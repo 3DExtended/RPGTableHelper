@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         content: Container(
-          color: Colors.red,
+          color: const Color.fromARGB(35, 29, 22, 22),
         ));
   }
 }

@@ -13,7 +13,7 @@ void main() {
       widgetName: 'MainTwoBlockLayout',
       useMaterialAppWrapper: true,
       screenFactory: (Locale locale) => MainTwoBlockLayout(
-        content: Container(color: Colors.red),
+        content: Container(color: const Color.fromARGB(102, 0, 0, 0)),
         navbarButtons: [
           NavbarButton(
             onPressed: () {},

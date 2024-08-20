@@ -40,6 +40,12 @@ class MainTwoBlockLayout extends StatelessWidget {
           child: StyledBox(
             kInnerDecoration: BoxDecoration(
               color: Colors.transparent,
+              image: const DecorationImage(
+                image: AssetImage(
+                  "assets/images/bg.png",
+                ),
+                fit: BoxFit.fill,
+              ),
               borderRadius: BorderRadius.circular(32),
             ),
             child: content,
@@ -52,9 +58,18 @@ class MainTwoBlockLayout extends StatelessWidget {
       children = children.reversed.toList();
     }
 
-    return RowColumnFlipper(
-      isLandscapeMode: isLandscape,
-      children: children,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          "assets/images/bg.png",
+          fit: BoxFit.fill,
+        ),
+        RowColumnFlipper(
+          isLandscapeMode: isLandscape,
+          children: children,
+        ),
+      ],
     );
   }
 }
