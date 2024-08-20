@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:shadow_widget/shadow_widget.dart';
 
 class StyledBox extends StatelessWidget {
   final Widget child;
@@ -33,16 +34,18 @@ class StyledBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: kGradientBoxDecoration,
-      child: Padding(
-        padding: EdgeInsets.all(borderThickness ?? 2.0),
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: kInnerDecoration,
-          child: Padding(
-            padding: EdgeInsets.all(borderThickness ?? 2.0),
+    return ShadowWidget(
+      blurRadius: 7,
+      offset: const Offset(2, 3),
+      color: const Color.fromARGB(197, 0, 0, 0),
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: kGradientBoxDecoration,
+        child: Padding(
+          padding: EdgeInsets.all(borderThickness ?? 2.0),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: kInnerDecoration,
             child: child,
           ),
         ),
