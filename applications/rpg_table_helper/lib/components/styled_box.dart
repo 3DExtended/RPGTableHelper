@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class StyledBox extends StatelessWidget {
   final Widget child;
@@ -23,8 +24,7 @@ class StyledBox extends StatelessWidget {
 
     kGradientBoxDecoration = kGradientBoxDecoration ??
         BoxDecoration(
-          gradient:
-              const LinearGradient(colors: [Colors.black, Colors.redAccent]),
+          gradient: borderGradient,
           border: Border.all(
             color: Colors.transparent,
           ),

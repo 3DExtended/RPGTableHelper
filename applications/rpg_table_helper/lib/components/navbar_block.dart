@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
+import 'package:rpg_table_helper/components/styled_box.dart';
 
 class NavbarButton {
   final void Function() onPressed;
@@ -27,9 +28,13 @@ class NavbarBlock extends StatelessWidget {
             ))
         .toList();
 
-    return RowColumnFlipper(
-      isLandscapeMode: !isLandscapeMode,
-      children: children,
+    return StyledBox(
+      borderRadius: 400, // fully rounded
+      borderThickness: 2,
+      child: RowColumnFlipper(
+        isLandscapeMode: !isLandscapeMode,
+        children: children,
+      ),
     );
   }
 }
