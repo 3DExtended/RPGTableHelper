@@ -33,5 +33,14 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
+fonts:
+  - family: Roboto
+    fonts:
+      - asset: assets/fonts/Roboto-2/Roboto-Regular.ttf
+      - asset: assets/fonts/Roboto-2/Roboto-Italic.ttf
+        style: italic
+      - asset: assets/fonts/Roboto-2/Roboto-Bold.ttf
+        style: bold
+
 flutter_intl:
   enabled: true

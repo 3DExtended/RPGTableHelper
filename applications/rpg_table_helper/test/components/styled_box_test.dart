@@ -47,5 +47,48 @@ void main() {
         ),
       ]),
     );
+
+    testConfigurations(
+      disableLocals: true,
+      widgetName: 'StyledBox double',
+      useMaterialAppWrapper: true,
+      screenFactory: (Locale locale) => StyledBox(
+        child: Container(
+          height: 20,
+          width: 40,
+          color: Colors.green,
+        ),
+      ),
+      getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        MapEntry(
+          'default',
+          DependencyProvider.getMockedDependecyProvider(
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  widgetToTest,
+                  widgetToTest,
+                ],
+              ),
+            ),
+          ),
+        ),
+        MapEntry(
+          'expanded',
+          DependencyProvider.getMockedDependecyProvider(
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(child: widgetToTest),
+                  Expanded(child: widgetToTest),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
   });
 }
