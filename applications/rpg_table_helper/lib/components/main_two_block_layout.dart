@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
+import 'package:rpg_table_helper/components/styled_box.dart';
 
 class MainTwoBlockLayout extends StatelessWidget {
   final List<NavbarButton> navbarButtons;
@@ -36,7 +37,13 @@ class MainTwoBlockLayout extends StatelessWidget {
             60,
             !isLandscape ? 30 : 60,
           ),
-          child: content,
+          child: StyledBox(
+            kInnerDecoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(32),
+            ),
+            child: content,
+          ),
         ),
       ),
     ];

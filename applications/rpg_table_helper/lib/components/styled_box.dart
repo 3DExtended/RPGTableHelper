@@ -17,8 +17,7 @@ class StyledBox extends StatelessWidget {
   }) {
     kInnerDecoration = kInnerDecoration ??
         BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.white),
+          gradient: navbarBackground,
           borderRadius: BorderRadius.circular(borderRadius ?? 32),
         );
 
@@ -35,10 +34,12 @@ class StyledBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: Clip.hardEdge,
       decoration: kGradientBoxDecoration,
       child: Padding(
         padding: EdgeInsets.all(borderThickness ?? 2.0),
         child: Container(
+          clipBehavior: Clip.hardEdge,
           decoration: kInnerDecoration,
           child: Padding(
             padding: EdgeInsets.all(borderThickness ?? 2.0),
