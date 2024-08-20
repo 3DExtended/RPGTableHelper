@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/row_column_flipper.dart';
+
+class NavbarButton {
+  final void Function() onPressed;
+  final Widget icon;
+
+  NavbarButton({required this.onPressed, required this.icon});
+}
+
+class NavbarBlock extends StatelessWidget {
+  final List<NavbarButton> navbarButtons;
+  final bool isLandscapeMode;
+
+  const NavbarBlock({
+    super.key,
+    required this.navbarButtons,
+    required this.isLandscapeMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = navbarButtons
+        .map((e) => Container(
+              padding: const EdgeInsets.all(10),
+              child: e.icon,
+            ))
+        .toList();
+
+    return RowColumnFlipper(
+      isLandscapeMode: !isLandscapeMode,
+      children: children,
+    );
+  }
+}

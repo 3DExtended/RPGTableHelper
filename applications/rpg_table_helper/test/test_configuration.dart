@@ -6,54 +6,18 @@ import 'package:golden_toolkit/golden_toolkit.dart';
 
 const testDevices = [
   Device(
-    name: 'android 9to16',
-    size: Size(43 * 9, 43 * 16),
+    name: 'ipad pro 12-9 landscape',
+    size: Size(1366, 1024),
     devicePixelRatio: 3,
     textScale: 1.0,
     safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
   ),
   Device(
-    // Lisas device
-    name: 'samsungA34',
-    size: Size(1080 / 2.0, 2340 / 2.0),
+    name: 'ipad pro 12-9 portrait',
+    size: Size(1024, 1366),
     devicePixelRatio: 3,
     textScale: 1.0,
     safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  ),
-  Device(
-    name: 'pixel 7 pro',
-    size: Size(886 / 2.0, 1929 / 2.0),
-    devicePixelRatio: 2,
-    textScale: 1.0,
-    safeArea: EdgeInsets.fromLTRB(0.0, 60.0, 0.0, 0.0),
-  ),
-  Device(
-    name: 'iPhone 15',
-    size: Size(1179 / 3.0, 2556 / 3.0),
-    devicePixelRatio: 3,
-    textScale: 1.0,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  ),
-  Device(
-    name: 'iPhone 15 Pro Max',
-    size: Size(1290 / 3.0, 2796 / 3.0),
-    devicePixelRatio: 3,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-    textScale: 1.0,
-  ),
-  Device(
-    name: 'iPhone SE (3rd gen)',
-    size: Size(750 / 2, 1334 / 2),
-    devicePixelRatio: 2,
-    safeArea: EdgeInsets.fromLTRB(0.0, 20.0 / 2, 0.0, 0.0),
-    textScale: 1.0,
-  ),
-  Device(
-    name: 'super high iPhone',
-    size: Size(1290 / 3.0, 2796 / 3.0 * 5.0),
-    devicePixelRatio: 3,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0 / 3.0, 0.0, 34.0 / 3.0),
-    textScale: 1.0,
   ),
 ];
 
