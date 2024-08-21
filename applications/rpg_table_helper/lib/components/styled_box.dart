@@ -4,25 +4,25 @@ import 'package:shadow_widget/shadow_widget.dart';
 
 class StyledBox extends StatelessWidget {
   final Widget child;
-  late BoxDecoration? kInnerDecoration;
-  late BoxDecoration? kGradientBoxDecoration;
+  late final BoxDecoration? kInnerDecoration;
+  late final BoxDecoration? kGradientBoxDecoration;
   final double? borderRadius;
   final double? borderThickness;
   StyledBox({
     super.key,
     required this.child,
     this.borderRadius,
-    this.kInnerDecoration,
-    this.kGradientBoxDecoration,
+    BoxDecoration? overrideGradientBoxDecoration,
+    BoxDecoration? overrideInnerDecoration,
     this.borderThickness,
   }) {
-    kInnerDecoration = kInnerDecoration ??
+    kInnerDecoration = overrideInnerDecoration ??
         BoxDecoration(
           gradient: navbarBackground,
           borderRadius: BorderRadius.circular(borderRadius ?? 32),
         );
 
-    kGradientBoxDecoration = kGradientBoxDecoration ??
+    kGradientBoxDecoration = overrideGradientBoxDecoration ??
         BoxDecoration(
           gradient: borderGradient,
           border: Border.all(

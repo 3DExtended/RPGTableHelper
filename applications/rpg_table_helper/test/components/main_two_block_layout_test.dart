@@ -61,7 +61,7 @@ void main() {
         MapEntry(
           'default',
           DependencyProvider.getMockedDependecyProvider(
-            Center(
+            child: Center(
               child: widgetToTest,
             ),
           ),

@@ -22,7 +22,7 @@ void main() {
         MapEntry(
           'default',
           DependencyProvider.getMockedDependecyProvider(
-            Center(
+            child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -35,7 +35,7 @@ void main() {
         MapEntry(
           'expanded',
           DependencyProvider.getMockedDependecyProvider(
-            Center(
+            child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -63,7 +63,7 @@ void main() {
         MapEntry(
           'default',
           DependencyProvider.getMockedDependecyProvider(
-            Center(
+            child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -77,7 +77,7 @@ void main() {
         MapEntry(
           'expanded',
           DependencyProvider.getMockedDependecyProvider(
-            Center(
+            child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

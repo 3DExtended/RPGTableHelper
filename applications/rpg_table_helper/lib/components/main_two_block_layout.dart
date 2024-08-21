@@ -38,7 +38,7 @@ class MainTwoBlockLayout extends StatelessWidget {
             !isLandscape ? 30 : 60,
           ),
           child: StyledBox(
-            kInnerDecoration: BoxDecoration(
+            overrideInnerDecoration: BoxDecoration(
               color: Colors.transparent,
               image: const DecorationImage(
                 image: AssetImage(
