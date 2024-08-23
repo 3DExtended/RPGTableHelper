@@ -7,6 +7,14 @@ class CharacterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      children: [
+        Container(
+          child: const Text(
+            "CharacterScreen",
+          ),
+        ),
+      ],
+    );
   }
 }

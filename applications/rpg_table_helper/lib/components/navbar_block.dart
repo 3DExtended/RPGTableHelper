@@ -7,7 +7,7 @@ import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 
 class NavbarButton {
-  final void Function() onPressed;
+  final void Function(TabItem clickedItem) onPressed;
   final Widget icon;
   final TabItem tabItem;
 
@@ -37,8 +37,7 @@ class NavbarBlock extends StatelessWidget {
       return CupertinoButton(
         minSize: 0,
         onPressed: () {
-          navigationSerivce.setCurrentTabItem(e.value.tabItem);
-          e.value.onPressed();
+          e.value.onPressed(e.value.tabItem);
         },
         padding: const EdgeInsets.all(0),
         child: Theme(

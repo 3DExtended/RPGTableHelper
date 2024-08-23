@@ -103,104 +103,15 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
   }
 
   Widget _buildBody() {
-    return MainTwoBlockLayout(
-        navbarButtons: [
-          NavbarButton(
-            onPressed: () {
-              setState(() {});
-            },
-            icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-            tabItem: TabItem.search,
-          ),
-          NavbarButton(
-            onPressed: () {
-              setState(() {});
-            },
-            icon: const FaIcon(FontAwesomeIcons.user),
-            tabItem: TabItem.character,
-          ),
-          NavbarButton(
-            onPressed: () {
-              setState(() {});
-            },
-            icon: const FaIcon(FontAwesomeIcons.basketShopping),
-            tabItem: TabItem.inventory,
-          ),
-          NavbarButton(
-            onPressed: () {
-              setState(() {});
-            },
-            icon: const FaIcon(FontAwesomeIcons.trowel),
-            tabItem: TabItem.crafting,
-          ),
-          NavbarButton(
-            onPressed: () {
-              setState(() {});
-            },
-            icon: const FaIcon(FontAwesomeIcons.bookJournalWhills),
-            tabItem: TabItem.lore,
-          ),
-        ],
-        content: Container(
-          color: const Color.fromARGB(35, 29, 22, 22),
-          child: Stack(children: <Widget>[
-            _buildOffstageNavigator(TabItem.character),
-            _buildOffstageNavigator(TabItem.search),
-            _buildOffstageNavigator(TabItem.crafting),
-            _buildOffstageNavigator(TabItem.inventory),
-            _buildOffstageNavigator(TabItem.lore),
-          ]),
-        ));
-  }
-
-  Widget _buildOffstageNavigator(TabItem tabItem) {
-    var navigatorKeys = DependencyProvider.of(context)
-        .getService<INavigationService>()
-        .getNavigationKeys();
-
-    print(
-        'Building navigator for $tabItem with key: ${navigatorKeys[tabItem].toString()}');
-
-    return Offstage(
-      offstage: _currentTab != tabItem,
-      child: TabNavigator(
-        navigatorKey: navigatorKeys[tabItem],
-        tabItem: tabItem,
-      ),
-    );
-  }
-}
-
-class TabNavigator extends StatelessWidget {
-  const TabNavigator(
-      {super.key, required this.navigatorKey, required this.tabItem});
-
-  final GlobalKey<NavigatorState>? navigatorKey;
-  final TabItem tabItem;
-
-  @override
-  Widget build(BuildContext context) {
-    print(
-        "rebuilding TabNavigator with key: $navigatorKey and tabitem: ${tabItem.name}");
-    final routeBuilders = _routeBuilders(context);
-
-    var tabDefaultRoute = DependencyProvider.of(context)
-        .getService<INavigationService>()
-        .getDefaultRouteForTabItem(tabItem);
-
-    return Navigator(
-      key: navigatorKey,
-      initialRoute: tabDefaultRoute,
-      onGenerateRoute: (routeSettings) {
-        var routeName = routeSettings.name!;
-        if (routeName == '/') {
-          return null; //routeName = tabDefaultRoute;
-        }
-        return MaterialPageRoute(
-          settings: routeSettings,
-          builder: (context) => routeBuilders[routeSettings.name!]!(context),
-        );
-      },
+    return Container(
+      color: const Color.fromARGB(35, 29, 22, 22),
+      child: Stack(children: <Widget>[
+        _buildOffstageNavigator(TabItem.character),
+        _buildOffstageNavigator(TabItem.search),
+        _buildOffstageNavigator(TabItem.crafting),
+        _buildOffstageNavigator(TabItem.inventory),
+        _buildOffstageNavigator(TabItem.lore),
+      ]),
     );
   }
 
@@ -212,5 +123,91 @@ class TabNavigator extends StatelessWidget {
       CraftingScreen.route: (context) => const CraftingScreen(),
       SearchScreen.route: (context) => const SearchScreen(),
     };
+  }
+
+  Widget _buildOffstageNavigator(TabItem tabItem) {
+    var navigationService =
+        DependencyProvider.of(context).getService<INavigationService>();
+    var navigatorKeys = navigationService.getNavigationKeys();
+
+    print(
+        'Building navigator for $tabItem with key: ${navigatorKeys[tabItem].toString()}');
+
+    print(
+        "rebuilding TabNavigator with key: ${navigatorKeys[tabItem]} and tabitem: ${tabItem.name}");
+    final routeBuilders = _routeBuilders(context);
+
+    var tabDefaultRoute = navigationService.getDefaultRouteForTabItem(tabItem);
+
+    return Offstage(
+      offstage: _currentTab != tabItem,
+      child: Navigator(
+        key: navigatorKeys[tabItem],
+        initialRoute: tabDefaultRoute,
+        onGenerateRoute: (routeSettings) {
+          var routeName = routeSettings.name!;
+          if (routeName == '/') {
+            return null; //routeName = tabDefaultRoute;
+          }
+          return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (context) {
+              return MainTwoBlockLayout(
+                  navbarButtons: [
+                    NavbarButton(
+                      onPressed: (tabItem) {
+                        setState(() {
+                          _selectTab(tabItem);
+                        });
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+                      tabItem: TabItem.search,
+                    ),
+                    NavbarButton(
+                      onPressed: (tabItem) {
+                        setState(() {
+                          _selectTab(tabItem);
+                        });
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.user),
+                      tabItem: TabItem.character,
+                    ),
+                    NavbarButton(
+                      onPressed: (tabItem) {
+                        setState(() {
+                          _selectTab(tabItem);
+                        });
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.basketShopping),
+                      tabItem: TabItem.inventory,
+                    ),
+                    NavbarButton(
+                      onPressed: (tabItem) {
+                        setState(() {
+                          _selectTab(tabItem);
+                        });
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.trowel),
+                      tabItem: TabItem.crafting,
+                    ),
+                    NavbarButton(
+                      onPressed: (tabItem) {
+                        setState(() {
+                          _selectTab(tabItem);
+                        });
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.bookJournalWhills),
+                      tabItem: TabItem.lore,
+                    ),
+                  ],
+                  content: Container(
+                    color: const Color.fromARGB(35, 29, 22, 22),
+                    child: routeBuilders[routeSettings.name!]!(context),
+                  ));
+            },
+          );
+        },
+      ),
+    );
   }
 }

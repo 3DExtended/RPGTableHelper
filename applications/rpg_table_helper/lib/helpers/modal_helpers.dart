@@ -330,7 +330,7 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
 
   var nav = DependencyProvider.of(context)
       .getService<INavigationService>()
-      .getNavigationKeys()[TabItem.base]!;
+      .getNavigationKeys()[TabItem.search]!; // TODO this was TabItem.base...
 
   final result = await nav.currentState!.push(
     CupertinoModalBottomSheetRoute<T>(

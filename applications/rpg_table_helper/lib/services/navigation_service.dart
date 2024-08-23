@@ -1,7 +1,11 @@
 import 'package:flutter/widgets.dart';
+import 'package:rpg_table_helper/screens/character_screen.dart';
+import 'package:rpg_table_helper/screens/crafting_screen.dart';
+import 'package:rpg_table_helper/screens/inventory_screen.dart';
+import 'package:rpg_table_helper/screens/lore_screen.dart';
+import 'package:rpg_table_helper/screens/search_screen.dart';
 
 enum TabItem {
-  base,
   search,
   character,
   inventory,
@@ -24,16 +28,15 @@ abstract class INavigationService {
   String getDefaultRouteForTabItem(TabItem tabItem) {
     switch (tabItem) {
       case TabItem.search:
-        return "/"; //SearchScreen.route; // TODO make me
+        return SearchScreen.route; // TODO make me
       case TabItem.character:
-        return "/"; //SearchScreen.route; // TODO make me
+        return CharacterScreen.route; // TODO make me
       case TabItem.crafting:
-        return "/"; //SearchScreen.route; // TODO make me
+        return CraftingScreen.route; // TODO make me
       case TabItem.inventory:
-        return "/"; //SearchScreen.route; // TODO make me
+        return InventoryScreen.route; // TODO make me
       case TabItem.lore:
-        return "/"; //SearchScreen.route; // TODO make me
-      case TabItem.base:
+        return LoreScreen.route; // TODO make me
       default:
         throw Exception(
             'tried opeing the signinflow from the wrong navigation key');
@@ -49,7 +52,6 @@ class NavigationService extends INavigationService {
     TabItem.search: const GlobalObjectKey<NavigatorState>('search'),
     TabItem.crafting: const GlobalObjectKey<NavigatorState>('crafting'),
     TabItem.inventory: const GlobalObjectKey<NavigatorState>('inventory'),
-    TabItem.base: const GlobalObjectKey<NavigatorState>('base'),
   };
 
   @override
