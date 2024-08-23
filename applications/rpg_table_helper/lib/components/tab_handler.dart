@@ -130,11 +130,6 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
         DependencyProvider.of(context).getService<INavigationService>();
     var navigatorKeys = navigationService.getNavigationKeys();
 
-    print(
-        'Building navigator for $tabItem with key: ${navigatorKeys[tabItem].toString()}');
-
-    print(
-        "rebuilding TabNavigator with key: ${navigatorKeys[tabItem]} and tabitem: ${tabItem.name}");
     final routeBuilders = _routeBuilders(context);
 
     var tabDefaultRoute = navigationService.getDefaultRouteForTabItem(tabItem);

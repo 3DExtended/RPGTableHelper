@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/fill_remaining_space.dart';
 
 class CharacterScreen extends StatelessWidget {
   static String route = "character";
@@ -7,14 +8,12 @@ class CharacterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: const Text(
-            "CharacterScreen",
-          ),
-        ),
-      ],
-    );
+    return FillRemainingSpace(
+        child: Container(
+      child: const Text(
+        "CharacterScreen",
+        style: TextStyle(color: Colors.white),
+      ),
+    ));
   }
 }
