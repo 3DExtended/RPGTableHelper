@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class MainTwoBlockLayout extends StatelessWidget {
   final List<NavbarButton> navbarButtons;
@@ -20,22 +23,76 @@ class MainTwoBlockLayout extends StatelessWidget {
 
     var isLandscape = width >= height;
 
+    // TODO is connected or not
+    var isConnectedToServer = false;
+
+    var isConnectedBtn = Padding(
+      padding: EdgeInsets.fromLTRB(
+        outerPadding,
+        outerPadding,
+        !isLandscape ? outerPadding * 2 : outerPadding,
+        isLandscape ? outerPadding * 2 : outerPadding,
+      ),
+      child: StyledBox(
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(1000),
+              color: Colors.transparent,
+            ),
+            padding: const EdgeInsets.all(12),
+            child: Theme(
+                data: ThemeData(
+                  iconTheme: IconThemeData(
+                    color: isConnectedToServer
+                        ? const Color.fromARGB(255, 12, 163, 90)
+                        : const Color.fromARGB(255, 163, 12, 12),
+                    size: 24,
+                  ),
+                ),
+                child: FaIcon(isConnectedToServer
+                    ? FontAwesomeIcons.link
+                    : FontAwesomeIcons.linkSlash)),
+          ),
+        ),
+      ),
+    );
+
     var children = [
       const SizedBox(
-        height: 30,
-        width: 30,
+        height: outerPadding,
+        width: outerPadding,
       ),
-      NavbarBlock(
-        isLandscapeMode: isLandscape,
-        navbarButtons: navbarButtons,
+      RowColumnFlipper(
+        isLandscapeMode: !isLandscape,
+        children: [
+          const Spacer(),
+          CupertinoButton(
+              minSize: 0,
+              padding: const EdgeInsets.all(0),
+              onPressed: () {},
+              child: isConnectedBtn),
+          Center(
+            child: NavbarBlock(
+              isLandscapeMode: isLandscape,
+              navbarButtons: navbarButtons,
+            ),
+          ),
+          Opacity(
+            opacity: 0,
+            child: isConnectedBtn,
+          ),
+          const Spacer(),
+        ],
       ),
       Expanded(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-            isLandscape ? 30 : 60,
-            60,
-            60,
-            !isLandscape ? 30 : 60,
+            isLandscape ? outerPadding : outerPadding * 2,
+            outerPadding * 2,
+            outerPadding * 2,
+            !isLandscape ? outerPadding : outerPadding * 2,
           ),
           child: StyledBox(
             overrideInnerDecoration: BoxDecoration(
