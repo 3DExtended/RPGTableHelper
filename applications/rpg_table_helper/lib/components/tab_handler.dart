@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/screens/login_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/main_two_block_layout.dart';
+import 'package:rpg_table_helper/components/navbar_block.dart';
+import 'package:rpg_table_helper/screens/character_screen.dart';
+import 'package:rpg_table_helper/screens/crafting_screen.dart';
+import 'package:rpg_table_helper/screens/inventory_screen.dart';
+import 'package:rpg_table_helper/screens/lore_screen.dart';
 import 'package:rpg_table_helper/screens/search_screen.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthorizedScreenWrapper extends StatefulWidget {
   static const route = '/';
@@ -17,8 +22,6 @@ class AuthorizedScreenWrapper extends StatefulWidget {
 
 class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
   var _currentTab = TabItem.character;
-
-  final Set<TabItem> _listOfOpendTabs = {TabItem.character};
 
   _reloadRouteIfPossible(BuildContext context, TabItem tabItem) {
     var navigatorKeys = DependencyProvider.of(context)
@@ -56,7 +59,6 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
       _reloadRouteIfPossible(context, tabItem);
     } else {
       setState(() {
-        _listOfOpendTabs.add(tabItem);
         _currentTab = tabItem;
         navservice.setCurrentTabItem(tabItem);
       });
@@ -66,44 +68,6 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(const Duration(milliseconds: 10), () async {
-      if (DependencyProvider.of(context).isMocked) {
-        return;
-      }
-
-      var navigateBack = false;
-
-      var hasSomeJwtStored = await getHasSomeJwtStored();
-      if (!hasSomeJwtStored) navigateBack = true;
-
-      if (!navigateBack && mounted) {
-        if (!await LoginScreen.checkIfAppVersionFits(context)) {
-          navigateBack = true;
-        }
-      }
-
-      if (navigateBack == true) {
-        if (!mounted) return;
-
-        var navigatorService =
-            DependencyProvider.of(context).getService<INavigationService>();
-        navigatorService.setCurrentTabItem(TabItem.base);
-        navigatorService
-            .getNavigationKeys()[TabItem.base]!
-            .currentState!
-            .pushNamedAndRemoveUntil(LoginScreen.route, (route) => false);
-      }
-    });
-  }
-
-  Future<bool> getHasSomeJwtStored() async {
-    if (!DependencyProvider.of(context).isMocked) {
-      var prefs = await SharedPreferences.getInstance();
-      return prefs.containsKey('jwt');
-    }
-
-    return false;
   }
 
   @override
@@ -134,35 +98,68 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
         body: _buildBody(),
         extendBody: true,
         resizeToAvoidBottomInset: false,
-        // bottomNavigationBar: BottomNavigation(
-        //   currentTab: _currentTab,
-        //   onSelectTab: _selectTab,
-        // ),
       ),
     );
   }
 
   Widget _buildBody() {
-    return Stack(children: <Widget>[
-      if (_listOfOpendTabs.contains(TabItem.character))
-        _buildOffstageNavigator(TabItem.character),
-      if (_listOfOpendTabs.contains(TabItem.search))
-        _buildOffstageNavigator(TabItem.search),
-      if (_listOfOpendTabs.contains(TabItem.crafting))
-        _buildOffstageNavigator(TabItem.crafting),
-      if (_listOfOpendTabs.contains(TabItem.inventory))
-        _buildOffstageNavigator(TabItem.inventory),
-      if (_listOfOpendTabs.contains(TabItem.lore))
-        _buildOffstageNavigator(TabItem.lore),
-      if (_listOfOpendTabs.contains(TabItem.search))
-        _buildOffstageNavigator(TabItem.search),
-    ]);
+    return MainTwoBlockLayout(
+        navbarButtons: [
+          NavbarButton(
+            onPressed: () {
+              setState(() {});
+            },
+            icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+            tabItem: TabItem.search,
+          ),
+          NavbarButton(
+            onPressed: () {
+              setState(() {});
+            },
+            icon: const FaIcon(FontAwesomeIcons.user),
+            tabItem: TabItem.character,
+          ),
+          NavbarButton(
+            onPressed: () {
+              setState(() {});
+            },
+            icon: const FaIcon(FontAwesomeIcons.basketShopping),
+            tabItem: TabItem.inventory,
+          ),
+          NavbarButton(
+            onPressed: () {
+              setState(() {});
+            },
+            icon: const FaIcon(FontAwesomeIcons.trowel),
+            tabItem: TabItem.crafting,
+          ),
+          NavbarButton(
+            onPressed: () {
+              setState(() {});
+            },
+            icon: const FaIcon(FontAwesomeIcons.bookJournalWhills),
+            tabItem: TabItem.lore,
+          ),
+        ],
+        content: Container(
+          color: const Color.fromARGB(35, 29, 22, 22),
+          child: Stack(children: <Widget>[
+            _buildOffstageNavigator(TabItem.character),
+            _buildOffstageNavigator(TabItem.search),
+            _buildOffstageNavigator(TabItem.crafting),
+            _buildOffstageNavigator(TabItem.inventory),
+            _buildOffstageNavigator(TabItem.lore),
+          ]),
+        ));
   }
 
   Widget _buildOffstageNavigator(TabItem tabItem) {
     var navigatorKeys = DependencyProvider.of(context)
         .getService<INavigationService>()
         .getNavigationKeys();
+
+    print(
+        'Building navigator for $tabItem with key: ${navigatorKeys[tabItem].toString()}');
 
     return Offstage(
       offstage: _currentTab != tabItem,
@@ -183,6 +180,8 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "rebuilding TabNavigator with key: $navigatorKey and tabitem: ${tabItem.name}");
     final routeBuilders = _routeBuilders(context);
 
     var tabDefaultRoute = DependencyProvider.of(context)
@@ -207,6 +206,10 @@ class TabNavigator extends StatelessWidget {
 
   _routeBuilders(BuildContext context) {
     return {
+      LoreScreen.route: (context) => const LoreScreen(),
+      CharacterScreen.route: (context) => const CharacterScreen(),
+      InventoryScreen.route: (context) => const InventoryScreen(),
+      CraftingScreen.route: (context) => const CraftingScreen(),
       SearchScreen.route: (context) => const SearchScreen(),
     };
   }

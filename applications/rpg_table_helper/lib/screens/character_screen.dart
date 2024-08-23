@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-class SearchScreen extends StatelessWidget {
-  static String route = "search";
+class CharacterScreen extends StatelessWidget {
+  static String route = "character";
 
-  const SearchScreen({super.key});
+  const CharacterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
