@@ -18,7 +18,7 @@ void main() {
         navbarButtons: [
           NavbarButton(
             tabItem: TabItem.search,
-            onPressed: () {},
+            onPressed: (_) {},
             icon: Container(
               width: 20,
               height: 20,
@@ -27,7 +27,7 @@ void main() {
           ),
           NavbarButton(
             tabItem: TabItem.character,
-            onPressed: () {},
+            onPressed: (_) {},
             icon: Container(
               width: 20,
               height: 20,
@@ -36,7 +36,7 @@ void main() {
           ),
           NavbarButton(
             tabItem: TabItem.inventory,
-            onPressed: () {},
+            onPressed: (_) {},
             icon: Container(
               width: 20,
               height: 20,
@@ -45,7 +45,7 @@ void main() {
           ),
           NavbarButton(
             tabItem: TabItem.crafting,
-            onPressed: () {},
+            onPressed: (_) {},
             icon: Container(
               width: 20,
               height: 20,
@@ -54,7 +54,7 @@ void main() {
           ),
           NavbarButton(
             tabItem: TabItem.lore,
-            onPressed: () {},
+            onPressed: (_) {},
             icon: Container(
               width: 20,
               height: 20,
