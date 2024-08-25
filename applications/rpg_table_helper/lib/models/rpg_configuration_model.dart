@@ -26,6 +26,35 @@ class RpgConfigurationModel {
   });
 
   Map<String, dynamic> toJson() => _$RpgConfigurationModelToJson(this);
+
+  static RpgConfigurationModel getBaseConfiguration() => RpgConfigurationModel(
+        rpgName: "",
+        currencyDefinition: CurrencyDefinition(currencyTypes: []),
+        itemCategories: [],
+        placesOfFindings: [],
+        allItems: [],
+        craftingRecipes: [],
+        characterStatsDefinition: CharacterStatsDefinition(
+            mainPlayerStat: CharacterStatDefinition(
+                statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
+                name: "HP",
+                helperText: "Health Points",
+                valueType: CharacterStatValueType.intWithMaxValue,
+                editType: CharacterStatEditType.oneTap),
+            secondaryPlayerStat: CharacterStatDefinition(
+                statUuid: "886df3c2-a93f-47ae-931f-86153997860d",
+                name: "AC",
+                helperText: "Armor Class",
+                valueType: CharacterStatValueType.int,
+                editType: CharacterStatEditType.static),
+            thirdPlayerStat: CharacterStatDefinition(
+                statUuid: "082e62cb-7c17-4702-8529-172fb8e74c04",
+                name: "SP",
+                helperText: "Speed",
+                valueType: CharacterStatValueType.int,
+                editType: CharacterStatEditType.static),
+            otherPlayerStats: []),
+      );
 }
 
 @JsonSerializable()

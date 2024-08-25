@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 part 'rpg_character_configuration.g.dart';
 
@@ -19,6 +20,18 @@ class RpgCharacterConfiguration {
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterConfigurationToJson(this);
+
+  static RpgCharacterConfiguration getBaseConfiguration(
+          RpgConfigurationModel? rpgConfig) =>
+      RpgCharacterConfiguration(
+        characterName: "",
+        characterStats: [],
+        inventory: [],
+        moneyCoinCount: rpgConfig?.currencyDefinition.currencyTypes
+                .map((e) => 0)
+                .toList() ??
+            [],
+      );
 }
 
 @JsonSerializable()

@@ -22,3 +22,6 @@ const secondaryNavbarColor = Color(0xff3E4148);
 const paddingBeforeAndAfterNavbarButtons = 5.0;
 
 const outerPadding = 20.0;
+
+const sharedPrefsKeyRpgConfigJson = "rpgconfig";
+const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";

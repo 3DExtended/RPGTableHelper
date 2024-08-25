@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/tab_handler.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/navigation_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,12 +28,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return DependencyProvider(
       isMocked: false,
-      child: Builder(builder: (context) {
-        var navigatorService = DependencyProvider.of(context)
-            .getService<INavigationService>()
-            .getNavigationKeys();
-
-        return MaterialApp(
+      child: ProviderScope(
+        child: MaterialApp(
           title: 'Flutter Demo',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -59,8 +55,8 @@ class _MyAppState extends State<MyApp> {
             }
             return null;
           },
-        );
-      }),
+        ),
+      ),
     );
   }
 }
