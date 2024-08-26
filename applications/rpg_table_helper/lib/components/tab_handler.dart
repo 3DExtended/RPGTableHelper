@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/main_two_block_layout.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
+import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:rpg_table_helper/screens/character_screen.dart';
 import 'package:rpg_table_helper/screens/crafting_screen.dart';
 import 'package:rpg_table_helper/screens/inventory_screen.dart';
 import 'package:rpg_table_helper/screens/lore_screen.dart';
 import 'package:rpg_table_helper/screens/search_screen.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 
@@ -23,20 +24,26 @@ class AuthorizedScreenWrapper extends StatefulWidget {
 
 class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
   _routeBuilders(BuildContext context) {
-    return {
+    var result = {
       LoreScreen.route: (context) => const LoreScreen(),
       CharacterScreen.route: (context) => const CharacterScreen(),
       InventoryScreen.route: (context) => const InventoryScreen(),
       CraftingScreen.route: (context) => const CraftingScreen(),
       SearchScreen.route: (context) => const SearchScreen(),
-      RpgConfigurationWizard.route: (context) => const RpgConfigurationWizard(),
     };
+
+    for (var config in allWizardConfigurations.entries.toList()) {
+      result[config.key] = (context) => WizardRendererForConfiguration(
+            configuration: config.value,
+          );
+    }
+
+    return result;
   }
 
   bool _doesRouteImplementOwnTabHandler(String route) {
-    var ownTabHandledRoutes = [
-      RpgConfigurationWizard.route,
-    ];
+    var ownTabHandledRoutes = [];
+    ownTabHandledRoutes.addAll(allWizardConfigurations.keys);
 
     return (ownTabHandledRoutes.contains(route));
   }

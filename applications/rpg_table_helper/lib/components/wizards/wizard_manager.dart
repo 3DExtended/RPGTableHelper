@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/fill_remaining_space.dart';
 import 'package:rpg_table_helper/components/main_two_block_layout.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
@@ -7,10 +6,16 @@ import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 class WizardManager extends StatefulWidget {
   final List<WizardStepBase Function(void Function(), void Function())>
       stepBuilders;
-  final VoidCallback onFinish; // Callback when the wizard is finished
+  final VoidCallback onFinish;
 
-  const WizardManager(
-      {super.key, required this.stepBuilders, required this.onFinish});
+  final int? startStepIndex;
+
+  const WizardManager({
+    super.key,
+    required this.stepBuilders,
+    required this.onFinish,
+    this.startStepIndex,
+  });
 
   @override
   State<WizardManager> createState() => _WizardManagerState();
@@ -18,6 +23,12 @@ class WizardManager extends StatefulWidget {
 
 class _WizardManagerState extends State<WizardManager> {
   int _currentStep = 0;
+
+  @override
+  void initState() {
+    _currentStep = widget.startStepIndex ?? 0;
+    super.initState();
+  }
 
   void _goToNextStep() {
     if (_currentStep < widget.stepBuilders.length - 1) {
@@ -72,13 +83,11 @@ class _WizardManagerState extends State<WizardManager> {
             ),
           )
           .toList(),
-      content: FillRemainingSpace(
-        child: Container(
-          color: const Color.fromARGB(35, 29, 22, 22),
-          child: widget.stepBuilders[_currentStep](
-            _goToPreviousStep,
-            _goToNextStep,
-          ),
+      content: Container(
+        color: const Color.fromARGB(35, 29, 22, 22),
+        child: widget.stepBuilders[_currentStep](
+          _goToPreviousStep,
+          _goToNextStep,
         ),
       ),
     );

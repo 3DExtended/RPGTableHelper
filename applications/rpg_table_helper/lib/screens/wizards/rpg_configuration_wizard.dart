@@ -1,82 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_manager.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 
-class RpgConfigurationWizard extends StatelessWidget {
-  static const String route = "/rpgconfigurationwizard";
-  const RpgConfigurationWizard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: WizardManager(
-        stepBuilders: [
-          (moveToPrevious, moveToNext) =>
-              _RpgConfigurationWizardStepCampagneName(
-                  title: "asdf1",
-                  onPreviousBtnPressed: moveToPrevious,
-                  onNextBtnPressed: moveToNext),
-          (moveToPrevious, moveToNext) =>
-              _RpgConfigurationWizardStepCampagneName(
-                  title: "asdf2",
-                  onPreviousBtnPressed: moveToPrevious,
-                  onNextBtnPressed: moveToNext),
-        ],
-        onFinish: () {
-          // Pop the wizard route off the stack when finished
-          Navigator.of(context).pop();
-        },
-      ),
-    );
-  }
-}
-
-class _RpgConfigurationWizardStepCampagneName extends WizardStepBase {
-  final String title;
-
-  const _RpgConfigurationWizardStepCampagneName({
+class RpgConfigurationWizardStepCampagneName extends WizardStepBase {
+  const RpgConfigurationWizardStepCampagneName({
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
-    required this.title,
   });
 
   @override
-  ConsumerState<_RpgConfigurationWizardStepCampagneName> createState() =>
+  ConsumerState<RpgConfigurationWizardStepCampagneName> createState() =>
       _RpgConfigurationWizardStepCampagneNameState();
 }
 
 class _RpgConfigurationWizardStepCampagneNameState
-    extends ConsumerState<_RpgConfigurationWizardStepCampagneName> {
+    extends ConsumerState<RpgConfigurationWizardStepCampagneName> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
       children: [
-        Text(
-          "asdf${widget.title}",
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Colors.white,
-              ),
+        Container(
+          color: const Color.fromARGB(33, 210, 191, 221),
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "RPG Configuration", // TODO localize
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: Colors.white,
+                      fontSize: 32,
+                    ),
+              )
+            ],
+          ),
         ),
-        Row(
-          children: [
-            CustomButton(
-              label: "Zurück",
-              onPressed: () {
-                widget.onPreviousBtnPressed();
-              },
-            ),
-            CustomButton(
-              label: "Weiter",
-              onPressed: () {
-                widget.onNextBtnPressed();
-              },
-            ),
-          ],
-        )
+        Container(
+          height: 1,
+          width: double.infinity,
+          color: const Color.fromARGB(78, 255, 255, 255),
+        ),
+        Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: Container(
+                    color: const Color.fromARGB(33, 210, 191, 221),
+                    child: const Column()),
+              ),
+              Expanded(
+                child: Container(
+                  color: const Color.fromARGB(65, 39, 39, 39),
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Row(
+                          children: [
+                            CustomButton(
+                              label: "Zurück",
+                              onPressed: () {
+                                widget.onPreviousBtnPressed();
+                              },
+                            ),
+                            const Spacer(),
+                            CustomButton(
+                              label: "Weiter",
+                              onPressed: () {
+                                widget.onNextBtnPressed();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

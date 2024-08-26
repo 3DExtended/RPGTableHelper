@@ -5,7 +5,7 @@ import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class MainTwoBlockLayout extends StatelessWidget {
   final List<NavbarButton> navbarButtons;
@@ -78,7 +78,8 @@ class MainTwoBlockLayout extends StatelessWidget {
                 minSize: 0,
                 padding: const EdgeInsets.all(0),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(RpgConfigurationWizard.route);
+                  Navigator.of(context)
+                      .pushNamed(allWizardConfigurations.entries.first.key);
                 },
                 child: isConnectedBtn),
           Center(
