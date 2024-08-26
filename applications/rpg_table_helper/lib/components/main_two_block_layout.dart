@@ -9,9 +9,11 @@ import 'package:rpg_table_helper/constants.dart';
 class MainTwoBlockLayout extends StatelessWidget {
   final List<NavbarButton> navbarButtons;
   final Widget content;
+  final int selectedNavbarButton;
   const MainTwoBlockLayout({
     super.key,
     required this.navbarButtons,
+    required this.selectedNavbarButton,
     required this.content,
   });
 
@@ -77,6 +79,7 @@ class MainTwoBlockLayout extends StatelessWidget {
             child: NavbarBlock(
               isLandscapeMode: isLandscape,
               navbarButtons: navbarButtons,
+              selectedNavbarButton: selectedNavbarButton,
             ),
           ),
           Opacity(

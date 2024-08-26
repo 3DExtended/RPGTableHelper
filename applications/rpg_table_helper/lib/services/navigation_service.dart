@@ -31,10 +31,10 @@ abstract class INavigationService {
         return SearchScreen.route; // TODO make me
       case TabItem.character:
         return CharacterScreen.route; // TODO make me
-      case TabItem.crafting:
-        return CraftingScreen.route; // TODO make me
       case TabItem.inventory:
         return InventoryScreen.route; // TODO make me
+      case TabItem.crafting:
+        return CraftingScreen.route; // TODO make me
       case TabItem.lore:
         return LoreScreen.route; // TODO make me
       default:

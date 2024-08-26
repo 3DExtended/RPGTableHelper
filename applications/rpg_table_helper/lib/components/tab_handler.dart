@@ -147,12 +147,14 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
           return MaterialPageRoute(
             settings: routeSettings,
             builder: (context) {
+              var selectedId = TabItem.values.indexOf(tabItem);
               return MainTwoBlockLayout(
+                  selectedNavbarButton: selectedId,
                   navbarButtons: [
                     NavbarButton(
                       onPressed: (tabItem) {
                         setState(() {
-                          _selectTab(tabItem);
+                          _selectTab(tabItem!);
                         });
                       },
                       icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
@@ -161,7 +163,7 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
                     NavbarButton(
                       onPressed: (tabItem) {
                         setState(() {
-                          _selectTab(tabItem);
+                          _selectTab(tabItem!);
                         });
                       },
                       icon: const FaIcon(FontAwesomeIcons.user),
@@ -170,7 +172,7 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
                     NavbarButton(
                       onPressed: (tabItem) {
                         setState(() {
-                          _selectTab(tabItem);
+                          _selectTab(tabItem!);
                         });
                       },
                       icon: const FaIcon(FontAwesomeIcons.basketShopping),
@@ -179,7 +181,7 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
                     NavbarButton(
                       onPressed: (tabItem) {
                         setState(() {
-                          _selectTab(tabItem);
+                          _selectTab(tabItem!);
                         });
                       },
                       icon: const FaIcon(FontAwesomeIcons.trowel),
@@ -188,7 +190,7 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
                     NavbarButton(
                       onPressed: (tabItem) {
                         setState(() {
-                          _selectTab(tabItem);
+                          _selectTab(tabItem!);
                         });
                       },
                       icon: const FaIcon(FontAwesomeIcons.bookJournalWhills),
