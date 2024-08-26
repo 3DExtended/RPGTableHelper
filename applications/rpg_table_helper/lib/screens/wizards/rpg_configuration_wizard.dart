@@ -20,10 +20,48 @@ class _RpgConfigurationWizardStepCampagneNameState
     extends ConsumerState<RpgConfigurationWizardStepCampagneName> {
   @override
   Widget build(BuildContext context) {
-    var stepTitle = ""; // TODO Localize
+    var stepHelperText = '''
 
-    var isLandscapeMode =
-        MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
+Willkommen beim RPG Helper!
+
+Du wirst auf den nächsten Schritten die App für dich und deine Party konfigurieren. Hierzu wirst du die Character Sheets erstellen, Item Kategorien, Fundorte, Items und Crafting Rezepte anlegen. Alle diese Einstellungen können später noch ergänzt werden, jedoch lohnt es sich am Anfang etwas Zeit zu investieren, damit deine Spieler die App bestens für sich nutzen können.
+
+Wir beginnen mit der wohl schwierigsten Frage überhaupt:
+
+Wie heißt deine Kampagne?'''; // TODO localize
+
+    return TwoPartWizardStepBody(
+      wizardTitle: "RPG Configuration", // TODO localize
+      isLandscapeMode: MediaQuery.of(context).size.width >
+          MediaQuery.of(context).size.height,
+      stepTitle: "Kampangen Name", // TODO Localize,
+      stepHelperText: stepHelperText,
+      onNextBtnPressed: widget.onNextBtnPressed,
+      onPreviousBtnPressed: widget.onPreviousBtnPressed,
+    );
+  }
+}
+
+class TwoPartWizardStepBody extends StatelessWidget {
+  const TwoPartWizardStepBody({
+    super.key,
+    required this.wizardTitle,
+    required this.isLandscapeMode,
+    required this.stepTitle,
+    required this.stepHelperText,
+    required this.onPreviousBtnPressed,
+    required this.onNextBtnPressed,
+  });
+
+  final String wizardTitle;
+  final bool isLandscapeMode;
+  final String stepTitle;
+  final String stepHelperText;
+  final void Function() onPreviousBtnPressed;
+  final void Function() onNextBtnPressed;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -34,12 +72,13 @@ class _RpgConfigurationWizardStepCampagneNameState
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "RPG Configuration", // TODO localize
+                wizardTitle,
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                       color: Colors.white,
                       fontSize: 32,
+                      fontWeight: FontWeight.bold,
                     ),
-              )
+              ),
             ],
           ),
         ),
@@ -56,9 +95,44 @@ class _RpgConfigurationWizardStepCampagneNameState
               Expanded(
                 child: Container(
                     color: const Color.fromARGB(33, 210, 191, 221),
-                    child: Column(
-                      children: [Container()],
-                    )),
+                    padding: const EdgeInsets.all(20),
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    stepTitle,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                stepHelperText,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    })),
               ),
               if (!isLandscapeMode)
                 Container(
@@ -69,6 +143,7 @@ class _RpgConfigurationWizardStepCampagneNameState
               Expanded(
                 child: Container(
                   color: const Color.fromARGB(65, 39, 39, 39),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
                       const Spacer(),
@@ -79,14 +154,14 @@ class _RpgConfigurationWizardStepCampagneNameState
                             CustomButton(
                               label: "Zurück",
                               onPressed: () {
-                                widget.onPreviousBtnPressed();
+                                onPreviousBtnPressed();
                               },
                             ),
                             const Spacer(),
                             CustomButton(
                               label: "Weiter",
                               onPressed: () {
-                                widget.onNextBtnPressed();
+                                onNextBtnPressed();
                               },
                             ),
                           ],
