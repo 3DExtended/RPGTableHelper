@@ -49,6 +49,9 @@ class _WizardManagerState extends State<WizardManager> {
   }
 
   void _goToStepId(int id) {
+    if (id < 0 || id >= widget.stepBuilders.length) {
+      throw ArgumentError('Invalid step index');
+    }
     setState(() {
       _currentStep = id;
     });
