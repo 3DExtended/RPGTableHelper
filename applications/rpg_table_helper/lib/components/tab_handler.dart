@@ -42,7 +42,7 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
   }
 
   bool _doesRouteImplementOwnTabHandler(String route) {
-    var ownTabHandledRoutes = [];
+    List<String> ownTabHandledRoutes = [];
     ownTabHandledRoutes.addAll(allWizardConfigurations.keys);
 
     return (ownTabHandledRoutes.contains(route));
