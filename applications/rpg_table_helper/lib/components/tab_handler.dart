@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/screens/crafting_screen.dart';
 import 'package:rpg_table_helper/screens/inventory_screen.dart';
 import 'package:rpg_table_helper/screens/lore_screen.dart';
 import 'package:rpg_table_helper/screens/search_screen.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 
@@ -21,6 +22,25 @@ class AuthorizedScreenWrapper extends StatefulWidget {
 }
 
 class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
+  _routeBuilders(BuildContext context) {
+    return {
+      LoreScreen.route: (context) => const LoreScreen(),
+      CharacterScreen.route: (context) => const CharacterScreen(),
+      InventoryScreen.route: (context) => const InventoryScreen(),
+      CraftingScreen.route: (context) => const CraftingScreen(),
+      SearchScreen.route: (context) => const SearchScreen(),
+      RpgConfigurationWizard.route: (context) => const RpgConfigurationWizard(),
+    };
+  }
+
+  bool _doesRouteImplementOwnTabHandler(String route) {
+    var ownTabHandledRoutes = [
+      RpgConfigurationWizard.route,
+    ];
+
+    return (ownTabHandledRoutes.contains(route));
+  }
+
   var _currentTab = TabItem.character;
 
   _reloadRouteIfPossible(BuildContext context, TabItem tabItem) {
@@ -115,16 +135,6 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
     );
   }
 
-  _routeBuilders(BuildContext context) {
-    return {
-      LoreScreen.route: (context) => const LoreScreen(),
-      CharacterScreen.route: (context) => const CharacterScreen(),
-      InventoryScreen.route: (context) => const InventoryScreen(),
-      CraftingScreen.route: (context) => const CraftingScreen(),
-      SearchScreen.route: (context) => const SearchScreen(),
-    };
-  }
-
   Widget _buildOffstageNavigator(TabItem tabItem) {
     var navigationService =
         DependencyProvider.of(context).getService<INavigationService>();
@@ -148,59 +158,66 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
             settings: routeSettings,
             builder: (context) {
               var selectedId = TabItem.values.indexOf(tabItem);
-              return MainTwoBlockLayout(
-                  selectedNavbarButton: selectedId,
-                  navbarButtons: [
-                    NavbarButton(
-                      onPressed: (tabItem) {
-                        setState(() {
-                          _selectTab(tabItem!);
-                        });
-                      },
-                      icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-                      tabItem: TabItem.search,
-                    ),
-                    NavbarButton(
-                      onPressed: (tabItem) {
-                        setState(() {
-                          _selectTab(tabItem!);
-                        });
-                      },
-                      icon: const FaIcon(FontAwesomeIcons.user),
-                      tabItem: TabItem.character,
-                    ),
-                    NavbarButton(
-                      onPressed: (tabItem) {
-                        setState(() {
-                          _selectTab(tabItem!);
-                        });
-                      },
-                      icon: const FaIcon(FontAwesomeIcons.basketShopping),
-                      tabItem: TabItem.inventory,
-                    ),
-                    NavbarButton(
-                      onPressed: (tabItem) {
-                        setState(() {
-                          _selectTab(tabItem!);
-                        });
-                      },
-                      icon: const FaIcon(FontAwesomeIcons.trowel),
-                      tabItem: TabItem.crafting,
-                    ),
-                    NavbarButton(
-                      onPressed: (tabItem) {
-                        setState(() {
-                          _selectTab(tabItem!);
-                        });
-                      },
-                      icon: const FaIcon(FontAwesomeIcons.bookJournalWhills),
-                      tabItem: TabItem.lore,
-                    ),
-                  ],
-                  content: Container(
-                    color: const Color.fromARGB(35, 29, 22, 22),
-                    child: routeBuilders[routeSettings.name!]!(context),
-                  ));
+              var routeChild = routeBuilders[routeSettings.name!]!(context);
+
+              if (_doesRouteImplementOwnTabHandler(routeSettings.name!)) {
+                return routeChild;
+              } else {
+                return MainTwoBlockLayout(
+                    showIsConnectedButton: true,
+                    selectedNavbarButton: selectedId,
+                    navbarButtons: [
+                      NavbarButton(
+                        onPressed: (tabItem) {
+                          setState(() {
+                            _selectTab(tabItem!);
+                          });
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+                        tabItem: TabItem.search,
+                      ),
+                      NavbarButton(
+                        onPressed: (tabItem) {
+                          setState(() {
+                            _selectTab(tabItem!);
+                          });
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.user),
+                        tabItem: TabItem.character,
+                      ),
+                      NavbarButton(
+                        onPressed: (tabItem) {
+                          setState(() {
+                            _selectTab(tabItem!);
+                          });
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.basketShopping),
+                        tabItem: TabItem.inventory,
+                      ),
+                      NavbarButton(
+                        onPressed: (tabItem) {
+                          setState(() {
+                            _selectTab(tabItem!);
+                          });
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.trowel),
+                        tabItem: TabItem.crafting,
+                      ),
+                      NavbarButton(
+                        onPressed: (tabItem) {
+                          setState(() {
+                            _selectTab(tabItem!);
+                          });
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.bookJournalWhills),
+                        tabItem: TabItem.lore,
+                      ),
+                    ],
+                    content: Container(
+                      color: const Color.fromARGB(35, 29, 22, 22),
+                      child: routeChild,
+                    ));
+              }
             },
           );
         },

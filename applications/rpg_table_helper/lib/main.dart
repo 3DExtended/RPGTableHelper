@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
               size: 24,
             ),
           ),
-          initialRoute: AuthorizedScreenWrapper.route,
+          initialRoute: widget.initialRoute ?? AuthorizedScreenWrapper.route,
           onGenerateRoute: (RouteSettings settings) {
             // add all routes which are accessible without authorization
             switch (settings.name) {

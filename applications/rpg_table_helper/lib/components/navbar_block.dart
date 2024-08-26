@@ -40,6 +40,13 @@ class NavbarBlock extends StatelessWidget {
                 : const Color.fromARGB(255, 141, 141, 141),
             size: 24,
           ),
+          textTheme: TextTheme(
+            bodyMedium: TextStyle(
+              color: selectedNavbarButton == e.key
+                  ? Colors.white
+                  : const Color.fromARGB(255, 141, 141, 141),
+            ),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(3.0),

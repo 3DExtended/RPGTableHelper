@@ -5,16 +5,19 @@ import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard.dart';
 
 class MainTwoBlockLayout extends StatelessWidget {
   final List<NavbarButton> navbarButtons;
   final Widget content;
   final int selectedNavbarButton;
+  final bool showIsConnectedButton;
   const MainTwoBlockLayout({
     super.key,
     required this.navbarButtons,
     required this.selectedNavbarButton,
     required this.content,
+    required this.showIsConnectedButton,
   });
 
   @override
@@ -70,11 +73,14 @@ class MainTwoBlockLayout extends StatelessWidget {
         isLandscapeMode: !isLandscape,
         children: [
           const Spacer(),
-          CupertinoButton(
-              minSize: 0,
-              padding: const EdgeInsets.all(0),
-              onPressed: () {},
-              child: isConnectedBtn),
+          if (showIsConnectedButton)
+            CupertinoButton(
+                minSize: 0,
+                padding: const EdgeInsets.all(0),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(RpgConfigurationWizard.route);
+                },
+                child: isConnectedBtn),
           Center(
             child: NavbarBlock(
               isLandscapeMode: isLandscape,
@@ -82,10 +88,11 @@ class MainTwoBlockLayout extends StatelessWidget {
               selectedNavbarButton: selectedNavbarButton,
             ),
           ),
-          Opacity(
-            opacity: 0,
-            child: isConnectedBtn,
-          ),
+          if (showIsConnectedButton)
+            Opacity(
+              opacity: 0,
+              child: isConnectedBtn,
+            ),
           const Spacer(),
         ],
       ),
