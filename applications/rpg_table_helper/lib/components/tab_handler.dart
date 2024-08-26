@@ -23,7 +23,7 @@ class AuthorizedScreenWrapper extends StatefulWidget {
 }
 
 class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
-  _routeBuilders(BuildContext context) {
+  Map<String, Widget Function(BuildContext)> _routeBuilders(BuildContext context) {
     var result = {
       LoreScreen.route: (context) => const LoreScreen(),
       CharacterScreen.route: (context) => const CharacterScreen(),
