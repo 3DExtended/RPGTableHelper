@@ -29,6 +29,7 @@ void testConfigurations({
   bool disableLocals = false,
   Future<void> Function(WidgetTester tester, Locale local)? testerInteractions,
   bool useMaterialAppWrapper = true,
+  String? pathPrefix = "",
 }) {
   Widget? widgetToTest;
   var supportedLocales = AppLocalizations.supportedLocales;
@@ -95,7 +96,7 @@ void testConfigurations({
 
         await multiScreenGolden(
           tester,
-          '../../goldens/$widgetName/$testName',
+          '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
           devices: testDevices,
         );
       });

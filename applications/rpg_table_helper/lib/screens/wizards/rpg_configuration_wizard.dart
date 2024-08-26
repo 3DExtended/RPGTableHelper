@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 
 class RpgConfigurationWizardStepCampagneName extends WizardStepBase {
@@ -19,6 +20,10 @@ class _RpgConfigurationWizardStepCampagneNameState
     extends ConsumerState<RpgConfigurationWizardStepCampagneName> {
   @override
   Widget build(BuildContext context) {
+    var stepTitle = ""; // TODO Localize
+
+    var isLandscapeMode =
+        MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
     return Column(
       children: [
         Container(
@@ -44,14 +49,23 @@ class _RpgConfigurationWizardStepCampagneNameState
           color: const Color.fromARGB(78, 255, 255, 255),
         ),
         Expanded(
-          child: Row(
+          child: RowColumnFlipper(
+            isLandscapeMode: isLandscapeMode,
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
                 child: Container(
                     color: const Color.fromARGB(33, 210, 191, 221),
-                    child: const Column()),
+                    child: Column(
+                      children: [Container()],
+                    )),
               ),
+              if (!isLandscapeMode)
+                Container(
+                  height: 1,
+                  width: double.infinity,
+                  color: const Color.fromARGB(78, 255, 255, 255),
+                ),
               Expanded(
                 child: Container(
                   color: const Color.fromARGB(65, 39, 39, 39),

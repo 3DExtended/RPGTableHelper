@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
@@ -8,18 +9,22 @@ import '../../test_configuration.dart';
 
 void main() {
   for (var config in allWizardConfigurations.entries) {
-    group('${config.key} renderings', () {
+    var routeNameWithoutSlashes = config.key.replaceAll("/", "");
+    group('$routeNameWithoutSlashes renderings', () {
       // for each step in config add new testConfig
       for (var i = 0; i < config.value.stepBuilders.length; i++) {
         var stepBuilder = config.value.stepBuilders[i];
 
         testConfigurations(
           disableLocals: true,
-          widgetName: '${config.key}-step-$i',
+          pathPrefix: "../",
+          widgetName: '$routeNameWithoutSlashes-step-$i',
           useMaterialAppWrapper: true,
-          screenFactory: (Locale locale) => WizardRendererForConfiguration(
-            configuration: config.value,
-            startStepIndex: i,
+          screenFactory: (Locale locale) => ProviderScope(
+            child: WizardRendererForConfiguration(
+              configuration: config.value,
+              startStepIndex: i,
+            ),
           ),
           getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
             MapEntry(
