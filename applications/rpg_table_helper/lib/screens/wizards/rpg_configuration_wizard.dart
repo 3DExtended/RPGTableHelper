@@ -125,7 +125,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
                                     .headlineSmall!
                                     .copyWith(
                                       color: Colors.white,
-                                      fontSize: 24,
+                                      fontSize: 16,
                                     ),
                               ),
                             ],
