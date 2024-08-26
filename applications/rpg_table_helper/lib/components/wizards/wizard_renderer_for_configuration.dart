@@ -11,15 +11,18 @@ class WizardConfiguration {
 
 class WizardRendererForConfiguration extends StatelessWidget {
   final WizardConfiguration configuration;
+  final int? startStepIndex;
   const WizardRendererForConfiguration({
     super.key,
     required this.configuration,
+    this.startStepIndex,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: WizardManager(
+        startStepIndex: startStepIndex,
         stepBuilders: configuration.stepBuilders,
         onFinish: () {
           // Pop the wizard route off the stack when finished
