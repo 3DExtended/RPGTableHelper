@@ -1,9 +1,11 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 part 'rpg_character_configuration.g.dart';
 
 @JsonSerializable()
+@CopyWith()
 class RpgCharacterConfiguration {
   final String characterName;
   final List<int> moneyCoinCount;
@@ -35,6 +37,7 @@ class RpgCharacterConfiguration {
 }
 
 @JsonSerializable()
+@CopyWith()
 class RpgCharacterStatValue {
   final String statUuid;
   final String serializedValue;
@@ -49,6 +52,7 @@ class RpgCharacterStatValue {
 }
 
 @JsonSerializable()
+@CopyWith()
 class RpgCharacterOwnedItemPair {
   final String itemUuid;
   final int amount;
