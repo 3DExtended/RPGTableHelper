@@ -1,8 +1,10 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'rpg_configuration_model.g.dart';
 
 @JsonSerializable()
+@CopyWith()
 class RpgConfigurationModel {
   final String rpgName;
   final List<RpgItem> allItems;
@@ -58,6 +60,7 @@ class RpgConfigurationModel {
 }
 
 @JsonSerializable()
+@CopyWith()
 class ItemCategory {
   final String uuid;
   final String name;
@@ -78,6 +81,7 @@ class ItemCategory {
 }
 
 @JsonSerializable()
+@CopyWith()
 class CurrencyType {
   final String name;
   final int? multipleOfPreviousValue;
@@ -93,6 +97,7 @@ class CurrencyType {
 }
 
 @JsonSerializable()
+@CopyWith()
 class CurrencyDefinition {
   final List<CurrencyType> currencyTypes;
   CurrencyDefinition({
@@ -106,6 +111,7 @@ class CurrencyDefinition {
 }
 
 @JsonSerializable()
+@CopyWith()
 class CraftingRecipeIngredientPair {
   final String itemUuid;
   final int amountOfUsedItem;
@@ -121,6 +127,7 @@ class CraftingRecipeIngredientPair {
 }
 
 @JsonSerializable()
+@CopyWith()
 class CraftingRecipe {
   final String recipeUuid;
   final List<CraftingRecipeIngredientPair> ingredients;
@@ -153,6 +160,7 @@ enum CharacterStatValueType {
 }
 
 @JsonSerializable()
+@CopyWith()
 class CharacterStatDefinition {
   final String name;
   final String statUuid;
@@ -175,6 +183,7 @@ class CharacterStatDefinition {
 }
 
 @JsonSerializable()
+@CopyWith()
 class CharacterStatsDefinition {
   final CharacterStatDefinition mainPlayerStat;
   final CharacterStatDefinition secondaryPlayerStat;
@@ -194,6 +203,7 @@ class CharacterStatsDefinition {
 }
 
 @JsonSerializable()
+@CopyWith()
 class PlaceOfFinding {
   final String uuid;
   final String name;
@@ -210,6 +220,7 @@ class PlaceOfFinding {
 }
 
 @JsonSerializable()
+@CopyWith()
 class RpgItem {
   final String uuid;
   final String name;

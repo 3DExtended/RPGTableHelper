@@ -24,6 +24,7 @@ dependencies:
   chopper: ^8.0.1+1
   json_annotation: ^4.9.0
   flutter_riverpod: ^2.5.1
+  copy_with_extension: ^5.0.4
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +34,8 @@ dev_dependencies:
   custom_lint: ^0.6.4
   json_serializable: ^6.8.0
   build_runner: ^2.3.3
+  copy_with_extension_gen: ^5.0.4
+
 
 
 
