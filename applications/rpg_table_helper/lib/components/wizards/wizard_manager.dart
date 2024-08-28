@@ -71,12 +71,12 @@ class _WizardManagerState extends State<WizardManager> {
                 _goToStepId(e.key);
               },
               icon: Container(
-                width: 28,
+                width: 24,
                 alignment: Alignment.center,
                 child: Text(
                   e.key.toString(),
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 24,
+                      fontSize: 16,
                       color: e.key == _currentStep
                           ? Colors.white
                           : const Color.fromARGB(255, 141, 141, 141)),

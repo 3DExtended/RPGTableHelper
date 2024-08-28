@@ -19,14 +19,14 @@ class CustomButton extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       child: StyledBox(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(10.0),
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                 color: onPressed != null
                     ? Colors.white
                     : const Color.fromARGB(255, 135, 135, 135),
-                fontSize: 24),
+                fontSize: 16),
           ),
         ),
       ),

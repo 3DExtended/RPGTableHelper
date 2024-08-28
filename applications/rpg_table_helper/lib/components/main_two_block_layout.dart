@@ -42,6 +42,8 @@ class MainTwoBlockLayout extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Container(
+            alignment: Alignment.center,
+            height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(1000),
               color: Colors.transparent,
@@ -53,7 +55,7 @@ class MainTwoBlockLayout extends StatelessWidget {
                     color: isConnectedToServer
                         ? const Color.fromARGB(255, 12, 163, 90)
                         : const Color.fromARGB(255, 163, 12, 12),
-                    size: 24,
+                    size: 20,
                   ),
                 ),
                 child: FaIcon(isConnectedToServer
