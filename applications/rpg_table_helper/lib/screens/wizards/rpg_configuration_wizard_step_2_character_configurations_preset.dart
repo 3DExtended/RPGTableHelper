@@ -4,23 +4,23 @@ import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.da
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 
-class RpgConfigurationWizardStepCharacterConfigurationsPreset
+class RpgConfigurationWizardStep2CharacterConfigurationsPreset
     extends WizardStepBase {
-  const RpgConfigurationWizardStepCharacterConfigurationsPreset({
+  const RpgConfigurationWizardStep2CharacterConfigurationsPreset({
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
   });
 
   @override
-  ConsumerState<RpgConfigurationWizardStepCharacterConfigurationsPreset>
+  ConsumerState<RpgConfigurationWizardStep2CharacterConfigurationsPreset>
       createState() =>
-          _RpgConfigurationWizardStepCharacterConfigurationsPresetState();
+          _RpgConfigurationWizardStep2CharacterConfigurationsPresetState();
 }
 
-class _RpgConfigurationWizardStepCharacterConfigurationsPresetState
+class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
     extends ConsumerState<
-        RpgConfigurationWizardStepCharacterConfigurationsPreset> {
+        RpgConfigurationWizardStep2CharacterConfigurationsPreset> {
   bool hasDataLoaded = false;
 
   @override

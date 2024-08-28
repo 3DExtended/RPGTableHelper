@@ -30,7 +30,7 @@ class RpgConfigurationModel {
   Map<String, dynamic> toJson() => _$RpgConfigurationModelToJson(this);
 
   static RpgConfigurationModel getBaseConfiguration() => RpgConfigurationModel(
-        rpgName: "",
+        rpgName: "Maries Kampagne",
         currencyDefinition: CurrencyDefinition(currencyTypes: []),
         itemCategories: [],
         placesOfFindings: [],

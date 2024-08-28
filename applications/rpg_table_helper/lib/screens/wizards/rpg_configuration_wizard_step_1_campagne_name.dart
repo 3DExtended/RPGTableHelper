@@ -4,20 +4,20 @@ import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.da
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 
-class RpgConfigurationWizardStepCampagneName extends WizardStepBase {
-  const RpgConfigurationWizardStepCampagneName({
+class RpgConfigurationWizardStep1CampagneName extends WizardStepBase {
+  const RpgConfigurationWizardStep1CampagneName({
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
   });
 
   @override
-  ConsumerState<RpgConfigurationWizardStepCampagneName> createState() =>
-      _RpgConfigurationWizardStepCampagneNameState();
+  ConsumerState<RpgConfigurationWizardStep1CampagneName> createState() =>
+      _RpgConfigurationWizardStep1CampagneNameState();
 }
 
-class _RpgConfigurationWizardStepCampagneNameState
-    extends ConsumerState<RpgConfigurationWizardStepCampagneName> {
+class _RpgConfigurationWizardStep1CampagneNameState
+    extends ConsumerState<RpgConfigurationWizardStep1CampagneName> {
   bool hasDataLoaded = false;
   TextEditingController textEditingController = TextEditingController();
 
@@ -31,6 +31,7 @@ class _RpgConfigurationWizardStepCampagneNameState
     ref.watch(rpgConfigurationProvider).whenData((data) {
       setState(() {
         hasDataLoaded = true;
+        textEditingController.text = data.rpgName;
       });
     });
 
