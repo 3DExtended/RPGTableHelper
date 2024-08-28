@@ -51,7 +51,7 @@ class RpgConfigurationNotifier
     });
   }
 
-  // void addNewDeck(Deck deck) {
-  //   state = AsyncValue.data([...state.requireValue, deck]);
-  // }
+  void updateRpgName(String newRpgName) {
+    state = AsyncValue.data(state.requireValue.copyWith(rpgName: newRpgName));
+  }
 }

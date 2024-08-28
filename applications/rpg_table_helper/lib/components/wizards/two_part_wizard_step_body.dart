@@ -19,8 +19,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final bool isLandscapeMode;
   final String stepTitle;
   final String stepHelperText;
-  final void Function() onPreviousBtnPressed;
-  final void Function() onNextBtnPressed;
+  final void Function()? onPreviousBtnPressed;
+  final void Function()? onNextBtnPressed;
   final List<Widget> contentChildren;
 
   @override
@@ -121,16 +121,12 @@ class TwoPartWizardStepBody extends StatelessWidget {
                           children: [
                             CustomButton(
                               label: "Zurück",
-                              onPressed: () {
-                                onPreviousBtnPressed();
-                              },
+                              onPressed: onPreviousBtnPressed,
                             ),
                             const Spacer(),
                             CustomButton(
                               label: "Weiter",
-                              onPressed: () {
-                                onNextBtnPressed();
-                              },
+                              onPressed: onNextBtnPressed,
                             ),
                           ],
                         ),

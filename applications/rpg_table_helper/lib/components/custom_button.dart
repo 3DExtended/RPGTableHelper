@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 
 class CustomButton extends StatelessWidget {
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final String label;
-  const CustomButton({super.key, required this.onPressed, required this.label});
+  const CustomButton({
+    super.key,
+    required this.onPressed,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +22,11 @@ class CustomButton extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: Text(
             label,
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: Colors.white, fontSize: 24),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: onPressed != null
+                    ? Colors.white
+                    : const Color.fromARGB(255, 135, 135, 135),
+                fontSize: 24),
           ),
         ),
       ),
