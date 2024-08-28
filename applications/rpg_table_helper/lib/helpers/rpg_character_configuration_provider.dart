@@ -11,6 +11,7 @@ final rpgCharacterConfigurationProvider = StateNotifierProvider<
   return RpgCharacterConfigurationNotifier(
     decks: const AsyncValue.loading(),
     ref: ref,
+    runningInTests: false,
   );
 });
 
@@ -18,9 +19,12 @@ class RpgCharacterConfigurationNotifier
     extends StateNotifier<AsyncValue<RpgCharacterConfiguration>> {
   final StateNotifierProviderRef<RpgCharacterConfigurationNotifier,
       AsyncValue<RpgCharacterConfiguration>> ref;
+  bool runningInTests;
+
   RpgCharacterConfigurationNotifier({
     required AsyncValue<RpgCharacterConfiguration> decks,
     required this.ref,
+    required this.runningInTests,
   }) : super(decks) {
     init();
   }
@@ -30,15 +34,21 @@ class RpgCharacterConfigurationNotifier
   }
 
   Future<void> init() async {
+    if (runningInTests) {
+      return;
+    }
+
     state = const AsyncValue.loading();
 
+    String? loadedJson;
     var prefs = await SharedPreferences.getInstance();
-
     if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
-      var loadedJsonForRpgConfig =
-          prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
-      var parsedJson = RpgCharacterConfiguration.fromJson(
-          jsonDecode(loadedJsonForRpgConfig!));
+      loadedJson = prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
+    }
+
+    if (loadedJson != null) {
+      var parsedJson =
+          RpgCharacterConfiguration.fromJson(jsonDecode(loadedJson));
       state = AsyncValue.data(parsedJson);
     } else {
       state = AsyncValue.data(RpgCharacterConfiguration.getBaseConfiguration(

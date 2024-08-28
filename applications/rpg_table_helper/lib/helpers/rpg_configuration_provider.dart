@@ -10,6 +10,7 @@ final rpgConfigurationProvider = StateNotifierProvider<RpgConfigurationNotifier,
   return RpgConfigurationNotifier(
     decks: const AsyncValue.loading(),
     ref: ref,
+    runningInTests: false,
   );
 });
 
@@ -17,9 +18,12 @@ class RpgConfigurationNotifier
     extends StateNotifier<AsyncValue<RpgConfigurationModel>> {
   final StateNotifierProviderRef<RpgConfigurationNotifier,
       AsyncValue<RpgConfigurationModel>> ref;
-  RpgConfigurationNotifier(
-      {required AsyncValue<RpgConfigurationModel> decks, required this.ref})
-      : super(decks) {
+  bool runningInTests;
+  RpgConfigurationNotifier({
+    required AsyncValue<RpgConfigurationModel> decks,
+    required this.runningInTests,
+    required this.ref,
+  }) : super(decks) {
     init();
   }
 
@@ -28,18 +32,23 @@ class RpgConfigurationNotifier
   }
 
   Future<void> init() async {
+    if (runningInTests) return;
+
     state = const AsyncValue.loading();
 
-    var prefs = await SharedPreferences.getInstance();
+    await Future.delayed(Duration.zero, () async {
+      var prefs = await SharedPreferences.getInstance();
 
-    if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
-      var loadedJsonForRpgConfig = prefs.getString(sharedPrefsKeyRpgConfigJson);
-      var parsedJson =
-          RpgConfigurationModel.fromJson(jsonDecode(loadedJsonForRpgConfig!));
-      state = AsyncValue.data(parsedJson);
-    } else {
-      state = AsyncValue.data(RpgConfigurationModel.getBaseConfiguration());
-    }
+      if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
+        var loadedJsonForRpgConfig =
+            prefs.getString(sharedPrefsKeyRpgConfigJson);
+        var parsedJson =
+            RpgConfigurationModel.fromJson(jsonDecode(loadedJsonForRpgConfig!));
+        state = AsyncValue.data(parsedJson);
+      } else {
+        state = AsyncValue.data(RpgConfigurationModel.getBaseConfiguration());
+      }
+    });
   }
 
   // void addNewDeck(Deck deck) {

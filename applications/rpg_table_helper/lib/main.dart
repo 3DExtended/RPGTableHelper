@@ -34,6 +34,8 @@ class _MyAppState extends State<MyApp> {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           navigatorKey: navigatorKey,
+          darkTheme: ThemeData.dark(),
+          themeMode: ThemeMode.dark,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             fontFamily: 'Roboto',
