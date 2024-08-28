@@ -511,3 +511,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+applications/rpg_table_helper/coverage/lcov.info
