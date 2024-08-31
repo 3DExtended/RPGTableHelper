@@ -59,4 +59,9 @@ class RpgConfigurationNotifier
     state = AsyncValue.data(
         state.requireValue.copyWith(currencyDefinition: newCurrencyMapping));
   }
+
+  void updateLocations(List<PlaceOfFinding> newLocations) {
+    state = AsyncValue.data(
+        state.requireValue.copyWith(placesOfFindings: newLocations));
+  }
 }

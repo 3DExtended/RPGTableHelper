@@ -37,10 +37,31 @@ class RpgConfigurationModel {
           CurrencyType(name: "Gold", multipleOfPreviousValue: 10),
           CurrencyType(name: "Platin", multipleOfPreviousValue: 10),
         ]),
-        itemCategories: [],
-        placesOfFindings: [],
+        placesOfFindings: [
+          PlaceOfFinding(
+            uuid: "5b9690c1-afc9-436d-8912-d223c440eb6a",
+            name: "Berge",
+          ),
+          PlaceOfFinding(
+            uuid: "4a9abc76-df97-4790-9abe-cee5f6bec8a7",
+            name: "Höhlen",
+          ),
+          PlaceOfFinding(
+            uuid: "f4e2605a-1d22-45e8-92d6-44534eafdc44",
+            name: "Wiesen",
+          ),
+          PlaceOfFinding(
+            uuid: "2ed1f4ca-8ae0-4945-8771-5f74cf7ac546",
+            name: "Wüste",
+          ),
+          PlaceOfFinding(
+            uuid: "8ea924d4-7160-48dd-9d7f-5afa04c27048",
+            name: "Wälder",
+          ),
+        ],
         allItems: [],
         craftingRecipes: [],
+        itemCategories: [],
         characterStatsDefinition: CharacterStatsDefinition(
             mainPlayerStat: CharacterStatDefinition(
                 statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
