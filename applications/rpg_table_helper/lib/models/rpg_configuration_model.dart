@@ -31,7 +31,12 @@ class RpgConfigurationModel {
 
   static RpgConfigurationModel getBaseConfiguration() => RpgConfigurationModel(
         rpgName: "Maries Kampagne",
-        currencyDefinition: CurrencyDefinition(currencyTypes: []),
+        currencyDefinition: CurrencyDefinition(currencyTypes: [
+          CurrencyType(name: "Kupfer", multipleOfPreviousValue: null),
+          CurrencyType(name: "Silber", multipleOfPreviousValue: 10),
+          CurrencyType(name: "Gold", multipleOfPreviousValue: 10),
+          CurrencyType(name: "Platin", multipleOfPreviousValue: 10),
+        ]),
         itemCategories: [],
         placesOfFindings: [],
         allItems: [],

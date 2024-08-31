@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 
 class TwoPartWizardStepBody extends StatelessWidget {
@@ -13,6 +14,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
     required this.onPreviousBtnPressed,
     required this.onNextBtnPressed,
     required this.contentChildren,
+    this.footerWidget,
   });
 
   final String wizardTitle;
@@ -22,6 +24,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final void Function()? onPreviousBtnPressed;
   final void Function()? onNextBtnPressed;
   final List<Widget> contentChildren;
+  final Widget? footerWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +48,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          height: 1,
-          width: double.infinity,
-          color: const Color.fromARGB(78, 255, 255, 255),
-        ),
+        const HorizontalLine(),
         Expanded(
           child: RowColumnFlipper(
             isLandscapeMode: isLandscapeMode,
@@ -101,31 +100,38 @@ class TwoPartWizardStepBody extends StatelessWidget {
                       );
                     })),
               ),
-              if (!isLandscapeMode)
-                Container(
-                  height: 1,
-                  width: double.infinity,
-                  color: const Color.fromARGB(78, 255, 255, 255),
-                ),
+              if (!isLandscapeMode) const HorizontalLine(),
               Expanded(
                 child: Container(
                   color: const Color.fromARGB(65, 39, 39, 39),
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      ...contentChildren,
-                      const Spacer(),
+                      Expanded(
+                          child: LayoutBuilder(builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight,
+                            ),
+                            child: Column(
+                              children: [...contentChildren],
+                            ),
+                          ),
+                        );
+                      })),
+                      if (footerWidget != null) footerWidget!,
                       Padding(
                         padding: const EdgeInsets.all(30.0),
                         child: Row(
                           children: [
                             CustomButton(
-                              label: "Zurück",
+                              label: "Zurück", // TODO localize
                               onPressed: onPreviousBtnPressed,
                             ),
                             const Spacer(),
                             CustomButton(
-                              label: "Weiter",
+                              label: "Weiter", // TODO localize
                               onPressed: onNextBtnPressed,
                             ),
                           ],

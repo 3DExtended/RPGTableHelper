@@ -1,6 +1,7 @@
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_1_campagne_name.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_2_character_configurations_preset.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_3_currency_definition.dart';
 
 Map<String, WizardConfiguration> allWizardConfigurations = {
   "/rpgconfigurationwizard": WizardConfiguration(
@@ -9,6 +10,10 @@ Map<String, WizardConfiguration> allWizardConfigurations = {
           onPreviousBtnPressed: moveToPrevious, onNextBtnPressed: moveToNext),
       (moveToPrevious, moveToNext) =>
           RpgConfigurationWizardStep2CharacterConfigurationsPreset(
+              onPreviousBtnPressed: moveToPrevious,
+              onNextBtnPressed: moveToNext),
+      (moveToPrevious, moveToNext) =>
+          RpgConfigurationWizardStep3CurrencyDefinition(
               onPreviousBtnPressed: moveToPrevious,
               onNextBtnPressed: moveToNext),
     ],

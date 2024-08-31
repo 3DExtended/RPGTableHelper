@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -82,25 +83,9 @@ Wie heißt deine Kampagne?'''; // TODO localize
         widget.onPreviousBtnPressed();
       },
       contentChildren: [
-        TextField(
-          decoration: InputDecoration(
-            labelText: "Campagne Name:", // TODO localize
-            border: const OutlineInputBorder(),
-            hintStyle: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: Colors.white),
-            labelStyle: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: Colors.white),
-          ),
-          style: Theme.of(context)
-              .textTheme
-              .labelMedium!
-              .copyWith(color: Colors.white),
-          controller: textEditingController,
-        ),
+        CustomTextField(
+            labelText: "Campagne Name:",
+            textEditingController: textEditingController),
       ],
     );
   }

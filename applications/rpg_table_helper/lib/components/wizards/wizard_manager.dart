@@ -74,7 +74,7 @@ class _WizardManagerState extends State<WizardManager> {
                 width: 24,
                 alignment: Alignment.center,
                 child: Text(
-                  e.key.toString(),
+                  (e.key + 1).toString(),
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontSize: 16,
                       color: e.key == _currentStep

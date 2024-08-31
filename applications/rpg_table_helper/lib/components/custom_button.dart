@@ -4,11 +4,13 @@ import 'package:rpg_table_helper/components/styled_box.dart';
 
 class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
-  final String label;
+  final String? label;
+  final Widget? icon;
   const CustomButton({
     super.key,
     required this.onPressed,
-    required this.label,
+    this.label,
+    this.icon,
   });
 
   @override
@@ -20,14 +22,16 @@ class CustomButton extends StatelessWidget {
       child: StyledBox(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: onPressed != null
-                    ? Colors.white
-                    : const Color.fromARGB(255, 135, 135, 135),
-                fontSize: 16),
-          ),
+          child: label != null
+              ? Text(
+                  label!,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color: onPressed != null
+                          ? Colors.white
+                          : const Color.fromARGB(255, 135, 135, 135),
+                      fontSize: 16),
+                )
+              : icon!,
         ),
       ),
     );
