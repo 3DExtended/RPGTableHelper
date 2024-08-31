@@ -54,4 +54,9 @@ class RpgConfigurationNotifier
   void updateRpgName(String newRpgName) {
     state = AsyncValue.data(state.requireValue.copyWith(rpgName: newRpgName));
   }
+
+  void updateCurrency(CurrencyDefinition newCurrencyMapping) {
+    state = AsyncValue.data(
+        state.requireValue.copyWith(currencyDefinition: newCurrencyMapping));
+  }
 }

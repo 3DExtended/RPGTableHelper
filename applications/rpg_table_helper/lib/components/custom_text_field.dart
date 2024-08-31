@@ -5,8 +5,10 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.labelText,
     required this.textEditingController,
+    required this.keyboardType,
   });
 
+  final TextInputType keyboardType;
   final String labelText;
   final TextEditingController textEditingController;
 
@@ -15,7 +17,7 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextField(
-        keyboardType: TextInputType.number,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: labelText, // TODO localize
           border: const OutlineInputBorder(),

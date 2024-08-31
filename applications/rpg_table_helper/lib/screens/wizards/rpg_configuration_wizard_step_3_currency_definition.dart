@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 class RpgConfigurationWizardStep3CurrencyDefinition extends WizardStepBase {
   const RpgConfigurationWizardStep3CurrencyDefinition({
@@ -69,21 +70,12 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
 
             if (loadedCurrencyDef.currencyTypes.length > 1) {
               for (var i = 1; i < loadedCurrencyDef.currencyTypes.length; i++) {
-                var temp1 = TextEditingController(
-                    text: loadedCurrencyDef.currencyTypes[i].name);
-                var temp2 = TextEditingController(
-                    text: loadedCurrencyDef
-                        .currencyTypes[i].multipleOfPreviousValue!
-                        .toString());
+                var newCurrencyName = loadedCurrencyDef.currencyTypes[i].name;
+                var newCurrencyValue = loadedCurrencyDef
+                    .currencyTypes[i].multipleOfPreviousValue!
+                    .toString();
 
-                temp1.addListener(() {
-                  setState(() {});
-                });
-                temp2.addListener(() {
-                  setState(() {});
-                });
-
-                currencyControllerPairs.add((temp1, temp2));
+                addNewCurrencyPair(newCurrencyName, newCurrencyValue);
               }
             }
           }
@@ -130,6 +122,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           children: [
             Expanded(
               child: CustomTextField(
+                keyboardType: TextInputType.text,
                 labelText: "Name der kleinsten Währung:", // TODO localize
                 textEditingController:
                     smallestCurrencyNameTextEditingController,
@@ -159,26 +152,29 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   children: [
                     Expanded(
                       child: CustomTextField(
+                        keyboardType: TextInputType.text,
+
                         labelText:
                             "Name der nächst größeren Währung:", // TODO localize
                         textEditingController: e.value.$1,
                       ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    SizedBox(
+                    Container(
                       height: 50,
-                      width: 50,
+                      width: 70,
+                      clipBehavior: Clip.none,
                       child: CustomButton(
                         onPressed: () {
-                          // TODO remove this pair from list
+                          // remove this pair from list
+                          setState(() {
+                            currencyControllerPairs.removeAt(e.key);
+                          });
                         },
                         icon: Theme(
                             data: ThemeData(
                               iconTheme: const IconThemeData(
                                 color: Colors.white,
-                                size: 24,
+                                size: 16,
                               ),
                               textTheme: const TextTheme(
                                 bodyMedium: TextStyle(
@@ -187,8 +183,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                               ),
                             ),
                             child: Container(
-                                width: 30,
-                                height: 30,
+                                width: 24,
+                                height: 24,
                                 alignment: AlignmentDirectional.center,
                                 child:
                                     const FaIcon(FontAwesomeIcons.trashCan))),
@@ -203,6 +199,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   children: [
                     Expanded(
                       child: CustomTextField(
+                        keyboardType: TextInputType.number,
+
                         labelText:
                             "Gleichwertige Anzahl an vorheriger Währung:", // TODO localize
                         textEditingController: e.value.$2,
@@ -220,12 +218,10 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                 const SizedBox(
                   height: 20,
                 ),
-                if (e.key != currencyControllerPairs.length - 1)
-                  const HorizontalLine(),
-                if (e.key != currencyControllerPairs.length - 1)
-                  const SizedBox(
-                    height: 20,
-                  ),
+                const HorizontalLine(),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           );
@@ -237,15 +233,68 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           //       // TODO make me
           //     });
         }),
+        CustomButton(
+          onPressed: () {
+            setState(() {
+              addNewCurrencyPair("New", "10");
+            });
+          },
+          icon: Theme(
+              data: ThemeData(
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
+                textTheme: const TextTheme(
+                  bodyMedium: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              child: Container(
+                  width: 24,
+                  height: 24,
+                  alignment: AlignmentDirectional.center,
+                  child: const FaIcon(FontAwesomeIcons.plus))),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
       ],
     );
   }
 
+  void addNewCurrencyPair(String newCurrencyName, String newCurrencyValue) {
+    var temp1 = TextEditingController(text: newCurrencyName);
+    var temp2 = TextEditingController(text: newCurrencyValue);
+
+    temp1.addListener(() {
+      setState(() {});
+    });
+    temp2.addListener(() {
+      setState(() {});
+    });
+
+    currencyControllerPairs.add((temp1, temp2));
+  }
+
   void saveChanges() {
     // TODO change me
+
+    var newCurrencyMapping = CurrencyDefinition(currencyTypes: []);
+    newCurrencyMapping.currencyTypes.add(CurrencyType(
+        name: smallestCurrencyNameTextEditingController.text,
+        multipleOfPreviousValue: null));
+
+    for (var pair in currencyControllerPairs) {
+      newCurrencyMapping.currencyTypes.add(CurrencyType(
+          name: pair.$1.text,
+          multipleOfPreviousValue: int.parse(pair.$2.text)));
+    }
+
     ref
         .read(rpgConfigurationProvider.notifier)
-        .updateRpgName(smallestCurrencyNameTextEditingController.text);
+        .updateCurrency(newCurrencyMapping);
   }
 
   bool getIsFormValid() {
