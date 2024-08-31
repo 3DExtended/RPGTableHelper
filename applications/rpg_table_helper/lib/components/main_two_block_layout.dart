@@ -43,19 +43,18 @@ class MainTwoBlockLayout extends StatelessWidget {
           padding: const EdgeInsets.all(3.0),
           child: Container(
             alignment: Alignment.center,
-            height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(1000),
               color: Colors.transparent,
             ),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(12, 13, 12, 13),
             child: Theme(
                 data: ThemeData(
                   iconTheme: IconThemeData(
                     color: isConnectedToServer
                         ? const Color.fromARGB(255, 12, 163, 90)
                         : const Color.fromARGB(255, 163, 12, 12),
-                    size: 20,
+                    size: 16,
                   ),
                 ),
                 child: FaIcon(isConnectedToServer

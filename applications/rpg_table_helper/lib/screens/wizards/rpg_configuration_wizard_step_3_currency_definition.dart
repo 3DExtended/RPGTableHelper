@@ -35,11 +35,11 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
   void _updateStateForFormValidation() {
     var newIsFormValid = getIsFormValid();
 
-    if (newIsFormValid != isFormValid) {
-      setState(() {
+    setState(() {
+      if (newIsFormValid != isFormValid) {
         isFormValid = newIsFormValid;
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -225,13 +225,6 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
               ],
             ),
           );
-
-          // return _CurrencyPairBlock(
-          //     index: e.key,
-          //     controllers: e.value,
-          //     onDelete: () {
-          //       // TODO make me
-          //     });
         }),
         CustomButton(
           onPressed: () {
@@ -269,10 +262,10 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
     var temp2 = TextEditingController(text: newCurrencyValue);
 
     temp1.addListener(() {
-      setState(() {});
+      _updateStateForFormValidation();
     });
     temp2.addListener(() {
-      setState(() {});
+      _updateStateForFormValidation();
     });
 
     currencyControllerPairs.add((temp1, temp2));

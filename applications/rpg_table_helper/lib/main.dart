@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
             useMaterial3: true,
             iconTheme: const IconThemeData(
               color: Colors.white,
-              size: 24,
+              size: 16,
             ),
           ),
           initialRoute: widget.initialRoute ?? AuthorizedScreenWrapper.route,
