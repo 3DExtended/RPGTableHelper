@@ -3,6 +3,7 @@ import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_1
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_2_character_configurations_preset.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_3_currency_definition.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_4_item_locations.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard_step_5_item_categories.dart';
 
 Map<String, WizardConfiguration> allWizardConfigurations = {
   "/rpgconfigurationwizard": WizardConfiguration(
@@ -22,6 +23,10 @@ Map<String, WizardConfiguration> allWizardConfigurations = {
             onNextBtnPressed: moveToNext,
           ),
       (moveToPrevious, moveToNext) => RpgConfigurationWizardStep4ItemLocations(
+            onPreviousBtnPressed: moveToPrevious,
+            onNextBtnPressed: moveToNext,
+          ),
+      (moveToPrevious, moveToNext) => RpgConfigurationWizardStep5ItemCategories(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
           ),
