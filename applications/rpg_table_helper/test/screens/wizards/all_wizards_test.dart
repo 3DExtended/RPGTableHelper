@@ -17,12 +17,10 @@ void main() {
     group('$routeNameWithoutSlashes renderings', () {
       // for each step in config add new testConfig
       for (var i = 0; i < config.value.stepBuilders.length; i++) {
-        var stepBuilder = config.value.stepBuilders[i];
-
         testConfigurations(
           disableLocals: true,
           pathPrefix: "../",
-          widgetName: '$routeNameWithoutSlashes-step-$i',
+          widgetName: '$routeNameWithoutSlashes-step-${i + 1}',
           useMaterialAppWrapper: true,
           screenFactory: (Locale locale) => ProviderScope(
             overrides: [

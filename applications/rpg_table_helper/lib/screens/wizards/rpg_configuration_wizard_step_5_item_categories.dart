@@ -42,11 +42,9 @@ class _ItemCategoryEdit {
       nameController: editController,
       uuid: cat.uuid,
       hideInInventoryFilters: cat.hideInInventoryFilters,
-      subCategories: cat.subCategories != null && cat.subCategories!.length > 1
-          ? cat.subCategories!
-              .map((e) => _ItemCategoryEdit.fromItemCategory(e, listener))
-              .toList()
-          : [],
+      subCategories: cat.subCategories
+          .map((e) => _ItemCategoryEdit.fromItemCategory(e, listener))
+          .toList(),
     );
   }
 }
