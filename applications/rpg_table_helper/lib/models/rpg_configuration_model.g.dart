@@ -145,7 +145,7 @@ abstract class _$ItemCategoryCWProxy {
 
   ItemCategory name(String name);
 
-  ItemCategory subCategories(List<ItemCategory>? subCategories);
+  ItemCategory subCategories(List<ItemCategory> subCategories);
 
   ItemCategory hideInInventoryFilters(bool hideInInventoryFilters);
 
@@ -176,7 +176,7 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
   ItemCategory name(String name) => this(name: name);
 
   @override
-  ItemCategory subCategories(List<ItemCategory>? subCategories) =>
+  ItemCategory subCategories(List<ItemCategory> subCategories) =>
       this(subCategories: subCategories);
 
   @override
@@ -206,10 +206,11 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
-      subCategories: subCategories == const $CopyWithPlaceholder()
-          ? _value.subCategories
-          // ignore: cast_nullable_to_non_nullable
-          : subCategories as List<ItemCategory>?,
+      subCategories:
+          subCategories == const $CopyWithPlaceholder() || subCategories == null
+              ? _value.subCategories
+              // ignore: cast_nullable_to_non_nullable
+              : subCategories as List<ItemCategory>,
       hideInInventoryFilters:
           hideInInventoryFilters == const $CopyWithPlaceholder() ||
                   hideInInventoryFilters == null
@@ -880,8 +881,8 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
 ItemCategory _$ItemCategoryFromJson(Map<String, dynamic> json) => ItemCategory(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
-      subCategories: (json['subCategories'] as List<dynamic>?)
-          ?.map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
+      subCategories: (json['subCategories'] as List<dynamic>)
+          .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
       hideInInventoryFilters: json['hideInInventoryFilters'] as bool? ?? false,
     );

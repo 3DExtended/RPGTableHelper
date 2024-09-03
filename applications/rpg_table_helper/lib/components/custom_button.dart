@@ -6,11 +6,13 @@ class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
   final String? label;
   final Widget? icon;
+  final bool? isSubbutton;
   const CustomButton({
     super.key,
     required this.onPressed,
     this.label,
     this.icon,
+    this.isSubbutton,
   });
 
   @override
@@ -20,18 +22,31 @@ class CustomButton extends StatelessWidget {
       minSize: 0,
       padding: const EdgeInsets.all(0),
       child: StyledBox(
+        borderRadius: isSubbutton == true ? 5 : null,
+        borderThickness: isSubbutton == true ? 0 : null,
+        overrideInnerDecoration: isSubbutton == true
+            ? BoxDecoration(
+                color: const Color(0xff434752),
+                borderRadius: BorderRadius.circular(5),
+              )
+            : null,
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: label != null
-              ? Text(
+          padding: EdgeInsets.all(isSubbutton == true ? 5 : 10.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) icon!,
+              if (label != null)
+                Text(
                   label!,
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color: onPressed != null
                           ? Colors.white
                           : const Color.fromARGB(255, 135, 135, 135),
                       fontSize: 16),
-                )
-              : icon!,
+                ),
+            ],
+          ),
         ),
       ),
     );

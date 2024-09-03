@@ -69,19 +69,19 @@ class RpgConfigurationModel {
               ItemCategory(
                 uuid: "263dc67f-bfae-4559-a909-1479e24354a6",
                 name: "Rüstung",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "544cdaac-a8d2-4ee6-8a8f-4772bfb95a93",
                 name: "Accessoire",
-                subCategories: null,
+                subCategories: [],
               ),
             ],
           ),
           ItemCategory(
             uuid: "b895a30a-2c0a-4aba-8629-9a363e405281",
             name: "Zutaten",
-            subCategories: null,
+            subCategories: [],
           ),
           ItemCategory(
             uuid: "4bba577f-c4c0-43a4-bc70-cbb39cbb7bee",
@@ -90,22 +90,22 @@ class RpgConfigurationModel {
               ItemCategory(
                 uuid: "79773521-2fd6-4aff-942e-87b9e4bb6599",
                 name: "Heilung",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "64031e58-a816-4c84-9ca8-d80cd514a908",
                 name: "Gift",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "b0b0b636-6637-48c2-a899-4bd62435dba0",
                 name: "Gegengift",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "04b75751-0a85-4d82-8b66-361f47743797",
                 name: "Buff",
-                subCategories: null,
+                subCategories: [],
               ),
             ],
           ),
@@ -116,39 +116,39 @@ class RpgConfigurationModel {
               ItemCategory(
                 uuid: "1666d606-b839-4664-930d-2f51b552111c",
                 name: "Finesse",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "4ab9bded-a516-4a1b-a66d-fd5d972957cf",
                 name: "Fernkampf",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "8d86c1df-fe26-420d-8ccf-f5ef0af535a3",
                 name: "Magie",
-                subCategories: null,
+                subCategories: [],
               ),
               ItemCategory(
                 uuid: "1d21556e-8993-4883-a9a5-f9853697f21e",
                 name: "Wurfwaffe",
-                subCategories: null,
+                subCategories: [],
               ),
             ],
           ),
           ItemCategory(
             uuid: "c7690cb0-39b4-45d2-b7c5-75b6e8eeb88f",
             name: "Schätze",
-            subCategories: null,
+            subCategories: [],
           ),
           ItemCategory(
             uuid: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
             name: "Tools",
-            subCategories: null,
+            subCategories: [],
           ),
           ItemCategory(
             uuid: "06996121-b48d-4660-91f3-540bc91b0186",
             name: "Sonstiges",
-            subCategories: null,
+            subCategories: [],
           ),
         ],
         allItems: [],
@@ -181,7 +181,7 @@ class RpgConfigurationModel {
 class ItemCategory {
   final String uuid;
   final String name;
-  final List<ItemCategory>? subCategories;
+  final List<ItemCategory> subCategories;
   final bool hideInInventoryFilters;
 
   factory ItemCategory.fromJson(Map<String, dynamic> json) =>
