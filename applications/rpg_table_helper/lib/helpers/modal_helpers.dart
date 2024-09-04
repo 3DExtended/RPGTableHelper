@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
+import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/navigation_service.dart';
 
 Future<void> showOldVersionUpdateRequired(BuildContext context) async {
   // show error to user
@@ -328,11 +327,13 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
       ? MaterialLocalizations.of(context).modalBarrierDismissLabel
       : '';
 
-  var nav = DependencyProvider.of(context)
-      .getService<INavigationService>()
-      .getNavigationKeys()[TabItem.search]!; // TODO this was TabItem.base...
+  // var nav = DependencyProvider.of(context)
+  //     .getService<INavigationService>()
+  //     .getNavigationKeys()[TabItem.search]!.currentState!; // TODO this was TabItem.base...
+  // var nav = Navigator.of(context);
+  var nav = navigatorKey.currentState!;
 
-  final result = await nav.currentState!.push(
+  final result = await nav.push(
     CupertinoModalBottomSheetRoute<T>(
         builder: builder,
         containerBuilder: (context, _, child) => _CupertinoBottomSheetContainer(

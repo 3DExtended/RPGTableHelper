@@ -8,6 +8,8 @@ import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.da
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal.dart';
+import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep6Items extends WizardStepBase {
   const RpgConfigurationWizardStep6Items({
@@ -75,102 +77,150 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         widget.onPreviousBtnPressed();
       },
       contentChildren: [
-        ..._items.asMap().entries.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: StyledBox(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 10.0, left: 20.0, bottom: 20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              item.value.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
-                                  .copyWith(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                  ),
-                            ),
-                          ),
-                          Container(
-                            height: 50,
-                            width: 70,
-                            clipBehavior: Clip.none,
-                            child: CustomButton(
-                              onPressed: () {
-                                // remove this pair from list
-                                // TODO check if assigned...
-                                // TODO handle sub categories
-                                setState(() {
-                                  _items.removeAt(item.key);
-                                });
-                              },
-                              icon: Theme(
-                                  data: ThemeData(
-                                    iconTheme: const IconThemeData(
+        ..._items.asMap().entries.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: StyledBox(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, left: 20.0, bottom: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                item.value.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
                                       color: Colors.white,
-                                      size: 16,
+                                      fontSize: 24,
                                     ),
-                                    textTheme: const TextTheme(
-                                      bodyMedium: TextStyle(
+                              ),
+                            ),
+                            Container(
+                              height: 50,
+                              width: 70,
+                              clipBehavior: Clip.none,
+                              child: CustomButton(
+                                onPressed: () {
+                                  // remove this pair from list
+                                  // TODO check if assigned...
+                                  // TODO handle sub categories
+                                  setState(() {
+                                    _items.removeAt(item.key);
+                                  });
+                                },
+                                icon: Theme(
+                                    data: ThemeData(
+                                      iconTheme: const IconThemeData(
                                         color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      textTheme: const TextTheme(
+                                        bodyMedium: TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  child: Container(
-                                      width: 24,
-                                      height: 24,
-                                      alignment: AlignmentDirectional.center,
-                                      child: const FaIcon(
-                                          FontAwesomeIcons.trashCan))),
+                                    child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        alignment: AlignmentDirectional.center,
+                                        child: const FaIcon(
+                                            FontAwesomeIcons.trashCan))),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      LabeledRow(
-                        label: "Kategorie:", // TODO localize
-                        text: getItemCategoryPathName(
-                          getItemCategoryById(item.value.categoryId),
+                          ],
                         ),
-                      ),
-                      LabeledRow(
-                        label: "Fundort:", // TODO localize
-                        text: item.value.placeOfFindingIds != null &&
-                                item.value.placeOfFindingIds!.isNotEmpty
-                            ? item.value.placeOfFindingIds!
-                                .map((plid) =>
-                                    getPlaceOfFinding(plid)?.name ?? "")
-                                .join(", ")
-                            : "N/A",
-                      ),
-                      LabeledRow(
-                        label: "Verkaufswert:", // TODO localize
-                        text: getValueOfItem(item.value.baseCurrencyPrice),
-                      ),
-                      Text(
-                        "Beschreibung:",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      MarkdownBody(
-                        data: item.value.description,
-                      )
-                    ],
+                        LabeledRow(
+                          label: "Kategorie:", // TODO localize
+                          text: getItemCategoryPathName(
+                            getItemCategoryById(item.value.categoryId),
+                          ),
+                        ),
+                        LabeledRow(
+                          label: "Fundort:", // TODO localize
+                          text: item.value.placeOfFindingIds != null &&
+                                  item.value.placeOfFindingIds!.isNotEmpty
+                              ? item.value.placeOfFindingIds!
+                                  .map((plid) =>
+                                      getPlaceOfFinding(plid)?.name ?? "")
+                                  .join(", ")
+                              : "N/A",
+                        ),
+                        LabeledRow(
+                          label: "Verkaufswert:", // TODO localize
+                          text: getValueOfItem(item.value.baseCurrencyPrice),
+                        ),
+                        Text(
+                          "Beschreibung:",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        MarkdownBody(
+                          data: item.value.description,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            )),
+            ),
+        CustomButton(
+          onPressed: () async {
+            // open create modal with new item
+            await showCreateOrEditItemModal(
+                context,
+                RpgItem(
+                  baseCurrencyPrice: 0,
+                  categoryId: null,
+                  description: "",
+                  name: "",
+                  placeOfFindingIds: [],
+                  uuid: const UuidV7().generate(),
+                )).then((returnValue) => {
+                  // TODO make me
+                  // setState(() {
+                  //   addNewItemCategory(_ItemCategoryEdit.fromItemCategory(
+                  //       ItemCategory(
+                  //           uuid: const UuidV7().generate(),
+                  //           name: "Neu",
+                  //           subCategories: []),
+                  //       _updateStateForFormValidation));
+                  // });
+                });
+          },
+          icon: Theme(
+              data: ThemeData(
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
+                textTheme: const TextTheme(
+                  bodyMedium: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              child: Container(
+                  width: 24,
+                  height: 24,
+                  alignment: AlignmentDirectional.center,
+                  child: const FaIcon(FontAwesomeIcons.plus))),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
       ],
     );
   }
@@ -201,8 +251,9 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
     return place;
   }
 
-  List<ItemCategory>? getItemCategoryById(String categoryId,
+  List<ItemCategory>? getItemCategoryById(String? categoryId,
       {List<ItemCategory>? searchList}) {
+    if (categoryId == null) return [];
     var searchField = searchList;
 
     if (searchField == null) {
