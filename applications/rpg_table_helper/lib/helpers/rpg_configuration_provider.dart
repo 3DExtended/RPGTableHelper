@@ -69,4 +69,8 @@ class RpgConfigurationNotifier
     state = AsyncValue.data(
         state.requireValue.copyWith(itemCategories: newItemCategories));
   }
+
+  void updateItems(List<RpgItem> items) {
+    state = AsyncValue.data(state.requireValue.copyWith(allItems: items));
+  }
 }

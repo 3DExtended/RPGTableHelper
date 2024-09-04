@@ -750,6 +750,8 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem categoryId(String categoryId);
 
+  RpgItem description(String description);
+
   RpgItem baseCurrencyPrice(int baseCurrencyPrice);
 
   RpgItem placeOfFindingIds(List<String>? placeOfFindingIds);
@@ -764,6 +766,7 @@ abstract class _$RpgItemCWProxy {
     String? uuid,
     String? name,
     String? categoryId,
+    String? description,
     int? baseCurrencyPrice,
     List<String>? placeOfFindingIds,
   });
@@ -785,6 +788,9 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem categoryId(String categoryId) => this(categoryId: categoryId);
 
   @override
+  RpgItem description(String description) => this(description: description);
+
+  @override
   RpgItem baseCurrencyPrice(int baseCurrencyPrice) =>
       this(baseCurrencyPrice: baseCurrencyPrice);
 
@@ -804,6 +810,7 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
     Object? categoryId = const $CopyWithPlaceholder(),
+    Object? description = const $CopyWithPlaceholder(),
     Object? baseCurrencyPrice = const $CopyWithPlaceholder(),
     Object? placeOfFindingIds = const $CopyWithPlaceholder(),
   }) {
@@ -821,6 +828,11 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
               ? _value.categoryId
               // ignore: cast_nullable_to_non_nullable
               : categoryId as String,
+      description:
+          description == const $CopyWithPlaceholder() || description == null
+              ? _value.description
+              // ignore: cast_nullable_to_non_nullable
+              : description as String,
       baseCurrencyPrice: baseCurrencyPrice == const $CopyWithPlaceholder() ||
               baseCurrencyPrice == null
           ? _value.baseCurrencyPrice
@@ -1025,6 +1037,7 @@ RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
       categoryId: json['categoryId'] as String,
+      description: json['description'] as String,
       baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
       placeOfFindingIds: (json['placeOfFindingIds'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -1034,6 +1047,7 @@ RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
 Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
       'uuid': instance.uuid,
       'name': instance.name,
+      'description': instance.description,
       'categoryId': instance.categoryId,
       'placeOfFindingIds': instance.placeOfFindingIds,
       'baseCurrencyPrice': instance.baseCurrencyPrice,

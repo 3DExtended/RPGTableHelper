@@ -151,7 +151,36 @@ class RpgConfigurationModel {
             subCategories: [],
           ),
         ],
-        allItems: [],
+        allItems: [
+          RpgItem(
+            uuid: "a7537746-260d-4aed-b182-26768a9c2d51",
+            name: "Kl. Heiltrank",
+            categoryId: "79773521-2fd6-4aff-942e-87b9e4bb6599",
+            baseCurrencyPrice: 10000,
+            placeOfFindingIds: [],
+            description:
+                "1D4 Heilung bei Konsum\n\nEin kleiner Heiltrank der auf natürliche (und nicht magische) Weise Lebenspunkte wiederherstellt.\nDieser Gegenstand ist fast unerlässlich für Kämpfe!",
+          ),
+          RpgItem(
+              uuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
+              name: "Rote Vitus Blüte",
+              categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
+              baseCurrencyPrice: 100,
+              placeOfFindingIds: [
+                "5b9690c1-afc9-436d-8912-d223c440eb6a",
+                "4a9abc76-df97-4790-9abe-cee5f6bec8a7",
+              ],
+              description:
+                  "Ein Blütenblatt der Roten Vitus Blüte\n\nSehr fragil und muss mit Vorsicht geerntet werden!"),
+          RpgItem(
+            uuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
+            name: "Fuchsschwanz",
+            categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
+            baseCurrencyPrice: 777777,
+            placeOfFindingIds: [],
+            description: "Der Schwanz eines Fuchses",
+          ),
+        ],
         craftingRecipes: [],
         characterStatsDefinition: CharacterStatsDefinition(
             mainPlayerStat: CharacterStatDefinition(
@@ -195,6 +224,23 @@ class ItemCategory {
   });
 
   Map<String, dynamic> toJson() => _$ItemCategoryToJson(this);
+
+  static List<ItemCategory> flattenitemCategories(
+      List<ItemCategory> categories) {
+    List<ItemCategory> flattenCategorieList = [];
+    var queue = categories.toList();
+
+    while (queue.isNotEmpty) {
+      var pop = queue.removeLast();
+      flattenCategorieList.add(pop);
+
+      if (pop.subCategories.isNotEmpty) {
+        queue.addAll(pop.subCategories);
+      }
+    }
+
+    return flattenCategorieList;
+  }
 }
 
 @JsonSerializable()
@@ -341,6 +387,7 @@ class PlaceOfFinding {
 class RpgItem {
   final String uuid;
   final String name;
+  final String description;
   final String categoryId;
 
   final List<String>? placeOfFindingIds;
@@ -355,6 +402,7 @@ class RpgItem {
     required this.uuid,
     required this.name,
     required this.categoryId,
+    required this.description,
     required this.baseCurrencyPrice,
     required this.placeOfFindingIds,
   });

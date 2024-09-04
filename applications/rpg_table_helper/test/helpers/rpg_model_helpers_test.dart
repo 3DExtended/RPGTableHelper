@@ -15,26 +15,26 @@ void main() {
           rpgName: 'Test RPG',
           allItems: [
             RpgItem(
-              uuid: 'item1',
-              name: 'Iron Ore',
-              categoryId: 'cat1',
-              baseCurrencyPrice: 10,
-              placeOfFindingIds: ['place1'],
-            ),
+                uuid: 'item1',
+                name: 'Iron Ore',
+                categoryId: 'cat1',
+                baseCurrencyPrice: 10,
+                placeOfFindingIds: ['place1'],
+                description: "Eine Beschreibung"),
             RpgItem(
-              uuid: 'item2',
-              name: 'Wood',
-              categoryId: 'cat1',
-              baseCurrencyPrice: 5,
-              placeOfFindingIds: ['place1'],
-            ),
+                uuid: 'item2',
+                name: 'Wood',
+                categoryId: 'cat1',
+                baseCurrencyPrice: 5,
+                placeOfFindingIds: ['place1'],
+                description: "Eine Beschreibung"),
             RpgItem(
-              uuid: 'item3',
-              name: 'Iron Sword',
-              categoryId: 'cat2',
-              baseCurrencyPrice: 50,
-              placeOfFindingIds: ['place2'],
-            ),
+                uuid: 'item3',
+                name: 'Iron Sword',
+                categoryId: 'cat2',
+                baseCurrencyPrice: 50,
+                placeOfFindingIds: ['place2'],
+                description: "Eine Beschreibung"),
           ],
           placesOfFindings: [],
           itemCategories: [],
@@ -191,12 +191,14 @@ void main() {
     test('Character with no items in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
@@ -246,12 +248,14 @@ void main() {
     test('Character with one item in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
@@ -305,18 +309,21 @@ void main() {
     test('Character with multiple items in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item3 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid3',
           name: 'Potion',
           baseCurrencyPrice: 0,
@@ -374,12 +381,14 @@ void main() {
     test('Character with items not in global item list', () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
@@ -431,12 +440,14 @@ void main() {
     test('Character with items having zero quantity in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
@@ -488,12 +499,14 @@ void main() {
     test('Character with all items from the list in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
@@ -553,12 +566,14 @@ void main() {
         () {
       // Arrange
       var item1 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
           placeOfFindingIds: null);
       var item2 = RpgItem(
+          description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
