@@ -264,15 +264,15 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topSafeAreaPadding = MediaQuery.of(context).padding.top;
-    final topPadding = _kPreviousPageVisibleOffset + topSafeAreaPadding;
+    // final topSafeAreaPadding = MediaQuery.of(context).padding.top;
+    const topPadding = _kPreviousPageVisibleOffset; // + topSafeAreaPadding;
 
     final shadow = this.shadow ?? _kDefaultBoxShadow;
     const BoxShadow(blurRadius: 10, color: Colors.black12, spreadRadius: 5);
     final backgroundColor = this.backgroundColor ??
         CupertinoTheme.of(context).scaffoldBackgroundColor;
     return Padding(
-      padding: EdgeInsets.only(top: topPadding),
+      padding: const EdgeInsets.only(top: topPadding),
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(top: topRadius),
         child: Container(

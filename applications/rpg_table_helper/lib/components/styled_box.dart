@@ -42,7 +42,7 @@ class StyledBox extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: kGradientBoxDecoration,
         child: Padding(
-          padding: EdgeInsets.all(borderThickness ?? 2.0),
+          padding: EdgeInsets.all(borderThickness ?? 1.0),
           child: Container(
             clipBehavior: Clip.hardEdge,
             decoration: kInnerDecoration,
