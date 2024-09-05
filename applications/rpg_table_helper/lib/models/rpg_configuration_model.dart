@@ -496,9 +496,12 @@ class DiceRoll {
 
   // Parse a string like "1D10+5" or "2D6-1" or "2W6+1" into a DiceRoll object
   factory DiceRoll.parse(String input) {
+    final cleanedInput =
+        input.replaceAll(RegExp(r'[^0-9DW+-]', caseSensitive: false), '');
+
     final diceRegex =
         RegExp(r'(\d*)[DW](\d+)([+-]?\d+)?', caseSensitive: false);
-    final match = diceRegex.firstMatch(input);
+    final match = diceRegex.firstMatch(cleanedInput);
 
     if (match == null) {
       throw const FormatException('Invalid dice roll format');

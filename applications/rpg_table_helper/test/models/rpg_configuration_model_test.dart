@@ -527,4 +527,39 @@ void main() {
       expect(roll.toString(), equals('1 D20 +0'));
     });
   });
+  group('DiceRoll.parse with random spaces and characters', () {
+    test('parses "1 D 1 0 + 5" correctly', () {
+      DiceRoll roll = DiceRoll.parse("1 D 1 0 + 5");
+      expect(roll.numDice, equals(1));
+      expect(roll.diceSides, equals(10));
+      expect(roll.modifier, equals(5));
+    });
+
+    test('parses "  2  W6   - 1  " correctly', () {
+      DiceRoll roll = DiceRoll.parse("  2  W6   - 1  ");
+      expect(roll.numDice, equals(2));
+      expect(roll.diceSides, equals(6));
+      expect(roll.modifier, equals(-1));
+    });
+
+    test('parses "W  20" with random spaces correctly', () {
+      DiceRoll roll = DiceRoll.parse("W  20");
+      expect(roll.numDice, equals(1)); // Implicit 1 dice
+      expect(roll.diceSides, equals(20));
+      expect(roll.modifier, equals(0)); // No modifier
+    });
+
+    test('parses " 1D6+1abc!@#" with random characters correctly', () {
+      DiceRoll roll = DiceRoll.parse(" 1D6+1abc!@#");
+      expect(roll.numDice, equals(1));
+      expect(roll.diceSides, equals(6));
+      expect(roll.modifier, equals(1));
+    });
+
+    test('throws FormatException for invalid input', () {
+      expect(() => DiceRoll.parse("Invalid"), throwsFormatException);
+      expect(() => DiceRoll.parse("2X"),
+          throwsFormatException); // Invalid delimiter 'X'
+    });
+  });
 }
