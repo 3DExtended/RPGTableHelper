@@ -78,6 +78,8 @@ void main() {
                             name: "Test",
                             categoryId: null,
                             description: "Ich bin ein text",
+                            patchSize: DiceRoll(
+                                numDice: 22, diceSides: 6, modifier: 1),
                             baseCurrencyPrice: 1000,
                             placeOfFindings: []),
                       );

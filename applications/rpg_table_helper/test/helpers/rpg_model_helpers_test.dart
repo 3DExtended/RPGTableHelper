@@ -19,12 +19,9 @@ void main() {
                 name: 'Iron Ore',
                 categoryId: 'cat1',
                 baseCurrencyPrice: 10,
+                patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "place1",
-                      patchSize:
-                          DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
-                      diceChallenge: 3)
+                  RpgItemRarity(placeOfFindingId: "place1", diceChallenge: 3)
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
@@ -32,12 +29,9 @@ void main() {
                 name: 'Wood',
                 categoryId: 'cat1',
                 baseCurrencyPrice: 5,
+                patchSize: DiceRoll(numDice: 2, diceSides: 10, modifier: 7),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "place1",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 10, modifier: 7),
-                      diceChallenge: 3)
+                  RpgItemRarity(placeOfFindingId: "place1", diceChallenge: 3)
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
@@ -45,12 +39,9 @@ void main() {
                 name: 'Iron Sword',
                 categoryId: 'cat2',
                 baseCurrencyPrice: 50,
+                patchSize: DiceRoll(numDice: 3, diceSides: 6, modifier: 1),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "place2",
-                      patchSize:
-                          DiceRoll(numDice: 3, diceSides: 6, modifier: 1),
-                      diceChallenge: 3)
+                  RpgItemRarity(placeOfFindingId: "place2", diceChallenge: 3)
                 ],
                 description: "Eine Beschreibung"),
           ],
@@ -213,6 +204,7 @@ void main() {
           uuid: 'uuid1',
           name: 'Sword',
           baseCurrencyPrice: 0,
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
@@ -221,6 +213,7 @@ void main() {
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
+          patchSize: DiceRoll(numDice: 5, diceSides: 6, modifier: 1),
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
@@ -266,6 +259,7 @@ void main() {
     test('Character with one item in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -273,6 +267,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -327,6 +322,7 @@ void main() {
     test('Character with multiple items in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -334,6 +330,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -341,6 +338,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item3 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid3',
           name: 'Potion',
@@ -399,6 +397,7 @@ void main() {
     test('Character with items not in global item list', () {
       // Arrange
       var item1 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -406,6 +405,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -458,6 +458,7 @@ void main() {
     test('Character with items having zero quantity in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -465,6 +466,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -517,6 +519,7 @@ void main() {
     test('Character with all items from the list in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -524,6 +527,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -584,6 +588,7 @@ void main() {
         () {
       // Arrange
       var item1 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -591,6 +596,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',

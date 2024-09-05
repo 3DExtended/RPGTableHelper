@@ -43,6 +43,7 @@ class CreateOrEditItemModalContent extends ConsumerStatefulWidget {
 class _CreateOrEditItemModalContentState
     extends ConsumerState<CreateOrEditItemModalContent> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController patchSizeTextController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   List<TextEditingController> currencyControllers = [];
 
@@ -61,6 +62,8 @@ class _CreateOrEditItemModalContentState
         nameController.text = widget.itemToEdit.name;
         descriptionController.text = widget.itemToEdit.description;
         selectedItemCategoryId = widget.itemToEdit.categoryId;
+        patchSizeTextController.text =
+            widget.itemToEdit.patchSize?.toString() ?? "1D4+1";
       });
     });
     super.initState();
@@ -223,6 +226,20 @@ class _CreateOrEditItemModalContentState
                         children: [
                           Expanded(
                             child: CustomTextField(
+                              keyboardType: TextInputType.text,
+                              labelText: "Fundgröße:", // TODO localize
+                              textEditingController: patchSizeTextController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
                               keyboardType: TextInputType.multiline,
                               labelText: "Beschreibung:", // TODO localize
                               textEditingController: descriptionController,
@@ -250,6 +267,7 @@ class _CreateOrEditItemModalContentState
                                   name: nameController.text,
                                   categoryId: selectedItemCategoryId,
                                   description: descriptionController.text,
+                                  patchSize: getPatchSize(),
                                   baseCurrencyPrice: getBaseCurrencyPrice(),
                                   placeOfFindings: [], // TODO fix me and return list of placesOfFindings
                                 ));
@@ -277,10 +295,9 @@ class _CreateOrEditItemModalContentState
       var currencyType =
           _currencyDefinition!.currencyTypes.reversed.toList()[i];
 
-      var parsedUserInput = int.tryParse(controller.text);
-      assert(parsedUserInput != null, "Should have been validated beforehand");
+      var parsedUserInput = int.tryParse(controller.text) ?? 0;
 
-      result += parsedUserInput!;
+      result += parsedUserInput;
 
       if (i != currencyControllers.length - 1) {
         assert(currencyType.multipleOfPreviousValue != null,
@@ -291,5 +308,18 @@ class _CreateOrEditItemModalContentState
     }
 
     return result;
+  }
+
+  DiceRoll? getPatchSize() {
+    var userInput = patchSizeTextController.text;
+    if (userInput.isEmpty) {
+      return null;
+    }
+
+    try {
+      return DiceRoll.parse(userInput);
+    } catch (e) {
+      return null;
+    }
   }
 }

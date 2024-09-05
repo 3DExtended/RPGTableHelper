@@ -165,6 +165,10 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                               : "N/A",
                         ),
                         _LabeledRow(
+                          label: "Fundgröße:", // TODO localize
+                          text: item.value.patchSize?.toString() ?? "N/A",
+                        ),
+                        _LabeledRow(
                           label: "Verkaufswert:", // TODO localize
                           text: getValueOfItem(item.value.baseCurrencyPrice),
                         ),
@@ -202,6 +206,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                   description: "",
                   name: "Neues Item", // TODO remove me
                   placeOfFindings: [],
+                  patchSize: null,
                   uuid: const UuidV7().generate(),
                 )).then((returnValue) {
               if (returnValue == null) {
@@ -246,8 +251,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
     result += placeOfFinding.name;
 
     // TODO decide if I want to show this...
-    // result +=
-    //     " (DC: ${plid.diceChallenge}, Anzahl: ${plid.patchSize.toString()})";
+    result += " (DC: ${plid.diceChallenge})";
 
     return result;
   }
@@ -381,7 +385,10 @@ class _LabeledRow extends StatelessWidget {
                       fontSize: 16,
                     ),
               ),
-            )
+            ),
+            const SizedBox(
+              width: 20,
+            ),
           ],
         ),
       ],

@@ -88,17 +88,10 @@ void main() {
                 name: "Ascheveilchen",
                 categoryId: "6",
                 baseCurrencyPrice: 20000,
+                patchSize: DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "wald",
-                      patchSize:
-                          DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
-                      diceChallenge: 2),
-                  RpgItemRarity(
-                      placeOfFindingId: "berg",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2)
+                  RpgItemRarity(placeOfFindingId: "wald", diceChallenge: 2),
+                  RpgItemRarity(placeOfFindingId: "berg", diceChallenge: 2)
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
@@ -106,22 +99,11 @@ void main() {
                 name: "Aloe Vera",
                 categoryId: "6",
                 baseCurrencyPrice: 200300,
+                patchSize: DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "savanne",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 10, modifier: 1),
-                      diceChallenge: 22),
-                  RpgItemRarity(
-                      placeOfFindingId: "wüste",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2),
-                  RpgItemRarity(
-                      placeOfFindingId: "steppe",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2)
+                  RpgItemRarity(placeOfFindingId: "savanne", diceChallenge: 22),
+                  RpgItemRarity(placeOfFindingId: "wüste", diceChallenge: 2),
+                  RpgItemRarity(placeOfFindingId: "steppe", diceChallenge: 2)
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
@@ -129,22 +111,11 @@ void main() {
                 name: "Aurora Rose",
                 categoryId: "6",
                 baseCurrencyPrice: 2300,
+                patchSize: DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "wald",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: -1),
-                      diceChallenge: 5),
-                  RpgItemRarity(
-                      placeOfFindingId: "berg",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2),
-                  RpgItemRarity(
-                      placeOfFindingId: "grasland",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2)
+                  RpgItemRarity(placeOfFindingId: "wald", diceChallenge: 5),
+                  RpgItemRarity(placeOfFindingId: "berg", diceChallenge: 2),
+                  RpgItemRarity(placeOfFindingId: "grasland", diceChallenge: 2)
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
@@ -152,28 +123,18 @@ void main() {
                 name: "Roter Amanita Pilz",
                 categoryId: "6",
                 baseCurrencyPrice: 232100,
+                patchSize: DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
                 placeOfFindings: [
-                  RpgItemRarity(
-                      placeOfFindingId: "wald",
-                      patchSize:
-                          DiceRoll(numDice: 1, diceSides: 20, modifier: 4),
-                      diceChallenge: 7),
-                  RpgItemRarity(
-                      placeOfFindingId: "sümpfe",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2),
-                  RpgItemRarity(
-                      placeOfFindingId: "höhle",
-                      patchSize:
-                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
-                      diceChallenge: 2)
+                  RpgItemRarity(placeOfFindingId: "wald", diceChallenge: 7),
+                  RpgItemRarity(placeOfFindingId: "sümpfe", diceChallenge: 2),
+                  RpgItemRarity(placeOfFindingId: "höhle", diceChallenge: 2)
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: "Lebenslikörasdf",
                 name: "Lebenslikör",
                 categoryId: "11",
+                patchSize: DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
                 baseCurrencyPrice: 232133300,
                 placeOfFindings: [],
                 description: "Eine Beschreibung"),
@@ -202,7 +163,7 @@ void main() {
 
       // debugLog(serializedText, "uuidErrorCode");
       expect(serializedText,
-          '{"rpgName":"DnD - Marie config","allItems":[{"uuid":"asdf","name":"Ascheveilchen","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","patchSize":{"numDice":22,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"berg","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":20000},{"uuid":"asdfew","name":"Aloe Vera","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"savanne","patchSize":{"numDice":2,"diceSides":10,"modifier":1},"diceChallenge":22},{"placeOfFindingId":"wüste","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"steppe","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":200300},{"uuid":"asdeefew","name":"Aurora Rose","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","patchSize":{"numDice":2,"diceSides":6,"modifier":-1},"diceChallenge":5},{"placeOfFindingId":"berg","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"grasland","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":2300},{"uuid":"asde323efew","name":"Roter Amanita Pilz","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","patchSize":{"numDice":1,"diceSides":20,"modifier":4},"diceChallenge":7},{"placeOfFindingId":"sümpfe","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"höhle","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":232100},{"uuid":"Lebenslikörasdf","name":"Lebenslikör","description":"Eine Beschreibung","categoryId":"11","placeOfFindings":[],"baseCurrencyPrice":232133300}],"placesOfFindings":[{"uuid":"wald","name":"Wald"},{"uuid":"grasland","name":"Grasland"},{"uuid":"berg","name":"Berg"},{"uuid":"steppe","name":"Steppe"},{"uuid":"wüste","name":"Wüste"},{"uuid":"savanne","name":"Savanne"},{"uuid":"sümpfe","name":"Sümpfe"},{"uuid":"höhle","name":"Höhle"}],"itemCategories":[{"uuid":"0","name":"Kleidung","subCategories":[{"uuid":"01","name":"Rüstung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"02","name":"Accessoire","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"6","name":"Zutaten","subCategories":[],"hideInInventoryFilters":false},{"uuid":"1","name":"Trank","subCategories":[{"uuid":"11","name":"Heilung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"12","name":"Gift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"13","name":"Gegengift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"14","name":"Buff","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"2","name":"Waffen","subCategories":[{"uuid":"21","name":"Finesse","subCategories":[],"hideInInventoryFilters":false},{"uuid":"22","name":"Fernkampf","subCategories":[],"hideInInventoryFilters":false},{"uuid":"23","name":"Magie","subCategories":[],"hideInInventoryFilters":false},{"uuid":"24","name":"Wurfwaffe","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"3","name":"Schätze","subCategories":[],"hideInInventoryFilters":false},{"uuid":"4","name":"Tools","subCategories":[],"hideInInventoryFilters":false},{"uuid":"5","name":"Sonstiges","subCategories":[],"hideInInventoryFilters":false}],"characterStatsDefinition":{"mainPlayerStat":{"name":"HP","statUuid":"5251c0bb-02ee-405b-b697-8e6ff0482983","helperText":"Lebenspunkte","valueType":"intWithMaxValue","editType":"oneTap"},"secondaryPlayerStat":{"name":"AC","statUuid":"d728a934-6b3d-4548-9fe9-53a42e88712b","helperText":"Rüstungsklasse","valueType":"int","editType":"static"},"thirdPlayerStat":{"name":"SP","statUuid":"8882935f-a3e8-42b3-9b38-0d87aa71df73","helperText":"Geschwindigkeit","valueType":"int","editType":"static"},"otherPlayerStats":[{"name":"Class","statUuid":"9ff51b8e-59a2-427f-8236-3ab6933ded5b","helperText":"The main class of your character.","valueType":"string","editType":"static"}]},"craftingRecipes":[{"recipeUuid":"123456789087654321","ingredients":[{"itemUuid":"asdfew","amountOfUsedItem":1},{"itemUuid":"asdeefew","amountOfUsedItem":1},{"itemUuid":"asde323efew","amountOfUsedItem":1}],"createdItem":{"itemUuid":"Lebenslikörasdf","amountOfUsedItem":1}}],"currencyDefinition":{"currencyTypes":[{"name":"Kupfer","multipleOfPreviousValue":null},{"name":"Silber","multipleOfPreviousValue":10},{"name":"Gold","multipleOfPreviousValue":10},{"name":"Platin","multipleOfPreviousValue":10}]}}');
+          '{"rpgName":"DnD - Marie config","allItems":[{"uuid":"asdf","name":"Ascheveilchen","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":2},{"placeOfFindingId":"berg","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":20000},{"uuid":"asdfew","name":"Aloe Vera","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"savanne","diceChallenge":22},{"placeOfFindingId":"wüste","diceChallenge":2},{"placeOfFindingId":"steppe","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":200300},{"uuid":"asdeefew","name":"Aurora Rose","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":5},{"placeOfFindingId":"berg","diceChallenge":2},{"placeOfFindingId":"grasland","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":2300},{"uuid":"asde323efew","name":"Roter Amanita Pilz","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":7},{"placeOfFindingId":"sümpfe","diceChallenge":2},{"placeOfFindingId":"höhle","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":232100},{"uuid":"Lebenslikörasdf","name":"Lebenslikör","description":"Eine Beschreibung","categoryId":"11","placeOfFindings":[],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":232133300}],"placesOfFindings":[{"uuid":"wald","name":"Wald"},{"uuid":"grasland","name":"Grasland"},{"uuid":"berg","name":"Berg"},{"uuid":"steppe","name":"Steppe"},{"uuid":"wüste","name":"Wüste"},{"uuid":"savanne","name":"Savanne"},{"uuid":"sümpfe","name":"Sümpfe"},{"uuid":"höhle","name":"Höhle"}],"itemCategories":[{"uuid":"0","name":"Kleidung","subCategories":[{"uuid":"01","name":"Rüstung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"02","name":"Accessoire","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"6","name":"Zutaten","subCategories":[],"hideInInventoryFilters":false},{"uuid":"1","name":"Trank","subCategories":[{"uuid":"11","name":"Heilung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"12","name":"Gift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"13","name":"Gegengift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"14","name":"Buff","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"2","name":"Waffen","subCategories":[{"uuid":"21","name":"Finesse","subCategories":[],"hideInInventoryFilters":false},{"uuid":"22","name":"Fernkampf","subCategories":[],"hideInInventoryFilters":false},{"uuid":"23","name":"Magie","subCategories":[],"hideInInventoryFilters":false},{"uuid":"24","name":"Wurfwaffe","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"3","name":"Schätze","subCategories":[],"hideInInventoryFilters":false},{"uuid":"4","name":"Tools","subCategories":[],"hideInInventoryFilters":false},{"uuid":"5","name":"Sonstiges","subCategories":[],"hideInInventoryFilters":false}],"characterStatsDefinition":{"mainPlayerStat":{"name":"HP","statUuid":"5251c0bb-02ee-405b-b697-8e6ff0482983","helperText":"Lebenspunkte","valueType":"intWithMaxValue","editType":"oneTap"},"secondaryPlayerStat":{"name":"AC","statUuid":"d728a934-6b3d-4548-9fe9-53a42e88712b","helperText":"Rüstungsklasse","valueType":"int","editType":"static"},"thirdPlayerStat":{"name":"SP","statUuid":"8882935f-a3e8-42b3-9b38-0d87aa71df73","helperText":"Geschwindigkeit","valueType":"int","editType":"static"},"otherPlayerStats":[{"name":"Class","statUuid":"9ff51b8e-59a2-427f-8236-3ab6933ded5b","helperText":"The main class of your character.","valueType":"string","editType":"static"}]},"craftingRecipes":[{"recipeUuid":"123456789087654321","ingredients":[{"itemUuid":"asdfew","amountOfUsedItem":1},{"itemUuid":"asdeefew","amountOfUsedItem":1},{"itemUuid":"asde323efew","amountOfUsedItem":1}],"createdItem":{"itemUuid":"Lebenslikörasdf","amountOfUsedItem":1}}],"currencyDefinition":{"currencyTypes":[{"name":"Kupfer","multipleOfPreviousValue":null},{"name":"Silber","multipleOfPreviousValue":10},{"name":"Gold","multipleOfPreviousValue":10},{"name":"Platin","multipleOfPreviousValue":10}]}}');
     });
   });
 

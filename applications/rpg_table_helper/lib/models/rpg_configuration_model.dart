@@ -150,6 +150,7 @@ class RpgConfigurationModel {
         ],
         allItems: [
           RpgItem(
+            patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
             uuid: "a7537746-260d-4aed-b182-26768a9c2d51",
             name: "Kl. Heiltrank",
             categoryId: "79773521-2fd6-4aff-942e-87b9e4bb6599",
@@ -163,30 +164,26 @@ class RpgConfigurationModel {
               name: "Rote Vitus Blüte",
               categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
               baseCurrencyPrice: 100,
+              patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
               placeOfFindings: [
                 RpgItemRarity(
                   placeOfFindingId: "2ed1f4ca-8ae0-4945-8771-5f74cf7ac546",
-                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
                   diceChallenge: 15,
                 ),
                 RpgItemRarity(
                   placeOfFindingId: "8ea924d4-7160-48dd-9d7f-5afa04c27048",
-                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
                   diceChallenge: 15,
                 ),
                 RpgItemRarity(
                   placeOfFindingId: "f4e2605a-1d22-45e8-92d6-44534eafdc44",
-                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
                   diceChallenge: 15,
                 ),
                 RpgItemRarity(
                   placeOfFindingId: "5b9690c1-afc9-436d-8912-d223c440eb6a",
-                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
                   diceChallenge: 15,
                 ),
                 RpgItemRarity(
                   placeOfFindingId: "4a9abc76-df97-4790-9abe-cee5f6bec8a7",
-                  patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
                   diceChallenge: 22,
                 ),
               ],
@@ -199,6 +196,7 @@ class RpgConfigurationModel {
             baseCurrencyPrice: 777777,
             placeOfFindings: [],
             description: "Der Schwanz eines Fuchses",
+            patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
           ),
         ],
         craftingRecipes: [],
@@ -449,7 +447,6 @@ class PlaceOfFinding {
 @CopyWith()
 class RpgItemRarity {
   final String placeOfFindingId;
-  final DiceRoll patchSize;
   final int diceChallenge;
 
   factory RpgItemRarity.fromJson(Map<String, dynamic> json) =>
@@ -457,7 +454,6 @@ class RpgItemRarity {
 
   RpgItemRarity({
     required this.placeOfFindingId,
-    required this.patchSize,
     required this.diceChallenge,
   });
 
@@ -473,6 +469,7 @@ class RpgItem {
   final String? categoryId;
 
   final List<RpgItemRarity> placeOfFindings;
+  final DiceRoll? patchSize;
 
   /// price without looking at the exchange rates. always a multiple of the smalles currency definition
   final int baseCurrencyPrice;
@@ -483,6 +480,7 @@ class RpgItem {
   RpgItem({
     required this.uuid,
     required this.name,
+    required this.patchSize,
     required this.categoryId,
     required this.description,
     required this.baseCurrencyPrice,

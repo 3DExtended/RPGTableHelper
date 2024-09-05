@@ -746,8 +746,6 @@ extension $PlaceOfFindingCopyWith on PlaceOfFinding {
 abstract class _$RpgItemRarityCWProxy {
   RpgItemRarity placeOfFindingId(String placeOfFindingId);
 
-  RpgItemRarity patchSize(DiceRoll patchSize);
-
   RpgItemRarity diceChallenge(int diceChallenge);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItemRarity(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -758,7 +756,6 @@ abstract class _$RpgItemRarityCWProxy {
   /// ````
   RpgItemRarity call({
     String? placeOfFindingId,
-    DiceRoll? patchSize,
     int? diceChallenge,
   });
 }
@@ -774,9 +771,6 @@ class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
       this(placeOfFindingId: placeOfFindingId);
 
   @override
-  RpgItemRarity patchSize(DiceRoll patchSize) => this(patchSize: patchSize);
-
-  @override
   RpgItemRarity diceChallenge(int diceChallenge) =>
       this(diceChallenge: diceChallenge);
 
@@ -790,7 +784,6 @@ class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
   /// ````
   RpgItemRarity call({
     Object? placeOfFindingId = const $CopyWithPlaceholder(),
-    Object? patchSize = const $CopyWithPlaceholder(),
     Object? diceChallenge = const $CopyWithPlaceholder(),
   }) {
     return RpgItemRarity(
@@ -799,10 +792,6 @@ class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
           ? _value.placeOfFindingId
           // ignore: cast_nullable_to_non_nullable
           : placeOfFindingId as String,
-      patchSize: patchSize == const $CopyWithPlaceholder() || patchSize == null
-          ? _value.patchSize
-          // ignore: cast_nullable_to_non_nullable
-          : patchSize as DiceRoll,
       diceChallenge:
           diceChallenge == const $CopyWithPlaceholder() || diceChallenge == null
               ? _value.diceChallenge
@@ -823,6 +812,8 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem name(String name);
 
+  RpgItem patchSize(DiceRoll? patchSize);
+
   RpgItem categoryId(String? categoryId);
 
   RpgItem description(String description);
@@ -840,6 +831,7 @@ abstract class _$RpgItemCWProxy {
   RpgItem call({
     String? uuid,
     String? name,
+    DiceRoll? patchSize,
     String? categoryId,
     String? description,
     int? baseCurrencyPrice,
@@ -858,6 +850,9 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
 
   @override
   RpgItem name(String name) => this(name: name);
+
+  @override
+  RpgItem patchSize(DiceRoll? patchSize) => this(patchSize: patchSize);
 
   @override
   RpgItem categoryId(String? categoryId) => this(categoryId: categoryId);
@@ -884,6 +879,7 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
+    Object? patchSize = const $CopyWithPlaceholder(),
     Object? categoryId = const $CopyWithPlaceholder(),
     Object? description = const $CopyWithPlaceholder(),
     Object? baseCurrencyPrice = const $CopyWithPlaceholder(),
@@ -898,6 +894,10 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
+      patchSize: patchSize == const $CopyWithPlaceholder()
+          ? _value.patchSize
+          // ignore: cast_nullable_to_non_nullable
+          : patchSize as DiceRoll?,
       categoryId: categoryId == const $CopyWithPlaceholder()
           ? _value.categoryId
           // ignore: cast_nullable_to_non_nullable
@@ -1182,20 +1182,21 @@ Map<String, dynamic> _$PlaceOfFindingToJson(PlaceOfFinding instance) =>
 RpgItemRarity _$RpgItemRarityFromJson(Map<String, dynamic> json) =>
     RpgItemRarity(
       placeOfFindingId: json['placeOfFindingId'] as String,
-      patchSize: DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
       diceChallenge: (json['diceChallenge'] as num).toInt(),
     );
 
 Map<String, dynamic> _$RpgItemRarityToJson(RpgItemRarity instance) =>
     <String, dynamic>{
       'placeOfFindingId': instance.placeOfFindingId,
-      'patchSize': instance.patchSize,
       'diceChallenge': instance.diceChallenge,
     };
 
 RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
+      patchSize: json['patchSize'] == null
+          ? null
+          : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
       categoryId: json['categoryId'] as String?,
       description: json['description'] as String,
       baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
@@ -1210,6 +1211,7 @@ Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
       'description': instance.description,
       'categoryId': instance.categoryId,
       'placeOfFindings': instance.placeOfFindings,
+      'patchSize': instance.patchSize,
       'baseCurrencyPrice': instance.baseCurrencyPrice,
     };
 
