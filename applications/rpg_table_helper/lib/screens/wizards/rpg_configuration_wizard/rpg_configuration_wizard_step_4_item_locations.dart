@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
@@ -125,24 +126,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                             locationPairs.removeAt(e.key);
                           });
                         },
-                        icon: Theme(
-                            data: ThemeData(
-                              iconTheme: const IconThemeData(
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                              textTheme: const TextTheme(
-                                bodyMedium: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            child: Container(
-                                width: 24,
-                                height: 24,
-                                alignment: AlignmentDirectional.center,
-                                child:
-                                    const FaIcon(FontAwesomeIcons.trashCan))),
+                        icon:
+                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
                       ),
                     ),
                   ],
