@@ -509,22 +509,22 @@ void main() {
   group('DiceRoll.toString', () {
     test('formats correctly for positive modifier', () {
       DiceRoll roll = DiceRoll(numDice: 1, diceSides: 10, modifier: 5);
-      expect(roll.toString(), equals('1 D10 +5'));
+      expect(roll.toString(), equals('1D10+5'));
     });
 
     test('formats correctly for negative modifier', () {
       DiceRoll roll = DiceRoll(numDice: 2, diceSides: 6, modifier: -1);
-      expect(roll.toString(), equals('2 D6 -1'));
+      expect(roll.toString(), equals('2D6-1'));
     });
 
     test('formats correctly without modifier', () {
       DiceRoll roll = DiceRoll(numDice: 8, diceSides: 4, modifier: 0);
-      expect(roll.toString(), equals('8 D4 +0'));
+      expect(roll.toString(), equals('8D4+0'));
     });
 
     test('formats correctly for single dice without explicit number', () {
       DiceRoll roll = DiceRoll(numDice: 1, diceSides: 20, modifier: 0);
-      expect(roll.toString(), equals('1 D20 +0'));
+      expect(roll.toString(), equals('1D20+0'));
     });
   });
   group('DiceRoll.parse with random spaces and characters', () {

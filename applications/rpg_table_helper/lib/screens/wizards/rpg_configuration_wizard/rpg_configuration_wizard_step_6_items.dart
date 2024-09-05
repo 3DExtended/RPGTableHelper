@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
@@ -101,6 +102,34 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                                     ),
                               ),
                             ),
+
+                            // Edit Button
+                            Container(
+                              height: 50,
+                              width: 50,
+                              clipBehavior: Clip.none,
+                              child: CustomButton(
+                                onPressed: () async {
+                                  // open edit modal with clicked item
+                                  await showCreateOrEditItemModal(
+                                          context, item.value)
+                                      .then((returnValue) {
+                                    if (returnValue == null) {
+                                      return;
+                                    }
+
+                                    setState(() {
+                                      _items.removeAt(item.key);
+                                      _items.insert(item.key, returnValue);
+                                    });
+                                  });
+                                },
+                                icon: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.penToSquare),
+                              ),
+                            ),
+
+                            // Remove button
                             Container(
                               height: 50,
                               width: 70,
@@ -109,52 +138,33 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                                 onPressed: () {
                                   // remove this pair from list
                                   // TODO check if assigned...
-                                  // TODO handle sub categories
                                   setState(() {
                                     _items.removeAt(item.key);
                                   });
                                 },
-                                icon: Theme(
-                                    data: ThemeData(
-                                      iconTheme: const IconThemeData(
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      textTheme: const TextTheme(
-                                        bodyMedium: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        alignment: AlignmentDirectional.center,
-                                        child: const FaIcon(
-                                            FontAwesomeIcons.trashCan))),
+                                icon: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.trashCan),
                               ),
                             ),
                           ],
                         ),
-                        LabeledRow(
+                        _LabeledRow(
                           label: "Kategorie:", // TODO localize
                           text: getItemCategoryPathName(
                             getItemCategoryById(item.value.categoryId),
                           ),
                         ),
-                        LabeledRow(
+                        _LabeledRow(
                           label: "Fundort:", // TODO localize
                           // TODO append difficulty and patchSize
                           text: item.value.placeOfFindings.isNotEmpty
                               ? item.value.placeOfFindings
                                   .map((plid) =>
-                                      getPlaceOfFinding(plid.placeOfFindingId)
-                                          ?.name ??
-                                      "")
+                                      formatRpgItemRarityToString(plid))
                                   .join(", ")
                               : "N/A",
                         ),
-                        LabeledRow(
+                        _LabeledRow(
                           label: "Verkaufswert:", // TODO localize
                           text: getValueOfItem(item.value.baseCurrencyPrice),
                         ),
@@ -169,8 +179,11 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                         const SizedBox(
                           height: 10,
                         ),
-                        MarkdownBody(
-                          data: item.value.description,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: MarkdownBody(
+                            data: item.value.description,
+                          ),
                         )
                       ],
                     ),
@@ -223,6 +236,20 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         ),
       ],
     );
+  }
+
+  String formatRpgItemRarityToString(RpgItemRarity plid) {
+    var result = "";
+    var placeOfFinding = getPlaceOfFinding(plid.placeOfFindingId);
+    if (placeOfFinding == null) return result;
+
+    result += placeOfFinding.name;
+
+    // TODO decide if I want to show this...
+    // result +=
+    //     " (DC: ${plid.diceChallenge}, Anzahl: ${plid.patchSize.toString()})";
+
+    return result;
   }
 
   void saveChanges() {
@@ -319,9 +346,8 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
   }
 }
 
-class LabeledRow extends StatelessWidget {
-  const LabeledRow({
-    super.key,
+class _LabeledRow extends StatelessWidget {
+  const _LabeledRow({
     required this.label,
     required this.text,
   });

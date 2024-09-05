@@ -165,6 +165,21 @@ class RpgConfigurationModel {
               baseCurrencyPrice: 100,
               placeOfFindings: [
                 RpgItemRarity(
+                  placeOfFindingId: "2ed1f4ca-8ae0-4945-8771-5f74cf7ac546",
+                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
+                  diceChallenge: 15,
+                ),
+                RpgItemRarity(
+                  placeOfFindingId: "8ea924d4-7160-48dd-9d7f-5afa04c27048",
+                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
+                  diceChallenge: 15,
+                ),
+                RpgItemRarity(
+                  placeOfFindingId: "f4e2605a-1d22-45e8-92d6-44534eafdc44",
+                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
+                  diceChallenge: 15,
+                ),
+                RpgItemRarity(
                   placeOfFindingId: "5b9690c1-afc9-436d-8912-d223c440eb6a",
                   patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
                   diceChallenge: 15,
@@ -525,7 +540,7 @@ class DiceRoll {
 
   @override
   String toString() {
-    return '$numDice D$diceSides ${modifier >= 0 ? '+' : ''}$modifier';
+    return '${numDice}D$diceSides${modifier >= 0 ? '+' : ''}$modifier';
   }
 
   // Roll the dice and calculate the total value
