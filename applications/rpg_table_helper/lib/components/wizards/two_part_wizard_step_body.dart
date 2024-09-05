@@ -57,44 +57,46 @@ class TwoPartWizardStepBody extends StatelessWidget {
               Expanded(
                 child: Container(
                     color: const Color.fromARGB(33, 210, 191, 221),
-                    padding: const EdgeInsets.all(20),
                     child: LayoutBuilder(builder: (context, constraints) {
                       return SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight,
-                          ),
-                          child: Column(
-                            children: [
-                              Theme(
-                                data: ThemeData(
-                                  textTheme:
-                                      Theme.of(context).textTheme.copyWith(
-                                            bodySmall: const TextStyle(
-                                                color: Colors.white),
-                                            bodyMedium: const TextStyle(
-                                                color: Colors.white),
-                                            bodyLarge: const TextStyle(
-                                                color: Colors.white),
-                                            labelSmall: const TextStyle(
-                                                color: Colors.white),
-                                            labelMedium: const TextStyle(
-                                                color: Colors.white),
-                                            labelLarge: const TextStyle(
-                                                color: Colors.white),
-                                            displaySmall: const TextStyle(
-                                                color: Colors.white),
-                                            displayMedium: const TextStyle(
-                                                color: Colors.white),
-                                            displayLarge: const TextStyle(
-                                                color: Colors.white),
-                                          ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight,
+                            ),
+                            child: Column(
+                              children: [
+                                Theme(
+                                  data: ThemeData(
+                                    textTheme:
+                                        Theme.of(context).textTheme.copyWith(
+                                              bodySmall: const TextStyle(
+                                                  color: Colors.white),
+                                              bodyMedium: const TextStyle(
+                                                  color: Colors.white),
+                                              bodyLarge: const TextStyle(
+                                                  color: Colors.white),
+                                              labelSmall: const TextStyle(
+                                                  color: Colors.white),
+                                              labelMedium: const TextStyle(
+                                                  color: Colors.white),
+                                              labelLarge: const TextStyle(
+                                                  color: Colors.white),
+                                              displaySmall: const TextStyle(
+                                                  color: Colors.white),
+                                              displayMedium: const TextStyle(
+                                                  color: Colors.white),
+                                              displayLarge: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                  ),
+                                  child: MarkdownBody(
+                                    data: "# $stepTitle\n\n$stepHelperText",
+                                  ),
                                 ),
-                                child: MarkdownBody(
-                                  data: "# $stepTitle\n\n$stepHelperText",
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -104,25 +106,28 @@ class TwoPartWizardStepBody extends StatelessWidget {
               Expanded(
                 child: Container(
                   color: const Color.fromARGB(65, 39, 39, 39),
-                  padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
                       Expanded(
                           child: LayoutBuilder(builder: (context, constraints) {
                         return SingleChildScrollView(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: constraints.maxHeight,
-                            ),
-                            child: Column(
-                              children: [...contentChildren],
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
+                              ),
+                              child: Column(
+                                children: [...contentChildren],
+                              ),
                             ),
                           ),
                         );
                       })),
                       if (footerWidget != null) footerWidget!,
                       Padding(
-                        padding: const EdgeInsets.all(30.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 50.0),
                         child: Row(
                           children: [
                             CustomButton(
