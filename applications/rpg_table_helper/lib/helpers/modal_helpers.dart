@@ -318,6 +318,7 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
   BoxShadow? shadow,
   SystemUiOverlayStyle? overlayStyle,
   double? closeProgressThreshold,
+  GlobalKey<NavigatorState>? overrideNavigatorKey,
 }) async {
   assert(debugCheckHasMediaQuery(context));
   final hasMaterialLocalizations =
@@ -331,7 +332,7 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
   //     .getService<INavigationService>()
   //     .getNavigationKeys()[TabItem.search]!.currentState!; // TODO this was TabItem.base...
   // var nav = Navigator.of(context);
-  var nav = navigatorKey.currentState!;
+  var nav = overrideNavigatorKey?.currentState ?? navigatorKey.currentState!;
 
   final result = await nav.push(
     CupertinoModalBottomSheetRoute<T>(
