@@ -17,9 +17,14 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextField(
+        minLines: keyboardType == TextInputType.multiline ? 5 : null,
+        maxLines: keyboardType == TextInputType.multiline ? 5 : null,
         keyboardType: keyboardType,
+        enableSuggestions: true,
+        scribbleEnabled: false,
         decoration: InputDecoration(
           labelText: labelText, // TODO localize
+          alignLabelWithHint: true,
           border: const OutlineInputBorder(),
           hintStyle: Theme.of(context)
               .textTheme

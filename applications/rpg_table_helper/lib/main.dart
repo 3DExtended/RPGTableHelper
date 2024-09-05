@@ -33,7 +33,6 @@ class _MyAppState extends State<MyApp> {
           title: 'Flutter Demo',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: navigatorKey,
           darkTheme: ThemeData.dark(),
           themeMode: ThemeMode.dark,
           theme: ThemeData(
@@ -45,6 +44,7 @@ class _MyAppState extends State<MyApp> {
               size: 16,
             ),
           ),
+          navigatorKey: navigatorKey,
           initialRoute: widget.initialRoute ?? AuthorizedScreenWrapper.route,
           onGenerateRoute: (RouteSettings settings) {
             // add all routes which are accessible without authorization
