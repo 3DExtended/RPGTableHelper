@@ -19,21 +19,39 @@ void main() {
                 name: 'Iron Ore',
                 categoryId: 'cat1',
                 baseCurrencyPrice: 10,
-                placeOfFindingIds: ['place1'],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "place1",
+                      patchSize:
+                          DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
+                      diceChallenge: 3)
+                ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: 'item2',
                 name: 'Wood',
                 categoryId: 'cat1',
                 baseCurrencyPrice: 5,
-                placeOfFindingIds: ['place1'],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "place1",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 10, modifier: 7),
+                      diceChallenge: 3)
+                ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: 'item3',
                 name: 'Iron Sword',
                 categoryId: 'cat2',
                 baseCurrencyPrice: 50,
-                placeOfFindingIds: ['place2'],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "place2",
+                      patchSize:
+                          DiceRoll(numDice: 3, diceSides: 6, modifier: 1),
+                      diceChallenge: 3)
+                ],
                 description: "Eine Beschreibung"),
           ],
           placesOfFindings: [],
@@ -196,14 +214,14 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
           characterStatsDefinition: CharacterStatsDefinition(
@@ -253,14 +271,14 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
           characterStatsDefinition: CharacterStatsDefinition(
@@ -314,21 +332,21 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item3 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid3',
           name: 'Potion',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2, item3],
           characterStatsDefinition: CharacterStatsDefinition(
@@ -386,14 +404,14 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
           characterStatsDefinition: CharacterStatsDefinition(
@@ -445,14 +463,14 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
           characterStatsDefinition: CharacterStatsDefinition(
@@ -504,14 +522,14 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
           characterStatsDefinition: CharacterStatsDefinition(
@@ -571,14 +589,14 @@ void main() {
           name: 'Sword',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var item2 = RpgItem(
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
           baseCurrencyPrice: 0,
           categoryId: "",
-          placeOfFindingIds: null);
+          placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
           characterStatsDefinition: CharacterStatsDefinition(

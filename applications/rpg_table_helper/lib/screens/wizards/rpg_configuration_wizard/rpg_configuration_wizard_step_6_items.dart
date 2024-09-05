@@ -144,11 +144,13 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                         ),
                         LabeledRow(
                           label: "Fundort:", // TODO localize
-                          text: item.value.placeOfFindingIds != null &&
-                                  item.value.placeOfFindingIds!.isNotEmpty
-                              ? item.value.placeOfFindingIds!
+                          // TODO append difficulty and patchSize
+                          text: item.value.placeOfFindings.isNotEmpty
+                              ? item.value.placeOfFindings
                                   .map((plid) =>
-                                      getPlaceOfFinding(plid)?.name ?? "")
+                                      getPlaceOfFinding(plid.placeOfFindingId)
+                                          ?.name ??
+                                      "")
                                   .join(", ")
                               : "N/A",
                         ),
@@ -182,11 +184,11 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
             await showCreateOrEditItemModal(
                 context,
                 RpgItem(
-                  baseCurrencyPrice: 0,
+                  baseCurrencyPrice: 45678, // TODO remove me
                   categoryId: null,
                   description: "",
-                  name: "",
-                  placeOfFindingIds: [],
+                  name: "Neues Item", // TODO remove me
+                  placeOfFindings: [],
                   uuid: const UuidV7().generate(),
                 )).then((returnValue) => {
                   // TODO make me

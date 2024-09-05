@@ -88,35 +88,94 @@ void main() {
                 name: "Ascheveilchen",
                 categoryId: "6",
                 baseCurrencyPrice: 20000,
-                placeOfFindingIds: ["wald", "berg"],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "wald",
+                      patchSize:
+                          DiceRoll(numDice: 22, diceSides: 6, modifier: 1),
+                      diceChallenge: 2),
+                  RpgItemRarity(
+                      placeOfFindingId: "berg",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2)
+                ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: "asdfew",
                 name: "Aloe Vera",
                 categoryId: "6",
                 baseCurrencyPrice: 200300,
-                placeOfFindingIds: ["savanne", "wüste", "steppe"],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "savanne",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 10, modifier: 1),
+                      diceChallenge: 22),
+                  RpgItemRarity(
+                      placeOfFindingId: "wüste",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2),
+                  RpgItemRarity(
+                      placeOfFindingId: "steppe",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2)
+                ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: "asdeefew",
                 name: "Aurora Rose",
                 categoryId: "6",
                 baseCurrencyPrice: 2300,
-                placeOfFindingIds: ["wald", "berg", "grasland"],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "wald",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: -1),
+                      diceChallenge: 5),
+                  RpgItemRarity(
+                      placeOfFindingId: "berg",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2),
+                  RpgItemRarity(
+                      placeOfFindingId: "grasland",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2)
+                ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: "asde323efew",
                 name: "Roter Amanita Pilz",
                 categoryId: "6",
                 baseCurrencyPrice: 232100,
-                placeOfFindingIds: ["wald", "sümpfe", "höhle"],
+                placeOfFindings: [
+                  RpgItemRarity(
+                      placeOfFindingId: "wald",
+                      patchSize:
+                          DiceRoll(numDice: 1, diceSides: 20, modifier: 4),
+                      diceChallenge: 7),
+                  RpgItemRarity(
+                      placeOfFindingId: "sümpfe",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2),
+                  RpgItemRarity(
+                      placeOfFindingId: "höhle",
+                      patchSize:
+                          DiceRoll(numDice: 2, diceSides: 6, modifier: 1),
+                      diceChallenge: 2)
+                ],
                 description: "Eine Beschreibung"),
             RpgItem(
                 uuid: "Lebenslikörasdf",
                 name: "Lebenslikör",
                 categoryId: "11",
                 baseCurrencyPrice: 232133300,
-                placeOfFindingIds: null,
+                placeOfFindings: [],
                 description: "Eine Beschreibung"),
           ],
           craftingRecipes: [
@@ -143,7 +202,329 @@ void main() {
 
       // debugLog(serializedText, "uuidErrorCode");
       expect(serializedText,
-          '{"rpgName":"DnD - Marie config","allItems":[{"uuid":"asdf","name":"Ascheveilchen","description":"Eine Beschreibung","categoryId":"6","placeOfFindingIds":["wald","berg"],"baseCurrencyPrice":20000},{"uuid":"asdfew","name":"Aloe Vera","description":"Eine Beschreibung","categoryId":"6","placeOfFindingIds":["savanne","wüste","steppe"],"baseCurrencyPrice":200300},{"uuid":"asdeefew","name":"Aurora Rose","description":"Eine Beschreibung","categoryId":"6","placeOfFindingIds":["wald","berg","grasland"],"baseCurrencyPrice":2300},{"uuid":"asde323efew","name":"Roter Amanita Pilz","description":"Eine Beschreibung","categoryId":"6","placeOfFindingIds":["wald","sümpfe","höhle"],"baseCurrencyPrice":232100},{"uuid":"Lebenslikörasdf","name":"Lebenslikör","description":"Eine Beschreibung","categoryId":"11","placeOfFindingIds":null,"baseCurrencyPrice":232133300}],"placesOfFindings":[{"uuid":"wald","name":"Wald"},{"uuid":"grasland","name":"Grasland"},{"uuid":"berg","name":"Berg"},{"uuid":"steppe","name":"Steppe"},{"uuid":"wüste","name":"Wüste"},{"uuid":"savanne","name":"Savanne"},{"uuid":"sümpfe","name":"Sümpfe"},{"uuid":"höhle","name":"Höhle"}],"itemCategories":[{"uuid":"0","name":"Kleidung","subCategories":[{"uuid":"01","name":"Rüstung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"02","name":"Accessoire","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"6","name":"Zutaten","subCategories":[],"hideInInventoryFilters":false},{"uuid":"1","name":"Trank","subCategories":[{"uuid":"11","name":"Heilung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"12","name":"Gift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"13","name":"Gegengift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"14","name":"Buff","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"2","name":"Waffen","subCategories":[{"uuid":"21","name":"Finesse","subCategories":[],"hideInInventoryFilters":false},{"uuid":"22","name":"Fernkampf","subCategories":[],"hideInInventoryFilters":false},{"uuid":"23","name":"Magie","subCategories":[],"hideInInventoryFilters":false},{"uuid":"24","name":"Wurfwaffe","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"3","name":"Schätze","subCategories":[],"hideInInventoryFilters":false},{"uuid":"4","name":"Tools","subCategories":[],"hideInInventoryFilters":false},{"uuid":"5","name":"Sonstiges","subCategories":[],"hideInInventoryFilters":false}],"characterStatsDefinition":{"mainPlayerStat":{"name":"HP","statUuid":"5251c0bb-02ee-405b-b697-8e6ff0482983","helperText":"Lebenspunkte","valueType":"intWithMaxValue","editType":"oneTap"},"secondaryPlayerStat":{"name":"AC","statUuid":"d728a934-6b3d-4548-9fe9-53a42e88712b","helperText":"Rüstungsklasse","valueType":"int","editType":"static"},"thirdPlayerStat":{"name":"SP","statUuid":"8882935f-a3e8-42b3-9b38-0d87aa71df73","helperText":"Geschwindigkeit","valueType":"int","editType":"static"},"otherPlayerStats":[{"name":"Class","statUuid":"9ff51b8e-59a2-427f-8236-3ab6933ded5b","helperText":"The main class of your character.","valueType":"string","editType":"static"}]},"craftingRecipes":[{"recipeUuid":"123456789087654321","ingredients":[{"itemUuid":"asdfew","amountOfUsedItem":1},{"itemUuid":"asdeefew","amountOfUsedItem":1},{"itemUuid":"asde323efew","amountOfUsedItem":1}],"createdItem":{"itemUuid":"Lebenslikörasdf","amountOfUsedItem":1}}],"currencyDefinition":{"currencyTypes":[{"name":"Kupfer","multipleOfPreviousValue":null},{"name":"Silber","multipleOfPreviousValue":10},{"name":"Gold","multipleOfPreviousValue":10},{"name":"Platin","multipleOfPreviousValue":10}]}}');
+          '{"rpgName":"DnD - Marie config","allItems":[{"uuid":"asdf","name":"Ascheveilchen","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","patchSize":{"numDice":22,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"berg","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":20000},{"uuid":"asdfew","name":"Aloe Vera","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"savanne","patchSize":{"numDice":2,"diceSides":10,"modifier":1},"diceChallenge":22},{"placeOfFindingId":"wüste","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"steppe","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":200300},{"uuid":"asdeefew","name":"Aurora Rose","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","patchSize":{"numDice":2,"diceSides":6,"modifier":-1},"diceChallenge":5},{"placeOfFindingId":"berg","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"grasland","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":2300},{"uuid":"asde323efew","name":"Roter Amanita Pilz","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","patchSize":{"numDice":1,"diceSides":20,"modifier":4},"diceChallenge":7},{"placeOfFindingId":"sümpfe","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2},{"placeOfFindingId":"höhle","patchSize":{"numDice":2,"diceSides":6,"modifier":1},"diceChallenge":2}],"baseCurrencyPrice":232100},{"uuid":"Lebenslikörasdf","name":"Lebenslikör","description":"Eine Beschreibung","categoryId":"11","placeOfFindings":[],"baseCurrencyPrice":232133300}],"placesOfFindings":[{"uuid":"wald","name":"Wald"},{"uuid":"grasland","name":"Grasland"},{"uuid":"berg","name":"Berg"},{"uuid":"steppe","name":"Steppe"},{"uuid":"wüste","name":"Wüste"},{"uuid":"savanne","name":"Savanne"},{"uuid":"sümpfe","name":"Sümpfe"},{"uuid":"höhle","name":"Höhle"}],"itemCategories":[{"uuid":"0","name":"Kleidung","subCategories":[{"uuid":"01","name":"Rüstung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"02","name":"Accessoire","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"6","name":"Zutaten","subCategories":[],"hideInInventoryFilters":false},{"uuid":"1","name":"Trank","subCategories":[{"uuid":"11","name":"Heilung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"12","name":"Gift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"13","name":"Gegengift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"14","name":"Buff","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"2","name":"Waffen","subCategories":[{"uuid":"21","name":"Finesse","subCategories":[],"hideInInventoryFilters":false},{"uuid":"22","name":"Fernkampf","subCategories":[],"hideInInventoryFilters":false},{"uuid":"23","name":"Magie","subCategories":[],"hideInInventoryFilters":false},{"uuid":"24","name":"Wurfwaffe","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"3","name":"Schätze","subCategories":[],"hideInInventoryFilters":false},{"uuid":"4","name":"Tools","subCategories":[],"hideInInventoryFilters":false},{"uuid":"5","name":"Sonstiges","subCategories":[],"hideInInventoryFilters":false}],"characterStatsDefinition":{"mainPlayerStat":{"name":"HP","statUuid":"5251c0bb-02ee-405b-b697-8e6ff0482983","helperText":"Lebenspunkte","valueType":"intWithMaxValue","editType":"oneTap"},"secondaryPlayerStat":{"name":"AC","statUuid":"d728a934-6b3d-4548-9fe9-53a42e88712b","helperText":"Rüstungsklasse","valueType":"int","editType":"static"},"thirdPlayerStat":{"name":"SP","statUuid":"8882935f-a3e8-42b3-9b38-0d87aa71df73","helperText":"Geschwindigkeit","valueType":"int","editType":"static"},"otherPlayerStats":[{"name":"Class","statUuid":"9ff51b8e-59a2-427f-8236-3ab6933ded5b","helperText":"The main class of your character.","valueType":"string","editType":"static"}]},"craftingRecipes":[{"recipeUuid":"123456789087654321","ingredients":[{"itemUuid":"asdfew","amountOfUsedItem":1},{"itemUuid":"asdeefew","amountOfUsedItem":1},{"itemUuid":"asde323efew","amountOfUsedItem":1}],"createdItem":{"itemUuid":"Lebenslikörasdf","amountOfUsedItem":1}}],"currencyDefinition":{"currencyTypes":[{"name":"Kupfer","multipleOfPreviousValue":null},{"name":"Silber","multipleOfPreviousValue":10},{"name":"Gold","multipleOfPreviousValue":10},{"name":"Platin","multipleOfPreviousValue":10}]}}');
+    });
+  });
+
+  group('ItemCategory flattenCategoriesRecursive', () {
+    late ItemCategory categoryA;
+    late ItemCategory categoryB;
+    late ItemCategory categoryA1;
+    late ItemCategory categoryA2;
+    late ItemCategory categoryB1;
+
+    setUp(() {
+      // Setup sample categories
+      categoryA1 = ItemCategory(
+        uuid: '1-1',
+        name: 'Category A1',
+        subCategories: [],
+      );
+
+      categoryA2 = ItemCategory(
+        uuid: '1-2',
+        name: 'Category A2',
+        subCategories: [],
+      );
+
+      categoryA = ItemCategory(
+        uuid: '1',
+        name: 'Category A',
+        subCategories: [categoryA1, categoryA2],
+      );
+
+      categoryB1 = ItemCategory(
+        uuid: '2-1',
+        name: 'Category B1',
+        subCategories: [],
+      );
+
+      categoryB = ItemCategory(
+        uuid: '2',
+        name: 'Category B',
+        subCategories: [categoryB1],
+      );
+    });
+
+    test('should flatten categories without combining names', () {
+      // Arrange
+      final categories = [categoryA, categoryB];
+
+      // Act
+      final result = ItemCategory.flattenCategoriesRecursive(
+        categories: categories,
+        combineCategoryNames: false,
+      );
+
+      // Assert
+      expect(result.length, equals(5));
+      expect(result[0].name, equals('Category A'));
+      expect(result[1].name, equals('Category A1'));
+      expect(result[2].name, equals('Category A2'));
+      expect(result[3].name, equals('Category B'));
+      expect(result[4].name, equals('Category B1'));
+    });
+
+    test('should flatten categories with combined names', () {
+      // Arrange
+      final categories = [categoryA, categoryB];
+
+      // Act
+      final result = ItemCategory.flattenCategoriesRecursive(
+        categories: categories,
+        combineCategoryNames: true,
+      );
+
+      // Assert
+      expect(result.length, equals(5));
+      expect(result[0].name, equals('Category A'));
+      expect(result[1].name, equals('Category A > Category A1'));
+      expect(result[2].name, equals('Category A > Category A2'));
+      expect(result[3].name, equals('Category B'));
+      expect(result[4].name, equals('Category B > Category B1'));
+    });
+
+    test('should return empty list when no categories are passed', () {
+      // Act
+      final result = ItemCategory.flattenCategoriesRecursive(categories: []);
+
+      // Assert
+      expect(result, isEmpty);
+    });
+
+    test('should flatten deeply nested categories', () {
+      // Arrange
+      final deeplyNestedCategory = ItemCategory(
+        uuid: '1',
+        name: 'Category A',
+        subCategories: [
+          ItemCategory(
+            uuid: '1-1',
+            name: 'Category A1',
+            subCategories: [
+              ItemCategory(
+                uuid: '1-1-1',
+                name: 'Category A1A',
+                subCategories: [],
+              )
+            ],
+          )
+        ],
+      );
+
+      // Act
+      final result = ItemCategory.flattenCategoriesRecursive(
+        categories: [deeplyNestedCategory],
+        combineCategoryNames: true,
+      );
+
+      // Assert
+      expect(result.length, equals(3));
+      expect(result[0].name, equals('Category A'));
+      expect(result[1].name, equals('Category A > Category A1'));
+      expect(result[2].name, equals('Category A > Category A1 > Category A1A'));
+    });
+  });
+
+  group('CurrencyDefinition', () {
+    test('valueOfItemForDefinition returns correct result for simple case', () {
+      final currencyDefinition = CurrencyDefinition(
+        currencyTypes: [
+          CurrencyType(name: "", multipleOfPreviousValue: 1),
+          CurrencyType(name: "", multipleOfPreviousValue: 10),
+          CurrencyType(name: "", multipleOfPreviousValue: 10),
+        ],
+      );
+
+      final result =
+          CurrencyDefinition.valueOfItemForDefinition(currencyDefinition, 155);
+      expect(result, [1, 5, 5]); // Expecting 1 * 10 * 10 + 5 * 10 + 5 * 1 = 155
+    });
+
+    test('valueOfItemForDefinition returns correct result when no remainder',
+        () {
+      final currencyDefinition = CurrencyDefinition(
+        currencyTypes: [
+          CurrencyType(name: "", multipleOfPreviousValue: 1),
+          CurrencyType(name: "", multipleOfPreviousValue: 10),
+          CurrencyType(name: "", multipleOfPreviousValue: 10),
+        ],
+      );
+
+      final result =
+          CurrencyDefinition.valueOfItemForDefinition(currencyDefinition, 250);
+      expect(result, [2, 5, 0]); // Expecting 2 * 100 + 5 * 10 = 250
+    });
+
+    test(
+        'valueOfItemForDefinition returns correct result when base currency only',
+        () {
+      final currencyDefinition = CurrencyDefinition(
+        currencyTypes: [
+          CurrencyType(name: "", multipleOfPreviousValue: 1),
+        ],
+      );
+
+      final result =
+          CurrencyDefinition.valueOfItemForDefinition(currencyDefinition, 42);
+      expect(result, [42]); // Only base currency should be used
+    });
+
+    test('valueOfItemForDefinition returns correct result for large values',
+        () {
+      final currencyDefinition = CurrencyDefinition(
+        currencyTypes: [
+          CurrencyType(name: "", multipleOfPreviousValue: 1),
+          CurrencyType(name: "", multipleOfPreviousValue: 5),
+          CurrencyType(name: "", multipleOfPreviousValue: 2),
+        ],
+      );
+
+      final result =
+          CurrencyDefinition.valueOfItemForDefinition(currencyDefinition, 387);
+      expect(result, [38, 1, 2]); // Expecting 3 * 2 * 5 + 4 * 5 + 7 * 1 = 387
+    });
+
+    test('valueOfItemForDefinition handles zero base currency value', () {
+      final currencyDefinition = CurrencyDefinition(
+        currencyTypes: [
+          CurrencyType(name: "", multipleOfPreviousValue: 1),
+          CurrencyType(name: "", multipleOfPreviousValue: 10),
+        ],
+      );
+
+      final result =
+          CurrencyDefinition.valueOfItemForDefinition(currencyDefinition, 0);
+      expect(result, [0, 0]); // Expecting 0 for both currencies
+    });
+  });
+  group('DiceRoll.parse', () {
+    test('parses "1D10+5" correctly', () {
+      DiceRoll roll = DiceRoll.parse("1D10+5");
+      expect(roll.numDice, equals(1));
+      expect(roll.diceSides, equals(10));
+      expect(roll.modifier, equals(5));
+    });
+
+    test('parses "2D6-1" correctly', () {
+      DiceRoll roll = DiceRoll.parse("2D6-1");
+      expect(roll.numDice, equals(2));
+      expect(roll.diceSides, equals(6));
+      expect(roll.modifier, equals(-1));
+    });
+
+    test('parses "8D4" without a modifier correctly', () {
+      DiceRoll roll = DiceRoll.parse("8D4");
+      expect(roll.numDice, equals(8));
+      expect(roll.diceSides, equals(4));
+      expect(roll.modifier, equals(0)); // No modifier means it defaults to 0
+    });
+
+    test('parses "D20" with implicit 1 dice correctly', () {
+      DiceRoll roll = DiceRoll.parse("D20");
+      expect(roll.numDice, equals(1)); // Implicit 1 dice
+      expect(roll.diceSides, equals(20));
+      expect(roll.modifier, equals(0)); // No modifier means it defaults to 0
+    });
+
+    test('parses "1W10+5" correctly', () {
+      DiceRoll roll = DiceRoll.parse("1W10+5");
+      expect(roll.numDice, equals(1));
+      expect(roll.diceSides, equals(10));
+      expect(roll.modifier, equals(5));
+    });
+
+    test('parses "2W6-1" correctly', () {
+      DiceRoll roll = DiceRoll.parse("2W6-1");
+      expect(roll.numDice, equals(2));
+      expect(roll.diceSides, equals(6));
+      expect(roll.modifier, equals(-1));
+    });
+
+    test('parses "8W4" without a modifier correctly', () {
+      DiceRoll roll = DiceRoll.parse("8W4");
+      expect(roll.numDice, equals(8));
+      expect(roll.diceSides, equals(4));
+      expect(roll.modifier, equals(0)); // No modifier means it defaults to 0
+    });
+
+    test('parses "W20" with implicit 1 dice correctly', () {
+      DiceRoll roll = DiceRoll.parse("W20");
+      expect(roll.numDice, equals(1)); // Implicit 1 dice
+      expect(roll.diceSides, equals(20));
+      expect(roll.modifier, equals(0)); // No modifier means it defaults to 0
+    });
+
+    test('throws FormatException for invalid input', () {
+      expect(() => DiceRoll.parse("Invalid"), throwsFormatException);
+      expect(() => DiceRoll.parse("2D"), throwsFormatException);
+      expect(() => DiceRoll.parse("D"), throwsFormatException);
+      expect(() => DiceRoll.parse("W"), throwsFormatException);
+      expect(() => DiceRoll.parse("2W"), throwsFormatException);
+    });
+  });
+
+  group('DiceRoll.roll', () {
+    test('rolls a dice with no modifier and number of dice 1 correctly', () {
+      DiceRoll roll = DiceRoll(numDice: 1, diceSides: 6, modifier: 0);
+
+      for (int i = 0; i < 100; i++) {
+        int result = roll.roll();
+        expect(result, inInclusiveRange(1, 6));
+      }
+    });
+
+    test('rolls multiple dice with a positive modifier', () {
+      DiceRoll roll = DiceRoll(numDice: 2, diceSides: 6, modifier: 3);
+
+      for (int i = 0; i < 100; i++) {
+        int result = roll.roll();
+        expect(
+            result,
+            inInclusiveRange(
+                5, 15)); // 2D6 minimum is 2, max is 12, plus 3 modifier
+      }
+    });
+
+    test('rolls multiple dice with a negative modifier', () {
+      DiceRoll roll = DiceRoll(numDice: 3, diceSides: 4, modifier: -2);
+
+      for (int i = 0; i < 100; i++) {
+        int result = roll.roll();
+        expect(result,
+            inInclusiveRange(1, 10)); // 3D4 min is 3, max is 12, minus 2
+      }
+    });
+
+    test('handles rolls of single dice with large number of sides', () {
+      DiceRoll roll = DiceRoll(numDice: 1, diceSides: 100, modifier: 0);
+
+      for (int i = 0; i < 100; i++) {
+        int result = roll.roll();
+        expect(result, inInclusiveRange(1, 100)); // 1D100 min is 1, max is 100
+      }
+    });
+  });
+
+  group('DiceRoll.toString', () {
+    test('formats correctly for positive modifier', () {
+      DiceRoll roll = DiceRoll(numDice: 1, diceSides: 10, modifier: 5);
+      expect(roll.toString(), equals('1 D10 +5'));
+    });
+
+    test('formats correctly for negative modifier', () {
+      DiceRoll roll = DiceRoll(numDice: 2, diceSides: 6, modifier: -1);
+      expect(roll.toString(), equals('2 D6 -1'));
+    });
+
+    test('formats correctly without modifier', () {
+      DiceRoll roll = DiceRoll(numDice: 8, diceSides: 4, modifier: 0);
+      expect(roll.toString(), equals('8 D4 +0'));
+    });
+
+    test('formats correctly for single dice without explicit number', () {
+      DiceRoll roll = DiceRoll(numDice: 1, diceSides: 20, modifier: 0);
+      expect(roll.toString(), equals('1 D20 +0'));
     });
   });
 }

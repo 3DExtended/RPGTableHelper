@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -145,11 +147,6 @@ class RpgConfigurationModel {
             name: "Tools",
             subCategories: [],
           ),
-          ItemCategory(
-            uuid: "06996121-b48d-4660-91f3-540bc91b0186",
-            name: "Sonstiges",
-            subCategories: [],
-          ),
         ],
         allItems: [
           RpgItem(
@@ -157,7 +154,7 @@ class RpgConfigurationModel {
             name: "Kl. Heiltrank",
             categoryId: "79773521-2fd6-4aff-942e-87b9e4bb6599",
             baseCurrencyPrice: 10000,
-            placeOfFindingIds: [],
+            placeOfFindings: [],
             description:
                 "1D4 Heilung bei Konsum\n\nEin kleiner Heiltrank der auf natürliche (und nicht magische) Weise Lebenspunkte wiederherstellt.\nDieser Gegenstand ist fast unerlässlich für Kämpfe!",
           ),
@@ -166,9 +163,17 @@ class RpgConfigurationModel {
               name: "Rote Vitus Blüte",
               categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
               baseCurrencyPrice: 100,
-              placeOfFindingIds: [
-                "5b9690c1-afc9-436d-8912-d223c440eb6a",
-                "4a9abc76-df97-4790-9abe-cee5f6bec8a7",
+              placeOfFindings: [
+                RpgItemRarity(
+                  placeOfFindingId: "5b9690c1-afc9-436d-8912-d223c440eb6a",
+                  patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
+                  diceChallenge: 15,
+                ),
+                RpgItemRarity(
+                  placeOfFindingId: "4a9abc76-df97-4790-9abe-cee5f6bec8a7",
+                  patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
+                  diceChallenge: 22,
+                ),
               ],
               description:
                   "Ein Blütenblatt der Roten Vitus Blüte\n\nSehr fragil und muss mit Vorsicht geerntet werden!"),
@@ -177,7 +182,7 @@ class RpgConfigurationModel {
             name: "Fuchsschwanz",
             categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
             baseCurrencyPrice: 777777,
-            placeOfFindingIds: [],
+            placeOfFindings: [],
             description: "Der Schwanz eines Fuchses",
           ),
         ],
@@ -225,18 +230,29 @@ class ItemCategory {
 
   Map<String, dynamic> toJson() => _$ItemCategoryToJson(this);
 
-  static List<ItemCategory> flattenitemCategories(
-      List<ItemCategory> categories) {
+  static List<ItemCategory> flattenCategoriesRecursive({
+    required List<ItemCategory> categories,
+    bool combineCategoryNames = false,
+  }) {
     List<ItemCategory> flattenCategorieList = [];
-    var queue = categories.toList();
 
-    while (queue.isNotEmpty) {
-      var pop = queue.removeLast();
-      flattenCategorieList.add(pop);
+    void flatten(ItemCategory category, {String namePrefix = ""}) {
+      flattenCategorieList
+          .add(category.copyWith(name: namePrefix + category.name));
 
-      if (pop.subCategories.isNotEmpty) {
-        queue.addAll(pop.subCategories);
+      // Recursively add all subcategories
+      for (var subCategory in category.subCategories) {
+        if (combineCategoryNames) {
+          flatten(subCategory, namePrefix: "${namePrefix + category.name} > ");
+        } else {
+          flatten(subCategory, namePrefix: "");
+        }
       }
+    }
+
+    // Start the recursion for each category in the list
+    for (var category in categories) {
+      flatten(category);
     }
 
     return flattenCategorieList;
@@ -271,6 +287,38 @@ class CurrencyDefinition {
       _$CurrencyDefinitionFromJson(json);
 
   Map<String, dynamic> toJson() => _$CurrencyDefinitionToJson(this);
+
+  static List<int> valueOfItemForDefinition(
+      CurrencyDefinition def, int valueInBaseCurrencyPrice) {
+    var currencySetting = def.currencyTypes;
+
+    var moneyPricesAsMultipleOfBasePrice = [1];
+    for (var i = 1; i < currencySetting.length; i++) {
+      moneyPricesAsMultipleOfBasePrice.add(
+          currencySetting[i].multipleOfPreviousValue! *
+              moneyPricesAsMultipleOfBasePrice.last);
+    }
+
+    var reversedmoneyPricesAsMultipleOfBasePrice =
+        moneyPricesAsMultipleOfBasePrice.reversed.toList();
+
+    var valueLeft = valueInBaseCurrencyPrice;
+    List<int> result = [];
+
+    for (var i = 0; i < reversedmoneyPricesAsMultipleOfBasePrice.length; i++) {
+      var divisionWithLeftOver =
+          valueLeft ~/ reversedmoneyPricesAsMultipleOfBasePrice[i];
+      if (divisionWithLeftOver > 0) {
+        valueLeft -=
+            divisionWithLeftOver * reversedmoneyPricesAsMultipleOfBasePrice[i];
+        result.add(divisionWithLeftOver);
+      } else {
+        result.add(0);
+      }
+    }
+
+    return result;
+  }
 }
 
 @JsonSerializable()
@@ -384,13 +432,32 @@ class PlaceOfFinding {
 
 @JsonSerializable()
 @CopyWith()
+class RpgItemRarity {
+  final String placeOfFindingId;
+  final DiceRoll patchSize;
+  final int diceChallenge;
+
+  factory RpgItemRarity.fromJson(Map<String, dynamic> json) =>
+      _$RpgItemRarityFromJson(json);
+
+  RpgItemRarity({
+    required this.placeOfFindingId,
+    required this.patchSize,
+    required this.diceChallenge,
+  });
+
+  Map<String, dynamic> toJson() => _$RpgItemRarityToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
 class RpgItem {
   final String uuid;
   final String name;
   final String description;
   final String? categoryId;
 
-  final List<String>? placeOfFindingIds;
+  final List<RpgItemRarity> placeOfFindings;
 
   /// price without looking at the exchange rates. always a multiple of the smalles currency definition
   final int baseCurrencyPrice;
@@ -404,8 +471,67 @@ class RpgItem {
     required this.categoryId,
     required this.description,
     required this.baseCurrencyPrice,
-    required this.placeOfFindingIds,
+    required this.placeOfFindings,
   });
 
   Map<String, dynamic> toJson() => _$RpgItemToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
+class DiceRoll {
+  int numDice; // Number of dice
+  int diceSides; // Type of dice (e.g., D10 -> 10 sides)
+  int modifier; // Modifier added to the roll (can be positive or negative)
+
+  DiceRoll({
+    required this.numDice,
+    required this.diceSides,
+    required this.modifier,
+  });
+  Map<String, dynamic> toJson() => _$DiceRollToJson(this);
+
+  factory DiceRoll.fromJson(Map<String, dynamic> json) =>
+      _$DiceRollFromJson(json);
+
+  // Parse a string like "1D10+5" or "2D6-1" or "2W6+1" into a DiceRoll object
+  factory DiceRoll.parse(String input) {
+    final diceRegex =
+        RegExp(r'(\d*)[DW](\d+)([+-]?\d+)?', caseSensitive: false);
+    final match = diceRegex.firstMatch(input);
+
+    if (match == null) {
+      throw const FormatException('Invalid dice roll format');
+    }
+
+    final numDiceStr = match.group(1);
+    final numDice =
+        numDiceStr == null || numDiceStr.isEmpty ? 1 : int.parse(numDiceStr);
+
+    final diceSides = int.parse(match.group(2)!);
+
+    final modifierStr = match.group(3);
+    final modifier = modifierStr != null ? int.parse(modifierStr) : 0;
+
+    return DiceRoll(
+      numDice: numDice,
+      diceSides: diceSides,
+      modifier: modifier,
+    );
+  }
+
+  @override
+  String toString() {
+    return '$numDice D$diceSides ${modifier >= 0 ? '+' : ''}$modifier';
+  }
+
+  // Roll the dice and calculate the total value
+  int roll() {
+    final random = Random();
+    int total = 0;
+    for (int i = 0; i < numDice; i++) {
+      total += random.nextInt(diceSides) + 1;
+    }
+    return total + modifier;
+  }
 }

@@ -109,8 +109,7 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                       child: CustomTextField(
                         keyboardType: TextInputType.text,
 
-                        labelText:
-                            "Name der nächst größeren Währung:", // TODO localize
+                        labelText: "Fundort #${e.key + 1}", // TODO localize
                         textEditingController: e.value.$2,
                       ),
                     ),
