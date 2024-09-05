@@ -190,17 +190,15 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                   name: "Neues Item", // TODO remove me
                   placeOfFindings: [],
                   uuid: const UuidV7().generate(),
-                )).then((returnValue) => {
-                  // TODO make me
-                  // setState(() {
-                  //   addNewItemCategory(_ItemCategoryEdit.fromItemCategory(
-                  //       ItemCategory(
-                  //           uuid: const UuidV7().generate(),
-                  //           name: "Neu",
-                  //           subCategories: []),
-                  //       _updateStateForFormValidation));
-                  // });
-                });
+                )).then((returnValue) {
+              if (returnValue == null) {
+                return;
+              }
+
+              setState(() {
+                _items.add(returnValue);
+              });
+            });
           },
           icon: Theme(
               data: ThemeData(

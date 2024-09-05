@@ -16,7 +16,7 @@ Future<RpgItem?> showCreateOrEditItemModal(
   RpgItem itemToEdit,
 ) async {
   // show error to user
-  await customShowCupertinoModalBottomSheet<RpgItem>(
+  return await customShowCupertinoModalBottomSheet<RpgItem>(
     isDismissible: false,
     expand: true,
     closeProgressThreshold: -50000,
@@ -26,7 +26,6 @@ Future<RpgItem?> showCreateOrEditItemModal(
     // barrierColor: const Color.fromARGB(20, 201, 201, 201),
     builder: (context) => CreateOrEditItemModalContent(itemToEdit: itemToEdit),
   );
-  return null;
 }
 
 class CreateOrEditItemModalContent extends ConsumerStatefulWidget {
