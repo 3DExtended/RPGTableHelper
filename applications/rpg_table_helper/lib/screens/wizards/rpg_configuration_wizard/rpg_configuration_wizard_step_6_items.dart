@@ -236,7 +236,6 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
   String getItemCategoryPathName(List<ItemCategory>? path) {
     if (path == null) return "N/A";
 
-    var result = "";
     return path.map((c) => c.name).join(" > ");
   }
 

@@ -250,7 +250,26 @@ class _CreateOrEditItemModalContentState
   }
 
   int getBaseCurrencyPrice() {
-    // TODO write me!
-    return 100;
+    int result = 0;
+
+    for (var i = 0; i < currencyControllers.length; i++) {
+      var controller = currencyControllers[i];
+      var currencyType =
+          _currencyDefinition!.currencyTypes.reversed.toList()[i];
+
+      var parsedUserInput = int.tryParse(controller.text);
+      assert(parsedUserInput != null, "Should have been validated beforehand");
+
+      result += parsedUserInput!;
+
+      if (i != currencyControllers.length - 1) {
+        assert(currencyType.multipleOfPreviousValue != null,
+            "Required for all entries but the last (base) one");
+
+        result *= currencyType.multipleOfPreviousValue!;
+      }
+    }
+
+    return result;
   }
 }
