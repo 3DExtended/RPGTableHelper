@@ -302,6 +302,7 @@ class _CreateOrEditItemModalContentState
                                               label:
                                                   'Fundort #${tuple.key + 1}', // TODO localize
                                               items: _allPlacesOfFindings
+                                                  .sortBy((p) => p.name)
                                                   .map((placeOfFinding) {
                                                 return DropdownMenuItem<
                                                     String?>(

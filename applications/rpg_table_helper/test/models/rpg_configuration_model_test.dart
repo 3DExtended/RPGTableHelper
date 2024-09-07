@@ -480,12 +480,12 @@ void main() {
 
     test('formats correctly without modifier', () {
       DiceRoll roll = DiceRoll(numDice: 8, diceSides: 4, modifier: 0);
-      expect(roll.toString(), equals('8D4+0'));
+      expect(roll.toString(), equals('8D4'));
     });
 
     test('formats correctly for single dice without explicit number', () {
       DiceRoll roll = DiceRoll(numDice: 1, diceSides: 20, modifier: 0);
-      expect(roll.toString(), equals('1D20+0'));
+      expect(roll.toString(), equals('1D20'));
     });
   });
   group('DiceRoll.parse with random spaces and characters', () {

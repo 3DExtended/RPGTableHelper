@@ -201,10 +201,10 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
             await showCreateOrEditItemModal(
                 context,
                 RpgItem(
-                  baseCurrencyPrice: 45678, // TODO remove me
+                  baseCurrencyPrice: 0,
                   categoryId: null,
                   description: "",
-                  name: "Neues Item", // TODO remove me
+                  name: "",
                   placeOfFindings: [],
                   patchSize: null,
                   uuid: const UuidV7().generate(),

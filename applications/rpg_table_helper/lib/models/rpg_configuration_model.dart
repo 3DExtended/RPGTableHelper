@@ -113,7 +113,7 @@ class RpgConfigurationModel {
           ),
           ItemCategory(
             uuid: "f9cc6513-36b4-4e4e-b3ba-dd9f40fca078",
-            name: "Waffen",
+            name: "Waffe",
             subCategories: [
               ItemCategory(
                 uuid: "1666d606-b839-4664-930d-2f51b552111c",
@@ -139,12 +139,12 @@ class RpgConfigurationModel {
           ),
           ItemCategory(
             uuid: "c7690cb0-39b4-45d2-b7c5-75b6e8eeb88f",
-            name: "Schätze",
+            name: "Schatz",
             subCategories: [],
           ),
           ItemCategory(
             uuid: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
-            name: "Tools",
+            name: "Tool",
             subCategories: [],
           ),
         ],
@@ -538,7 +538,8 @@ class DiceRoll {
 
   @override
   String toString() {
-    return '${numDice}D$diceSides${modifier >= 0 ? '+' : ''}$modifier';
+    var modString = modifier == 0 ? "" : modifier;
+    return '${numDice}D$diceSides${modifier > 0 ? '+' : ''}$modString';
   }
 
   // Roll the dice and calculate the total value
