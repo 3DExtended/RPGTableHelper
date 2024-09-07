@@ -82,7 +82,7 @@ class RpgConfigurationModel {
           ),
           ItemCategory(
             uuid: "b895a30a-2c0a-4aba-8629-9a363e405281",
-            name: "Zutaten",
+            name: "Zutat",
             subCategories: [],
           ),
           ItemCategory(

@@ -67,6 +67,7 @@ void main() {
               ),
             ),
             home: Scaffold(
+              resizeToAvoidBottomInset: false,
               body: Builder(builder: (context) {
                 return ElevatedButton(
                     onPressed: () async {

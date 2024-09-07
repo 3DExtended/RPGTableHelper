@@ -95,6 +95,11 @@ class TwoPartWizardStepBody extends StatelessWidget {
                                     data: "# $stepTitle\n\n$stepHelperText",
                                   ),
                                 ),
+                                SizedBox(
+                                    height: EdgeInsets.fromViewPadding(
+                                            View.of(context).viewInsets,
+                                            View.of(context).devicePixelRatio)
+                                        .bottom),
                               ],
                             ),
                           ),
@@ -118,7 +123,14 @@ class TwoPartWizardStepBody extends StatelessWidget {
                                 minHeight: constraints.maxHeight,
                               ),
                               child: Column(
-                                children: [...contentChildren],
+                                children: [
+                                  ...contentChildren,
+                                  SizedBox(
+                                      height: EdgeInsets.fromViewPadding(
+                                              View.of(context).viewInsets,
+                                              View.of(context).devicePixelRatio)
+                                          .bottom),
+                                ],
                               ),
                             ),
                           ),

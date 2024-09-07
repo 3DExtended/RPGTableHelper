@@ -21,6 +21,7 @@ class WizardRendererForConfiguration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: WizardManager(
         startStepIndex: startStepIndex,
         stepBuilders: configuration.stepBuilders,

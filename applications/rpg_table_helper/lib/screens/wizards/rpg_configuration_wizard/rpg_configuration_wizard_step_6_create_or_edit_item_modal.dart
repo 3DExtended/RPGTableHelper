@@ -110,6 +110,7 @@ class _CreateOrEditItemModalContentState
           horizontal: 80.0,
           vertical: 80.0), // TODO maybe percentage of total width?
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
         body: Center(
           child: ConstrainedBox(
@@ -399,6 +400,11 @@ class _CreateOrEditItemModalContentState
                                 ],
                               ),
                             ),
+                            SizedBox(
+                                height: EdgeInsets.fromViewPadding(
+                                        View.of(context).viewInsets,
+                                        View.of(context).devicePixelRatio)
+                                    .bottom),
                           ],
                         ),
                       ),
