@@ -81,7 +81,13 @@ void main() {
                             patchSize: DiceRoll(
                                 numDice: 22, diceSides: 6, modifier: 1),
                             baseCurrencyPrice: 1000,
-                            placeOfFindings: []),
+                            placeOfFindings: [
+                              RpgItemRarity(
+                                placeOfFindingId:
+                                    "5b9690c1-afc9-436d-8912-d223c440eb6a",
+                                diceChallenge: 5,
+                              )
+                            ]),
                       );
                     },
                     child: const Text("Click me"));

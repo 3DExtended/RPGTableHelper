@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
+import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -21,7 +24,7 @@ Future<RpgItem?> showCreateOrEditItemModal(
     isDismissible: false,
     expand: true,
     closeProgressThreshold: -50000,
-    enableDrag: true,
+    enableDrag: false,
     backgroundColor: const Color.fromARGB(158, 49, 49, 49),
     context: context,
     // barrierColor: const Color.fromARGB(20, 201, 201, 201),
@@ -53,7 +56,9 @@ class _CreateOrEditItemModalContentState
 
   List<ItemCategory> _allItemCategories = [];
   CurrencyDefinition? _currencyDefinition;
-  List<ItemCategory> _allPlacesOfFindings = [];
+  List<PlaceOfFinding> _allPlacesOfFindings = [];
+
+  List<(String? id, TextEditingController)> _placesOfFinding = [];
 
   @override
   void initState() {
@@ -64,6 +69,13 @@ class _CreateOrEditItemModalContentState
         selectedItemCategoryId = widget.itemToEdit.categoryId;
         patchSizeTextController.text =
             widget.itemToEdit.patchSize?.toString() ?? "1D4+1";
+
+        _placesOfFinding = widget.itemToEdit.placeOfFindings
+            .map((pair) => (
+                  pair.placeOfFindingId,
+                  TextEditingController(text: pair.diceChallenge.toString())
+                ))
+            .toList();
       });
     });
     super.initState();
@@ -76,7 +88,7 @@ class _CreateOrEditItemModalContentState
         setState(() {
           hasDataLoaded = true;
           _allItemCategories = data.itemCategories;
-          _allPlacesOfFindings = data.itemCategories;
+          _allPlacesOfFindings = data.placesOfFindings;
           _currencyDefinition = data.currencyDefinition;
 
           if (widget.itemToEdit.baseCurrencyPrice != 0) {
@@ -107,177 +119,323 @@ class _CreateOrEditItemModalContentState
               borderThickness: 1,
               child: Padding(
                 padding: const EdgeInsets.all(21.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "Item bearbeiten", // TODO localize/ switch text between add and edit
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(color: Colors.white, fontSize: 32),
-                            ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Item bearbeiten", // TODO localize/ switch text between add and edit
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(color: Colors.white, fontSize: 32),
                           ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              keyboardType: TextInputType.text,
-                              labelText: "Name des Items:", // TODO localize
-                              textEditingController: nameController,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomDropdownMenu(
-                                selectedValueTemp: selectedItemCategoryId,
-                                setter: (newValue) {
-                                  setState(() {
-                                    selectedItemCategoryId = newValue;
-                                  });
-                                },
-                                label: 'Kategorie', // TODO localize
-                                items: [
-                                  ...(ItemCategory.flattenCategoriesRecursive(
-                                          categories: _allItemCategories,
-                                          combineCategoryNames: true)
-                                      .sortBy((e) => e.name)),
-                                  ItemCategory(
-                                      name: "Sonstiges (Keine Kategorie)",
-                                      uuid: "",
-                                      subCategories: [],
-                                      hideInInventoryFilters: true),
-                                ].map((category) {
-                                  return DropdownMenuItem<String?>(
-                                    value: category.uuid == ""
-                                        ? null
-                                        : category.uuid,
-                                    child: FittedBox(
-                                        fit: BoxFit.fitWidth,
-                                        child: Text(category.name,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                            ))),
-                                  );
-                                }).toList()),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      // Currency value
-                      if (_currencyDefinition != null &&
-                          currencyControllers.length ==
-                              _currencyDefinition!.currencyTypes.length)
-                        Row(
-                          children: _currencyDefinition!.currencyTypes.reversed
-                              .toList()
-                              .asMap()
-                              .entries
-                              .map((e) {
-                            return Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  e.key == 0 ? 0 : 10,
-                                  0,
-                                  e.key ==
-                                          _currencyDefinition!
-                                                  .currencyTypes.length -
-                                              1
-                                      ? 0
-                                      : 10,
-                                  0,
-                                ),
-                                child: CustomTextField(
-                                  keyboardType: TextInputType.number,
-                                  labelText:
-                                      "${e.value.name}:", // TODO localize
-                                  textEditingController:
-                                      currencyControllers[e.key],
-                                ),
-                              ),
-                            );
-                          }).toList(),
                         ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              keyboardType: TextInputType.text,
-                              labelText: "Fundgröße:", // TODO localize
-                              textEditingController: patchSizeTextController,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              keyboardType: TextInputType.multiline,
-                              labelText: "Beschreibung:", // TODO localize
-                              textEditingController: descriptionController,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                        child: Row(
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomButton(
-                              label: "Abbrechen", // TODO localize
-                              onPressed: () {
-                                navigatorKey.currentState!.pop(null);
-                              },
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextField(
+                                    keyboardType: TextInputType.text,
+                                    labelText:
+                                        "Name des Items:", // TODO localize
+                                    textEditingController: nameController,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const Spacer(),
-                            CustomButton(
-                              label: "Weiter", // TODO localize
-                              onPressed: () {
-                                navigatorKey.currentState!.pop(RpgItem(
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomDropdownMenu(
+                                      selectedValueTemp: selectedItemCategoryId,
+                                      setter: (newValue) {
+                                        setState(() {
+                                          selectedItemCategoryId = newValue;
+                                        });
+                                      },
+                                      label: 'Kategorie', // TODO localize
+                                      items: [
+                                        ...(ItemCategory
+                                                .flattenCategoriesRecursive(
+                                                    categories:
+                                                        _allItemCategories,
+                                                    combineCategoryNames: true)
+                                            .sortBy((e) => e.name)),
+                                        ItemCategory(
+                                            name: "Sonstiges (Keine Kategorie)",
+                                            uuid: "",
+                                            subCategories: [],
+                                            hideInInventoryFilters: true),
+                                      ].map((category) {
+                                        return DropdownMenuItem<String?>(
+                                          value: category.uuid == ""
+                                              ? null
+                                              : category.uuid,
+                                          child: FittedBox(
+                                              fit: BoxFit.fitWidth,
+                                              child: Text(category.name,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                  ))),
+                                        );
+                                      }).toList()),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            // Currency value
+                            if (_currencyDefinition != null &&
+                                currencyControllers.length ==
+                                    _currencyDefinition!.currencyTypes.length)
+                              Row(
+                                children: _currencyDefinition!
+                                    .currencyTypes.reversed
+                                    .toList()
+                                    .asMap()
+                                    .entries
+                                    .map((e) {
+                                  return Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                        e.key == 0 ? 0 : 10,
+                                        0,
+                                        e.key ==
+                                                _currencyDefinition!
+                                                        .currencyTypes.length -
+                                                    1
+                                            ? 0
+                                            : 10,
+                                        0,
+                                      ),
+                                      child: CustomTextField(
+                                        keyboardType: TextInputType.number,
+                                        labelText:
+                                            "${e.value.name}:", // TODO localize
+                                        textEditingController:
+                                            currencyControllers[e.key],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextField(
+                                    keyboardType: TextInputType.text,
+                                    labelText: "Fundgröße:", // TODO localize
+                                    textEditingController:
+                                        patchSizeTextController,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextField(
+                                    keyboardType: TextInputType.multiline,
+                                    labelText: "Beschreibung:", // TODO localize
+                                    textEditingController:
+                                        descriptionController,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const HorizontalLine(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text("Fundorte:"),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ..._placesOfFinding.asMap().entries.map(
+                                  (tuple) => Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomDropdownMenu(
+                                              selectedValueTemp: tuple.value.$1,
+                                              setter: (newValue) {
+                                                setState(() {
+                                                  _placesOfFinding[tuple.key] =
+                                                      (
+                                                    newValue,
+                                                    _placesOfFinding[tuple.key]
+                                                        .$2
+                                                  );
+                                                });
+                                              },
+                                              label:
+                                                  'Fundort #${tuple.key + 1}', // TODO localize
+                                              items: _allPlacesOfFindings
+                                                  .map((placeOfFinding) {
+                                                return DropdownMenuItem<
+                                                    String?>(
+                                                  value:
+                                                      placeOfFinding.uuid == ""
+                                                          ? null
+                                                          : placeOfFinding.uuid,
+                                                  child: FittedBox(
+                                                      fit: BoxFit.fitWidth,
+                                                      child: Text(
+                                                          placeOfFinding.name,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.white,
+                                                          ))),
+                                                );
+                                              }).toList()),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        SizedBox(
+                                          width: 75,
+                                          child: CustomTextField(
+                                            keyboardType: TextInputType.text,
+                                            labelText: "DC:", // TODO localize
+                                            textEditingController:
+                                                tuple.value.$2,
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 50,
+                                          width: 70,
+                                          clipBehavior: Clip.none,
+                                          child: CustomButton(
+                                            onPressed: () {
+                                              // remove this pair from list
+                                              setState(() {
+                                                _placesOfFinding
+                                                    .removeAt(tuple.key);
+                                              });
+                                            },
+                                            icon: const CustomFaIcon(
+                                                icon:
+                                                    FontAwesomeIcons.trashCan),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  CustomButton(
+                                    isSubbutton: true,
+                                    onPressed: () {
+                                      setState(() {
+                                        _placesOfFinding.add((
+                                          _allPlacesOfFindings.isNotEmpty
+                                              ? _allPlacesOfFindings[0].uuid
+                                              : "",
+                                          TextEditingController(text: "10")
+                                        ));
+                                      });
+                                    },
+                                    label: "Neuer Fundort",
+                                    icon: Theme(
+                                        data: ThemeData(
+                                          iconTheme: const IconThemeData(
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                          textTheme: const TextTheme(
+                                            bodyMedium: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 0, 5, 0),
+                                          child: Container(
+                                              width: 16,
+                                              height: 16,
+                                              alignment:
+                                                  AlignmentDirectional.center,
+                                              child: const FaIcon(
+                                                  FontAwesomeIcons.plus)),
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                      child: Row(
+                        children: [
+                          CustomButton(
+                            label: "Abbrechen", // TODO localize
+                            onPressed: () {
+                              navigatorKey.currentState!.pop(null);
+                            },
+                          ),
+                          const Spacer(),
+                          CustomButton(
+                            label: "Speichern", // TODO localize
+                            onPressed: () {
+                              navigatorKey.currentState!.pop(RpgItem(
                                   uuid: widget.itemToEdit.uuid,
                                   name: nameController.text,
                                   categoryId: selectedItemCategoryId,
                                   description: descriptionController.text,
                                   patchSize: getPatchSize(),
                                   baseCurrencyPrice: getBaseCurrencyPrice(),
-                                  placeOfFindings: [], // TODO fix me and return list of placesOfFindings
-                                ));
-                              },
-                            ),
-                          ],
-                        ),
+                                  placeOfFindings: _placesOfFinding
+                                      .map((pair) => RpgItemRarity(
+                                          placeOfFindingId: pair.$1!,
+                                          diceChallenge:
+                                              int.parse(pair.$2.text)))
+                                      .toList()));
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -26,10 +26,9 @@ class CustomDropdownMenu extends StatelessWidget {
       ),
       child: DropdownButtonFormField<String?>(
         borderRadius: BorderRadius.circular(10),
-        style: Theme.of(context)
-            .textTheme
-            .labelLarge!
-            .copyWith(color: Colors.white),
+        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              color: Colors.white,
+            ),
         decoration: InputDecoration(
           labelStyle: Theme.of(context)
               .textTheme
