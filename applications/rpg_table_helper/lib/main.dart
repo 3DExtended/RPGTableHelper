@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/tab_handler.dart';
+import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 void main() {
@@ -29,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     return DependencyProvider(
       isMocked: false,
       child: ProviderScope(
+        observers: [SaveRpgConfigurationToStorageObserver()],
         child: MaterialApp(
           title: 'Flutter Demo',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
