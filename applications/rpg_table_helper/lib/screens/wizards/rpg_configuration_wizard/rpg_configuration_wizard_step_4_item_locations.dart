@@ -125,6 +125,7 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                           setState(() {
                             locationPairs.removeAt(e.key);
                           });
+                          _updateStateForFormValidation();
                         },
                         icon:
                             const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
@@ -146,7 +147,7 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
         CustomButton(
           onPressed: () {
             setState(() {
-              addNewLocationPair("New", const UuidV7().generate());
+              addNewLocationPair("", const UuidV7().generate());
             });
           },
           icon: Theme(
