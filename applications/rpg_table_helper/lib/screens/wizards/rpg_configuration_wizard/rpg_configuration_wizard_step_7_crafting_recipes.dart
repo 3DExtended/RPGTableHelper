@@ -1,0 +1,283 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+
+class RpgConfigurationWizardStep7CraftingRecipes extends WizardStepBase {
+  const RpgConfigurationWizardStep7CraftingRecipes({
+    required super.onPreviousBtnPressed,
+    required super.onNextBtnPressed,
+    super.key,
+  });
+
+  @override
+  ConsumerState<RpgConfigurationWizardStep7CraftingRecipes> createState() =>
+      _RpgConfigurationWizardStep7CraftingRecipesState();
+}
+
+class _RpgConfigurationWizardStep7CraftingRecipesState
+    extends ConsumerState<RpgConfigurationWizardStep7CraftingRecipes> {
+  bool hasDataLoaded = false;
+  bool isFormValid = false;
+
+  List<CraftingRecipe> _recipes = [];
+  List<RpgItem> _allItems = [];
+
+  void _updateStateForFormValidation() {
+    var newIsFormValid = getIsFormValid();
+
+    if (newIsFormValid != isFormValid) {
+      setState(() {
+        isFormValid = newIsFormValid;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(rpgConfigurationProvider).whenData((data) {
+      if (!hasDataLoaded) {
+        setState(() {
+          hasDataLoaded = true;
+          _recipes = data.craftingRecipes;
+          _allItems = data.allItems;
+        });
+        _updateStateForFormValidation();
+      }
+    });
+
+    var stepHelperText = '''
+
+Nachdem du nun alle Items hinzugefügt hast, kannst du deinen Spieler Rezepte hinzufügen, damit sie selber bspw. Heiltränke craften können.
+
+Für manche Rezepte ist es natürlich Voraussetzung, dass du ein Tool (wie ein Kräuterkunde-Set) hast. 
+Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen dann die entsprechenden Tools um die Rezepte nutzen zu können.
+'''; // TODO localize
+
+    return TwoPartWizardStepBody(
+      wizardTitle: "RPG Configuration", // TODO localize
+      isLandscapeMode: MediaQuery.of(context).size.width >
+          MediaQuery.of(context).size.height,
+      stepTitle: "Rezepte", // TODO Localize,
+      stepHelperText: stepHelperText,
+      onNextBtnPressed: !isFormValid
+          ? null
+          : () {
+              saveChanges();
+              widget.onNextBtnPressed();
+            },
+      onPreviousBtnPressed: () {
+        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
+        widget.onPreviousBtnPressed();
+      },
+      contentChildren: [
+        ..._recipes.asMap().entries.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: StyledBox(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, left: 20.0, bottom: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "${getItemForId(item.value.createdItem.itemUuid)?.name ?? "N/A"} (${item.value.createdItem.amountOfUsedItem}x)",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                    ),
+                              ),
+                            ),
+
+                            // Edit Button
+                            Container(
+                              height: 50,
+                              width: 50,
+                              clipBehavior: Clip.none,
+                              child: CustomButton(
+                                onPressed: () async {
+                                  // TODO make me
+                                  // // open edit modal with clicked item
+                                  // await showCreateOrEditItemModal(
+                                  //         context, item.value)
+                                  //     .then((returnValue) {
+                                  //   if (returnValue == null) {
+                                  //     return;
+                                  //   }
+                                  //   setState(() {
+                                  //     _recipes.removeAt(item.key);
+                                  //     _recipes.insert(item.key, returnValue);
+                                  //   });
+                                  // });
+                                },
+                                icon: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.penToSquare),
+                              ),
+                            ),
+
+                            // Remove button
+                            Container(
+                              height: 50,
+                              width: 70,
+                              clipBehavior: Clip.none,
+                              child: CustomButton(
+                                onPressed: () {
+                                  // remove this pair from list
+                                  setState(() {
+                                    _recipes.removeAt(item.key);
+                                  });
+                                },
+                                icon: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.trashCan),
+                              ),
+                            ),
+                          ],
+                        ),
+                        _LabeledRow(
+                          label: "Voraussetzungen:", // TODO localize
+                          text: item.value.requiredItemIds
+                              .map((id) => getItemForId(id))
+                              .where((e) => e != null)
+                              .map((e) => " - ${e!.name}")
+                              .join("\n"),
+                        ),
+                        _LabeledRow(
+                          label: "Zutaten:", // TODO localize
+                          text: item.value.ingredients
+                              .map(
+                                  (pair) => (pair, getItemForId(pair.itemUuid)))
+                              .where((e) => e.$2 != null)
+                              .map((e) =>
+                                  " - ${e.$1.amountOfUsedItem}x ${e.$2!.name}")
+                              .join("\n"),
+                        ),
+                        //
+                        // Padding(
+                        //   padding: const EdgeInsets.only(right: 20.0),
+                        //   child: MarkdownBody(
+                        //     data: item.value.description,
+                        //   ),
+                        // )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        CustomButton(
+          onPressed: () async {
+            // open create modal with new item
+            // TODO make me
+            // await showCreateOrEditRecipeModal(context, null)
+            //     .then((returnValue) {
+            //   if (returnValue == null) {
+            //     return;
+            //   }
+//
+            //   setState(() {
+            //     _recipes.add(returnValue);
+            //   });
+            // });
+          },
+          icon: Theme(
+              data: ThemeData(
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
+                textTheme: const TextTheme(
+                  bodyMedium: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              child: Container(
+                  width: 24,
+                  height: 24,
+                  alignment: AlignmentDirectional.center,
+                  child: const FaIcon(FontAwesomeIcons.plus))),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+
+  void saveChanges() {
+    ref.read(rpgConfigurationProvider.notifier).updateRecipes(_recipes);
+  }
+
+  bool getIsFormValid() {
+    return hasDataLoaded == true;
+  }
+
+  String getItemCategoryPathName(List<ItemCategory>? path) {
+    if (path == null) return "N/A";
+
+    return path.map((c) => c.name).join(" > ");
+  }
+
+  RpgItem? getItemForId(String itemId) {
+    return _allItems.where((i) => i.uuid == itemId).firstOrNull;
+  }
+}
+
+class _LabeledRow extends StatelessWidget {
+  const _LabeledRow({
+    required this.label,
+    required this.text,
+  });
+
+  final String label;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+              ),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

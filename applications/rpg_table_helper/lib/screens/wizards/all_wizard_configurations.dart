@@ -5,6 +5,7 @@ import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_co
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_4_item_locations.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_5_item_categories.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_items.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 
 Map<String, WizardConfiguration> allWizardConfigurations = {
   "/rpgconfigurationwizard": WizardConfiguration(
@@ -32,6 +33,11 @@ Map<String, WizardConfiguration> allWizardConfigurations = {
             onNextBtnPressed: moveToNext,
           ),
       (moveToPrevious, moveToNext) => RpgConfigurationWizardStep6Items(
+            onPreviousBtnPressed: moveToPrevious,
+            onNextBtnPressed: moveToNext,
+          ),
+      (moveToPrevious, moveToNext) =>
+          RpgConfigurationWizardStep7CraftingRecipes(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
           ),

@@ -198,8 +198,36 @@ class RpgConfigurationModel {
             description: "Der Schwanz eines Fuchses",
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
           ),
+          RpgItem(
+            uuid: "dc497952-1989-40d1-9d50-a5b4e53dd1be",
+            name: "Kräuterkunde-Set",
+            categoryId: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
+            baseCurrencyPrice: 777777,
+            placeOfFindings: [],
+            description: "Ein Tool zum erstellen von Tränken",
+            patchSize: DiceRoll(numDice: 0, diceSides: 6, modifier: 0),
+          ),
         ],
-        craftingRecipes: [],
+        craftingRecipes: [
+          CraftingRecipe(
+            recipeUuid: "1e660b2d-cc7b-4e4d-9acf-b1bc4b41eb14",
+            ingredients: [
+              CraftingRecipeIngredientPair(
+                  itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
+                  amountOfUsedItem: 2),
+              CraftingRecipeIngredientPair(
+                  itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
+                  amountOfUsedItem: 1),
+            ],
+            requiredItemIds: [
+              "dc497952-1989-40d1-9d50-a5b4e53dd1be",
+            ],
+            createdItem: CraftingRecipeIngredientPair(
+              itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
+              amountOfUsedItem: 1,
+            ),
+          )
+        ],
         characterStatsDefinition: CharacterStatsDefinition(
             mainPlayerStat: CharacterStatDefinition(
                 statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -356,10 +384,12 @@ class CraftingRecipe {
   final String recipeUuid;
   final List<CraftingRecipeIngredientPair> ingredients;
   final CraftingRecipeIngredientPair createdItem;
+  final List<String> requiredItemIds;
 
   CraftingRecipe({
     required this.recipeUuid,
     required this.ingredients,
+    required this.requiredItemIds,
     required this.createdItem,
   });
   factory CraftingRecipe.fromJson(Map<String, dynamic> json) =>

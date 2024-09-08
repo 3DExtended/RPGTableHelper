@@ -412,6 +412,8 @@ abstract class _$CraftingRecipeCWProxy {
 
   CraftingRecipe ingredients(List<CraftingRecipeIngredientPair> ingredients);
 
+  CraftingRecipe requiredItemIds(List<String> requiredItemIds);
+
   CraftingRecipe createdItem(CraftingRecipeIngredientPair createdItem);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CraftingRecipe(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -423,6 +425,7 @@ abstract class _$CraftingRecipeCWProxy {
   CraftingRecipe call({
     String? recipeUuid,
     List<CraftingRecipeIngredientPair>? ingredients,
+    List<String>? requiredItemIds,
     CraftingRecipeIngredientPair? createdItem,
   });
 }
@@ -441,6 +444,10 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
       this(ingredients: ingredients);
 
   @override
+  CraftingRecipe requiredItemIds(List<String> requiredItemIds) =>
+      this(requiredItemIds: requiredItemIds);
+
+  @override
   CraftingRecipe createdItem(CraftingRecipeIngredientPair createdItem) =>
       this(createdItem: createdItem);
 
@@ -455,6 +462,7 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
   CraftingRecipe call({
     Object? recipeUuid = const $CopyWithPlaceholder(),
     Object? ingredients = const $CopyWithPlaceholder(),
+    Object? requiredItemIds = const $CopyWithPlaceholder(),
     Object? createdItem = const $CopyWithPlaceholder(),
   }) {
     return CraftingRecipe(
@@ -468,6 +476,11 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
               ? _value.ingredients
               // ignore: cast_nullable_to_non_nullable
               : ingredients as List<CraftingRecipeIngredientPair>,
+      requiredItemIds: requiredItemIds == const $CopyWithPlaceholder() ||
+              requiredItemIds == null
+          ? _value.requiredItemIds
+          // ignore: cast_nullable_to_non_nullable
+          : requiredItemIds as List<String>,
       createdItem:
           createdItem == const $CopyWithPlaceholder() || createdItem == null
               ? _value.createdItem
@@ -1098,6 +1111,9 @@ CraftingRecipe _$CraftingRecipeFromJson(Map<String, dynamic> json) =>
           .map((e) =>
               CraftingRecipeIngredientPair.fromJson(e as Map<String, dynamic>))
           .toList(),
+      requiredItemIds: (json['requiredItemIds'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
       createdItem: CraftingRecipeIngredientPair.fromJson(
           json['createdItem'] as Map<String, dynamic>),
     );
@@ -1107,6 +1123,7 @@ Map<String, dynamic> _$CraftingRecipeToJson(CraftingRecipe instance) =>
       'recipeUuid': instance.recipeUuid,
       'ingredients': instance.ingredients,
       'createdItem': instance.createdItem,
+      'requiredItemIds': instance.requiredItemIds,
     };
 
 CharacterStatDefinition _$CharacterStatDefinitionFromJson(

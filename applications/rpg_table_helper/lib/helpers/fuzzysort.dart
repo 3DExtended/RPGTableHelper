@@ -413,16 +413,12 @@ class Fuzzysort {
 
     for (int i = 0; i < targetLen; ++i) {
       if (lastIsBeginning > i) {
-        print("a"); // Console log equivalent
         nextBeginningIndexes[i] = lastIsBeginning;
       } else {
-        print("b");
-
         if (++lastIsBeginningI < beginningIndexes.length) {
           lastIsBeginning = beginningIndexes[lastIsBeginningI];
           nextBeginningIndexes[i] = lastIsBeginning ?? targetLen;
         } else {
-          print("c");
           nextBeginningIndexes[i] = targetLen;
         }
       }

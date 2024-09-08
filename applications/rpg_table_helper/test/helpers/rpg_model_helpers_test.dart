@@ -78,6 +78,7 @@ void main() {
           ),
           craftingRecipes: [
             CraftingRecipe(
+              requiredItemIds: [],
               recipeUuid: 'recipe1',
               ingredients: [
                 CraftingRecipeIngredientPair(
@@ -149,6 +150,7 @@ void main() {
       test('returns multiple craftable recipes sorted by craftable count', () {
         rpgConfig.craftingRecipes.add(
           CraftingRecipe(
+            requiredItemIds: [],
             recipeUuid: 'recipe2',
             ingredients: [
               CraftingRecipeIngredientPair(
@@ -176,6 +178,7 @@ void main() {
           () {
         rpgConfig.craftingRecipes.add(
           CraftingRecipe(
+            requiredItemIds: [],
             recipeUuid: 'recipe3',
             ingredients: [
               CraftingRecipeIngredientPair(
