@@ -3,9 +3,6 @@ import 'dart:math';
 /// Copyright notice: Copied and translated from here: https://github.com/farzher/fuzzysort/blob/master/fuzzysort.js
 
 class Fuzzysort {
-  static const int INFINITY = 1000000000;
-  static const int NEGATIVE_INFINITY = -INFINITY;
-
   Map<String, Prepared> preparedCache = {};
   Map<String, PreparedSearch> preparedSearchCache = {};
 
@@ -50,7 +47,7 @@ class Fuzzysort {
     var searchBitflags = preparedSearch.bitflags;
 
     var threshold = denormalizeScore(options?['threshold'] ?? 0.0);
-    var limit = options?['limit'] ?? INFINITY;
+    var limit = options?['limit'] ?? double.infinity;
 
     var resultsLen = 0;
     var limitedCount = 0;
@@ -366,7 +363,7 @@ class Fuzzysort {
 
   // Normalize score function
   double normalizeScore(double score) {
-    if (score == NEGATIVE_INFINITY) return 0;
+    if (score == double.negativeInfinity) return 0;
     if (score > 1) return score;
     return exp((((-score + 1) > 0 ? pow(-score + 1, 0.04307) : 0) - 1) * -2);
   }
