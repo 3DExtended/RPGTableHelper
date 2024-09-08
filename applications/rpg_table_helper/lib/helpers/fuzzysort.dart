@@ -1,5 +1,7 @@
 import 'dart:math';
 
+/// Copyright notice: Copied and translated from here: https://github.com/farzher/fuzzysort/blob/master/fuzzysort.js
+
 class Fuzzysort {
   static const int INFINITY = 1000000000;
   static const int NEGATIVE_INFINITY = -INFINITY;
