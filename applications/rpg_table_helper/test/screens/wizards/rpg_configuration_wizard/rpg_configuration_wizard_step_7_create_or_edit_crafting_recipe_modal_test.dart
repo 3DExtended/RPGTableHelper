@@ -53,6 +53,7 @@ void main() {
         ],
         child: MaterialApp(
             navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             darkTheme: ThemeData.dark(),

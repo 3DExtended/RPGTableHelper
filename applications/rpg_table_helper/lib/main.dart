@@ -33,6 +33,7 @@ class _MyAppState extends State<MyApp> {
         observers: [SaveRpgConfigurationToStorageObserver()],
         child: MaterialApp(
           title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           darkTheme: ThemeData.dark(),
