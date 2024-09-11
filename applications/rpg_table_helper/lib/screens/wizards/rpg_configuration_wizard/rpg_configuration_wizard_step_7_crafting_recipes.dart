@@ -8,6 +8,8 @@ import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.da
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_create_or_edit_item_recipe_modal.dart';
+import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep7CraftingRecipes extends WizardStepBase {
   const RpgConfigurationWizardStep7CraftingRecipes({
@@ -109,19 +111,18 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                               clipBehavior: Clip.none,
                               child: CustomButton(
                                 onPressed: () async {
-                                  // TODO make me
-                                  // // open edit modal with clicked item
-                                  // await showCreateOrEditItemModal(
-                                  //         context, item.value)
-                                  //     .then((returnValue) {
-                                  //   if (returnValue == null) {
-                                  //     return;
-                                  //   }
-                                  //   setState(() {
-                                  //     _recipes.removeAt(item.key);
-                                  //     _recipes.insert(item.key, returnValue);
-                                  //   });
-                                  // });
+                                  // open edit modal with clicked item
+                                  await showCreateOrEditCraftingRecipeModal(
+                                          context, item.value)
+                                      .then((returnValue) {
+                                    if (returnValue == null) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      _recipes.removeAt(item.key);
+                                      _recipes.insert(item.key, returnValue);
+                                    });
+                                  });
                                 },
                                 icon: const CustomFaIcon(
                                     icon: FontAwesomeIcons.penToSquare),
@@ -147,6 +148,8 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                           ],
                         ),
                         _LabeledRow(
+                          labelWidthFlex: 2,
+                          valueWidthFlex: 5,
                           label: "Voraussetzungen:", // TODO localize
                           text: item.value.requiredItemIds
                               .map((id) => getItemForId(id))
@@ -154,7 +157,12 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                               .map((e) => " - ${e!.name}")
                               .join("\n"),
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         _LabeledRow(
+                          labelWidthFlex: 2,
+                          valueWidthFlex: 5,
                           label: "Zutaten:", // TODO localize
                           text: item.value.ingredients
                               .map(
@@ -181,16 +189,25 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
           onPressed: () async {
             // open create modal with new item
             // TODO make me
-            // await showCreateOrEditRecipeModal(context, null)
-            //     .then((returnValue) {
-            //   if (returnValue == null) {
-            //     return;
-            //   }
-//
-            //   setState(() {
-            //     _recipes.add(returnValue);
-            //   });
-            // });
+            await showCreateOrEditCraftingRecipeModal(
+                context,
+                CraftingRecipe(
+                  recipeUuid: const UuidV7().generate(),
+                  ingredients: [],
+                  requiredItemIds: [],
+                  createdItem: CraftingRecipeIngredientPair(
+                    itemUuid: "",
+                    amountOfUsedItem: 1,
+                  ),
+                )).then((returnValue) {
+              if (returnValue == null) {
+                return;
+              }
+
+              setState(() {
+                _recipes.add(returnValue);
+              });
+            });
           },
           icon: Theme(
               data: ThemeData(
@@ -240,8 +257,11 @@ class _LabeledRow extends StatelessWidget {
   const _LabeledRow({
     required this.label,
     required this.text,
+    required this.labelWidthFlex,
+    required this.valueWidthFlex,
   });
-
+  final int? labelWidthFlex;
+  final int? valueWidthFlex;
   final String label;
   final String text;
 
@@ -253,17 +273,23 @@ class _LabeledRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+            ConditionalWidgetWrapper(
+              condition: labelWidthFlex != null,
+              wrapper: (BuildContext context, Widget child) =>
+                  Expanded(flex: labelWidthFlex!, child: child),
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+              ),
             ),
             const SizedBox(
               width: 10,
             ),
             Expanded(
+              flex: valueWidthFlex ?? 1,
               child: Text(
                 text,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -278,6 +304,26 @@ class _LabeledRow extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class ConditionalWidgetWrapper extends StatelessWidget {
+  const ConditionalWidgetWrapper({
+    super.key,
+    required this.condition,
+    required this.wrapper,
+    required this.child,
+  });
+
+  final bool condition;
+  final Expanded Function(BuildContext context, Widget child) wrapper;
+  final Text child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: condition ? wrapper(context, child) : child,
     );
   }
 }
