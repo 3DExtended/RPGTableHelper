@@ -121,6 +121,7 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                                     setState(() {
                                       _recipes.removeAt(item.key);
                                       _recipes.insert(item.key, returnValue);
+                                      saveChanges();
                                     });
                                   });
                                 },
@@ -206,6 +207,7 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
 
               setState(() {
                 _recipes.add(returnValue);
+                saveChanges();
               });
             });
           },

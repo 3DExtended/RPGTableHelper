@@ -121,6 +121,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                                     setState(() {
                                       _items.removeAt(item.key);
                                       _items.insert(item.key, returnValue);
+                                      saveChanges();
                                     });
                                   });
                                 },
@@ -215,6 +216,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
 
               setState(() {
                 _items.add(returnValue);
+                saveChanges();
               });
             });
           },
