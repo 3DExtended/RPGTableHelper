@@ -454,29 +454,32 @@ class _CreateOrEditCraftingRecipeModalContentState
                           CustomButton(
                             label: "Speichern", // TODO localize
                             onPressed: () {
-                              navigatorKey.currentState!.pop(
-                                CraftingRecipe(
-                                  recipeUuid: widget.itemToEdit.recipeUuid,
-                                  requiredItemIds: requiredItemIdsSelected
-                                      .where((str) => str != null)
-                                      .map((str) => str!)
-                                      .toList(),
-                                  ingredients: selectedIngredient
-                                      .map(
-                                        (pair) => CraftingRecipeIngredientPair(
-                                          itemUuid: pair.$1!,
-                                          amountOfUsedItem:
-                                              int.tryParse(pair.$2.text) ?? 1,
-                                        ),
-                                      )
-                                      .toList(),
-                                  createdItem: CraftingRecipeIngredientPair(
-                                      itemUuid: selectedCreatingItem.$1!,
-                                      amountOfUsedItem: int.tryParse(
-                                              selectedCreatingItem.$2.text) ??
-                                          1),
-                                ),
-                              );
+                              try {
+                                navigatorKey.currentState!.pop(
+                                  CraftingRecipe(
+                                    recipeUuid: widget.itemToEdit.recipeUuid,
+                                    requiredItemIds: requiredItemIdsSelected
+                                        .where((str) => str != null)
+                                        .map((str) => str!)
+                                        .toList(),
+                                    ingredients: selectedIngredient
+                                        .map(
+                                          (pair) =>
+                                              CraftingRecipeIngredientPair(
+                                            itemUuid: pair.$1!,
+                                            amountOfUsedItem:
+                                                int.tryParse(pair.$2.text) ?? 1,
+                                          ),
+                                        )
+                                        .toList(),
+                                    createdItem: CraftingRecipeIngredientPair(
+                                        itemUuid: selectedCreatingItem.$1!,
+                                        amountOfUsedItem: int.tryParse(
+                                                selectedCreatingItem.$2.text) ??
+                                            1),
+                                  ),
+                                );
+                              } catch (e) {}
                             },
                           ),
                         ],

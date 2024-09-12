@@ -247,7 +247,8 @@ class _CreateOrEditItemModalContentState
                                 Expanded(
                                   child: CustomTextField(
                                     keyboardType: TextInputType.text,
-                                    labelText: "Fundgröße:", // TODO localize
+                                    labelText:
+                                        "Fundgröße: (optional)", // TODO localize
                                     textEditingController:
                                         patchSizeTextController,
                                   ),

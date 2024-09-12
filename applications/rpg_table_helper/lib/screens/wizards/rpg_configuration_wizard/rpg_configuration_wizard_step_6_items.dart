@@ -155,20 +155,22 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                             getItemCategoryById(item.value.categoryId),
                           ),
                         ),
-                        _LabeledRow(
-                          label: "Fundort:", // TODO localize
-                          // TODO append difficulty and patchSize
-                          text: item.value.placeOfFindings.isNotEmpty
-                              ? item.value.placeOfFindings
-                                  .map((plid) =>
-                                      formatRpgItemRarityToString(plid))
-                                  .join(", ")
-                              : "N/A",
-                        ),
-                        _LabeledRow(
-                          label: "Fundgröße:", // TODO localize
-                          text: item.value.patchSize?.toString() ?? "N/A",
-                        ),
+                        if (item.value.placeOfFindings.isNotEmpty)
+                          _LabeledRow(
+                            label: "Fundort:", // TODO localize
+                            // TODO append difficulty and patchSize
+                            text: item.value.placeOfFindings.isNotEmpty
+                                ? item.value.placeOfFindings
+                                    .map((plid) =>
+                                        formatRpgItemRarityToString(plid))
+                                    .join(", ")
+                                : "N/A",
+                          ),
+                        if (item.value.placeOfFindings.isNotEmpty)
+                          _LabeledRow(
+                            label: "Fundgröße:", // TODO localize
+                            text: item.value.patchSize?.toString() ?? "N/A",
+                          ),
                         _LabeledRow(
                           label: "Verkaufswert:", // TODO localize
                           text: getValueOfItem(item.value.baseCurrencyPrice),
