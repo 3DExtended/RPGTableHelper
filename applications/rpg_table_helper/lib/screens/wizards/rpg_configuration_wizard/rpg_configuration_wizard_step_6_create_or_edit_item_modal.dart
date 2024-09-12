@@ -184,17 +184,11 @@ class _CreateOrEditItemModalContentState
                                             subCategories: [],
                                             hideInInventoryFilters: true),
                                       ].map((category) {
-                                        return DropdownMenuItem<String?>(
+                                        return DropdownMenuEntry<String?>(
                                           value: category.uuid == ""
                                               ? null
                                               : category.uuid,
-                                          child: FittedBox(
-                                              fit: BoxFit.fitWidth,
-                                              child: Text(category.name,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white,
-                                                  ))),
+                                          label: category.name,
                                         );
                                       }).toList()),
                                 ),
@@ -305,21 +299,13 @@ class _CreateOrEditItemModalContentState
                                               items: _allPlacesOfFindings
                                                   .sortBy((p) => p.name)
                                                   .map((placeOfFinding) {
-                                                return DropdownMenuItem<
+                                                return DropdownMenuEntry<
                                                     String?>(
                                                   value:
                                                       placeOfFinding.uuid == ""
                                                           ? null
                                                           : placeOfFinding.uuid,
-                                                  child: FittedBox(
-                                                      fit: BoxFit.fitWidth,
-                                                      child: Text(
-                                                          placeOfFinding.name,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            color: Colors.white,
-                                                          ))),
+                                                  label: placeOfFinding.name,
                                                 );
                                               }).toList()),
                                         ),

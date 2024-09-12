@@ -152,17 +152,11 @@ class _CreateOrEditCraftingRecipeModalContentState
                                       label:
                                           'Herzustellendes Item', // TODO localize
                                       items: _allItems.map((item) {
-                                        return DropdownMenuItem<String?>(
+                                        return DropdownMenuEntry<String?>(
                                           value: item.uuid == ""
                                               ? null
                                               : item.uuid,
-                                          child: FittedBox(
-                                              fit: BoxFit.fitWidth,
-                                              child: Text(item.name,
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white,
-                                                  ))),
+                                          label: item.name,
                                         );
                                       }).toList()),
                                 ),
@@ -214,19 +208,12 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               items: _allItems
                                                   .sortBy((p) => p.name)
                                                   .map((item) {
-                                                return DropdownMenuItem<
+                                                return DropdownMenuEntry<
                                                     String?>(
                                                   value: item.uuid == ""
                                                       ? null
                                                       : item.uuid,
-                                                  child: FittedBox(
-                                                      fit: BoxFit.fitWidth,
-                                                      child: Text(item.name,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            color: Colors.white,
-                                                          ))),
+                                                  label: item.name,
                                                 );
                                               }).toList()),
                                         ),
@@ -334,19 +321,12 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               items: _allItems
                                                   .sortBy((p) => p.name)
                                                   .map((item) {
-                                                return DropdownMenuItem<
+                                                return DropdownMenuEntry<
                                                     String?>(
                                                   value: item.uuid == ""
                                                       ? null
                                                       : item.uuid,
-                                                  child: FittedBox(
-                                                      fit: BoxFit.fitWidth,
-                                                      child: Text(item.name,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 16,
-                                                            color: Colors.white,
-                                                          ))),
+                                                  label: item.name,
                                                 );
                                               }).toList()),
                                         ),
