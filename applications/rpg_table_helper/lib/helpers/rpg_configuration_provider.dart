@@ -78,4 +78,8 @@ class RpgConfigurationNotifier
     state =
         AsyncValue.data(state.requireValue.copyWith(craftingRecipes: recipes));
   }
+
+  void updateConfiguration(RpgConfigurationModel config) {
+    state = AsyncValue.data(config);
+  }
 }

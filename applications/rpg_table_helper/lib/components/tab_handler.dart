@@ -11,6 +11,7 @@ import 'package:rpg_table_helper/screens/search_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
+import 'package:rpg_table_helper/services/server_communication_service.dart';
 
 class AuthorizedScreenWrapper extends StatefulWidget {
   static const route = '/';
@@ -23,7 +24,8 @@ class AuthorizedScreenWrapper extends StatefulWidget {
 }
 
 class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
-  Map<String, Widget Function(BuildContext)> _routeBuilders(BuildContext context) {
+  Map<String, Widget Function(BuildContext)> _routeBuilders(
+      BuildContext context) {
     var result = {
       LoreScreen.route: (context) => const LoreScreen(),
       CharacterScreen.route: (context) => const CharacterScreen(),
@@ -94,6 +96,10 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () async {
+      var commService = DependencyProvider.of(context)
+          .getService<IServerCommunicationService>();
+    });
     super.initState();
   }
 

@@ -11,6 +11,6 @@ public class Program
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                webBuilder.UseStartup<Startup>().UseUrls(urls: "http://*:4413");
+                webBuilder.UseStartup<Startup>().UseUrls(urls: "http://*:5012");
             });
 }

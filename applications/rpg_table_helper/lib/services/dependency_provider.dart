@@ -1,7 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/src/consumer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
+import 'package:rpg_table_helper/services/server_communication_service.dart';
 import 'package:rpg_table_helper/services/systemclock_service.dart';
 
 class DependencyProvider extends InheritedWidget {
@@ -17,18 +19,17 @@ class DependencyProvider extends InheritedWidget {
     return dependOnInheritedWidgetOfExactType;
   }
 
-  static DependencyProvider getMockedDependecyProvider(
-          {required Widget child,
-          Map<Type, dynamic Function()>? mockOverrides}) =>
-      DependencyProvider(
-        isMocked: true,
-        mockOverrides: mockOverrides,
-        child: child,
-      );
+  static MockedRiverpodDependencyProviderWrapper getMockedDependecyProvider({
+    required Widget child,
+    Map<Type, dynamic Function()>? mockOverrides,
+  }) =>
+      MockedRiverpodDependencyProviderWrapper(
+          mockOverrides: mockOverrides, child: child);
 
   late final GetIt _getIt;
   final bool isMocked;
   final Map<Type, dynamic Function()>? mockOverrides;
+  final WidgetRef widgetRef;
 
   T getService<T extends Object>() {
     var result = _getIt.get<T>();
@@ -39,6 +40,7 @@ class DependencyProvider extends InheritedWidget {
     super.key,
     required this.isMocked,
     required super.child,
+    required this.widgetRef,
     this.mockOverrides,
   }) {
     _getIt = GetIt.asNewInstance();
@@ -48,6 +50,10 @@ class DependencyProvider extends InheritedWidget {
         () => SystemClockService(), () => MockSystemClockService());
     _registerService<INavigationService>(
         () => NavigationService(), () => NavigationService());
+
+    _registerService<IServerCommunicationService>(
+        () => ServerCommunicationService(widgetRef: widgetRef),
+        () => MockServerCommunicationService(widgetRef: widgetRef));
   }
 
   void _registerService<T extends Object>(T Function() realServiceFactoryFunc,
@@ -66,5 +72,25 @@ class DependencyProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
     return false;
+  }
+}
+
+class MockedRiverpodDependencyProviderWrapper extends ConsumerWidget {
+  final Widget child;
+  final Map<Type, dynamic Function()>? mockOverrides;
+  const MockedRiverpodDependencyProviderWrapper({
+    super.key,
+    required this.child,
+    this.mockOverrides,
+  }) : super();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DependencyProvider(
+      widgetRef: ref,
+      isMocked: true,
+      mockOverrides: mockOverrides,
+      child: child,
+    );
   }
 }

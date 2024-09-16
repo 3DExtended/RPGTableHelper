@@ -10,4 +10,15 @@ public class ChatHub : Hub
         // Call the "OnMessage" method to update clients.
         Clients.All.SendAsync("OnMessage", name, message);
     }
+
+    public override async Task OnConnectedAsync()
+    {
+        // This newMessage call is what is not being received on the front end
+        await Clients.All.SendAsync("aClientProvidedFunction", "ich bin ein test");
+
+        // This console.WriteLine does print when I bring up the component in the front end.
+        Console.WriteLine("Test");
+
+        await base.OnConnectedAsync();
+    }
 }

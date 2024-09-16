@@ -57,7 +57,7 @@ class RpgCharacterConfigurationNotifier
     }
   }
 
-  // void addNewDeck(Deck deck) {
-  //   state = AsyncValue.data([...state.requireValue, deck]);
-  // }
+  void updateConfiguration(RpgCharacterConfiguration config) {
+    state = AsyncValue.data(config);
+  }
 }

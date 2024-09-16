@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
-class MainTwoBlockLayout extends StatelessWidget {
+class MainTwoBlockLayout extends ConsumerWidget {
   final List<NavbarButton> navbarButtons;
   final Widget content;
   final int selectedNavbarButton;
@@ -21,15 +23,16 @@ class MainTwoBlockLayout extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // figure out if landscape or if portrait mode
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
     var isLandscape = width >= height;
 
-    // TODO is connected or not
-    var isConnectedToServer = false;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
+
+    var isConnectedToServer = connectionDetails?.isConnected ?? false;
 
     var isConnectedBtn = Padding(
       padding: EdgeInsets.fromLTRB(
