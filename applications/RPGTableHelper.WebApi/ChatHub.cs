@@ -17,7 +17,10 @@ public class ChatHub : Hub
         await Clients.All.SendAsync("aClientProvidedFunction", "ich bin ein test");
 
         // This console.WriteLine does print when I bring up the component in the front end.
-        Console.WriteLine("Test");
+        Console.WriteLine("Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
+        Console.WriteLine("Context.User:" + Context.User.ToString());
+        Console.WriteLine("Context.User.Identity.Name:" + Context.User.Identity.Name);
+        Console.WriteLine("Context.UserIdentifier:" + Context.UserIdentifier);
 
         await base.OnConnectedAsync();
     }

@@ -61,7 +61,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     final httpConnectionOptions = HttpConnectionOptions(
       httpClient: WebSupportingHttpClient(null,
           httpClientCreateCallback: httpClientCreateCallback),
-      accessTokenFactory: () => Future.value('JWT_TOKEN'),
+      accessTokenFactory: () => Future.value('JWT_TOKEN'), // TODO handle JWT...
       logMessageContent: true,
       headers: defaultHeaders,
     );
@@ -70,8 +70,12 @@ class ServerCommunicationService extends IServerCommunicationService {
     final hubConnection = HubConnectionBuilder()
         .withUrl(serverUrl, options: httpConnectionOptions)
         .withHubProtocol(MessagePackHubProtocol())
-        .withAutomaticReconnect(
-            retryDelays: [2000, 5000, 10000, 20000]).build();
+        .withAutomaticReconnect(retryDelays: [
+      2000,
+      5000,
+      10000,
+      ...List.generate(5000, (i) => 20000)
+    ]).build();
 
     // When the connection is closed, print out a message to the console.
     hubConnection.onclose(
