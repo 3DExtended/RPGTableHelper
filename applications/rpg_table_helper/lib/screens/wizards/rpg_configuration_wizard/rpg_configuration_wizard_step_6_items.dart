@@ -198,52 +198,49 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                 ),
               ),
             ),
-        CustomButton(
-          onPressed: () async {
-            // open create modal with new item
-            await showCreateOrEditItemModal(
-                context,
-                RpgItem(
-                  baseCurrencyPrice: 0,
-                  categoryId: null,
-                  description: "",
-                  name: "",
-                  placeOfFindings: [],
-                  patchSize: null,
-                  uuid: const UuidV7().generate(),
-                )).then((returnValue) {
-              if (returnValue == null) {
-                return;
-              }
+      ],
+      centerNavBarWidget: CustomButton(
+        onPressed: () async {
+          // open create modal with new item
+          await showCreateOrEditItemModal(
+              context,
+              RpgItem(
+                baseCurrencyPrice: 0,
+                categoryId: null,
+                description: "",
+                name: "",
+                placeOfFindings: [],
+                patchSize: null,
+                uuid: const UuidV7().generate(),
+              )).then((returnValue) {
+            if (returnValue == null) {
+              return;
+            }
 
-              setState(() {
-                _items.add(returnValue);
-                saveChanges();
-              });
+            setState(() {
+              _items.add(returnValue);
+              saveChanges();
             });
-          },
-          icon: Theme(
-              data: ThemeData(
-                iconTheme: const IconThemeData(
+          });
+        },
+        icon: Theme(
+            data: ThemeData(
+              iconTheme: const IconThemeData(
+                color: Colors.white,
+                size: 16,
+              ),
+              textTheme: const TextTheme(
+                bodyMedium: TextStyle(
                   color: Colors.white,
-                  size: 16,
-                ),
-                textTheme: const TextTheme(
-                  bodyMedium: TextStyle(
-                    color: Colors.white,
-                  ),
                 ),
               ),
-              child: Container(
-                  width: 24,
-                  height: 24,
-                  alignment: AlignmentDirectional.center,
-                  child: const FaIcon(FontAwesomeIcons.plus))),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-      ],
+            ),
+            child: Container(
+                width: 24,
+                height: 24,
+                alignment: AlignmentDirectional.center,
+                child: const FaIcon(FontAwesomeIcons.plus))),
+      ),
     );
   }
 

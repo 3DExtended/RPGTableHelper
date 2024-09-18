@@ -186,53 +186,50 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                 ),
               ),
             ),
-        CustomButton(
-          onPressed: () async {
-            // open create modal with new item
-            // TODO make me
-            await showCreateOrEditCraftingRecipeModal(
-                context,
-                CraftingRecipe(
-                  recipeUuid: const UuidV7().generate(),
-                  ingredients: [],
-                  requiredItemIds: [],
-                  createdItem: CraftingRecipeIngredientPair(
-                    itemUuid: "",
-                    amountOfUsedItem: 1,
-                  ),
-                )).then((returnValue) {
-              if (returnValue == null) {
-                return;
-              }
-
-              setState(() {
-                _recipes.add(returnValue);
-                saveChanges();
-              });
-            });
-          },
-          icon: Theme(
-              data: ThemeData(
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+      ],
+      centerNavBarWidget: CustomButton(
+        onPressed: () async {
+          // open create modal with new item
+          // TODO make me
+          await showCreateOrEditCraftingRecipeModal(
+              context,
+              CraftingRecipe(
+                recipeUuid: const UuidV7().generate(),
+                ingredients: [],
+                requiredItemIds: [],
+                createdItem: CraftingRecipeIngredientPair(
+                  itemUuid: "",
+                  amountOfUsedItem: 1,
                 ),
-                textTheme: const TextTheme(
-                  bodyMedium: TextStyle(
-                    color: Colors.white,
-                  ),
+              )).then((returnValue) {
+            if (returnValue == null) {
+              return;
+            }
+
+            setState(() {
+              _recipes.add(returnValue);
+              saveChanges();
+            });
+          });
+        },
+        icon: Theme(
+            data: ThemeData(
+              iconTheme: const IconThemeData(
+                color: Colors.white,
+                size: 16,
+              ),
+              textTheme: const TextTheme(
+                bodyMedium: TextStyle(
+                  color: Colors.white,
                 ),
               ),
-              child: Container(
-                  width: 24,
-                  height: 24,
-                  alignment: AlignmentDirectional.center,
-                  child: const FaIcon(FontAwesomeIcons.plus))),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-      ],
+            ),
+            child: Container(
+                width: 24,
+                height: 24,
+                alignment: AlignmentDirectional.center,
+                child: const FaIcon(FontAwesomeIcons.plus))),
+      ),
     );
   }
 

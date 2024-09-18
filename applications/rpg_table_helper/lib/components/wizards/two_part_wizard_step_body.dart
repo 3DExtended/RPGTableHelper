@@ -15,6 +15,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
     required this.onNextBtnPressed,
     required this.contentChildren,
     this.footerWidget,
+    this.centerNavBarWidget,
   });
 
   final String wizardTitle;
@@ -25,6 +26,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final void Function()? onNextBtnPressed;
   final List<Widget> contentChildren;
   final Widget? footerWidget;
+  final Widget? centerNavBarWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -137,9 +139,10 @@ class TwoPartWizardStepBody extends StatelessWidget {
                         );
                       })),
                       if (footerWidget != null) footerWidget!,
+                      const HorizontalLine(),
                       Padding(
                         padding:
-                            const EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 50.0),
+                            const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                         child: Row(
                           children: [
                             CustomButton(
@@ -147,6 +150,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
                               onPressed: onPreviousBtnPressed,
                             ),
                             const Spacer(),
+                            if (centerNavBarWidget != null) centerNavBarWidget!,
+                            if (centerNavBarWidget != null) const Spacer(),
                             CustomButton(
                               label: "Weiter", // TODO localize
                               onPressed: onNextBtnPressed,

@@ -113,7 +113,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
         children: [
           const HorizontalLine(),
           Padding(
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 20, bottom: 30),
             child: Text(buildTextForCurrencyComparison()),
           ),
         ],
