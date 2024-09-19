@@ -8,6 +8,7 @@ part 'connection_details.g.dart';
 class ConnectionDetails {
   final bool isConnected;
   final bool isConnecting;
+  final bool isInSession;
   final String? sessionConnectionNumberForPlayers;
   final bool isDm;
 
@@ -15,12 +16,14 @@ class ConnectionDetails {
     required this.isConnected,
     required this.sessionConnectionNumberForPlayers,
     required this.isConnecting,
+    required this.isInSession,
     required this.isDm,
   });
 
   static ConnectionDetails defaultValue() => ConnectionDetails(
         isConnected: false,
         isConnecting: false,
+        isInSession: false,
         isDm: false,
         sessionConnectionNumberForPlayers: null,
       );

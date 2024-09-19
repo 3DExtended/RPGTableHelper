@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/screens/choose_player_or_dm_modal.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class MainTwoBlockLayout extends ConsumerWidget {
@@ -31,8 +32,9 @@ class MainTwoBlockLayout extends ConsumerWidget {
     var isLandscape = width >= height;
 
     var connectionDetails = ref.watch(connectionDetailsProvider).value;
-
     var isConnectedToServer = connectionDetails?.isConnected ?? false;
+    var isDmDevice = connectionDetails?.isDm ?? true;
+    var isInSession = connectionDetails?.isInSession ?? false;
 
     var isConnectedBtn = Padding(
       padding: EdgeInsets.fromLTRB(
@@ -54,13 +56,13 @@ class MainTwoBlockLayout extends ConsumerWidget {
             child: Theme(
                 data: ThemeData(
                   iconTheme: IconThemeData(
-                    color: isConnectedToServer
+                    color: isInSession
                         ? const Color.fromARGB(255, 12, 163, 90)
                         : const Color.fromARGB(255, 163, 12, 12),
                     size: 16,
                   ),
                 ),
-                child: FaIcon(isConnectedToServer
+                child: FaIcon(isInSession
                     ? FontAwesomeIcons.link
                     : FontAwesomeIcons.linkSlash)),
           ),
@@ -81,9 +83,19 @@ class MainTwoBlockLayout extends ConsumerWidget {
             CupertinoButton(
                 minSize: 0,
                 padding: const EdgeInsets.all(0),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(allWizardConfigurations.entries.first.key);
+                onPressed: () async {
+                  if (isInSession) {
+                    if (isDmDevice) {
+                      // TODO open DM modal
+                      Navigator.of(context)
+                          .pushNamed(allWizardConfigurations.entries.first.key);
+                    } else {
+                      // TODO open configuration for players
+                    }
+                  } else {
+                    // open "connect modal"
+                    await showChoosePlayerOrDmModal(context);
+                  }
                 },
                 child: isConnectedBtn),
           Center(

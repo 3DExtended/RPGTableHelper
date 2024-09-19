@@ -31,6 +31,13 @@ abstract class IServerCommunicationService {
         .read(rpgCharacterConfigurationProvider.notifier)
         .updateConfiguration(config);
   }
+
+  void registerCallbackSingleString({
+    required void Function({required String parameter}) registerGameResponse,
+    required String functionName,
+  });
+
+  Future executeServerFunction(String functionName, {List<Object>? args});
 }
 
 ////
@@ -40,7 +47,7 @@ abstract class IServerCommunicationService {
 ////
 class ServerCommunicationService extends IServerCommunicationService {
   bool connectionIsOpen = false;
-
+  late HubConnection? hubConnection;
   ServerCommunicationService({
     required super.widgetRef,
   }) : super(isMock: false) {
@@ -67,7 +74,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     );
 
     // Creates the connection by using the HubConnectionBuilder.
-    final hubConnection = HubConnectionBuilder()
+    hubConnection = HubConnectionBuilder()
         .withUrl(serverUrl, options: httpConnectionOptions)
         .withHubProtocol(MessagePackHubProtocol())
         .withAutomaticReconnect(retryDelays: [
@@ -78,7 +85,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     ]).build();
 
     // When the connection is closed, print out a message to the console.
-    hubConnection.onclose(
+    hubConnection!.onclose(
       ({error}) {
         print("Connection Closed");
         widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
@@ -90,7 +97,7 @@ class ServerCommunicationService extends IServerCommunicationService {
       },
     );
 
-    hubConnection.onreconnecting(({error}) {
+    hubConnection!.onreconnecting(({error}) {
       print("onreconnecting called");
       connectionIsOpen = false;
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
@@ -101,7 +108,7 @@ class ServerCommunicationService extends IServerCommunicationService {
               ConnectionDetails.defaultValue());
     });
 
-    hubConnection.onreconnected(({connectionId}) {
+    hubConnection!.onreconnected(({connectionId}) {
       print("onreconnected called");
       connectionIsOpen = true;
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
@@ -112,8 +119,8 @@ class ServerCommunicationService extends IServerCommunicationService {
               ConnectionDetails.defaultValue());
     });
 
-    hubConnection.on("aClientProvidedFunction", _handleAClientProvidedFunction);
-
+    hubConnection!
+        .on("aClientProvidedFunction", _handleAClientProvidedFunction);
     Future.delayed(Duration.zero, () async {
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -122,7 +129,7 @@ class ServerCommunicationService extends IServerCommunicationService {
                   ) ??
               ConnectionDetails.defaultValue());
 
-      await hubConnection.start();
+      await hubConnection!.start();
     });
   }
 
@@ -134,6 +141,28 @@ class ServerCommunicationService extends IServerCommunicationService {
     // TODO check if we need this only on dev or also on prod
     HttpOverrides.global = HttpOverrideCertificateVerificationInDev();
   }
+
+  @override
+  void registerCallbackSingleString({
+    required void Function({required String parameter}) registerGameResponse,
+    required String functionName,
+  }) {
+    hubConnection!.on(functionName, (List<Object?>? parameters) {
+      if (parameters == null || parameters.isEmpty) return;
+
+      final String? param =
+          parameters[0] != null ? parameters[0] as String : null;
+
+      if (param == null) return;
+
+      registerGameResponse(parameter: param);
+    });
+  }
+
+  @override
+  Future executeServerFunction(String methodName, {List<Object>? args}) async {
+    await hubConnection!.invoke(methodName, args: args);
+  }
 }
 
 class MockServerCommunicationService extends IServerCommunicationService {
@@ -142,6 +171,20 @@ class MockServerCommunicationService extends IServerCommunicationService {
     required super.widgetRef,
     this.nowOverride,
   }) : super(isMock: true);
+
+  @override
+  void registerCallbackSingleString({
+    required void Function({required String parameter}) registerGameResponse,
+    required String functionName,
+  }) {
+    // TODO: implement registerCallbackSingleString
+  }
+
+  @override
+  Future executeServerFunction(String s, {List<Object>? args}) {
+    // TODO: implement executeServerFunction
+    throw UnimplementedError();
+  }
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

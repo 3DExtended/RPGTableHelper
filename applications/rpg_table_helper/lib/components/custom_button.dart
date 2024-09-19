@@ -37,13 +37,16 @@ class CustomButton extends StatelessWidget {
             children: [
               if (icon != null) icon!,
               if (label != null)
-                Text(
-                  label!,
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: onPressed != null
-                          ? Colors.white
-                          : const Color.fromARGB(255, 135, 135, 135),
-                      fontSize: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text(
+                    label!,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: onPressed != null
+                            ? Colors.white
+                            : const Color.fromARGB(255, 135, 135, 135),
+                        fontSize: 16),
+                  ),
                 ),
             ],
           ),

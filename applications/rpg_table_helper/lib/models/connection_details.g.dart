@@ -14,6 +14,8 @@ abstract class _$ConnectionDetailsCWProxy {
 
   ConnectionDetails isConnecting(bool isConnecting);
 
+  ConnectionDetails isInSession(bool isInSession);
+
   ConnectionDetails isDm(bool isDm);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ConnectionDetails(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -26,6 +28,7 @@ abstract class _$ConnectionDetailsCWProxy {
     bool? isConnected,
     String? sessionConnectionNumberForPlayers,
     bool? isConnecting,
+    bool? isInSession,
     bool? isDm,
   });
 }
@@ -51,6 +54,10 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
       this(isConnecting: isConnecting);
 
   @override
+  ConnectionDetails isInSession(bool isInSession) =>
+      this(isInSession: isInSession);
+
+  @override
   ConnectionDetails isDm(bool isDm) => this(isDm: isDm);
 
   @override
@@ -65,6 +72,7 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
     Object? isConnected = const $CopyWithPlaceholder(),
     Object? sessionConnectionNumberForPlayers = const $CopyWithPlaceholder(),
     Object? isConnecting = const $CopyWithPlaceholder(),
+    Object? isInSession = const $CopyWithPlaceholder(),
     Object? isDm = const $CopyWithPlaceholder(),
   }) {
     return ConnectionDetails(
@@ -83,6 +91,11 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
               ? _value.isConnecting
               // ignore: cast_nullable_to_non_nullable
               : isConnecting as bool,
+      isInSession:
+          isInSession == const $CopyWithPlaceholder() || isInSession == null
+              ? _value.isInSession
+              // ignore: cast_nullable_to_non_nullable
+              : isInSession as bool,
       isDm: isDm == const $CopyWithPlaceholder() || isDm == null
           ? _value.isDm
           // ignore: cast_nullable_to_non_nullable
@@ -108,6 +121,7 @@ ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
       sessionConnectionNumberForPlayers:
           json['sessionConnectionNumberForPlayers'] as String?,
       isConnecting: json['isConnecting'] as bool,
+      isInSession: json['isInSession'] as bool,
       isDm: json['isDm'] as bool,
     );
 
@@ -115,6 +129,7 @@ Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
     <String, dynamic>{
       'isConnected': instance.isConnected,
       'isConnecting': instance.isConnecting,
+      'isInSession': instance.isInSession,
       'sessionConnectionNumberForPlayers':
           instance.sessionConnectionNumberForPlayers,
       'isDm': instance.isDm,

@@ -45,6 +45,8 @@ class _WizardManagerState extends State<WizardManager> {
       setState(() {
         _currentStep--;
       });
+    } else {
+      Navigator.of(context).pop();
     }
   }
 

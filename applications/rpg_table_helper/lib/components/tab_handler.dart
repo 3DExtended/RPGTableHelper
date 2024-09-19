@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/main_two_block_layout.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/screens/character_screen.dart';
 import 'package:rpg_table_helper/screens/crafting_screen.dart';
 import 'package:rpg_table_helper/screens/inventory_screen.dart';
@@ -13,17 +15,18 @@ import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 
-class AuthorizedScreenWrapper extends StatefulWidget {
+class AuthorizedScreenWrapper extends ConsumerStatefulWidget {
   static const route = '/';
 
   const AuthorizedScreenWrapper({super.key});
 
   @override
-  State<AuthorizedScreenWrapper> createState() =>
+  ConsumerState<AuthorizedScreenWrapper> createState() =>
       _AuthorizedScreenWrapperState();
 }
 
-class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
+class _AuthorizedScreenWrapperState
+    extends ConsumerState<AuthorizedScreenWrapper> {
   Map<String, Widget Function(BuildContext)> _routeBuilders(
       BuildContext context) {
     var result = {
@@ -176,6 +179,9 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
               if (_doesRouteImplementOwnTabHandler(routeSettings.name!)) {
                 return routeChild;
               } else {
+                var connectionDetails =
+                    ref.watch(connectionDetailsProvider).valueOrNull;
+
                 return MainTwoBlockLayout(
                     showIsConnectedButton: true,
                     selectedNavbarButton: selectedId,
@@ -195,7 +201,9 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
                             _selectTab(tabItem!);
                           });
                         },
-                        icon: const FaIcon(FontAwesomeIcons.user),
+                        icon: connectionDetails?.isDm == true
+                            ? const FaIcon(FontAwesomeIcons.users)
+                            : const FaIcon(FontAwesomeIcons.user),
                         tabItem: TabItem.character,
                       ),
                       NavbarButton(
@@ -204,18 +212,21 @@ class _AuthorizedScreenWrapperState extends State<AuthorizedScreenWrapper> {
                             _selectTab(tabItem!);
                           });
                         },
-                        icon: const FaIcon(FontAwesomeIcons.basketShopping),
+                        icon: connectionDetails?.isDm == true
+                            ? const FaIcon(FontAwesomeIcons.handHoldingMedical)
+                            : const FaIcon(FontAwesomeIcons.basketShopping),
                         tabItem: TabItem.inventory,
                       ),
-                      NavbarButton(
-                        onPressed: (tabItem) {
-                          setState(() {
-                            _selectTab(tabItem!);
-                          });
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.trowel),
-                        tabItem: TabItem.crafting,
-                      ),
+                      if (connectionDetails?.isDm != true)
+                        NavbarButton(
+                          onPressed: (tabItem) {
+                            setState(() {
+                              _selectTab(tabItem!);
+                            });
+                          },
+                          icon: const FaIcon(FontAwesomeIcons.trowel),
+                          tabItem: TabItem.crafting,
+                        ),
                       NavbarButton(
                         onPressed: (tabItem) {
                           setState(() {

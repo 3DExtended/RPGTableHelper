@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/src/consumer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 import 'package:rpg_table_helper/services/systemclock_service.dart';
 
 class DependencyProvider extends InheritedWidget {
@@ -54,6 +55,20 @@ class DependencyProvider extends InheritedWidget {
     _registerService<IServerCommunicationService>(
         () => ServerCommunicationService(widgetRef: widgetRef),
         () => MockServerCommunicationService(widgetRef: widgetRef));
+
+    _registerService<IServerMethodsService>(() {
+      var serverCommunicationService =
+          getService<IServerCommunicationService>();
+      return ServerMethodsService(
+          serverCommunicationService: serverCommunicationService,
+          widgetRef: widgetRef);
+    }, () {
+      var serverCommunicationService =
+          getService<IServerCommunicationService>();
+      return ServerMethodsService(
+          serverCommunicationService: serverCommunicationService,
+          widgetRef: widgetRef);
+    });
   }
 
   void _registerService<T extends Object>(T Function() realServiceFactoryFunc,
