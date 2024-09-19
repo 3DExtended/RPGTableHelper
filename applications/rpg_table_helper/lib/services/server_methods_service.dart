@@ -14,7 +14,7 @@ abstract class IServerMethodsService {
     required this.serverCommunicationService,
   }) {
     serverCommunicationService.registerCallbackSingleString(
-      registerGameResponse: registerGameResponse,
+      function: registerGameResponse,
       functionName: "registerGameResponse",
     );
 

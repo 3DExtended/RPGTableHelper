@@ -9,6 +9,8 @@ import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
 
@@ -190,20 +192,40 @@ class _ChoosePlayerOrDmModalContentState
                         height: 10,
                       ),
                       Center(
-                        child: CustomButton(
-                          label: "Session beginnen", // TODO localize
-                          onPressed: isStartSessionButtonDisabled
-                              ? null
-                              : () async {
-                                  // add register game button
-                                  final com = DependencyProvider.of(context)
-                                      .getService<IServerMethodsService>();
-                                  await com.registerGame(
-                                      campagneName:
-                                          dmCampagneNameController.text);
-                                  if (!context.mounted) return;
-                                  Navigator.of(context).pop();
-                                },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CustomButton(
+                              label: "Session beginnen", // TODO localize
+                              onPressed: isStartSessionButtonDisabled
+                                  ? null
+                                  : () async {
+                                      // add register game button
+                                      final com = DependencyProvider.of(context)
+                                          .getService<IServerMethodsService>();
+                                      await com.registerGame(
+                                          campagneName:
+                                              dmCampagneNameController.text);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                    },
+                            ),
+                            SizedBox(
+                              width: DependencyProvider.of(context).isMocked
+                                  ? 10
+                                  : 20,
+                            ),
+                            CustomButton(
+                              label: "RPG konfigurieren", // TODO localize
+                              onPressed: isStartSessionButtonDisabled
+                                  ? null
+                                  : () {
+                                      navigatorKey.currentState!.pushNamed(
+                                          allWizardConfigurations
+                                              .entries.first.key);
+                                    },
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(

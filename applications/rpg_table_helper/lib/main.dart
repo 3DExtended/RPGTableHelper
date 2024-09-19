@@ -3,7 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/tab_handler.dart';
+import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 void main() {
@@ -74,6 +76,18 @@ class AppRoutingShell extends ConsumerWidget {
                 settings: settings,
               );
           }
+
+          for (var config in allWizardConfigurations.entries.toList()) {
+            if (settings.name == config.key) {
+              return MaterialWithModalsPageRoute(
+                builder: (_) => WizardRendererForConfiguration(
+                  configuration: config.value,
+                ),
+                settings: settings,
+              );
+            }
+          }
+
           return null;
         },
       ),
