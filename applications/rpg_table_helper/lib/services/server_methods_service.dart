@@ -14,14 +14,23 @@ abstract class IServerMethodsService {
     required this.serverCommunicationService,
   }) {
     serverCommunicationService.registerCallbackSingleString(
-        registerGameResponse: registerGameResponse,
-        functionName: "registerGameResponse");
+      registerGameResponse: registerGameResponse,
+      functionName: "registerGameResponse",
+    );
+
+    serverCommunicationService.registerCallbackThreeStrings(
+      function: requestJoinPermission,
+      functionName: "requestJoinPermission",
+    );
   }
 
   // this should contain every method that is callable by the server
-  void registerGameResponse({required String parameter});
+  void registerGameResponse(String parameter);
 
-  // this should contain every method that calls the server
+  void requestJoinPermission(
+      String playerName, String gameCode, String connectionId);
+
+  // this should contain every method that call the server
   Future registerGame({required String campagneName});
 }
 
@@ -37,7 +46,7 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  void registerGameResponse({required String parameter}) {
+  void registerGameResponse(String parameter) {
     print("Gamecode: $parameter");
     // as we have loaded the session here, we now can update the riverpod state to reflect that
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
@@ -47,6 +56,30 @@ class ServerMethodsService extends IServerMethodsService {
                 isDm: true,
                 isInSession: true,
                 sessionConnectionNumberForPlayers: parameter) ??
+            ConnectionDetails.defaultValue());
+  }
+
+  @override
+  void requestJoinPermission(
+      String playerName, String gameCode, String connectionId) {
+    print("requestJoinPermission:");
+
+    List<PlayerJoinRequests> openRequests = [
+      ...(widgetRef.read(connectionDetailsProvider).value?.openPlayerRequests ??
+          []),
+      PlayerJoinRequests(
+        playerName: playerName,
+        gameCode: gameCode,
+        connectionId: connectionId,
+      ),
+    ];
+
+    // as we have loaded the session here, we now can update the riverpod state to reflect that
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        widgetRef.read(connectionDetailsProvider).value?.copyWith(
+                isConnected: true,
+                isConnecting: false,
+                openPlayerRequests: openRequests) ??
             ConnectionDetails.defaultValue());
   }
 }

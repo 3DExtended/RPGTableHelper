@@ -5,14 +5,33 @@ part 'connection_details.g.dart';
 
 @JsonSerializable()
 @CopyWith()
+class PlayerJoinRequests {
+  final String playerName;
+  final String gameCode;
+  final String connectionId;
+
+  PlayerJoinRequests(
+      {required this.playerName,
+      required this.gameCode,
+      required this.connectionId});
+  factory PlayerJoinRequests.fromJson(Map<String, dynamic> json) =>
+      _$PlayerJoinRequestsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PlayerJoinRequestsToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
 class ConnectionDetails {
   final bool isConnected;
   final bool isConnecting;
   final bool isInSession;
   final String? sessionConnectionNumberForPlayers;
+  final List<PlayerJoinRequests>? openPlayerRequests;
   final bool isDm;
 
   ConnectionDetails({
+    required this.openPlayerRequests,
     required this.isConnected,
     required this.sessionConnectionNumberForPlayers,
     required this.isConnecting,
@@ -26,6 +45,7 @@ class ConnectionDetails {
         isInSession: false,
         isDm: false,
         sessionConnectionNumberForPlayers: null,
+        openPlayerRequests: [],
       );
 
   bool get isPlayer => !isDm;

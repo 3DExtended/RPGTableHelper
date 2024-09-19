@@ -33,9 +33,14 @@ abstract class IServerCommunicationService {
   }
 
   void registerCallbackSingleString({
-    required void Function({required String parameter}) registerGameResponse,
+    required void Function(String parameter) function,
     required String functionName,
   });
+
+  void registerCallbackThreeStrings(
+      {required void Function(String param1, String param2, String param3)
+          function,
+      required String functionName});
 
   Future executeServerFunction(String functionName, {List<Object>? args});
 }
@@ -144,7 +149,7 @@ class ServerCommunicationService extends IServerCommunicationService {
 
   @override
   void registerCallbackSingleString({
-    required void Function({required String parameter}) registerGameResponse,
+    required void Function(String parameter) function,
     required String functionName,
   }) {
     hubConnection!.on(functionName, (List<Object?>? parameters) {
@@ -155,7 +160,28 @@ class ServerCommunicationService extends IServerCommunicationService {
 
       if (param == null) return;
 
-      registerGameResponse(parameter: param);
+      function(param);
+    });
+  }
+
+  @override
+  void registerCallbackThreeStrings(
+      {required void Function(String param1, String param2, String param3)
+          function,
+      required String functionName}) {
+    hubConnection!.on(functionName, (List<Object?>? parameters) {
+      if (parameters == null || parameters.isEmpty) return;
+
+      final String? param1 =
+          parameters[0] != null ? parameters[0] as String : null;
+      final String? param2 =
+          parameters[1] != null ? parameters[1] as String : null;
+      final String? param3 =
+          parameters[2] != null ? parameters[2] as String : null;
+
+      if (param1 == null || param2 == null || param3 == null) return;
+
+      function(param1, param2, param3);
     });
   }
 
@@ -174,7 +200,7 @@ class MockServerCommunicationService extends IServerCommunicationService {
 
   @override
   void registerCallbackSingleString({
-    required void Function({required String parameter}) registerGameResponse,
+    required void Function(String parameter) function,
     required String functionName,
   }) {
     // TODO: implement registerCallbackSingleString
@@ -184,6 +210,14 @@ class MockServerCommunicationService extends IServerCommunicationService {
   Future executeServerFunction(String s, {List<Object>? args}) {
     // TODO: implement executeServerFunction
     throw UnimplementedError();
+  }
+
+  @override
+  void registerCallbackThreeStrings(
+      {required void Function(String param1, String param2, String param3)
+          function,
+      required String functionName}) {
+    // TODO: implement registerCallbackThreeStrings
   }
 }
 

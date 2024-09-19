@@ -86,7 +86,6 @@ class MainTwoBlockLayout extends ConsumerWidget {
                 onPressed: () async {
                   if (isInSession) {
                     if (isDmDevice) {
-                      // TODO open DM modal
                       Navigator.of(context)
                           .pushNamed(allWizardConfigurations.entries.first.key);
                     } else {
@@ -94,7 +93,13 @@ class MainTwoBlockLayout extends ConsumerWidget {
                     }
                   } else {
                     // open "connect modal"
-                    await showChoosePlayerOrDmModal(context);
+                    if (isConnectedToServer) {
+                      await showChoosePlayerOrDmModal(context);
+                    } else {
+                      // This is a fallback such that the dm can work offline on their configurations
+                      Navigator.of(context)
+                          .pushNamed(allWizardConfigurations.entries.first.key);
+                    }
                   }
                 },
                 child: isConnectedBtn),

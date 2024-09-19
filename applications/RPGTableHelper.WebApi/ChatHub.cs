@@ -13,6 +13,9 @@ public class ChatHub : Hub
     //     Clients.All.SendAsync("OnMessage", name, message);
     // }
 
+    /// <summary>
+    /// DM Method for starting a session
+    /// </summary>
     public async Task RegisterGame(string campagneName)
     {
         Console.WriteLine("New game initiated for campagne: " + campagneName);
@@ -35,6 +38,30 @@ public class ChatHub : Hub
             gameToken,
             (CancellationToken)default
         );
+    }
+
+    /// <summary>
+    /// Player Method to join a game
+    /// </summary>
+    public async Task JoinGame(string playerName, string gameCode)
+    {
+        Console.WriteLine(
+            "A player with the name "
+                + playerName
+                + " would like to join the game with code "
+                + gameCode
+        );
+
+        // ask DM for joining permissions:
+        await Clients
+            .Group(gameCode + "_Dms")
+            .SendAsync(
+                "requestJoinPermission",
+                playerName,
+                gameCode,
+                Context.ConnectionId,
+                (CancellationToken)default
+            );
     }
 
     public override async Task OnConnectedAsync()
