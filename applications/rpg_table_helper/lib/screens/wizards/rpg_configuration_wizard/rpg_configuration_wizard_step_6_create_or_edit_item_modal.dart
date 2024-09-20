@@ -184,11 +184,11 @@ class _CreateOrEditItemModalContentState
                                             subCategories: [],
                                             hideInInventoryFilters: true),
                                       ].map((category) {
-                                        return DropdownMenuEntry<String?>(
+                                        return DropdownMenuItem<String?>(
                                           value: category.uuid == ""
                                               ? null
                                               : category.uuid,
-                                          label: category.name,
+                                          child: Text(category.name),
                                         );
                                       }).toList()),
                                 ),
@@ -299,13 +299,14 @@ class _CreateOrEditItemModalContentState
                                               items: _allPlacesOfFindings
                                                   .sortBy((p) => p.name)
                                                   .map((placeOfFinding) {
-                                                return DropdownMenuEntry<
+                                                return DropdownMenuItem<
                                                     String?>(
                                                   value:
                                                       placeOfFinding.uuid == ""
                                                           ? null
                                                           : placeOfFinding.uuid,
-                                                  label: placeOfFinding.name,
+                                                  child:
+                                                      Text(placeOfFinding.name),
                                                 );
                                               }).toList()),
                                         ),

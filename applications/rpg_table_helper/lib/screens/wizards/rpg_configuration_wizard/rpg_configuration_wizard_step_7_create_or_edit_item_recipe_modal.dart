@@ -138,7 +138,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                             Row(
                               children: [
                                 Expanded(
-                                  child: CustomDropdownMenu(
+                                  child: CustomDropdownMenuWithSearch(
                                       selectedValueTemp:
                                           selectedCreatingItem.$1,
                                       setter: (newValue) {
@@ -192,7 +192,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: CustomDropdownMenu(
+                                          child: CustomDropdownMenuWithSearch(
                                               selectedValueTemp:
                                                   tuple.value == ""
                                                       ? null
@@ -300,7 +300,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: CustomDropdownMenu(
+                                          child: CustomDropdownMenuWithSearch(
                                               selectedValueTemp:
                                                   tuple.value.$1 == ""
                                                       ? null
@@ -410,6 +410,9 @@ class _CreateOrEditCraftingRecipeModalContentState
                                   ),
                                 ],
                               ),
+                            ),
+                            const SizedBox(
+                              height: 10,
                             ),
                             SizedBox(
                                 height: EdgeInsets.fromViewPadding(
