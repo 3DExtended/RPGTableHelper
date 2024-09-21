@@ -25,3 +25,6 @@ const outerPadding = 20.0;
 
 const sharedPrefsKeyRpgConfigJson = "rpgconfig";
 const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
+
+// The location of the SignalR Server.
+const serverUrl = "http://192.168.178.106:5012/Chat";

@@ -93,6 +93,9 @@ abstract class _$ConnectionDetailsCWProxy {
 
   ConnectionDetails isConnecting(bool isConnecting);
 
+  ConnectionDetails playerProfiles(
+      List<RpgCharacterConfiguration>? playerProfiles);
+
   ConnectionDetails isInSession(bool isInSession);
 
   ConnectionDetails isDm(bool isDm);
@@ -108,6 +111,7 @@ abstract class _$ConnectionDetailsCWProxy {
     bool? isConnected,
     String? sessionConnectionNumberForPlayers,
     bool? isConnecting,
+    List<RpgCharacterConfiguration>? playerProfiles,
     bool? isInSession,
     bool? isDm,
   });
@@ -139,6 +143,11 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
       this(isConnecting: isConnecting);
 
   @override
+  ConnectionDetails playerProfiles(
+          List<RpgCharacterConfiguration>? playerProfiles) =>
+      this(playerProfiles: playerProfiles);
+
+  @override
   ConnectionDetails isInSession(bool isInSession) =>
       this(isInSession: isInSession);
 
@@ -158,6 +167,7 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
     Object? isConnected = const $CopyWithPlaceholder(),
     Object? sessionConnectionNumberForPlayers = const $CopyWithPlaceholder(),
     Object? isConnecting = const $CopyWithPlaceholder(),
+    Object? playerProfiles = const $CopyWithPlaceholder(),
     Object? isInSession = const $CopyWithPlaceholder(),
     Object? isDm = const $CopyWithPlaceholder(),
   }) {
@@ -181,6 +191,10 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
               ? _value.isConnecting
               // ignore: cast_nullable_to_non_nullable
               : isConnecting as bool,
+      playerProfiles: playerProfiles == const $CopyWithPlaceholder()
+          ? _value.playerProfiles
+          // ignore: cast_nullable_to_non_nullable
+          : playerProfiles as List<RpgCharacterConfiguration>?,
       isInSession:
           isInSession == const $CopyWithPlaceholder() || isInSession == null
               ? _value.isInSession
@@ -228,6 +242,10 @@ ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
       sessionConnectionNumberForPlayers:
           json['sessionConnectionNumberForPlayers'] as String?,
       isConnecting: json['isConnecting'] as bool,
+      playerProfiles: (json['playerProfiles'] as List<dynamic>?)
+          ?.map((e) =>
+              RpgCharacterConfiguration.fromJson(e as Map<String, dynamic>))
+          .toList(),
       isInSession: json['isInSession'] as bool,
       isDm: json['isDm'] as bool,
     );
@@ -240,5 +258,6 @@ Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
       'sessionConnectionNumberForPlayers':
           instance.sessionConnectionNumberForPlayers,
       'openPlayerRequests': instance.openPlayerRequests,
+      'playerProfiles': instance.playerProfiles,
       'isDm': instance.isDm,
     };

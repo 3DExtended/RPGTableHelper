@@ -271,8 +271,16 @@ class _ChoosePlayerOrDmModalContentState
                           label: "Session beitreten", // TODO localize
                           onPressed: isJoinSessionButtonDisabled
                               ? null
-                              : () {
-                                  // TODO add join game
+                              : () async {
+                                  // add register game button
+                                  final com = DependencyProvider.of(context)
+                                      .getService<IServerMethodsService>();
+                                  await com.joinGameSession(
+                                      gameCode: sessionCodeController.text,
+                                      playerName: playerNameController.text);
+                                  if (!context.mounted) return;
+                                  // TODO show loading spinner?
+                                  Navigator.of(context).pop();
                                 },
                         ),
                       ),

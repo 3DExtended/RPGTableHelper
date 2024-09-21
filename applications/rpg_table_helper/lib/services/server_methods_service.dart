@@ -32,6 +32,8 @@ abstract class IServerMethodsService {
 
   // this should contain every method that call the server
   Future registerGame({required String campagneName});
+  Future joinGameSession(
+      {required String playerName, required String gameCode});
 }
 
 class ServerMethodsService extends IServerMethodsService {
@@ -43,6 +45,13 @@ class ServerMethodsService extends IServerMethodsService {
   Future registerGame({required String campagneName}) async {
     await serverCommunicationService
         .executeServerFunction("RegisterGame", args: [campagneName]);
+  }
+
+  @override
+  Future joinGameSession(
+      {required String playerName, required String gameCode}) async {
+    await serverCommunicationService
+        .executeServerFunction("JoinGame", args: [playerName, gameCode]);
   }
 
   @override

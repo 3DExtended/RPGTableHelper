@@ -1,5 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 
 part 'connection_details.g.dart';
 
@@ -28,6 +29,7 @@ class ConnectionDetails {
   final bool isInSession;
   final String? sessionConnectionNumberForPlayers;
   final List<PlayerJoinRequests>? openPlayerRequests;
+  final List<RpgCharacterConfiguration>? playerProfiles;
   final bool isDm;
 
   ConnectionDetails({
@@ -35,6 +37,7 @@ class ConnectionDetails {
     required this.isConnected,
     required this.sessionConnectionNumberForPlayers,
     required this.isConnecting,
+    required this.playerProfiles,
     required this.isInSession,
     required this.isDm,
   });
@@ -45,7 +48,29 @@ class ConnectionDetails {
         isInSession: false,
         isDm: false,
         sessionConnectionNumberForPlayers: null,
-        openPlayerRequests: [],
+        playerProfiles: [],
+        openPlayerRequests: [
+          PlayerJoinRequests(
+              connectionId: "asdf asdf asdf",
+              gameCode: "asdfasdf",
+              playerName: "Peter"),
+          PlayerJoinRequests(
+              connectionId: "asdf asdf asdf",
+              gameCode: "asdfasdf",
+              playerName: "Marie"),
+          PlayerJoinRequests(
+              connectionId: "asdf asdf asdf",
+              gameCode: "asdfasdf",
+              playerName: "Lukas"),
+          PlayerJoinRequests(
+              connectionId: "asdf asdf asdf",
+              gameCode: "asdfasdf",
+              playerName: "Rachel"),
+          PlayerJoinRequests(
+              connectionId: "asdf asdf asdf",
+              gameCode: "asdfasdf",
+              playerName: "Tobias"),
+        ],
       );
 
   bool get isPlayer => !isDm;

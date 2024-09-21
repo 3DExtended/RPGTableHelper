@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/src/client.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -62,9 +63,6 @@ class ServerCommunicationService extends IServerCommunicationService {
                   isConnecting: true,
                 ) ??
             ConnectionDetails.defaultValue());
-
-    // The location of the SignalR Server.
-    const serverUrl = "http://localhost:5012/Chat"; // TODO move me to constants
 
     final defaultHeaders = MessageHeaders();
     defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
@@ -127,14 +125,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     hubConnection!
         .on("aClientProvidedFunction", _handleAClientProvidedFunction);
     Future.delayed(Duration.zero, () async {
-      widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-          widgetRef.read(connectionDetailsProvider).value?.copyWith(
-                    isConnected: true,
-                    isConnecting: false,
-                  ) ??
-              ConnectionDetails.defaultValue());
-
-      await hubConnection!.start();
+      await tryOpenConnection();
     });
   }
 
@@ -187,7 +178,25 @@ class ServerCommunicationService extends IServerCommunicationService {
 
   @override
   Future executeServerFunction(String methodName, {List<Object>? args}) async {
+    if (!connectionIsOpen) {
+      await tryOpenConnection();
+    }
+
     await hubConnection!.invoke(methodName, args: args);
+  }
+
+  Future tryOpenConnection() async {
+    try {
+      await hubConnection!.start();
+      connectionIsOpen = true;
+
+      widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+          widgetRef.read(connectionDetailsProvider).value?.copyWith(
+                    isConnected: true,
+                    isConnecting: false,
+                  ) ??
+              ConnectionDetails.defaultValue());
+    } catch (e) {}
   }
 }
 
