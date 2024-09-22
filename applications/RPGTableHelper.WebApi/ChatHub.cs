@@ -95,8 +95,25 @@ public class ChatHub : Hub
         Console.WriteLine($"The DM sent an updated RPG config for game {gameCode}");
 
         await Clients
-            .Group(gameCode + "_All")
+            .OthersInGroup(gameCode + "_All")
             .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
+
+        string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
+        string fileName = $"{timestamp}-rpgbackup.json";
+        string currentDirectory = Directory.GetCurrentDirectory();
+        string filePath = Path.Combine(currentDirectory, fileName);
+
+        try
+        {
+            // Write the long string to the file
+            await File.WriteAllTextAsync(filePath, rpgConfig, (CancellationToken)default);
+
+            Console.WriteLine($"File saved to {filePath}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
 
     public override async Task OnConnectedAsync()

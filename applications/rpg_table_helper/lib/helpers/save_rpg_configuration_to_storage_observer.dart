@@ -32,23 +32,27 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (newValue is AsyncData<RpgConfigurationModel>) {
-      var asdf = container.read(connectionDetailsProvider).valueOrNull;
+      var connectionDetails =
+          container.read(connectionDetailsProvider).valueOrNull;
 
-      var isPlayer = (asdf?.isPlayer ?? false) &&
-          (asdf?.isInSession ?? false) &&
-          (asdf?.isConnected ?? false);
+      var isPlayer = (connectionDetails?.isPlayer ?? false) &&
+          (connectionDetails?.isInSession ?? false) &&
+          (connectionDetails?.isConnected ?? false);
 
       if (!isPlayer) {
         print("Saving rpg config");
         _handleAsyncData(newValue);
 
-        if (asdf != null && asdf.isConnected && asdf.isDm) {
+        if (connectionDetails != null &&
+            connectionDetails.isConnected &&
+            connectionDetails.isDm) {
           // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
           DependencyProvider.getIt!
               .get<IServerMethodsService>()
               .sendUpdatedRpgConfig(
                   rpgConfig: newValue.requireValue,
-                  gameCode: asdf.sessionConnectionNumberForPlayers!);
+                  gameCode:
+                      connectionDetails.sessionConnectionNumberForPlayers!);
         }
       }
     }
