@@ -27,13 +27,13 @@ class DependencyProvider extends InheritedWidget {
       MockedRiverpodDependencyProviderWrapper(
           mockOverrides: mockOverrides, child: child);
 
-  late final GetIt _getIt;
+  static GetIt? getIt;
   final bool isMocked;
   final Map<Type, dynamic Function()>? mockOverrides;
   final WidgetRef widgetRef;
 
   T getService<T extends Object>() {
-    var result = _getIt.get<T>();
+    var result = getIt!.get<T>();
     return result;
   }
 
@@ -44,7 +44,7 @@ class DependencyProvider extends InheritedWidget {
     required this.widgetRef,
     this.mockOverrides,
   }) {
-    _getIt = GetIt.asNewInstance();
+    getIt = GetIt.asNewInstance();
 
     // TODO add all services here
     _registerService<ISystemClockService>(
@@ -74,12 +74,12 @@ class DependencyProvider extends InheritedWidget {
   void _registerService<T extends Object>(T Function() realServiceFactoryFunc,
       T Function() mockServiceFactoryFunc) {
     if (mockOverrides != null && mockOverrides!.keys.any((t) => T == t)) {
-      _getIt.registerLazySingleton<T>(() => mockOverrides![T]!());
+      getIt!.registerLazySingleton<T>(() => mockOverrides![T]!());
     } else {
       if (isMocked) {
-        _getIt.registerLazySingleton<T>(mockServiceFactoryFunc);
+        getIt!.registerLazySingleton<T>(mockServiceFactoryFunc);
       } else {
-        _getIt.registerLazySingleton<T>(realServiceFactoryFunc);
+        getIt!.registerLazySingleton<T>(realServiceFactoryFunc);
       }
     }
   }

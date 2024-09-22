@@ -64,6 +64,41 @@ public class ChatHub : Hub
             );
     }
 
+    /// <summary>
+    /// Dm Method to accept a join request
+    /// </summary>
+    public async Task AcceptJoinRequest(
+        string playerName,
+        string gameCode,
+        string connectionId,
+        string rpgConfig
+    )
+    {
+        Console.WriteLine($"A player named {playerName} was accepted to game {gameCode}");
+
+        // ask DM for joining permissions:
+        await Groups.AddToGroupAsync(connectionId, gameCode + "_All", (CancellationToken)default);
+        await Clients
+            .Client(connectionId)
+            .SendAsync("joinRequestAccepted", (CancellationToken)default);
+
+        await Clients
+            .Group(gameCode + "_All")
+            .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
+    }
+
+    /// <summary>
+    /// Dm Method for updating all rpg configs
+    /// </summary>
+    public async Task SendUpdatedRpgConfig(string gameCode, string rpgConfig)
+    {
+        Console.WriteLine($"The DM sent an updated RPG config for game {gameCode}");
+
+        await Clients
+            .Group(gameCode + "_All")
+            .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
+    }
+
     public override async Task OnConnectedAsync()
     {
         // This newMessage call is what is not being received on the front end

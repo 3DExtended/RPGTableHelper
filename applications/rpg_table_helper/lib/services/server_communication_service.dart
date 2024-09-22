@@ -33,6 +33,9 @@ abstract class IServerCommunicationService {
         .updateConfiguration(config);
   }
 
+  void registerCallbackWithoutParameters(
+      {required void Function() function, required String functionName});
+
   void registerCallbackSingleString({
     required void Function(String parameter) function,
     required String functionName,
@@ -139,6 +142,14 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   @override
+  void registerCallbackWithoutParameters(
+      {required void Function() function, required String functionName}) {
+    hubConnection!.on(functionName, (List<Object?>? parameters) {
+      function();
+    });
+  }
+
+  @override
   void registerCallbackSingleString({
     required void Function(String parameter) function,
     required String functionName,
@@ -227,6 +238,12 @@ class MockServerCommunicationService extends IServerCommunicationService {
           function,
       required String functionName}) {
     // TODO: implement registerCallbackThreeStrings
+  }
+
+  @override
+  void registerCallbackWithoutParameters(
+      {required void Function() function, required String functionName}) {
+    // TODO: implement registerCallbackWithoutParameters
   }
 }
 

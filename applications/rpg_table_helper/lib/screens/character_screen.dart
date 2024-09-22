@@ -6,7 +6,10 @@ import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 
 class CharacterScreen extends ConsumerWidget {
   static String route = "character";
@@ -41,7 +44,7 @@ class CharacterScreen extends ConsumerWidget {
                     ),
                     CustomMarkdownBody(
                         text:
-                            "Deine Session Id (für deine Player): __${connectionDetails!.sessionConnectionNumberForPlayers ?? ""}__"),
+                            "Deine Session ID (für deine Player): __${connectionDetails!.sessionConnectionNumberForPlayers ?? ""}__"),
                     const SizedBox(
                       height: 20,
                     ),
@@ -138,8 +141,21 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                                             255, 79, 255, 103),
                                       ),
                                 ),
-                                onPressed: () {
-                                  // TODO make me
+                                onPressed: () async {
+                                  var com = DependencyProvider.of(context)
+                                      .getService<IServerMethodsService>();
+
+                                  com.acceptJoinRequest(
+                                    connectionId: request.value.connectionId,
+                                    gameCode: request.value.gameCode,
+                                    playerName: request.value.playerName,
+                                    rpgConfig: ref
+                                        .read(rpgConfigurationProvider)
+                                        .requireValue,
+                                  );
+
+                                  // remove this particular request from open requests
+                                  deleteJoinRequestAt(request, ref);
                                 }),
                             CupertinoButton(
                                 minSize: 0,
@@ -156,18 +172,8 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                                       ),
                                 ),
                                 onPressed: () {
-                                  // TODO make me
                                   // remove this particular request from open requests
-                                  var newRequests = [
-                                    ...connectionDetails.openPlayerRequests!
-                                  ];
-                                  newRequests.removeAt(request.key);
-                                  ref
-                                      .read(connectionDetailsProvider.notifier)
-                                      .updateConfiguration(
-                                          connectionDetails.copyWith(
-                                        openPlayerRequests: newRequests,
-                                      ));
+                                  deleteJoinRequestAt(request, ref);
                                 }),
                             const SizedBox(
                               width: 15,
@@ -183,5 +189,16 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                 )),
       ],
     );
+  }
+
+  void deleteJoinRequestAt(
+      MapEntry<int, PlayerJoinRequests> request, WidgetRef ref) {
+    var newRequests = [...connectionDetails.openPlayerRequests!];
+    newRequests.removeAt(request.key);
+    ref
+        .read(connectionDetailsProvider.notifier)
+        .updateConfiguration(connectionDetails.copyWith(
+          openPlayerRequests: newRequests,
+        ));
   }
 }

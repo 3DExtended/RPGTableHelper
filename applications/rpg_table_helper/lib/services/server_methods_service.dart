@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 
 abstract class IServerMethodsService {
   final bool isMock;
   final WidgetRef widgetRef;
-
   final IServerCommunicationService serverCommunicationService;
+
   IServerMethodsService({
     required this.isMock,
     required this.widgetRef,
@@ -22,18 +25,36 @@ abstract class IServerMethodsService {
       function: requestJoinPermission,
       functionName: "requestJoinPermission",
     );
+
+    serverCommunicationService.registerCallbackWithoutParameters(
+      function: joinRequestAccepted,
+      functionName: "joinRequestAccepted",
+    );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: updateRpgConfig,
+      functionName: "updateRpgConfig",
+    );
   }
 
   // this should contain every method that is callable by the server
   void registerGameResponse(String parameter);
-
   void requestJoinPermission(
       String playerName, String gameCode, String connectionId);
+  void joinRequestAccepted();
+  void updateRpgConfig(String parameter);
 
   // this should contain every method that call the server
   Future registerGame({required String campagneName});
   Future joinGameSession(
       {required String playerName, required String gameCode});
+  Future acceptJoinRequest(
+      {required String playerName,
+      required String gameCode,
+      required String connectionId,
+      required RpgConfigurationModel rpgConfig});
+  Future sendUpdatedRpgConfig(
+      {required RpgConfigurationModel rpgConfig, required String gameCode});
 }
 
 class ServerMethodsService extends IServerMethodsService {
@@ -90,5 +111,43 @@ class ServerMethodsService extends IServerMethodsService {
                 isConnecting: false,
                 openPlayerRequests: openRequests) ??
             ConnectionDetails.defaultValue());
+  }
+
+  @override
+  void joinRequestAccepted() {
+    print("accepted as player within session");
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        widgetRef.read(connectionDetailsProvider).value?.copyWith(
+                isConnected: true, isConnecting: false, isInSession: true) ??
+            ConnectionDetails.defaultValue());
+  }
+
+  @override
+  void updateRpgConfig(String parameter) {
+    // TODO: implement updateRpgConfig
+    print("Received new rpg config");
+    Map<String, dynamic> map = jsonDecode(parameter);
+
+    var receivedConfig = RpgConfigurationModel.fromJson(map);
+    serverCommunicationService.updateRpgConfiguration(receivedConfig);
+  }
+
+  @override
+  Future acceptJoinRequest(
+      {required String playerName,
+      required String gameCode,
+      required String connectionId,
+      required RpgConfigurationModel rpgConfig}) async {
+    await serverCommunicationService.executeServerFunction("AcceptJoinRequest",
+        args: [playerName, gameCode, connectionId, jsonEncode(rpgConfig)]);
+  }
+
+  @override
+  Future sendUpdatedRpgConfig(
+      {required RpgConfigurationModel rpgConfig,
+      required String gameCode}) async {
+    await serverCommunicationService.executeServerFunction(
+        "SendUpdatedRpgConfig",
+        args: [gameCode, jsonEncode(rpgConfig)]);
   }
 }

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
@@ -29,7 +32,25 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (newValue is AsyncData<RpgConfigurationModel>) {
-      _handleAsyncData(newValue);
+      var asdf = container.read(connectionDetailsProvider).valueOrNull;
+
+      var isPlayer = (asdf?.isPlayer ?? false) &&
+          (asdf?.isInSession ?? false) &&
+          (asdf?.isConnected ?? false);
+
+      if (!isPlayer) {
+        print("Saving rpg config");
+        _handleAsyncData(newValue);
+
+        if (asdf != null && asdf.isConnected && asdf.isDm) {
+          // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
+          DependencyProvider.getIt!
+              .get<IServerMethodsService>()
+              .sendUpdatedRpgConfig(
+                  rpgConfig: newValue.requireValue,
+                  gameCode: asdf.sessionConnectionNumberForPlayers!);
+        }
+      }
     }
   }
 

@@ -50,26 +50,26 @@ class ConnectionDetails {
         sessionConnectionNumberForPlayers: null,
         playerProfiles: [],
         openPlayerRequests: [
-          PlayerJoinRequests(
-              connectionId: "asdf asdf asdf",
-              gameCode: "asdfasdf",
-              playerName: "Peter"),
-          PlayerJoinRequests(
-              connectionId: "asdf asdf asdf",
-              gameCode: "asdfasdf",
-              playerName: "Marie"),
-          PlayerJoinRequests(
-              connectionId: "asdf asdf asdf",
-              gameCode: "asdfasdf",
-              playerName: "Lukas"),
-          PlayerJoinRequests(
-              connectionId: "asdf asdf asdf",
-              gameCode: "asdfasdf",
-              playerName: "Rachel"),
-          PlayerJoinRequests(
-              connectionId: "asdf asdf asdf",
-              gameCode: "asdfasdf",
-              playerName: "Tobias"),
+          // PlayerJoinRequests(
+          //     connectionId: "asdf asdf asdf",
+          //     gameCode: "asdfasdf",
+          //     playerName: "Peter"),
+          // PlayerJoinRequests(
+          //     connectionId: "asdf asdf asdf",
+          //     gameCode: "asdfasdf",
+          //     playerName: "Marie"),
+          // PlayerJoinRequests(
+          //     connectionId: "asdf asdf asdf",
+          //     gameCode: "asdfasdf",
+          //     playerName: "Lukas"),
+          // PlayerJoinRequests(
+          //     connectionId: "asdf asdf asdf",
+          //     gameCode: "asdfasdf",
+          //     playerName: "Rachel"),
+          // PlayerJoinRequests(
+          //     connectionId: "asdf asdf asdf",
+          //     gameCode: "asdfasdf",
+          //     playerName: "Tobias"),
         ],
       );
 
