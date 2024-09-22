@@ -321,7 +321,7 @@ class _CreateOrEditItemModalContentState
                                         SizedBox(
                                           width: 75,
                                           child: CustomTextField(
-                                            keyboardType: TextInputType.text,
+                                            keyboardType: TextInputType.number,
                                             labelText: "DC:", // TODO localize
                                             textEditingController:
                                                 tuple.value.$2,
