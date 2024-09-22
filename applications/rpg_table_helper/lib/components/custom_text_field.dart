@@ -20,6 +20,7 @@ class CustomTextField extends StatelessWidget {
         minLines: keyboardType == TextInputType.multiline ? 5 : null,
         maxLines: keyboardType == TextInputType.multiline ? 5 : null,
         keyboardType: keyboardType,
+        textCapitalization: TextCapitalization.sentences,
         enableSuggestions: true,
         scribbleEnabled: false,
         decoration: InputDecoration(
