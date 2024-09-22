@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -132,18 +130,21 @@ class _ChoosePlayerOrDmModalContentState
         });
       }
     });
+    var modalPadding = 80.0;
+    if (MediaQuery.of(context).size.width < 800) {
+      modalPadding = 20.0;
+    }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 80.0,
-          vertical: 80.0), // TODO maybe percentage of total width?
+      padding: EdgeInsets.symmetric(
+          horizontal: modalPadding,
+          vertical: modalPadding), // TODO maybe percentage of total width?
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
         body: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: min(MediaQuery.of(context).size.width * 0.5, 800)),
+            constraints: const BoxConstraints(maxWidth: 800),
             child: StyledBox(
               borderThickness: 1,
               child: Padding(
