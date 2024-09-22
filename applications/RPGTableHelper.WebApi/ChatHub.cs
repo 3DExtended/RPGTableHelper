@@ -98,7 +98,7 @@ public class ChatHub : Hub
             .OthersInGroup(gameCode + "_All")
             .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
 
-        string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
+        string timestamp = DateTime.Now.ToString("yyyyMMdd");
         string fileName = $"{timestamp}-rpgbackup.json";
         string currentDirectory = Directory.GetCurrentDirectory();
         string filePath = Path.Combine(currentDirectory, fileName);
@@ -128,6 +128,13 @@ public class ChatHub : Hub
         Console.WriteLine("Context.UserIdentifier:" + Context.UserIdentifier);
 
         await base.OnConnectedAsync();
+    }
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        Console.WriteLine("Disconnected: Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
+
+        return base.OnDisconnectedAsync(exception);
     }
 
     private static string GenerateRefreshToken()
