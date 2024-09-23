@@ -103,6 +103,35 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                               ),
                             ),
 
+                            // Duplicate Button
+                            Container(
+                              height: 50,
+                              width: 50,
+                              clipBehavior: Clip.none,
+                              child: CustomButton(
+                                onPressed: () async {
+                                  // open edit modal with clicked item
+                                  await showCreateOrEditItemModal(
+                                      context,
+                                      item.value.copyWith(
+                                        uuid: const UuidV7().generate(),
+                                      )).then((returnValue) {
+                                    if (returnValue == null) {
+                                      return;
+                                    }
+
+                                    setState(() {
+                                      _items.add(returnValue);
+                                      saveChanges();
+                                    });
+                                  });
+                                },
+                                icon: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.clone),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+
                             // Edit Button
                             Container(
                               height: 50,
@@ -129,11 +158,12 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                                     icon: FontAwesomeIcons.penToSquare),
                               ),
                             ),
+                            const SizedBox(width: 10),
 
                             // Remove button
                             Container(
                               height: 50,
-                              width: 70,
+                              width: 50,
                               clipBehavior: Clip.none,
                               child: CustomButton(
                                 onPressed: () {
@@ -147,6 +177,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                                     icon: FontAwesomeIcons.trashCan),
                               ),
                             ),
+                            const SizedBox(width: 10),
                           ],
                         ),
                         _LabeledRow(
