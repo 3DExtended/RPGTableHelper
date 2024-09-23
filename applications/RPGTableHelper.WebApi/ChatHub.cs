@@ -102,12 +102,10 @@ public class ChatHub : Hub
         string fileName = $"{timestamp}-rpgbackup.json";
         string currentDirectory = Directory.GetCurrentDirectory();
         string filePath = Path.Combine(currentDirectory, fileName);
-
         try
         {
             // Write the long string to the file
             await File.WriteAllTextAsync(filePath, rpgConfig, (CancellationToken)default);
-
             Console.WriteLine($"File saved to {filePath}");
         }
         catch (Exception ex)

@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class TwoPartWizardStepBody extends StatelessWidget {
   const TwoPartWizardStepBody({
@@ -33,7 +34,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: const Color.fromARGB(33, 210, 191, 221),
+          color: whiteBgTint,
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +59,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
             children: [
               Expanded(
                 child: Container(
-                    color: const Color.fromARGB(33, 210, 191, 221),
+                    color: whiteBgTint,
                     child: LayoutBuilder(builder: (context, constraints) {
                       return SingleChildScrollView(
                         child: Padding(

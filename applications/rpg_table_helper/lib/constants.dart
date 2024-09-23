@@ -28,3 +28,5 @@ const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 
 // The location of the SignalR Server.
 const serverUrl = "http://192.168.178.106:5012/Chat";
+
+const whiteBgTint = Color.fromARGB(33, 210, 191, 221);
