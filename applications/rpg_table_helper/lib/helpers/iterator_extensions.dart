@@ -5,5 +5,5 @@ extension IterableExtensions<T> on Iterable<T> {
 
   Iterable<T> sortByDescending<TSelected extends Comparable<TSelected>>(
           TSelected Function(T) selector) =>
-      sortBy(selector).toList().reversed;
+      toList()..sort((a, b) => selector(b).compareTo(selector(a)));
 }

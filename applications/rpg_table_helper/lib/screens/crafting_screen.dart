@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/categorized_item_layout.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/item_visualization.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -50,284 +53,165 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
     var isLandscape =
         MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
 
-    return Row(
-      children: [
-        Container(
-          color: const Color.fromARGB(32, 124, 124, 124),
-          width: 240,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: CustomMarkdownBody(
-                      text:
-                          "# ${characterConfig?.characterName == null || characterConfig!.characterName.isEmpty ? "Player Name" : characterConfig.characterName}"),
-                ),
-                const HorizontalLine(),
-                ...categories.map(
-                  (category) => Column(
+    var categoryColumns = [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: CustomMarkdownBody(
+            text:
+                "# ${characterConfig?.characterName == null || characterConfig!.characterName.isEmpty ? "Player Name" : characterConfig.characterName}"),
+      ),
+      const HorizontalLine(),
+      ...categories.map(
+        (category) => Column(
+          children: [
+            CupertinoButton(
+              onPressed: () {
+                setState(() {
+                  selectedCategory = category.uuid;
+                  selectedParentCategory = category.uuid;
+                });
+              },
+              minSize: 0,
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                color: category.uuid == selectedParentCategory
+                    ? whiteBgTint
+                    : Colors.transparent,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
                     children: [
-                      CupertinoButton(
+                      Expanded(
+                        child: Text(
+                          category.name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(color: Colors.white, fontSize: 24),
+                        ),
+                      ),
+                      // show chevron if subcategories
+                      if (category.subCategories.isNotEmpty)
+                        CustomFaIcon(
+                          size: 20,
+                          icon: selectedParentCategory == category.uuid
+                              ? FontAwesomeIcons.chevronUp
+                              : FontAwesomeIcons.chevronDown,
+                        )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (category.subCategories.isNotEmpty &&
+                category.uuid == selectedParentCategory)
+              ...category.subCategories
+                  .where((sc) => getSubcategoryHasRecipes(rpgConfig, sc))
+                  .map((subCategory) => CupertinoButton(
                         onPressed: () {
                           setState(() {
-                            selectedCategory = category.uuid;
+                            selectedCategory = subCategory.uuid;
                             selectedParentCategory = category.uuid;
                           });
                         },
                         minSize: 0,
-                        padding: const EdgeInsets.all(0),
-                        child: Container(
-                          color: category.uuid == selectedParentCategory
-                              ? whiteBgTint
-                              : Colors.transparent,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    category.name,
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(left: 30),
+                              child: Row(
+                                children: [
+                                  StyledBox(
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      color:
+                                          selectedCategory == subCategory.uuid
+                                              ? Colors.white
+                                              : Colors.transparent,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    subCategory.name,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium!
                                         .copyWith(
-                                            color: Colors.white, fontSize: 24),
+                                            color: Colors.white, fontSize: 16),
                                   ),
-                                ),
-                                // show chevron if subcategories
-                                if (category.subCategories.isNotEmpty)
-                                  CustomFaIcon(
-                                    size: 20,
-                                    icon:
-                                        selectedParentCategory == category.uuid
-                                            ? FontAwesomeIcons.chevronUp
-                                            : FontAwesomeIcons.chevronDown,
-                                  )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (category.subCategories.isNotEmpty &&
-                          category.uuid == selectedParentCategory)
-                        ...category.subCategories
-                            .where(
-                                (sc) => getSubcategoryHasRecipes(rpgConfig, sc))
-                            .map((subCategory) => CupertinoButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedCategory = subCategory.uuid;
-                                      selectedParentCategory = category.uuid;
-                                    });
-                                  },
-                                  minSize: 0,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.only(left: 30),
-                                        child: Row(
-                                          children: [
-                                            StyledBox(
-                                              child: Container(
-                                                width: 20,
-                                                height: 20,
-                                                color: selectedCategory ==
-                                                        subCategory.uuid
-                                                    ? Colors.white
-                                                    : Colors.transparent,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              subCategory.name,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .copyWith(
-                                                      color: Colors.white,
-                                                      fontSize: 16),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            color: whiteBgTint,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 9.0),
-                  child: Text(
-                    "Rezepte",
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(color: Colors.white, fontSize: 32),
-                  ),
-                ),
-                const HorizontalLine(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: StaticGrid(
-                        colGap: 20,
-                        rowGap: 20,
-                        columnCount: isLandscape ? 3 : 2,
-                        children: [
-                          ...recipesForSelectedCategory
-                              .map((r) => (
-                                    r,
-                                    getAmountCreatableForRecipe(
-                                        characterConfig, r)
-                                  ))
-                              .map(
-                                (rec) => StyledBox(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Text(
-                                              "${"${getItemForId(rpgConfig!, rec.$1.createdItem.itemUuid).name} (x${rec.$1.createdItem.amountOfUsedItem}"})",
-                                              textAlign: TextAlign.center,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .copyWith(
-                                                      color: Colors.white,
-                                                      fontSize: 18),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Expanded(
-                                            child: SingleChildScrollView(
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  text: getItemForId(
-                                                          rpgConfig,
-                                                          rec.$1.createdItem
-                                                              .itemUuid)
-                                                      .description,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .copyWith(
-                                                          color: Colors.white,
-                                                          fontSize: 14),
-                                                ),
-                                                textAlign: TextAlign.left,
-                                                softWrap: true,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          const HorizontalLine(),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Spacer(),
-                                              Text(
-                                                "Im Besitz: ",
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .copyWith(
-                                                        color: Colors.white,
-                                                        fontSize: 14),
-                                              ),
-                                              Text(
-                                                getItemCountInCharacterInventory(
-                                                        characterConfig,
-                                                        rec.$1.createdItem
-                                                            .itemUuid)
-                                                    .toString(),
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .copyWith(
-                                                        color: Colors.white,
-                                                        fontSize: 14),
-                                              ),
-                                              const Spacer(),
-                                              Text(
-                                                "Herstellbar: ",
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .copyWith(
-                                                        color: Colors.white,
-                                                        fontSize: 14),
-                                              ),
-                                              Text(
-                                                rec.$2.toString(),
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .copyWith(
-                                                        color: Colors.white,
-                                                        fontSize: 14),
-                                              ),
-                                              const Spacer(),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ))
+          ],
+        ),
+      ),
+    ];
+
+    var contentChildren = [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 9.0),
+        child: Text(
+          "Rezepte",
+          style: Theme.of(context)
+              .textTheme
+              .labelMedium!
+              .copyWith(color: Colors.white, fontSize: 32),
+        ),
+      ),
+      const HorizontalLine(),
+      Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: StaticGrid(
+              colGap: 20,
+              rowGap: 20,
+              columnCount: isLandscape ? 3 : 2,
+              children: [
+                ...recipesForSelectedCategory
+                    .map((r) =>
+                        (r, getAmountCreatableForRecipe(characterConfig, r)))
+                    .map(
+                      (rece) => Builder(builder: (context) {
+                        RpgItem itemToRender = getItemForId(
+                            rpgConfig!, rece.$1.createdItem.itemUuid);
+                        int numberOfItemsInInventory =
+                            getItemCountInCharacterInventory(
+                                characterConfig, itemToRender.uuid);
+
+                        return ItemVisualization(
+                            itemToRender: itemToRender,
+                            renderRecipeRelatedThings: true,
+                            itemNameSuffix:
+                                " (x${rece.$1.createdItem.amountOfUsedItem})",
+                            numberOfItemsInInventory: numberOfItemsInInventory,
+                            numberOfCreateableInstances: rece.$2,
+                            craftItem: () {
+                              ref
+                                  .read(rpgCharacterConfigurationProvider
+                                      .notifier)
+                                  .tryCraftItem(rpgConfig, rece.$1);
+                            });
+                      }),
                     ),
-                  ),
-                )
               ],
             ),
           ),
         ),
-      ],
-    );
+      )
+    ];
+
+    return CategorizedItemLayout(
+        categoryColumns: categoryColumns, contentChildren: contentChildren);
   }
 
   RpgItem getItemForId(RpgConfigurationModel rpgConfig, String id) {
@@ -429,17 +313,5 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
 
     return rpgConfig.craftingRecipes.any((cr) =>
         getItemForId(rpgConfig, cr.createdItem.itemUuid).categoryId == sc.uuid);
-  }
-}
-
-extension IterableExtension<T> on Iterable<T> {
-  List<T> distinct<U>({required U Function(T t) by}) {
-    final unique = <U, T>{};
-
-    for (final item in this) {
-      unique.putIfAbsent(by(item), () => item);
-    }
-
-    return unique.values.toList();
   }
 }

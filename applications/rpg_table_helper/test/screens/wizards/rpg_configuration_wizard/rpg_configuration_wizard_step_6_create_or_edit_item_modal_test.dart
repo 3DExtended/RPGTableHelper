@@ -78,7 +78,7 @@ void main() {
                         RpgItem(
                             uuid: "asdf",
                             name: "Test",
-                            categoryId: null,
+                            categoryId: "",
                             description: "Ich bin ein text",
                             patchSize: DiceRoll(
                                 numDice: 22, diceSides: 6, modifier: 1),

@@ -169,7 +169,10 @@ class _CreateOrEditItemModalContentState
                               children: [
                                 Expanded(
                                   child: CustomDropdownMenu(
-                                      selectedValueTemp: selectedItemCategoryId,
+                                      selectedValueTemp:
+                                          selectedItemCategoryId == ""
+                                              ? null
+                                              : selectedItemCategoryId,
                                       setter: (newValue) {
                                         setState(() {
                                           selectedItemCategoryId = newValue;
@@ -183,16 +186,9 @@ class _CreateOrEditItemModalContentState
                                                         _allItemCategories,
                                                     combineCategoryNames: true)
                                             .sortBy((e) => e.name)),
-                                        ItemCategory(
-                                            name: "Sonstiges (Keine Kategorie)",
-                                            uuid: "",
-                                            subCategories: [],
-                                            hideInInventoryFilters: true),
                                       ].map((category) {
                                         return DropdownMenuItem<String?>(
-                                          value: category.uuid == ""
-                                              ? null
-                                              : category.uuid,
+                                          value: category.uuid,
                                           child: Text(category.name),
                                         );
                                       }).toList()),
@@ -417,10 +413,12 @@ class _CreateOrEditItemModalContentState
                           CustomButton(
                             label: "Speichern", // TODO localize
                             onPressed: () {
+                              if (selectedItemCategoryId == null) return;
+
                               navigatorKey.currentState!.pop(RpgItem(
                                   uuid: widget.itemToEdit.uuid,
                                   name: nameController.text,
-                                  categoryId: selectedItemCategoryId,
+                                  categoryId: selectedItemCategoryId!,
                                   description: descriptionController.text,
                                   patchSize: getPatchSize(),
                                   baseCurrencyPrice: getBaseCurrencyPrice(),

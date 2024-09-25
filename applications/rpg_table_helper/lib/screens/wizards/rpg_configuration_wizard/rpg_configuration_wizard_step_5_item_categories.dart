@@ -27,7 +27,7 @@ class _ItemCategoryEdit {
     return ItemCategory(
       uuid: uuid,
       name: nameController.text,
-      subCategories: subCategories.length > 1
+      subCategories: subCategories.isNotEmpty
           ? subCategories.map((e) => e.toItemCategory()).toList()
           : [],
       hideInInventoryFilters: hideInInventoryFilters,

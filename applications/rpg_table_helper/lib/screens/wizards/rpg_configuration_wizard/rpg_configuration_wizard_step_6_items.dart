@@ -237,7 +237,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
               context,
               RpgItem(
                 baseCurrencyPrice: 0,
-                categoryId: null,
+                categoryId: "",
                 description: "",
                 name: "",
                 placeOfFindings: [],

@@ -47,7 +47,7 @@ void main() {
       final sortedStrings =
           strings.sortByDescending<num>((s) => s.length).toList();
 
-      expect(sortedStrings, equals(['banana', 'apple', 'pear', 'kiwi']));
+      expect(sortedStrings, equals(['banana', 'apple', 'kiwi', 'pear']));
     });
 
     test('sortBy works with empty iterable', () {

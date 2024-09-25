@@ -496,7 +496,7 @@ class RpgItem {
   final String uuid;
   final String name;
   final String description;
-  final String? categoryId;
+  final String categoryId;
 
   final List<RpgItemRarity> placeOfFindings;
   final DiceRoll? patchSize;

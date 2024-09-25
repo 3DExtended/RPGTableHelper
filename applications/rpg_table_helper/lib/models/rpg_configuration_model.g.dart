@@ -827,7 +827,7 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem patchSize(DiceRoll? patchSize);
 
-  RpgItem categoryId(String? categoryId);
+  RpgItem categoryId(String categoryId);
 
   RpgItem description(String description);
 
@@ -868,7 +868,7 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem patchSize(DiceRoll? patchSize) => this(patchSize: patchSize);
 
   @override
-  RpgItem categoryId(String? categoryId) => this(categoryId: categoryId);
+  RpgItem categoryId(String categoryId) => this(categoryId: categoryId);
 
   @override
   RpgItem description(String description) => this(description: description);
@@ -911,10 +911,11 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.patchSize
           // ignore: cast_nullable_to_non_nullable
           : patchSize as DiceRoll?,
-      categoryId: categoryId == const $CopyWithPlaceholder()
-          ? _value.categoryId
-          // ignore: cast_nullable_to_non_nullable
-          : categoryId as String?,
+      categoryId:
+          categoryId == const $CopyWithPlaceholder() || categoryId == null
+              ? _value.categoryId
+              // ignore: cast_nullable_to_non_nullable
+              : categoryId as String,
       description:
           description == const $CopyWithPlaceholder() || description == null
               ? _value.description
@@ -1214,7 +1215,7 @@ RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       patchSize: json['patchSize'] == null
           ? null
           : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
-      categoryId: json['categoryId'] as String?,
+      categoryId: json['categoryId'] ?? "" as String,
       description: json['description'] as String,
       baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
       placeOfFindings: (json['placeOfFindings'] as List<dynamic>)

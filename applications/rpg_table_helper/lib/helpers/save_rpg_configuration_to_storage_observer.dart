@@ -32,6 +32,9 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (newValue is AsyncData<RpgConfigurationModel>) {
+      // remove me
+      // _handleAsyncData(newValue);
+
       var connectionDetails =
           container.read(connectionDetailsProvider).valueOrNull;
 
