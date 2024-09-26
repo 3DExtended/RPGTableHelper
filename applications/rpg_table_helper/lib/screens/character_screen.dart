@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,6 +67,47 @@ class CharacterScreen extends ConsumerWidget {
                         height: 20,
                       ),
                     const HorizontalLine(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Wrap(
+                      runSpacing: 10,
+                      spacing: 10,
+                      children: [
+                        ...(connectionDetails.playerProfiles ?? []).map(
+                          (player) => StyledBox(
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Spielername: ${player.characterName}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Colors.white,
+                                        ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "Anzahl Items: ${player.inventory.map((it) => it.amount).sum}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Colors.white,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

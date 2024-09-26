@@ -9,6 +9,7 @@ import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -291,6 +292,15 @@ class _ChoosePlayerOrDmModalContentState
                           onPressed: isJoinSessionButtonDisabled
                               ? null
                               : () async {
+                                  ref
+                                      .read(connectionDetailsProvider.notifier)
+                                      .updateConfiguration(ref
+                                          .read(connectionDetailsProvider)
+                                          .requireValue
+                                          .copyWith(
+                                              sessionConnectionNumberForPlayers:
+                                                  sessionCodeController.text));
+
                                   var currentPlayerModel = ref
                                       .read(rpgCharacterConfigurationProvider)
                                       .requireValue;

@@ -179,6 +179,14 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   isSubbutton: true,
                   onPressed: () {
                     // TODO add modal to add new item
+                    // just add a random item
+
+                    // get some item
+                    var itemId = rpgConfig!.allItems.first.uuid;
+
+                    ref
+                        .read(rpgCharacterConfigurationProvider.notifier)
+                        .grantItem(itemId: itemId, amount: 1);
                   },
                   icon: const CustomFaIcon(icon: FontAwesomeIcons.plus),
                 ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/tab_handler.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -30,7 +31,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-      observers: [SaveRpgConfigurationToStorageObserver()],
+      observers: [
+        SaveRpgConfigurationToStorageObserver(),
+        SaveRpgCharacterConfigurationToStorageObserver()
+      ],
       child: AppRoutingShell(widget: widget),
     );
   }

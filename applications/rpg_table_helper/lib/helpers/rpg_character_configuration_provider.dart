@@ -114,27 +114,49 @@ class RpgCharacterConfigurationNotifier
                   ingredientPair.amountOfUsedItem);
     }
 
-    // add crafted item to state
-    var isItemInInventory = tempInventoryState
-        .where((e) => e.itemUuid == r.createdItem.itemUuid)
-        .singleOrNull;
-
-    // check if itemId is in inventory
-    if (isItemInInventory == null) {
-      tempInventoryState.add(RpgCharacterOwnedItemPair(
-          itemUuid: r.createdItem.itemUuid,
-          amount: r.createdItem.amountOfUsedItem));
-    } else {
-      var indexOfItemInInventory = tempInventoryState
-          .indexWhere((e) => e.itemUuid == r.createdItem.itemUuid);
-      tempInventoryState[indexOfItemInInventory] =
-          tempInventoryState[indexOfItemInInventory].copyWith(
-              amount: tempInventoryState[indexOfItemInInventory].amount +
-                  r.createdItem.amountOfUsedItem);
-    }
+    tempInventoryState = _grantItemsInternal(
+        itemId: r.createdItem.itemUuid,
+        amount: r.createdItem.amountOfUsedItem,
+        currentInventory: tempInventoryState);
 
     state = AsyncValue.data(
         state.requireValue.copyWith(inventory: tempInventoryState));
     return true;
+  }
+
+  void grantItem({required String itemId, int amount = 1}) {
+    var tempInventory = _grantItemsInternal(
+        itemId: itemId,
+        amount: amount,
+        currentInventory: [...state.requireValue.inventory]);
+
+    state =
+        AsyncValue.data(state.requireValue.copyWith(inventory: tempInventory));
+  }
+
+  List<RpgCharacterOwnedItemPair> _grantItemsInternal(
+      {required String itemId,
+      required List<RpgCharacterOwnedItemPair> currentInventory,
+      int amount = 1}) {
+    // add crafted item to state
+    var tempInventoryState = currentInventory;
+
+    var isItemInInventory =
+        tempInventoryState.where((e) => e.itemUuid == itemId).singleOrNull;
+
+    // check if itemId is in inventory
+    if (isItemInInventory == null) {
+      tempInventoryState
+          .add(RpgCharacterOwnedItemPair(itemUuid: itemId, amount: amount));
+    } else {
+      var indexOfItemInInventory =
+          tempInventoryState.indexWhere((e) => e.itemUuid == itemId);
+      tempInventoryState[indexOfItemInInventory] =
+          tempInventoryState[indexOfItemInInventory].copyWith(
+              amount:
+                  tempInventoryState[indexOfItemInInventory].amount + amount);
+    }
+
+    return tempInventoryState;
   }
 }

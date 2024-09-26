@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -127,10 +128,20 @@ class ServerMethodsService extends IServerMethodsService {
   @override
   void joinRequestAccepted() {
     print("accepted as player within session");
+
+    var connectionDetails =
+        widgetRef.read(connectionDetailsProvider).requireValue;
+    var charDetails =
+        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
+
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        widgetRef.read(connectionDetailsProvider).value?.copyWith(
-                isConnected: true, isConnecting: false, isInSession: true) ??
-            ConnectionDetails.defaultValue());
+        connectionDetails.copyWith(
+            isConnected: true, isConnecting: false, isInSession: true));
+
+    sendUpdatedRpgCharacterConfig(
+      charConfig: charDetails,
+      gameCode: connectionDetails.sessionConnectionNumberForPlayers!,
+    );
   }
 
   @override
