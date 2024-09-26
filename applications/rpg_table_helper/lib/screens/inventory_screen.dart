@@ -16,6 +16,7 @@ import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.da
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/add_new_item_modal.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   static String route = "inventory";
@@ -179,16 +180,19 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 padding: const EdgeInsets.only(right: 20.0),
                 child: CustomButton(
                   isSubbutton: true,
-                  onPressed: () {
-                    // TODO add modal to add new item
-                    // just add a random item
+                  onPressed: () async {
+                    await showAddNewItemModal(
+                      context,
+                      itemCategoryFilter: selectedCategory,
+                    ).then(
+                      (value) {
+                        if (value == null) return;
 
-                    // get some item
-                    var itemId = rpgConfig!.allItems.first.uuid;
-
-                    ref
-                        .read(rpgCharacterConfigurationProvider.notifier)
-                        .grantItem(itemId: itemId, amount: 1);
+                        ref
+                            .read(rpgCharacterConfigurationProvider.notifier)
+                            .grantItem(itemId: value.$1, amount: value.$2);
+                      },
+                    );
                   },
                   icon: const CustomFaIcon(icon: FontAwesomeIcons.plus),
                 ),

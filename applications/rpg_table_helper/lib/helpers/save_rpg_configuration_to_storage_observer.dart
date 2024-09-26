@@ -32,8 +32,8 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
     ProviderContainer container,
   ) {
     if (newValue is AsyncData<RpgConfigurationModel>) {
-      // remove me
-      // _handleAsyncData(newValue);
+      // TODO i am not sure this is correct here...
+      _handleAsyncData(newValue);
 
       var connectionDetails =
           container.read(connectionDetailsProvider).valueOrNull;
@@ -44,7 +44,7 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
 
       if (!isPlayer) {
         print("Saving rpg config");
-        _handleAsyncData(newValue);
+        // _handleAsyncData(newValue);
 
         if (connectionDetails != null &&
             connectionDetails.isConnected &&
