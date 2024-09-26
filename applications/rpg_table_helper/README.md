@@ -11,11 +11,12 @@ A new Flutter project.
   - [] Enter rolls from players
   - [] "Roll new Items for Players"
   - [] "Send items to players"-SignalR-Feature
-- [] Safe inventory and player name for players
+- [x] Safe inventory and player name for players
 - [] Players should be able to add items themselfs
-- [] Hide items with count = 0
+- [x] Hide items with count = 0
 - [] Make a screen for showing and changing the currency for the players
-
+- [] Changable Server IP
+  
 ## Getting Started
 
 This project is a starting point for a Flutter application.

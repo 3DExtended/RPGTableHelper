@@ -35,7 +35,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     var characterConfig =
         ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
-    var categories = getAllCategoriesWithItemsWithin(rpgConfig);
+    var categories =
+        getAllCategoriesWithItemsWithin(rpgConfig, characterConfig);
 
     if (selectedCategory == null && categories.isNotEmpty) {
       selectedParentCategory = categories.first.uuid;
@@ -106,7 +107,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
             if (category.subCategories.isNotEmpty &&
                 category.uuid == selectedParentCategory)
               ...category.subCategories
-                  .where((sc) => getSubcategoryHasItems(rpgConfig, sc))
+                  .where((sc) =>
+                      getSubcategoryHasItems(rpgConfig, characterConfig, sc))
                   .map((subCategory) => CupertinoButton(
                         onPressed: () {
                           setState(() {
@@ -211,6 +213,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           getItemCountInCharacterInventory(
                               characterConfig, it.uuid)
                         ))
+                    .where((it) => it.$2 > 0)
                     .sortBy((t) => t.$1.name.toLowerCase())
                     // TODO this creates an issue with sorting i dont understand...
                     // .sortByDescending<int>((t) => t.$2)
@@ -244,17 +247,27 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   }
 
   List<ItemCategory> getAllCategoriesWithItemsWithin(
-      RpgConfigurationModel? rpgConfig) {
+      RpgConfigurationModel? rpgConfig,
+      RpgCharacterConfiguration? characterConfig) {
     if (rpgConfig == null) return [];
+    if (characterConfig == null) return [];
 
     var allItemCategories = [...rpgConfig.itemCategories];
 
     List<ItemCategory> result = [];
 
+    var allItemsForGivenPlayerConfig = characterConfig.inventory
+        .map((it) => it.itemUuid)
+        .map((it) =>
+            rpgConfig.allItems.where((ait) => ait.uuid == it).singleOrNull)
+        .where((it) => it != null)
+        .map((it) => it!)
+        .toList();
+
     for (var cat in allItemCategories) {
-      if (rpgConfig.allItems.any((it) => it.categoryId == cat.uuid)) {
+      if (allItemsForGivenPlayerConfig.any((it) => it.categoryId == cat.uuid)) {
         result.add(cat);
-      } else if (rpgConfig.allItems.any((it) => cat.subCategories
+      } else if (allItemsForGivenPlayerConfig.any((it) => cat.subCategories
           .map((sc) => sc.uuid)
           .any((sc) => sc == it.categoryId))) {
         result.add(cat);
@@ -302,10 +315,19 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     return res.amount;
   }
 
-  bool getSubcategoryHasItems(
-      RpgConfigurationModel? rpgConfig, ItemCategory sc) {
+  bool getSubcategoryHasItems(RpgConfigurationModel? rpgConfig,
+      RpgCharacterConfiguration? characterConfig, ItemCategory sc) {
     if (rpgConfig == null) return false;
+    if (characterConfig == null) return false;
 
-    return rpgConfig.allItems.any((cr) => cr.categoryId == sc.uuid);
+    var allItemsForGivenPlayerConfig = characterConfig.inventory
+        .map((it) => it.itemUuid)
+        .map((it) =>
+            rpgConfig.allItems.where((ait) => ait.uuid == it).singleOrNull)
+        .where((it) => it != null)
+        .map((it) => it!)
+        .toList();
+
+    return allItemsForGivenPlayerConfig.any((cr) => cr.categoryId == sc.uuid);
   }
 }
