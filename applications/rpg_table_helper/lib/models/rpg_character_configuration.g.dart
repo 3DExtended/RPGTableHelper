@@ -7,6 +7,8 @@ part of 'rpg_character_configuration.dart';
 // **************************************************************************
 
 abstract class _$RpgCharacterConfigurationCWProxy {
+  RpgCharacterConfiguration uuid(String uuid);
+
   RpgCharacterConfiguration characterName(String characterName);
 
   RpgCharacterConfiguration moneyCoinCount(List<int> moneyCoinCount);
@@ -24,6 +26,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   /// RpgCharacterConfiguration(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterConfiguration call({
+    String? uuid,
     String? characterName,
     List<int>? moneyCoinCount,
     List<RpgCharacterStatValue>? characterStats,
@@ -37,6 +40,9 @@ class _$RpgCharacterConfigurationCWProxyImpl
   const _$RpgCharacterConfigurationCWProxyImpl(this._value);
 
   final RpgCharacterConfiguration _value;
+
+  @override
+  RpgCharacterConfiguration uuid(String uuid) => this(uuid: uuid);
 
   @override
   RpgCharacterConfiguration characterName(String characterName) =>
@@ -65,12 +71,17 @@ class _$RpgCharacterConfigurationCWProxyImpl
   /// RpgCharacterConfiguration(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterConfiguration call({
+    Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
     Object? moneyCoinCount = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterConfiguration(
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+          ? _value.uuid
+          // ignore: cast_nullable_to_non_nullable
+          : uuid as String,
       characterName:
           characterName == const $CopyWithPlaceholder() || characterName == null
               ? _value.characterName
@@ -235,6 +246,7 @@ extension $RpgCharacterOwnedItemPairCopyWith on RpgCharacterOwnedItemPair {
 RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
         Map<String, dynamic> json) =>
     RpgCharacterConfiguration(
+      uuid: json['uuid'] as String,
       characterName: json['characterName'] as String,
       moneyCoinCount: (json['moneyCoinCount'] as List<dynamic>)
           .map((e) => (e as num).toInt())
@@ -251,6 +263,7 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
 Map<String, dynamic> _$RpgCharacterConfigurationToJson(
         RpgCharacterConfiguration instance) =>
     <String, dynamic>{
+      'uuid': instance.uuid,
       'characterName': instance.characterName,
       'moneyCoinCount': instance.moneyCoinCount,
       'characterStats': instance.characterStats,

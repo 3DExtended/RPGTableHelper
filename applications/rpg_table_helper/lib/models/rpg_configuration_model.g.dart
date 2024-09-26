@@ -1215,7 +1215,7 @@ RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       patchSize: json['patchSize'] == null
           ? null
           : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
-      categoryId: json['categoryId'] ?? "" as String,
+      categoryId: json['categoryId'] as String,
       description: json['description'] as String,
       baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
       placeOfFindings: (json['placeOfFindings'] as List<dynamic>)

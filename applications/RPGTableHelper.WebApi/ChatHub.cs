@@ -64,6 +64,20 @@ public class ChatHub : Hub
             );
     }
 
+    public async Task SendUpdatedRpgCharacterConfigToDm(string gameCode, string characterConfig)
+    {
+        Console.WriteLine("A player updated their character for code " + gameCode);
+
+        // ask DM for joining permissions:
+        await Clients
+            .Group(gameCode + "_Dms")
+            .SendAsync(
+                "updateRpgCharacterConfigOnDmSide",
+                characterConfig,
+                (CancellationToken)default
+            );
+    }
+
     /// <summary>
     /// Dm Method to accept a join request
     /// </summary>

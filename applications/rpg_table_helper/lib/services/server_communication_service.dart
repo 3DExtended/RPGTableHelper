@@ -4,10 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/src/client.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
@@ -24,12 +22,6 @@ abstract class IServerCommunicationService {
   void updateRpgConfiguration(RpgConfigurationModel config) {
     widgetRef
         .read(rpgConfigurationProvider.notifier)
-        .updateConfiguration(config);
-  }
-
-  void updateRpgCharacterConfiguration(RpgCharacterConfiguration config) {
-    widgetRef
-        .read(rpgCharacterConfigurationProvider.notifier)
         .updateConfiguration(config);
   }
 

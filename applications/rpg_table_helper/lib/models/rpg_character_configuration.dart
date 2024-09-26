@@ -1,12 +1,14 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:uuid/v7.dart';
 
 part 'rpg_character_configuration.g.dart';
 
 @JsonSerializable()
 @CopyWith()
 class RpgCharacterConfiguration {
+  final String uuid;
   final String characterName;
   final List<int> moneyCoinCount;
   final List<RpgCharacterStatValue> characterStats;
@@ -15,6 +17,7 @@ class RpgCharacterConfiguration {
       _$RpgCharacterConfigurationFromJson(json);
 
   RpgCharacterConfiguration({
+    required this.uuid,
     required this.characterName,
     required this.moneyCoinCount,
     required this.characterStats,
@@ -26,6 +29,7 @@ class RpgCharacterConfiguration {
   static RpgCharacterConfiguration getBaseConfiguration(
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
+        uuid: const UuidV7().generate(),
         characterName: "",
         characterStats: [],
         inventory: [],

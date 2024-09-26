@@ -6,8 +6,10 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
@@ -45,12 +47,15 @@ class _ChoosePlayerOrDmModalContentState
 
   bool hasConnectionDataLoaded = false;
   bool hasRpgConfigDataLoaded = false;
+  bool hasRpgCharacterConfigDataLoaded = false;
 
   bool isStartSessionButtonDisabled = true;
   bool isJoinSessionButtonDisabled = true;
 
   bool getIsStartGameButtonDisabled() {
-    if (!hasConnectionDataLoaded || !hasRpgConfigDataLoaded) return false;
+    if (!hasConnectionDataLoaded ||
+        !hasRpgConfigDataLoaded ||
+        !hasRpgCharacterConfigDataLoaded) return false;
 
     if (dmCampagneNameController.text.isEmpty ||
         dmCampagneNameController.text.length < 3) {
@@ -60,7 +65,9 @@ class _ChoosePlayerOrDmModalContentState
   }
 
   bool getIsJoinGameButtonDisabled() {
-    if (!hasConnectionDataLoaded || !hasRpgConfigDataLoaded) return false;
+    if (!hasConnectionDataLoaded ||
+        !hasRpgConfigDataLoaded ||
+        !hasRpgCharacterConfigDataLoaded) return false;
 
     if (sessionCodeController.text.isEmpty ||
         sessionCodeController.text.length < 3) {
@@ -130,6 +137,17 @@ class _ChoosePlayerOrDmModalContentState
         });
       }
     });
+
+    ref.watch(rpgCharacterConfigurationProvider).whenData((data) {
+      if (!hasRpgCharacterConfigDataLoaded) {
+        setState(() {
+          hasRpgCharacterConfigDataLoaded = true;
+
+          playerNameController.text = data.characterName;
+        });
+      }
+    });
+
     var modalPadding = 80.0;
     if (MediaQuery.of(context).size.width < 800) {
       modalPadding = 20.0;
@@ -273,6 +291,18 @@ class _ChoosePlayerOrDmModalContentState
                           onPressed: isJoinSessionButtonDisabled
                               ? null
                               : () async {
+                                  var currentPlayerModel = ref
+                                      .read(rpgCharacterConfigurationProvider)
+                                      .requireValue;
+
+                                  ref
+                                      .read(rpgCharacterConfigurationProvider
+                                          .notifier)
+                                      .updateConfiguration(
+                                          currentPlayerModel.copyWith(
+                                              characterName:
+                                                  playerNameController.text));
+
                                   // add register game button
                                   final com = DependencyProvider.of(context)
                                       .getService<IServerMethodsService>();
