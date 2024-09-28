@@ -104,6 +104,38 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                               ),
                             ),
 
+                            // Duplicate Button
+                            Container(
+                              height: 50,
+                              width: 50,
+                              clipBehavior: Clip.none,
+                              child: CustomButton(
+                                onPressed: () async {
+                                  // open edit modal with clicked item
+                                  await showCreateOrEditCraftingRecipeModal(
+                                      context,
+                                      item.value.copyWith(
+                                        recipeUuid: const UuidV7().generate(),
+                                      )).then((returnValue) {
+                                    if (returnValue == null) {
+                                      return;
+                                    }
+
+                                    setState(() {
+                                      _recipes.add(returnValue);
+                                      saveChanges();
+                                    });
+                                  });
+                                },
+                                icon: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.clone),
+                              ),
+                            ),
+
+                            const SizedBox(
+                              width: 10,
+                            ),
+
                             // Edit Button
                             Container(
                               height: 50,
@@ -190,7 +222,6 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
       centerNavBarWidget: CustomButton(
         onPressed: () async {
           // open create modal with new item
-          // TODO make me
           await showCreateOrEditCraftingRecipeModal(
               context,
               CraftingRecipe(
