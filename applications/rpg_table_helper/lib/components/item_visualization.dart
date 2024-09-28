@@ -15,6 +15,7 @@ class ItemVisualization extends StatelessWidget {
     required this.numberOfItemsInInventory,
     required this.numberOfCreateableInstances,
     required this.craftItem,
+    required this.useItem,
   });
 
   final RpgItem itemToRender;
@@ -23,6 +24,7 @@ class ItemVisualization extends StatelessWidget {
   final int numberOfItemsInInventory;
   final int? numberOfCreateableInstances;
   final void Function() craftItem;
+  final void Function()? useItem;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +116,28 @@ class ItemVisualization extends StatelessWidget {
                           .copyWith(color: Colors.white, fontSize: 14),
                     ),
                   if (renderRecipeRelatedThings) const Spacer(),
+                  if (!renderRecipeRelatedThings &&
+                      useItem != null &&
+                      numberOfItemsInInventory != 0)
+                    const Spacer(),
+                  if (!renderRecipeRelatedThings &&
+                      useItem != null &&
+                      numberOfItemsInInventory != 0)
+                    Center(
+                      child: CupertinoButton(
+                        onPressed: useItem!,
+                        minSize: 0,
+                        padding: const EdgeInsets.all(0),
+                        child: StyledBox(
+                          borderRadius: 5,
+                          child: const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: CustomFaIcon(
+                                icon: FontAwesomeIcons.handSparkles),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
               if (renderRecipeRelatedThings && numberOfCreateableInstances != 0)
@@ -134,7 +158,7 @@ class ItemVisualization extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
+                ),
             ],
           ),
         ),

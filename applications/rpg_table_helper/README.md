@@ -7,13 +7,13 @@ A new Flutter project.
 - [] Reconnect creates new ConnectionIds which then are not within the SignalR Groups related to the group.
   - The correct way to fix this is using logins, however for the first working prototype we might get away with adding everyone to only one group without differentiating between dm group and all group.
     - This might be an issue though since the "isDm" flag might be set somewhere else in the client
-- [] Send Items based on "search" to clients
-  - [] Enter rolls from players
-  - [] "Roll new Items for Players"
-  - [] "Send items to players"-SignalR-Feature
 - [] Make a screen for showing and changing the currency for the players
 - [] Changable Server IP
-- [] Players should be able to consume items...
+- [x] Players should be able to consume items...
+- [x] Send Items based on "search" to clients
+  - [x] Enter rolls from players
+  - [x] "Roll new Items for Players"
+  - [x] "Send items to players"-SignalR-Feature
 - [x] Players should be able to add items themselfs
 - [x] Safe inventory and player name for players
 - [x] Hide items with count = 0

@@ -174,4 +174,22 @@ class RpgCharacterConfigurationNotifier
     state = AsyncValue.data(
         state.requireValue.copyWith(inventory: tempNewInventory));
   }
+
+  void useItem(String itemId) {
+    var tempNewInventory = [...state.requireValue.inventory];
+
+    var indexOfItemInInventory =
+        tempNewInventory.indexWhere((e) => e.itemUuid == itemId);
+
+    tempNewInventory[indexOfItemInInventory] =
+        tempNewInventory[indexOfItemInInventory].copyWith(
+            amount: tempNewInventory[indexOfItemInInventory].amount - 1);
+
+    if (tempNewInventory[indexOfItemInInventory].amount == 0) {
+      tempNewInventory.removeAt(indexOfItemInInventory);
+    }
+
+    state = AsyncValue.data(
+        state.requireValue.copyWith(inventory: tempNewInventory));
+  }
 }

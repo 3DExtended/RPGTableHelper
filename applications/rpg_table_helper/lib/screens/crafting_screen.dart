@@ -204,6 +204,7 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
                                 characterConfig, itemToRender.uuid);
 
                         return ItemVisualization(
+                            useItem: null,
                             itemToRender: itemToRender,
                             renderRecipeRelatedThings: true,
                             itemNameSuffix:

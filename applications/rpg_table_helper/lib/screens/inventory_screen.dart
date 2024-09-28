@@ -257,6 +257,12 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           itemNameSuffix: null,
                           numberOfItemsInInventory: item.$2,
                           numberOfCreateableInstances: null,
+                          useItem: () {
+                            ref
+                                .read(
+                                    rpgCharacterConfigurationProvider.notifier)
+                                .useItem(item.$1.uuid);
+                          },
                           craftItem: () {
                             // ref
                             //     .read(rpgCharacterConfigurationProvider
