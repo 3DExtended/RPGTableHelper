@@ -11,12 +11,14 @@ import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/add_new_item_modal.dart';
+import 'package:rpg_table_helper/screens/dm_grant_items_screen_content.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   static String route = "inventory";
@@ -33,6 +35,18 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
+
+    if (connectionDetails != null &&
+        connectionDetails.isDm &&
+        connectionDetails.isConnected) {
+      return const DmGrantItemsScreenContent();
+    }
+
+    return contentForPlayer(context);
+  }
+
+  Widget contentForPlayer(BuildContext context) {
     var characterConfig =
         ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
