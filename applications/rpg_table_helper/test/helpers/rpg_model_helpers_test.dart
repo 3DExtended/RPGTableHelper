@@ -95,7 +95,7 @@ void main() {
         character = RpgCharacterConfiguration(
           uuid: "f2d956b6-a739-451a-8213-c60a2337868d",
           characterName: 'Hero',
-          moneyCoinCount: [100],
+          moneyInBaseType: 100,
           characterStats: [],
           inventory: [
             RpgCharacterOwnedItemPair(itemUuid: 'item1', amount: 4),
@@ -252,7 +252,7 @@ void main() {
           inventory: [],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);
@@ -314,7 +314,7 @@ void main() {
           inventory: [inventoryItem],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);
@@ -388,7 +388,7 @@ void main() {
           inventory: [inventoryItem1, inventoryItem2],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);
@@ -454,7 +454,7 @@ void main() {
           inventory: [inventoryItem1],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);
@@ -516,7 +516,7 @@ void main() {
           inventory: [inventoryItem1],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);
@@ -580,7 +580,7 @@ void main() {
           inventory: [inventoryItem1, inventoryItem2],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);
@@ -646,7 +646,7 @@ void main() {
           inventory: [],
           characterName: "",
           characterStats: [],
-          moneyCoinCount: []);
+          moneyInBaseType: 0);
 
       // Act
       var result = getInventoryOfCharacter(rpgConfig, character);

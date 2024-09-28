@@ -100,8 +100,8 @@ class _AuthorizedScreenWrapperState
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      var commService = DependencyProvider.of(context)
-          .getService<IServerCommunicationService>();
+      // this initializes the communication
+      DependencyProvider.of(context).getService<IServerCommunicationService>();
     });
     super.initState();
   }

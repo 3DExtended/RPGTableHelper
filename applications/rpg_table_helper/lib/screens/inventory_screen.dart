@@ -18,6 +18,7 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/add_new_item_modal.dart';
+import 'package:rpg_table_helper/screens/change_money_modal.dart';
 import 'package:rpg_table_helper/screens/dm_grant_items_screen_content.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
@@ -189,16 +190,48 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
     var contentChildren = [
       Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Spacer(),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 9.0),
-            child: Text(
-              "Inventar",
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium!
-                  .copyWith(color: Colors.white, fontSize: 32),
+            padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 3.0),
+            child: Column(
+              children: [
+                Text(
+                  "Inventar",
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: Colors.white, fontSize: 32),
+                ),
+                CupertinoButton(
+                  onPressed: () async {
+                    // open edit money modal
+                    await showChangeMoneyModal(context).then((value) {
+                      if (value == null) return;
+
+                      ref
+                          .read(rpgCharacterConfigurationProvider.notifier)
+                          .updateConfiguration(ref
+                              .read(rpgCharacterConfigurationProvider)
+                              .requireValue
+                              .copyWith(moneyInBaseType: value));
+                    });
+                  },
+                  minSize: 0,
+                  padding: const EdgeInsets.all(0),
+                  child: Text(
+                    rpgConfig == null || characterConfig == null
+                        ? "0 Gold"
+                        : buildTextForCurrencyComparison(
+                            rpgConfig, characterConfig),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -279,6 +312,32 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
     return CategorizedItemLayout(
         categoryColumns: categoryColumns, contentChildren: contentChildren);
+  }
+
+  String buildTextForCurrencyComparison(RpgConfigurationModel rpgConfig,
+      RpgCharacterConfiguration characterConfig) {
+    var currentPlayerMoney = characterConfig.moneyInBaseType ?? 0;
+
+    var valueSplitInCurrency = CurrencyDefinition.valueOfItemForDefinition(
+        rpgConfig.currencyDefinition, currentPlayerMoney);
+
+    var result = "";
+
+    var reversedCurrencyNames =
+        rpgConfig.currencyDefinition.currencyTypes.reversed.toList();
+    for (var i = 0; i < valueSplitInCurrency.length; i++) {
+      var value = valueSplitInCurrency[i];
+      if (value != 0) {
+        var nameOfCurrencyValue = reversedCurrencyNames[i].name;
+        result += " $value $nameOfCurrencyValue";
+      }
+    }
+
+    if (result.isEmpty) {
+      return "0 ${rpgConfig.currencyDefinition.currencyTypes.first.name}";
+    }
+
+    return result.trim();
   }
 
   RpgItem getItemForId(RpgConfigurationModel rpgConfig, String id) {

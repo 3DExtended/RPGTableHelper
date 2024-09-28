@@ -11,7 +11,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
 
   RpgCharacterConfiguration characterName(String characterName);
 
-  RpgCharacterConfiguration moneyCoinCount(List<int> moneyCoinCount);
+  RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType);
 
   RpgCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
@@ -28,7 +28,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration call({
     String? uuid,
     String? characterName,
-    List<int>? moneyCoinCount,
+    int? moneyInBaseType,
     List<RpgCharacterStatValue>? characterStats,
     List<RpgCharacterOwnedItemPair>? inventory,
   });
@@ -49,8 +49,8 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(characterName: characterName);
 
   @override
-  RpgCharacterConfiguration moneyCoinCount(List<int> moneyCoinCount) =>
-      this(moneyCoinCount: moneyCoinCount);
+  RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType) =>
+      this(moneyInBaseType: moneyInBaseType);
 
   @override
   RpgCharacterConfiguration characterStats(
@@ -73,7 +73,7 @@ class _$RpgCharacterConfigurationCWProxyImpl
   RpgCharacterConfiguration call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
-    Object? moneyCoinCount = const $CopyWithPlaceholder(),
+    Object? moneyInBaseType = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
   }) {
@@ -87,11 +87,10 @@ class _$RpgCharacterConfigurationCWProxyImpl
               ? _value.characterName
               // ignore: cast_nullable_to_non_nullable
               : characterName as String,
-      moneyCoinCount: moneyCoinCount == const $CopyWithPlaceholder() ||
-              moneyCoinCount == null
-          ? _value.moneyCoinCount
+      moneyInBaseType: moneyInBaseType == const $CopyWithPlaceholder()
+          ? _value.moneyInBaseType
           // ignore: cast_nullable_to_non_nullable
-          : moneyCoinCount as List<int>,
+          : moneyInBaseType as int?,
       characterStats: characterStats == const $CopyWithPlaceholder() ||
               characterStats == null
           ? _value.characterStats
@@ -248,9 +247,7 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
     RpgCharacterConfiguration(
       uuid: json['uuid'] as String,
       characterName: json['characterName'] as String,
-      moneyCoinCount: (json['moneyCoinCount'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+      moneyInBaseType: (json['moneyInBaseType'] as num?)?.toInt(),
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -265,7 +262,7 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
     <String, dynamic>{
       'uuid': instance.uuid,
       'characterName': instance.characterName,
-      'moneyCoinCount': instance.moneyCoinCount,
+      'moneyInBaseType': instance.moneyInBaseType,
       'characterStats': instance.characterStats,
       'inventory': instance.inventory,
     };

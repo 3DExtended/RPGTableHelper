@@ -4,11 +4,11 @@ A new Flutter project.
 
 ## TODOs
 
-- [] Reconnect creates new ConnectionIds which then are not within the SignalR Groups related to the group.
+- [ ] Reconnect creates new ConnectionIds which then are not within the SignalR Groups related to the group.
   - The correct way to fix this is using logins, however for the first working prototype we might get away with adding everyone to only one group without differentiating between dm group and all group.
     - This might be an issue though since the "isDm" flag might be set somewhere else in the client
-- [] Make a screen for showing and changing the currency for the players
-- [] Changable Server IP
+- [ ] Changable Server IP
+- [x] Make a screen for showing and changing the currency for the players
 - [x] Players should be able to consume items...
 - [x] Send Items based on "search" to clients
   - [x] Enter rolls from players

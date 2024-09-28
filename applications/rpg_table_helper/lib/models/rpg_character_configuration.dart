@@ -10,7 +10,7 @@ part 'rpg_character_configuration.g.dart';
 class RpgCharacterConfiguration {
   final String uuid;
   final String characterName;
-  final List<int> moneyCoinCount;
+  final int? moneyInBaseType;
   final List<RpgCharacterStatValue> characterStats;
   final List<RpgCharacterOwnedItemPair> inventory;
   factory RpgCharacterConfiguration.fromJson(Map<String, dynamic> json) =>
@@ -19,7 +19,7 @@ class RpgCharacterConfiguration {
   RpgCharacterConfiguration({
     required this.uuid,
     required this.characterName,
-    required this.moneyCoinCount,
+    required this.moneyInBaseType,
     required this.characterStats,
     required this.inventory,
   });
@@ -33,10 +33,7 @@ class RpgCharacterConfiguration {
         characterName: "",
         characterStats: [],
         inventory: [],
-        moneyCoinCount: rpgConfig?.currencyDefinition.currencyTypes
-                .map((e) => 0)
-                .toList() ??
-            [],
+        moneyInBaseType: 0,
       );
 }
 
