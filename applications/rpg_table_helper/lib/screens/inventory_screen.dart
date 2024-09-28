@@ -172,6 +172,21 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       ),
     ];
 
+    var normalizedScreenWidth = MediaQuery.of(context).devicePixelRatio *
+        MediaQuery.of(context).size.width;
+
+    if (isLandscape) {
+      normalizedScreenWidth = MediaQuery.of(context).devicePixelRatio *
+          MediaQuery.of(context).size.height;
+    }
+    var numberOfColumnsInMainContent = 1;
+    if (normalizedScreenWidth > 1300) {
+      numberOfColumnsInMainContent = 2;
+    }
+    if (normalizedScreenWidth > 1600) {
+      numberOfColumnsInMainContent = 3;
+    }
+
     var contentChildren = [
       Row(
         children: [
@@ -223,7 +238,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
             child: StaticGrid(
               colGap: 20,
               rowGap: 20,
-              columnCount: isLandscape ? 3 : 2,
+              columnCount: numberOfColumnsInMainContent,
               children: [
                 ...itemsForSelectedCategory
                     .map((it) => (

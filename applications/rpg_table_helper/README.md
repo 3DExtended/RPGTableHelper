@@ -13,6 +13,7 @@ A new Flutter project.
   - [] "Send items to players"-SignalR-Feature
 - [] Make a screen for showing and changing the currency for the players
 - [] Changable Server IP
+- [] Players should be able to consume items...
 - [x] Players should be able to add items themselfs
 - [x] Safe inventory and player name for players
 - [x] Hide items with count = 0

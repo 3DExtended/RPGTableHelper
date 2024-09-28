@@ -42,6 +42,11 @@ abstract class IServerMethodsService {
       function: updateRpgCharacterConfigOnDmSide,
       functionName: "updateRpgCharacterConfigOnDmSide",
     );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: grantPlayerItems,
+      functionName: "grantPlayerItems",
+    );
   }
 
   // this should contain every method that is callable by the server
@@ -51,6 +56,7 @@ abstract class IServerMethodsService {
   void joinRequestAccepted();
   void updateRpgConfig(String parameter);
   void updateRpgCharacterConfigOnDmSide(String parameter);
+  void grantPlayerItems(String grantedItemsJson);
 
   // this should contain every method that call the server
   Future registerGame({required String campagneName});
@@ -67,6 +73,10 @@ abstract class IServerMethodsService {
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
       required String gameCode});
+
+  Future sendGrantedItemsToPlayers(
+      {required String gameCode,
+      required List<GrantedItemsForPlayer> grantedItems});
 }
 
 class ServerMethodsService extends IServerMethodsService {
@@ -182,6 +192,15 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
+  Future sendGrantedItemsToPlayers(
+      {required String gameCode,
+      required List<GrantedItemsForPlayer> grantedItems}) async {
+    await serverCommunicationService.executeServerFunction(
+        "SendGrantedItemsToPlayers",
+        args: [gameCode, jsonEncode(grantedItems)]);
+  }
+
+  @override
   void updateRpgCharacterConfigOnDmSide(String parameter) {
     print("Received new rpg character config");
     Map<String, dynamic> map = jsonDecode(parameter);
@@ -208,5 +227,32 @@ class ServerMethodsService extends IServerMethodsService {
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         currentConnectionDetails.copyWith(
             playerProfiles: updatedPlayerProfiles));
+  }
+
+  @override
+  void grantPlayerItems(String grantedItemsJson) {
+    List<dynamic> listOfGrants = jsonDecode(grantedItemsJson);
+    var castedList = listOfGrants
+        .map((e) => GrantedItemsForPlayer.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    var currentCharacter =
+        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
+
+    // filter correct grants for current user
+    var myNewItems = castedList
+        .where((el) => el.playerId == currentCharacter.uuid)
+        .singleOrNull;
+    if (myNewItems == null) {
+      // do nothing...
+      return;
+    }
+
+    // update inventory
+    widgetRef
+        .read(rpgCharacterConfigurationProvider.notifier)
+        .grantItems(myNewItems);
+
+    // TODO show modal
   }
 }

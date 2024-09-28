@@ -156,6 +156,21 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
       ),
     ];
 
+    var normalizedScreenWidth = MediaQuery.of(context).devicePixelRatio *
+        MediaQuery.of(context).size.width;
+
+    if (isLandscape) {
+      normalizedScreenWidth = MediaQuery.of(context).devicePixelRatio *
+          MediaQuery.of(context).size.height;
+    }
+    var numberOfColumnsInMainContent = 1;
+    if (normalizedScreenWidth > 1300) {
+      numberOfColumnsInMainContent = 2;
+    }
+    if (normalizedScreenWidth > 1600) {
+      numberOfColumnsInMainContent = 3;
+    }
+
     var contentChildren = [
       Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 9.0),
@@ -175,7 +190,7 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
             child: StaticGrid(
               colGap: 20,
               rowGap: 20,
-              columnCount: isLandscape ? 3 : 2,
+              columnCount: numberOfColumnsInMainContent,
               children: [
                 ...recipesForSelectedCategory
                     .map((r) =>

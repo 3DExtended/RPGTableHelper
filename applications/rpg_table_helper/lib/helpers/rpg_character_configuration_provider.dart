@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -158,5 +159,19 @@ class RpgCharacterConfigurationNotifier
     }
 
     return tempInventoryState;
+  }
+
+  void grantItems(GrantedItemsForPlayer myNewItems) {
+    var tempNewInventory = [...state.requireValue.inventory];
+
+    for (var itemGrant in myNewItems.grantedItems) {
+      tempNewInventory = _grantItemsInternal(
+          currentInventory: tempNewInventory,
+          itemId: itemGrant.itemUuid,
+          amount: itemGrant.amount);
+    }
+
+    state = AsyncValue.data(
+        state.requireValue.copyWith(inventory: tempNewInventory));
   }
 }

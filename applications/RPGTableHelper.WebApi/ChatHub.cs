@@ -78,6 +78,16 @@ public class ChatHub : Hub
             );
     }
 
+    public async Task SendGrantedItemsToPlayers(string gameCode, string json)
+    {
+        Console.WriteLine("A dm granted items to their players for code " + gameCode);
+
+        // ask DM for joining permissions:
+        await Clients
+            .Group(gameCode + "_All")
+            .SendAsync("grantPlayerItems", json, (CancellationToken)default);
+    }
+
     /// <summary>
     /// Dm Method to accept a join request
     /// </summary>

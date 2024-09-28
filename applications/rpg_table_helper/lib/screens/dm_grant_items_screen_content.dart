@@ -12,6 +12,8 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 
 class DmGrantItemsScreenContent extends ConsumerStatefulWidget {
   const DmGrantItemsScreenContent({
@@ -237,64 +239,8 @@ class _DmGrantItemsScreenContentState
                               onPressed: isSendItemsButtonDisabled
                                   ? null
                                   : () {
-                                      List<GrantedItemsForPlayer> result = [];
-
-                                      List<(RpgItem, int)>
-                                          itemsInPlaceOfFinding =
-                                          getItemsForSelectedPlaceOfFinding(
-                                              rpgConfig!,
-                                              selectedPlaceOfFindingId!);
-
-                                      for (var playerTuple in playerRolls) {
-                                        var playerId = playerTuple.$1;
-                                        var playerName = playerTuple.$2;
-                                        var playerRoll =
-                                            int.parse(playerTuple.$3.text);
-
-                                        List<RpgCharacterOwnedItemPair>
-                                            itemsGrantedForPlayer = [];
-
-                                        for (var possibleItemToGet
-                                            in itemsInPlaceOfFinding) {
-                                          // for every player and every item in itemsInPlaceOfFinding
-                                          // check if player hit the dc
-                                          var itemDc = possibleItemToGet.$2;
-
-                                          // meats it beats it
-                                          if (playerRoll < itemDc) continue;
-
-                                          // now roll the amount for the item
-                                          var amountOfItem = possibleItemToGet
-                                                  .$1.patchSize
-                                                  ?.roll() ??
-                                              0;
-
-                                          if (amountOfItem > 0) {
-                                            itemsGrantedForPlayer.add(
-                                                RpgCharacterOwnedItemPair(
-                                                    itemUuid: possibleItemToGet
-                                                        .$1.uuid,
-                                                    amount: amountOfItem));
-                                          }
-                                        }
-
-                                        result.add(GrantedItemsForPlayer(
-                                          characterName: playerName,
-                                          grantedItems: itemsGrantedForPlayer,
-                                          playerId: playerId,
-                                        ));
-                                      }
-
-                                      ref
-                                          .read(connectionDetailsProvider
-                                              .notifier)
-                                          .updateConfiguration(ref
-                                              .read(connectionDetailsProvider)
-                                              .requireValue
-                                              .copyWith(
-                                                  lastGrantedItems: result));
-
-                                      // TODO send updates to players
+                                      grantItemsToPlayerForPlaceOfFindingRoll(
+                                          rpgConfig, context);
                                     },
                               label: "Items verschicken",
                             ),
@@ -320,6 +266,60 @@ class _DmGrantItemsScreenContentState
         )
       ],
     );
+  }
+
+  void grantItemsToPlayerForPlaceOfFindingRoll(
+      RpgConfigurationModel? rpgConfig, BuildContext context) {
+    List<GrantedItemsForPlayer> result = [];
+
+    List<(RpgItem, int)> itemsInPlaceOfFinding =
+        getItemsForSelectedPlaceOfFinding(
+            rpgConfig!, selectedPlaceOfFindingId!);
+
+    for (var playerTuple in playerRolls) {
+      var playerId = playerTuple.$1;
+      var playerName = playerTuple.$2;
+      var playerRoll = int.parse(playerTuple.$3.text);
+
+      List<RpgCharacterOwnedItemPair> itemsGrantedForPlayer = [];
+
+      for (var possibleItemToGet in itemsInPlaceOfFinding) {
+        // for every player and every item in itemsInPlaceOfFinding
+        // check if player hit the dc
+        var itemDc = possibleItemToGet.$2;
+
+        // meats it beats it
+        if (playerRoll < itemDc) continue;
+
+        // now roll the amount for the item
+        var amountOfItem = possibleItemToGet.$1.patchSize?.roll() ?? 0;
+
+        if (amountOfItem > 0) {
+          itemsGrantedForPlayer.add(RpgCharacterOwnedItemPair(
+              itemUuid: possibleItemToGet.$1.uuid, amount: amountOfItem));
+        }
+      }
+
+      result.add(GrantedItemsForPlayer(
+        characterName: playerName,
+        grantedItems: itemsGrantedForPlayer,
+        playerId: playerId,
+      ));
+    }
+
+    var connectionDetails = ref.read(connectionDetailsProvider).requireValue;
+    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+        connectionDetails.copyWith(lastGrantedItems: result));
+
+    // send updates to players
+    var com =
+        DependencyProvider.of(context).getService<IServerMethodsService>();
+    if (connectionDetails.sessionConnectionNumberForPlayers != null) {
+      com.sendGrantedItemsToPlayers(
+        gameCode: connectionDetails.sessionConnectionNumberForPlayers!,
+        grantedItems: result,
+      );
+    }
   }
 
   String getTextOfFindableItemsInPlaceOfFinding(
