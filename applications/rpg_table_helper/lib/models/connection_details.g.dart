@@ -100,6 +100,9 @@ abstract class _$ConnectionDetailsCWProxy {
 
   ConnectionDetails isDm(bool isDm);
 
+  ConnectionDetails lastGrantedItems(
+      List<GrantedItemsForPlayer>? lastGrantedItems);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ConnectionDetails(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -114,6 +117,7 @@ abstract class _$ConnectionDetailsCWProxy {
     List<RpgCharacterConfiguration>? playerProfiles,
     bool? isInSession,
     bool? isDm,
+    List<GrantedItemsForPlayer>? lastGrantedItems,
   });
 }
 
@@ -155,6 +159,11 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
   ConnectionDetails isDm(bool isDm) => this(isDm: isDm);
 
   @override
+  ConnectionDetails lastGrantedItems(
+          List<GrantedItemsForPlayer>? lastGrantedItems) =>
+      this(lastGrantedItems: lastGrantedItems);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ConnectionDetails(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -170,6 +179,7 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
     Object? playerProfiles = const $CopyWithPlaceholder(),
     Object? isInSession = const $CopyWithPlaceholder(),
     Object? isDm = const $CopyWithPlaceholder(),
+    Object? lastGrantedItems = const $CopyWithPlaceholder(),
   }) {
     return ConnectionDetails(
       openPlayerRequests: openPlayerRequests == const $CopyWithPlaceholder()
@@ -204,6 +214,10 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
           ? _value.isDm
           // ignore: cast_nullable_to_non_nullable
           : isDm as bool,
+      lastGrantedItems: lastGrantedItems == const $CopyWithPlaceholder()
+          ? _value.lastGrantedItems
+          // ignore: cast_nullable_to_non_nullable
+          : lastGrantedItems as List<GrantedItemsForPlayer>?,
     );
   }
 }
@@ -213,6 +227,85 @@ extension $ConnectionDetailsCopyWith on ConnectionDetails {
   // ignore: library_private_types_in_public_api
   _$ConnectionDetailsCWProxy get copyWith =>
       _$ConnectionDetailsCWProxyImpl(this);
+}
+
+abstract class _$GrantedItemsForPlayerCWProxy {
+  GrantedItemsForPlayer characterName(String characterName);
+
+  GrantedItemsForPlayer playerId(String playerId);
+
+  GrantedItemsForPlayer grantedItems(
+      List<RpgCharacterOwnedItemPair> grantedItems);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `GrantedItemsForPlayer(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// GrantedItemsForPlayer(...).copyWith(id: 12, name: "My name")
+  /// ````
+  GrantedItemsForPlayer call({
+    String? characterName,
+    String? playerId,
+    List<RpgCharacterOwnedItemPair>? grantedItems,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfGrantedItemsForPlayer.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfGrantedItemsForPlayer.copyWith.fieldName(...)`
+class _$GrantedItemsForPlayerCWProxyImpl
+    implements _$GrantedItemsForPlayerCWProxy {
+  const _$GrantedItemsForPlayerCWProxyImpl(this._value);
+
+  final GrantedItemsForPlayer _value;
+
+  @override
+  GrantedItemsForPlayer characterName(String characterName) =>
+      this(characterName: characterName);
+
+  @override
+  GrantedItemsForPlayer playerId(String playerId) => this(playerId: playerId);
+
+  @override
+  GrantedItemsForPlayer grantedItems(
+          List<RpgCharacterOwnedItemPair> grantedItems) =>
+      this(grantedItems: grantedItems);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `GrantedItemsForPlayer(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// GrantedItemsForPlayer(...).copyWith(id: 12, name: "My name")
+  /// ````
+  GrantedItemsForPlayer call({
+    Object? characterName = const $CopyWithPlaceholder(),
+    Object? playerId = const $CopyWithPlaceholder(),
+    Object? grantedItems = const $CopyWithPlaceholder(),
+  }) {
+    return GrantedItemsForPlayer(
+      characterName:
+          characterName == const $CopyWithPlaceholder() || characterName == null
+              ? _value.characterName
+              // ignore: cast_nullable_to_non_nullable
+              : characterName as String,
+      playerId: playerId == const $CopyWithPlaceholder() || playerId == null
+          ? _value.playerId
+          // ignore: cast_nullable_to_non_nullable
+          : playerId as String,
+      grantedItems:
+          grantedItems == const $CopyWithPlaceholder() || grantedItems == null
+              ? _value.grantedItems
+              // ignore: cast_nullable_to_non_nullable
+              : grantedItems as List<RpgCharacterOwnedItemPair>,
+    );
+  }
+}
+
+extension $GrantedItemsForPlayerCopyWith on GrantedItemsForPlayer {
+  /// Returns a callable class that can be used as follows: `instanceOfGrantedItemsForPlayer.copyWith(...)` or like so:`instanceOfGrantedItemsForPlayer.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$GrantedItemsForPlayerCWProxy get copyWith =>
+      _$GrantedItemsForPlayerCWProxyImpl(this);
 }
 
 // **************************************************************************
@@ -248,6 +341,10 @@ ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
           .toList(),
       isInSession: json['isInSession'] as bool,
       isDm: json['isDm'] as bool,
+      lastGrantedItems: (json['lastGrantedItems'] as List<dynamic>?)
+          ?.map(
+              (e) => GrantedItemsForPlayer.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
@@ -260,4 +357,24 @@ Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
       'openPlayerRequests': instance.openPlayerRequests,
       'playerProfiles': instance.playerProfiles,
       'isDm': instance.isDm,
+      'lastGrantedItems': instance.lastGrantedItems,
+    };
+
+GrantedItemsForPlayer _$GrantedItemsForPlayerFromJson(
+        Map<String, dynamic> json) =>
+    GrantedItemsForPlayer(
+      characterName: json['characterName'] as String,
+      playerId: json['playerId'] as String,
+      grantedItems: (json['grantedItems'] as List<dynamic>)
+          .map((e) =>
+              RpgCharacterOwnedItemPair.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$GrantedItemsForPlayerToJson(
+        GrantedItemsForPlayer instance) =>
+    <String, dynamic>{
+      'characterName': instance.characterName,
+      'playerId': instance.playerId,
+      'grantedItems': instance.grantedItems,
     };

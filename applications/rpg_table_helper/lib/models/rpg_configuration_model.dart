@@ -579,6 +579,6 @@ class DiceRoll {
     for (int i = 0; i < numDice; i++) {
       total += random.nextInt(diceSides) + 1;
     }
-    return total + modifier;
+    return max(0, total + modifier);
   }
 }

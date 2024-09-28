@@ -31,6 +31,7 @@ class ConnectionDetails {
   final List<PlayerJoinRequests>? openPlayerRequests;
   final List<RpgCharacterConfiguration>? playerProfiles;
   final bool isDm;
+  final List<GrantedItemsForPlayer>? lastGrantedItems;
 
   ConnectionDetails({
     required this.openPlayerRequests,
@@ -40,6 +41,7 @@ class ConnectionDetails {
     required this.playerProfiles,
     required this.isInSession,
     required this.isDm,
+    required this.lastGrantedItems,
   });
 
   static ConnectionDetails defaultValue() => ConnectionDetails(
@@ -49,28 +51,8 @@ class ConnectionDetails {
         isDm: false,
         sessionConnectionNumberForPlayers: null,
         playerProfiles: [],
-        openPlayerRequests: [
-          // PlayerJoinRequests(
-          //     connectionId: "asdf asdf asdf",
-          //     gameCode: "asdfasdf",
-          //     playerName: "Peter"),
-          // PlayerJoinRequests(
-          //     connectionId: "asdf asdf asdf",
-          //     gameCode: "asdfasdf",
-          //     playerName: "Marie"),
-          // PlayerJoinRequests(
-          //     connectionId: "asdf asdf asdf",
-          //     gameCode: "asdfasdf",
-          //     playerName: "Lukas"),
-          // PlayerJoinRequests(
-          //     connectionId: "asdf asdf asdf",
-          //     gameCode: "asdfasdf",
-          //     playerName: "Rachel"),
-          // PlayerJoinRequests(
-          //     connectionId: "asdf asdf asdf",
-          //     gameCode: "asdfasdf",
-          //     playerName: "Tobias"),
-        ],
+        lastGrantedItems: null,
+        openPlayerRequests: [],
       );
 
   bool get isPlayer => !isDm;
@@ -79,4 +61,23 @@ class ConnectionDetails {
       _$ConnectionDetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$ConnectionDetailsToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
+class GrantedItemsForPlayer {
+  final String characterName;
+  final String playerId;
+  final List<RpgCharacterOwnedItemPair> grantedItems;
+
+  GrantedItemsForPlayer({
+    required this.characterName,
+    required this.playerId,
+    required this.grantedItems,
+  });
+
+  factory GrantedItemsForPlayer.fromJson(Map<String, dynamic> json) =>
+      _$GrantedItemsForPlayerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GrantedItemsForPlayerToJson(this);
 }
