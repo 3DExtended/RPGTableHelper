@@ -41,25 +41,26 @@ void main() {
       }),
       connectionDetailsProvider.overrideWith((ref) {
         return ConnectionDetailsNotifier(
-            initState: AsyncValue.data(ConnectionDetails.defaultValue()
-                .copyWith(
-                    isConnected: true,
-                    isConnecting: false,
-                    isDm: true,
-                    isInSession: true,
-                    sessionConnectionNumberForPlayers: "123-123",
-                    openPlayerRequests: [
-                  PlayerJoinRequests(
-                    playerName: "Bilbo",
-                    gameCode: "123-123",
-                    connectionId: "asdf234easdf",
-                  ),
-                  PlayerJoinRequests(
-                    playerName: "Frodo",
-                    gameCode: "123-123",
-                    connectionId: "fghjkweiee",
-                  ),
-                ])),
+            initState:
+                AsyncValue.data(ConnectionDetails.defaultValue().copyWith(
+              isConnected: true,
+              isConnecting: false,
+              isDm: true,
+              isInSession: true,
+              sessionConnectionNumberForPlayers: "123-123",
+              openPlayerRequests: [
+                PlayerJoinRequests(
+                  playerName: "Bilbo",
+                  gameCode: "123-123",
+                  connectionId: "asdf234easdf",
+                ),
+                PlayerJoinRequests(
+                  playerName: "Frodo",
+                  gameCode: "123-123",
+                  connectionId: "fghjkweiee",
+                ),
+              ],
+            )),
             runningInTests: true,
             ref: ref);
       }),
@@ -88,6 +89,29 @@ void main() {
               RpgCharacterConfiguration.getBaseConfiguration(null).copyWith(
                 characterName: "Frodo",
                 inventory: [],
+              ),
+            ],
+            lastGrantedItems: [
+              GrantedItemsForPlayer(
+                  characterName: "Frodo", playerId: "fghjkl", grantedItems: []),
+              GrantedItemsForPlayer(
+                characterName: "Gandalf",
+                playerId: "ghjiuhjkiujhn",
+                grantedItems: [
+                  RpgCharacterOwnedItemPair(
+                    itemUuid: RpgConfigurationModel.getBaseConfiguration()
+                        .allItems
+                        .first
+                        .uuid,
+                    amount: 2,
+                  ),
+                  RpgCharacterOwnedItemPair(
+                    itemUuid: RpgConfigurationModel.getBaseConfiguration()
+                        .allItems[2]
+                        .uuid,
+                    amount: 12,
+                  ),
+                ],
               ),
             ],
           )),
