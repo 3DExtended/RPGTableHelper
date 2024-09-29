@@ -17,8 +17,12 @@ class TwoPartWizardStepBody extends StatelessWidget {
     required this.contentChildren,
     this.footerWidget,
     this.centerNavBarWidget,
+    this.sideBarFlex = 1,
+    this.contentFlex = 1,
   });
 
+  final int? sideBarFlex;
+  final int? contentFlex;
   final String wizardTitle;
   final bool isLandscapeMode;
   final String stepTitle;
@@ -58,6 +62,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
+                flex: sideBarFlex ?? 1,
                 child: Container(
                     color: whiteBgTint,
                     child: LayoutBuilder(builder: (context, constraints) {
@@ -86,6 +91,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
               ),
               if (!isLandscapeMode) const HorizontalLine(),
               Expanded(
+                flex: contentFlex ?? 1,
                 child: Container(
                   color: const Color.fromARGB(65, 39, 39, 39),
                   child: Column(

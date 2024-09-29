@@ -58,6 +58,8 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
       stepHelperText: stepHelperText,
       onNextBtnPressed: widget.onNextBtnPressed,
       onPreviousBtnPressed: widget.onPreviousBtnPressed,
+      sideBarFlex: 1,
+      contentFlex: 2,
       contentChildren: const [],
     );
   }

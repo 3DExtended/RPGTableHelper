@@ -68,6 +68,8 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
           MediaQuery.of(context).size.height,
       stepTitle: "Rezepte", // TODO Localize,
       stepHelperText: stepHelperText,
+      sideBarFlex: 1,
+      contentFlex: 2,
       onNextBtnPressed: !isFormValid
           ? null
           : () {

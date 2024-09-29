@@ -413,7 +413,8 @@ class _CreateOrEditItemModalContentState
                           CustomButton(
                             label: "Speichern", // TODO localize
                             onPressed: () {
-                              if (selectedItemCategoryId == null) return;
+                              if (selectedItemCategoryId == null ||
+                                  selectedItemCategoryId!.isEmpty) return;
 
                               navigatorKey.currentState!.pop(RpgItem(
                                   uuid: widget.itemToEdit.uuid,
