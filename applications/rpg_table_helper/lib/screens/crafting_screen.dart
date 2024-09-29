@@ -11,6 +11,7 @@ import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
+import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -195,6 +196,7 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
                 ...recipesForSelectedCategory
                     .map((r) =>
                         (r, getAmountCreatableForRecipe(characterConfig, r)))
+                    .sortByDescending<num>((rt) => rt.$2)
                     .map(
                       (rece) => Builder(builder: (context) {
                         RpgItem itemToRender = getItemForId(
