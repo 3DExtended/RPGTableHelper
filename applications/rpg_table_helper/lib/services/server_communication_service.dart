@@ -199,7 +199,9 @@ class ServerCommunicationService extends IServerCommunicationService {
                     isConnecting: false,
                   ) ??
               ConnectionDetails.defaultValue());
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
