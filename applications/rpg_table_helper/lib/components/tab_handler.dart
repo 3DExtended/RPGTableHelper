@@ -18,7 +18,9 @@ import 'package:rpg_table_helper/services/server_communication_service.dart';
 class AuthorizedScreenWrapper extends ConsumerStatefulWidget {
   static const route = '/';
 
-  const AuthorizedScreenWrapper({super.key});
+  final TabItem? initTab;
+
+  const AuthorizedScreenWrapper({super.key, this.initTab});
 
   @override
   ConsumerState<AuthorizedScreenWrapper> createState() =>
@@ -27,6 +29,8 @@ class AuthorizedScreenWrapper extends ConsumerStatefulWidget {
 
 class _AuthorizedScreenWrapperState
     extends ConsumerState<AuthorizedScreenWrapper> {
+  var _currentTab = TabItem.character;
+
   Map<String, Widget Function(BuildContext)> _routeBuilders(
       BuildContext context) {
     var result = {
@@ -52,8 +56,6 @@ class _AuthorizedScreenWrapperState
 
     return (ownTabHandledRoutes.contains(route));
   }
-
-  var _currentTab = TabItem.character;
 
   _reloadRouteIfPossible(BuildContext context, TabItem tabItem) {
     var navigatorKeys = DependencyProvider.of(context)
@@ -102,6 +104,12 @@ class _AuthorizedScreenWrapperState
     Future.delayed(Duration.zero, () async {
       // this initializes the communication
       DependencyProvider.of(context).getService<IServerCommunicationService>();
+
+      if (widget.initTab != null) {
+        setState(() {
+          _currentTab = widget.initTab!;
+        });
+      }
     });
     super.initState();
   }
