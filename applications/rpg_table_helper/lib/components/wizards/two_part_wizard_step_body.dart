@@ -15,6 +15,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
     required this.onPreviousBtnPressed,
     required this.onNextBtnPressed,
     required this.contentChildren,
+    this.titleWidgetRight,
+    this.contentWidget,
     this.footerWidget,
     this.centerNavBarWidget,
     this.sideBarFlex = 1,
@@ -32,6 +34,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final List<Widget> contentChildren;
   final Widget? footerWidget;
   final Widget? centerNavBarWidget;
+  final Widget? contentWidget;
+  final Widget? titleWidgetRight;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const Spacer(),
               Text(
                 wizardTitle,
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
@@ -52,6 +57,9 @@ class TwoPartWizardStepBody extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
+              titleWidgetRight == null
+                  ? const Spacer()
+                  : Expanded(child: titleWidgetRight!),
             ],
           ),
         ),
@@ -98,6 +106,10 @@ class TwoPartWizardStepBody extends StatelessWidget {
                     children: [
                       Expanded(
                           child: LayoutBuilder(builder: (context, constraints) {
+                        if (contentWidget != null) {
+                          return contentWidget!;
+                        }
+
                         return SingleChildScrollView(
                           child: Padding(
                             padding: const EdgeInsets.all(20),
