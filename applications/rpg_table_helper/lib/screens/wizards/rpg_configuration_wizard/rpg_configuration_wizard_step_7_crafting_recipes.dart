@@ -80,146 +80,26 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
-      contentChildren: [
-        ..._recipes.asMap().entries.map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: StyledBox(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 20.0, bottom: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "${getItemForId(item.value.createdItem.itemUuid)?.name ?? "N/A"} (${item.value.createdItem.amountOfUsedItem}x)",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                    ),
-                              ),
-                            ),
-
-                            // Duplicate Button
-                            Container(
-                              height: 50,
-                              width: 50,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () async {
-                                  // open edit modal with clicked item
-                                  await showCreateOrEditCraftingRecipeModal(
-                                      context,
-                                      item.value.copyWith(
-                                        recipeUuid: const UuidV7().generate(),
-                                      )).then((returnValue) {
-                                    if (returnValue == null) {
-                                      return;
-                                    }
-
-                                    setState(() {
-                                      _recipes.add(returnValue);
-                                      saveChanges();
-                                    });
-                                  });
-                                },
-                                icon: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.clone),
-                              ),
-                            ),
-
-                            const SizedBox(
-                              width: 10,
-                            ),
-
-                            // Edit Button
-                            Container(
-                              height: 50,
-                              width: 50,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () async {
-                                  // open edit modal with clicked item
-                                  await showCreateOrEditCraftingRecipeModal(
-                                          context, item.value)
-                                      .then((returnValue) {
-                                    if (returnValue == null) {
-                                      return;
-                                    }
-                                    setState(() {
-                                      _recipes.removeAt(item.key);
-                                      _recipes.insert(item.key, returnValue);
-                                      saveChanges();
-                                    });
-                                  });
-                                },
-                                icon: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.penToSquare),
-                              ),
-                            ),
-
-                            // Remove button
-                            Container(
-                              height: 50,
-                              width: 70,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () {
-                                  // remove this pair from list
-                                  setState(() {
-                                    _recipes.removeAt(item.key);
-                                  });
-                                },
-                                icon: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.trashCan),
-                              ),
-                            ),
-                          ],
-                        ),
-                        _LabeledRow(
-                          labelWidthFlex: 2,
-                          valueWidthFlex: 5,
-                          label: "Voraussetzungen:", // TODO localize
-                          text: item.value.requiredItemIds
-                              .map((id) => getItemForId(id))
-                              .where((e) => e != null)
-                              .map((e) => " - ${e!.name}")
-                              .join("\n"),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        _LabeledRow(
-                          labelWidthFlex: 2,
-                          valueWidthFlex: 5,
-                          label: "Zutaten:", // TODO localize
-                          text: item.value.ingredients
-                              .map(
-                                  (pair) => (pair, getItemForId(pair.itemUuid)))
-                              .where((e) => e.$2 != null)
-                              .map((e) =>
-                                  " - ${e.$1.amountOfUsedItem}x ${e.$2!.name}")
-                              .join("\n"),
-                        ),
-                        //
-                        // Padding(
-                        //   padding: const EdgeInsets.only(right: 20.0),
-                        //   child: MarkdownBody(
-                        //     data: item.value.description,
-                        //   ),
-                        // )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+      contentWidget: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Builder(builder: (context) {
+          var recipesAsMapList = _recipes.asMap().entries.toList();
+          return ListView.builder(
+            itemCount: recipesAsMapList.length,
+            prototypeItem: recipesAsMapList.isEmpty
+                ? null
+                : getRecipeVisualisation(recipesAsMapList[0], context),
+            itemBuilder: (context, index) {
+              var recipe = recipesAsMapList[index];
+              return getRecipeVisualisation(recipe, context);
+            },
+          );
+        }),
+      ),
+      contentChildren: const [
+        //  ..._recipes.asMap().entries.map(
+        //        (item) => getRecipeVisualisation(item, context),
+        //      ),
       ],
       centerNavBarWidget: CustomButton(
         onPressed: () async {
@@ -262,6 +142,151 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                 height: 24,
                 alignment: AlignmentDirectional.center,
                 child: const FaIcon(FontAwesomeIcons.plus))),
+      ),
+    );
+  }
+
+  Padding getRecipeVisualisation(
+      MapEntry<int, CraftingRecipe> item, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: StyledBox(
+        child: SizedBox(
+          height: 200,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, bottom: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "${getItemForId(item.value.createdItem.itemUuid)?.name ?? "N/A"} (${item.value.createdItem.amountOfUsedItem}x)",
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                      ),
+                    ),
+
+                    // Duplicate Button
+                    Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () async {
+                          // open edit modal with clicked item
+                          await showCreateOrEditCraftingRecipeModal(
+                              context,
+                              item.value.copyWith(
+                                recipeUuid: const UuidV7().generate(),
+                              )).then((returnValue) {
+                            if (returnValue == null) {
+                              return;
+                            }
+
+                            setState(() {
+                              _recipes.add(returnValue);
+                              saveChanges();
+                            });
+                          });
+                        },
+                        icon: const CustomFaIcon(icon: FontAwesomeIcons.clone),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      width: 10,
+                    ),
+
+                    // Edit Button
+                    Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () async {
+                          // open edit modal with clicked item
+                          await showCreateOrEditCraftingRecipeModal(
+                                  context, item.value)
+                              .then((returnValue) {
+                            if (returnValue == null) {
+                              return;
+                            }
+                            setState(() {
+                              _recipes.removeAt(item.key);
+                              _recipes.insert(item.key, returnValue);
+                              saveChanges();
+                            });
+                          });
+                        },
+                        icon: const CustomFaIcon(
+                            icon: FontAwesomeIcons.penToSquare),
+                      ),
+                    ),
+
+                    // Remove button
+                    Container(
+                      height: 50,
+                      width: 70,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () {
+                          // remove this pair from list
+                          setState(() {
+                            _recipes.removeAt(item.key);
+                          });
+                        },
+                        icon:
+                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _LabeledRow(
+                        labelWidthFlex: 2,
+                        valueWidthFlex: 5,
+                        label: "Voraussetzungen:", // TODO localize
+                        text: item.value.requiredItemIds
+                            .map((id) => getItemForId(id))
+                            .where((e) => e != null)
+                            .map((e) => " - ${e!.name}")
+                            .join("\n"),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _LabeledRow(
+                        labelWidthFlex: 2,
+                        valueWidthFlex: 5,
+                        label: "Zutaten:", // TODO localize
+                        text: item.value.ingredients
+                            .map((pair) => (pair, getItemForId(pair.itemUuid)))
+                            .where((e) => e.$2 != null)
+                            .map((e) =>
+                                " - ${e.$1.amountOfUsedItem}x ${e.$2!.name}")
+                            .join("\n"),
+                      ),
+                      //
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 20.0),
+                      //   child: MarkdownBody(
+                      //     data: item.value.description,
+                      //   ),
+                      // )
+                    ],
+                  ),
+                ))
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
