@@ -5,9 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/categorized_item_layout.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_grid_list_view.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/item_visualization.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -265,48 +265,46 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       ),
       const HorizontalLine(),
       Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: StaticGrid(
-              colGap: 20,
-              rowGap: 20,
-              columnCount: numberOfColumnsInMainContent,
-              children: [
-                ...itemsForSelectedCategory
-                    .map((it) => (
-                          it,
-                          getItemCountInCharacterInventory(
-                              characterConfig, it.uuid)
-                        ))
-                    .where((it) => it.$2 > 0)
-                    .sortBy((t) => t.$1.name.toLowerCase())
-                    // TODO this creates an issue with sorting i dont understand...
-                    // .sortByDescending<int>((t) => t.$2)
-                    .map(
-                      (item) => ItemVisualization(
-                          itemToRender: item.$1,
-                          renderRecipeRelatedThings: false,
-                          itemNameSuffix: null,
-                          numberOfItemsInInventory: item.$2,
-                          numberOfCreateableInstances: null,
-                          useItem: () {
-                            ref
-                                .read(
-                                    rpgCharacterConfigurationProvider.notifier)
-                                .useItem(item.$1.uuid);
-                          },
-                          craftItem: () {
-                            // ref
-                            //     .read(rpgCharacterConfigurationProvider
-                            //         .notifier)
-                            //     .tryCraftItem(rpgConfig, rece.$1);
-                          }),
-                    ),
-              ],
-            ),
-          ),
-        ),
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Builder(builder: (context) {
+              var itemsToRender = itemsForSelectedCategory
+                  .map((it) => (
+                        it,
+                        getItemCountInCharacterInventory(
+                            characterConfig, it.uuid)
+                      ))
+                  .where((it) => it.$2 > 0)
+                  .sortBy((t) => t.$1.name.toLowerCase())
+                  .toList();
+              return CustomGridListView(
+                numberOfColumns: numberOfColumnsInMainContent,
+                horizontalSpacing: 20,
+                verticalSpacing: 20,
+                itemCount: itemsToRender.length,
+                itemBuilder: (context, index) {
+                  var item = itemsToRender[index];
+
+                  return ItemVisualization(
+                      itemToRender: item.$1,
+                      renderRecipeRelatedThings: false,
+                      itemNameSuffix: null,
+                      numberOfItemsInInventory: item.$2,
+                      numberOfCreateableInstances: null,
+                      useItem: () {
+                        ref
+                            .read(rpgCharacterConfigurationProvider.notifier)
+                            .useItem(item.$1.uuid);
+                      },
+                      craftItem: () {
+                        // ref
+                        //     .read(rpgCharacterConfigurationProvider
+                        //         .notifier)
+                        //     .tryCraftItem(rpgConfig, rece.$1);
+                      });
+                },
+              );
+            })),
       )
     ];
 

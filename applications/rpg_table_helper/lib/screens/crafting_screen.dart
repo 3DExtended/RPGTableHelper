@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/categorized_item_layout.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_grid_list_view.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/item_visualization.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -185,45 +185,43 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
       ),
       const HorizontalLine(),
       Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: StaticGrid(
-              colGap: 20,
-              rowGap: 20,
-              columnCount: numberOfColumnsInMainContent,
-              children: [
-                ...recipesForSelectedCategory
-                    .map((r) =>
-                        (r, getAmountCreatableForRecipe(characterConfig, r)))
-                    .sortByDescending<num>((rt) => rt.$2)
-                    .map(
-                      (rece) => Builder(builder: (context) {
-                        RpgItem itemToRender = getItemForId(
-                            rpgConfig!, rece.$1.createdItem.itemUuid);
-                        int numberOfItemsInInventory =
-                            getItemCountInCharacterInventory(
-                                characterConfig, itemToRender.uuid);
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Builder(builder: (context) {
+            var recipesToRender = recipesForSelectedCategory
+                .map(
+                    (r) => (r, getAmountCreatableForRecipe(characterConfig, r)))
+                .sortByDescending<num>((rt) => rt.$2)
+                .toList();
 
-                        return ItemVisualization(
-                            useItem: null,
-                            itemToRender: itemToRender,
-                            renderRecipeRelatedThings: true,
-                            itemNameSuffix:
-                                " (x${rece.$1.createdItem.amountOfUsedItem})",
-                            numberOfItemsInInventory: numberOfItemsInInventory,
-                            numberOfCreateableInstances: rece.$2,
-                            craftItem: () {
-                              ref
-                                  .read(rpgCharacterConfigurationProvider
-                                      .notifier)
-                                  .tryCraftItem(rpgConfig, rece.$1);
-                            });
-                      }),
-                    ),
-              ],
-            ),
-          ),
+            return CustomGridListView(
+                numberOfColumns: numberOfColumnsInMainContent,
+                horizontalSpacing: 20,
+                verticalSpacing: 20,
+                itemCount: recipesToRender.length,
+                itemBuilder: (context, index) {
+                  var rece = recipesToRender[index];
+                  RpgItem itemToRender =
+                      getItemForId(rpgConfig!, rece.$1.createdItem.itemUuid);
+                  int numberOfItemsInInventory =
+                      getItemCountInCharacterInventory(
+                          characterConfig, itemToRender.uuid);
+
+                  return ItemVisualization(
+                      useItem: null,
+                      itemToRender: itemToRender,
+                      renderRecipeRelatedThings: true,
+                      itemNameSuffix:
+                          " (x${rece.$1.createdItem.amountOfUsedItem})",
+                      numberOfItemsInInventory: numberOfItemsInInventory,
+                      numberOfCreateableInstances: rece.$2,
+                      craftItem: () {
+                        ref
+                            .read(rpgCharacterConfigurationProvider.notifier)
+                            .tryCraftItem(rpgConfig, rece.$1);
+                      });
+                });
+          }),
         ),
       )
     ];

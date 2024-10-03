@@ -46,7 +46,7 @@ class CustomGridListView extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: verticalSpacing / 2.0),
+      padding: EdgeInsets.only(bottom: verticalSpacing),
       child: Row(
         children: children,
       ),
