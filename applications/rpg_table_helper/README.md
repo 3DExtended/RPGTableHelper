@@ -39,3 +39,7 @@ Update golden tests:
 
 Build generated code:
 ```dart run build_runner build```
+
+Update launcher icons:
+
+```flutter pub get && dart run flutter_launcher_icons```
