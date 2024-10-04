@@ -18,7 +18,7 @@ void main() {
 
     testConfigurations(
       disableLocals: true,
-      pathPrefix: "../../",
+      pathPrefix: "",
       widgetName: 'showChoosePlayerOrDmModal',
       useMaterialAppWrapper: true,
       testerInteractions: (tester, local) async {

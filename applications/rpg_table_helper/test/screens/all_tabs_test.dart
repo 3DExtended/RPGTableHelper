@@ -127,7 +127,7 @@ void main() {
       for (var tabItem in TabItem.values) {
         testConfigurations(
           disableLocals: true,
-          pathPrefix: "../../",
+          pathPrefix: "",
           widgetName: 'allTabsTest$tabItem$i',
           useMaterialAppWrapper: true,
           testerInteractions: (tester, local) async {

@@ -18,7 +18,7 @@ void main() {
 
     testConfigurations(
       disableLocals: true,
-      pathPrefix: "../../",
+      pathPrefix: "",
       widgetName: 'showAddNewItemModal',
       useMaterialAppWrapper: true,
       testerInteractions: (tester, local) async {
