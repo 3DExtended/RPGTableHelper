@@ -41,6 +41,7 @@ class ItemVisualization extends StatelessWidget {
                 child: Text(
                   itemToRender.name +
                       (renderRecipeRelatedThings ? (itemNameSuffix ?? "") : ""),
+                  overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
