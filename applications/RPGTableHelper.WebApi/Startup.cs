@@ -58,7 +58,7 @@ public class Startup
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<ChatHub>("/Chat");
+            endpoints.MapHub<RpgServerHub>("/Chat");
         });
     }
 }

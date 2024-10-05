@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace RPGTableHelper.WebApi;
 
-public class ChatHub : Hub
+public class RpgServerHub : Hub
 {
     /// <summary>
     /// DM Method for starting a session
