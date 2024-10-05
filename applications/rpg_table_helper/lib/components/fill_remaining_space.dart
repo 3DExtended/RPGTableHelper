@@ -6,16 +6,19 @@ class FillRemainingSpace extends StatelessWidget {
     required this.child,
   });
 
-  final Container child;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [child],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [child],
+          ),
         ),
       ],
     );

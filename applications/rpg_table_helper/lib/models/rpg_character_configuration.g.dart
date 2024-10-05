@@ -7,9 +7,11 @@ part of 'rpg_character_configuration.dart';
 // **************************************************************************
 
 abstract class _$RpgCharacterConfigurationCWProxy {
+  RpgCharacterConfiguration uuid(String uuid);
+
   RpgCharacterConfiguration characterName(String characterName);
 
-  RpgCharacterConfiguration moneyCoinCount(List<int> moneyCoinCount);
+  RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType);
 
   RpgCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
@@ -24,8 +26,9 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   /// RpgCharacterConfiguration(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterConfiguration call({
+    String? uuid,
     String? characterName,
-    List<int>? moneyCoinCount,
+    int? moneyInBaseType,
     List<RpgCharacterStatValue>? characterStats,
     List<RpgCharacterOwnedItemPair>? inventory,
   });
@@ -39,12 +42,15 @@ class _$RpgCharacterConfigurationCWProxyImpl
   final RpgCharacterConfiguration _value;
 
   @override
+  RpgCharacterConfiguration uuid(String uuid) => this(uuid: uuid);
+
+  @override
   RpgCharacterConfiguration characterName(String characterName) =>
       this(characterName: characterName);
 
   @override
-  RpgCharacterConfiguration moneyCoinCount(List<int> moneyCoinCount) =>
-      this(moneyCoinCount: moneyCoinCount);
+  RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType) =>
+      this(moneyInBaseType: moneyInBaseType);
 
   @override
   RpgCharacterConfiguration characterStats(
@@ -65,22 +71,26 @@ class _$RpgCharacterConfigurationCWProxyImpl
   /// RpgCharacterConfiguration(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterConfiguration call({
+    Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
-    Object? moneyCoinCount = const $CopyWithPlaceholder(),
+    Object? moneyInBaseType = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterConfiguration(
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+          ? _value.uuid
+          // ignore: cast_nullable_to_non_nullable
+          : uuid as String,
       characterName:
           characterName == const $CopyWithPlaceholder() || characterName == null
               ? _value.characterName
               // ignore: cast_nullable_to_non_nullable
               : characterName as String,
-      moneyCoinCount: moneyCoinCount == const $CopyWithPlaceholder() ||
-              moneyCoinCount == null
-          ? _value.moneyCoinCount
+      moneyInBaseType: moneyInBaseType == const $CopyWithPlaceholder()
+          ? _value.moneyInBaseType
           // ignore: cast_nullable_to_non_nullable
-          : moneyCoinCount as List<int>,
+          : moneyInBaseType as int?,
       characterStats: characterStats == const $CopyWithPlaceholder() ||
               characterStats == null
           ? _value.characterStats
@@ -235,10 +245,9 @@ extension $RpgCharacterOwnedItemPairCopyWith on RpgCharacterOwnedItemPair {
 RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
         Map<String, dynamic> json) =>
     RpgCharacterConfiguration(
+      uuid: json['uuid'] as String,
       characterName: json['characterName'] as String,
-      moneyCoinCount: (json['moneyCoinCount'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+      moneyInBaseType: (json['moneyInBaseType'] as num?)?.toInt(),
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -251,8 +260,9 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
 Map<String, dynamic> _$RpgCharacterConfigurationToJson(
         RpgCharacterConfiguration instance) =>
     <String, dynamic>{
+      'uuid': instance.uuid,
       'characterName': instance.characterName,
-      'moneyCoinCount': instance.moneyCoinCount,
+      'moneyInBaseType': instance.moneyInBaseType,
       'characterStats': instance.characterStats,
       'inventory': instance.inventory,
     };

@@ -145,7 +145,7 @@ abstract class _$ItemCategoryCWProxy {
 
   ItemCategory name(String name);
 
-  ItemCategory subCategories(List<ItemCategory>? subCategories);
+  ItemCategory subCategories(List<ItemCategory> subCategories);
 
   ItemCategory hideInInventoryFilters(bool hideInInventoryFilters);
 
@@ -176,7 +176,7 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
   ItemCategory name(String name) => this(name: name);
 
   @override
-  ItemCategory subCategories(List<ItemCategory>? subCategories) =>
+  ItemCategory subCategories(List<ItemCategory> subCategories) =>
       this(subCategories: subCategories);
 
   @override
@@ -206,10 +206,11 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
-      subCategories: subCategories == const $CopyWithPlaceholder()
-          ? _value.subCategories
-          // ignore: cast_nullable_to_non_nullable
-          : subCategories as List<ItemCategory>?,
+      subCategories:
+          subCategories == const $CopyWithPlaceholder() || subCategories == null
+              ? _value.subCategories
+              // ignore: cast_nullable_to_non_nullable
+              : subCategories as List<ItemCategory>,
       hideInInventoryFilters:
           hideInInventoryFilters == const $CopyWithPlaceholder() ||
                   hideInInventoryFilters == null
@@ -411,6 +412,8 @@ abstract class _$CraftingRecipeCWProxy {
 
   CraftingRecipe ingredients(List<CraftingRecipeIngredientPair> ingredients);
 
+  CraftingRecipe requiredItemIds(List<String> requiredItemIds);
+
   CraftingRecipe createdItem(CraftingRecipeIngredientPair createdItem);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CraftingRecipe(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -422,6 +425,7 @@ abstract class _$CraftingRecipeCWProxy {
   CraftingRecipe call({
     String? recipeUuid,
     List<CraftingRecipeIngredientPair>? ingredients,
+    List<String>? requiredItemIds,
     CraftingRecipeIngredientPair? createdItem,
   });
 }
@@ -440,6 +444,10 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
       this(ingredients: ingredients);
 
   @override
+  CraftingRecipe requiredItemIds(List<String> requiredItemIds) =>
+      this(requiredItemIds: requiredItemIds);
+
+  @override
   CraftingRecipe createdItem(CraftingRecipeIngredientPair createdItem) =>
       this(createdItem: createdItem);
 
@@ -454,6 +462,7 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
   CraftingRecipe call({
     Object? recipeUuid = const $CopyWithPlaceholder(),
     Object? ingredients = const $CopyWithPlaceholder(),
+    Object? requiredItemIds = const $CopyWithPlaceholder(),
     Object? createdItem = const $CopyWithPlaceholder(),
   }) {
     return CraftingRecipe(
@@ -467,6 +476,11 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
               ? _value.ingredients
               // ignore: cast_nullable_to_non_nullable
               : ingredients as List<CraftingRecipeIngredientPair>,
+      requiredItemIds: requiredItemIds == const $CopyWithPlaceholder() ||
+              requiredItemIds == null
+          ? _value.requiredItemIds
+          // ignore: cast_nullable_to_non_nullable
+          : requiredItemIds as List<String>,
       createdItem:
           createdItem == const $CopyWithPlaceholder() || createdItem == null
               ? _value.createdItem
@@ -742,16 +756,84 @@ extension $PlaceOfFindingCopyWith on PlaceOfFinding {
   _$PlaceOfFindingCWProxy get copyWith => _$PlaceOfFindingCWProxyImpl(this);
 }
 
+abstract class _$RpgItemRarityCWProxy {
+  RpgItemRarity placeOfFindingId(String placeOfFindingId);
+
+  RpgItemRarity diceChallenge(int diceChallenge);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItemRarity(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// RpgItemRarity(...).copyWith(id: 12, name: "My name")
+  /// ````
+  RpgItemRarity call({
+    String? placeOfFindingId,
+    int? diceChallenge,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfRpgItemRarity.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfRpgItemRarity.copyWith.fieldName(...)`
+class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
+  const _$RpgItemRarityCWProxyImpl(this._value);
+
+  final RpgItemRarity _value;
+
+  @override
+  RpgItemRarity placeOfFindingId(String placeOfFindingId) =>
+      this(placeOfFindingId: placeOfFindingId);
+
+  @override
+  RpgItemRarity diceChallenge(int diceChallenge) =>
+      this(diceChallenge: diceChallenge);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItemRarity(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// RpgItemRarity(...).copyWith(id: 12, name: "My name")
+  /// ````
+  RpgItemRarity call({
+    Object? placeOfFindingId = const $CopyWithPlaceholder(),
+    Object? diceChallenge = const $CopyWithPlaceholder(),
+  }) {
+    return RpgItemRarity(
+      placeOfFindingId: placeOfFindingId == const $CopyWithPlaceholder() ||
+              placeOfFindingId == null
+          ? _value.placeOfFindingId
+          // ignore: cast_nullable_to_non_nullable
+          : placeOfFindingId as String,
+      diceChallenge:
+          diceChallenge == const $CopyWithPlaceholder() || diceChallenge == null
+              ? _value.diceChallenge
+              // ignore: cast_nullable_to_non_nullable
+              : diceChallenge as int,
+    );
+  }
+}
+
+extension $RpgItemRarityCopyWith on RpgItemRarity {
+  /// Returns a callable class that can be used as follows: `instanceOfRpgItemRarity.copyWith(...)` or like so:`instanceOfRpgItemRarity.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$RpgItemRarityCWProxy get copyWith => _$RpgItemRarityCWProxyImpl(this);
+}
+
 abstract class _$RpgItemCWProxy {
   RpgItem uuid(String uuid);
 
   RpgItem name(String name);
 
+  RpgItem patchSize(DiceRoll? patchSize);
+
   RpgItem categoryId(String categoryId);
+
+  RpgItem description(String description);
 
   RpgItem baseCurrencyPrice(int baseCurrencyPrice);
 
-  RpgItem placeOfFindingIds(List<String>? placeOfFindingIds);
+  RpgItem placeOfFindings(List<RpgItemRarity> placeOfFindings);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItem(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -762,9 +844,11 @@ abstract class _$RpgItemCWProxy {
   RpgItem call({
     String? uuid,
     String? name,
+    DiceRoll? patchSize,
     String? categoryId,
+    String? description,
     int? baseCurrencyPrice,
-    List<String>? placeOfFindingIds,
+    List<RpgItemRarity>? placeOfFindings,
   });
 }
 
@@ -781,15 +865,21 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem name(String name) => this(name: name);
 
   @override
+  RpgItem patchSize(DiceRoll? patchSize) => this(patchSize: patchSize);
+
+  @override
   RpgItem categoryId(String categoryId) => this(categoryId: categoryId);
+
+  @override
+  RpgItem description(String description) => this(description: description);
 
   @override
   RpgItem baseCurrencyPrice(int baseCurrencyPrice) =>
       this(baseCurrencyPrice: baseCurrencyPrice);
 
   @override
-  RpgItem placeOfFindingIds(List<String>? placeOfFindingIds) =>
-      this(placeOfFindingIds: placeOfFindingIds);
+  RpgItem placeOfFindings(List<RpgItemRarity> placeOfFindings) =>
+      this(placeOfFindings: placeOfFindings);
 
   @override
 
@@ -802,9 +892,11 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
+    Object? patchSize = const $CopyWithPlaceholder(),
     Object? categoryId = const $CopyWithPlaceholder(),
+    Object? description = const $CopyWithPlaceholder(),
     Object? baseCurrencyPrice = const $CopyWithPlaceholder(),
-    Object? placeOfFindingIds = const $CopyWithPlaceholder(),
+    Object? placeOfFindings = const $CopyWithPlaceholder(),
   }) {
     return RpgItem(
       uuid: uuid == const $CopyWithPlaceholder() || uuid == null
@@ -815,20 +907,30 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
+      patchSize: patchSize == const $CopyWithPlaceholder()
+          ? _value.patchSize
+          // ignore: cast_nullable_to_non_nullable
+          : patchSize as DiceRoll?,
       categoryId:
           categoryId == const $CopyWithPlaceholder() || categoryId == null
               ? _value.categoryId
               // ignore: cast_nullable_to_non_nullable
               : categoryId as String,
+      description:
+          description == const $CopyWithPlaceholder() || description == null
+              ? _value.description
+              // ignore: cast_nullable_to_non_nullable
+              : description as String,
       baseCurrencyPrice: baseCurrencyPrice == const $CopyWithPlaceholder() ||
               baseCurrencyPrice == null
           ? _value.baseCurrencyPrice
           // ignore: cast_nullable_to_non_nullable
           : baseCurrencyPrice as int,
-      placeOfFindingIds: placeOfFindingIds == const $CopyWithPlaceholder()
-          ? _value.placeOfFindingIds
+      placeOfFindings: placeOfFindings == const $CopyWithPlaceholder() ||
+              placeOfFindings == null
+          ? _value.placeOfFindings
           // ignore: cast_nullable_to_non_nullable
-          : placeOfFindingIds as List<String>?,
+          : placeOfFindings as List<RpgItemRarity>,
     );
   }
 }
@@ -837,6 +939,77 @@ extension $RpgItemCopyWith on RpgItem {
   /// Returns a callable class that can be used as follows: `instanceOfRpgItem.copyWith(...)` or like so:`instanceOfRpgItem.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$RpgItemCWProxy get copyWith => _$RpgItemCWProxyImpl(this);
+}
+
+abstract class _$DiceRollCWProxy {
+  DiceRoll numDice(int numDice);
+
+  DiceRoll diceSides(int diceSides);
+
+  DiceRoll modifier(int modifier);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `DiceRoll(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// DiceRoll(...).copyWith(id: 12, name: "My name")
+  /// ````
+  DiceRoll call({
+    int? numDice,
+    int? diceSides,
+    int? modifier,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfDiceRoll.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfDiceRoll.copyWith.fieldName(...)`
+class _$DiceRollCWProxyImpl implements _$DiceRollCWProxy {
+  const _$DiceRollCWProxyImpl(this._value);
+
+  final DiceRoll _value;
+
+  @override
+  DiceRoll numDice(int numDice) => this(numDice: numDice);
+
+  @override
+  DiceRoll diceSides(int diceSides) => this(diceSides: diceSides);
+
+  @override
+  DiceRoll modifier(int modifier) => this(modifier: modifier);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `DiceRoll(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// DiceRoll(...).copyWith(id: 12, name: "My name")
+  /// ````
+  DiceRoll call({
+    Object? numDice = const $CopyWithPlaceholder(),
+    Object? diceSides = const $CopyWithPlaceholder(),
+    Object? modifier = const $CopyWithPlaceholder(),
+  }) {
+    return DiceRoll(
+      numDice: numDice == const $CopyWithPlaceholder() || numDice == null
+          ? _value.numDice
+          // ignore: cast_nullable_to_non_nullable
+          : numDice as int,
+      diceSides: diceSides == const $CopyWithPlaceholder() || diceSides == null
+          ? _value.diceSides
+          // ignore: cast_nullable_to_non_nullable
+          : diceSides as int,
+      modifier: modifier == const $CopyWithPlaceholder() || modifier == null
+          ? _value.modifier
+          // ignore: cast_nullable_to_non_nullable
+          : modifier as int,
+    );
+  }
+}
+
+extension $DiceRollCopyWith on DiceRoll {
+  /// Returns a callable class that can be used as follows: `instanceOfDiceRoll.copyWith(...)` or like so:`instanceOfDiceRoll.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$DiceRollCWProxy get copyWith => _$DiceRollCWProxyImpl(this);
 }
 
 // **************************************************************************
@@ -880,8 +1053,8 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
 ItemCategory _$ItemCategoryFromJson(Map<String, dynamic> json) => ItemCategory(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
-      subCategories: (json['subCategories'] as List<dynamic>?)
-          ?.map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
+      subCategories: (json['subCategories'] as List<dynamic>)
+          .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
       hideInInventoryFilters: json['hideInInventoryFilters'] as bool? ?? false,
     );
@@ -939,6 +1112,9 @@ CraftingRecipe _$CraftingRecipeFromJson(Map<String, dynamic> json) =>
           .map((e) =>
               CraftingRecipeIngredientPair.fromJson(e as Map<String, dynamic>))
           .toList(),
+      requiredItemIds: (json['requiredItemIds'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
       createdItem: CraftingRecipeIngredientPair.fromJson(
           json['createdItem'] as Map<String, dynamic>),
     );
@@ -948,6 +1124,7 @@ Map<String, dynamic> _$CraftingRecipeToJson(CraftingRecipe instance) =>
       'recipeUuid': instance.recipeUuid,
       'ingredients': instance.ingredients,
       'createdItem': instance.createdItem,
+      'requiredItemIds': instance.requiredItemIds,
     };
 
 CharacterStatDefinition _$CharacterStatDefinitionFromJson(
@@ -1020,20 +1197,50 @@ Map<String, dynamic> _$PlaceOfFindingToJson(PlaceOfFinding instance) =>
       'name': instance.name,
     };
 
+RpgItemRarity _$RpgItemRarityFromJson(Map<String, dynamic> json) =>
+    RpgItemRarity(
+      placeOfFindingId: json['placeOfFindingId'] as String,
+      diceChallenge: (json['diceChallenge'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$RpgItemRarityToJson(RpgItemRarity instance) =>
+    <String, dynamic>{
+      'placeOfFindingId': instance.placeOfFindingId,
+      'diceChallenge': instance.diceChallenge,
+    };
+
 RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
+      patchSize: json['patchSize'] == null
+          ? null
+          : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
       categoryId: json['categoryId'] as String,
+      description: json['description'] as String,
       baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
-      placeOfFindingIds: (json['placeOfFindingIds'] as List<dynamic>?)
-          ?.map((e) => e as String)
+      placeOfFindings: (json['placeOfFindings'] as List<dynamic>)
+          .map((e) => RpgItemRarity.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
       'uuid': instance.uuid,
       'name': instance.name,
+      'description': instance.description,
       'categoryId': instance.categoryId,
-      'placeOfFindingIds': instance.placeOfFindingIds,
+      'placeOfFindings': instance.placeOfFindings,
+      'patchSize': instance.patchSize,
       'baseCurrencyPrice': instance.baseCurrencyPrice,
+    };
+
+DiceRoll _$DiceRollFromJson(Map<String, dynamic> json) => DiceRoll(
+      numDice: (json['numDice'] as num).toInt(),
+      diceSides: (json['diceSides'] as num).toInt(),
+      modifier: (json['modifier'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$DiceRollToJson(DiceRoll instance) => <String, dynamic>{
+      'numDice': instance.numDice,
+      'diceSides': instance.diceSides,
+      'modifier': instance.modifier,
     };

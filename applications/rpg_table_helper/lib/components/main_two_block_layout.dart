@@ -1,30 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/screens/choose_player_or_dm_modal.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
-class MainTwoBlockLayout extends StatelessWidget {
+class MainTwoBlockLayout extends ConsumerWidget {
   final List<NavbarButton> navbarButtons;
   final Widget content;
+  final int selectedNavbarButton;
+  final bool showIsConnectedButton;
   const MainTwoBlockLayout({
     super.key,
     required this.navbarButtons,
+    required this.selectedNavbarButton,
     required this.content,
+    required this.showIsConnectedButton,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // figure out if landscape or if portrait mode
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
     var isLandscape = width >= height;
 
-    // TODO is connected or not
-    var isConnectedToServer = false;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
+    var isConnectedToServer = connectionDetails?.isConnected ?? false;
+    var isDmDevice = connectionDetails?.isDm ?? true;
+    var isInSession = connectionDetails?.isInSession ?? false;
 
     var isConnectedBtn = Padding(
       padding: EdgeInsets.fromLTRB(
@@ -37,21 +47,22 @@ class MainTwoBlockLayout extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Container(
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(1000),
               color: Colors.transparent,
             ),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(12, 13, 12, 13),
             child: Theme(
                 data: ThemeData(
                   iconTheme: IconThemeData(
-                    color: isConnectedToServer
+                    color: isInSession
                         ? const Color.fromARGB(255, 12, 163, 90)
                         : const Color.fromARGB(255, 163, 12, 12),
-                    size: 24,
+                    size: 16,
                   ),
                 ),
-                child: FaIcon(isConnectedToServer
+                child: FaIcon(isInSession
                     ? FontAwesomeIcons.link
                     : FontAwesomeIcons.linkSlash)),
           ),
@@ -68,21 +79,42 @@ class MainTwoBlockLayout extends StatelessWidget {
         isLandscapeMode: !isLandscape,
         children: [
           const Spacer(),
-          CupertinoButton(
-              minSize: 0,
-              padding: const EdgeInsets.all(0),
-              onPressed: () {},
-              child: isConnectedBtn),
+          if (showIsConnectedButton)
+            CupertinoButton(
+                minSize: 0,
+                padding: const EdgeInsets.all(0),
+                onPressed: () async {
+                  if (isInSession) {
+                    if (isDmDevice) {
+                      Navigator.of(context)
+                          .pushNamed(allWizardConfigurations.entries.first.key);
+                    } else {
+                      // TODO open configuration for players
+                    }
+                  } else {
+                    // open "connect modal"
+                    if (isConnectedToServer) {
+                      await showChoosePlayerOrDmModal(context);
+                    } else {
+                      // This is a fallback such that the dm can work offline on their configurations
+                      Navigator.of(context)
+                          .pushNamed(allWizardConfigurations.entries.first.key);
+                    }
+                  }
+                },
+                child: isConnectedBtn),
           Center(
             child: NavbarBlock(
               isLandscapeMode: isLandscape,
               navbarButtons: navbarButtons,
+              selectedNavbarButton: selectedNavbarButton,
             ),
           ),
-          Opacity(
-            opacity: 0,
-            child: isConnectedBtn,
-          ),
+          if (showIsConnectedButton)
+            Opacity(
+              opacity: 0,
+              child: isConnectedBtn,
+            ),
           const Spacer(),
         ],
       ),

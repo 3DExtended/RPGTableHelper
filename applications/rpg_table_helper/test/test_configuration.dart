@@ -19,6 +19,27 @@ const testDevices = [
     textScale: 1.0,
     safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
   ),
+  Device(
+    name: 'ipad 6th gen landscape',
+    size: Size(1024, 768),
+    devicePixelRatio: 2,
+    textScale: 1.0,
+    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  ),
+  Device(
+    name: 'ipad pro 11inch 4th gen',
+    size: Size(1210, 834),
+    devicePixelRatio: 2,
+    textScale: 1.0,
+    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  ),
+  // Device(
+  //   name: 'iphone 16',
+  //   size: Size(852, 393),
+  //   devicePixelRatio: 3,
+  //   textScale: 1.0,
+  //   safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  // ),
 ];
 
 void testConfigurations({
@@ -29,6 +50,7 @@ void testConfigurations({
   bool disableLocals = false,
   Future<void> Function(WidgetTester tester, Locale local)? testerInteractions,
   bool useMaterialAppWrapper = true,
+  String? pathPrefix = "",
 }) {
   Widget? widgetToTest;
   var supportedLocales = AppLocalizations.supportedLocales;
@@ -95,7 +117,7 @@ void testConfigurations({
 
         await multiScreenGolden(
           tester,
-          '../../goldens/$widgetName/$testName',
+          '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
           devices: testDevices,
         );
       });

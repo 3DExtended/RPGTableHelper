@@ -3,6 +3,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/tab_handler.dart';
+import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
+import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 void main() {
@@ -26,36 +30,70 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return ProviderScope(
+      observers: [
+        SaveRpgConfigurationToStorageObserver(),
+        SaveRpgCharacterConfigurationToStorageObserver()
+      ],
+      child: AppRoutingShell(widget: widget),
+    );
+  }
+}
+
+class AppRoutingShell extends ConsumerWidget {
+  const AppRoutingShell({
+    super.key,
+    required this.widget,
+  });
+
+  final MyApp widget;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return DependencyProvider(
+      widgetRef: ref,
       isMocked: false,
-      child: ProviderScope(
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorKey: navigatorKey,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            fontFamily: 'Roboto',
-            useMaterial3: true,
-            iconTheme: const IconThemeData(
-              color: Colors.white,
-              size: 24,
-            ),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.dark,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          fontFamily: 'Roboto',
+          useMaterial3: true,
+          iconTheme: const IconThemeData(
+            color: Colors.white,
+            size: 16,
           ),
-          initialRoute: AuthorizedScreenWrapper.route,
-          onGenerateRoute: (RouteSettings settings) {
-            // add all routes which are accessible without authorization
-            switch (settings.name) {
-              case AuthorizedScreenWrapper.route:
-                return MaterialWithModalsPageRoute(
-                  builder: (_) => const AuthorizedScreenWrapper(),
-                  settings: settings,
-                );
-            }
-            return null;
-          },
         ),
+        navigatorKey: navigatorKey,
+        initialRoute: widget.initialRoute ?? AuthorizedScreenWrapper.route,
+        onGenerateRoute: (RouteSettings settings) {
+          // add all routes which are accessible without authorization
+          switch (settings.name) {
+            case AuthorizedScreenWrapper.route:
+              return MaterialWithModalsPageRoute(
+                builder: (_) => const AuthorizedScreenWrapper(),
+                settings: settings,
+              );
+          }
+
+          for (var config in allWizardConfigurations.entries.toList()) {
+            if (settings.name == config.key) {
+              return MaterialWithModalsPageRoute(
+                builder: (_) => WizardRendererForConfiguration(
+                  configuration: config.value,
+                ),
+                settings: settings,
+              );
+            }
+          }
+
+          return null;
+        },
       ),
     );
   }

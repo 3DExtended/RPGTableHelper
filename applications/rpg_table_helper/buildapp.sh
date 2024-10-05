@@ -25,13 +25,13 @@ flutter build ipa --no-tree-shake-icons --obfuscate --split-debug-info=./obfusca
 # create certs here: https://appstoreconnect.apple.com/access/api
 sleep 6
 
-xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa --apiIssuer c97ca5fd-1e2f-4be2-8d67-01078f794b3d --apiKey RQXKQ9835X
+xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa --apiIssuer c97ca5fd-1e2f-4be2-8d67-01078f794b3d --apiKey RQXKQ9835X --show-progress
 
 sleep 6
 
 # open ios/Runner.xcworkspace 
 
-flutter build appbundle --no-tree-shake-icons  --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
+flutter build appbundle --no-tree-shake-icons --no-shrink --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
 
 git add obfuscation/*
 git commit -m "chore: Checkin symbols for $version" 

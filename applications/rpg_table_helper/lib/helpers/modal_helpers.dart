@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
+import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/navigation_service.dart';
 
 Future<void> showOldVersionUpdateRequired(BuildContext context) async {
   // show error to user
@@ -265,15 +264,15 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topSafeAreaPadding = MediaQuery.of(context).padding.top;
-    final topPadding = _kPreviousPageVisibleOffset + topSafeAreaPadding;
+    // final topSafeAreaPadding = MediaQuery.of(context).padding.top;
+    const topPadding = _kPreviousPageVisibleOffset; // + topSafeAreaPadding;
 
     final shadow = this.shadow ?? _kDefaultBoxShadow;
     const BoxShadow(blurRadius: 10, color: Colors.black12, spreadRadius: 5);
     final backgroundColor = this.backgroundColor ??
         CupertinoTheme.of(context).scaffoldBackgroundColor;
     return Padding(
-      padding: EdgeInsets.only(top: topPadding),
+      padding: const EdgeInsets.only(top: topPadding),
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(top: topRadius),
         child: Container(
@@ -319,6 +318,7 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
   BoxShadow? shadow,
   SystemUiOverlayStyle? overlayStyle,
   double? closeProgressThreshold,
+  GlobalKey<NavigatorState>? overrideNavigatorKey,
 }) async {
   assert(debugCheckHasMediaQuery(context));
   final hasMaterialLocalizations =
@@ -328,11 +328,9 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
       ? MaterialLocalizations.of(context).modalBarrierDismissLabel
       : '';
 
-  var nav = DependencyProvider.of(context)
-      .getService<INavigationService>()
-      .getNavigationKeys()[TabItem.search]!; // TODO this was TabItem.base...
+  var nav = overrideNavigatorKey?.currentState ?? navigatorKey.currentState!;
 
-  final result = await nav.currentState!.push(
+  final result = await nav.push(
     CupertinoModalBottomSheetRoute<T>(
         builder: builder,
         containerBuilder: (context, _, child) => _CupertinoBottomSheetContainer(

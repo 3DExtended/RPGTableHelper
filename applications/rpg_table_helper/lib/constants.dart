@@ -25,3 +25,8 @@ const outerPadding = 20.0;
 
 const sharedPrefsKeyRpgConfigJson = "rpgconfig";
 const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
+
+// The location of the SignalR Server.
+const serverUrl = "https://rpghelper.peter-esser.de/Chat";
+
+const whiteBgTint = Color.fromARGB(33, 210, 191, 221);
