@@ -50,7 +50,6 @@ class Fuzzysort {
     var limit = options?['limit'] ?? double.infinity;
 
     var resultsLen = 0;
-    var limitedCount = 0;
     var targetsLen = targets.length;
 
     void pushResult(Result result) {
@@ -58,7 +57,6 @@ class Fuzzysort {
         q.add(result);
         ++resultsLen;
       } else {
-        ++limitedCount;
         if (result.score > q[0].score) {
           q.sort((a, b) => a.score.compareTo(b.score));
           q.removeAt(0);
@@ -70,8 +68,9 @@ class Fuzzysort {
 
     for (var i = 0; i < targetsLen; ++i) {
       var target = targets[i];
-      if (!preparedCache.containsKey(target))
+      if (!preparedCache.containsKey(target.target)) {
         target = getPrepared(target.target);
+      }
 
       if ((searchBitflags & target.bitFlags) != searchBitflags) continue;
       var result = algorithm(preparedSearch, target, true, true);
@@ -108,7 +107,6 @@ class Fuzzysort {
     int targetLen = targetLowerCodes.length;
     int searchI = 0;
     int targetI = 0;
-    int matchesSimpleLen = 0;
 
     // Walk through target, find sequential matches
     while (true) {
@@ -116,7 +114,6 @@ class Fuzzysort {
           searchLowerCode == targetLowerCodes[targetI];
       if (isMatch) {
         matchesSimple.add(targetI);
-        matchesSimpleLen++;
         searchI++;
         if (searchI == searchLen) break;
         searchLowerCode = searchLowerCodes[searchI];
@@ -126,7 +123,6 @@ class Fuzzysort {
     }
 
     bool successStrict = false;
-    int matchesStrictLen = 0;
     searchI = 0;
 
     List<int>? nextBeginningIndexes = prepared.nextBeginningIndexes;
@@ -135,14 +131,12 @@ class Fuzzysort {
 
     targetI =
         matchesSimple[0] == 0 ? 0 : nextBeginningIndexes[matchesSimple[0] - 1];
-    int backtrackCount = 0;
 
     // Strict matching logic
     while (targetI < targetLen) {
       bool isMatch = searchLowerCodes[searchI] == targetLowerCodes[targetI];
       if (isMatch) {
         matchesStrict.add(targetI);
-        matchesStrictLen++;
         searchI++;
         if (searchI == searchLen) {
           successStrict = true;
@@ -159,7 +153,7 @@ class Fuzzysort {
         ? -1
         : prepared.targetLower.indexOf(preparedSearch.lower, matchesSimple[0]);
     bool isSubstring = substringIndex != -1;
-    // assert(prepared.nextBeginningIndexes != null); // TODO check me
+    // assert(prepared.nextBeginningIndexes != null);
     bool isSubstringBeginning = isSubstring &&
         (substringIndex == 0 ||
             prepared.nextBeginningIndexes![substringIndex - 1] ==
@@ -172,7 +166,7 @@ class Fuzzysort {
           i = nextBeginningIndexes[i]) {
         if (i <= substringIndex) continue;
         for (int s = 0; s < searchLen; s++) {
-          assert(prepared.targetLowerCodes != null); // TODO check me
+          assert(prepared.targetLowerCodes != null);
 
           if (searchLowerCodes[s] != prepared.targetLowerCodes![i + s]) break;
           if (s == searchLen - 1) {
@@ -236,7 +230,6 @@ class Fuzzysort {
       // Update nextBeginningIndexes for the next search
       bool isTheLastSearch = i == searchesLen - 1;
       if (!isTheLastSearch) {
-// TODO check me
         List<int>? indexes = result.indexes;
         bool indexesIsConsecutiveSubstring = true;
 
@@ -250,7 +243,7 @@ class Fuzzysort {
         if (indexesIsConsecutiveSubstring) {
           int newBeginningIndex = indexes[indexes.length - 1] + 1;
 
-          assert(target.nextBeginningIndexes != null); // TODO check me
+          assert(target.nextBeginningIndexes != null);
 
           int toReplace = target.nextBeginningIndexes![newBeginningIndex - 1];
 
@@ -267,8 +260,6 @@ class Fuzzysort {
           }
         }
       }
-
-// TODO check me
 
       score += result.score / searchesLen;
       allowPartialMatchScores[i] = result.score / searchesLen;
@@ -417,7 +408,7 @@ class Fuzzysort {
       } else {
         if (++lastIsBeginningI < beginningIndexes.length) {
           lastIsBeginning = beginningIndexes[lastIsBeginningI];
-          nextBeginningIndexes[i] = lastIsBeginning ?? targetLen;
+          nextBeginningIndexes[i] = lastIsBeginning;
         } else {
           nextBeginningIndexes[i] = targetLen;
         }

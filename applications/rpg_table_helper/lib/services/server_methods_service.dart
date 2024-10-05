@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
@@ -99,7 +101,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void registerGameResponse(String parameter) {
-    print("Gamecode: $parameter");
+    log("Gamecode: $parameter");
     // as we have loaded the session here, we now can update the riverpod state to reflect that
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -114,7 +116,7 @@ class ServerMethodsService extends IServerMethodsService {
   @override
   void requestJoinPermission(
       String playerName, String gameCode, String connectionId) {
-    print("requestJoinPermission:");
+    log("requestJoinPermission:");
 
     List<PlayerJoinRequests> openRequests = [
       ...(widgetRef.read(connectionDetailsProvider).value?.openPlayerRequests ??
@@ -137,7 +139,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void joinRequestAccepted() {
-    print("accepted as player within session");
+    log("accepted as player within session");
 
     var connectionDetails =
         widgetRef.read(connectionDetailsProvider).requireValue;
@@ -156,7 +158,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void updateRpgConfig(String parameter) {
-    print("Received new rpg config");
+    log("Received new rpg config");
     Map<String, dynamic> map = jsonDecode(parameter);
 
     var receivedConfig = RpgConfigurationModel.fromJson(map);
@@ -202,7 +204,10 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void updateRpgCharacterConfigOnDmSide(String parameter) {
-    print("Received new rpg character config");
+    if (kDebugMode == true) {
+      log("Received new rpg character config");
+    }
+
     Map<String, dynamic> map = jsonDecode(parameter);
 
     var receivedConfig = RpgCharacterConfiguration.fromJson(map);

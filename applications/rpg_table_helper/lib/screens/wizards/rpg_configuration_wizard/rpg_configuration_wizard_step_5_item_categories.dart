@@ -138,139 +138,136 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
           height: 20,
         ),
         ...categories.asMap().entries.map((e) {
-          return Container(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        keyboardType: TextInputType.text,
-                        labelText: "Name der Kategorie:", // TODO localize
-                        textEditingController: e.value.nameController,
-                      ),
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      keyboardType: TextInputType.text,
+                      labelText: "Name der Kategorie:", // TODO localize
+                      textEditingController: e.value.nameController,
                     ),
-                    Container(
-                      height: 50,
-                      width: 70,
-                      clipBehavior: Clip.none,
-                      child: CustomButton(
-                        onPressed: () {
-                          // remove this pair from list
-                          // TODO check if assigned...
-                          // TODO handle sub categories
-                          setState(() {
-                            categories.removeAt(e.key);
-                          });
-                        },
-                        icon:
-                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
-                      ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 70,
+                    clipBehavior: Clip.none,
+                    child: CustomButton(
+                      onPressed: () {
+                        // remove this pair from list
+                        // TODO check if assigned...
+                        // TODO handle sub categories
+                        setState(() {
+                          categories.removeAt(e.key);
+                        });
+                      },
+                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
 
-                ...(e.value.subCategories ?? []).asMap().entries.map(
-                      (subCat) => Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: CustomTextField(
-                                keyboardType: TextInputType.text,
-                                labelText:
-                                    "Name der Sub-Kategorie:", // TODO localize
-                                textEditingController:
-                                    subCat.value.nameController,
-                              ),
+              ...(e.value.subCategories).asMap().entries.map(
+                    (subCat) => Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              keyboardType: TextInputType.text,
+                              labelText:
+                                  "Name der Sub-Kategorie:", // TODO localize
+                              textEditingController:
+                                  subCat.value.nameController,
                             ),
-                            Container(
-                              height: 50,
-                              width: 70,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () {
-                                  // remove this pair from list
-                                  // TODO check if assigned...
-                                  // TODO handle sub categories
-                                  setState(() {
-                                    categories[e.key]
-                                        .subCategories
-                                        .removeAt(subCat.key);
-                                  });
-                                },
-                                icon: Theme(
-                                    data: ThemeData(
-                                      iconTheme: const IconThemeData(
+                          ),
+                          Container(
+                            height: 50,
+                            width: 70,
+                            clipBehavior: Clip.none,
+                            child: CustomButton(
+                              onPressed: () {
+                                // remove this pair from list
+                                // TODO check if assigned...
+                                // TODO handle sub categories
+                                setState(() {
+                                  categories[e.key]
+                                      .subCategories
+                                      .removeAt(subCat.key);
+                                });
+                              },
+                              icon: Theme(
+                                  data: ThemeData(
+                                    iconTheme: const IconThemeData(
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                    textTheme: const TextTheme(
+                                      bodyMedium: TextStyle(
                                         color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      textTheme: const TextTheme(
-                                        bodyMedium: TextStyle(
-                                          color: Colors.white,
-                                        ),
                                       ),
                                     ),
-                                    child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        alignment: AlignmentDirectional.center,
-                                        child: const FaIcon(
-                                            FontAwesomeIcons.trashCan))),
-                              ),
+                                  ),
+                                  child: Container(
+                                      width: 24,
+                                      height: 24,
+                                      alignment: AlignmentDirectional.center,
+                                      child: const FaIcon(
+                                          FontAwesomeIcons.trashCan))),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
 
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                  child: CustomButton(
-                    isSubbutton: true,
-                    onPressed: () {
-                      setState(() {
-                        categories[e.key].subCategories.add(
-                            _ItemCategoryEdit.fromItemCategory(
-                                ItemCategory(
-                                    uuid: const UuidV7().generate(),
-                                    name: "Neu",
-                                    subCategories: []),
-                                _updateStateForFormValidation));
-                      });
-                    },
-                    label: "Neue Sub-Kategorie",
-                    icon: Theme(
-                        data: ThemeData(
-                          iconTheme: const IconThemeData(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                child: CustomButton(
+                  isSubbutton: true,
+                  onPressed: () {
+                    setState(() {
+                      categories[e.key].subCategories.add(
+                          _ItemCategoryEdit.fromItemCategory(
+                              ItemCategory(
+                                  uuid: const UuidV7().generate(),
+                                  name: "Neu",
+                                  subCategories: []),
+                              _updateStateForFormValidation));
+                    });
+                  },
+                  label: "Neue Sub-Kategorie",
+                  icon: Theme(
+                      data: ThemeData(
+                        iconTheme: const IconThemeData(
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        textTheme: const TextTheme(
+                          bodyMedium: TextStyle(
                             color: Colors.white,
-                            size: 16,
-                          ),
-                          textTheme: const TextTheme(
-                            bodyMedium: TextStyle(
-                              color: Colors.white,
-                            ),
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                          child: Container(
-                              width: 16,
-                              height: 16,
-                              alignment: AlignmentDirectional.center,
-                              child: const FaIcon(FontAwesomeIcons.plus)),
-                        )),
-                  ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        child: Container(
+                            width: 16,
+                            height: 16,
+                            alignment: AlignmentDirectional.center,
+                            child: const FaIcon(FontAwesomeIcons.plus)),
+                      )),
                 ),
-                // const SizedBox(
-                //   height: 20,
-                // ),
-                // const HorizontalLine(),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
+              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // const HorizontalLine(),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
           );
         }),
         CustomButton(

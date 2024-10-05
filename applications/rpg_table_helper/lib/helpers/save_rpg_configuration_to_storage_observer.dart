@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -43,7 +44,7 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
           (connectionDetails?.isConnected ?? false);
 
       if (!isPlayer) {
-        print("Saving rpg config");
+        log("Saving rpg config");
         // _handleAsyncData(newValue);
 
         if (connectionDetails != null &&

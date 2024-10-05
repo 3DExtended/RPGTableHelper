@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -56,7 +58,6 @@ class _CreateOrEditCraftingRecipeModalContentState
 
   bool hasDataLoaded = false;
 
-  List<ItemCategory> _allItemCategories = [];
   List<RpgItem> _allItems = [];
 
   @override
@@ -88,7 +89,6 @@ class _CreateOrEditCraftingRecipeModalContentState
       if (!hasDataLoaded) {
         setState(() {
           hasDataLoaded = true;
-          _allItemCategories = data.itemCategories;
           _allItems = data.allItems;
         });
       }
@@ -464,7 +464,9 @@ class _CreateOrEditCraftingRecipeModalContentState
                                             1),
                                   ),
                                 );
-                              } catch (e) {}
+                              } catch (e) {
+                                log(e.toString());
+                              }
                             },
                           ),
                         ],

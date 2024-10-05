@@ -101,47 +101,44 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
           height: 20,
         ),
         ...locationPairs.asMap().entries.map((e) {
-          return Container(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        keyboardType: TextInputType.text,
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      keyboardType: TextInputType.text,
 
-                        labelText: "Fundort #${e.key + 1}", // TODO localize
-                        textEditingController: e.value.$2,
-                      ),
+                      labelText: "Fundort #${e.key + 1}", // TODO localize
+                      textEditingController: e.value.$2,
                     ),
-                    Container(
-                      height: 50,
-                      width: 70,
-                      clipBehavior: Clip.none,
-                      child: CustomButton(
-                        onPressed: () {
-                          // remove this pair from list
-                          // TODO check if assigned...
-                          setState(() {
-                            locationPairs.removeAt(e.key);
-                          });
-                          _updateStateForFormValidation();
-                        },
-                        icon:
-                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
-                      ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 70,
+                    clipBehavior: Clip.none,
+                    child: CustomButton(
+                      onPressed: () {
+                        // remove this pair from list
+                        // TODO check if assigned...
+                        setState(() {
+                          locationPairs.removeAt(e.key);
+                        });
+                        _updateStateForFormValidation();
+                      },
+                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const HorizontalLine(),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const HorizontalLine(),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
           );
         }),
         CustomButton(

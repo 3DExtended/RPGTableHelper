@@ -103,6 +103,7 @@ class _AuthorizedScreenWrapperState
   void initState() {
     Future.delayed(Duration.zero, () async {
       // this initializes the communication
+      if (!mounted) return;
       DependencyProvider.of(context).getService<IServerCommunicationService>();
 
       if (widget.initTab != null) {

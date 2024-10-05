@@ -245,7 +245,6 @@ class _CraftingScreenState extends ConsumerState<CraftingScreen> {
     var allRecipeCategoryIds = rpgConfig.allItems
         .where((it) => allCreatableItems.contains(it.uuid))
         .map((it) => it.categoryId)
-        .where((it) => it != null)
         .distinct(by: (by) => by)
         .toList();
 

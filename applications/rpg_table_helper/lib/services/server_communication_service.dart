@@ -1,7 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/src/client.dart';
+import 'package:http/http.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -80,7 +81,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     // When the connection is closed, print out a message to the console.
     hubConnection!.onclose(
       ({error}) {
-        print("Connection Closed");
+        log("Connection Closed");
         widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
             widgetRef.read(connectionDetailsProvider).value?.copyWith(
                       isConnected: false,
@@ -91,7 +92,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     );
 
     hubConnection!.onreconnecting(({error}) {
-      print("onreconnecting called");
+      log("onreconnecting called");
       connectionIsOpen = false;
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -102,7 +103,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     });
 
     hubConnection!.onreconnected(({connectionId}) {
-      print("onreconnected called");
+      log("onreconnected called");
       connectionIsOpen = true;
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -120,7 +121,7 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   void _handleAClientProvidedFunction(List<Object?>? parameters) {
-    print("Server invoked the method");
+    log("Server invoked the method");
   }
 
   void httpClientCreateCallback(Client httpClient) {
@@ -175,12 +176,13 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   @override
-  Future executeServerFunction(String methodName, {List<Object>? args}) async {
+  Future executeServerFunction(String functionName,
+      {List<Object>? args}) async {
     if (!connectionIsOpen) {
       await tryOpenConnection();
     }
 
-    await hubConnection!.invoke(methodName, args: args);
+    await hubConnection!.invoke(functionName, args: args);
   }
 
   Future tryOpenConnection() async {
@@ -195,7 +197,7 @@ class ServerCommunicationService extends IServerCommunicationService {
                   ) ??
               ConnectionDetails.defaultValue());
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 }
@@ -214,7 +216,7 @@ class MockServerCommunicationService extends IServerCommunicationService {
   }) {}
 
   @override
-  Future executeServerFunction(String s, {List<Object>? args}) {
+  Future executeServerFunction(String functionName, {List<Object>? args}) {
     throw UnimplementedError();
   }
 

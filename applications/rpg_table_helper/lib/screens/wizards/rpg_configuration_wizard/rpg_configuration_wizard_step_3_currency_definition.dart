@@ -146,69 +146,66 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           height: 20,
         ),
         ...currencyControllerPairs.asMap().entries.map((e) {
-          return Container(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        keyboardType: TextInputType.text,
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      keyboardType: TextInputType.text,
 
-                        labelText:
-                            "Name der nächst größeren Währung:", // TODO localize
-                        textEditingController: e.value.$1,
-                      ),
+                      labelText:
+                          "Name der nächst größeren Währung:", // TODO localize
+                      textEditingController: e.value.$1,
                     ),
-                    Container(
-                      height: 50,
-                      width: 70,
-                      clipBehavior: Clip.none,
-                      child: CustomButton(
-                        onPressed: () {
-                          // remove this pair from list
-                          setState(() {
-                            currencyControllerPairs.removeAt(e.key);
-                          });
-                        },
-                        icon:
-                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
-                      ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 70,
+                    clipBehavior: Clip.none,
+                    child: CustomButton(
+                      onPressed: () {
+                        // remove this pair from list
+                        setState(() {
+                          currencyControllerPairs.removeAt(e.key);
+                        });
+                      },
+                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        keyboardType: TextInputType.number,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      keyboardType: TextInputType.number,
 
-                        labelText:
-                            "Gleichwertige Anzahl an vorheriger Währung:", // TODO localize
-                        textEditingController: e.value.$2,
-                      ),
+                      labelText:
+                          "Gleichwertige Anzahl an vorheriger Währung:", // TODO localize
+                      textEditingController: e.value.$2,
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const SizedBox(
-                      height: 50,
-                      width: 50,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const HorizontalLine(),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const SizedBox(
+                    height: 50,
+                    width: 50,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const HorizontalLine(),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
           );
         }),
         CustomButton(

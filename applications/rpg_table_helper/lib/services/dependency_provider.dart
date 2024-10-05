@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/src/consumer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';

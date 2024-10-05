@@ -63,7 +63,7 @@ class NavbarBlock extends StatelessWidget {
         ),
       );
 
-      if (e.value.onPressed != null)
+      if (e.value.onPressed != null) {
         return CupertinoButton(
           minSize: 0,
           onPressed: () {
@@ -72,7 +72,7 @@ class NavbarBlock extends StatelessWidget {
           padding: const EdgeInsets.all(0),
           child: buttonChild,
         );
-      else {
+      } else {
         return buttonChild;
       }
     }).toList();

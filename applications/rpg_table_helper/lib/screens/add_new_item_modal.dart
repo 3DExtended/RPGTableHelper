@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
@@ -238,7 +240,9 @@ class _AddNewItemModalContentState
                                             selectedItemId,
                                             int.parse(amountController.text)
                                           ));
-                                        } catch (e) {}
+                                        } catch (e) {
+                                          log(e.toString());
+                                        }
                                       },
                                     ),
                                   ],
