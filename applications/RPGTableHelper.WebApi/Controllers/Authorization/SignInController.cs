@@ -210,7 +210,7 @@ namespace RPGTableHelper.WebApi.Controllers
                     {
                         "client_id=" + _appleAuthOptions.ClientId,
                         "client_secret=" + clientSecret,
-                        "code=" + loginDto.AuthorizationCode,
+                        "code=" + WebUtility.UrlEncode(loginDto.AuthorizationCode),
                         "grant_type=authorization_code",
                     };
 
