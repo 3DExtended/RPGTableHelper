@@ -1154,4 +1154,4 @@ public async Task<IActionResult> Logout([FromBody] LogoutModel model)
 
 Using your own **refresh tokens** after a user signs in with an OIDC provider can offer significant benefits in terms of **unified session management**, **security control**, and **token consistency** across different authentication methods. However, it adds some complexity since you’ll need to maintain your own token infrastructure while potentially handling OIDC provider tokens in the background.
 
-In most cases, it's a great approach if you want to standardize token management across your application, allowing you to handle sessions in a consistent and secure way.
+In most cases, it's a great approach if you want to standardize token management across your application, allowing you to handle sessions in a consistent and secure way. :)
