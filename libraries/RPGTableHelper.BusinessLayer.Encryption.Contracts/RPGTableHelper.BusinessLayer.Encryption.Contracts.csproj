@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.Abstractions\Prodot.Patterns.Cqrs.Abstractions.csproj" />
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.EfCore.Abstractions\Prodot.Patterns.Cqrs.EfCore.Abstractions.csproj" />
+    <ProjectReference
+      Include="..\RPGTableHelper.DataLayer.Contracts\RPGTableHelper.DataLayer.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
