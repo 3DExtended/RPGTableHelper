@@ -2,7 +2,7 @@
 
 ## Sign In flow
 
-- Every Client gets a unique client user id assigned... :)
+- Every Client gets a unique client user id assigned...
 
 serverMethods:
 
