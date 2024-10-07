@@ -72,9 +72,16 @@ public class Startup
                             context.SecurityToken
                             as Microsoft.IdentityModel.JsonWebTokens.JsonWebToken;
                         var tokenIdentifier = token?.Claims;
-                        var identityProviderId = token
-                            ?.Claims.Single(c => c.Type == "identityproviderid")
-                            .Value;
+
+                        var identityProviderClaim = token?.Claims.FirstOrDefault(c =>
+                            c.Type == "identityproviderid"
+                        );
+                        if (identityProviderClaim == null)
+                        {
+                            context.Fail("Token does not contain 'identityproviderid' claim.");
+                            return;
+                        }
+                        var identityProviderId = identityProviderClaim.Value;
 
                         // Access the service provider
                         var serviceProvider = context.HttpContext.RequestServices;
@@ -212,16 +219,32 @@ public class Startup
     private void AddServiceOptions(IServiceCollection services)
     {
         var sendGridOptions = Configuration.GetSection("SendGrid").Get<SendGridOptions>();
-        services.AddSingleton<SendGridOptions>(sendGridOptions!);
+        if (sendGridOptions == null)
+        {
+            throw new InvalidOperationException("SendGrid configuration is missing.");
+        }
+        services.AddSingleton(sendGridOptions);
 
         var sqlOptions = Configuration.GetSection("Sql").Get<SqlServerOptions>();
-        services.AddSingleton<SqlServerOptions>(sqlOptions!);
+        if (sqlOptions == null)
+        {
+            throw new InvalidOperationException("Sql configuration is missing.");
+        }
+        services.AddSingleton(sqlOptions);
 
         var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
-        services.AddSingleton<AppleAuthOptions>(appleOptions!);
+        if (appleOptions == null)
+        {
+            throw new InvalidOperationException("Apple configuration is missing.");
+        }
+        services.AddSingleton(appleOptions);
 
-        var rsaOptions = Configuration.GetSection("Rsa").Get<RSAOptions>();
-        services.AddSingleton<RSAOptions>(rsaOptions!);
+        var rsaOptions = Configuration.GetSection("RSA").Get<RSAOptions>();
+        if (rsaOptions == null)
+        {
+            throw new InvalidOperationException("RSA configuration is missing.");
+        }
+        services.AddSingleton(rsaOptions);
     }
 
     private static void AddCqrs(IServiceCollection services)
