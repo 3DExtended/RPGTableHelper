@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Prodot.Patterns.Cqrs;
@@ -201,6 +202,11 @@ public class Startup
                 }
             )
         );
+        services.AddMemoryCache();
+
+        // services.AddSingleton<ITypedMemoryCache<AzureBlobStorageOptions>>(
+        //     new TypedMemoryCache<AzureBlobStorageOptions>(cache, memoryCacheSize)
+        // );
     }
 
     private void AddServiceOptions(IServiceCollection services)
@@ -254,6 +260,16 @@ public class Startup
             app.UseHsts();
         }
 
+        if (env.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Versioned API v1.0");
+            });
+            IdentityModelEventSource.ShowPII = true;
+        }
+
         app.UseHttpsRedirection();
         app.UseDefaultFiles();
         app.UseStaticFiles();
@@ -262,10 +278,12 @@ public class Startup
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapHub<RpgServerHub>("/Chat");
+            endpoints.MapControllers();
         });
     }
 }
