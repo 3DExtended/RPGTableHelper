@@ -1,9 +1,23 @@
-﻿namespace RPGTableHelper.WebApi.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RPGTableHelper.WebApi.Dtos
 {
+    /// <summary>
+    /// Data Transfer Object for password reset requests.
+    /// </summary>
     public class ResetPasswordRequestDto
     {
-        public string Email { get; set; }
+        /// <summary>
+        /// Gets or sets the email address of the user requesting a password reset.
+        /// </summary>
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = null!;
 
-        public string Username { get; set; }
+        /// <summary>
+        /// Gets or sets the username of the user requesting a password reset.
+        /// </summary>
+        [Required]
+        public string Username { get; set; } = null!;
     }
 }

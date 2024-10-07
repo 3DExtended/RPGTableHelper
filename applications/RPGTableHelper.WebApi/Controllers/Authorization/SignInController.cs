@@ -61,7 +61,7 @@ namespace RPGTableHelper.WebApi.Controllers
         {
             var issuer = configuration["Jwt:Issuer"];
             var audience = configuration["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? "");
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -132,24 +132,7 @@ namespace RPGTableHelper.WebApi.Controllers
             CancellationToken cancellationToken
         )
         {
-            // todo add caching
-            // Download apple keys from here: https://appleid.apple.com/auth/keys
-            var url = "https://appleid.apple.com/auth/keys";
-
-            var httpRequest = (HttpWebRequest)WebRequest.Create(url);
-            var httpResponse = (HttpWebResponse)
-                await httpRequest.GetResponseAsync().ConfigureAwait(false);
-            var result = "";
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                result = streamReader.ReadToEnd();
-            }
-
-            Console.WriteLine(httpResponse.StatusCode);
-            if ((int)httpResponse.StatusCode >= 300)
-            {
-                return BadRequest();
-            }
+            var result = await GetAppleIdKeysAsync();
 
             // Parse keys
             var appleKeys = JsonConvert.DeserializeObject<AppleKeysResponse>(result);
@@ -160,7 +143,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
             // decode identitytoken
             var tokenDetails = GetTokenInfo(loginDto.IdentityToken);
-            var appleKeyForIdentityToken = appleKeys.keys.Single(k => k.kid == tokenDetails["kid"]);
+            var appleKeyForIdentityToken = appleKeys.Keys.Single(k => k.kid == tokenDetails["kid"]);
 
             // vertify token with public key:
             string[] parts = loginDto.IdentityToken.Split('.');
@@ -231,7 +214,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
                     var appleTokenResponse = JsonConvert.DeserializeObject<AppleTokenResponse>(
                         appleTokenString
-                    );
+                    )!;
 
                     // decode id token
                     var appleAuthTokenDetails = GetTokenInfo(appleTokenResponse.id_token);
@@ -290,7 +273,7 @@ namespace RPGTableHelper.WebApi.Controllers
                                 return new Dictionary<string, string>
                                 {
                                     { "sub", internalId },
-                                    { "ref", appleTokenResponse.refresh_token },
+                                    { "ref", appleTokenResponse.refresh_token ?? "" },
                                     { "email", appleAuthTokenDetails["email"] },
                                 };
                             }
@@ -302,23 +285,49 @@ namespace RPGTableHelper.WebApi.Controllers
             }
         }
 
+        private static async Task<string> GetAppleIdKeysAsync()
+        {
+            // todo add caching
+            // Download apple keys from here: https://appleid.apple.com/auth/keys
+            var url = "https://appleid.apple.com/auth/keys";
+
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return content;
+                }
+                else
+                {
+                    // Handle error response here (e.g., log the status code, throw an exception, etc.)
+                    throw new HttpRequestException(
+                        $"Request failed with status code {response.StatusCode}"
+                    );
+                }
+            }
+        }
+
         [HttpPost("loginwithgoogle")]
         public async Task<ActionResult<string>> LoginWithGoogleAsync(
             [FromBody] GoogleLoginDto loginDto,
             CancellationToken cancellationToken
         )
         {
-            if (
-                loginDto == null
-                || (loginDto.IdentityToken == null && loginDto.AccessToken == null)
-            )
+            if (loginDto == null)
             {
                 return BadRequest();
             }
 
+            if (loginDto.AccessToken == null)
+            {
+                return BadRequest("Expected to find an AccessToken to send to google...");
+            }
             if (loginDto.IdentityToken == null)
             {
-                throw new InvalidDataException("Expected to find an idtoken to validate...");
+                return BadRequest("Expected to find an idtoken to validate...");
             }
 
             try
@@ -470,12 +479,12 @@ namespace RPGTableHelper.WebApi.Controllers
             return BadRequest("Could not set new password!");
         }
 
-        protected Dictionary<string, string> GetTokenInfo(string token)
+        protected Dictionary<string, string> GetTokenInfo(string? token)
         {
             var TokenInfo = new Dictionary<string, string>();
 
             var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var jwtSecurityToken = handler.ReadJwtToken(token ?? "");
             var claims = jwtSecurityToken.Claims.ToList();
 
             foreach (var claim in claims)
@@ -486,7 +495,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
             foreach (var header in headers)
             {
-                TokenInfo.Add(header.Key, header.Value.ToString());
+                TokenInfo.Add(header.Key, (header.Value.ToString() ?? ""));
             }
 
             return TokenInfo;

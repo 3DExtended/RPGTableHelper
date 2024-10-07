@@ -15,7 +15,7 @@ namespace BookGram.DataLayer.SendGrid.QueryHandlers
             _options = options;
         }
 
-        public IQueryHandler<EmailSendQuery, Unit> Successor { get; set; }
+        public IQueryHandler<EmailSendQuery, Unit> Successor { get; set; } = default!;
 
         public async Task<Option<Unit>> RunQueryAsync(
             EmailSendQuery query,
@@ -33,7 +33,7 @@ namespace BookGram.DataLayer.SendGrid.QueryHandlers
 
             var mailRecipients = new List<EmailAddress> { to };
 
-            if (query.CC != null && query.CC.IsSome && query.CC.Get().Count > 0)
+            if (query.CC.IsSome && query.CC.Get().Count > 0)
             {
                 mailRecipients.AddRange(
                     query.CC.Get().Select(e => new EmailAddress { Email = e.Email, Name = e.Name })

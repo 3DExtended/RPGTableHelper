@@ -2,7 +2,6 @@ namespace RPGTableHelper.WebApi.Dtos
 {
     public class AppleTokenResponse
     {
-        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         public string? access_token { get; set; }
 
         public int expires_in { get; set; }

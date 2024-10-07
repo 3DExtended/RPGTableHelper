@@ -15,15 +15,13 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             _options = options;
         }
 
-        public override IQueryHandler<RSASignStringQuery, string>? Successor { get; set; }
-
         public override Task<Option<string>> RunQueryAsync(
             RSASignStringQuery query,
             CancellationToken cancellationToken
         )
         {
             var privateKey = this.ImportPrivateKey(
-                query.PrivateKeyOverride.GetOrElse(_options.PrivateRsaKeyAsPEM)
+                query.PrivateKeyOverride.GetOrRequiredElse(_options.PrivateRsaKeyAsPEM)
             );
 
             try

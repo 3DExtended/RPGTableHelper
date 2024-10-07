@@ -333,7 +333,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     Username = registerDto.Username,
                     EncryptionChallengeIdentifier =
                         EncryptionChallenge.EncryptionChallengeIdentifier.From(Guid.Empty),
-                    HashedPassword = "", // StringHasher.HashText(registerDto.Password, _configuration["Jwt:PasswordSalt"]),
+                    HashedPassword = "",
                     InternalId = registrationCacheDict["sub"],
                     SignInProvider = true,
                     RefreshToken = registrationCacheDict["ref"],

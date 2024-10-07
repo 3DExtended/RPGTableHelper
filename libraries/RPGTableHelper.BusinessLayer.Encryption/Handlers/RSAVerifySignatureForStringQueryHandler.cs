@@ -16,18 +16,13 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             _options = options;
         }
 
-        public override IQueryHandler<
-            RSAVerifySignatureForStringQuery,
-            bool
-        >? Successor { get; set; }
-
         public override Task<Option<bool>> RunQueryAsync(
             RSAVerifySignatureForStringQuery query,
             CancellationToken cancellationToken
         )
         {
             var publicKey = this.ImportPublicKey(
-                query.PublicKeyOverride.GetOrElse(_options.PublicRsaKeyAsPEM)
+                query.PublicKeyOverride.GetOrRequiredElse(_options.PublicRsaKeyAsPEM)
             );
 
             try

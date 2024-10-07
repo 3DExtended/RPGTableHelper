@@ -7,7 +7,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
 {
     public class JwsE256ValidationQueryHandler : IQueryHandler<JwsE256ValidationQuery, bool>
     {
-        public IQueryHandler<JwsE256ValidationQuery, bool>? Successor { get; set; }
+        public IQueryHandler<JwsE256ValidationQuery, bool> Successor { get; set; } = default!;
 
         public Task<Option<bool>> RunQueryAsync(
             JwsE256ValidationQuery query,

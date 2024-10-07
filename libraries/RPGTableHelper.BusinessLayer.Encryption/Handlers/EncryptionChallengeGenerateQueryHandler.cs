@@ -11,7 +11,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
         public IQueryHandler<
             EncryptionChallengeGenerateQuery,
             EncryptionChallenge
-        >? Successor { get; set; }
+        > Successor { get; set; } = default!;
 
         public Task<Option<EncryptionChallenge>> RunQueryAsync(
             EncryptionChallengeGenerateQuery query,

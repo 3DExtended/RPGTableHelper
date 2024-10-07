@@ -6,7 +6,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
     public abstract class RSABaseHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : IQuery<TResult, TQuery>
     {
-        public abstract IQueryHandler<TQuery, TResult> Successor { get; set; }
+        public IQueryHandler<TQuery, TResult> Successor { get; set; } = default!;
 
         public abstract Task<Option<TResult>> RunQueryAsync(
             TQuery query,

@@ -6,6 +6,6 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries
     {
         public Option<string> PrivateKeyOverride { get; set; } = Option.None;
 
-        public string StringToDecrypt { get; set; }
+        public string StringToDecrypt { get; set; } = default!;
     }
 }

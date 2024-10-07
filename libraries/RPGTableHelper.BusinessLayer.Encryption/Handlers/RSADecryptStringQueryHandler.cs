@@ -14,15 +14,13 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             _options = options;
         }
 
-        public override IQueryHandler<RSADecryptStringQuery, string> Successor { get; set; }
-
         public override Task<Option<string>> RunQueryAsync(
             RSADecryptStringQuery query,
             CancellationToken cancellationToken
         )
         {
             var privateKey = this.ImportPrivateKey(
-                query.PrivateKeyOverride.GetOrElse(_options.PrivateRsaKeyAsPEM)
+                query.PrivateKeyOverride.GetOrRequiredElse(_options.PrivateRsaKeyAsPEM)
             );
 
             var bytesAppPubKey = privateKey.Decrypt(

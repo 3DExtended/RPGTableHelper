@@ -1,9 +1,22 @@
-﻿namespace RPGTableHelper.WebApi.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RPGTableHelper.WebApi.Dtos
 {
+    /// <summary>
+    /// Data Transfer Object for Google login information.
+    /// </summary>
     public class GoogleLoginDto
     {
-        public string? AccessToken { get; set; }
+        /// <summary>
+        /// Gets or sets the Google Access Token.
+        /// </summary>
+        [Required]
+        public string AccessToken { get; set; } = default!;
 
-        public string? IdentityToken { get; set; }
+        /// <summary>
+        /// Gets or sets the Google Identity Token.
+        /// </summary>
+        [Required]
+        public string IdentityToken { get; set; } = default!;
     }
 }
