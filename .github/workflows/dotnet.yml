@@ -3,9 +3,6 @@ name: .NET
 on:
   pull_request:
     branches: [ "main" ]
-    paths-ignore:
-      - '**.md'
-      - 'applications/rpg_table_helper/**'
   push:
     branches:
       - main
