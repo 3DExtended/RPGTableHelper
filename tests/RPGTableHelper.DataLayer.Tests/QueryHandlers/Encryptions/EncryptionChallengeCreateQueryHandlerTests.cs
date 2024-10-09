@@ -1,11 +1,10 @@
 using FluentAssertions;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
-using RPGTableHelper.DataLayer.Contracts.Queries.Users;
-using RPGTableHelper.DataLayer.QueryHandlers;
+using RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
-namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;
+namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Encryptions;
 
 public class EncryptionChallengeCreateQueryHandlerTests : QueryHandlersTestBase
 {
@@ -13,12 +12,16 @@ public class EncryptionChallengeCreateQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_CreatesModelSuccessfully()
     {
         // Arrange
+        var user = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper);
+
         var model = new EncryptionChallenge
         {
             Id = EncryptionChallenge.EncryptionChallengeIdentifier.From(Guid.Empty),
+            UserId = user.Id,
             RndInt = 1234567,
             PasswordPrefix = "Bla",
         };
+
         var query = new EncryptionChallengeCreateQuery { ModelToCreate = model };
         var subjectUnderTest = new EncryptionChallengeCreateQueryHandler(
             Mapper,

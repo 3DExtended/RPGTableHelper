@@ -2,7 +2,7 @@
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Entities;
 
-namespace Prodot.Patterns.Cqrs.EfCore.Tests.TestHelpers.Context;
+namespace RPGTableHelper.DataLayer.EfCore;
 
 public class RpgDbContext : DbContext
 {

@@ -10,6 +10,8 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 
         public int RndInt { get; set; }
 
+        public User.UserIdentifier UserId { get; set; } = default!;
+
         public record EncryptionChallengeIdentifier
             : Identifier<Guid, EncryptionChallengeIdentifier> { }
     }

@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Prodot.Patterns.Cqrs.EfCore.Tests.TestHelpers.Context;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
+using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.Shared.Services;
 
-namespace RPGTableHelper.DataLayer.QueryHandlers
+namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
 {
     public class EncryptionChallengeCreateQueryHandler
         : EntityBaseCreateQueryHandlerBase<

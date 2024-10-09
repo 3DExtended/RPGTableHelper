@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
-using RPGTableHelper.DataLayer.Contracts.Queries.Books;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
@@ -89,7 +88,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            challenge.Get().Id = challengeId.Get().Identifier;
+            challenge.Get().Id = challengeId.Get();
 
             var challengeDict = new Dictionary<string, object>
             {
@@ -262,7 +261,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var registrationEmailResult = await SendRegistrationEmail(
                     registerDto.Username,
                     registerDto.Email,
-                    usercreateresult.Get().Identifier,
+                    usercreateresult.Get(),
                     cancellationToken
                 )
                 .ConfigureAwait(false);
@@ -276,7 +275,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 _configuration,
                 _systemClock,
                 registerDto.Username,
-                usercreateresult.Get().Identifier.Value.ToString()
+                usercreateresult.Get().Value.ToString()
             );
             return Ok(token);
         }
@@ -351,7 +350,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var registrationEmailResult = await SendRegistrationEmail(
                     registerDto.Username,
                     registrationCacheDict["email"],
-                    usercreateresult.Get().Identifier,
+                    usercreateresult.Get(),
                     cancellationToken
                 )
                 .ConfigureAwait(false);
@@ -364,7 +363,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 _configuration,
                 _systemClock,
                 registerDto.Username,
-                usercreateresult.Get().Identifier.Value.ToString()
+                usercreateresult.Get().Value.ToString()
             );
             return Ok(token);
         }

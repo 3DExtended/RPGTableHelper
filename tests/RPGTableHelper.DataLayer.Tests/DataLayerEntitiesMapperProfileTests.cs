@@ -65,7 +65,7 @@ public class DataLayerEntitiesMapperProfileTests
     public void EncryptionChallengeToEncryptionChallengeEntity_ShouldMapSuccessfully()
     {
         // Arrange
-        var user = new EncryptionChallenge
+        var encryptionChallenge = new EncryptionChallenge
         {
             PasswordPrefix = "TestEncryptionChallenge",
             RndInt = 34567,
@@ -75,22 +75,22 @@ public class DataLayerEntitiesMapperProfileTests
         };
 
         // Act
-        var userEntity = _mapper.Map<EncryptionChallengeEntity>(user);
+        var encryptionChallengeEntity = _mapper.Map<EncryptionChallengeEntity>(encryptionChallenge);
 
         // Assert
-        userEntity.Should().NotBeNull();
-        userEntity.PasswordPrefix.Should().Be(user.PasswordPrefix);
-        userEntity.RndInt.Should().Be(user.RndInt);
-        userEntity.Id.Should().Be(user.Id.Value);
-        userEntity.CreationDate.Should().Be(user.CreationDate);
-        userEntity.LastModifiedAt.Should().Be(user.LastModifiedAt);
+        encryptionChallengeEntity.Should().NotBeNull();
+        encryptionChallengeEntity.PasswordPrefix.Should().Be(encryptionChallenge.PasswordPrefix);
+        encryptionChallengeEntity.RndInt.Should().Be(encryptionChallenge.RndInt);
+        encryptionChallengeEntity.Id.Should().Be(encryptionChallenge.Id.Value);
+        encryptionChallengeEntity.CreationDate.Should().Be(encryptionChallenge.CreationDate);
+        encryptionChallengeEntity.LastModifiedAt.Should().Be(encryptionChallenge.LastModifiedAt);
     }
 
     [Fact]
     public void EncryptionChallengeEntityToEncryptionChallenge_ShouldMapSuccessfully()
     {
         // Arrange
-        var userEntity = new EncryptionChallengeEntity
+        var encryptionChallengeEntity = new EncryptionChallengeEntity
         {
             PasswordPrefix = "TestEncryptionChallengeEntity",
             RndInt = 254321,
@@ -100,14 +100,14 @@ public class DataLayerEntitiesMapperProfileTests
         };
 
         // Act
-        var user = _mapper.Map<EncryptionChallenge>(userEntity);
+        var encryptionChallenge = _mapper.Map<EncryptionChallenge>(encryptionChallengeEntity);
 
         // Assert
-        user.Should().NotBeNull();
-        user.PasswordPrefix.Should().Be(userEntity.PasswordPrefix);
-        user.RndInt.Should().Be(userEntity.RndInt);
-        user.Id.Value.Should().Be(userEntity.Id);
-        user.CreationDate.Should().Be(userEntity.CreationDate);
-        user.LastModifiedAt.Should().Be(userEntity.LastModifiedAt);
+        encryptionChallenge.Should().NotBeNull();
+        encryptionChallenge.PasswordPrefix.Should().Be(encryptionChallengeEntity.PasswordPrefix);
+        encryptionChallenge.RndInt.Should().Be(encryptionChallengeEntity.RndInt);
+        encryptionChallenge.Id.Value.Should().Be(encryptionChallengeEntity.Id);
+        encryptionChallenge.CreationDate.Should().Be(encryptionChallengeEntity.CreationDate);
+        encryptionChallenge.LastModifiedAt.Should().Be(encryptionChallengeEntity.LastModifiedAt);
     }
 }

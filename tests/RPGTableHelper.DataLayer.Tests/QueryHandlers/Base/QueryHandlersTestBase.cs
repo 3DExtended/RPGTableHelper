@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using Prodot.Patterns.Cqrs.EfCore.Tests.TestHelpers.Context;
+using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
