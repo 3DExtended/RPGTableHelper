@@ -3,7 +3,7 @@ using RPGTableHelper.DataLayer.Contracts.Models.BaseModels;
 
 namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 {
-    public class User : NodeModelBase<User.UserIdentifier>, IIpAddressBasedNode
+    public class User : NodeModelBase<User.UserIdentifier>
     {
         public string Username { get; set; } = default!;
 
