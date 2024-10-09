@@ -9,5 +9,6 @@ public class RpgDbContext : DbContext
     public RpgDbContext(DbContextOptions<RpgDbContext> options)
         : base(options) { }
 
-    public DbSet<UserEntity> Entities { get; set; } = default!;
+    public DbSet<UserEntity> Users { get; set; } = default!;
+    public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
 }

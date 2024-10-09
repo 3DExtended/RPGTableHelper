@@ -4,7 +4,7 @@ using RPGTableHelper.DataLayer.Contracts.Models.BaseModels;
 namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 {
     public class EncryptionChallenge
-        : NodeModelBase<EncryptionChallenge.EncryptionChallengeIdentifier>
+        : NodeModelBase<EncryptionChallenge.EncryptionChallengeIdentifier, Guid>
     {
         public string PasswordPrefix { get; set; } = default!;
 

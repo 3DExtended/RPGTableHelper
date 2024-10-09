@@ -2,23 +2,23 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs.EfCore.Tests.TestHelpers.Context;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
-using RPGTableHelper.DataLayer.Contracts.Queries.Users;
+using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers
 {
-    public class UserCreateQueryHandler
+    public class EncryptionChallengeCreateQueryHandler
         : EntityBaseCreateQueryHandlerBase<
-            UserCreateQuery,
-            User,
-            User.UserIdentifier,
+            EncryptionChallengeCreateQuery,
+            EncryptionChallenge,
+            EncryptionChallenge.EncryptionChallengeIdentifier,
             Guid,
             RpgDbContext,
-            UserEntity
+            EncryptionChallengeEntity
         >
     {
-        public UserCreateQueryHandler(
+        public EncryptionChallengeCreateQueryHandler(
             IMapper mapper,
             IDbContextFactory<RpgDbContext> contextFactory,
             ISystemClock systemClock

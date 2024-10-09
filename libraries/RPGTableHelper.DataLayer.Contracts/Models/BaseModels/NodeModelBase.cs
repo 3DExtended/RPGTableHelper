@@ -2,8 +2,9 @@
 
 namespace RPGTableHelper.DataLayer.Contracts.Models.BaseModels
 {
-    public abstract class NodeModelBase<TIdentifier> : ModelBase<TIdentifier, Guid>
-        where TIdentifier : Identifier<Guid, TIdentifier>, new()
+    public abstract class NodeModelBase<TIdentifier, TIdentifierValue>
+        : ModelBase<TIdentifier, TIdentifierValue>
+        where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
     {
         public DateTimeOffset CreationDate { get; set; }
 

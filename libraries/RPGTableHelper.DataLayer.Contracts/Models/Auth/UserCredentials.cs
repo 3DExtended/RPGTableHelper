@@ -3,7 +3,7 @@ using RPGTableHelper.DataLayer.Contracts.Models.BaseModels;
 
 namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 {
-    public class UserCredentials : NodeModelBase<UserCredentials.UserCredentialsIdentifier>
+    public class UserCredentials : NodeModelBase<UserCredentials.UserCredentialsIdentifier, Guid>
     {
         public bool? Deleted { get; set; } = false;
 
