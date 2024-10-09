@@ -48,10 +48,6 @@ dev_dependencies:
   chopper_generator: ^8.0.3
   swagger_dart_code_generator: ^3.0.1
 
-
-
-
-
 flutter:
   uses-material-design: true
   generate: true
@@ -74,5 +70,5 @@ flutter_intl:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icons/icon.jpg"
+  image_path: "assets/icons/icon.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
