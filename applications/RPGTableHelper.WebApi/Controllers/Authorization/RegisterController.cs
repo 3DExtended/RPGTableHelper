@@ -240,19 +240,29 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var usercreateresult = await new UserCreateQuery
             {
                 ModelToCreate = new User { Username = registerDto.Username },
-                UserCredential = new UserCredential
-                {
-                    Email = encryptedEmail.Get(),
-                    EncryptionChallengeId = registerDto.EncryptionChallengeIdentifier,
-                    HashedPassword =
-                        registerDto.UserSecret // StringHasher.HashText(registerDto.Password, _configuration["Jwt:PasswordSalt"]),
-                    ,
-                },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
             if (usercreateresult.IsNone)
+            {
+                return BadRequest();
+            }
+
+            var userCredentialCreateResult = await new UserCredentialCreateQuery
+            {
+                ModelToCreate = new UserCredential
+                {
+                    Email = encryptedEmail.Get(),
+                    EncryptionChallengeId = registerDto.EncryptionChallengeIdentifier,
+                    HashedPassword = registerDto.UserSecret,
+                    UserId = usercreateresult.Get(),
+                },
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (userCredentialCreateResult.IsNone)
             {
                 return BadRequest();
             }
@@ -326,7 +336,18 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var usercreateresult = await new UserCreateQuery
             {
                 ModelToCreate = new User { Username = registerDto.Username },
-                UserCredential = new UserCredential
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (usercreateresult.IsNone)
+            {
+                return BadRequest();
+            }
+
+            var userCredentialCreateResult = await new UserCredentialCreateQuery
+            {
+                ModelToCreate = new UserCredential
                 {
                     EncryptionChallengeId = EncryptionChallenge.EncryptionChallengeIdentifier.From(
                         Guid.Empty
@@ -335,12 +356,13 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     SignInProvider = true,
                     RefreshToken = registrationCacheDict["ref"],
                     Email = encryptedEmail.Get(),
+                    UserId = usercreateresult.Get(),
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (usercreateresult.IsNone)
+            if (userCredentialCreateResult.IsNone)
             {
                 return BadRequest();
             }

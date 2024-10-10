@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.EfCore;
@@ -16,7 +17,8 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
             Guid,
             RpgDbContext,
             UserCredentialEntity
-        >
+        >,
+            IConfigurableQueryHandler<User.UserIdentifier>
     {
         public UserCredentialCreateQueryHandler(
             IMapper mapper,
@@ -24,5 +26,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
             ISystemClock systemClock
         )
             : base(mapper, contextFactory, systemClock) { }
+
+        public User.UserIdentifier Configuration { set; get; } = default!;
     }
 }
