@@ -158,7 +158,7 @@ public class DataLayerEntitiesMapperProfileTests
         userCredentialEntity.EmailVerified.Should().BeNull();
         userCredentialEntity.EncryptionChallengeId.HasValue.Should().BeTrue();
         userCredentialEntity
-            .EncryptionChallengeId.Value.Should()
+            .EncryptionChallengeId!.Value.Should()
             .Be(userCredential.EncryptionChallengeId.Get().Value);
         userCredentialEntity.HashedPassword.Should().BeNull();
         userCredentialEntity

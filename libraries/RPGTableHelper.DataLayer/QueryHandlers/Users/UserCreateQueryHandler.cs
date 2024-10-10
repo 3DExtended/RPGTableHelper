@@ -6,7 +6,7 @@ using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.Shared.Services;
 
-namespace RPGTableHelper.DataLayer.QueryHandlers
+namespace RPGTableHelper.DataLayer.QueryHandlers.Users
 {
     public class UserCreateQueryHandler
         : EntityBaseCreateQueryHandlerBase<
