@@ -20,7 +20,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             CancellationToken cancellationToken
         )
         {
-            var privateKey = this.ImportPrivateKey(
+            var privateKey = ImportPrivateKey(
                 query.PrivateKeyOverride.GetOrRequiredElse(_options.PrivateRsaKeyAsPEM)
             );
 

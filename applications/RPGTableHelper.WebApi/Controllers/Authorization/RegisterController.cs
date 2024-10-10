@@ -7,6 +7,7 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
+using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
@@ -417,7 +418,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             }
 
             // verify email
-            var result = await new UserCredentialVerifyEmailQuery
+            var result = await new UserCredentialConfirmEmailQuery
             {
                 UserIdentifier = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(
                     Guid.Parse(userIdStr)

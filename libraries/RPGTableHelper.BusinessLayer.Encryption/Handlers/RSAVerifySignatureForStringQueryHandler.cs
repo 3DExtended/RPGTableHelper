@@ -21,7 +21,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             CancellationToken cancellationToken
         )
         {
-            var publicKey = this.ImportPublicKey(
+            var publicKey = ImportPublicKey(
                 query.PublicKeyOverride.GetOrRequiredElse(_options.PublicRsaKeyAsPEM)
             );
 

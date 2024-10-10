@@ -19,8 +19,8 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
             IDbContextFactory<RpgDbContext> contextFactory
         )
         {
-            this._mapper = mapper;
-            this._contextFactory = contextFactory;
+            _mapper = mapper;
+            _contextFactory = contextFactory;
         }
 
         public IQueryHandler<
@@ -42,6 +42,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
                 var entity = await context
                     .Set<EncryptionChallengeEntity>()
                     .Where((e) => e.User.Username == query.Username)
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(cancellationToken)
                     .ConfigureAwait(false);
 

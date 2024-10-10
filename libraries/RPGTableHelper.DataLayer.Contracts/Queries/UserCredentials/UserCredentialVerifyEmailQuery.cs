@@ -1,12 +1,12 @@
 ﻿using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 
-namespace RPGTableHelper.DataLayer.Contracts.Queries.Users
+namespace RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials
 {
     /// <summary>
-    /// Represents a query to verify a user's email credentials.
+    /// Confirms that a user has verified their email
     /// </summary>
-    public class UserCredentialVerifyEmailQuery : IQuery<Unit, UserCredentialVerifyEmailQuery>
+    public class UserCredentialConfirmEmailQuery : IQuery<Unit, UserCredentialConfirmEmailQuery>
     {
         /// <summary>
         /// Gets or sets the identifier of the user whose email credentials are being verified.
