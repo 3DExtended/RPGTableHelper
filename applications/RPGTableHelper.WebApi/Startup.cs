@@ -211,7 +211,7 @@ public class Startup
         );
         services.AddMemoryCache();
 
-        services.AddAutoMapper(typeof(DataLayerEntitiesMapperProfile));
+        services.AddAutoMapper(typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile));
 
         // services.AddSingleton<ITypedMemoryCache<AzureBlobStorageOptions>>(
         //     new TypedMemoryCache<AzureBlobStorageOptions>(cache, memoryCacheSize)

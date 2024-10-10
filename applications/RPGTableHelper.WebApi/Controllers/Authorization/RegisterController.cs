@@ -240,11 +240,10 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var usercreateresult = await new UserCreateQuery
             {
                 ModelToCreate = new User { Username = registerDto.Username },
-                UserCredentials = new UserCredentials
+                UserCredential = new UserCredential
                 {
                     Email = encryptedEmail.Get(),
-                    Username = registerDto.Username,
-                    EncryptionChallengeIdentifier = registerDto.EncryptionChallengeIdentifier,
+                    EncryptionChallengeId = registerDto.EncryptionChallengeIdentifier,
                     HashedPassword =
                         registerDto.UserSecret // StringHasher.HashText(registerDto.Password, _configuration["Jwt:PasswordSalt"]),
                     ,
@@ -327,13 +326,12 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var usercreateresult = await new UserCreateQuery
             {
                 ModelToCreate = new User { Username = registerDto.Username },
-                UserCredentials = new UserCredentials
+                UserCredential = new UserCredential
                 {
-                    Username = registerDto.Username,
-                    EncryptionChallengeIdentifier =
-                        EncryptionChallenge.EncryptionChallengeIdentifier.From(Guid.Empty),
+                    EncryptionChallengeId = EncryptionChallenge.EncryptionChallengeIdentifier.From(
+                        Guid.Empty
+                    ),
                     HashedPassword = "",
-                    InternalId = registrationCacheDict["sub"],
                     SignInProvider = true,
                     RefreshToken = registrationCacheDict["ref"],
                     Email = encryptedEmail.Get(),
@@ -397,7 +395,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             }
 
             // verify email
-            var result = await new UserCredentialsVerifyEmailQuery
+            var result = await new UserCredentialVerifyEmailQuery
             {
                 UserIdentifier = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(
                     Guid.Parse(userIdStr)

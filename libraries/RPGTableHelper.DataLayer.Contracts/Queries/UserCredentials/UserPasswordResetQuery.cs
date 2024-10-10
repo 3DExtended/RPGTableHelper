@@ -1,6 +1,6 @@
 ﻿using Prodot.Patterns.Cqrs;
 
-namespace RPGTableHelper.DataLayer.Contracts.Queries.Encryptions
+namespace RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials
 {
     public class UserPasswordResetQuery : IQuery<Unit, UserPasswordResetQuery>
     {

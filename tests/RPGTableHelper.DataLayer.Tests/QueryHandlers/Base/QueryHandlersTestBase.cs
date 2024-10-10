@@ -32,7 +32,7 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
                 .AddDbContextFactory<RpgDbContext>(o =>
                     o.UseSqlite($"DataSource=file:memdb{_runIdentifier}?mode=memory&cache=shared")
                 )
-                .AddAutoMapper(typeof(DataLayerEntitiesMapperProfile))
+                .AddAutoMapper(typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile))
                 .BuildServiceProvider();
 
             // initialize test database

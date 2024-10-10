@@ -6,6 +6,6 @@ namespace RPGTableHelper.DataLayer.Contracts.Queries.Users
 {
     public class UserCreateQuery : CreateQuery<User, User.UserIdentifier, Guid, UserCreateQuery>
     {
-        public UserCredentials? UserCredentials { get; set; }
+        public UserCredential? UserCredential { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Queries.Users
     /// <summary>
     /// Represents a query to verify a user's email credentials.
     /// </summary>
-    public class UserCredentialsVerifyEmailQuery : IQuery<Unit, UserCredentialsVerifyEmailQuery>
+    public class UserCredentialVerifyEmailQuery : IQuery<Unit, UserCredentialVerifyEmailQuery>
     {
         /// <summary>
         /// Gets or sets the identifier of the user whose email credentials are being verified.

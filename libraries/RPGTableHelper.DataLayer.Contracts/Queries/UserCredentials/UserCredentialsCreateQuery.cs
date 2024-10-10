@@ -4,11 +4,11 @@ using RPGTableHelper.DataLayer.Contracts.Queries.Base;
 
 namespace RPGTableHelper.DataLayer.Contracts.Queries.Users
 {
-    public class UserCredentialsCreateQuery
+    public class UserCredentialCreateQuery
         : ConditionalCreateQueryBase<
-            UserCredentials,
-            UserCredentials.UserCredentialsIdentifier,
+            UserCredential,
+            UserCredential.UserCredentialIdentifier,
             Guid,
-            UserCredentialsCreateQuery
+            UserCredentialCreateQuery
         > { }
 }

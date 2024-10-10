@@ -1,35 +1,31 @@
-﻿using Prodot.Patterns.Cqrs.EfCore;
+﻿using Prodot.Patterns.Cqrs;
+using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.BaseModels;
 
 namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 {
-    public class UserCredentials : NodeModelBase<UserCredentials.UserCredentialsIdentifier, Guid>
+    public class UserCredential : NodeModelBase<UserCredential.UserCredentialIdentifier, Guid>
     {
-        public bool? Deleted { get; set; } = false;
+        public bool Deleted { get; set; } = false;
 
-        public string? Email { get; set; }
+        public Option<string> Email { get; set; }
 
-        public bool? EmailVerified { get; set; } = false;
+        public Option<bool> EmailVerified { get; set; } = false;
 
-        public EncryptionChallenge.EncryptionChallengeIdentifier? EncryptionChallengeIdentifier { get; set; }
+        public Option<EncryptionChallenge.EncryptionChallengeIdentifier> EncryptionChallengeId { get; set; }
 
-        public string? HashedPassword { get; set; }
+        public Option<string> HashedPassword { get; set; }
 
-        public string? InternalId { get; set; }
+        public Option<string> PasswordResetToken { get; set; }
 
-        public string? PasswordResetToken { get; set; }
+        public Option<DateTimeOffset> PasswordResetTokenExpireDate { get; set; }
 
-        public DateTimeOffset? PasswordResetTokenExpireDate { get; set; }
-
-        public string? RefreshToken { get; set; }
+        public Option<string> RefreshToken { get; set; }
 
         public bool SignInProvider { get; set; } = false;
 
-        // Used as identity provider id
-        public User.UserIdentifier Userid { get; set; } = default!;
+        public User.UserIdentifier UserId { get; set; } = default!;
 
-        public string Username { get; set; } = default!;
-
-        public record UserCredentialsIdentifier : Identifier<Guid, UserCredentialsIdentifier> { }
+        public record UserCredentialIdentifier : Identifier<Guid, UserCredentialIdentifier> { }
     }
 }

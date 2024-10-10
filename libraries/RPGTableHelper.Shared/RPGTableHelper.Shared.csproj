@@ -11,14 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
 
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\RPGTableHelper.DataLayer.Contracts\RPGTableHelper.DataLayer.Contracts.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.DataLayer.Contracts\RPGTableHelper.DataLayer.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
