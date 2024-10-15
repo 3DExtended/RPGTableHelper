@@ -68,7 +68,8 @@ public static class RpgDbContextHelpers
         CancellationToken cancellationToken = default,
         string? email = null,
         string? passwordResetToken = null,
-        DateTimeOffset? passwordResetTokenExpireDate = null
+        DateTimeOffset? passwordResetTokenExpireDate = null,
+        bool? signInProvider = null
     )
     {
         var (user, encryptionChallenge) = await CreateUserWithEncryptionChallengeInDb(
@@ -91,7 +92,7 @@ public static class RpgDbContextHelpers
             PasswordResetToken = Option.From(passwordResetToken),
             PasswordResetTokenExpireDate = Option.From(passwordResetTokenExpireDate),
             RefreshToken = Option.None,
-            SignInProvider = false,
+            SignInProvider = signInProvider ?? false,
         };
 
         using (var context = contextFactory.CreateDbContext())

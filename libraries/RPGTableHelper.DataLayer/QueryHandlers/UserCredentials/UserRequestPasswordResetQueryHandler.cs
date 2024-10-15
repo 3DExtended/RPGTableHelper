@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
@@ -10,13 +11,14 @@ using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
 {
-    public class UserPasswordResetQueryHandler : IQueryHandler<UserPasswordResetQuery, Unit>
+    public class UserRequestPasswordResetQueryHandler
+        : IQueryHandler<UserRequestPasswordResetQuery, Unit>
     {
         private readonly IDbContextFactory<RpgDbContext> _contextFactory;
         private readonly ISystemClock _systemClock;
         private readonly IQueryProcessor _queryProcessor;
 
-        public UserPasswordResetQueryHandler(
+        public UserRequestPasswordResetQueryHandler(
             IDbContextFactory<RpgDbContext> contextFactory,
             ISystemClock systemClock,
             IQueryProcessor queryProcessor
@@ -27,10 +29,11 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
             _queryProcessor = queryProcessor;
         }
 
-        public IQueryHandler<UserPasswordResetQuery, Unit> Successor { get; set; } = default!;
+        public IQueryHandler<UserRequestPasswordResetQuery, Unit> Successor { get; set; } =
+            default!;
 
         public async Task<Option<Unit>> RunQueryAsync(
-            UserPasswordResetQuery query,
+            UserRequestPasswordResetQuery query,
             CancellationToken cancellationToken
         )
         {
@@ -52,9 +55,11 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
                 if (
                     entity.SignInProvider == true // resets are only valid for users registered with username and password
                     || string.IsNullOrEmpty(entity.Email) // resets are only valid if a email is setup
-                    || string.IsNullOrEmpty(entity.PasswordResetToken) // resets are only valid if the PasswordResetToken is set
-                    || entity.PasswordResetTokenExpireDate == null // resets are only valid if a PasswordResetTokenExpireDate is set
-                    || _systemClock.Now > entity.PasswordResetTokenExpireDate // resets are only valid if the PasswordResetTokenExpireDate is in the past
+                    || (
+                        !string.IsNullOrEmpty(entity.PasswordResetToken) // requesting resets is only valid if there wasnt a request recently sent
+                        && entity.PasswordResetTokenExpireDate != null
+                        && _systemClock.Now > entity.PasswordResetTokenExpireDate
+                    )
                 )
                 {
                     return Option.None;
@@ -79,15 +84,22 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
                     return Option.None;
                 }
 
-                // check if user provided reset token is valid
-                if (entity.PasswordResetToken.Replace("-", "") != query.ResetCode.Replace("-", ""))
-                {
-                    return Option.None;
-                }
+                // generate email reset token:
+                var temporaryApiKey =
+                    string.Join(
+                        "",
+                        Enumerable.Range(0, 3).Select(_ => RandomNumberGenerator.GetInt32(10))
+                    )
+                    + "-"
+                    + string.Join(
+                        "",
+                        Enumerable.Range(0, 3).Select(_ => RandomNumberGenerator.GetInt32(10))
+                    );
 
-                entity.HashedPassword = query.NewPassword;
-                entity.PasswordResetToken = null;
-                entity.PasswordResetTokenExpireDate = null;
+                var expiresIn = DateTimeOffset.UtcNow.AddHours(2);
+
+                entity.PasswordResetToken = temporaryApiKey;
+                entity.PasswordResetTokenExpireDate = expiresIn;
                 entity.LastModifiedAt = _systemClock.Now;
 
                 await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -101,21 +113,30 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
                         Email = dencryptedEmail.Get(),
                     },
                     CC = new List<EmailAddress>(),
-                    Subject = "Passwort zurückgesetzt",
+                    Subject = "Passwort zurücksetzen",
                     Body =
                         @$"Hallo {query.Username}, <br><br>
 
-                    Dein Passwort wurde gerade zurückgesetzt.<br>
+                    Hast du gerade versucht, dein Passwort für deinen Account zurückzusetzen?<br>
+                    Falls ja, ist hier der Code, den du nun in die App eingeben musst: <br><br>
 
+                    <strong>{temporaryApiKey}</strong><br><br>
+
+                    Dieser Code ist 2 Stunden gültig!<br>
                     Peter (der Entwickler ;) )<br><br>
 
-                    P.S.: Falls du dein Passwort nicht geändert hast, ändere bitte umgehend dein Passwort über die App!<br>
+                    P.S.: Falls du nicht versucht hast, dein Passwort zurückzusetzen, kannst du diese E-Mail ignorieren.<br>
 
                     Falls du Fragen zu dieser Mail hast oder dir irgendetwas merkwürdig vorkommt, kannst du auf diese E-Mail antworten und wir klären das!
                     ",
                 }
                     .RunAsync(_queryProcessor, cancellationToken)
                     .ConfigureAwait(false);
+
+                if (sendEmailResult.IsNone)
+                {
+                    return Option.None;
+                }
 
                 return Unit.Value;
             }
