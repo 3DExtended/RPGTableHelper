@@ -1,7 +1,5 @@
 using AutoMapper;
 using Prodot.Patterns.Cqrs;
-using Prodot.Patterns.Cqrs.EfCore;
-using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 
 namespace RPGTableHelper.DataLayer
 {

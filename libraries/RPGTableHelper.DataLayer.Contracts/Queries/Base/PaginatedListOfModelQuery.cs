@@ -1,6 +1,5 @@
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.EfCore;
-using RPGTableHelper.DataLayer.Contracts.Models;
 using RPGTableHelper.DataLayer.Contracts.Models.BaseModels;
 
 namespace RPGTableHelper.DataLayer.Contracts.Queries.Base

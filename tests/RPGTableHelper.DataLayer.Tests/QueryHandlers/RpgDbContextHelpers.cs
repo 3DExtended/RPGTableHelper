@@ -65,7 +65,10 @@ public static class RpgDbContextHelpers
     )> CreateUserWithEncryptionChallengeAndCredentialsInDb(
         IDbContextFactory<RpgDbContext> contextFactory,
         IMapper mapper,
-        CancellationToken cancellationToken = default
+        CancellationToken cancellationToken = default,
+        string? email = null,
+        string? passwordResetToken = null,
+        DateTimeOffset? passwordResetTokenExpireDate = null
     )
     {
         var (user, encryptionChallenge) = await CreateUserWithEncryptionChallengeInDb(
@@ -80,13 +83,13 @@ public static class RpgDbContextHelpers
             CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             EmailVerified = false,
-            Email = "asdf@asdf.de",
+            Email = email ?? "asdf@asdf.de",
             Deleted = false,
             EncryptionChallengeId = encryptionChallenge.Id,
             HashedPassword = "asdfhjk",
             Id = UserCredential.UserCredentialIdentifier.From(Guid.Empty),
-            PasswordResetToken = Option.None,
-            PasswordResetTokenExpireDate = Option.None,
+            PasswordResetToken = Option.From(passwordResetToken),
+            PasswordResetTokenExpireDate = Option.From(passwordResetTokenExpireDate),
             RefreshToken = Option.None,
             SignInProvider = false,
         };

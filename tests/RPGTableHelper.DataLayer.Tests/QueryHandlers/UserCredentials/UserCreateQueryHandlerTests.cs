@@ -2,9 +2,7 @@ using FluentAssertions;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
-using RPGTableHelper.DataLayer.QueryHandlers;
 using RPGTableHelper.DataLayer.QueryHandlers.UserCredentials;
-using RPGTableHelper.DataLayer.QueryHandlers.Users;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;

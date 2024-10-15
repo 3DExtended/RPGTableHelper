@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace RPGTableHelper.DataLayer.SendGrid.Options
 {
     /// <summary>

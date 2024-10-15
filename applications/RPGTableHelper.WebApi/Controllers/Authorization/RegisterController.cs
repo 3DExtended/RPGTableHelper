@@ -12,7 +12,6 @@ using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
 using RPGTableHelper.Shared.Services;
-using RPGTableHelper.WebApi.Controllers;
 using RPGTableHelper.WebApi.Dtos;
 
 namespace RPGTableHelper.WebApi.Controllers.Authorization

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Entities;
 
 namespace RPGTableHelper.DataLayer.EfCore;

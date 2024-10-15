@@ -14,7 +14,6 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Models;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
-using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.Shared.Services;

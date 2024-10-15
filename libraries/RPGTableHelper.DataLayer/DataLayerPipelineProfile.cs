@@ -1,7 +1,4 @@
 ﻿using Prodot.Patterns.Cqrs;
-using RPGTableHelper.DataLayer.Contracts.Models.Auth;
-using RPGTableHelper.DataLayer.Contracts.Queries.Users;
-using RPGTableHelper.DataLayer.QueryHandlers.Users;
 
 namespace RPGTableHelper.DataLayer
 {
