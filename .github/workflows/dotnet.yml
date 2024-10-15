@@ -32,7 +32,7 @@ jobs:
     - name: Report Generation
       run: dotnet tool install -g dotnet-reportgenerator-globaltool && reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
     - name: COVERAGE_VALUE Calculation
-      run:  COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml") && COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc) && 'echo "TOTAL_COVERAGE=$COVERAGE%"'
+      run:  COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml") && COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc) && 'echo "TOTAL_COVERAGE:" && 'echo $COVERAGE' && 'echo "$COVERAGE"'
 
 
 
