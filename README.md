@@ -1,5 +1,16 @@
 # RPGTableHelper
 
+## Code Coverage
+
+```sh
+dotnet test --collect:"XPlat Code Coverage" --results-directory cobertura
+reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml")
+COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc)
+'echo "TOTAL_COVERAGE=$COVERAGE%"'
+```
+
 ## Sign In flow
 
 - Every Client gets a unique client user id assigned... :)

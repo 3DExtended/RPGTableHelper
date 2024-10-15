@@ -28,16 +28,17 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal -c Release
-    # - name: Pack
-    #   run: dotnet pack --no-build -c Release -o out /p:VersionSuffix=${GITHUB_RUN_NUMBER}
-    # - name: Upload Packages as artifacts
-    #   uses: actions/upload-artifact@v3.0.0
-    #   with:
-    #     name: packages
-    #     path: '**/*.nupkg'
-    # - name: Push to nuget.org
-    #   if: startsWith(github.ref, 'refs/tags/v')
-    #   run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_API_KEY}
-    #   env:
-    #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: dotnet test --no-build --verbosity normal -c Release --collect:"XPlat Code Coverage" --results-directory cobertura
+    - name: Report Generation
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool && reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+    - name: COVERAGE_VALUE Calculation
+      run:  COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml") && COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc) && 'echo "TOTAL_COVERAGE=$COVERAGE%"'
+
+
+
+# dotnet test --collect:"XPlat Code Coverage" --results-directory cobertura
+# reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+# reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+# COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml")
+# COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc)
+# 'echo "TOTAL_COVERAGE=$COVERAGE%"'
