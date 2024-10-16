@@ -44,12 +44,13 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         /// <summary>
         /// This method generates a new encryptionChallenge and stores it in the db.
         /// Use this method as first start point for a register operation.
-        ///
+        /// </summary>
+        /// <remarks>
         /// Additionally, it uses rsa encryption to comunicate: the client has to provide a public pem
         /// certificate encrypted with the public pem of this server and receives the encryption challenge
         /// RSA encrypted with the provided public cert.
         /// This way, no man in the middle can pretend to be the server as each client has a copy of the public cert of the server.
-        /// </summary>
+        /// </remarks>
         /// <param name="encryptedAppPubKey">RSA encrpyted public pem cert of the client.</param>
         /// <returns>A dictionary with the encryptionChallenge encrypted using the provided public cert of the client.</returns>
         [HttpPost("registerchallenge")]
