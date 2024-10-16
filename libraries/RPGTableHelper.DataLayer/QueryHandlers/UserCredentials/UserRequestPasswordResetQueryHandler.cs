@@ -9,7 +9,7 @@ using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
 using RPGTableHelper.Shared.Services;
 
-namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
+namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 {
     public class UserRequestPasswordResetQueryHandler
         : IQueryHandler<UserRequestPasswordResetQuery, Unit>
@@ -55,11 +55,9 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
                 if (
                     entity.SignInProvider == true // resets are only valid for users registered with username and password
                     || string.IsNullOrEmpty(entity.Email) // resets are only valid if a email is setup
-                    || (
-                        !string.IsNullOrEmpty(entity.PasswordResetToken) // requesting resets is only valid if there wasnt a request recently sent
+                    || !string.IsNullOrEmpty(entity.PasswordResetToken) // requesting resets is only valid if there wasnt a request recently sent
                         && entity.PasswordResetTokenExpireDate != null
                         && _systemClock.Now > entity.PasswordResetTokenExpireDate
-                    )
                 )
                 {
                     return Option.None;

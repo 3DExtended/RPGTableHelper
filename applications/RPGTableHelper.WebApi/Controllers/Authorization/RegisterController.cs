@@ -335,7 +335,11 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             // create new user and usercredentials
             var usercreateresult = await new UserCreateQuery
             {
-                ModelToCreate = new User { Username = registerDto.Username },
+                ModelToCreate = new User
+                {
+                    Username = registerDto.Username,
+                    SignInProviderId = registrationCacheDict["sub"],
+                },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);

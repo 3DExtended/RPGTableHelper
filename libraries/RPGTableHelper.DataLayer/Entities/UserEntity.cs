@@ -4,6 +4,7 @@ namespace RPGTableHelper.DataLayer.Entities
 {
     public class UserEntity : EntityBase<Guid>
     {
+        public string? SignInProviderId { get; set; } = default!;
         public string Username { get; set; } = default!;
     }
 }

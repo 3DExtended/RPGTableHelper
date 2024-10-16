@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges;
+using RPGTableHelper.DataLayer.QueryHandlers.UserCredentials;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Encryptions;

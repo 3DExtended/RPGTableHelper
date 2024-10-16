@@ -5,7 +5,7 @@ using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.Shared.Services;
 
-namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
+namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 {
     public class UserCredentialConfirmEmailQueryHandler
         : IQueryHandler<UserCredentialConfirmEmailQuery, Unit>

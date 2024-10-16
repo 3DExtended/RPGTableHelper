@@ -12,7 +12,12 @@ public class UserCreateQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_CreatesModelSuccessfully()
     {
         // Arrange
-        var model = new User { Id = User.UserIdentifier.From(Guid.Empty), Username = "Bla" };
+        var model = new User
+        {
+            Id = User.UserIdentifier.From(Guid.Empty),
+            Username = "Bla",
+            SignInProviderId = "34567",
+        };
         var query = new UserCreateQuery { ModelToCreate = model };
         var subjectUnderTest = new UserCreateQueryHandler(Mapper, ContextFactory, SystemClock);
 
@@ -25,6 +30,7 @@ public class UserCreateQueryHandlerTests : QueryHandlersTestBase
         var entities = Context.Users.ToList();
         entities.Should().HaveCount(1);
         entities[0].Username.Should().Be("Bla");
+        entities[0].SignInProviderId.Should().Be("34567");
 
         AssertCorrectTime(entities[0].CreationDate);
         AssertCorrectTime(entities[0].LastModifiedAt);

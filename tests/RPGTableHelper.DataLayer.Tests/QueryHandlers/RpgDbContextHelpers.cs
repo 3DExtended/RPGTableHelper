@@ -12,12 +12,14 @@ public static class RpgDbContextHelpers
     public static async Task<User> CreateUserInDb(
         IDbContextFactory<RpgDbContext> contextFactory,
         IMapper mapper,
-        CancellationToken cancellationToken = default
+        CancellationToken cancellationToken = default,
+        string? signInProviderId = null
     )
     {
         var user = new User
         {
             Username = "User1",
+            SignInProviderId = Option.From(signInProviderId),
             CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
         };

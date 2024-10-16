@@ -5,6 +5,7 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges;
+using RPGTableHelper.DataLayer.QueryHandlers.UserCredentials;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 

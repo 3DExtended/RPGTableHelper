@@ -8,7 +8,7 @@ using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
 using RPGTableHelper.Shared.Services;
 
-namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
+namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 {
     public class UserPasswordResetQueryHandler : IQueryHandler<UserPasswordResetQuery, Unit>
     {
