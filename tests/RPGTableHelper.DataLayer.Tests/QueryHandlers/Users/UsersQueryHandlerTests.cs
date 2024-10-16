@@ -62,10 +62,12 @@ public class UsersQueryHandlerTests : QueryHandlersTestBase
         result.IsSome.Should().BeTrue("because the retrieval should be successful");
         result.Get().Should().HaveCount(2);
 
-        result.Get().First().Id.Should().Be(User.UserIdentifier.From(entity2.Id));
-        result.Get().First().Username.Should().Be("Bla2");
+        var orderedList = result.Get().OrderBy(x => x.Username).ToList();
 
-        result.Get().Last().Id.Should().Be(User.UserIdentifier.From(entity3.Id));
-        result.Get().Last().Username.Should().Be("Bla3");
+        orderedList.First().Id.Should().Be(User.UserIdentifier.From(entity2.Id));
+        orderedList.First().Username.Should().Be("Bla2");
+
+        orderedList.Last().Id.Should().Be(User.UserIdentifier.From(entity3.Id));
+        orderedList.Last().Username.Should().Be("Bla3");
     }
 }
