@@ -8,7 +8,7 @@ using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Users;
 
-public class SingleModelQueryHandlerTests : QueryHandlersTestBase
+public class UserQueryHandlerTests : QueryHandlersTestBase
 {
     [Fact]
     public async Task RunQueryAsync_RetrievesEntityCorrectly()
