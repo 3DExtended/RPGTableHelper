@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,9 +13,11 @@ using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
+using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
 using RPGTableHelper.WebApi.Swagger;
@@ -231,6 +234,12 @@ public class Startup
             throw new InvalidOperationException("Sql configuration is missing.");
         }
         services.AddSingleton(sqlOptions);
+        services.AddDbContextFactory<RpgDbContext>(options =>
+        {
+            options.UseSqlite($"DataSource=file:maindb?mode=memory&cache=shared");
+        });
+
+        services.AddSingleton<ISystemClock, RealSystemClock>();
 
         var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
         if (appleOptions == null)

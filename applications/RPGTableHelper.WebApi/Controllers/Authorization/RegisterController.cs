@@ -51,9 +51,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             var decryptedMessageFromClient = await new RSADecryptStringQuery
             {
                 StringToDecrypt = encryptedAppPubKey,
-                PrivateKeyOverride =
-                    Option.None // we want to use the server private key
-                ,
+                PrivateKeyOverride = Option.None, // we want to use the server private key
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);

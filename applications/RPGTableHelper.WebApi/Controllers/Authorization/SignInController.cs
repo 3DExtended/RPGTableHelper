@@ -33,7 +33,6 @@ namespace RPGTableHelper.WebApi.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IQueryProcessor _queryProcessor;
         private readonly ISystemClock _systemClock;
-        private readonly string minimalAppVersionSupported = "1.1.0";
 
         public SignInController(
             IHttpClientFactory httpClientFactory,
@@ -91,10 +90,11 @@ namespace RPGTableHelper.WebApi.Controllers
             return stringToken;
         }
 
-        [HttpGet("getminimalversion")]
-        public Task<ActionResult<string>> GetMinimalAppVersion(CancellationToken cancellationToken)
+        [HttpGet("testlogin")]
+        [Authorize]
+        public Task<ActionResult<string>> TestLoginAsync(CancellationToken cancellationToken)
         {
-            return Task.FromResult<ActionResult<string>>(Ok(minimalAppVersionSupported));
+            return Task.FromResult<ActionResult<string>>(Ok("Welcome"));
         }
 
         [HttpPost("login")]
@@ -434,13 +434,6 @@ namespace RPGTableHelper.WebApi.Controllers
             }
 
             return BadRequest("Could not create password reset mail or token!");
-        }
-
-        [HttpGet("testlogin")]
-        [Authorize]
-        public Task<ActionResult<string>> TestLoginAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult<ActionResult<string>>(Ok(minimalAppVersionSupported));
         }
 
         [HttpPost("resetpassword")]
