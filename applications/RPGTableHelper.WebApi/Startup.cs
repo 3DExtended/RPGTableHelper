@@ -91,21 +91,19 @@ public class Startup
                         var cancellationToken = context.HttpContext.RequestAborted;
 
                         // Check if the token is revoked
-                        var isTokenRevoked = await new UserIsDeletedQuery
-                        {
-                            UserIdentifier = User.UserIdentifier.From(
-                                Guid.Parse(identityProviderId)
-                            ),
-                        }
-                            .RunAsync(queryProcessor, cancellationToken)
-                            .ConfigureAwait(false);
-
-                        // Implement logic to check if tokenIdentifier exists in revoked tokens list
-
-                        if (isTokenRevoked.IsNone || isTokenRevoked.Get() == true)
-                        {
-                            context.Fail("Token has been revoked.");
-                        }
+                        // var isTokenRevoked = await new UserIsDeletedQuery
+                        // {
+                        //     UserIdentifier = User.UserIdentifier.From(
+                        //         Guid.Parse(identityProviderId)
+                        //     ),
+                        // }
+                        //     .RunAsync(queryProcessor, cancellationToken)
+                        //     .ConfigureAwait(false);
+                        // // Implement logic to check if tokenIdentifier exists in revoked tokens list
+                        // if (isTokenRevoked.IsNone || isTokenRevoked.Get() == true)
+                        // {
+                        //     context.Fail("Token has been revoked.");
+                        // }
                     },
                     OnAuthenticationFailed = jwtContext =>
                     {
