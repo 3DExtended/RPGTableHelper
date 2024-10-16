@@ -1,4 +1,5 @@
-﻿using Prodot.Patterns.Cqrs.EfCore;
+﻿using Prodot.Patterns.Cqrs;
+using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.BaseModels;
 
 namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
@@ -10,7 +11,10 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 
         public int RndInt { get; set; }
 
-        public User.UserIdentifier UserId { get; set; } = default!;
+        /// <summary>
+        /// Is not yet set if the user is in the process of signing up
+        /// </summary>
+        public Option<User.UserIdentifier> UserId { get; set; } = default!;
 
         public record EncryptionChallengeIdentifier
             : Identifier<Guid, EncryptionChallengeIdentifier> { }

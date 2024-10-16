@@ -41,7 +41,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
             {
                 var entity = await context
                     .Set<EncryptionChallengeEntity>()
-                    .Where((e) => e.User.Username == query.Username)
+                    .Where((e) => e.UserId != null && e.User!.Username == query.Username)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(cancellationToken)
                     .ConfigureAwait(false);

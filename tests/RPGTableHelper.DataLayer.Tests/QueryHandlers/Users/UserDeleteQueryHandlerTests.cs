@@ -13,11 +13,7 @@ public class UserDeleteQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_DeletesModelSuccessfully()
     {
         // Arrange
-        var (user, _, _) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper
-            );
+        var user = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper);
 
         var query = new UserDeleteQuery { Id = user.Id };
         var subjectUnderTest = new UserDeleteQueryHandler(ContextFactory);

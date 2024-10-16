@@ -26,6 +26,6 @@ public class EncryptionChallengeForUserQueryHandlerTests : QueryHandlersTestBase
         result.Get().Id.Value.Should().Be(encryptionChallenge.Id.Value);
         result.Get().RndInt.Should().Be(encryptionChallenge.RndInt);
         result.Get().PasswordPrefix.Should().Be(encryptionChallenge.PasswordPrefix);
-        result.Get().UserId.Value.Should().Be(user.Id.Value);
+        result.Get().UserId.Get().Value.Should().Be(user.Id.Value);
     }
 }

@@ -16,11 +16,24 @@ namespace RPGTableHelper.DataLayer
             // EncryptionChallenge Mappings
             CreateMapBetweenIdentifiers<EncryptionChallenge.EncryptionChallengeIdentifier, Guid>();
             CreateMap<EncryptionChallenge, EncryptionChallengeEntity>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.Value))
+                .ForMember(
+                    dest => dest.UserId,
+                    opt =>
+                        opt.MapFrom(src =>
+                            src.UserId.Match<Guid?>((some) => some.Value, () => null)
+                        )
+                )
                 .ReverseMap()
                 .ForMember(
                     dest => dest.UserId,
-                    opt => opt.MapFrom(src => new User.UserIdentifier { Value = src.UserId })
+                    opt =>
+                        opt.MapFrom(src =>
+                            Option.From(
+                                !src.UserId.HasValue
+                                    ? null
+                                    : new User.UserIdentifier { Value = src.UserId.Value }
+                            )
+                        )
                 );
 
             // UserCredentials Mappings
