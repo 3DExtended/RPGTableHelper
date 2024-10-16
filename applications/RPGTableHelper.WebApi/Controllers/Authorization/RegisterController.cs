@@ -52,6 +52,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         /// This way, no man in the middle can pretend to be the server as each client has a copy of the public cert of the server.
         /// </remarks>
         /// <param name="encryptedAppPubKey">RSA encrpyted public pem cert of the client.</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A dictionary with the encryptionChallenge encrypted using the provided public cert of the client.</returns>
         [HttpPost("registerchallenge")]
         public async Task<ActionResult<string>> CreateNewChallenge(

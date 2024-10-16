@@ -22,6 +22,9 @@ namespace BookGram.DataLayer.SendGrid.QueryHandlers
             CancellationToken cancellationToken
         )
         {
+            if (_options.IsDisabled == true)
+                return Unit.Value;
+
             var apiKey = _options.ApiKey;
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress(_options.FromEmailAddress, _options.FromSenderName);

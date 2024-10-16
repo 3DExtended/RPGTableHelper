@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer.EfCore;
+using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.WebApi;
 
 namespace RPGTableHelper.Api.Tests.Base;
@@ -35,7 +36,7 @@ public abstract class ControllerTestBase
             builder.ConfigureServices(services =>
             {
                 ReconfigureDatabase(services);
-                ReconfigureRSAOptions(services);
+                ReconfigureOptions(services);
 
                 // Build the service provider
                 ServiceProvider = services.BuildServiceProvider();
@@ -64,8 +65,26 @@ public abstract class ControllerTestBase
         _client = _factory.CreateClient();
     }
 
-    private static void ReconfigureRSAOptions(IServiceCollection services)
+    private static void ReconfigureOptions(IServiceCollection services)
     {
+        var sendGridOptionDescriptor = services.SingleOrDefault(d =>
+            d.ServiceType == typeof(SendGridOptions)
+        );
+
+        if (sendGridOptionDescriptor != null)
+        {
+            services.Remove(sendGridOptionDescriptor);
+        }
+        services.AddSingleton(
+            new SendGridOptions
+            {
+                ApiKey = "ichbineinkey",
+                FromEmailAddress = "asdf@asdf.de",
+                FromSenderName = "Asdf",
+                IsDisabled = true,
+            }
+        );
+
         var rsaOptionDescriptor = services.SingleOrDefault(d =>
             d.ServiceType == typeof(RSAOptions)
         );

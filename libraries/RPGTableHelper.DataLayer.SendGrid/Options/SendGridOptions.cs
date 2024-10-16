@@ -22,5 +22,10 @@ namespace RPGTableHelper.DataLayer.SendGrid.Options
         /// </summary>
         /// <remarks> Can be null for environments without email verification </remarks>
         public string? FromSenderName { get; set; }
+
+        /// <summary>
+        /// Disables the sending of emails
+        /// </summary>
+        public bool? IsDisabled { get; set; }
     }
 }
