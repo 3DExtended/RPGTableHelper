@@ -218,7 +218,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (result.IsNone || result.Get())
+            if (result.IsSome)
             {
                 return Conflict();
             }
@@ -315,7 +315,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (result.IsNone || result.Get())
+            if (result.IsSome)
             {
                 return Conflict();
             }
