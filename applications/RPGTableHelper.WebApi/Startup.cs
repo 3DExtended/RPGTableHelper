@@ -132,8 +132,8 @@ public class Startup
 
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = Configuration.GetSection("Jwt")["Issuer"] ?? "Test",
-                    ValidAudience = Configuration.GetSection("Jwt")["Audience"] ?? "Test",
+                    ValidIssuer = Configuration.GetSection("Jwt")["Issuer"] ?? "api",
+                    ValidAudience = Configuration.GetSection("Jwt")["Audience"] ?? "api",
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
                             Configuration.GetSection("Jwt")["Key"]
