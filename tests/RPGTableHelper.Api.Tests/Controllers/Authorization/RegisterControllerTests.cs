@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -5,8 +7,10 @@ using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Controllers;
+using RPGTableHelper.WebApi.Dtos;
 
 namespace RPGTableHelper.Shared.Tests.Controllers.Authorization;
 
@@ -16,11 +20,85 @@ public class RegisterControllerTests : ControllerTestBase
         : base(factory) { }
 
     [Fact]
-    public async Task CreateNewChallenge_ShouldSuccessfullyGenerateNewChallengeAndUseRSAEncryption()
+    public async Task RegisterUsingUsername_ShouldBeSuccessfully()
     {
-        // Act
-        var (mockedPublicAppPEM, mockedPrivateAppPEM) = GetPEMPairForMockedApp();
+        // get encryption challenge
+        Dictionary<string, object>? challengeDict = await GenerateAndReceiveEncryptionChallenge();
 
+        // execute register as new user
+        string? jwtResult = await LoginAndReceiveJWT(challengeDict);
+
+        // verify jwt is valid for login
+        await VerifyLoginValidity(jwtResult);
+    }
+
+    private async Task VerifyLoginValidity(string? jwtResult)
+    {
+        // arrange
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            jwtResult
+        );
+
+        // act
+        var response = await _client.GetAsync("/SignIn/testlogin");
+
+        // assert
+        if (!response.IsSuccessStatusCode)
+        {
+            // Log error response content
+            var errorContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Error Response Content: " + errorContent); // Helpful for debugging
+        }
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseText = await response.Content.ReadAsStringAsync();
+        responseText.Should().Be("Welcome");
+    }
+
+    private async Task<string?> LoginAndReceiveJWT(Dictionary<string, object>? challengeDict)
+    {
+        // arrange
+        var registerDto = new RegisterWithUsernamePasswordDto
+        {
+            Username = "TestUser1",
+            EncryptionChallengeIdentifier = EncryptionChallenge.EncryptionChallengeIdentifier.From(
+                Guid.Parse(challengeDict!["id"]!.ToString())
+            ),
+            UserSecret = "mysupersecretpassword",
+            Email = "asdf@asdf.de",
+        };
+
+        var serializedRegisterDto = JsonConvert.SerializeObject(registerDto);
+        var encryptedRegisterDto = await new RSAEncryptStringQuery
+        {
+            StringToEncrypt = serializedRegisterDto,
+        }
+            .RunAsync(QueryProcessor, (default!))
+            .ConfigureAwait(true);
+
+        // act
+        var response = await _client.PostAsync(
+            "/register/register",
+            new StringContent(
+                $"\"{encryptedRegisterDto.Get()}\"",
+                Encoding.UTF8,
+                "application/json"
+            )
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var jwtResult = await response.Content.ReadAsStringAsync();
+        jwtResult.Should().NotBeNullOrEmpty();
+
+        return jwtResult;
+    }
+
+    private async Task<Dictionary<string, object>?> GenerateAndReceiveEncryptionChallenge()
+    {
+        // arrange
+        var (mockedPublicAppPEM, mockedPrivateAppPEM) = GetPEMPairForMockedApp();
         var encryptedAppPubKey = await new RSAEncryptStringQuery
         {
             StringToEncrypt = mockedPublicAppPEM,
@@ -28,8 +106,9 @@ public class RegisterControllerTests : ControllerTestBase
             .RunAsync(QueryProcessor, (default!))
             .ConfigureAwait(true);
 
+        // Act
         var response = await _client.PostAsync(
-            "/register/registerchallenge",
+            "/register/createencryptionchallenge",
             new StringContent($"\"{encryptedAppPubKey.Get()}\"", Encoding.UTF8, "application/json")
         );
 
@@ -60,6 +139,8 @@ public class RegisterControllerTests : ControllerTestBase
         entities[0].Id.ToString().Should().Be(challengeDict["id"].ToString());
         entities[0].PasswordPrefix.ToString().Should().Be(challengeDict["pp"].ToString());
         entities[0].RndInt.ToString().Should().Be(challengeDict["ri"].ToString());
+
+        return challengeDict;
     }
 
     private (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()

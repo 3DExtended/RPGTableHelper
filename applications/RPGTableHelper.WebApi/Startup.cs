@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +20,7 @@ using RPGTableHelper.DataLayer.SendGrid;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Services;
+using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
 using RPGTableHelper.WebApi.Swagger;
@@ -163,6 +165,10 @@ public class Startup
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
+            // enforce publishing dtos even when models not directly exposed via endpoints
+            c.DocumentFilter<CustomModelDocumentFilter<RegisterWithApiKeyDto>>();
+            c.DocumentFilter<CustomModelDocumentFilter<RegisterWithUsernamePasswordDto>>();
+
             c.SchemaFilter<EnumSchemaFilter>();
 
             c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
@@ -218,6 +224,7 @@ public class Startup
             )
         );
         services.AddMemoryCache();
+        services.AddHttpClient();
 
         services.AddAutoMapper(typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile));
 
@@ -292,6 +299,21 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    var exceptionHandlerPathFeature =
+                        context.Features.Get<IExceptionHandlerPathFeature>();
+
+                    var exception = exceptionHandlerPathFeature?.Error;
+
+                    // Log the exception
+                    context.Response.StatusCode = 500;
+                    await context.Response.WriteAsync("An internal server error occurred.");
+                });
+            });
         }
         else
         {

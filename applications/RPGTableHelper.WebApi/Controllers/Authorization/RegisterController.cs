@@ -54,7 +54,11 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         /// <param name="encryptedAppPubKey">RSA encrpyted public pem cert of the client.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A dictionary with the encryptionChallenge encrypted using the provided public cert of the client.</returns>
-        [HttpPost("registerchallenge")]
+        /// <response code="200">Returns the JWT for the user.</response>
+        /// <response code="400">If the passed user input is invalid</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("createencryptionchallenge")]
         public async Task<ActionResult<string>> CreateNewChallenge(
             [FromBody] string encryptedAppPubKey,
             CancellationToken cancellationToken
@@ -127,75 +131,24 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             return Ok(encryptedChallenge.Get());
         }
 
-        [HttpPost("getloginchallengeforusername/{username}")]
-        public async Task<ActionResult<string>> GetChallengeByUsername(
-            [FromRoute] string username,
-            [FromBody] EncryptedMessageWrapperDto encryptedAppPubKey,
-            CancellationToken cancellationToken
-        )
-        {
-            // first decode message from client
-            var decryptedMessageFromClient = await new RSADecryptStringQuery
-            {
-                StringToDecrypt = encryptedAppPubKey.EncryptedMessage,
-                PrivateKeyOverride =
-                    Option.None // we want to use the server private key
-                ,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (decryptedMessageFromClient.IsNone)
-            {
-                _logger.LogWarning(
-                    "Could not decrypt message from app for challenge by username request"
-                );
-                return BadRequest();
-            }
-
-            var appPubKey = decryptedMessageFromClient.Get();
-
-            // load challenge for username
-            var challenge = await new EncryptionChallengeForUserQuery { Username = username }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (challenge.IsNone)
-            {
-                _logger.LogWarning("Could not load challenge by username");
-
-                return BadRequest();
-            }
-
-            var challengeDict = new Dictionary<string, object>
-            {
-                ["ri"] = challenge.Get().RndInt,
-                ["pp"] = challenge.Get().PasswordPrefix,
-                ["id"] = challenge.Get().Id.Value,
-            };
-
-            var challengeAsJson = JsonConvert.SerializeObject(challengeDict);
-
-            // encrypt challenge with client pubKey
-            var encryptedChallenge = await new RSAEncryptStringQuery
-            {
-                PublicKeyOverride = appPubKey,
-                StringToEncrypt = challengeAsJson,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (encryptedChallenge.IsNone)
-            {
-                _logger.LogWarning("Could not encrypt challenge for result");
-
-                return BadRequest();
-            }
-
-            return Ok(encryptedChallenge.Get());
-        }
-
+        /// <summary>
+        /// Creates a new user with "username and password" sign in.
+        /// </summary>
+        /// <remarks>
+        /// In order to signup the provided body must be RSA encrypted with
+        /// the public certificate of this server. The dto must be of type
+        /// <see cref="RegisterWithUsernamePasswordDto"/>.
+        /// </remarks>
+        /// <param name="encryptedRegisterDto">The encrypted register dto</param>
+        /// <param name="cancellationToken">cancellationToken</param>
+        /// <returns>When valid, the JWT.</returns>
+        /// <response code="200">Returns the JWT for the user.</response>
+        /// <response code="400">If the passed user input is invalid</response>
+        /// <response code="409">If the desired username is already taken</response>
         [HttpPost("register")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<string>> RegisterAsync(
             [FromBody] string encryptedRegisterDto,
             CancellationToken cancellationToken
@@ -213,7 +166,9 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            var registerDto = JsonConvert.DeserializeObject<RegisterDto>(registerDtoString.Get());
+            var registerDto = JsonConvert.DeserializeObject<RegisterWithUsernamePasswordDto>(
+                registerDtoString.Get()
+            );
 
             if (
                 registerDto == null
@@ -250,7 +205,11 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             // create new user and usercredentials
             var usercreateresult = await new UserCreateQuery
             {
-                ModelToCreate = new User { Username = registerDto.Username },
+                ModelToCreate = new User
+                {
+                    Username = registerDto.Username,
+                    SignInProviderId = null,
+                },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -268,6 +227,8 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     EncryptionChallengeId = registerDto.EncryptionChallengeIdentifier,
                     HashedPassword = registerDto.UserSecret,
                     UserId = usercreateresult.Get(),
+                    EmailVerified = false,
+                    SignInProvider = false,
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
@@ -302,7 +263,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
 
         [HttpPost("registerwithapikey")]
         public async Task<ActionResult<string>> RegisterWithApiKeyAsync(
-            [FromBody] RegisterDto registerDto,
+            [FromBody] RegisterWithApiKeyDto registerDto,
             CancellationToken cancellationToken
         )
         {
@@ -314,7 +275,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return Unauthorized();
             }
 
-            var registrationCacheDict = (Dictionary<string, string>)registrationCache;
+            var registrationCacheDict = (Dictionary<string, string>)registrationCache!;
 
             if (registrationCacheDict["email"] == null)
             {

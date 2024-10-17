@@ -3,14 +3,8 @@ using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 
 namespace RPGTableHelper.WebApi.Dtos
 {
-    public class RegisterDto
+    public class RegisterWithUsernamePasswordDto
     {
-        /// <summary>
-        /// Gets or sets the api key of this user register request.
-        /// Either this has to be set or the UserSecret.
-        /// </summary>
-        public string? ApiKey { get; set; }
-
         /// <summary>
         /// Gets or sets the email address of the user.
         /// </summary>
@@ -23,7 +17,9 @@ namespace RPGTableHelper.WebApi.Dtos
         ///
         /// Has to be set when the UserSecret is provided.
         /// </summary>
-        public EncryptionChallenge.EncryptionChallengeIdentifier? EncryptionChallengeIdentifier { get; set; }
+        [Required]
+        public EncryptionChallenge.EncryptionChallengeIdentifier EncryptionChallengeIdentifier { get; set; } =
+            default!;
 
         /// <summary>
         /// Gets or sets the username of the user.
@@ -39,6 +35,7 @@ namespace RPGTableHelper.WebApi.Dtos
         /// the user is providing username and password after the sign in using a OIDC Provider
         /// (like apple or google).
         /// </summary>
-        public string? UserSecret { get; set; }
+        [Required]
+        public string UserSecret { get; set; } = default!;
     }
 }

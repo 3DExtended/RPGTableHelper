@@ -14,6 +14,7 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Models;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.Shared.Services;
@@ -33,10 +34,12 @@ namespace RPGTableHelper.WebApi.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IQueryProcessor _queryProcessor;
         private readonly ISystemClock _systemClock;
+        private readonly ILogger _logger;
 
         public SignInController(
             IHttpClientFactory httpClientFactory,
             IMemoryCache cache,
+            ILogger logger,
             IQueryProcessor queryProcessor,
             IConfiguration configuration,
             ISystemClock systemClock,
@@ -49,6 +52,7 @@ namespace RPGTableHelper.WebApi.Controllers
             _systemClock = systemClock;
             _httpClientFactory = httpClientFactory;
             _cache = cache;
+            _logger = logger;
         }
 
         public static string GetJWTToken(
@@ -86,15 +90,91 @@ namespace RPGTableHelper.WebApi.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = tokenHandler.WriteToken(token);
-            var stringToken = tokenHandler.WriteToken(token);
-            return stringToken;
+            return jwtToken;
         }
 
+        /// <summary>
+        /// This method returns "Welcome" when the provided JWT is valid.
+        /// </summary>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>"Welcome"</returns>
+        /// <response code="200">Returns the JWT for the user.</response>
+        /// <response code="401">If the used jwt is not valid</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("testlogin")]
         [Authorize]
         public Task<ActionResult<string>> TestLoginAsync(CancellationToken cancellationToken)
         {
             return Task.FromResult<ActionResult<string>>(Ok("Welcome"));
+        }
+
+        [HttpPost("getloginchallengeforusername/{username}")]
+        public async Task<ActionResult<string>> GetChallengeByUsername(
+            [FromRoute] string username,
+            [FromBody] EncryptedMessageWrapperDto encryptedAppPubKey,
+            CancellationToken cancellationToken
+        )
+        {
+            // first decode message from client
+            var decryptedMessageFromClient = await new RSADecryptStringQuery
+            {
+                StringToDecrypt = encryptedAppPubKey.EncryptedMessage,
+                PrivateKeyOverride =
+                    Option.None // we want to use the server private key
+                ,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (decryptedMessageFromClient.IsNone)
+            {
+                _logger.LogWarning(
+                    "Could not decrypt message from app for challenge by username request"
+                );
+                return BadRequest();
+            }
+
+            var appPubKey = decryptedMessageFromClient.Get();
+
+            // load challenge for username
+            var challenge = await new EncryptionChallengeForUserQuery { Username = username }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (challenge.IsNone)
+            {
+                _logger.LogWarning("Could not load challenge by username");
+
+                return BadRequest();
+            }
+
+            var challengeDict = new Dictionary<string, object>
+            {
+                ["ri"] = challenge.Get().RndInt,
+                ["pp"] = challenge.Get().PasswordPrefix,
+                ["id"] = challenge.Get().Id.Value,
+            };
+
+            var challengeAsJson = JsonConvert.SerializeObject(challengeDict);
+
+            // encrypt challenge with client pubKey
+            var encryptedChallenge = await new RSAEncryptStringQuery
+            {
+                PublicKeyOverride = appPubKey,
+                StringToEncrypt = challengeAsJson,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (encryptedChallenge.IsNone)
+            {
+                _logger.LogWarning("Could not encrypt challenge for result");
+
+                return BadRequest();
+            }
+
+            return Ok(encryptedChallenge.Get());
         }
 
         [HttpPost("login")]
