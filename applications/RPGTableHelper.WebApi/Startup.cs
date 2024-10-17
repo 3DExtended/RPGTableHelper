@@ -136,7 +136,8 @@ public class Startup
                     ValidAudience = Configuration.GetSection("Jwt")["Audience"] ?? "Test",
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
-                            Configuration.GetSection("Jwt")["Key"] ?? "fghjkiuztfvbnjkuzgbnjk"
+                            Configuration.GetSection("Jwt")["Key"]
+                                ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
                         )
                     ),
                     ValidateIssuer = true,

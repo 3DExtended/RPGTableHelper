@@ -65,7 +65,7 @@ namespace RPGTableHelper.WebApi.Controllers
             var issuer = configuration["Jwt:Issuer"] ?? "api";
             var audience = configuration["Jwt:Audience"] ?? "api";
             var key = Encoding.ASCII.GetBytes(
-                configuration["Jwt:Key"] ?? "asghjhgbnjhgbnjhgbdfasfd"
+                configuration["Jwt:Key"] ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
             );
 
             var tokenDescriptor = new SecurityTokenDescriptor
