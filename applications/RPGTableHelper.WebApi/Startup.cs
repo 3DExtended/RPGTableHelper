@@ -302,7 +302,10 @@ public class Startup
 
                     // Log the exception
                     context.Response.StatusCode = 500;
-                    await context.Response.WriteAsync("An internal server error occurred.");
+                    Console.WriteLine(exception);
+                    await context.Response.WriteAsync(
+                        "An internal server error occurred.\n" + exception?.ToString()
+                    );
                 });
             });
         }
