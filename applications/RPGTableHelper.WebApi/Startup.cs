@@ -236,10 +236,12 @@ public class Startup
     private void AddServiceOptions(IServiceCollection services)
     {
         var sendGridOptions = Configuration.GetSection("SendGrid").Get<SendGridOptions>();
-        services.AddSingleton(sendGridOptions!);
+        if (sendGridOptions != null)
+            services.AddSingleton(sendGridOptions);
 
         var sqlOptions = Configuration.GetSection("Sql").Get<SqlServerOptions>();
-        services.AddSingleton(sqlOptions!);
+        if (sqlOptions != null)
+            services.AddSingleton(sqlOptions!);
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
             options.UseSqlite($"DataSource=file:maindb?mode=memory&cache=shared");
@@ -248,10 +250,12 @@ public class Startup
         services.AddSingleton<ISystemClock, RealSystemClock>();
 
         var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
-        services.AddSingleton(appleOptions!);
+        if (appleOptions != null)
+            services.AddSingleton(appleOptions!);
 
         var rsaOptions = Configuration.GetSection("RSA").Get<RSAOptions>();
-        services.AddSingleton(rsaOptions!);
+        if (rsaOptions != null)
+            services.AddSingleton(rsaOptions!);
     }
 
     private static void AddCqrs(IServiceCollection services)
