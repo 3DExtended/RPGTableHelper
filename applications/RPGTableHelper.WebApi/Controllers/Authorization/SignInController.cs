@@ -62,9 +62,11 @@ namespace RPGTableHelper.WebApi.Controllers
             string userIdentityProviderId
         )
         {
-            var issuer = configuration["Jwt:Issuer"];
-            var audience = configuration["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? "");
+            var issuer = configuration["Jwt:Issuer"] ?? "api";
+            var audience = configuration["Jwt:Audience"] ?? "api";
+            var key = Encoding.ASCII.GetBytes(
+                configuration["Jwt:Key"] ?? "asghjhgbnjhgbnjhgbdfasfd"
+            );
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
