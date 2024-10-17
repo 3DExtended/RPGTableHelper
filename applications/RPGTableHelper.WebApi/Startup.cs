@@ -236,18 +236,10 @@ public class Startup
     private void AddServiceOptions(IServiceCollection services)
     {
         var sendGridOptions = Configuration.GetSection("SendGrid").Get<SendGridOptions>();
-        if (sendGridOptions == null)
-        {
-            throw new InvalidOperationException("SendGrid configuration is missing.");
-        }
-        services.AddSingleton(sendGridOptions);
+        services.AddSingleton(sendGridOptions!);
 
         var sqlOptions = Configuration.GetSection("Sql").Get<SqlServerOptions>();
-        if (sqlOptions == null)
-        {
-            throw new InvalidOperationException("Sql configuration is missing.");
-        }
-        services.AddSingleton(sqlOptions);
+        services.AddSingleton(sqlOptions!);
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
             options.UseSqlite($"DataSource=file:maindb?mode=memory&cache=shared");
@@ -256,18 +248,10 @@ public class Startup
         services.AddSingleton<ISystemClock, RealSystemClock>();
 
         var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
-        if (appleOptions == null)
-        {
-            throw new InvalidOperationException("Apple configuration is missing.");
-        }
-        services.AddSingleton(appleOptions);
+        services.AddSingleton(appleOptions!);
 
         var rsaOptions = Configuration.GetSection("RSA").Get<RSAOptions>();
-        if (rsaOptions == null)
-        {
-            throw new InvalidOperationException("RSA configuration is missing.");
-        }
-        services.AddSingleton(rsaOptions);
+        services.AddSingleton(rsaOptions!);
     }
 
     private static void AddCqrs(IServiceCollection services)
