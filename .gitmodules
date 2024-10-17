@@ -1,0 +1,3 @@
+[submodule "extern/Prodot.Patterns.Cqrs"]
+	path = extern/Prodot.Patterns.Cqrs
+	url = https://github.com/3DExtended/Prodot.Patterns.Cqrs.git

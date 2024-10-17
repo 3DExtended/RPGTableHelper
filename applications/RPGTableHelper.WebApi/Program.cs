@@ -1,3 +1,5 @@
+using Swashbuckle.Swagger;
+
 namespace RPGTableHelper.WebApi;
 
 public class Program

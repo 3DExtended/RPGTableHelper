@@ -40,6 +40,7 @@ Update golden tests:
 ```flutter test --update-goldens```
 
 Build generated code:
+
 ```dart run build_runner build```
 
 Update launcher icons:

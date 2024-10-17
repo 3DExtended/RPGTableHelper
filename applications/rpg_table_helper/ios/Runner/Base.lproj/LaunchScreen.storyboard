@@ -19,8 +19,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
-                                <rect key="frame" x="26" y="255.33333333333334" width="341.33333333333331" height="341.33333333333326"/>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
+                                <rect key="frame" x="-503" y="-273.33333333333331" width="1399" height="1398.6666666666667"/>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="viewFlipsideBackgroundColor"/>
@@ -36,7 +37,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="341.33334350585938" height="341.33334350585938"/>
+        <image name="LaunchImage" width="1398.6666259765625" height="1398.6666259765625"/>
         <systemColor name="viewFlipsideBackgroundColor">
             <color red="0.12156862745098039" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

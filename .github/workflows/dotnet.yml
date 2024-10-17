@@ -1,0 +1,44 @@
+name: Test backend
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches:
+      - main
+      - releases/*
+    paths-ignore:
+      - '**.md'
+      - 'applications/rpg_table_helper/**'
+
+jobs:
+  build:
+    name: Build & Test Solution
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore -c Release
+    - name: Test
+      run: dotnet test --no-build --verbosity normal -c Release --collect:"XPlat Code Coverage" --results-directory cobertura
+    - name: Report Generation
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool && reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+    - name: COVERAGE_VALUE Calculation
+      run:  COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml") && COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc) && echo "TOTAL_COVERAGE:" && echo $COVERAGE && echo "$COVERAGE"
+
+
+
+# dotnet test --collect:"XPlat Code Coverage" --results-directory cobertura
+# reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+# reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+# COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml")
+# COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc)
+# 'echo "TOTAL_COVERAGE=$COVERAGE%"'
