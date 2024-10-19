@@ -93,7 +93,7 @@ public class AppleVerifyTokenAndReceiveUserDetailsQueryHandler
             return Option.None;
 
         // decode id token
-        var appleAuthTokenDetails = appleTokenResponse.Get().id_token.GetTokenInfo();
+        var appleAuthTokenDetails = appleTokenResponse.Get().id_token!.GetTokenInfo();
 
         // some string uniquely identifying the user
         var internalId = appleAuthTokenDetails["sub"];
