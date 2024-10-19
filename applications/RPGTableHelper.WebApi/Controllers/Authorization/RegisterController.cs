@@ -60,6 +60,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         /// <response code="400">If the passed user input is invalid</response>
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         [HttpPost("createencryptionchallenge")]
         public async Task<ActionResult<string>> CreateNewChallenge(
             [FromBody] string encryptedAppPubKey,
@@ -151,6 +152,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [AllowAnonymous]
         public async Task<ActionResult<string>> RegisterAsync(
             [FromBody] string encryptedRegisterDto,
             CancellationToken cancellationToken
@@ -270,6 +272,21 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             return Ok(token);
         }
 
+        /// <summary>
+        /// Creates a new user for an open sign OpenSignInProviderRegisterRequest.
+        /// </summary>
+        /// <param name="registerDto">The register dto providing apikey and username</param>
+        /// <param name="cancellationToken">cancellationToken</param>
+        /// <returns>When valid, the JWT.</returns>
+        /// <response code="200">Returns the JWT for the user.</response>
+        /// <response code="400">If there was an issue</response>
+        /// <response code="401">If there is no open <see cref="OpenSignInProviderRegisterRequest"/></response>
+        /// <response code="409">If the open OpenSignInProviderRegisterRequest does not have an email or the username is already taken</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [AllowAnonymous]
         [HttpPost("registerwithapikey")]
         public async Task<ActionResult<string>> RegisterWithApiKeyAsync(
             [FromBody] RegisterWithApiKeyDto registerDto,
@@ -343,9 +360,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             {
                 ModelToCreate = new UserCredential
                 {
-                    EncryptionChallengeId = EncryptionChallenge.EncryptionChallengeIdentifier.From(
-                        Guid.Empty
-                    ),
+                    EncryptionChallengeId = Option.None,
                     HashedPassword = "",
                     SignInProvider = true,
                     RefreshToken = refreshToken,
@@ -391,6 +406,18 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             return Ok(token);
         }
 
+        /// <summary>
+        /// Lets the user verify their email.
+        /// </summary>
+        /// <remarks>This link is send via email to the user after registration (and only if the user used username and password login).</remarks>
+        /// <param name="useridbase64">The base64 encoded userid</param>
+        /// <param name="signaturebase64">The server generated signature for the userid</param>
+        /// <param name="cancellationToken">cancellationToken</param>
+        /// <returns>A string "Email verified!" if everything worked</returns>
+        /// <response code="200">Returns the JWT for the user.</response>
+        /// <response code="400">If there was an issue</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         [HttpGet("verifyemail/{useridbase64}/{signaturebase64}")]
         public async Task<ActionResult<string>> VerifyEmailAsync(
@@ -400,7 +427,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         )
         {
             // "https://www.your-shelf.app/api/register/verifyemail/?key={useridbase64}&sig={signbase64}"
-
             var userIdStr = Encoding.UTF8.GetString(
                 Convert.FromBase64String(useridbase64.Replace('_', '/'))
             );
@@ -446,42 +472,40 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             CancellationToken cancellationToken
         )
         {
-            var useridToSign = userIdentifier.Value.ToString();
-            var useridsignature = await new RSASignStringQuery { MessageToSign = useridToSign }
+            var useridAsString = userIdentifier.Value.ToString();
+            var userIdSignature = await new RSASignStringQuery { MessageToSign = useridAsString }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (useridsignature.IsNone)
+            if (userIdSignature.IsNone)
             {
                 return false;
             }
 
-            var signaturebase64 = useridsignature.Get();
-            var useridbase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(useridToSign));
+            var useridbase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(useridAsString));
 
             // "https://www.your-shelf.app/api/register/verifyemail/?key={useridbase64}&sig={signbase64}"
             var verifyEmailUrl =
-                $"https://your-shelf.app/api/register/verifyemail/?key={useridbase64.Replace('/', '_')}&sig={signaturebase64.Replace('/', '_')}";
+                $"https://your-shelf.app/api/register/verifyemail/?key={useridbase64.Replace('/', '_')}&sig={userIdSignature.Get().Replace('/', '_')}";
 
             var sendEmailResult = await new EmailSendQuery
             {
                 To = new EmailAddress { Name = email, Email = email },
                 CC = new List<EmailAddress>(),
-                Subject = "YourShelf Registrierung",
+                Subject = "Registrierung",
                 Body =
                     @$"Hallo {username}, <br><br>
 
-                    Damit deine YourShelf Registrierung abgeschlossen werden kann, klicke bitte auf den folgenden Link:<br><br>
+                    Damit deine Registrierung abgeschlossen werden kann, klicke bitte auf den folgenden Link:<br><br>
 
                     {verifyEmailUrl} <br><br>
 
                     Vielen vielen Dank fürs Registrieren!<br>
-                    Peter (der YourShelf Entwickler ;) )<br><br>
+                    Peter (der Entwickler ;) )<br><br>
 
                     P.S.: Falls du Fragen hast, kannst du mich jederzeit erreichen: <br>
-                    Entweder über Twitter @PeterEsser_ oder per Mail an feedback@your-shelf.app <br><br>
+                    Über Twitter @PeterEsser_ <br><br>
 
-                    P.P.S.: Die Datenschutzerklärung findest du hier: https://www.your-shelf.app/datenschutz/ <br>
                     Falls du Fragen zu dieser Mail hast, dir irgendetwas merkwürdig vorkommt oder du keine Registrierung für die App YourShelf gemacht hast, kannst du auf diese E-Mail antworten und wir klären das!
                     ",
             }

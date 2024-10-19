@@ -1,13 +1,17 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NSubstitute.Core;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Controllers;
 using RPGTableHelper.WebApi.Dtos;
@@ -20,7 +24,7 @@ public class RegisterControllerTests : ControllerTestBase
         : base(factory) { }
 
     [Fact]
-    public async Task RegisterUsingUsername_ShouldBeSuccessfully()
+    public async Task RegisterUsingUsername_ShouldBeSuccessful()
     {
         // get encryption challenge
         Dictionary<string, object>? challengeDict = await GenerateAndReceiveEncryptionChallenge();
@@ -29,6 +33,91 @@ public class RegisterControllerTests : ControllerTestBase
         string? jwtResult = await LoginAndReceiveJWT(challengeDict);
 
         // verify jwt is valid for login
+        await VerifyLoginValidity(jwtResult);
+    }
+
+    [Fact]
+    public async Task VerifyEmailAsync_ShouldBeSuccessful()
+    {
+        // arrange
+        var userEntity = new UserEntity { Id = Guid.Empty, Username = "TestUser" };
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            await context.Users.AddAsync(userEntity, default!);
+            await context.SaveChangesAsync(default);
+        }
+
+        var requestEntity = new UserCredentialEntity
+        {
+            Id = Guid.Empty,
+            Email = "asdf@asdf.de",
+            EmailVerified = false,
+            Deleted = false,
+            UserId = userEntity.Id,
+        };
+
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            await context.UserCredentials.AddAsync(requestEntity, default!);
+            await context.SaveChangesAsync(default);
+        }
+
+        var useridbase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(userEntity.Id.ToString()));
+        var useridsignature = await new RSASignStringQuery
+        {
+            MessageToSign = userEntity.Id.ToString(),
+        }
+            .RunAsync(QueryProcessor, default)
+            .ConfigureAwait(false);
+
+        // act
+        var response = await _client.GetAsync(
+            $"/register/verifyemail/{useridbase64.Replace('/', '_')}/{useridsignature.Get().Replace('/', '_')}"
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            var entities = await context.UserCredentials.ToListAsync(default);
+            entities.Count.Should().Be(1);
+            entities[0].EmailVerified.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task RegisterWithApiKeyAsync_ShouldBeSuccessful()
+    {
+        // arrange
+        var requestEntity = new OpenSignInProviderRegisterRequestEntity
+        {
+            Id = Guid.Empty,
+            Email = "asdf@asdf.de",
+            ExposedApiKey = "sdfghjklölkjhgfdfghjk",
+            IdentityProviderId = "64f1f32a-d40b-4809-b716-b982441cc2ef",
+            SignInProviderRefreshToken = "70919681-a118-49c3-833f-9f02e848182a",
+            SignInProviderUsed = SupportedSignInProviders.Apple,
+        };
+
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            await context.OpenSignInProviderRegisterRequests.AddAsync(requestEntity, default!);
+            await context.SaveChangesAsync(default);
+        }
+
+        var requestBody = new RegisterWithApiKeyDto
+        {
+            ApiKey = requestEntity.ExposedApiKey,
+            Username = "TestUsername",
+        };
+
+        // act
+        var response = await _client.PostAsJsonAsync("/register/registerwithapikey", requestBody);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var jwtResult = await response.Content.ReadAsStringAsync();
+        jwtResult.Should().NotBeNullOrEmpty();
         await VerifyLoginValidity(jwtResult);
     }
 
