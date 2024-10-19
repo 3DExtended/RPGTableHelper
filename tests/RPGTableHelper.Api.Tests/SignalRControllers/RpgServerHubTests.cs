@@ -93,21 +93,14 @@ public class PublicControllerTests : ControllerTestBase
         await connection.StartAsync();
         var message = "Ich komme aus dem Test";
 
+        await Task.Delay(1000);
+
         // act
         var task = () =>
             connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
 
         // assert
-        try
-        {
-            await task();
-        }
-        catch (HubException) { }
-        catch (InvalidOperationException) { }
-        catch (Exception)
-        {
-            throw;
-        }
+        await task.Should().ThrowAsync<InvalidOperationException>();
 
         resultFromServer.Should().BeNull();
     }
