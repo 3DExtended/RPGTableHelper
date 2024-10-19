@@ -22,8 +22,13 @@ namespace RPGTableHelper.Shared.Extensions
             return match.Success;
         }
 
-        public static Dictionary<string, string> GetTokenInfo(this string? token)
+        public static Dictionary<string, string> GetTokenInfo(this string token)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException("token");
+            }
+
             var TokenInfo = new Dictionary<string, string>();
 
             var handler = new JwtSecurityTokenHandler();

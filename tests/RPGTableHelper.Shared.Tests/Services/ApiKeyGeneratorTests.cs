@@ -7,17 +7,19 @@ namespace RPGTableHelper.Shared.Tests.Services
         [Fact]
         public void GenerateKey_ShouldReplaceForbiddenCharacters()
         {
-            // Arrange
-            int keyLength = 32;
+            // test a bunch of keys
+            for (int i = 0; i < 1000; i++)
+            {
+                // Arrange
+                int keyLength = 32;
 
-            // Act
-            string result = ApiKeyGenerator.GenerateKey(keyLength);
+                // Act
+                string result = ApiKeyGenerator.GenerateKey(keyLength);
 
-            // Assert
-            Assert.DoesNotContain("/", result);
-            Assert.DoesNotContain("+", result);
-            Assert.Contains("A", result); // Checking that "/" is replaced
-            Assert.Contains("b", result); // Checking that "+" is replaced
+                // Assert
+                Assert.DoesNotContain("/", result);
+                Assert.DoesNotContain("+", result);
+            }
         }
 
         [Fact]
