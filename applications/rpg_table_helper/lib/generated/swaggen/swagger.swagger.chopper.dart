@@ -18,26 +18,20 @@ final class _$Swagger extends Swagger {
   final Type definitionType = Swagger;
 
   @override
-  Future<Response<String>> _registerRegisterchallengePost(
-      {required String? body}) {
-    final Uri $url = Uri.parse('/Register/registerchallenge');
-    final $body = body;
+  Future<Response<String>> _publicGetminimalversionGet() {
+    final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(
-      'POST',
+      'GET',
       $url,
       client.baseUrl,
-      body: $body,
     );
     return client.send<String, String>($request);
   }
 
   @override
-  Future<Response<String>> _registerGetloginchallengeforusernameUsernamePost({
-    required String? username,
-    required EncryptedMessageWrapperDto? body,
-  }) {
-    final Uri $url =
-        Uri.parse('/Register/getloginchallengeforusername/${username}');
+  Future<Response<String>> _registerCreateencryptionchallengePost(
+      {required String? body}) {
+    final Uri $url = Uri.parse('/Register/createencryptionchallenge');
     final $body = body;
     final Request $request = Request(
       'POST',
@@ -63,7 +57,7 @@ final class _$Swagger extends Swagger {
 
   @override
   Future<Response<String>> _registerRegisterwithapikeyPost(
-      {required RegisterDto? body}) {
+      {required RegisterWithApiKeyDto? body}) {
     final Uri $url = Uri.parse('/Register/registerwithapikey');
     final $body = body;
     final Request $request = Request(
@@ -91,12 +85,29 @@ final class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<String>> _signInGetminimalversionGet() {
-    final Uri $url = Uri.parse('/SignIn/getminimalversion');
+  Future<Response<String>> _signInTestloginGet() {
+    final Uri $url = Uri.parse('/SignIn/testlogin');
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> _signInGetloginchallengeforusernameUsernamePost({
+    required String? username,
+    required EncryptedMessageWrapperDto? body,
+  }) {
+    final Uri $url =
+        Uri.parse('/SignIn/getloginchallengeforusername/${username}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
     );
     return client.send<String, String>($request);
   }
@@ -152,17 +163,6 @@ final class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       body: $body,
-    );
-    return client.send<String, String>($request);
-  }
-
-  @override
-  Future<Response<String>> _signInTestloginGet() {
-    final Uri $url = Uri.parse('/SignIn/testlogin');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
     );
     return client.send<String, String>($request);
   }

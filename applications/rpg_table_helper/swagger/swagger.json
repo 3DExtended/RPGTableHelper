@@ -5,12 +5,45 @@
         "version": "v1.0"
     },
     "paths": {
-        "/Register/registerchallenge": {
+        "/Public/getminimalversion": {
+            "get": {
+                "tags": [
+                    "Public"
+                ],
+                "summary": "Returns the minimal app version supported by this api.",
+                "responses": {
+                    "200": {
+                        "description": "The minimal app version supported",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Register/createencryptionchallenge": {
             "post": {
                 "tags": [
                     "Register"
                 ],
+                "summary": "This method generates a new encryptionChallenge and stores it in the db.\r\nUse this method as first start point for a register operation.",
+                "description": "Additionally, it uses rsa encryption to comunicate: the client has to provide a public pem\r\ncertificate encrypted with the public pem of this server and receives the encryption challenge\r\nRSA encrypted with the provided public cert.\r\nThis way, no man in the middle can pretend to be the server as each client has a copy of the public cert of the server.",
                 "requestBody": {
+                    "description": "RSA encrpyted public pem cert of the client.",
                     "content": {
                         "application/json-patch+json": {
                             "schema": {
@@ -36,7 +69,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Returns the JWT for the user.",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -54,14 +87,365 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "If the passed user input is invalid",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/Register/getloginchallengeforusername/{username}": {
+        "/Register/register": {
             "post": {
                 "tags": [
                     "Register"
+                ],
+                "summary": "Creates a new user with \"username and password\" sign in.",
+                "description": "In order to signup the provided body must be RSA encrypted with\r\nthe public certificate of this server. The dto must be of type\r\nRPGTableHelper.WebApi.Dtos.RegisterWithUsernamePasswordDto.",
+                "requestBody": {
+                    "description": "The encrypted register dto",
+                    "content": {
+                        "application/json-patch+json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Returns the JWT for the user.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If the passed user input is invalid",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "If the desired username is already taken",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Register/registerwithapikey": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "summary": "Creates a new user for an open sign OpenSignInProviderRegisterRequest.",
+                "requestBody": {
+                    "description": "The register dto providing apikey and username",
+                    "content": {
+                        "application/json-patch+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Returns the JWT for the user.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If there was an issue",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "If there is no open RPGTableHelper.DataLayer.Contracts.Models.Auth.OpenSignInProviderRegisterRequest",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "If the open OpenSignInProviderRegisterRequest does not have an email or the username is already taken",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Register/verifyemail/{useridbase64}/{signaturebase64}": {
+            "get": {
+                "tags": [
+                    "Register"
+                ],
+                "summary": "Lets the user verify their email.",
+                "description": "This link is send via email to the user after registration (and only if the user used username and password login).",
+                "parameters": [{
+                        "name": "useridbase64",
+                        "in": "path",
+                        "description": "The base64 encoded userid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "signaturebase64",
+                        "in": "path",
+                        "description": "The server generated signature for the userid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the JWT for the user.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If there was an issue",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/SignIn/testlogin": {
+            "get": {
+                "tags": [
+                    "SignIn"
+                ],
+                "summary": "This method returns \"Welcome\" when the provided JWT is valid.",
+                "responses": {
+                    "200": {
+                        "description": "Returns the JWT for the user.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "If the used jwt is not valid",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/SignIn/getloginchallengeforusername/{username}": {
+            "post": {
+                "tags": [
+                    "SignIn"
                 ],
                 "parameters": [{
                     "name": "username",
@@ -95,187 +479,6 @@
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/Register/register": {
-            "post": {
-                "tags": [
-                    "Register"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/Register/registerwithapikey": {
-            "post": {
-                "tags": [
-                    "Register"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/Register/verifyemail/{useridbase64}/{signaturebase64}": {
-            "get": {
-                "tags": [
-                    "Register"
-                ],
-                "parameters": [{
-                        "name": "useridbase64",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "signaturebase64",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/getminimalversion": {
-            "get": {
-                "tags": [
-                    "SignIn"
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -512,35 +715,6 @@
                 }
             }
         },
-        "/SignIn/testlogin": {
-            "get": {
-                "tags": [
-                    "SignIn"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/SignIn/resetpassword": {
             "post": {
                 "tags": [
@@ -598,15 +772,21 @@
     "components": {
         "schemas": {
             "AppleLoginDto": {
+                "required": [
+                    "authorizationCode",
+                    "identityToken"
+                ],
                 "type": "object",
                 "properties": {
                     "authorizationCode": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the Apple Identity Token."
                     },
                     "identityToken": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the Apple Identity Token."
                     }
                 },
                 "additionalProperties": false
@@ -619,7 +799,8 @@
                         "nullable": true
                     }
                 },
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Represents a data transfer object for encapsulating encrypted messages."
             },
             "EncryptionChallengeIdentifier": {
                 "type": "object",
@@ -632,93 +813,179 @@
                 "additionalProperties": false
             },
             "GoogleLoginDto": {
+                "required": [
+                    "accessToken",
+                    "identityToken"
+                ],
                 "type": "object",
                 "properties": {
                     "accessToken": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the Google Access Token."
                     },
                     "identityToken": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the Google Identity Token."
                     }
                 },
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data Transfer Object for Google login information."
             },
             "LoginDto": {
+                "required": [
+                    "username",
+                    "userSecretByEncryptionChallenge"
+                ],
                 "type": "object",
                 "properties": {
                     "username": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Gets or sets the username of the user."
+                    },
+                    "userSecretByEncryptionChallenge": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Gets or sets the hashed password of the user.\r\nEither this has to be set or the ApiKey.\r\n            \r\nIf this is set, the user is registering in with username + password, if not set,\r\nthe user is providing username and password after the sign in using a OIDC Provider\r\n(like apple or google)."
+                    }
+                },
+                "additionalProperties": false,
+                "description": "Data Transfer Object for user login information."
+            },
+            "ProblemDetails": {
+                "type": "object",
+                "properties": {
+                    "type": {
                         "type": "string",
                         "nullable": true
                     },
-                    "userSecretByEncryptionChallenge": {
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "detail": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instance": {
                         "type": "string",
                         "nullable": true
                     }
                 },
-                "additionalProperties": false
+                "additionalProperties": {}
             },
-            "RegisterDto": {
+            "RegisterWithApiKeyDto": {
+                "required": [
+                    "apiKey",
+                    "username"
+                ],
                 "type": "object",
                 "properties": {
                     "apiKey": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the api key of this user register request.\r\nEither this has to be set or the UserSecret."
                     },
-                    "email": {
+                    "username": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the username of the user."
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RegisterWithUsernamePasswordDto": {
+                "required": [
+                    "email",
+                    "encryptionChallengeIdentifier",
+                    "username",
+                    "userSecret"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Gets or sets the email address of the user.",
+                        "format": "email"
                     },
                     "encryptionChallengeIdentifier": {
                         "$ref": "#/components/schemas/EncryptionChallengeIdentifier"
                     },
                     "username": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the username of the user."
                     },
                     "userSecret": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the hashed password of the user.\r\nEither this has to be set or the ApiKey.\r\n            \r\nIf this is set, the user is registering in with username + password, if not set,\r\nthe user is providing username and password after the sign in using a OIDC Provider\r\n(like apple or google)."
                     }
                 },
                 "additionalProperties": false
             },
             "ResetPasswordDto": {
+                "required": [
+                    "email",
+                    "newPassword",
+                    "resetCode",
+                    "username"
+                ],
                 "type": "object",
                 "properties": {
                     "email": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the email address of the user requesting a password reset.",
+                        "format": "email"
                     },
                     "newPassword": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the user requested updated password of the user."
                     },
                     "resetCode": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the users reset code for the reset password operation."
                     },
                     "username": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the username of the user requesting a password reset."
                     }
                 },
                 "additionalProperties": false
             },
             "ResetPasswordRequestDto": {
+                "required": [
+                    "email",
+                    "username"
+                ],
                 "type": "object",
                 "properties": {
                     "email": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the email address of the user requesting a password reset.",
+                        "format": "email"
                     },
                     "username": {
+                        "minLength": 1,
                         "type": "string",
-                        "nullable": true
+                        "description": "Gets or sets the username of the user requesting a password reset."
                     }
                 },
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Data Transfer Object for password reset requests."
             }
         },
         "securitySchemes": {

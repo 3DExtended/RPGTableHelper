@@ -47,50 +47,38 @@ abstract class Swagger extends ChopperService {
     return _$Swagger(newClient);
   }
 
-  ///
-  Future<chopper.Response<String>> registerRegisterchallengePost(
-      {required String? body}) {
-    return _registerRegisterchallengePost(body: body);
+  ///Returns the minimal app version supported by this api.
+  Future<chopper.Response<String>> publicGetminimalversionGet() {
+    return _publicGetminimalversionGet();
   }
 
-  ///
+  ///Returns the minimal app version supported by this api.
+  @Get(path: '/Public/getminimalversion')
+  Future<chopper.Response<String>> _publicGetminimalversionGet();
+
+  ///This method generates a new encryptionChallenge and stores it in the db.
+  ///Use this method as first start point for a register operation.
+  Future<chopper.Response<String>> registerCreateencryptionchallengePost(
+      {required String? body}) {
+    return _registerCreateencryptionchallengePost(body: body);
+  }
+
+  ///This method generates a new encryptionChallenge and stores it in the db.
+  ///Use this method as first start point for a register operation.
   @Post(
-    path: '/Register/registerchallenge',
+    path: '/Register/createencryptionchallenge',
     optionalBody: true,
   )
-  Future<chopper.Response<String>> _registerRegisterchallengePost(
+  Future<chopper.Response<String>> _registerCreateencryptionchallengePost(
       {@Body() required String? body});
 
-  ///
-  ///@param username
-  Future<chopper.Response<String>>
-      registerGetloginchallengeforusernameUsernamePost({
-    required String? username,
-    required EncryptedMessageWrapperDto? body,
-  }) {
-    return _registerGetloginchallengeforusernameUsernamePost(
-        username: username, body: body);
-  }
-
-  ///
-  ///@param username
-  @Post(
-    path: '/Register/getloginchallengeforusername/{username}',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>>
-      _registerGetloginchallengeforusernameUsernamePost({
-    @Path('username') required String? username,
-    @Body() required EncryptedMessageWrapperDto? body,
-  });
-
-  ///
+  ///Creates a new user with "username and password" sign in.
   Future<chopper.Response<String>> registerRegisterPost(
       {required String? body}) {
     return _registerRegisterPost(body: body);
   }
 
-  ///
+  ///Creates a new user with "username and password" sign in.
   @Post(
     path: '/Register/register',
     optionalBody: true,
@@ -98,23 +86,23 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<String>> _registerRegisterPost(
       {@Body() required String? body});
 
-  ///
+  ///Creates a new user for an open sign OpenSignInProviderRegisterRequest.
   Future<chopper.Response<String>> registerRegisterwithapikeyPost(
-      {required RegisterDto? body}) {
+      {required RegisterWithApiKeyDto? body}) {
     return _registerRegisterwithapikeyPost(body: body);
   }
 
-  ///
+  ///Creates a new user for an open sign OpenSignInProviderRegisterRequest.
   @Post(
     path: '/Register/registerwithapikey',
     optionalBody: true,
   )
   Future<chopper.Response<String>> _registerRegisterwithapikeyPost(
-      {@Body() required RegisterDto? body});
+      {@Body() required RegisterWithApiKeyDto? body});
 
-  ///
-  ///@param useridbase64
-  ///@param signaturebase64
+  ///Lets the user verify their email.
+  ///@param useridbase64 The base64 encoded userid
+  ///@param signaturebase64 The server generated signature for the userid
   Future<chopper.Response<String>>
       registerVerifyemailUseridbase64Signaturebase64Get({
     required String? useridbase64,
@@ -124,9 +112,9 @@ abstract class Swagger extends ChopperService {
         useridbase64: useridbase64, signaturebase64: signaturebase64);
   }
 
-  ///
-  ///@param useridbase64
-  ///@param signaturebase64
+  ///Lets the user verify their email.
+  ///@param useridbase64 The base64 encoded userid
+  ///@param signaturebase64 The server generated signature for the userid
   @Get(path: '/Register/verifyemail/{useridbase64}/{signaturebase64}')
   Future<chopper.Response<String>>
       _registerVerifyemailUseridbase64Signaturebase64Get({
@@ -134,14 +122,37 @@ abstract class Swagger extends ChopperService {
     @Path('signaturebase64') required String? signaturebase64,
   });
 
+  ///This method returns "Welcome" when the provided JWT is valid.
+  Future<chopper.Response<String>> signInTestloginGet() {
+    return _signInTestloginGet();
+  }
+
+  ///This method returns "Welcome" when the provided JWT is valid.
+  @Get(path: '/SignIn/testlogin')
+  Future<chopper.Response<String>> _signInTestloginGet();
+
   ///
-  Future<chopper.Response<String>> signInGetminimalversionGet() {
-    return _signInGetminimalversionGet();
+  ///@param username
+  Future<chopper.Response<String>>
+      signInGetloginchallengeforusernameUsernamePost({
+    required String? username,
+    required EncryptedMessageWrapperDto? body,
+  }) {
+    return _signInGetloginchallengeforusernameUsernamePost(
+        username: username, body: body);
   }
 
   ///
-  @Get(path: '/SignIn/getminimalversion')
-  Future<chopper.Response<String>> _signInGetminimalversionGet();
+  ///@param username
+  @Post(
+    path: '/SignIn/getloginchallengeforusername/{username}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<String>>
+      _signInGetloginchallengeforusernameUsernamePost({
+    @Path('username') required String? username,
+    @Body() required EncryptedMessageWrapperDto? body,
+  });
 
   ///
   Future<chopper.Response<String>> signInLoginPost({required LoginDto? body}) {
@@ -197,15 +208,6 @@ abstract class Swagger extends ChopperService {
   )
   Future<chopper.Response<String>> _signInRequestresetpasswordPost(
       {@Body() required ResetPasswordRequestDto? body});
-
-  ///
-  Future<chopper.Response<String>> signInTestloginGet() {
-    return _signInTestloginGet();
-  }
-
-  ///
-  @Get(path: '/SignIn/testlogin')
-  Future<chopper.Response<String>> _signInTestloginGet();
 
   ///
   Future<chopper.Response<String>> signInResetpasswordPost(

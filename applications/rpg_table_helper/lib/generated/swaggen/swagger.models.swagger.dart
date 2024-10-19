@@ -9,8 +9,8 @@ part 'swagger.models.swagger.g.dart';
 @JsonSerializable(explicitToJson: true)
 class AppleLoginDto {
   const AppleLoginDto({
-    this.authorizationCode,
-    this.identityToken,
+    required this.authorizationCode,
+    required this.identityToken,
   });
 
   factory AppleLoginDto.fromJson(Map<String, dynamic> json) =>
@@ -20,9 +20,9 @@ class AppleLoginDto {
   Map<String, dynamic> toJson() => _$AppleLoginDtoToJson(this);
 
   @JsonKey(name: 'authorizationCode')
-  final String? authorizationCode;
+  final String authorizationCode;
   @JsonKey(name: 'identityToken')
-  final String? identityToken;
+  final String identityToken;
   static const fromJsonFactory = _$AppleLoginDtoFromJson;
 
   @override
@@ -55,7 +55,7 @@ extension $AppleLoginDtoExtension on AppleLoginDto {
   }
 
   AppleLoginDto copyWithWrapped(
-      {Wrapped<String?>? authorizationCode, Wrapped<String?>? identityToken}) {
+      {Wrapped<String>? authorizationCode, Wrapped<String>? identityToken}) {
     return AppleLoginDto(
         authorizationCode: (authorizationCode != null
             ? authorizationCode.value
@@ -161,8 +161,8 @@ extension $EncryptionChallengeIdentifierExtension
 @JsonSerializable(explicitToJson: true)
 class GoogleLoginDto {
   const GoogleLoginDto({
-    this.accessToken,
-    this.identityToken,
+    required this.accessToken,
+    required this.identityToken,
   });
 
   factory GoogleLoginDto.fromJson(Map<String, dynamic> json) =>
@@ -172,9 +172,9 @@ class GoogleLoginDto {
   Map<String, dynamic> toJson() => _$GoogleLoginDtoToJson(this);
 
   @JsonKey(name: 'accessToken')
-  final String? accessToken;
+  final String accessToken;
   @JsonKey(name: 'identityToken')
-  final String? identityToken;
+  final String identityToken;
   static const fromJsonFactory = _$GoogleLoginDtoFromJson;
 
   @override
@@ -207,7 +207,7 @@ extension $GoogleLoginDtoExtension on GoogleLoginDto {
   }
 
   GoogleLoginDto copyWithWrapped(
-      {Wrapped<String?>? accessToken, Wrapped<String?>? identityToken}) {
+      {Wrapped<String>? accessToken, Wrapped<String>? identityToken}) {
     return GoogleLoginDto(
         accessToken:
             (accessToken != null ? accessToken.value : this.accessToken),
@@ -219,8 +219,8 @@ extension $GoogleLoginDtoExtension on GoogleLoginDto {
 @JsonSerializable(explicitToJson: true)
 class LoginDto {
   const LoginDto({
-    this.username,
-    this.userSecretByEncryptionChallenge,
+    required this.username,
+    required this.userSecretByEncryptionChallenge,
   });
 
   factory LoginDto.fromJson(Map<String, dynamic> json) =>
@@ -230,9 +230,9 @@ class LoginDto {
   Map<String, dynamic> toJson() => _$LoginDtoToJson(this);
 
   @JsonKey(name: 'username')
-  final String? username;
+  final String username;
   @JsonKey(name: 'userSecretByEncryptionChallenge')
-  final String? userSecretByEncryptionChallenge;
+  final String userSecretByEncryptionChallenge;
   static const fromJsonFactory = _$LoginDtoFromJson;
 
   @override
@@ -269,8 +269,8 @@ extension $LoginDtoExtension on LoginDto {
   }
 
   LoginDto copyWithWrapped(
-      {Wrapped<String?>? username,
-      Wrapped<String?>? userSecretByEncryptionChallenge}) {
+      {Wrapped<String>? username,
+      Wrapped<String>? userSecretByEncryptionChallenge}) {
     return LoginDto(
         username: (username != null ? username.value : this.username),
         userSecretByEncryptionChallenge:
@@ -281,39 +281,177 @@ extension $LoginDtoExtension on LoginDto {
 }
 
 @JsonSerializable(explicitToJson: true)
-class RegisterDto {
-  const RegisterDto({
-    this.apiKey,
-    this.email,
-    this.encryptionChallengeIdentifier,
-    this.username,
-    this.userSecret,
+class ProblemDetails {
+  const ProblemDetails({
+    this.type,
+    this.title,
+    this.status,
+    this.detail,
+    this.instance,
   });
 
-  factory RegisterDto.fromJson(Map<String, dynamic> json) =>
-      _$RegisterDtoFromJson(json);
+  factory ProblemDetails.fromJson(Map<String, dynamic> json) =>
+      _$ProblemDetailsFromJson(json);
 
-  static const toJsonFactory = _$RegisterDtoToJson;
-  Map<String, dynamic> toJson() => _$RegisterDtoToJson(this);
+  static const toJsonFactory = _$ProblemDetailsToJson;
+  Map<String, dynamic> toJson() => _$ProblemDetailsToJson(this);
 
-  @JsonKey(name: 'apiKey')
-  final String? apiKey;
-  @JsonKey(name: 'email')
-  final String? email;
-  @JsonKey(name: 'encryptionChallengeIdentifier')
-  final EncryptionChallengeIdentifier? encryptionChallengeIdentifier;
-  @JsonKey(name: 'username')
-  final String? username;
-  @JsonKey(name: 'userSecret')
-  final String? userSecret;
-  static const fromJsonFactory = _$RegisterDtoFromJson;
+  @JsonKey(name: 'type')
+  final String? type;
+  @JsonKey(name: 'title')
+  final String? title;
+  @JsonKey(name: 'status')
+  final int? status;
+  @JsonKey(name: 'detail')
+  final String? detail;
+  @JsonKey(name: 'instance')
+  final String? instance;
+  static const fromJsonFactory = _$ProblemDetailsFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other is RegisterDto &&
+        (other is ProblemDetails &&
+            (identical(other.type, type) ||
+                const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.title, title) ||
+                const DeepCollectionEquality().equals(other.title, title)) &&
+            (identical(other.status, status) ||
+                const DeepCollectionEquality().equals(other.status, status)) &&
+            (identical(other.detail, detail) ||
+                const DeepCollectionEquality().equals(other.detail, detail)) &&
+            (identical(other.instance, instance) ||
+                const DeepCollectionEquality()
+                    .equals(other.instance, instance)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(title) ^
+      const DeepCollectionEquality().hash(status) ^
+      const DeepCollectionEquality().hash(detail) ^
+      const DeepCollectionEquality().hash(instance) ^
+      runtimeType.hashCode;
+}
+
+extension $ProblemDetailsExtension on ProblemDetails {
+  ProblemDetails copyWith(
+      {String? type,
+      String? title,
+      int? status,
+      String? detail,
+      String? instance}) {
+    return ProblemDetails(
+        type: type ?? this.type,
+        title: title ?? this.title,
+        status: status ?? this.status,
+        detail: detail ?? this.detail,
+        instance: instance ?? this.instance);
+  }
+
+  ProblemDetails copyWithWrapped(
+      {Wrapped<String?>? type,
+      Wrapped<String?>? title,
+      Wrapped<int?>? status,
+      Wrapped<String?>? detail,
+      Wrapped<String?>? instance}) {
+    return ProblemDetails(
+        type: (type != null ? type.value : this.type),
+        title: (title != null ? title.value : this.title),
+        status: (status != null ? status.value : this.status),
+        detail: (detail != null ? detail.value : this.detail),
+        instance: (instance != null ? instance.value : this.instance));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class RegisterWithApiKeyDto {
+  const RegisterWithApiKeyDto({
+    required this.apiKey,
+    required this.username,
+  });
+
+  factory RegisterWithApiKeyDto.fromJson(Map<String, dynamic> json) =>
+      _$RegisterWithApiKeyDtoFromJson(json);
+
+  static const toJsonFactory = _$RegisterWithApiKeyDtoToJson;
+  Map<String, dynamic> toJson() => _$RegisterWithApiKeyDtoToJson(this);
+
+  @JsonKey(name: 'apiKey')
+  final String apiKey;
+  @JsonKey(name: 'username')
+  final String username;
+  static const fromJsonFactory = _$RegisterWithApiKeyDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is RegisterWithApiKeyDto &&
             (identical(other.apiKey, apiKey) ||
                 const DeepCollectionEquality().equals(other.apiKey, apiKey)) &&
+            (identical(other.username, username) ||
+                const DeepCollectionEquality()
+                    .equals(other.username, username)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(apiKey) ^
+      const DeepCollectionEquality().hash(username) ^
+      runtimeType.hashCode;
+}
+
+extension $RegisterWithApiKeyDtoExtension on RegisterWithApiKeyDto {
+  RegisterWithApiKeyDto copyWith({String? apiKey, String? username}) {
+    return RegisterWithApiKeyDto(
+        apiKey: apiKey ?? this.apiKey, username: username ?? this.username);
+  }
+
+  RegisterWithApiKeyDto copyWithWrapped(
+      {Wrapped<String>? apiKey, Wrapped<String>? username}) {
+    return RegisterWithApiKeyDto(
+        apiKey: (apiKey != null ? apiKey.value : this.apiKey),
+        username: (username != null ? username.value : this.username));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class RegisterWithUsernamePasswordDto {
+  const RegisterWithUsernamePasswordDto({
+    required this.email,
+    required this.encryptionChallengeIdentifier,
+    required this.username,
+    required this.userSecret,
+  });
+
+  factory RegisterWithUsernamePasswordDto.fromJson(Map<String, dynamic> json) =>
+      _$RegisterWithUsernamePasswordDtoFromJson(json);
+
+  static const toJsonFactory = _$RegisterWithUsernamePasswordDtoToJson;
+  Map<String, dynamic> toJson() =>
+      _$RegisterWithUsernamePasswordDtoToJson(this);
+
+  @JsonKey(name: 'email')
+  final String email;
+  @JsonKey(name: 'encryptionChallengeIdentifier')
+  final EncryptionChallengeIdentifier encryptionChallengeIdentifier;
+  @JsonKey(name: 'username')
+  final String username;
+  @JsonKey(name: 'userSecret')
+  final String userSecret;
+  static const fromJsonFactory = _$RegisterWithUsernamePasswordDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is RegisterWithUsernamePasswordDto &&
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
             (identical(other.encryptionChallengeIdentifier,
@@ -334,7 +472,6 @@ class RegisterDto {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash(apiKey) ^
       const DeepCollectionEquality().hash(email) ^
       const DeepCollectionEquality().hash(encryptionChallengeIdentifier) ^
       const DeepCollectionEquality().hash(username) ^
@@ -342,15 +479,14 @@ class RegisterDto {
       runtimeType.hashCode;
 }
 
-extension $RegisterDtoExtension on RegisterDto {
-  RegisterDto copyWith(
-      {String? apiKey,
-      String? email,
+extension $RegisterWithUsernamePasswordDtoExtension
+    on RegisterWithUsernamePasswordDto {
+  RegisterWithUsernamePasswordDto copyWith(
+      {String? email,
       EncryptionChallengeIdentifier? encryptionChallengeIdentifier,
       String? username,
       String? userSecret}) {
-    return RegisterDto(
-        apiKey: apiKey ?? this.apiKey,
+    return RegisterWithUsernamePasswordDto(
         email: email ?? this.email,
         encryptionChallengeIdentifier:
             encryptionChallengeIdentifier ?? this.encryptionChallengeIdentifier,
@@ -358,14 +494,12 @@ extension $RegisterDtoExtension on RegisterDto {
         userSecret: userSecret ?? this.userSecret);
   }
 
-  RegisterDto copyWithWrapped(
-      {Wrapped<String?>? apiKey,
-      Wrapped<String?>? email,
-      Wrapped<EncryptionChallengeIdentifier?>? encryptionChallengeIdentifier,
-      Wrapped<String?>? username,
-      Wrapped<String?>? userSecret}) {
-    return RegisterDto(
-        apiKey: (apiKey != null ? apiKey.value : this.apiKey),
+  RegisterWithUsernamePasswordDto copyWithWrapped(
+      {Wrapped<String>? email,
+      Wrapped<EncryptionChallengeIdentifier>? encryptionChallengeIdentifier,
+      Wrapped<String>? username,
+      Wrapped<String>? userSecret}) {
+    return RegisterWithUsernamePasswordDto(
         email: (email != null ? email.value : this.email),
         encryptionChallengeIdentifier: (encryptionChallengeIdentifier != null
             ? encryptionChallengeIdentifier.value
@@ -378,10 +512,10 @@ extension $RegisterDtoExtension on RegisterDto {
 @JsonSerializable(explicitToJson: true)
 class ResetPasswordDto {
   const ResetPasswordDto({
-    this.email,
-    this.newPassword,
-    this.resetCode,
-    this.username,
+    required this.email,
+    required this.newPassword,
+    required this.resetCode,
+    required this.username,
   });
 
   factory ResetPasswordDto.fromJson(Map<String, dynamic> json) =>
@@ -391,13 +525,13 @@ class ResetPasswordDto {
   Map<String, dynamic> toJson() => _$ResetPasswordDtoToJson(this);
 
   @JsonKey(name: 'email')
-  final String? email;
+  final String email;
   @JsonKey(name: 'newPassword')
-  final String? newPassword;
+  final String newPassword;
   @JsonKey(name: 'resetCode')
-  final String? resetCode;
+  final String resetCode;
   @JsonKey(name: 'username')
-  final String? username;
+  final String username;
   static const fromJsonFactory = _$ResetPasswordDtoFromJson;
 
   @override
@@ -443,10 +577,10 @@ extension $ResetPasswordDtoExtension on ResetPasswordDto {
   }
 
   ResetPasswordDto copyWithWrapped(
-      {Wrapped<String?>? email,
-      Wrapped<String?>? newPassword,
-      Wrapped<String?>? resetCode,
-      Wrapped<String?>? username}) {
+      {Wrapped<String>? email,
+      Wrapped<String>? newPassword,
+      Wrapped<String>? resetCode,
+      Wrapped<String>? username}) {
     return ResetPasswordDto(
         email: (email != null ? email.value : this.email),
         newPassword:
@@ -459,8 +593,8 @@ extension $ResetPasswordDtoExtension on ResetPasswordDto {
 @JsonSerializable(explicitToJson: true)
 class ResetPasswordRequestDto {
   const ResetPasswordRequestDto({
-    this.email,
-    this.username,
+    required this.email,
+    required this.username,
   });
 
   factory ResetPasswordRequestDto.fromJson(Map<String, dynamic> json) =>
@@ -470,9 +604,9 @@ class ResetPasswordRequestDto {
   Map<String, dynamic> toJson() => _$ResetPasswordRequestDtoToJson(this);
 
   @JsonKey(name: 'email')
-  final String? email;
+  final String email;
   @JsonKey(name: 'username')
-  final String? username;
+  final String username;
   static const fromJsonFactory = _$ResetPasswordRequestDtoFromJson;
 
   @override
@@ -503,7 +637,7 @@ extension $ResetPasswordRequestDtoExtension on ResetPasswordRequestDto {
   }
 
   ResetPasswordRequestDto copyWithWrapped(
-      {Wrapped<String?>? email, Wrapped<String?>? username}) {
+      {Wrapped<String>? email, Wrapped<String>? username}) {
     return ResetPasswordRequestDto(
         email: (email != null ? email.value : this.email),
         username: (username != null ? username.value : this.username));
