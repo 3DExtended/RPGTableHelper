@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RPGTableHelper.WebApi.Dtos
+namespace RPGTableHelper.BusinessLayer.Contracts.Models
 {
-    public class AppleLoginDto
+    public class AppleLoginDetails
     {
         /// <summary>
         /// Gets or sets the Apple Identity Token.

@@ -3,12 +3,12 @@ using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
+using RPGTableHelper.BusinessLayer.Contracts.Models;
+using RPGTableHelper.BusinessLayer.Contracts.Queries;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Extensions;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
-using RPGTableHelper.DataLayer.Contracts.Queries.Apple;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
@@ -17,7 +17,6 @@ using RPGTableHelper.Shared.Extensions;
 using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
-using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.WebApi.Controllers
 {
@@ -171,69 +170,20 @@ namespace RPGTableHelper.WebApi.Controllers
 
         [HttpPost("loginwithapple")]
         public async Task<ActionResult<string>> LoginWithAppleAsync(
-            [FromBody] AppleLoginDto loginDto,
+            [FromBody] AppleLoginDetails loginDto,
             CancellationToken cancellationToken
         )
         {
-            var appleKeys = await new AppleAuthKeysQuery()
+            var appleDetails = await new AppleVerifyTokenAndReceiveUserDetailsQuery { }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (appleKeys.IsNone)
-            {
-                return BadRequest();
-            }
-
-            // decode identitytoken
-            var tokenDetails = loginDto.IdentityToken.GetTokenInfo();
-            var appleKeyForIdentityToken = appleKeys
-                .Get()
-                .Keys.Single(k => k.kid == tokenDetails["kid"]);
-
-            // vertify token with public key:
-            string[] parts = loginDto.IdentityToken.Split('.');
-            string header = parts[0];
-            string payload = parts[1];
-            await ValidateJwsE256(appleKeyForIdentityToken, parts, cancellationToken);
-
-            // TODO nonce is something I pass in through flutter. I have to make sure, a given nonce is only used ONCE...
-            // var nonce = tokenDetails["nonce"];
-
-            // Verify that the iss field contains https://appleid.apple.com
-            if (tokenDetails["iss"] != "https://appleid.apple.com")
-            {
+            if (appleDetails.IsNone)
                 return Unauthorized();
-            }
 
-            // Verify that the aud field is the developer’s client_id
-            if (tokenDetails["aud"] != _appleAuthOptions.ClientId)
-            {
-                return Unauthorized();
-            }
-
-            // Verify that the time is earlier than the exp value of the token
-            var expDateOfToken = DateTime.UnixEpoch.AddSeconds(+long.Parse(tokenDetails["exp"]));
-
-            if (DateTime.UtcNow > expDateOfToken)
-            {
-                return Unauthorized();
-            }
-
-            var appleTokenResponse = await new VerifyAppleOAuthTokenQuery
-            {
-                AuthorizationCode = loginDto.AuthorizationCode,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (appleTokenResponse.IsNone)
-                return BadRequest();
-
-            // decode id token
-            var appleAuthTokenDetails = appleTokenResponse.Get().id_token.GetTokenInfo();
-
-            // some string uniquely identifying the user
-            var internalId = appleAuthTokenDetails["sub"];
+            var internalId = appleDetails.Get().internalId;
+            var email = appleDetails.Get().email;
+            var appleRefreshToken = appleDetails.Get().appleRefreshToken;
 
             // check if user exists in our db:
             var possiblyExistingUserId = await new UserExistsByInternalIdQuery
@@ -275,12 +225,10 @@ namespace RPGTableHelper.WebApi.Controllers
                 {
                     ModelToCreate = new OpenSignInProviderRegisterRequest
                     {
-                        Email = appleAuthTokenDetails["email"]!,
+                        Email = email,
                         ExposedApiKey = temporaryApiKey,
                         IdentityProviderId = internalId,
-                        SignInProviderRefreshToken = Option.From(
-                            appleTokenResponse.Get().refresh_token ?? null
-                        ),
+                        SignInProviderRefreshToken = Option.From(appleRefreshToken),
                         SignInProviderUsed = SupportedSignInProviders.Apple,
                     },
                 }
@@ -449,26 +397,6 @@ namespace RPGTableHelper.WebApi.Controllers
             }
 
             return BadRequest("Could not set new password!");
-        }
-
-        private async Task ValidateJwsE256(
-            AppleKey appleKeyForIdentityToken,
-            string[] parts,
-            CancellationToken cancellationToken
-        )
-        {
-            var validationResult = await new JwsE256ValidationQuery
-            {
-                Key = appleKeyForIdentityToken,
-                StringParts = parts,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (validationResult.IsNone || validationResult.Get() == false)
-            {
-                throw new ApplicationException(string.Format("Invalid signature"));
-            }
         }
     }
 }
