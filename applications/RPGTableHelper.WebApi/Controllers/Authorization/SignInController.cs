@@ -206,19 +206,17 @@ namespace RPGTableHelper.WebApi.Controllers
                     return BadRequest();
                 }
 
-                var username = user.Get().Username;
-                var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
-                var stringToken = _jwtTokenGenerator.GetJWTToken(username, userIdentityProviderId);
+                var stringToken = _jwtTokenGenerator.GetJWTToken(
+                    user.Get().Username!,
+                    possiblyExistingUserId!.Get()!.Value!.ToString()
+                );
                 return Ok(stringToken);
             }
             else
             {
                 // create temp registration and wait for app to complete registration by adding an username
                 // we generate a temporary apikey for this user request so they can finish registration using this key and providing a username
-                var temporaryApiKey = Convert
-                    .ToBase64String(RandomNumberGenerator.GetBytes(32))
-                    .Replace("/", "A")
-                    .Replace("+", "b");
+                var temporaryApiKey = ApiKeyGenerator.GenerateKey(32);
 
                 // save temporary request in db
                 var requestCreateResult = await new OpenSignInProviderRegisterRequestCreateQuery
@@ -236,7 +234,9 @@ namespace RPGTableHelper.WebApi.Controllers
                     .ConfigureAwait(false);
 
                 if (requestCreateResult.IsNone)
+                {
                     return BadRequest();
+                }
 
                 return Ok("redirect" + temporaryApiKey);
             }
@@ -308,10 +308,7 @@ namespace RPGTableHelper.WebApi.Controllers
             {
                 // create temp registration and wait for app to complete registration by adding an username
                 // we generate a temporary apikey for this user request so they can finish registration using this key and providing a username
-                var temporaryApiKey = Convert
-                    .ToBase64String(RandomNumberGenerator.GetBytes(32))
-                    .Replace("/", "A")
-                    .Replace("+", "b");
+                var temporaryApiKey = ApiKeyGenerator.GenerateKey(32);
 
                 // save temporary request in db
                 var requestCreateResult = await new OpenSignInProviderRegisterRequestCreateQuery

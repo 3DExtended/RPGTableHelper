@@ -218,10 +218,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            var refreshToken = Convert
-                .ToBase64String(RandomNumberGenerator.GetBytes(32))
-                .Replace("/", "A")
-                .Replace("+", "b");
+            var refreshToken = ApiKeyGenerator.GenerateKey(32);
 
             var userCredentialCreateResult = await new UserCredentialCreateQuery
             {
@@ -343,10 +340,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            var refreshToken = Convert
-                .ToBase64String(RandomNumberGenerator.GetBytes(32))
-                .Replace("/", "A")
-                .Replace("+", "b");
+            var refreshToken = ApiKeyGenerator.GenerateKey(32);
 
             var userCredentialCreateResult = await new UserCredentialCreateQuery
             {

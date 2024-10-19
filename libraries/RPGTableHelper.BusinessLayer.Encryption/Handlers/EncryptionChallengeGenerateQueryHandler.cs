@@ -2,6 +2,7 @@
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
 {
@@ -22,7 +23,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
                 Option.From(
                     new EncryptionChallenge
                     {
-                        PasswordPrefix = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)),
+                        PasswordPrefix = ApiKeyGenerator.GenerateKey(32),
                         RndInt = RandomNumberGenerator.GetInt32(int.MaxValue - 1),
                     }
                 )

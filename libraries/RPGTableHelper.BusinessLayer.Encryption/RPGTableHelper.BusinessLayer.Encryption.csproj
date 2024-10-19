@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\RPGTableHelper.BusinessLayer.Encryption.Contracts\RPGTableHelper.BusinessLayer.Encryption.Contracts.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.BusinessLayer.Encryption.Contracts\RPGTableHelper.BusinessLayer.Encryption.Contracts.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.Shared\RPGTableHelper.Shared.csproj" />
   </ItemGroup>
 
 </Project>
