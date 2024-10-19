@@ -346,23 +346,6 @@ namespace RPGTableHelper.WebApi.Controllers
                             .Replace("/", "A")
                             .Replace("+", "b");
 
-                        // save details in cache
-                        // _cache.GetOrCreate(
-                        //     "registrationapikey" + temporaryApiKey,
-                        //     ent =>
-                        //     {
-                        //         ent.AbsoluteExpiration = DateTime.UtcNow.AddSeconds(
-                        //             appleTokenResponse.expires_in
-                        //         );
-                        //         return new Dictionary<string, string>
-                        //         {
-                        //             { "sub", internalId },
-                        //             { "ref", appleTokenResponse.refresh_token ?? "" },
-                        //             { "email", appleAuthTokenDetails["email"] },
-                        //         };
-                        //     }
-                        // );
-
                         // save temporary request in db
                         var requestCreateResult =
                             await new OpenSignInProviderRegisterRequestCreateQuery
@@ -490,23 +473,6 @@ namespace RPGTableHelper.WebApi.Controllers
                     .ToBase64String(RandomNumberGenerator.GetBytes(32))
                     .Replace("/", "A")
                     .Replace("+", "b");
-
-                // save details in cache
-                // _cache.GetOrCreate(
-                //     "registrationapikey" + temporaryApiKey,
-                //     ent =>
-                //     {
-                //         ent.AbsoluteExpiration = DateTime.UnixEpoch.AddSeconds(
-                //             +long.Parse(googleIdTokenDetails["exp"])
-                //         );
-                //         return new Dictionary<string, string>
-                //         {
-                //             { "sub", internalId! },
-                //             { "ref", loginDto.AccessToken! },
-                //             { "email", googleIdTokenDetails["email"]! },
-                //         };
-                //     }
-                // );
 
                 // save temporary request in db
                 var requestCreateResult = await new OpenSignInProviderRegisterRequestCreateQuery

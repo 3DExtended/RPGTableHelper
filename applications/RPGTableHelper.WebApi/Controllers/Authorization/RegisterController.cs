@@ -279,16 +279,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             // first ensure apikey is known:
             var apiKey = registerDto.ApiKey;
 
-            /*
-                {
-                    "registrationapikey" + apikey: {
-                        "email": string,
-                        "sub": string, // this is the identityproviderid
-                        "ref": string, // refreshtoken
-                    }
-                }
-            */
-
             var signInProviderRegisterRequest =
                 await new OpenSignInProviderRegisterRequestExistsByApiKeyQuery { ApiKey = apiKey }
                     .RunAsync(_queryProcessor, cancellationToken)
@@ -298,7 +288,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             {
                 return Unauthorized();
             }
-            ;
 
             if (signInProviderRegisterRequest.Get().Email == null)
             {
@@ -390,6 +379,15 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 registerDto.Username,
                 usercreateresult.Get().Value.ToString()
             );
+
+            // delete request from db
+            await new OpenSignInProviderRegisterRequestDeleteQuery
+            {
+                Id = signInProviderRegisterRequest.Get().Id,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
             return Ok(token);
         }
 
