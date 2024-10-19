@@ -22,25 +22,25 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
     [Route("/[controller]")]
     public class RegisterController : ControllerBase
     {
-        // private readonly IMemoryCache _cache;
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly IQueryProcessor _queryProcessor;
         private readonly ISystemClock _systemClock;
+        private readonly IJWTTokenGenerator _jwtTokenGenerator;
 
         public RegisterController(
             ILogger logger,
             IQueryProcessor queryProcessor,
-            // IMemoryCache cache,
             IConfiguration configuration,
-            ISystemClock systemClock
+            ISystemClock systemClock,
+            IJWTTokenGenerator jwtTokenGenerator
         )
         {
             _logger = logger;
             _queryProcessor = queryProcessor;
-            // _cache = cache;
             _configuration = configuration;
             _systemClock = systemClock;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         /// <summary>
@@ -263,9 +263,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest("Could not send registration email to user");
             }
 
-            var token = SignInController.GetJWTToken(
-                _configuration,
-                _systemClock,
+            var token = _jwtTokenGenerator.GetJWTToken(
                 registerDto.Username,
                 usercreateresult.Get().Value.ToString()
             );
@@ -388,9 +386,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest("Could not send registration mail");
             }
 
-            var token = SignInController.GetJWTToken(
-                _configuration,
-                _systemClock,
+            var token = _jwtTokenGenerator.GetJWTToken(
                 registerDto.Username,
                 usercreateresult.Get().Value.ToString()
             );

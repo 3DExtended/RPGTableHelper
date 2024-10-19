@@ -1,14 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Models;
@@ -32,69 +29,26 @@ namespace RPGTableHelper.WebApi.Controllers
         private readonly AppleAuthOptions _appleAuthOptions;
 
         private readonly IMemoryCache _inMemoryCache;
-        private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IQueryProcessor _queryProcessor;
-        private readonly ISystemClock _systemClock;
         private readonly ILogger _logger;
+        private readonly IJWTTokenGenerator _jwtTokenGenerator;
 
         public SignInController(
             IHttpClientFactory httpClientFactory,
             IMemoryCache cache,
             ILogger logger,
             IQueryProcessor queryProcessor,
-            IConfiguration configuration,
-            ISystemClock systemClock,
-            AppleAuthOptions appleAuthOptions
+            AppleAuthOptions appleAuthOptions,
+            IJWTTokenGenerator jwtTokenGenerator
         )
         {
             _appleAuthOptions = appleAuthOptions;
             _queryProcessor = queryProcessor;
-            _configuration = configuration;
-            _systemClock = systemClock;
             _httpClientFactory = httpClientFactory;
             _inMemoryCache = cache;
             _logger = logger;
-        }
-
-        public static string GetJWTToken(
-            IConfiguration configuration,
-            ISystemClock systemClock,
-            string username,
-            string userIdentityProviderId
-        )
-        {
-            var issuer = configuration["Jwt:Issuer"] ?? "api";
-            var audience = configuration["Jwt:Audience"] ?? "api";
-            var key = Encoding.ASCII.GetBytes(
-                configuration["Jwt:Key"] ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
-            );
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(
-                    new[]
-                    {
-                        new Claim("Id", Guid.NewGuid().ToString()),
-                        new Claim("identityproviderid", userIdentityProviderId), // TODO replace me with the identityproviderid
-                        new Claim(JwtRegisteredClaimNames.Name, username),
-                        new Claim(JwtRegisteredClaimNames.Sub, username),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    }
-                ),
-                Expires = systemClock.Now.DateTime.AddMinutes(200),
-                Issuer = issuer,
-                Audience = audience,
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha512Signature
-                ),
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwtToken = tokenHandler.WriteToken(token);
-            return jwtToken;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         /// <summary>
@@ -198,12 +152,7 @@ namespace RPGTableHelper.WebApi.Controllers
             {
                 var username = loginDto.Username;
                 var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
-                var stringToken = GetJWTToken(
-                    _configuration,
-                    _systemClock,
-                    username,
-                    userIdentityProviderId
-                );
+                var stringToken = _jwtTokenGenerator.GetJWTToken(username, userIdentityProviderId);
                 return Ok(stringToken);
             }
 
@@ -329,9 +278,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
                         var username = user.Get().Username;
                         var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
-                        var stringToken = GetJWTToken(
-                            _configuration,
-                            _systemClock,
+                        var stringToken = _jwtTokenGenerator.GetJWTToken(
                             username,
                             userIdentityProviderId
                         );
@@ -457,12 +404,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
                 var username = user.Get().Username;
                 var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
-                var stringToken = GetJWTToken(
-                    _configuration,
-                    _systemClock,
-                    username,
-                    userIdentityProviderId
-                );
+                var stringToken = _jwtTokenGenerator.GetJWTToken(username, userIdentityProviderId);
                 return Ok(stringToken);
             }
             else
@@ -560,7 +502,7 @@ namespace RPGTableHelper.WebApi.Controllers
             return BadRequest("Could not set new password!");
         }
 
-        protected Dictionary<string, string> GetTokenInfo(string? token)
+        private Dictionary<string, string> GetTokenInfo(string? token)
         {
             var TokenInfo = new Dictionary<string, string>();
 

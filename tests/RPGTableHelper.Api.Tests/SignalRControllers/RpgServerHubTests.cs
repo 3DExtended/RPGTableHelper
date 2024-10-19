@@ -54,8 +54,8 @@ public class PublicControllerTests : ControllerTestBase
         );
         await connection.StartAsync();
         var message = "Ich komme aus dem Test";
-        // act
 
+        // act
         await connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
 
         // wait so that server can invoke "Echo" on this connection
@@ -92,11 +92,12 @@ public class PublicControllerTests : ControllerTestBase
         );
         await connection.StartAsync();
         var message = "Ich komme aus dem Test";
-        // act
 
+        // act
         var task = () =>
             connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
 
+        // assert
         await task.Should().ThrowExactlyAsync<HubException>();
 
         resultFromServer.Should().BeNull();

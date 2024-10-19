@@ -43,6 +43,8 @@ public class Startup
         services.AddHttpContextAccessor();
         services.AddTransient<IUserContext, UserContextProvider>();
 
+        services.AddSingleton<IJWTTokenGenerator, JWTTokenGenerator>();
+
         services.AddTransient(provider =>
         {
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
