@@ -22,7 +22,6 @@ namespace RPGTableHelper.Shared.Extensions
                 int randomIndex = indexes[i];
                 yield return items[randomIndex];
 
-                // indexes.RemoveAt(i);                  // Avoid removing items from the middle of the list
                 indexes[i] = indexes[indexes.Count - 1]; // Replace yielded index with the last one
                 indexes.RemoveAt(indexes.Count - 1);
                 yieldedCount++;
