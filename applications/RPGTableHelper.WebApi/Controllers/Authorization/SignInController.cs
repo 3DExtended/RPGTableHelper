@@ -66,6 +66,21 @@ namespace RPGTableHelper.WebApi.Controllers
             return Task.FromResult<ActionResult<string>>(Ok("Welcome"));
         }
 
+        /// <summary>
+        /// Returns the encryption challenge for a given username.
+        /// </summary>
+        /// <remarks>
+        /// Please note that the client has to provide an RSA public
+        /// key in order to receive the encrypted challenge dictionary.
+        /// </remarks>
+        /// <param name="username">The username of the desired encryption challenge</param>
+        /// <param name="encryptedAppPubKey">The public RSA key of the client</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>"Welcome"</returns>
+        /// <response code="200">Returns the encrypted challenge dict for the user.</response>
+        /// <response code="400">If request is not valid (user not found, key not valid, etc.)</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [HttpPost("getloginchallengeforusername/{username}")]
         public async Task<ActionResult<string>> GetChallengeByUsername(
             [FromRoute] string username,
@@ -73,6 +88,16 @@ namespace RPGTableHelper.WebApi.Controllers
             CancellationToken cancellationToken
         )
         {
+            // load challenge for username
+            var challenge = await new EncryptionChallengeForUserQuery { Username = username }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (challenge.IsNone)
+            {
+                return BadRequest("Could not load challenge by username");
+            }
+
             // first decode message from client
             var decryptedMessageFromClient = await new RSADecryptStringQuery
             {
@@ -84,22 +109,9 @@ namespace RPGTableHelper.WebApi.Controllers
 
             if (decryptedMessageFromClient.IsNone)
             {
-                _logger.LogWarning(
+                return BadRequest(
                     "Could not decrypt message from app for challenge by username request"
                 );
-                return BadRequest();
-            }
-
-            // load challenge for username
-            var challenge = await new EncryptionChallengeForUserQuery { Username = username }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (challenge.IsNone)
-            {
-                _logger.LogWarning("Could not load challenge by username");
-
-                return BadRequest();
             }
 
             var challengeAsJson = challenge.Get().GetChallengeDictSerialized();
@@ -115,9 +127,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
             if (encryptedChallenge.IsNone)
             {
-                _logger.LogWarning("Could not encrypt challenge for result");
-
-                return BadRequest();
+                return BadRequest("Could not encrypt challenge for result");
             }
 
             return Ok(encryptedChallenge.Get());

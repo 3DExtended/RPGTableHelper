@@ -34,6 +34,7 @@
     <ProjectReference Include="..\..\applications\RPGTableHelper.WebApi\RPGTableHelper.WebApi.csproj" />
     <ProjectReference Include="..\..\libraries\RPGTableHelper.DataLayer.Contracts\RPGTableHelper.DataLayer.Contracts.csproj" />
     <ProjectReference Include="..\..\libraries\RPGTableHelper.BusinessLayer.Contracts\RPGTableHelper.BusinessLayer.Contracts.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.DataLayer.Tests\RPGTableHelper.DataLayer.Tests.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -22,6 +23,7 @@ public abstract class ControllerTestBase
     protected IServiceProvider ServiceProvider { get; private set; }
     protected IQueryProcessor QueryProcessor { get; private set; }
     protected RpgDbContext? Context { get; private set; }
+    protected IMapper Mapper { get; private set; }
 
     protected IDbContextFactory<RpgDbContext>? ContextFactory { get; private set; }
     private bool _isDisposed;
@@ -42,6 +44,7 @@ public abstract class ControllerTestBase
 
                 // Build the service provider
                 ServiceProvider = services.BuildServiceProvider();
+                Mapper = ServiceProvider.GetRequiredService<IMapper>();
                 QueryProcessor = ServiceProvider.GetRequiredService<IQueryProcessor>();
                 ContextFactory = ServiceProvider.GetRequiredService<
                     IDbContextFactory<RpgDbContext>
