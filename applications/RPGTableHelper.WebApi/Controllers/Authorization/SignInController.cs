@@ -1,7 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
+using RPGTableHelper.DataLayer.Contracts.Extensions;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Apple;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
@@ -79,9 +77,7 @@ namespace RPGTableHelper.WebApi.Controllers
             var decryptedMessageFromClient = await new RSADecryptStringQuery
             {
                 StringToDecrypt = encryptedAppPubKey.EncryptedMessage,
-                PrivateKeyOverride =
-                    Option.None // we want to use the server private key
-                ,
+                PrivateKeyOverride = Option.None, // we want to use the server private key
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -93,8 +89,6 @@ namespace RPGTableHelper.WebApi.Controllers
                 );
                 return BadRequest();
             }
-
-            var appPubKey = decryptedMessageFromClient.Get();
 
             // load challenge for username
             var challenge = await new EncryptionChallengeForUserQuery { Username = username }
@@ -108,19 +102,12 @@ namespace RPGTableHelper.WebApi.Controllers
                 return BadRequest();
             }
 
-            var challengeDict = new Dictionary<string, object>
-            {
-                ["ri"] = challenge.Get().RndInt,
-                ["pp"] = challenge.Get().PasswordPrefix,
-                ["id"] = challenge.Get().Id.Value,
-            };
-
-            var challengeAsJson = JsonConvert.SerializeObject(challengeDict);
+            var challengeAsJson = challenge.Get().GetChallengeDictSerialized();
 
             // encrypt challenge with client pubKey
             var encryptedChallenge = await new RSAEncryptStringQuery
             {
-                PublicKeyOverride = appPubKey,
+                PublicKeyOverride = decryptedMessageFromClient.Get(),
                 StringToEncrypt = challengeAsJson,
             }
                 .RunAsync(_queryProcessor, cancellationToken)

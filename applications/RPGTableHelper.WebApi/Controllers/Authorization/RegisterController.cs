@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
+using RPGTableHelper.DataLayer.Contracts.Extensions;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
@@ -108,14 +109,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
 
             challenge.Get().Id = challengeId.Get();
 
-            var challengeDict = new Dictionary<string, object>
-            {
-                ["ri"] = challenge.Get().RndInt,
-                ["pp"] = challenge.Get().PasswordPrefix,
-                ["id"] = challenge.Get().Id.Value,
-            };
-
-            var challengeAsJson = JsonConvert.SerializeObject(challengeDict);
+            var challengeAsJson = challenge.Get().GetChallengeDictSerialized();
 
             // encrypt challenge with client pubKey
             var encryptedChallenge = await new RSAEncryptStringQuery
