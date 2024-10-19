@@ -76,7 +76,7 @@ public class SignInControllerTests : ControllerTestBase
 
             case 2: // right issuer but expired
                 jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
-                await Task.Delay(5000);
+                await Task.Delay(10000);
                 break;
 
             case 3: // not expired but wrong issuer
