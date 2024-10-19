@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
@@ -151,7 +152,7 @@ public class Startup
         {
             options.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes("Bearer") //, "Apple")
+                .AddAuthenticationSchemes("Bearer")
                 .Build();
         });
 
@@ -337,7 +338,7 @@ public class Startup
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<RpgServerHub>("/Chat");
+            endpoints.MapHub<RpgServerHub>("/Chat", (options) => { });
             endpoints.MapControllers();
         });
     }

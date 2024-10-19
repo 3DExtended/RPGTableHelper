@@ -11,6 +11,7 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Controllers;
@@ -27,13 +28,17 @@ public class RegisterControllerTests : ControllerTestBase
     public async Task RegisterUsingUsername_ShouldBeSuccessful()
     {
         // get encryption challenge
-        Dictionary<string, object>? challengeDict = await GenerateAndReceiveEncryptionChallenge();
+        Dictionary<string, object>? challengeDict = await GenerateAndReceiveEncryptionChallenge(
+            QueryProcessor,
+            _client,
+            Context!
+        );
 
         // execute register as new user
-        string? jwtResult = await LoginAndReceiveJWT(challengeDict);
+        string? jwtResult = await LoginAndReceiveJWT(QueryProcessor, _client, challengeDict);
 
         // verify jwt is valid for login
-        await VerifyLoginValidity(jwtResult);
+        await VerifyLoginValidity(_client, jwtResult);
     }
 
     [Fact]
@@ -118,19 +123,19 @@ public class RegisterControllerTests : ControllerTestBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var jwtResult = await response.Content.ReadAsStringAsync();
         jwtResult.Should().NotBeNullOrEmpty();
-        await VerifyLoginValidity(jwtResult);
+        await VerifyLoginValidity(_client, jwtResult);
     }
 
-    private async Task VerifyLoginValidity(string? jwtResult)
+    internal static async Task VerifyLoginValidity(HttpClient client, string? jwtResult)
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
             "Bearer",
             jwtResult
         );
 
         // act
-        var response = await _client.GetAsync("/SignIn/testlogin");
+        var response = await client.GetAsync("/SignIn/testlogin");
 
         // assert
         if (!response.IsSuccessStatusCode)
@@ -145,7 +150,11 @@ public class RegisterControllerTests : ControllerTestBase
         responseText.Should().Be("Welcome");
     }
 
-    private async Task<string?> LoginAndReceiveJWT(Dictionary<string, object>? challengeDict)
+    internal static async Task<string?> LoginAndReceiveJWT(
+        IQueryProcessor queryProcessor,
+        HttpClient client,
+        Dictionary<string, object>? challengeDict
+    )
     {
         // arrange
         var registerDto = new RegisterWithUsernamePasswordDto
@@ -163,11 +172,11 @@ public class RegisterControllerTests : ControllerTestBase
         {
             StringToEncrypt = serializedRegisterDto,
         }
-            .RunAsync(QueryProcessor, (default!))
+            .RunAsync(queryProcessor, (default!))
             .ConfigureAwait(true);
 
         // act
-        var response = await _client.PostAsync(
+        var response = await client.PostAsync(
             "/register/register",
             new StringContent(
                 $"\"{encryptedRegisterDto.Get()}\"",
@@ -184,7 +193,11 @@ public class RegisterControllerTests : ControllerTestBase
         return jwtResult;
     }
 
-    private async Task<Dictionary<string, object>?> GenerateAndReceiveEncryptionChallenge()
+    internal static async Task<Dictionary<string, object>?> GenerateAndReceiveEncryptionChallenge(
+        IQueryProcessor queryProcessor,
+        HttpClient client,
+        RpgDbContext rpgDbContext
+    )
     {
         // arrange
         var (mockedPublicAppPEM, mockedPrivateAppPEM) = GetPEMPairForMockedApp();
@@ -192,11 +205,11 @@ public class RegisterControllerTests : ControllerTestBase
         {
             StringToEncrypt = mockedPublicAppPEM,
         }
-            .RunAsync(QueryProcessor, (default!))
+            .RunAsync(queryProcessor, (default!))
             .ConfigureAwait(true);
 
         // Act
-        var response = await _client.PostAsync(
+        var response = await client.PostAsync(
             "/register/createencryptionchallenge",
             new StringContent($"\"{encryptedAppPubKey.Get()}\"", Encoding.UTF8, "application/json")
         );
@@ -212,7 +225,7 @@ public class RegisterControllerTests : ControllerTestBase
             StringToDecrypt = encryptedContent,
             PrivateKeyOverride = mockedPrivateAppPEM,
         }
-            .RunAsync(QueryProcessor, (default!))
+            .RunAsync(queryProcessor, (default!))
             .ConfigureAwait(true);
 
         decryptedChallenge.IsSome.Should().BeTrue();
@@ -223,7 +236,7 @@ public class RegisterControllerTests : ControllerTestBase
         );
 
         // check if encryption challenge was successfully added to database
-        var entities = Context.EncryptionChallenges.ToList();
+        var entities = rpgDbContext.EncryptionChallenges.ToList();
         entities.Count.Should().Be(1);
         entities[0].Id.ToString().Should().Be(challengeDict["id"].ToString());
         entities[0].PasswordPrefix.ToString().Should().Be(challengeDict["pp"].ToString());
@@ -232,7 +245,7 @@ public class RegisterControllerTests : ControllerTestBase
         return challengeDict;
     }
 
-    private (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()
+    private static (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()
     {
         // some mocked 1024byte strong rsa certs
         return (

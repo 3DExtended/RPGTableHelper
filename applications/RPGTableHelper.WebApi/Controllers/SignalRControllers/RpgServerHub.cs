@@ -1,10 +1,23 @@
 using System.Security.Cryptography;
+using System.Web.Http;
 using Microsoft.AspNetCore.SignalR;
+using RPGTableHelper.Shared.Auth;
 
 namespace RPGTableHelper.WebApi;
 
+[Authorize] // NOTE this does not work. I am using the IUserContext to ensure authorization!
 public class RpgServerHub : Hub
 {
+    private readonly IUserContext _userContext;
+
+    public RpgServerHub(IUserContext userContext)
+    {
+        // IMPORTANT NOTE: this is required as all methods in the signalr hub are authorized.
+        // However, I wasnt able to configure SignalR to require an bearer token everywhere.
+        // Hence, I am using the IUserContext to guard this Hub.
+        _userContext = userContext;
+    }
+
     /// <summary>
     /// DM Method for starting a session
     /// </summary>
@@ -30,6 +43,14 @@ public class RpgServerHub : Hub
             gameToken,
             (CancellationToken)default
         );
+    }
+
+    /// <summary>
+    /// Test method for testing connections
+    /// </summary>
+    public async Task Echo(string text)
+    {
+        await Clients.Caller.SendAsync("Echo", text, (CancellationToken)default);
     }
 
     /// <summary>

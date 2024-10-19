@@ -16,6 +16,7 @@ namespace RPGTableHelper.WebApi.Services
         )
         {
             _contextAccessor = contextAccessor;
+            // new Microsoft.AspNetCore.Http.HeaderDictionary.HeaderDictionaryDebugView(new Microsoft.AspNetCore.Http.HttpRequest.HttpRequestDebugView(new Microsoft.AspNetCore.Http.HttpContext.HttpContextDebugView(((Microsoft.AspNetCore.Http.HttpContextAccessor)contextAccessor).HttpContext).Request).Headers).Items[3]
 
             var username = _contextAccessor
                 .HttpContext.User.Claims.Single(c =>
