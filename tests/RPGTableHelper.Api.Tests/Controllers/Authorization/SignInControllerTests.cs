@@ -143,6 +143,92 @@ public class SignInControllerTests : ControllerTestBase
         challengeDict!["ri"].ToString().Should().Be(encryptionChallenge.RndInt.ToString());
     }
 
+    [Fact]
+    public async Task LoginWithUsernameAndPassword_ShouldBeSuccessful()
+    {
+        // arrange
+        var (user, encryptionChallenge, userCredential) =
+            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+                ContextFactory!,
+                Mapper!,
+                default
+            );
+
+        // act
+        var response = await _client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username,
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+            }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var jwtContent = await response.Content.ReadAsStringAsync();
+        jwtContent.Should().NotBeNull();
+
+        await RegisterControllerTests.VerifyLoginValidity(_client, jwtContent);
+    }
+
+    [Fact]
+    public async Task LoginWithUsernameAndPassword_ShouldReturnUnauthorizedForWrongUsername()
+    {
+        // arrange
+        var (user, encryptionChallenge, userCredential) =
+            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+                ContextFactory!,
+                Mapper!,
+                default
+            );
+
+        // act
+        var response = await _client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username + "asdf",
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+            }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        var jwtContent = await response.Content.ReadAsStringAsync();
+        jwtContent.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task LoginWithUsernameAndPassword_ShouldReturnUnauthorizedForWrongPassword()
+    {
+        // arrange
+        var (user, encryptionChallenge, userCredential) =
+            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+                ContextFactory!,
+                Mapper!,
+                default
+            );
+
+        // act
+        var response = await _client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username,
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get() + "asdf",
+            }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        var jwtContent = await response.Content.ReadAsStringAsync();
+        jwtContent.Should().NotBeNull();
+    }
+
     private static (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()
     {
         // some mocked 1024byte strong rsa certs

@@ -5,7 +5,7 @@ namespace RPGTableHelper.WebApi.Dtos
     /// <summary>
     /// Data Transfer Object for user login information.
     /// </summary>
-    public class LoginDto
+    public class LoginWithUsernameAndPasswordDto
     {
         /// <summary>
         /// Gets or sets the username of the user.

@@ -133,9 +133,19 @@ namespace RPGTableHelper.WebApi.Controllers
             return Ok(encryptedChallenge.Get());
         }
 
+        /// <summary>
+        /// Performs the login with username and password.
+        /// </summary>
+        /// <param name="loginDto">The username and password</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>A JWT if everything worked</returns>
+        /// <response code="200">Returns the jwt for the user</response>
+        /// <response code="401">If username or password did not match</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [HttpPost("login")]
-        public async Task<ActionResult<string>> LoginAsync(
-            [FromBody] LoginDto loginDto,
+        public async Task<ActionResult<string>> LoginWithUsernameAndPasswordAsync(
+            [FromBody] LoginWithUsernameAndPasswordDto loginDto,
             CancellationToken cancellationToken
         )
         {
