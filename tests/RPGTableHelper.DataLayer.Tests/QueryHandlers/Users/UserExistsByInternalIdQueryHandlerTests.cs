@@ -5,7 +5,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.QueryHandlers.Users;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
-namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;
+namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Users;
 
 public class UserExistsByInternalIdQueryHandlerTests : QueryHandlersTestBase
 {
@@ -20,7 +20,10 @@ public class UserExistsByInternalIdQueryHandlerTests : QueryHandlersTestBase
             signInProviderId: "qwer"
         );
 
-        var query = new UserExistsByInternalIdQuery { InternalId = user.SignInProviderId.Get() };
+        var query = new UserExistsByInternalIdQuery
+        {
+            SignInProviderId = user.SignInProviderId.Get(),
+        };
         var subjectUnderTest = new UserExistsByInternalIdQueryHandler(ContextFactory);
 
         // Act
@@ -41,7 +44,7 @@ public class UserExistsByInternalIdQueryHandlerTests : QueryHandlersTestBase
             cancellationToken: default
         );
 
-        var query = new UserExistsByInternalIdQuery { InternalId = "asdf" };
+        var query = new UserExistsByInternalIdQuery { SignInProviderId = "asdf" };
         var subjectUnderTest = new UserExistsByInternalIdQueryHandler(ContextFactory);
 
         // Act

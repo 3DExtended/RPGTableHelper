@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -7,6 +8,7 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
+using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
@@ -20,7 +22,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
     [Route("/[controller]")]
     public class RegisterController : ControllerBase
     {
-        private readonly IMemoryCache _cache;
+        // private readonly IMemoryCache _cache;
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly IQueryProcessor _queryProcessor;
@@ -29,14 +31,14 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         public RegisterController(
             ILogger logger,
             IQueryProcessor queryProcessor,
-            IMemoryCache cache,
+            // IMemoryCache cache,
             IConfiguration configuration,
             ISystemClock systemClock
         )
         {
             _logger = logger;
             _queryProcessor = queryProcessor;
-            _cache = cache;
+            // _cache = cache;
             _configuration = configuration;
             _systemClock = systemClock;
         }
@@ -208,7 +210,8 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 ModelToCreate = new User
                 {
                     Username = registerDto.Username,
-                    SignInProviderId = null,
+                    SignInProviderId = Option.None,
+                    SignInProvider = Option.None,
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
@@ -219,6 +222,11 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
+            var refreshToken = Convert
+                .ToBase64String(RandomNumberGenerator.GetBytes(32))
+                .Replace("/", "A")
+                .Replace("+", "b");
+
             var userCredentialCreateResult = await new UserCredentialCreateQuery
             {
                 ModelToCreate = new UserCredential
@@ -226,6 +234,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     Email = encryptedEmail.Get(),
                     EncryptionChallengeId = registerDto.EncryptionChallengeIdentifier,
                     HashedPassword = registerDto.UserSecret,
+                    RefreshToken = refreshToken,
                     UserId = usercreateresult.Get(),
                     EmailVerified = false,
                     SignInProvider = false,
@@ -270,14 +279,28 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             // first ensure apikey is known:
             var apiKey = registerDto.ApiKey;
 
-            if (!_cache.TryGetValue("registrationapikey" + apiKey, out var registrationCache))
+            /*
+                {
+                    "registrationapikey" + apikey: {
+                        "email": string,
+                        "sub": string, // this is the identityproviderid
+                        "ref": string, // refreshtoken
+                    }
+                }
+            */
+
+            var signInProviderRegisterRequest =
+                await new OpenSignInProviderRegisterRequestExistsByApiKeyQuery { ApiKey = apiKey }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
+
+            if (signInProviderRegisterRequest.IsNone)
             {
                 return Unauthorized();
             }
+            ;
 
-            var registrationCacheDict = (Dictionary<string, string>)registrationCache!;
-
-            if (registrationCacheDict["email"] == null)
+            if (signInProviderRegisterRequest.Get().Email == null)
             {
                 return Conflict();
             }
@@ -294,7 +317,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
 
             var encryptedEmail = await new RSAEncryptStringQuery
             {
-                StringToEncrypt = registrationCacheDict["email"],
+                StringToEncrypt = signInProviderRegisterRequest.Get().Email,
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -310,7 +333,8 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 ModelToCreate = new User
                 {
                     Username = registerDto.Username,
-                    SignInProviderId = registrationCacheDict["sub"],
+                    SignInProviderId = signInProviderRegisterRequest.Get().IdentityProviderId,
+                    SignInProvider = signInProviderRegisterRequest.Get().SignInProviderUsed,
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
@@ -321,6 +345,11 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
+            var refreshToken = Convert
+                .ToBase64String(RandomNumberGenerator.GetBytes(32))
+                .Replace("/", "A")
+                .Replace("+", "b");
+
             var userCredentialCreateResult = await new UserCredentialCreateQuery
             {
                 ModelToCreate = new UserCredential
@@ -330,7 +359,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     ),
                     HashedPassword = "",
                     SignInProvider = true,
-                    RefreshToken = registrationCacheDict["ref"],
+                    RefreshToken = refreshToken,
                     Email = encryptedEmail.Get(),
                     UserId = usercreateresult.Get(),
                 },
@@ -345,7 +374,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
 
             var registrationEmailResult = await SendRegistrationEmail(
                     registerDto.Username,
-                    registrationCacheDict["email"],
+                    signInProviderRegisterRequest.Get().Email,
                     usercreateresult.Get(),
                     cancellationToken
                 )

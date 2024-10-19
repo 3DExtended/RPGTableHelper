@@ -6,6 +6,8 @@ using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.QueryHandlers.Users;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
+namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Users;
+
 public class UsersQueryHandlerTests : QueryHandlersTestBase
 {
     [Fact]

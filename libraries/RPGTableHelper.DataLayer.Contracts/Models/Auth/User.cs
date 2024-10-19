@@ -8,6 +8,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
     {
         public string Username { get; set; } = default!;
         public Option<string> SignInProviderId { get; set; }
+        public Option<SupportedSignInProviders> SignInProvider { get; set; }
 
         public record UserIdentifier : Identifier<Guid, UserIdentifier> { }
     }

@@ -12,6 +12,6 @@ namespace RPGTableHelper.DataLayer.Contracts.Queries.Users
     public class UserExistsByInternalIdQuery
         : IQuery<User.UserIdentifier, UserExistsByInternalIdQuery>
     {
-        public string InternalId { get; set; } = default!;
+        public string SignInProviderId { get; set; } = default!;
     }
 }

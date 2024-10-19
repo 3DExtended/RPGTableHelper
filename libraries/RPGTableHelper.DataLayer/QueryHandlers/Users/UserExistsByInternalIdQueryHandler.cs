@@ -36,7 +36,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.Users
             {
                 var entity = await context
                     .Set<UserEntity>()
-                    .Where((e) => e.SignInProviderId == query.InternalId)
+                    .Where((e) => e.SignInProviderId == query.SignInProviderId)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(cancellationToken)
                     .ConfigureAwait(false);

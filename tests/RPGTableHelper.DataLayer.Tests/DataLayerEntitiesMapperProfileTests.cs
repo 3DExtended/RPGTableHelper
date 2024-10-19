@@ -64,6 +64,105 @@ public class DataLayerEntitiesMapperProfileTests
     }
 
     [Fact]
+    public void OpenSignInProviderRegisterRequestToOpenSignInProviderRegisterRequestEntity_ShouldMapSuccessfully()
+    {
+        // Arrange
+        var openSignOpenSignInProviderRegisterRequest = new OpenSignInProviderRegisterRequest
+        {
+            ExposedApiKey = "TestOpenSignInProviderRegisterRequest",
+            Email = "asdf@asdf.de",
+            IdentityProviderId = Guid.NewGuid().ToString(),
+            SignInProviderRefreshToken = "fghjkuztgvbnjkiuzhgbn",
+            SignInProviderUsed = SupportedSignInProviders.Apple,
+            Id = OpenSignInProviderRegisterRequest.OpenSignInProviderRegisterRequestIdentifier.From(
+                Guid.NewGuid()
+            ),
+        };
+
+        // Act
+        var openSignOpenSignInProviderRegisterRequestEntity =
+            _mapper.Map<OpenSignInProviderRegisterRequestEntity>(
+                openSignOpenSignInProviderRegisterRequest
+            );
+
+        // Assert
+        openSignOpenSignInProviderRegisterRequestEntity.Should().NotBeNull();
+        openSignOpenSignInProviderRegisterRequestEntity
+            .Id.Should()
+            .Be(openSignOpenSignInProviderRegisterRequest.Id.Value);
+        openSignOpenSignInProviderRegisterRequestEntity
+            .ExposedApiKey.Should()
+            .Be(openSignOpenSignInProviderRegisterRequest.ExposedApiKey);
+
+        openSignOpenSignInProviderRegisterRequestEntity
+            .Email.Should()
+            .Be(openSignOpenSignInProviderRegisterRequest.Email);
+        openSignOpenSignInProviderRegisterRequestEntity
+            .IdentityProviderId.Should()
+            .Be(openSignOpenSignInProviderRegisterRequest.IdentityProviderId);
+        openSignOpenSignInProviderRegisterRequestEntity
+            .SignInProviderUsed.Should()
+            .Be(openSignOpenSignInProviderRegisterRequest.SignInProviderUsed);
+        openSignOpenSignInProviderRegisterRequestEntity
+            .SignInProviderRefreshToken!.Should()
+            .Be(openSignOpenSignInProviderRegisterRequest.SignInProviderRefreshToken.Get());
+    }
+
+    [Fact]
+    public void OpenSignInProviderRegisterRequestEntityToOpenSignInProviderRegisterRequest_ShouldMapSuccessfully()
+    {
+        // Arrange
+        var openSignOpenSignInProviderRegisterRequestEntity =
+            new OpenSignInProviderRegisterRequestEntity
+            {
+                ExposedApiKey = "TestOpenSignInProviderRegisterRequest",
+                Email = "asdf@asdf.de",
+                IdentityProviderId = Guid.NewGuid().ToString(),
+                SignInProviderRefreshToken = "fghjkuztgvbnjkiuzhgbn",
+                SignInProviderUsed = SupportedSignInProviders.Apple,
+                Id = Guid.NewGuid(),
+                CreationDate = DateTimeOffset.UtcNow,
+                LastModifiedAt = DateTimeOffset.UtcNow,
+            };
+
+        // Act
+        var openSignOpenSignInProviderRegisterRequest =
+            _mapper.Map<OpenSignInProviderRegisterRequest>(
+                openSignOpenSignInProviderRegisterRequestEntity
+            );
+
+        // Assert
+        openSignOpenSignInProviderRegisterRequest.Should().NotBeNull();
+        openSignOpenSignInProviderRegisterRequest
+            .ExposedApiKey.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.ExposedApiKey);
+
+        openSignOpenSignInProviderRegisterRequest
+            .Email.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.Email);
+        openSignOpenSignInProviderRegisterRequest
+            .IdentityProviderId.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.IdentityProviderId);
+        openSignOpenSignInProviderRegisterRequest
+            .SignInProviderUsed.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.SignInProviderUsed);
+        openSignOpenSignInProviderRegisterRequest
+            .SignInProviderRefreshToken.Get()
+            .Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.SignInProviderRefreshToken);
+
+        openSignOpenSignInProviderRegisterRequest
+            .Id.Value.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.Id);
+        openSignOpenSignInProviderRegisterRequest
+            .CreationDate.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.CreationDate);
+        openSignOpenSignInProviderRegisterRequest
+            .LastModifiedAt.Should()
+            .Be(openSignOpenSignInProviderRegisterRequestEntity.LastModifiedAt);
+    }
+
+    [Fact]
     public void EncryptionChallengeToEncryptionChallengeEntity_ShouldMapSuccessfully()
     {
         // Arrange

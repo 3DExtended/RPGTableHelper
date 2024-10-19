@@ -11,4 +11,7 @@ public class RpgDbContext : DbContext
     public DbSet<UserEntity> Users { get; set; } = default!;
     public DbSet<UserCredentialEntity> UserCredentials { get; set; } = default!;
     public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
+
+    public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } =
+        default!;
 }

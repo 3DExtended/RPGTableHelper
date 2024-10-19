@@ -7,6 +7,13 @@ using RPGTableHelper.WebApi.Options;
 
 namespace RPGTableHelper.WebApi.Services
 {
+    /// <summary>
+    /// In order to communicate with apple and verify the validity of a user-provided token,
+    /// we have to send a client secret to apple.
+    /// However, apple does not allow for unlimeted and not expiring tokens.
+    /// Hence, this class generates this secret used to communicate with apple
+    /// and caches them.
+    /// </summary>
     public class AppleClientSecretGenerator
     {
         private readonly IMemoryCache _cache;

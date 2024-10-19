@@ -15,6 +15,7 @@ using RPGTableHelper.BusinessLayer.Encryption.Contracts.Models;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
+using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.Shared.Services;
@@ -29,7 +30,8 @@ namespace RPGTableHelper.WebApi.Controllers
     public class SignInController : ControllerBase
     {
         private readonly AppleAuthOptions _appleAuthOptions;
-        private readonly IMemoryCache _cache;
+
+        private readonly IMemoryCache _inMemoryCache;
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IQueryProcessor _queryProcessor;
@@ -51,7 +53,7 @@ namespace RPGTableHelper.WebApi.Controllers
             _configuration = configuration;
             _systemClock = systemClock;
             _httpClientFactory = httpClientFactory;
-            _cache = cache;
+            _inMemoryCache = cache;
             _logger = logger;
         }
 
@@ -259,7 +261,7 @@ namespace RPGTableHelper.WebApi.Controllers
             }
 
             // generate new token from apple
-            var tokenGenerator = new AppleClientSecretGenerator(_cache, _appleAuthOptions);
+            var tokenGenerator = new AppleClientSecretGenerator(_inMemoryCache, _appleAuthOptions);
             var clientSecret = await tokenGenerator.GenerateAsync().ConfigureAwait(false);
 
             using (var httpClient = _httpClientFactory.CreateClient())
@@ -307,7 +309,7 @@ namespace RPGTableHelper.WebApi.Controllers
                     // check if user exists in our db:
                     var possiblyExistingUserId = await new UserExistsByInternalIdQuery
                     {
-                        InternalId = internalId,
+                        SignInProviderId = internalId,
                     }
                         .RunAsync(_queryProcessor, cancellationToken)
                         .ConfigureAwait(false);
@@ -345,21 +347,42 @@ namespace RPGTableHelper.WebApi.Controllers
                             .Replace("+", "b");
 
                         // save details in cache
-                        _cache.GetOrCreate(
-                            "registrationapikey" + temporaryApiKey,
-                            ent =>
+                        // _cache.GetOrCreate(
+                        //     "registrationapikey" + temporaryApiKey,
+                        //     ent =>
+                        //     {
+                        //         ent.AbsoluteExpiration = DateTime.UtcNow.AddSeconds(
+                        //             appleTokenResponse.expires_in
+                        //         );
+                        //         return new Dictionary<string, string>
+                        //         {
+                        //             { "sub", internalId },
+                        //             { "ref", appleTokenResponse.refresh_token ?? "" },
+                        //             { "email", appleAuthTokenDetails["email"] },
+                        //         };
+                        //     }
+                        // );
+
+                        // save temporary request in db
+                        var requestCreateResult =
+                            await new OpenSignInProviderRegisterRequestCreateQuery
                             {
-                                ent.AbsoluteExpiration = DateTime.UtcNow.AddSeconds(
-                                    appleTokenResponse.expires_in
-                                );
-                                return new Dictionary<string, string>
+                                ModelToCreate = new OpenSignInProviderRegisterRequest
                                 {
-                                    { "sub", internalId },
-                                    { "ref", appleTokenResponse.refresh_token ?? "" },
-                                    { "email", appleAuthTokenDetails["email"] },
-                                };
+                                    Email = appleAuthTokenDetails["email"]!,
+                                    ExposedApiKey = temporaryApiKey,
+                                    IdentityProviderId = internalId,
+                                    SignInProviderRefreshToken = Option.From(
+                                        appleTokenResponse.refresh_token ?? null
+                                    ),
+                                    SignInProviderUsed = SupportedSignInProviders.Apple,
+                                },
                             }
-                        );
+                                .RunAsync(_queryProcessor, cancellationToken)
+                                .ConfigureAwait(false);
+
+                        if (requestCreateResult.IsNone)
+                            return BadRequest();
 
                         return Ok("redirect" + temporaryApiKey);
                     }
@@ -431,7 +454,7 @@ namespace RPGTableHelper.WebApi.Controllers
             // check if user exists in our db:
             var possiblyExistingUserId = await new UserExistsByInternalIdQuery
             {
-                InternalId = internalId,
+                SignInProviderId = internalId,
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -469,22 +492,39 @@ namespace RPGTableHelper.WebApi.Controllers
                     .Replace("+", "b");
 
                 // save details in cache
-                _cache.GetOrCreate(
-                    "registrationapikey" + temporaryApiKey,
-                    ent =>
-                    {
-                        ent.AbsoluteExpiration = DateTime.UnixEpoch.AddSeconds(
-                            +long.Parse(googleIdTokenDetails["exp"])
-                        );
+                // _cache.GetOrCreate(
+                //     "registrationapikey" + temporaryApiKey,
+                //     ent =>
+                //     {
+                //         ent.AbsoluteExpiration = DateTime.UnixEpoch.AddSeconds(
+                //             +long.Parse(googleIdTokenDetails["exp"])
+                //         );
+                //         return new Dictionary<string, string>
+                //         {
+                //             { "sub", internalId! },
+                //             { "ref", loginDto.AccessToken! },
+                //             { "email", googleIdTokenDetails["email"]! },
+                //         };
+                //     }
+                // );
 
-                        return new Dictionary<string, string>
-                        {
-                            { "sub", internalId! },
-                            { "ref", loginDto.AccessToken! },
-                            { "email", googleIdTokenDetails["email"]! },
-                        };
-                    }
-                );
+                // save temporary request in db
+                var requestCreateResult = await new OpenSignInProviderRegisterRequestCreateQuery
+                {
+                    ModelToCreate = new OpenSignInProviderRegisterRequest
+                    {
+                        Email = googleIdTokenDetails["email"]!,
+                        ExposedApiKey = temporaryApiKey,
+                        IdentityProviderId = internalId!,
+                        SignInProviderRefreshToken = Option.None,
+                        SignInProviderUsed = SupportedSignInProviders.Google,
+                    },
+                }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (requestCreateResult.IsNone)
+                    return BadRequest();
 
                 return Ok("redirect" + temporaryApiKey);
             }

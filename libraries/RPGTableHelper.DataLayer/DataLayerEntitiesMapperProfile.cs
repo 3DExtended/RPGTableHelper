@@ -10,8 +10,16 @@ namespace RPGTableHelper.DataLayer
     {
         public DataLayerEntitiesMapperProfile()
         {
-            // User Mappings
             CreateModelMaps<User, User.UserIdentifier, Guid, UserEntity>();
+
+            CreateOptionMapForType<SupportedSignInProviders>();
+
+            CreateModelMaps<
+                OpenSignInProviderRegisterRequest,
+                OpenSignInProviderRegisterRequest.OpenSignInProviderRegisterRequestIdentifier,
+                Guid,
+                OpenSignInProviderRegisterRequestEntity
+            >();
 
             // EncryptionChallenge Mappings
             CreateMapBetweenIdentifiers<EncryptionChallenge.EncryptionChallengeIdentifier, Guid>();
@@ -67,6 +75,14 @@ namespace RPGTableHelper.DataLayer
                             )
                         )
                 );
+        }
+
+        private void CreateOptionMapForType<T>()
+            where T : struct
+        {
+            CreateMap<T?, Option<T>>().ConvertUsing((tmid, _) => Option.From(tmid));
+            CreateMap<Option<T>, T?>()
+                .ConvertUsing((tmid) => (T?)(tmid.IsNone ? null : tmid.Get()));
         }
 
         private void CreateModelMaps<TModel, TIdentifier, TIdentifierValue, TEntity>()

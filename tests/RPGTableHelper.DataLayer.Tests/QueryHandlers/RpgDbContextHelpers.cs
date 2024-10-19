@@ -34,6 +34,39 @@ public static class RpgDbContextHelpers
         }
     }
 
+    public static async Task<OpenSignInProviderRegisterRequest> CreateOpenSignInProviderRegisterRequestInDb(
+        IDbContextFactory<RpgDbContext> contextFactory,
+        IMapper mapper,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var openSignInProviderRegisterRequest = new OpenSignInProviderRegisterRequest
+        {
+            CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+
+            Email = "asdf@asdf.apple.de",
+            ExposedApiKey = "sdfghjklkjhgfd",
+            IdentityProviderId = "270c17fb-5cc5-470d-b5c5-72a2766d5665",
+            SignInProviderRefreshToken = "hjvablsdkjfhalksdhf",
+            SignInProviderUsed = SupportedSignInProviders.Apple,
+        };
+
+        using (var context = contextFactory.CreateDbContext())
+        {
+            var registerEntity = mapper.Map<OpenSignInProviderRegisterRequestEntity>(
+                openSignInProviderRegisterRequest
+            );
+            await context.OpenSignInProviderRegisterRequests.AddAsync(
+                registerEntity,
+                cancellationToken
+            );
+
+            await context.SaveChangesAsync();
+            return mapper.Map<OpenSignInProviderRegisterRequest>(registerEntity);
+        }
+    }
+
     public static async Task<(User, EncryptionChallenge)> CreateUserWithEncryptionChallengeInDb(
         IDbContextFactory<RpgDbContext> contextFactory,
         IMapper mapper,

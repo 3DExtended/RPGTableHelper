@@ -4,7 +4,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.QueryHandlers.Users;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 
-namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;
+namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Users;
 
 public class UserCreateQueryHandlerTests : QueryHandlersTestBase
 {
@@ -17,6 +17,7 @@ public class UserCreateQueryHandlerTests : QueryHandlersTestBase
             Id = User.UserIdentifier.From(Guid.Empty),
             Username = "Bla",
             SignInProviderId = "34567",
+            SignInProvider = SupportedSignInProviders.Apple,
         };
         var query = new UserCreateQuery { ModelToCreate = model };
         var subjectUnderTest = new UserCreateQueryHandler(Mapper, ContextFactory, SystemClock);
@@ -31,6 +32,7 @@ public class UserCreateQueryHandlerTests : QueryHandlersTestBase
         entities.Should().HaveCount(1);
         entities[0].Username.Should().Be("Bla");
         entities[0].SignInProviderId.Should().Be("34567");
+        entities[0].SignInProvider.Should().Be(SupportedSignInProviders.Apple);
 
         AssertCorrectTime(entities[0].CreationDate);
         AssertCorrectTime(entities[0].LastModifiedAt);
