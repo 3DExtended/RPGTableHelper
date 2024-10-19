@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text.RegularExpressions;
 
 namespace RPGTableHelper.Shared.Extensions
 {
@@ -19,6 +20,28 @@ namespace RPGTableHelper.Shared.Extensions
 
             // Return true if there's a match (string is alphanumeric), false otherwise
             return match.Success;
+        }
+
+        public static Dictionary<string, string> GetTokenInfo(this string? token)
+        {
+            var TokenInfo = new Dictionary<string, string>();
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token ?? "");
+            var claims = jwtSecurityToken.Claims.ToList();
+
+            foreach (var claim in claims)
+            {
+                TokenInfo.Add(claim.Type, claim.Value);
+            }
+            var headers = jwtSecurityToken.Header.ToList();
+
+            foreach (var header in headers)
+            {
+                TokenInfo.Add(header.Key, (header.Value.ToString() ?? ""));
+            }
+
+            return TokenInfo;
         }
     }
 }

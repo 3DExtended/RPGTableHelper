@@ -15,6 +15,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
+using RPGTableHelper.Shared.Extensions;
 using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
@@ -142,12 +143,14 @@ namespace RPGTableHelper.WebApi.Controllers
         )
         {
             // Normally Identity handles sign in, but you can do it directly
-            var possiblyExistingUserId = await ValidateLogin(
-                    loginDto.Username,
-                    loginDto.UserSecretByEncryptionChallenge,
-                    cancellationToken
-                )
+            var possiblyExistingUserId = await new UserLoginQuery
+            {
+                Username = loginDto.Username,
+                HashedPassword = loginDto.UserSecretByEncryptionChallenge,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
+
             if (possiblyExistingUserId.IsSome)
             {
                 var username = loginDto.Username;
@@ -165,17 +168,20 @@ namespace RPGTableHelper.WebApi.Controllers
             CancellationToken cancellationToken
         )
         {
-            var appleKeys = await GetAppleIdKeysAsync();
+            var appleKeys = await new AppleAuthKeysQuery()
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
 
-            // Parse keys
-            if (appleKeys == null)
+            if (appleKeys.IsNone)
             {
                 return BadRequest();
             }
 
             // decode identitytoken
-            var tokenDetails = GetTokenInfo(loginDto.IdentityToken);
-            var appleKeyForIdentityToken = appleKeys.Keys.Single(k => k.kid == tokenDetails["kid"]);
+            var tokenDetails = loginDto.IdentityToken.GetTokenInfo();
+            var appleKeyForIdentityToken = appleKeys
+                .Get()
+                .Keys.Single(k => k.kid == tokenDetails["kid"]);
 
             // vertify token with public key:
             string[] parts = loginDto.IdentityToken.Split('.');
@@ -183,9 +189,6 @@ namespace RPGTableHelper.WebApi.Controllers
             string payload = parts[1];
             await ValidateJwsE256(appleKeyForIdentityToken, parts, cancellationToken);
 
-            /*
-                Verify the nonce for the authentication
-            */
             // TODO nonce is something I pass in through flutter. I have to make sure, a given nonce is only used ONCE...
             // var nonce = tokenDetails["nonce"];
 
@@ -220,7 +223,7 @@ namespace RPGTableHelper.WebApi.Controllers
                 return BadRequest();
 
             // decode id token
-            var appleAuthTokenDetails = GetTokenInfo(appleTokenResponse.Get().id_token);
+            var appleAuthTokenDetails = appleTokenResponse.Get().id_token.GetTokenInfo();
 
             // some string uniquely identifying the user
             var internalId = appleAuthTokenDetails["sub"];
@@ -284,33 +287,6 @@ namespace RPGTableHelper.WebApi.Controllers
             }
         }
 
-        private static async Task<AppleKeysResponse?> GetAppleIdKeysAsync()
-        {
-            // todo add caching
-            // Download apple keys from here: https://appleid.apple.com/auth/keys
-            var url = "https://appleid.apple.com/auth/keys";
-
-            using (var httpClient = new HttpClient())
-            {
-                var response = await httpClient.GetAsync(url).ConfigureAwait(false);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var appleKeys = JsonConvert.DeserializeObject<AppleKeysResponse>(content);
-
-                    return appleKeys;
-                }
-                else
-                {
-                    // Handle error response here (e.g., log the status code, throw an exception, etc.)
-                    throw new HttpRequestException(
-                        $"Request failed with status code {response.StatusCode}"
-                    );
-                }
-            }
-        }
-
         [HttpPost("loginwithgoogle")]
         public async Task<ActionResult<string>> LoginWithGoogleAsync(
             [FromBody] GoogleLoginDto loginDto,
@@ -342,7 +318,7 @@ namespace RPGTableHelper.WebApi.Controllers
             }
 
             // decode id token
-            var googleIdTokenDetails = GetTokenInfo(loginDto.IdentityToken);
+            var googleIdTokenDetails = loginDto.IdentityToken.GetTokenInfo();
 
             // some string uniquely identifying the user
             var internalId = "google" + googleIdTokenDetails["sub"];
@@ -468,28 +444,6 @@ namespace RPGTableHelper.WebApi.Controllers
             return BadRequest("Could not set new password!");
         }
 
-        private Dictionary<string, string> GetTokenInfo(string? token)
-        {
-            var TokenInfo = new Dictionary<string, string>();
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token ?? "");
-            var claims = jwtSecurityToken.Claims.ToList();
-
-            foreach (var claim in claims)
-            {
-                TokenInfo.Add(claim.Type, claim.Value);
-            }
-            var headers = jwtSecurityToken.Header.ToList();
-
-            foreach (var header in headers)
-            {
-                TokenInfo.Add(header.Key, (header.Value.ToString() ?? ""));
-            }
-
-            return TokenInfo;
-        }
-
         private async Task ValidateJwsE256(
             AppleKey appleKeyForIdentityToken,
             string[] parts,
@@ -508,19 +462,6 @@ namespace RPGTableHelper.WebApi.Controllers
             {
                 throw new ApplicationException(string.Format("Invalid signature"));
             }
-        }
-
-        private async Task<Option<User.UserIdentifier>> ValidateLogin(
-            string userName,
-            string password,
-            CancellationToken cancellationToken
-        )
-        {
-            var result = await new UserLoginQuery { Username = userName, HashedPassword = password }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            return result;
         }
     }
 }
