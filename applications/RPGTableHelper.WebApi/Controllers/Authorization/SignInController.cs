@@ -24,28 +24,15 @@ namespace RPGTableHelper.WebApi.Controllers
     [Route("/[controller]")]
     public class SignInController : ControllerBase
     {
-        private readonly AppleAuthOptions _appleAuthOptions;
-
-        private readonly IMemoryCache _inMemoryCache;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IQueryProcessor _queryProcessor;
-        private readonly ILogger _logger;
         private readonly IJWTTokenGenerator _jwtTokenGenerator;
 
         public SignInController(
-            IHttpClientFactory httpClientFactory,
-            IMemoryCache cache,
-            ILogger logger,
             IQueryProcessor queryProcessor,
-            AppleAuthOptions appleAuthOptions,
             IJWTTokenGenerator jwtTokenGenerator
         )
         {
-            _appleAuthOptions = appleAuthOptions;
             _queryProcessor = queryProcessor;
-            _httpClientFactory = httpClientFactory;
-            _inMemoryCache = cache;
-            _logger = logger;
             _jwtTokenGenerator = jwtTokenGenerator;
         }
 
