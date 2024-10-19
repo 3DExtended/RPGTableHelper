@@ -134,15 +134,15 @@ public class Startup
                         return Task.CompletedTask;
                     },
                 };
+                var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
 
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = Configuration.GetSection("Jwt")["Issuer"] ?? "api",
-                    ValidAudience = Configuration.GetSection("Jwt")["Audience"] ?? "api",
+                    ValidIssuer = jwtOptions?.Issuer ?? "api",
+                    ValidAudience = jwtOptions?.Audience ?? "api",
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
-                            Configuration.GetSection("Jwt")["Key"]
-                                ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
+                            jwtOptions?.Key ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
                         )
                     ),
                     ValidateIssuer = true,
@@ -246,6 +246,10 @@ public class Startup
         var sendGridOptions = Configuration.GetSection("SendGrid").Get<SendGridOptions>();
         if (sendGridOptions != null)
             services.AddSingleton(sendGridOptions);
+
+        var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
+        if (jwtOptions != null)
+            services.AddSingleton(jwtOptions);
 
         var sqlOptions = Configuration.GetSection("Sql").Get<SqlServerOptions>();
         if (sqlOptions != null)

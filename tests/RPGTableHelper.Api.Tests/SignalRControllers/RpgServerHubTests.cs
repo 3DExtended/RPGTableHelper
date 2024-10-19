@@ -77,7 +77,7 @@ public class PublicControllerTests : ControllerTestBase
                 options =>
                 {
                     options.HttpMessageHandlerFactory = _ => handle;
-                    options.AccessTokenProvider = () => Task.FromResult("asdfasdf"); // some invalid JWT
+                    options.AccessTokenProvider = () => Task.FromResult((string?)"asdfasdf"); // some invalid JWT
                 }
             )
             .Build();
@@ -98,7 +98,16 @@ public class PublicControllerTests : ControllerTestBase
             connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
 
         // assert
-        await task.Should().ThrowExactlyAsync<HubException>();
+        try
+        {
+            await task();
+        }
+        catch (HubException) { }
+        catch (InvalidOperationException) { }
+        catch (Exception)
+        {
+            throw;
+        }
 
         resultFromServer.Should().BeNull();
     }

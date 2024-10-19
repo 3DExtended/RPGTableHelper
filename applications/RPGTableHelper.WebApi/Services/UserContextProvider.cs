@@ -18,11 +18,15 @@ namespace RPGTableHelper.WebApi.Services
             _contextAccessor = contextAccessor;
             // new Microsoft.AspNetCore.Http.HeaderDictionary.HeaderDictionaryDebugView(new Microsoft.AspNetCore.Http.HttpRequest.HttpRequestDebugView(new Microsoft.AspNetCore.Http.HttpContext.HttpContextDebugView(((Microsoft.AspNetCore.Http.HttpContextAccessor)contextAccessor).HttpContext).Request).Headers).Items[3]
 
-            var username = _contextAccessor
-                .HttpContext.User.Claims.Single(c =>
-                    c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-                )
-                .Value;
+            var usernameClaim = _contextAccessor.HttpContext.User.Claims.SingleOrDefault(c =>
+                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            );
+
+            if (usernameClaim == null)
+            {
+                throw new UnauthorizedAccessException("The provided JWT is invalid");
+            }
+
             var identityProviderId = _contextAccessor
                 .HttpContext.User.Claims.Single(c => c.Type == "identityproviderid")
                 .Value;
@@ -46,7 +50,7 @@ namespace RPGTableHelper.WebApi.Services
 
             User = new UserIdentity
             {
-                Username = username,
+                Username = usernameClaim.Value,
                 IdentityProviderId = identityProviderId,
             };
         }

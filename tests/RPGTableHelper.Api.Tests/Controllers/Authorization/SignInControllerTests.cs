@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NSubstitute;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
@@ -13,8 +14,11 @@ using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
+using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Dtos;
+using RPGTableHelper.WebApi.Options;
+using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.Shared.Tests.Controllers.Authorization;
 
@@ -22,6 +26,73 @@ public class SignInControllerTests : ControllerTestBase
 {
     public SignInControllerTests(WebApplicationFactory<Program> factory)
         : base(factory) { }
+
+    [Theory]
+    [InlineData(0)] // totally wrong jwt: not even base64 encoded
+    [InlineData(1)] // some base64 encoded string (but not the right structure)
+    [InlineData(2)] // right issuer but expired
+    [InlineData(3)] // not expired but wrong issuer
+    public async Task TestLogin_ShouldReturnUnauthorizedIfJwtNotValid(int jwtErrorType)
+    {
+        // arrange
+        var (user, encryptionChallenge, userCredential) =
+            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+                ContextFactory!,
+                Mapper!,
+                default
+            );
+
+        var jwtOptions = new JwtOptions
+        {
+            Issuer = "api",
+            Audience = "api",
+            Key = string.Join("", Enumerable.Repeat("asdfasdf", 200)),
+            NumberOfSecondsToExpire = 12000,
+        };
+
+        var mockedSystemClock = Substitute.For<ISystemClock>();
+        mockedSystemClock.Now.Returns(DateTimeOffset.UtcNow);
+        if (jwtErrorType == 2)
+        {
+            jwtOptions.NumberOfSecondsToExpire = 1;
+        }
+
+        if (jwtErrorType == 3)
+        {
+            jwtOptions.Issuer = "fghjkl";
+        }
+
+        var tokenGenerator = new JWTTokenGenerator(mockedSystemClock, jwtOptions);
+
+        string? jwt;
+        switch (jwtErrorType)
+        {
+            case 0: // totally wrong jwt: not even base64 encoded
+                jwt = "jwt";
+                break;
+            case 1: // some base64 encoded string (but not the right structure)
+                jwt = "aWNoIGJpbiBlaW4gZ3Jvw59lciBoZWNodA==";
+                break;
+
+            case 2: // right issuer but expired
+                jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
+                await Task.Delay(5000);
+                break;
+
+            case 3: // not expired but wrong issuer
+            default:
+                jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
+                break;
+        }
+
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
+
+        // act
+        var response = await _client.GetAsync("/SignIn/testlogin");
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 
     [Fact]
     public async Task GetChallengeByUsername_ShouldBeSuccessful()

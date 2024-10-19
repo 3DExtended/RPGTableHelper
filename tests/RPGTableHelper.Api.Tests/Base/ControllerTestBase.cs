@@ -9,6 +9,7 @@ using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Options;
+using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi;
 
 namespace RPGTableHelper.Api.Tests.Base;
@@ -22,6 +23,7 @@ public abstract class ControllerTestBase
 
     protected IServiceProvider ServiceProvider { get; private set; }
     protected IQueryProcessor QueryProcessor { get; private set; }
+    protected IJWTTokenGenerator JwtTokenGenerator { get; private set; }
     protected RpgDbContext? Context { get; private set; }
     protected IMapper Mapper { get; private set; }
 
@@ -45,7 +47,9 @@ public abstract class ControllerTestBase
                 // Build the service provider
                 ServiceProvider = services.BuildServiceProvider();
                 Mapper = ServiceProvider.GetRequiredService<IMapper>();
+
                 QueryProcessor = ServiceProvider.GetRequiredService<IQueryProcessor>();
+                JwtTokenGenerator = ServiceProvider.GetRequiredService<IJWTTokenGenerator>();
                 ContextFactory = ServiceProvider.GetRequiredService<
                     IDbContextFactory<RpgDbContext>
                 >();

@@ -3,26 +3,27 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using RPGTableHelper.Shared.Services;
+using RPGTableHelper.WebApi.Options;
 
 namespace RPGTableHelper.WebApi.Services
 {
     public class JWTTokenGenerator : IJWTTokenGenerator
     {
-        public readonly IConfiguration _configuration;
+        public readonly JwtOptions _jwtOptions;
         public readonly ISystemClock _systemClock;
 
-        public JWTTokenGenerator(ISystemClock systemClock, IConfiguration configuration)
+        public JWTTokenGenerator(ISystemClock systemClock, JwtOptions jwtOptions)
         {
             _systemClock = systemClock;
-            _configuration = configuration;
+            _jwtOptions = jwtOptions;
         }
 
         public string GetJWTToken(string username, string userIdentityProviderId)
         {
-            var issuer = _configuration["Jwt:Issuer"] ?? "api";
-            var audience = _configuration["Jwt:Audience"] ?? "api";
+            var issuer = _jwtOptions.Issuer ?? "api";
+            var audience = _jwtOptions.Audience ?? "api";
             var key = Encoding.ASCII.GetBytes(
-                _configuration["Jwt:Key"] ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
+                _jwtOptions.Key ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
             );
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -31,13 +32,13 @@ namespace RPGTableHelper.WebApi.Services
                     new[]
                     {
                         new Claim("Id", Guid.NewGuid().ToString()),
-                        new Claim("identityproviderid", userIdentityProviderId), // TODO replace me with the identityproviderid
+                        new Claim("identityproviderid", userIdentityProviderId),
                         new Claim(JwtRegisteredClaimNames.Name, username),
                         new Claim(JwtRegisteredClaimNames.Sub, username),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     }
                 ),
-                Expires = _systemClock.Now.DateTime.AddMinutes(200),
+                Expires = _systemClock.Now.DateTime.AddSeconds(_jwtOptions.NumberOfSecondsToExpire),
                 Issuer = issuer,
                 Audience = audience,
                 SigningCredentials = new SigningCredentials(
