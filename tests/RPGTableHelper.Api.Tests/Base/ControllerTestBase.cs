@@ -7,8 +7,8 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid.Options;
+using RPGTableHelper.Shared.Options;
 using RPGTableHelper.WebApi;
-using RPGTableHelper.WebApi.Options;
 
 namespace RPGTableHelper.Api.Tests.Base;
 

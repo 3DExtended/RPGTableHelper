@@ -1,4 +1,4 @@
-namespace RPGTableHelper.BusinessLayer.Encryption.Contracts.Models
+namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 {
     public class AppleKey
     {

@@ -3,7 +3,8 @@ using System.Security.Cryptography;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using RPGTableHelper.WebApi.Options;
+using RPGTableHelper.Shared.Options;
+using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.WebApi.Services
 {
@@ -14,7 +15,7 @@ namespace RPGTableHelper.WebApi.Services
     /// Hence, this class generates this secret used to communicate with apple
     /// and caches them.
     /// </summary>
-    public class AppleClientSecretGenerator
+    public class AppleClientSecretGenerator : IAppleClientSecretGenerator
     {
         private readonly IMemoryCache _cache;
         private readonly AppleAuthOptions _context;

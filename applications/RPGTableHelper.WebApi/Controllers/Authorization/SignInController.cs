@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Prodot.Patterns.Cqrs;
-using RPGTableHelper.BusinessLayer.Encryption.Contracts.Models;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Queries.Apple;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
+using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
-using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.WebApi.Controllers
@@ -165,10 +165,9 @@ namespace RPGTableHelper.WebApi.Controllers
             CancellationToken cancellationToken
         )
         {
-            var result = await GetAppleIdKeysAsync();
+            var appleKeys = await GetAppleIdKeysAsync();
 
             // Parse keys
-            var appleKeys = JsonConvert.DeserializeObject<AppleKeysResponse>(result);
             if (appleKeys == null)
             {
                 return BadRequest();
@@ -201,6 +200,7 @@ namespace RPGTableHelper.WebApi.Controllers
             {
                 return Unauthorized();
             }
+
             // Verify that the time is earlier than the exp value of the token
             var expDateOfToken = DateTime.UnixEpoch.AddSeconds(+long.Parse(tokenDetails["exp"]));
 
@@ -209,118 +209,82 @@ namespace RPGTableHelper.WebApi.Controllers
                 return Unauthorized();
             }
 
-            // generate new token from apple
-            var tokenGenerator = new AppleClientSecretGenerator(_inMemoryCache, _appleAuthOptions);
-            var clientSecret = await tokenGenerator.GenerateAsync().ConfigureAwait(false);
-
-            using (var httpClient = _httpClientFactory.CreateClient())
+            var appleTokenResponse = await new VerifyAppleOAuthTokenQuery
             {
-                using (
-                    var request = new HttpRequestMessage(
-                        new HttpMethod("POST"),
-                        "https://appleid.apple.com/auth/token"
-                    )
-                )
+                AuthorizationCode = loginDto.AuthorizationCode,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (appleTokenResponse.IsNone)
+                return BadRequest();
+
+            // decode id token
+            var appleAuthTokenDetails = GetTokenInfo(appleTokenResponse.Get().id_token);
+
+            // some string uniquely identifying the user
+            var internalId = appleAuthTokenDetails["sub"];
+
+            // check if user exists in our db:
+            var possiblyExistingUserId = await new UserExistsByInternalIdQuery
+            {
+                SignInProviderId = internalId,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (possiblyExistingUserId.IsSome)
+            {
+                // user already exists in db.
+                // hence we want to load user and return jwt for this user
+                var user = await new UserQuery { ModelId = possiblyExistingUserId.Get() }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (user.IsNone)
                 {
-                    var contentList = new List<string>
-                    {
-                        "client_id=" + _appleAuthOptions.ClientId,
-                        "client_secret=" + clientSecret,
-                        "code=" + WebUtility.UrlEncode(loginDto.AuthorizationCode),
-                        "grant_type=authorization_code",
-                    };
-
-                    request.Content = new StringContent(string.Join("&", contentList));
-                    request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(
-                        "application/x-www-form-urlencoded"
-                    );
-
-                    var response = await httpClient.SendAsync(request);
-                    var appleTokenString = await response
-                        .Content.ReadAsStringAsync(cancellationToken)
-                        .ConfigureAwait(false);
-
-                    if (appleTokenString.Contains("error_description"))
-                    {
-                        return BadRequest();
-                    }
-
-                    var appleTokenResponse = JsonConvert.DeserializeObject<AppleTokenResponse>(
-                        appleTokenString
-                    )!;
-
-                    // decode id token
-                    var appleAuthTokenDetails = GetTokenInfo(appleTokenResponse.id_token);
-
-                    // some string uniquely identifying the user
-                    var internalId = appleAuthTokenDetails["sub"];
-
-                    // check if user exists in our db:
-                    var possiblyExistingUserId = await new UserExistsByInternalIdQuery
-                    {
-                        SignInProviderId = internalId,
-                    }
-                        .RunAsync(_queryProcessor, cancellationToken)
-                        .ConfigureAwait(false);
-
-                    if (possiblyExistingUserId.IsSome)
-                    {
-                        // user already exists in db.
-                        // hence we want to load user and return jwt for this user
-                        var user = await new UserQuery { ModelId = possiblyExistingUserId.Get() }
-                            .RunAsync(_queryProcessor, cancellationToken)
-                            .ConfigureAwait(false);
-
-                        if (user.IsNone)
-                        {
-                            return BadRequest();
-                        }
-
-                        var username = user.Get().Username;
-                        var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
-                        var stringToken = _jwtTokenGenerator.GetJWTToken(
-                            username,
-                            userIdentityProviderId
-                        );
-                        return Ok(stringToken);
-                    }
-                    else
-                    {
-                        // create temp registration and wait for app to complete registration by adding an username
-                        // we generate a temporary apikey for this user request so they can finish registration using this key and providing a username
-                        var temporaryApiKey = Convert
-                            .ToBase64String(RandomNumberGenerator.GetBytes(32))
-                            .Replace("/", "A")
-                            .Replace("+", "b");
-
-                        // save temporary request in db
-                        var requestCreateResult =
-                            await new OpenSignInProviderRegisterRequestCreateQuery
-                            {
-                                ModelToCreate = new OpenSignInProviderRegisterRequest
-                                {
-                                    Email = appleAuthTokenDetails["email"]!,
-                                    ExposedApiKey = temporaryApiKey,
-                                    IdentityProviderId = internalId,
-                                    SignInProviderRefreshToken = Option.From(
-                                        appleTokenResponse.refresh_token ?? null
-                                    ),
-                                    SignInProviderUsed = SupportedSignInProviders.Apple,
-                                },
-                            }
-                                .RunAsync(_queryProcessor, cancellationToken)
-                                .ConfigureAwait(false);
-
-                        if (requestCreateResult.IsNone)
-                            return BadRequest();
-
-                        return Ok("redirect" + temporaryApiKey);
-                    }
+                    return BadRequest();
                 }
+
+                var username = user.Get().Username;
+                var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
+                var stringToken = _jwtTokenGenerator.GetJWTToken(username, userIdentityProviderId);
+                return Ok(stringToken);
+            }
+            else
+            {
+                // create temp registration and wait for app to complete registration by adding an username
+                // we generate a temporary apikey for this user request so they can finish registration using this key and providing a username
+                var temporaryApiKey = Convert
+                    .ToBase64String(RandomNumberGenerator.GetBytes(32))
+                    .Replace("/", "A")
+                    .Replace("+", "b");
+
+                // save temporary request in db
+                var requestCreateResult = await new OpenSignInProviderRegisterRequestCreateQuery
+                {
+                    ModelToCreate = new OpenSignInProviderRegisterRequest
+                    {
+                        Email = appleAuthTokenDetails["email"]!,
+                        ExposedApiKey = temporaryApiKey,
+                        IdentityProviderId = internalId,
+                        SignInProviderRefreshToken = Option.From(
+                            appleTokenResponse.Get().refresh_token ?? null
+                        ),
+                        SignInProviderUsed = SupportedSignInProviders.Apple,
+                    },
+                }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (requestCreateResult.IsNone)
+                    return BadRequest();
+
+                return Ok("redirect" + temporaryApiKey);
             }
         }
 
-        private static async Task<string> GetAppleIdKeysAsync()
+        private static async Task<AppleKeysResponse?> GetAppleIdKeysAsync()
         {
             // todo add caching
             // Download apple keys from here: https://appleid.apple.com/auth/keys
@@ -333,7 +297,9 @@ namespace RPGTableHelper.WebApi.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return content;
+                    var appleKeys = JsonConvert.DeserializeObject<AppleKeysResponse>(content);
+
+                    return appleKeys;
                 }
                 else
                 {

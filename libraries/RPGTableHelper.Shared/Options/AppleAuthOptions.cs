@@ -1,4 +1,4 @@
-namespace RPGTableHelper.WebApi.Options
+namespace RPGTableHelper.Shared.Options
 {
     public class AppleAuthOptions
     {

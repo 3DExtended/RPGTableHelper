@@ -1,5 +1,5 @@
 using Prodot.Patterns.Cqrs;
-using RPGTableHelper.BusinessLayer.Encryption.Contracts.Models;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 
 namespace RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries
 {

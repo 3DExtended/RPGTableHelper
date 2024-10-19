@@ -20,6 +20,7 @@ using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
@@ -44,6 +45,7 @@ public class Startup
         services.AddTransient<IUserContext, UserContextProvider>();
 
         services.AddSingleton<IJWTTokenGenerator, JWTTokenGenerator>();
+        services.AddSingleton<IAppleClientSecretGenerator, AppleClientSecretGenerator>();
 
         services.AddTransient(provider =>
         {

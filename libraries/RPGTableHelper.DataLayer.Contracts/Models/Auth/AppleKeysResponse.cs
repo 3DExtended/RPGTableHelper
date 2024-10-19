@@ -1,4 +1,4 @@
-namespace RPGTableHelper.BusinessLayer.Encryption.Contracts.Models
+namespace RPGTableHelper.DataLayer.Contracts.Models.Auth
 {
     /// <summary>
     /// Represents a response containing a collection of Apple keys.
