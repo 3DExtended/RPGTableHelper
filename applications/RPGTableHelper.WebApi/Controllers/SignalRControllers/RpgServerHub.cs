@@ -1,5 +1,5 @@
 using System.Security.Cryptography;
-using System.Web.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using RPGTableHelper.Shared.Auth;
 

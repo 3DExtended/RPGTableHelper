@@ -23,6 +23,7 @@ public abstract class ControllerTestBase
     protected readonly WebApplicationFactory<Program> _factory;
 
     protected IServiceProvider ServiceProvider { get; private set; }
+    protected ISystemClock SystemClock { get; private set; }
     protected IQueryProcessor QueryProcessor { get; private set; }
     protected IJWTTokenGenerator JwtTokenGenerator { get; private set; }
     protected RpgDbContext? Context { get; private set; }
@@ -51,6 +52,7 @@ public abstract class ControllerTestBase
 
                 QueryProcessor = ServiceProvider.GetRequiredService<IQueryProcessor>();
                 JwtTokenGenerator = ServiceProvider.GetRequiredService<IJWTTokenGenerator>();
+                SystemClock = ServiceProvider.GetRequiredService<ISystemClock>();
                 ContextFactory = ServiceProvider.GetRequiredService<
                     IDbContextFactory<RpgDbContext>
                 >();

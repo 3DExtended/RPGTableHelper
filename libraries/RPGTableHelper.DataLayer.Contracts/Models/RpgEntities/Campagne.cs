@@ -19,6 +19,8 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities
 
         public string CampagneName { get; set; } = default!;
 
+        public string JoinCode { get; set; } = default!;
+
         /// <summary>
         /// The dm of this campagne.
         /// </summary>

@@ -14,4 +14,16 @@ public static class ApiKeyGenerator
             .Replace("/", "A")
             .Replace("+", "b");
     }
+
+    public static string GenerateJoinCode()
+    {
+        var temporaryApiKey =
+            string.Join("", Enumerable.Range(0, 3).Select(_ => RandomNumberGenerator.GetInt32(10)))
+            + "-"
+            + string.Join(
+                "",
+                Enumerable.Range(0, 3).Select(_ => RandomNumberGenerator.GetInt32(10))
+            );
+        return temporaryApiKey;
+    }
 }

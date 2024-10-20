@@ -22,6 +22,7 @@ public class CampagneUpdateQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla1",
             DmUserId = user1.Id.Value,
             RpgConfiguration = null,
+            JoinCode = "123-123",
         };
         var entity2 = new CampagneEntity
         {
@@ -29,6 +30,7 @@ public class CampagneUpdateQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla2",
             DmUserId = user1.Id.Value,
             RpgConfiguration = null,
+            JoinCode = "123-123",
         };
         var entity3 = new CampagneEntity
         {
@@ -36,6 +38,7 @@ public class CampagneUpdateQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla3",
             DmUserId = user1.Id.Value,
             RpgConfiguration = null,
+            JoinCode = "123-123",
         };
 
         Context.Campagnes.Add(entity1);
@@ -51,6 +54,7 @@ public class CampagneUpdateQueryHandlerTests : QueryHandlersTestBase
                 CampagneName = "Foo",
                 DmUserId = user1.Id,
                 RpgConfiguration = "ghjkjhgfhjkjhg",
+                JoinCode = "321-321",
             },
         };
         var subjectUnderTest = new CampagneUpdateQueryHandler(Mapper, ContextFactory);
@@ -65,6 +69,7 @@ public class CampagneUpdateQueryHandlerTests : QueryHandlersTestBase
 
         var updatedEntity = Context.Campagnes.AsNoTracking().First(x => x.Id == entity2.Id);
         updatedEntity!.CampagneName.Should().Be("Foo");
+        updatedEntity!.JoinCode.Should().Be("321-321");
         updatedEntity!.RpgConfiguration.Should().Be("ghjkjhgfhjkjhg");
     }
 }

@@ -90,7 +90,11 @@ public class PublicControllerTests : ControllerTestBase
                 resultFromServer = message;
             }
         );
-        await connection.StartAsync();
+
+        var task1 = () => connection.StartAsync();
+
+        await task1.Should().ThrowAsync<HttpRequestException>();
+
         var message = "Ich komme aus dem Test";
 
         await Task.Delay(1000);

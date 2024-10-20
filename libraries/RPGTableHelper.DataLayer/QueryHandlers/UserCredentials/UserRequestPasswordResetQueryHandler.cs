@@ -83,17 +83,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                 }
 
                 // generate email reset token:
-                var temporaryApiKey =
-                    string.Join(
-                        "",
-                        Enumerable.Range(0, 3).Select(_ => RandomNumberGenerator.GetInt32(10))
-                    )
-                    + "-"
-                    + string.Join(
-                        "",
-                        Enumerable.Range(0, 3).Select(_ => RandomNumberGenerator.GetInt32(10))
-                    );
-
+                var temporaryApiKey = ApiKeyGenerator.GenerateJoinCode();
                 var expiresIn = DateTimeOffset.UtcNow.AddHours(2);
 
                 entity.PasswordResetToken = temporaryApiKey;
