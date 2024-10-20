@@ -319,6 +319,16 @@ namespace RPGTableHelper.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Requests an reset password email for the user.
+        /// </summary>
+        /// <param name="requestDto">The username and email for the user requesting the reset</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>The string "Email sent" if everything worked.</returns>
+        /// <response code="200">Returns the jwt for the user</response>
+        /// <response code="400">If username or password did not match</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [HttpPost("requestresetpassword")]
         [AllowAnonymous]
         public async Task<ActionResult<string>> RequestPasswordReset(
@@ -328,7 +338,7 @@ namespace RPGTableHelper.WebApi.Controllers
         {
             if (requestDto == null || requestDto.Email == null || requestDto.Username == null)
             {
-                return BadRequest();
+                return BadRequest("Invalid data");
             }
 
             var result = await new UserRequestPasswordResetQuery

@@ -13,6 +13,7 @@ using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi;
@@ -92,6 +93,66 @@ public class SignInControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task RequestPasswordReset_ShouldBeSuccessful()
+    {
+        // arrange
+        var encryptedEmail = await new RSAEncryptStringQuery { StringToEncrypt = "asdf@asdf.de" }
+            .RunAsync(QueryProcessor, (default!))
+            .ConfigureAwait(true);
+
+        // login using username and password
+        var (user, encryptionChallenge, userCredential, jwt) = await LoginUsingUsernameAndPassowrd(
+            emailOverride: encryptedEmail.Get()
+        );
+
+        // act
+        var response = await _client.PostAsJsonAsync(
+            $"/signin/requestresetpassword",
+            new ResetPasswordRequestDto
+            {
+                Username = user.Username,
+                Email = "asdf@asdf.de", // this email is taken from RpgDbContextHelpers
+            }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseText = await response.Content.ReadAsStringAsync();
+        responseText.Should().Be("Email sent");
+    }
+
+    private async Task<(
+        User user,
+        EncryptionChallenge encryptionChallenge,
+        UserCredential userCredential,
+        string? jwt
+    )> LoginUsingUsernameAndPassowrd(string emailOverride)
+    {
+        var (user, encryptionChallenge, userCredential) =
+            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+                ContextFactory!,
+                Mapper!,
+                default,
+                email: emailOverride
+            );
+
+        var response = await _client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username,
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+            }
+        );
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var jwtContent = await response.Content.ReadAsStringAsync();
+        jwtContent.Should().NotBeNull();
+        return (user, encryptionChallenge, userCredential, jwtContent);
     }
 
     [Fact]
