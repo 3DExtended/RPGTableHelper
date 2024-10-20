@@ -13,12 +13,13 @@ public static class RpgDbContextHelpers
         IDbContextFactory<RpgDbContext> contextFactory,
         IMapper mapper,
         CancellationToken cancellationToken = default,
-        string? signInProviderId = null
+        string? signInProviderId = null,
+        string? usernameOverride = null
     )
     {
         var user = new User
         {
-            Username = "User1",
+            Username = usernameOverride ?? "User1",
             SignInProviderId = Option.From(signInProviderId),
             CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),

@@ -4,7 +4,9 @@ using AutoMapper;
 using FluentAssertions;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.RpgEntities;
 
 public class DataLayerEntitiesMapperProfileTests
 {
@@ -334,5 +336,113 @@ public class DataLayerEntitiesMapperProfileTests
         userCredential.RefreshToken.Should().Be(userCredentialEntity.RefreshToken.ToOption());
         userCredential.SignInProvider.Should().Be(userCredentialEntity.SignInProvider);
         userCredential.UserId.Value.Should().Be(userCredentialEntity.UserId);
+    }
+
+    [Fact]
+    public void CampagneToCampagneEntity_ShouldMapSuccessfully()
+    {
+        // Arrange
+        var campagne = new Campagne
+        {
+            CampagneName = "TestCampagne",
+            Id = Campagne.CampagneIdentifier.From(Guid.NewGuid()),
+            DmUserId = User.UserIdentifier.From(Guid.NewGuid()),
+            RpgConfiguration = "fghjklkjhgfghjklkjhgfhjklö",
+        };
+
+        // Act
+        var campagneEntity = _mapper.Map<CampagneEntity>(campagne);
+
+        // Assert
+        campagneEntity.Should().NotBeNull();
+        campagneEntity.RpgConfiguration.Should().Be(campagne.RpgConfiguration.Get());
+        campagneEntity.CampagneName.Should().Be(campagne.CampagneName);
+        campagneEntity.Id.Should().Be(campagne.Id.Value);
+        campagneEntity.DmUserId.Should().Be(campagne.DmUserId.Value);
+        campagneEntity.Characters.Should().BeNull();
+    }
+
+    [Fact]
+    public void CampagneEntityToCampagne_ShouldMapSuccessfully()
+    {
+        // Arrange
+        var campagneEntity = new CampagneEntity
+        {
+            CampagneName = "TestCampagneEntity",
+            Id = Guid.NewGuid(),
+            CreationDate = DateTimeOffset.UtcNow,
+            LastModifiedAt = DateTimeOffset.UtcNow,
+            DmUserId = Guid.NewGuid(),
+            RpgConfiguration = "asdfkjahsdföklhaslkdjfhölakjsdföl",
+        };
+
+        // Act
+        var campagne = _mapper.Map<Campagne>(campagneEntity);
+
+        // Assert
+        campagne.Should().NotBeNull();
+        campagne.CampagneName.Should().Be(campagneEntity.CampagneName);
+        campagne.RpgConfiguration.Get().Should().Be(campagneEntity.RpgConfiguration);
+        campagne.DmUserId.Value.Should().Be(campagneEntity.DmUserId);
+        campagne.Id.Value.Should().Be(campagneEntity.Id);
+        campagne.CreationDate.Should().Be(campagneEntity.CreationDate);
+        campagne.LastModifiedAt.Should().Be(campagneEntity.LastModifiedAt);
+    }
+
+    [Fact]
+    public void PlayerCharacterToPlayerCharacterEntity_ShouldMapSuccessfully()
+    {
+        // Arrange
+        var playerCharacter = new PlayerCharacter
+        {
+            CharacterName = "TestPlayerCharacter",
+            Id = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.NewGuid()),
+            PlayerUserId = User.UserIdentifier.From(Guid.NewGuid()),
+            RpgCharacterConfiguration = "fghjklkjhgfghjklkjhgfhjklö",
+            CampagneId = Option.None,
+        };
+
+        // Act
+        var playerCharacterEntity = _mapper.Map<PlayerCharacterEntity>(playerCharacter);
+
+        // Assert
+        playerCharacterEntity.Should().NotBeNull();
+        playerCharacterEntity
+            .RpgCharacterConfiguration.Should()
+            .Be(playerCharacter.RpgCharacterConfiguration.Get());
+        playerCharacterEntity.CharacterName.Should().Be(playerCharacter.CharacterName);
+        playerCharacterEntity.Id.Should().Be(playerCharacter.Id.Value);
+        playerCharacterEntity.PlayerUserId.Should().Be(playerCharacter.PlayerUserId.Value);
+        playerCharacterEntity.CampagneId.Should().BeNull();
+    }
+
+    [Fact]
+    public void PlayerCharacterEntityToPlayerCharacter_ShouldMapSuccessfully()
+    {
+        // Arrange
+        var playerCharacterEntity = new PlayerCharacterEntity
+        {
+            CharacterName = "TestPlayerCharacterEntity",
+
+            Id = Guid.NewGuid(),
+            CreationDate = DateTimeOffset.UtcNow,
+            LastModifiedAt = DateTimeOffset.UtcNow,
+            PlayerUserId = Guid.NewGuid(),
+            RpgCharacterConfiguration = "asdfkjahsdföklhaslkdjfhölakjsdföl",
+        };
+
+        // Act
+        var playerCharacter = _mapper.Map<PlayerCharacter>(playerCharacterEntity);
+
+        // Assert
+        playerCharacter.Should().NotBeNull();
+        playerCharacter.CharacterName.Should().Be(playerCharacterEntity.CharacterName);
+        playerCharacter
+            .RpgCharacterConfiguration.Should()
+            .Be(playerCharacterEntity.RpgCharacterConfiguration);
+        playerCharacter.PlayerUserId.Value.Should().Be(playerCharacterEntity.PlayerUserId);
+        playerCharacter.Id.Value.Should().Be(playerCharacterEntity.Id);
+        playerCharacter.CreationDate.Should().Be(playerCharacterEntity.CreationDate);
+        playerCharacter.LastModifiedAt.Should().Be(playerCharacterEntity.LastModifiedAt);
     }
 }
