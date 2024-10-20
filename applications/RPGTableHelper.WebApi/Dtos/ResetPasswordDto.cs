@@ -15,7 +15,7 @@ namespace RPGTableHelper.WebApi.Dtos
         /// Gets or sets the user requested updated password of the user.
         /// </summary>
         [Required]
-        public string NewPassword { get; set; } = default!;
+        public string NewHashedPassword { get; set; } = default!;
 
         /// <summary>
         /// Gets or sets the users reset code for the reset password operation.

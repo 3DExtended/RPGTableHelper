@@ -31,7 +31,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         // Mock RSA decryption query
@@ -73,7 +73,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = "invalid-username",
             Email = "decrypted-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -108,7 +108,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "expired-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -151,7 +151,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "wrong-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -192,7 +192,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "invalid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -234,7 +234,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -270,7 +270,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -312,7 +312,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -354,7 +354,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "wrong-decrypted-email", // Incorrect email
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
@@ -398,7 +398,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             Username = user.Username,
             Email = "decrypted-email",
             ResetCode = "valid-token",
-            NewPassword = "new-password",
+            NewHashedPassword = "new-password",
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();

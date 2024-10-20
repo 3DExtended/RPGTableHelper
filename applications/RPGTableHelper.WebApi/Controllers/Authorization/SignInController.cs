@@ -325,7 +325,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <param name="requestDto">The username and email for the user requesting the reset</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>The string "Email sent" if everything worked.</returns>
-        /// <response code="200">Returns the jwt for the user</response>
+        /// <response code="200">Returns the text "Email sent"</response>
         /// <response code="400">If username or password did not match</response>
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -357,9 +357,19 @@ namespace RPGTableHelper.WebApi.Controllers
             return BadRequest("Could not create password reset mail or token!");
         }
 
+        /// <summary>
+        /// Completes the password reset requests by providing the reset code from the email.
+        /// </summary>
+        /// <param name="requestDto">The username and email for the user requesting the reset</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>The string "New password set" if everything worked.</returns>
+        /// <response code="200">Returns the text "New password set"</response>
+        /// <response code="400">If username, email or reset code did not match</response>
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [HttpPost("resetpassword")]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> UserPasswordReset(
+        public async Task<ActionResult<string>> CompleteUserPasswordReset(
             [FromBody] ResetPasswordDto requestDto,
             CancellationToken cancellationToken
         )
@@ -367,12 +377,12 @@ namespace RPGTableHelper.WebApi.Controllers
             if (
                 requestDto == null
                 || requestDto.Email == null
-                || requestDto.NewPassword == null
+                || requestDto.NewHashedPassword == null
                 || requestDto.ResetCode == null
                 || requestDto.Username == null
             )
             {
-                return BadRequest();
+                return BadRequest("Invalid request");
             }
 
             var result = await new UserPasswordResetQuery
@@ -380,7 +390,7 @@ namespace RPGTableHelper.WebApi.Controllers
                 Email = requestDto.Email,
                 Username = requestDto.Username,
                 ResetCode = requestDto.ResetCode,
-                NewPassword = requestDto.NewPassword,
+                NewHashedPassword = requestDto.NewHashedPassword,
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);

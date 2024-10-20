@@ -85,7 +85,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                     return Option.None;
                 }
 
-                entity.HashedPassword = query.NewPassword;
+                entity.HashedPassword = query.NewHashedPassword;
                 entity.PasswordResetToken = null;
                 entity.PasswordResetTokenExpireDate = null;
                 entity.LastModifiedAt = _systemClock.Now;

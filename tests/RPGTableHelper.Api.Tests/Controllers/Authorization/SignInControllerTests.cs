@@ -96,7 +96,7 @@ public class SignInControllerTests : ControllerTestBase
     }
 
     [Fact]
-    public async Task RequestPasswordReset_ShouldBeSuccessful()
+    public async Task PasswordReset_Workflow_ShouldBeSuccessful()
     {
         // arrange
         var encryptedEmail = await new RSAEncryptStringQuery { StringToEncrypt = "asdf@asdf.de" }
@@ -122,6 +122,41 @@ public class SignInControllerTests : ControllerTestBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseText = await response.Content.ReadAsStringAsync();
         responseText.Should().Be("Email sent");
+
+        // arrange
+        string? resetCode;
+        using (var context = this.ContextFactory!.CreateDbContext())
+        {
+            var userCredentialEntity = await context.UserCredentials.ToListAsync(default);
+            userCredentialEntity.Count.Should().Be(1);
+            resetCode = userCredentialEntity[0].PasswordResetToken;
+        }
+
+        // act
+        var resetResponse = await _client.PostAsJsonAsync(
+            $"/signin/resetpassword",
+            new ResetPasswordDto
+            {
+                Username = user.Username,
+                Email = "asdf@asdf.de", // this email is taken from RpgDbContextHelpers
+                NewHashedPassword = "fghjklkjhgfhjkl",
+                ResetCode = resetCode!,
+            }
+        );
+
+        // assert
+        resetResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var resetResponseText = await resetResponse.Content.ReadAsStringAsync();
+        resetResponseText.Should().Be("New password set");
+
+        using (var context = this.ContextFactory!.CreateDbContext())
+        {
+            var userCredentialEntity = await context.UserCredentials.ToListAsync(default);
+            userCredentialEntity.Count.Should().Be(1);
+            userCredentialEntity[0].PasswordResetToken.Should().BeNull();
+            userCredentialEntity[0].PasswordResetTokenExpireDate.Should().BeNull();
+            userCredentialEntity[0].HashedPassword.Should().Be("fghjklkjhgfhjkl");
+        }
     }
 
     private async Task<(
