@@ -27,7 +27,7 @@ public class CampagnesForUserAsDmQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla1",
             DmUserId = user1.Id.Value,
             RpgConfiguration = "hjkljhghjkl",
-            JoinCode = "123-123",
+            JoinCode = "123-124",
         };
         var entity2 = new CampagneEntity
         {
@@ -35,7 +35,7 @@ public class CampagnesForUserAsDmQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla2",
             DmUserId = user2.Id.Value,
             RpgConfiguration = "hjkljhghjkl",
-            JoinCode = "123-123",
+            JoinCode = "123-125",
         };
         var entity3 = new CampagneEntity
         {
@@ -43,7 +43,7 @@ public class CampagnesForUserAsDmQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla3",
             DmUserId = user1.Id.Value,
             RpgConfiguration = "hjkljhghjkl",
-            JoinCode = "123-123",
+            JoinCode = "123-126",
         };
 
         Context.Campagnes.Add(entity1);

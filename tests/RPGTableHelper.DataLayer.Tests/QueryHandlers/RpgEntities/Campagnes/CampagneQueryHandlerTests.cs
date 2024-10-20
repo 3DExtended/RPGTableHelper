@@ -33,7 +33,7 @@ public class CampagneQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla2",
             DmUserId = user.Id.Value,
             RpgConfiguration = "hjkljhghjkl",
-            JoinCode = "123-123",
+            JoinCode = "123-124",
         };
         var entity3 = new CampagneEntity
         {
@@ -41,7 +41,7 @@ public class CampagneQueryHandlerTests : QueryHandlersTestBase
             CampagneName = "Bla3",
             DmUserId = user.Id.Value,
             RpgConfiguration = "hjkljhghjkl",
-            JoinCode = "123-123",
+            JoinCode = "123-125",
         };
 
         Context.Campagnes.Add(entity1);

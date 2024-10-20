@@ -27,6 +27,9 @@ public class RpgDbContext : DbContext
             .WithOne(e => e.Campagne)
             .HasForeignKey(e => e.CampagneId);
 
+        modelBuilder.Entity<CampagneEntity>().HasIndex(entity => entity.JoinCode).IsUnique();
+        modelBuilder.Entity<UserEntity>().HasIndex(entity => entity.Username).IsUnique();
+
         base.OnModelCreating(modelBuilder);
     }
 }

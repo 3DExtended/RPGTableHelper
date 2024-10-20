@@ -76,5 +76,36 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
             return Ok(campagneId.Get().Value);
         }
+
+        /// <summary>
+        /// Returns a list of campagnes this user is the dm of.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Returns the list of campagnes.</returns>
+        /// <response code="200">The id of the newly created campagne</response>
+        /// <response code="400">If there was an error retrieving the campagnes</response>
+        /// <response code="401">If you are not logged in</response>
+        [ProducesResponseType(typeof(IReadOnlyList<Campagne>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("getcampagnes")]
+        public async Task<ActionResult<IReadOnlyList<Campagne>>> GetCampagnesForUserAsDmAsync(
+            CancellationToken cancellationToken
+        )
+        {
+            var campagnes = await new CampagnesForUserAsDmQuery
+            {
+                UserId = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (campagnes.IsNone)
+            {
+                return BadRequest("Could not retrieve campagnes.");
+            }
+
+            return Ok(campagnes.Get());
+        }
     }
 }
