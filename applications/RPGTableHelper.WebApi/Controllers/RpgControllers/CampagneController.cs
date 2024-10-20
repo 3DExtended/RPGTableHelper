@@ -82,7 +82,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Returns the list of campagnes.</returns>
-        /// <response code="200">The id of the newly created campagne</response>
+        /// <response code="200">A list of all campagnes for this user as dm</response>
         /// <response code="400">If there was an error retrieving the campagnes</response>
         /// <response code="401">If you are not logged in</response>
         [ProducesResponseType(typeof(IReadOnlyList<Campagne>), StatusCodes.Status200OK)]
@@ -106,6 +106,68 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             return Ok(campagnes.Get());
+        }
+
+        /// <summary>
+        /// Returns a single of campagne.
+        /// </summary>
+        /// <remarks>You must be the dm or a player in this campagne</remarks>
+        /// <param name="campagneid">The id of the desired campagne</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Returns the campagne.</returns>
+        /// <response code="200">The campagne</response>
+        /// <response code="400">If there was an error retrieving the campagnes</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this campagne</response>
+        [ProducesResponseType(typeof(Campagne), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("getcampagne/{campagneid}")]
+        public async Task<ActionResult<Campagne>> GetCampagneByIdAsync(
+            string campagneid,
+            CancellationToken cancellationToken
+        )
+        {
+            if (campagneid == null)
+            {
+                return BadRequest("No valid campagneId passed");
+            }
+
+            if (!Guid.TryParse(campagneid, out var campagneidparsed))
+            {
+                return BadRequest("No valid campagneId passed");
+            }
+
+            var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
+            {
+                CampagneId = Campagne.CampagneIdentifier.From(campagneidparsed),
+                UserIdToCheck = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (isUserInCampagneResult.IsNone)
+            {
+                return BadRequest("Could not retrieve info.");
+            }
+
+            if (isUserInCampagneResult.Get() == false)
+            {
+                return Unauthorized();
+            }
+
+            var campagne = await new CampagneQuery
+            {
+                ModelId = Campagne.CampagneIdentifier.From(campagneidparsed),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (campagne.IsNone)
+            {
+                return BadRequest("Could not retrieve campagne");
+            }
+
+            return Ok(campagne.Get());
         }
     }
 }

@@ -164,30 +164,123 @@ public class CampagneControllerTests : ControllerTestBase
         responseParsed.Select(x => x.Id.Value).Should().Contain(entity3.Id);
     }
 
-    protected async Task<User> ConfigureLoggedInUser()
+    [Fact]
+    public async Task GetCampagneByIdAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        var user = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!);
-
-        var jwtOptions = new JwtOptions
-        {
-            Issuer = "api",
-            Audience = "api",
-            Key = string.Join("", Enumerable.Repeat("asdfasdf", 200)),
-            NumberOfSecondsToExpire = 12000,
-        };
-
-        var tokenGenerator = new JWTTokenGenerator(SystemClock, jwtOptions);
-
-        var jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            "asdfasdfasdsf"
+        );
 
         // act
-        var response = await _client.GetAsync("/SignIn/testlogin");
+        var response = await _client.GetAsync(
+            "/campagne/getcampagne/a25ca8ab-d8d4-4909-af94-4c08583a13ab"
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetCampagneByIdAsync_ShouldBeSuccessfull()
+    {
+        // arrange
+        var user = await ConfigureLoggedInUser();
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(
+            ContextFactory!,
+            Mapper!,
+            usernameOverride: "Username2"
+        );
+
+        var entity1 = new CampagneEntity
+        {
+            Id = Guid.Empty,
+            CampagneName = "CampagneName1",
+            DmUserId = user2.Id.Value,
+            JoinCode = "123-123",
+            RpgConfiguration = "asdf",
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.Campagnes.AddAsync(entity1);
+            await context.SaveChangesAsync();
+        }
+
+        var player1 = new PlayerCharacterEntity
+        {
+            Id = Guid.Empty,
+            CampagneId = entity1.Id,
+            CharacterName = "Kardan",
+            PlayerUserId = user.Id.Value,
+            RpgCharacterConfiguration = "vbnjklökjhg",
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.PlayerCharacters.AddAsync(player1);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var response = await _client.GetAsync("/campagne/getcampagne/" + entity1.Id);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseParsed = await response.Content.ReadAsAsync<Campagne>();
+        responseParsed.Should().NotBeNull();
+        responseParsed.Id.Value.Should().Be(entity1.Id);
+    }
 
-        return user!;
+    [Fact]
+    public async Task GetCampagneByIdAsync_ShouldReturnUnauthorizedForCampagneWhereUserIsNotPlayer()
+    {
+        // arrange
+        var user = await ConfigureLoggedInUser();
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(
+            ContextFactory!,
+            Mapper!,
+            usernameOverride: "Username2"
+        );
+        var user3 = await RpgDbContextHelpers.CreateUserInDb(
+            ContextFactory!,
+            Mapper!,
+            usernameOverride: "Username3"
+        );
+
+        var entity1 = new CampagneEntity
+        {
+            Id = Guid.Empty,
+            CampagneName = "CampagneName1",
+            DmUserId = user2.Id.Value,
+            JoinCode = "123-123",
+            RpgConfiguration = "asdf",
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.Campagnes.AddAsync(entity1);
+            await context.SaveChangesAsync();
+        }
+        var player1 = new PlayerCharacterEntity
+        {
+            Id = Guid.Empty,
+            CampagneId = entity1.Id,
+            CharacterName = "Kardan",
+            PlayerUserId = user3.Id.Value,
+            RpgCharacterConfiguration = "vbnjklökjhg",
+        };
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.PlayerCharacters.AddAsync(player1);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var response = await _client.GetAsync("/campagne/getcampagne/" + entity1.Id);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }

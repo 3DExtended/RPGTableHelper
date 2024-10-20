@@ -1,4 +1,7 @@
+using System.Net;
+using System.Net.Http.Headers;
 using AutoMapper;
+using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -6,12 +9,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid.Options;
+using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Options;
+using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.Api.Tests.Base;
 
@@ -209,5 +215,32 @@ public abstract class ControllerTestBase
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected async Task<User> ConfigureLoggedInUser()
+    {
+        // arrange
+        var user = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!);
+
+        var jwtOptions = new JwtOptions
+        {
+            Issuer = "api",
+            Audience = "api",
+            Key = string.Join("", Enumerable.Repeat("asdfasdf", 200)),
+            NumberOfSecondsToExpire = 12000,
+        };
+
+        var tokenGenerator = new JWTTokenGenerator(SystemClock, jwtOptions);
+
+        var jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
+
+        // act
+        var response = await _client.GetAsync("/SignIn/testlogin");
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        return user!;
     }
 }
