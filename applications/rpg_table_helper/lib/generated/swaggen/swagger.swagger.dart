@@ -47,6 +47,49 @@ abstract class Swagger extends ChopperService {
     return _$Swagger(newClient);
   }
 
+  ///Creates a new campagne with the calling user as dm.
+  Future<chopper.Response<CampagneIdentifier>> campagneCreatecampagnePost(
+      {required CampagneCreateDto? body}) {
+    generatedMapping.putIfAbsent(
+        CampagneIdentifier, () => CampagneIdentifier.fromJsonFactory);
+
+    return _campagneCreatecampagnePost(body: body);
+  }
+
+  ///Creates a new campagne with the calling user as dm.
+  @Post(
+    path: '/Campagne/createcampagne',
+    optionalBody: true,
+  )
+  Future<chopper.Response<CampagneIdentifier>> _campagneCreatecampagnePost(
+      {@Body() required CampagneCreateDto? body});
+
+  ///Returns a list of campagnes this user is the dm of.
+  Future<chopper.Response<List<Campagne>>> campagneGetcampagnesGet() {
+    generatedMapping.putIfAbsent(Campagne, () => Campagne.fromJsonFactory);
+
+    return _campagneGetcampagnesGet();
+  }
+
+  ///Returns a list of campagnes this user is the dm of.
+  @Get(path: '/Campagne/getcampagnes')
+  Future<chopper.Response<List<Campagne>>> _campagneGetcampagnesGet();
+
+  ///Returns a single of campagne.
+  ///@param campagneid The id of the desired campagne
+  Future<chopper.Response<Campagne>> campagneGetcampagneCampagneidGet(
+      {required String? campagneid}) {
+    generatedMapping.putIfAbsent(Campagne, () => Campagne.fromJsonFactory);
+
+    return _campagneGetcampagneCampagneidGet(campagneid: campagneid);
+  }
+
+  ///Returns a single of campagne.
+  ///@param campagneid The id of the desired campagne
+  @Get(path: '/Campagne/getcampagne/{campagneid}')
+  Future<chopper.Response<Campagne>> _campagneGetcampagneCampagneidGet(
+      {@Path('campagneid') required String? campagneid});
+
   ///Returns the minimal app version supported by this api.
   Future<chopper.Response<String>> publicGetminimalversionGet() {
     return _publicGetminimalversionGet();
@@ -131,8 +174,8 @@ abstract class Swagger extends ChopperService {
   @Get(path: '/SignIn/testlogin')
   Future<chopper.Response<String>> _signInTestloginGet();
 
-  ///
-  ///@param username
+  ///Returns the encryption challenge for a given username.
+  ///@param username The username of the desired encryption challenge
   Future<chopper.Response<String>>
       signInGetloginchallengeforusernameUsernamePost({
     required String? username,
@@ -142,8 +185,8 @@ abstract class Swagger extends ChopperService {
         username: username, body: body);
   }
 
-  ///
-  ///@param username
+  ///Returns the encryption challenge for a given username.
+  ///@param username The username of the desired encryption challenge
   @Post(
     path: '/SignIn/getloginchallengeforusername/{username}',
     optionalBody: true,
@@ -154,22 +197,23 @@ abstract class Swagger extends ChopperService {
     @Body() required EncryptedMessageWrapperDto? body,
   });
 
-  ///
-  Future<chopper.Response<String>> signInLoginPost({required LoginDto? body}) {
+  ///Performs the login with username and password.
+  Future<chopper.Response<String>> signInLoginPost(
+      {required LoginWithUsernameAndPasswordDto? body}) {
     return _signInLoginPost(body: body);
   }
 
-  ///
+  ///Performs the login with username and password.
   @Post(
     path: '/SignIn/login',
     optionalBody: true,
   )
   Future<chopper.Response<String>> _signInLoginPost(
-      {@Body() required LoginDto? body});
+      {@Body() required LoginWithUsernameAndPasswordDto? body});
 
   ///
   Future<chopper.Response<String>> signInLoginwithapplePost(
-      {required AppleLoginDto? body}) {
+      {required AppleLoginDetails? body}) {
     return _signInLoginwithapplePost(body: body);
   }
 
@@ -179,7 +223,7 @@ abstract class Swagger extends ChopperService {
     optionalBody: true,
   )
   Future<chopper.Response<String>> _signInLoginwithapplePost(
-      {@Body() required AppleLoginDto? body});
+      {@Body() required AppleLoginDetails? body});
 
   ///
   Future<chopper.Response<String>> signInLoginwithgooglePost(
@@ -195,13 +239,13 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<String>> _signInLoginwithgooglePost(
       {@Body() required GoogleLoginDto? body});
 
-  ///
+  ///Requests an reset password email for the user.
   Future<chopper.Response<String>> signInRequestresetpasswordPost(
       {required ResetPasswordRequestDto? body}) {
     return _signInRequestresetpasswordPost(body: body);
   }
 
-  ///
+  ///Requests an reset password email for the user.
   @Post(
     path: '/SignIn/requestresetpassword',
     optionalBody: true,
@@ -209,13 +253,13 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<String>> _signInRequestresetpasswordPost(
       {@Body() required ResetPasswordRequestDto? body});
 
-  ///
+  ///Completes the password reset requests by providing the reset code from the email.
   Future<chopper.Response<String>> signInResetpasswordPost(
       {required ResetPasswordDto? body}) {
     return _signInResetpasswordPost(body: body);
   }
 
-  ///
+  ///Completes the password reset requests by providing the reset code from the email.
   @Post(
     path: '/SignIn/resetpassword',
     optionalBody: true,

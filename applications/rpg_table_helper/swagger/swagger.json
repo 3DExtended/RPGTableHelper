@@ -5,6 +5,260 @@
         "version": "v1.0"
     },
     "paths": {
+        "/Campagne/createcampagne": {
+            "post": {
+                "tags": [
+                    "Campagne"
+                ],
+                "summary": "Creates a new campagne with the calling user as dm.",
+                "requestBody": {
+                    "description": "The creation details",
+                    "content": {
+                        "application/json-patch+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CampagneCreateDto"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CampagneCreateDto"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CampagneCreateDto"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CampagneCreateDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The id of the newly created campagne",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CampagneIdentifier"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CampagneIdentifier"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CampagneIdentifier"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If the data provided is invalid",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "If you are not logged in",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Campagne/getcampagnes": {
+            "get": {
+                "tags": [
+                    "Campagne"
+                ],
+                "summary": "Returns a list of campagnes this user is the dm of.",
+                "responses": {
+                    "200": {
+                        "description": "A list of all campagnes for this user as dm",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Campagne"
+                                    }
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Campagne"
+                                    }
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Campagne"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If there was an error retrieving the campagnes",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "If you are not logged in",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Campagne/getcampagne/{campagneid}": {
+            "get": {
+                "tags": [
+                    "Campagne"
+                ],
+                "summary": "Returns a single of campagne.",
+                "description": "You must be the dm or a player in this campagne",
+                "parameters": [{
+                    "name": "campagneid",
+                    "in": "path",
+                    "description": "The id of the desired campagne",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "The campagne",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Campagne"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Campagne"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Campagne"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If there was an error retrieving the campagnes",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "If you are not logged in or you are not allowed to see this campagne",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/Public/getminimalversion": {
             "get": {
                 "tags": [
@@ -447,15 +701,19 @@
                 "tags": [
                     "SignIn"
                 ],
+                "summary": "Returns the encryption challenge for a given username.",
+                "description": "Please note that the client has to provide an RSA public\r\nkey in order to receive the encrypted challenge dictionary.",
                 "parameters": [{
                     "name": "username",
                     "in": "path",
+                    "description": "The username of the desired encryption challenge",
                     "required": true,
                     "schema": {
                         "type": "string"
                     }
                 }],
                 "requestBody": {
+                    "description": "The public RSA key of the client",
                     "content": {
                         "application/json-patch+json": {
                             "schema": {
@@ -481,7 +739,27 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Returns the encrypted challenge dict for the user.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If request is not valid (user not found, key not valid, etc.)",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -508,33 +786,55 @@
                 "tags": [
                     "SignIn"
                 ],
+                "summary": "Performs the login with username and password.",
                 "requestBody": {
+                    "description": "The username and password",
                     "content": {
                         "application/json-patch+json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LoginDto"
+                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LoginDto"
+                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
                             }
                         },
                         "text/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LoginDto"
+                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
                             }
                         },
                         "application/*+json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LoginDto"
+                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Returns the jwt for the user",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "If username or password did not match",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -565,22 +865,22 @@
                     "content": {
                         "application/json-patch+json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDto"
+                                "$ref": "#/components/schemas/AppleLoginDetails"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDto"
+                                "$ref": "#/components/schemas/AppleLoginDetails"
                             }
                         },
                         "text/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDto"
+                                "$ref": "#/components/schemas/AppleLoginDetails"
                             }
                         },
                         "application/*+json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDto"
+                                "$ref": "#/components/schemas/AppleLoginDetails"
                             }
                         }
                     }
@@ -667,7 +967,9 @@
                 "tags": [
                     "SignIn"
                 ],
+                "summary": "Requests an reset password email for the user.",
                 "requestBody": {
+                    "description": "The username and email for the user requesting the reset",
                     "content": {
                         "application/json-patch+json": {
                             "schema": {
@@ -693,7 +995,27 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Returns the text \"Email sent\"",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If username or password did not match",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -720,7 +1042,9 @@
                 "tags": [
                     "SignIn"
                 ],
+                "summary": "Completes the password reset requests by providing the reset code from the email.",
                 "requestBody": {
+                    "description": "The username and email for the user requesting the reset",
                     "content": {
                         "application/json-patch+json": {
                             "schema": {
@@ -746,7 +1070,27 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Returns the text \"New password set\"",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "If username, email or reset code did not match",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -771,7 +1115,7 @@
     },
     "components": {
         "schemas": {
-            "AppleLoginDto": {
+            "AppleLoginDetails": {
                 "required": [
                     "authorizationCode",
                     "identityToken"
@@ -780,13 +1124,70 @@
                 "properties": {
                     "authorizationCode": {
                         "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the Apple Identity Token."
+                        "type": "string"
                     },
                     "identityToken": {
                         "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Campagne": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/CampagneIdentifier"
+                    },
+                    "creationDate": {
                         "type": "string",
-                        "description": "Gets or sets the Apple Identity Token."
+                        "format": "date-time"
+                    },
+                    "lastModifiedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "rpgConfiguration": {
+                        "$ref": "#/components/schemas/StringOption"
+                    },
+                    "campagneName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "joinCode": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "dmUserId": {
+                        "$ref": "#/components/schemas/UserIdentifier"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CampagneCreateDto": {
+                "required": [
+                    "campagneName"
+                ],
+                "type": "object",
+                "properties": {
+                    "rpgConfiguration": {
+                        "type": "string",
+                        "description": "This is the json serialized configuration of the rpg",
+                        "nullable": true
+                    },
+                    "campagneName": {
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CampagneIdentifier": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "format": "uuid"
                     }
                 },
                 "additionalProperties": false
@@ -833,7 +1234,7 @@
                 "additionalProperties": false,
                 "description": "Data Transfer Object for Google login information."
             },
-            "LoginDto": {
+            "LoginWithUsernameAndPasswordDto": {
                 "required": [
                     "username",
                     "userSecretByEncryptionChallenge"
@@ -935,7 +1336,7 @@
             "ResetPasswordDto": {
                 "required": [
                     "email",
-                    "newPassword",
+                    "newHashedPassword",
                     "resetCode",
                     "username"
                 ],
@@ -947,7 +1348,7 @@
                         "description": "Gets or sets the email address of the user requesting a password reset.",
                         "format": "email"
                     },
-                    "newPassword": {
+                    "newHashedPassword": {
                         "minLength": 1,
                         "type": "string",
                         "description": "Gets or sets the user requested updated password of the user."
@@ -986,6 +1387,30 @@
                 },
                 "additionalProperties": false,
                 "description": "Data Transfer Object for password reset requests."
+            },
+            "StringOption": {
+                "type": "object",
+                "properties": {
+                    "isNone": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "isSome": {
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "UserIdentifier": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "additionalProperties": false
             }
         },
         "securitySchemes": {

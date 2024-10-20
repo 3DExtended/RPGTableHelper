@@ -18,6 +18,43 @@ final class _$Swagger extends Swagger {
   final Type definitionType = Swagger;
 
   @override
+  Future<Response<CampagneIdentifier>> _campagneCreatecampagnePost(
+      {required CampagneCreateDto? body}) {
+    final Uri $url = Uri.parse('/Campagne/createcampagne');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<CampagneIdentifier, CampagneIdentifier>($request);
+  }
+
+  @override
+  Future<Response<List<Campagne>>> _campagneGetcampagnesGet() {
+    final Uri $url = Uri.parse('/Campagne/getcampagnes');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<Campagne>, Campagne>($request);
+  }
+
+  @override
+  Future<Response<Campagne>> _campagneGetcampagneCampagneidGet(
+      {required String? campagneid}) {
+    final Uri $url = Uri.parse('/Campagne/getcampagne/${campagneid}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<Campagne, Campagne>($request);
+  }
+
+  @override
   Future<Response<String>> _publicGetminimalversionGet() {
     final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(
@@ -113,7 +150,8 @@ final class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<String>> _signInLoginPost({required LoginDto? body}) {
+  Future<Response<String>> _signInLoginPost(
+      {required LoginWithUsernameAndPasswordDto? body}) {
     final Uri $url = Uri.parse('/SignIn/login');
     final $body = body;
     final Request $request = Request(
@@ -127,7 +165,7 @@ final class _$Swagger extends Swagger {
 
   @override
   Future<Response<String>> _signInLoginwithapplePost(
-      {required AppleLoginDto? body}) {
+      {required AppleLoginDetails? body}) {
     final Uri $url = Uri.parse('/SignIn/loginwithapple');
     final $body = body;
     final Request $request = Request(

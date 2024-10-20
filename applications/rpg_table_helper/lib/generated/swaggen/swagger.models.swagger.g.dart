@@ -6,16 +6,69 @@ part of 'swagger.models.swagger.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-AppleLoginDto _$AppleLoginDtoFromJson(Map<String, dynamic> json) =>
-    AppleLoginDto(
+AppleLoginDetails _$AppleLoginDetailsFromJson(Map<String, dynamic> json) =>
+    AppleLoginDetails(
       authorizationCode: json['authorizationCode'] as String,
       identityToken: json['identityToken'] as String,
     );
 
-Map<String, dynamic> _$AppleLoginDtoToJson(AppleLoginDto instance) =>
+Map<String, dynamic> _$AppleLoginDetailsToJson(AppleLoginDetails instance) =>
     <String, dynamic>{
       'authorizationCode': instance.authorizationCode,
       'identityToken': instance.identityToken,
+    };
+
+Campagne _$CampagneFromJson(Map<String, dynamic> json) => Campagne(
+      id: json['id'] == null
+          ? null
+          : CampagneIdentifier.fromJson(json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+      rpgConfiguration: json['rpgConfiguration'] == null
+          ? null
+          : StringOption.fromJson(
+              json['rpgConfiguration'] as Map<String, dynamic>),
+      campagneName: json['campagneName'] as String?,
+      joinCode: json['joinCode'] as String?,
+      dmUserId: json['dmUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(json['dmUserId'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$CampagneToJson(Campagne instance) => <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'rpgConfiguration': instance.rpgConfiguration?.toJson(),
+      'campagneName': instance.campagneName,
+      'joinCode': instance.joinCode,
+      'dmUserId': instance.dmUserId?.toJson(),
+    };
+
+CampagneCreateDto _$CampagneCreateDtoFromJson(Map<String, dynamic> json) =>
+    CampagneCreateDto(
+      rpgConfiguration: json['rpgConfiguration'] as String?,
+      campagneName: json['campagneName'] as String,
+    );
+
+Map<String, dynamic> _$CampagneCreateDtoToJson(CampagneCreateDto instance) =>
+    <String, dynamic>{
+      'rpgConfiguration': instance.rpgConfiguration,
+      'campagneName': instance.campagneName,
+    };
+
+CampagneIdentifier _$CampagneIdentifierFromJson(Map<String, dynamic> json) =>
+    CampagneIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$CampagneIdentifierToJson(CampagneIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
     };
 
 EncryptedMessageWrapperDto _$EncryptedMessageWrapperDtoFromJson(
@@ -54,13 +107,17 @@ Map<String, dynamic> _$GoogleLoginDtoToJson(GoogleLoginDto instance) =>
       'identityToken': instance.identityToken,
     };
 
-LoginDto _$LoginDtoFromJson(Map<String, dynamic> json) => LoginDto(
+LoginWithUsernameAndPasswordDto _$LoginWithUsernameAndPasswordDtoFromJson(
+        Map<String, dynamic> json) =>
+    LoginWithUsernameAndPasswordDto(
       username: json['username'] as String,
       userSecretByEncryptionChallenge:
           json['userSecretByEncryptionChallenge'] as String,
     );
 
-Map<String, dynamic> _$LoginDtoToJson(LoginDto instance) => <String, dynamic>{
+Map<String, dynamic> _$LoginWithUsernameAndPasswordDtoToJson(
+        LoginWithUsernameAndPasswordDto instance) =>
+    <String, dynamic>{
       'username': instance.username,
       'userSecretByEncryptionChallenge':
           instance.userSecretByEncryptionChallenge,
@@ -121,7 +178,7 @@ Map<String, dynamic> _$RegisterWithUsernamePasswordDtoToJson(
 ResetPasswordDto _$ResetPasswordDtoFromJson(Map<String, dynamic> json) =>
     ResetPasswordDto(
       email: json['email'] as String,
-      newPassword: json['newPassword'] as String,
+      newHashedPassword: json['newHashedPassword'] as String,
       resetCode: json['resetCode'] as String,
       username: json['username'] as String,
     );
@@ -129,7 +186,7 @@ ResetPasswordDto _$ResetPasswordDtoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ResetPasswordDtoToJson(ResetPasswordDto instance) =>
     <String, dynamic>{
       'email': instance.email,
-      'newPassword': instance.newPassword,
+      'newHashedPassword': instance.newHashedPassword,
       'resetCode': instance.resetCode,
       'username': instance.username,
     };
@@ -146,4 +203,25 @@ Map<String, dynamic> _$ResetPasswordRequestDtoToJson(
     <String, dynamic>{
       'email': instance.email,
       'username': instance.username,
+    };
+
+StringOption _$StringOptionFromJson(Map<String, dynamic> json) => StringOption(
+      isNone: json['isNone'] as bool?,
+      isSome: json['isSome'] as bool?,
+    );
+
+Map<String, dynamic> _$StringOptionToJson(StringOption instance) =>
+    <String, dynamic>{
+      'isNone': instance.isNone,
+      'isSome': instance.isSome,
+    };
+
+UserIdentifier _$UserIdentifierFromJson(Map<String, dynamic> json) =>
+    UserIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$UserIdentifierToJson(UserIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
     };
