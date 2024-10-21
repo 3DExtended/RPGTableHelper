@@ -1,5 +1,4 @@
 import 'package:chopper/chopper.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.swagger.dart';
@@ -9,8 +8,7 @@ abstract class IApiConnectorService {
   final bool isMock;
   IApiConnectorService({required this.isMock});
 
-  Future<Swagger?> getApiConnector(
-    BuildContext? context, {
+  Future<Swagger?> getApiConnector({
     bool requiresJwt = true,
   });
   Future<String?> getJwt();
@@ -43,8 +41,7 @@ class ApiConnectorService extends IApiConnectorService {
   }
 
   @override
-  Future<Swagger?> getApiConnector(
-    BuildContext? context, {
+  Future<Swagger?> getApiConnector({
     bool requiresJwt = true,
   }) async {
     if (_cachedSwaggerClient != null) {
@@ -59,7 +56,7 @@ class ApiConnectorService extends IApiConnectorService {
       interceptorsToUse
           .add(HeadersInterceptor({'Authorization': headerContent}));
     } else {
-      if (requiresJwt && (context == null || !context.mounted)) {
+      if (requiresJwt) {
         return null;
       }
     }
@@ -75,6 +72,7 @@ class ApiConnectorService extends IApiConnectorService {
             baseUrl: Uri.parse(apiBaseUrl)));
 
     if (requiresJwt) {
+      // only cache if jwt is configured
       _cachedSwaggerClient = tempClient;
     }
 
@@ -111,8 +109,7 @@ class MockApiConnectorService extends IApiConnectorService {
   void clearCache() {}
 
   @override
-  Future<Swagger?> getApiConnector(
-    BuildContext? context, {
+  Future<Swagger?> getApiConnector({
     bool requiresJwt = true,
   }) {
     return Future.value(connectorOverride);
