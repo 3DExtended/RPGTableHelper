@@ -71,6 +71,20 @@ Map<String, dynamic> _$CampagneIdentifierToJson(CampagneIdentifier instance) =>
       'value': instance.$value,
     };
 
+CampagneIdentifierOption _$CampagneIdentifierOptionFromJson(
+        Map<String, dynamic> json) =>
+    CampagneIdentifierOption(
+      isNone: json['isNone'] as bool?,
+      isSome: json['isSome'] as bool?,
+    );
+
+Map<String, dynamic> _$CampagneIdentifierOptionToJson(
+        CampagneIdentifierOption instance) =>
+    <String, dynamic>{
+      'isNone': instance.isNone,
+      'isSome': instance.isSome,
+    };
+
 EncryptedMessageWrapperDto _$EncryptedMessageWrapperDtoFromJson(
         Map<String, dynamic> json) =>
     EncryptedMessageWrapperDto(
@@ -121,6 +135,72 @@ Map<String, dynamic> _$LoginWithUsernameAndPasswordDtoToJson(
       'username': instance.username,
       'userSecretByEncryptionChallenge':
           instance.userSecretByEncryptionChallenge,
+    };
+
+PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
+    PlayerCharacter(
+      id: json['id'] == null
+          ? null
+          : PlayerCharacterIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+      rpgCharacterConfiguration: json['rpgCharacterConfiguration'] == null
+          ? null
+          : StringOption.fromJson(
+              json['rpgCharacterConfiguration'] as Map<String, dynamic>),
+      characterName: json['characterName'] as String?,
+      playerUserId: json['playerUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(
+              json['playerUserId'] as Map<String, dynamic>),
+      campagneId: json['campagneId'] == null
+          ? null
+          : CampagneIdentifierOption.fromJson(
+              json['campagneId'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$PlayerCharacterToJson(PlayerCharacter instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'rpgCharacterConfiguration': instance.rpgCharacterConfiguration?.toJson(),
+      'characterName': instance.characterName,
+      'playerUserId': instance.playerUserId?.toJson(),
+      'campagneId': instance.campagneId?.toJson(),
+    };
+
+PlayerCharacterCreateDto _$PlayerCharacterCreateDtoFromJson(
+        Map<String, dynamic> json) =>
+    PlayerCharacterCreateDto(
+      rpgCharacterConfiguration: json['rpgCharacterConfiguration'] as String?,
+      characterName: json['characterName'] as String,
+      campagneId: json['campagneId'] as String?,
+    );
+
+Map<String, dynamic> _$PlayerCharacterCreateDtoToJson(
+        PlayerCharacterCreateDto instance) =>
+    <String, dynamic>{
+      'rpgCharacterConfiguration': instance.rpgCharacterConfiguration,
+      'characterName': instance.characterName,
+      'campagneId': instance.campagneId,
+    };
+
+PlayerCharacterIdentifier _$PlayerCharacterIdentifierFromJson(
+        Map<String, dynamic> json) =>
+    PlayerCharacterIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$PlayerCharacterIdentifierToJson(
+        PlayerCharacterIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
     };
 
 ProblemDetails _$ProblemDetailsFromJson(Map<String, dynamic> json) =>

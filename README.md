@@ -4,6 +4,8 @@
 
 ```dotnet outdated -u:Prompt -r```
 
+__NOTE:__ To find, why a given dependency is in your repository search all ```obj/project.assets``` files.
+
 ## Code Coverage
 
 ```sh
@@ -81,30 +83,30 @@ You're in a common situation faced by developers who work across different front
 
 ## Solution: Use Identity Provider + OAuth
 
-**Recommended Stack**:
+__Recommended Stack__:
 
-1. **.NET Core / ASP.NET Identity** for user management and local username/password signup.
-2. **OAuth/OIDC providers** for social login (Google, Apple, etc.).
-3. **JWT (JSON Web Tokens)** for secure token-based authentication, easily integrating with mobile apps (Flutter) and SPAs (Angular, React).
-4. **Authorization Policies** in .NET to manage role-based or claims-based access control.
+1. __.NET Core / ASP.NET Identity__ for user management and local username/password signup.
+2. __OAuth/OIDC providers__ for social login (Google, Apple, etc.).
+3. __JWT (JSON Web Tokens)__ for secure token-based authentication, easily integrating with mobile apps (Flutter) and SPAs (Angular, React).
+4. __Authorization Policies__ in .NET to manage role-based or claims-based access control.
 
 ### Suggested Setup Overview
 
-1. **Backend: ASP.NET Core Identity with OAuth Providers**
+1. __Backend: ASP.NET Core Identity with OAuth Providers__
    - ASP.NET Core has built-in identity and authentication/authorization systems.
    - It integrates with OAuth providers like Google, Facebook, Apple, etc., using OAuth2/OpenID Connect.
 
-2. **JWT Authentication**:
+2. __JWT Authentication__:
    - ASP.NET Core can issue JWTs (JSON Web Tokens) which are self-contained tokens that hold user information securely and can be consumed by mobile apps (Flutter) and web apps (React, Angular) for authentication and authorization.
    - Since JWT is a standard, any future frontends or APIs you build will be able to authenticate with the same system.
 
-3. **Frontend: Implement OAuth and JWT Handling**
+3. __Frontend: Implement OAuth and JWT Handling__
    - Use libraries like `flutter_oauth2` or `flutter_firebase_auth` for Flutter apps, and `oidc-client-js` for Angular/React to handle OAuth sign-in on the client side.
    - For traditional username/password signup, make a POST request to your backend API to register, and retrieve a JWT upon successful authentication.
 
 ### Detailed Implementation
 
-#### 1. **ASP.NET Core Identity with OAuth (Backend)**
+#### 1. __ASP.NET Core Identity with OAuth (Backend)__
 
 Start with ASP.NET Core Identity to manage local signups and logins.
 
@@ -183,7 +185,7 @@ Start with ASP.NET Core Identity to manage local signups and logins.
   }
   ```
 
-#### 2. **Frontend OAuth & JWT Handling**
+#### 2. __Frontend OAuth & JWT Handling__
 
 ##### Flutter
 
@@ -219,7 +221,7 @@ Start with ASP.NET Core Identity to manage local signups and logins.
   userManager.signinRedirect();  // OAuth sign-in
   ```
 
-#### 3. **Authorization**: Claims-based or Role-based Access Control
+#### 3. __Authorization__: Claims-based or Role-based Access Control
 
 - In .NET Core, you can define custom roles and policies to handle different levels of authorization.
   
@@ -232,15 +234,15 @@ Start with ASP.NET Core Identity to manage local signups and logins.
 
 ### Key Advantages
 
-1. **Unified Backend**: ASP.NET Core Identity handles both local and external authentication. It’s extensible, meaning you can add more providers (e.g., Facebook, Twitter) in the future.
-2. **Token-Based Authentication**: JWT is ideal for mobile apps, SPAs, and APIs. Your frontend can easily verify and refresh tokens without a persistent session.
-3. **Frontend Agnostic**: Whether you build an app in Flutter, Angular, React, or any future technology, JWT-based auth ensures consistent and reusable backend authentication.
-4. **Scalable Authorization**: Role-based access control (RBAC) and claims-based authorization ensure that your solution is flexible for complex permissions in future projects.
+1. __Unified Backend__: ASP.NET Core Identity handles both local and external authentication. It’s extensible, meaning you can add more providers (e.g., Facebook, Twitter) in the future.
+2. __Token-Based Authentication__: JWT is ideal for mobile apps, SPAs, and APIs. Your frontend can easily verify and refresh tokens without a persistent session.
+3. __Frontend Agnostic__: Whether you build an app in Flutter, Angular, React, or any future technology, JWT-based auth ensures consistent and reusable backend authentication.
+4. __Scalable Authorization__: Role-based access control (RBAC) and claims-based authorization ensure that your solution is flexible for complex permissions in future projects.
 
 ### Steps to Future-Proof
 
-1. **Modular OAuth Providers**: If new vendors or login methods emerge, you can easily extend the system by adding new authentication schemes.
-2. **Upgrade-Ready JWT Handling**: JWT allows easy scaling to microservices or distributed architectures, as each service can independently verify the token.
+1. __Modular OAuth Providers__: If new vendors or login methods emerge, you can easily extend the system by adding new authentication schemes.
+2. __Upgrade-Ready JWT Handling__: JWT allows easy scaling to microservices or distributed architectures, as each service can independently verify the token.
 
 By adopting this approach, you'll have a flexible, scalable authentication and authorization system that works across multiple frontends and can adapt as new login methods or frontends emerge.
 
@@ -250,17 +252,17 @@ okay i have some questions regarding this solution: how Can a user register with
 
 ### ChatGPT
 
-To allow users to register with a **username and password** in the **ASP.NET Core Identity** setup, you need to expose an API endpoint that handles user registration. ASP.NET Core Identity provides a straightforward way to handle this through its user management services.
+To allow users to register with a __username and password__ in the __ASP.NET Core Identity__ setup, you need to expose an API endpoint that handles user registration. ASP.NET Core Identity provides a straightforward way to handle this through its user management services.
 
 ### Steps for Username and Password Registration
 
-1. **Define a Registration API Endpoint**: You'll create a POST endpoint where users can send their username, password, and any other registration details. This endpoint will use `UserManager` provided by ASP.NET Core Identity to register the user.
+1. __Define a Registration API Endpoint__: You'll create a POST endpoint where users can send their username, password, and any other registration details. This endpoint will use `UserManager` provided by ASP.NET Core Identity to register the user.
 
-2. **Handling User Registration**: In the API endpoint, you can use the `UserManager.CreateAsync()` method to create a user with the specified username and password.
+2. __Handling User Registration__: In the API endpoint, you can use the `UserManager.CreateAsync()` method to create a user with the specified username and password.
 
 ### Example of Username and Password Registration
 
-1. **Controller Code**:
+1. __Controller Code__:
 
 In your controller, you will define a method for registration. It will take the user’s credentials (username, password) in the request body, create the user, and return an appropriate response.
 
@@ -306,7 +308,7 @@ public class AuthController : ControllerBase
 }
 ```
 
-2. **Register Model**:
+2. __Register Model__:
    You'll need a model to accept the registration details (e.g., `Username`, `Password`, and optionally `Email`).
 
 ```csharp
@@ -320,10 +322,10 @@ public class RegisterModel
 }
 ```
 
-3. **UserManager Service**:
+3. __UserManager Service__:
    The `UserManager<IdentityUser>` service is responsible for interacting with the Identity system to handle user creation. The `CreateAsync()` method will attempt to create the user with the provided username and password, and it will enforce any password policies that you've defined in your Identity configuration.
 
-4. **Password Requirements**:
+4. __Password Requirements__:
    You can configure password requirements in the `Startup.cs` (or `Program.cs` if using .NET 6 and beyond) during the Identity setup.
 
 ```csharp
@@ -340,10 +342,10 @@ services.Configure<IdentityOptions>(options =>
 
 ### Explanation
 
-- **UserManager**: The `UserManager` service is injected into the controller and is responsible for managing user-related operations like creating new users, updating passwords, finding users by username, etc.
-- **CreateAsync**: This method creates the user with the provided credentials. It takes two arguments:
-  1. **IdentityUser**: This object represents the user to be created and includes properties like `UserName` and `Email`.
-  2. **Password**: The password will be hashed and stored securely in the database.
+- __UserManager__: The `UserManager` service is injected into the controller and is responsible for managing user-related operations like creating new users, updating passwords, finding users by username, etc.
+- __CreateAsync__: This method creates the user with the provided credentials. It takes two arguments:
+  1. __IdentityUser__: This object represents the user to be created and includes properties like `UserName` and `Email`.
+  2. __Password__: The password will be hashed and stored securely in the database.
 
 ### Result
 
@@ -395,7 +397,7 @@ This way, once a user registers, they can start using the app without having to 
 
 ### Next Steps
 
-- Once registration is set up, you’ll need to create a **login** endpoint (if it's not OAuth) that issues JWT tokens when users log in with their username and password. This will allow your frontend apps to authenticate users and access protected resources.
+- Once registration is set up, you’ll need to create a __login__ endpoint (if it's not OAuth) that issues JWT tokens when users log in with their username and password. This will allow your frontend apps to authenticate users and access protected resources.
 
 ### Peter
 
@@ -403,20 +405,20 @@ how would that login endpoint look like
 
 ### ChatGPT
 
-The login endpoint will allow users to authenticate using their username and password. Once authenticated, the server will generate and return a **JWT (JSON Web Token)** that the client (Flutter, React, Angular, etc.) can use for subsequent requests to access protected resources.
+The login endpoint will allow users to authenticate using their username and password. Once authenticated, the server will generate and return a __JWT (JSON Web Token)__ that the client (Flutter, React, Angular, etc.) can use for subsequent requests to access protected resources.
 
-Below is a detailed implementation of the **login endpoint** in an ASP.NET Core API using **ASP.NET Core Identity**.
+Below is a detailed implementation of the __login endpoint__ in an ASP.NET Core API using __ASP.NET Core Identity__.
 
 ### Steps to Implement the Login Endpoint
 
-1. **Accept Login Credentials**: The login endpoint will receive the user's credentials (username and password) via a POST request.
-2. **Validate Credentials**: Use `SignInManager` to check the credentials against the stored data.
-3. **Generate JWT**: If the credentials are valid, generate a JWT that includes user claims, such as username and roles.
-4. **Return JWT**: Return the token to the client for use in authorization.
+1. __Accept Login Credentials__: The login endpoint will receive the user's credentials (username and password) via a POST request.
+2. __Validate Credentials__: Use `SignInManager` to check the credentials against the stored data.
+3. __Generate JWT__: If the credentials are valid, generate a JWT that includes user claims, such as username and roles.
+4. __Return JWT__: Return the token to the client for use in authorization.
 
 ### Example Code for Login Endpoint
 
-#### 1. **Login Endpoint in Controller**
+#### 1. __Login Endpoint in Controller__
 
 Here is how you can implement the login functionality in a controller.
 
@@ -496,7 +498,7 @@ public class AuthController : ControllerBase
 }
 ```
 
-#### 2. **LoginModel**
+#### 2. __LoginModel__
 
 The `LoginModel` class will hold the data passed in the body of the request (username and password).
 
@@ -508,7 +510,7 @@ public class LoginModel
 }
 ```
 
-#### 3. **Token Generation Method**
+#### 3. __Token Generation Method__
 
 The `GenerateJwtToken` method creates the JWT using the user's details. This method:
 
@@ -517,7 +519,7 @@ The `GenerateJwtToken` method creates the JWT using the user's details. This met
 - Sets a token expiration time (e.g., 30 minutes).
 - Uses `JwtSecurityTokenHandler` to generate the token.
 
-### 4. **JWT Configuration**
+### 4. __JWT Configuration__
 
 You'll need to store the JWT settings in your `appsettings.json` file.
 
@@ -531,7 +533,7 @@ You'll need to store the JWT settings in your `appsettings.json` file.
 
 Make sure the `Key` is a secure, long, and randomly generated string.
 
-### 5. **Configure JWT in Startup.cs**
+### 5. __Configure JWT in Startup.cs__
 
 In the `Startup.cs` (or `Program.cs` for newer .NET versions), you need to configure JWT authentication in the `ConfigureServices` method:
 
@@ -585,7 +587,7 @@ If the credentials are correct, the response will include the JWT token:
 }
 ```
 
-The client can then store this JWT (e.g., in **localStorage** for web apps or **secure storage** for mobile apps like Flutter) and use it in the `Authorization` header for subsequent API calls.
+The client can then store this JWT (e.g., in __localStorage__ for web apps or __secure storage__ for mobile apps like Flutter) and use it in the `Authorization` header for subsequent API calls.
 
 ```http
 GET /api/protected-resource
@@ -604,9 +606,9 @@ Authorization: Bearer <token>
 
 ### Key Points
 
-- **SignInManager**: ASP.NET Core’s `SignInManager` handles password validation and user sign-in checks.
-- **JWT Claims**: You can add custom claims such as roles, permissions, or other user-specific data when generating the JWT.
-- **JWT Security**: Ensure the JWT signing key is long and random, and that you handle token expiration and refresh strategies for longer sessions if needed.
+- __SignInManager__: ASP.NET Core’s `SignInManager` handles password validation and user sign-in checks.
+- __JWT Claims__: You can add custom claims such as roles, permissions, or other user-specific data when generating the JWT.
+- __JWT Security__: Ensure the JWT signing key is long and random, and that you handle token expiration and refresh strategies for longer sessions if needed.
 
 This setup allows your frontends to authenticate users using their username and password, receive a JWT, and then use that token to authorize subsequent requests.
 
@@ -616,33 +618,33 @@ I know that oauth or oidc uses a concept with access tokens and refresh tokens. 
 
 ### Chat GPT
 
-You're absolutely right! Implementing **access tokens** and **refresh tokens** is a common practice in OAuth2 and OIDC, and it's a wise approach when using JWTs to ensure a balance between **security** and **user experience**.
+You're absolutely right! Implementing __access tokens__ and __refresh tokens__ is a common practice in OAuth2 and OIDC, and it's a wise approach when using JWTs to ensure a balance between __security__ and __user experience__.
 
 Access tokens (short-lived) ensure security, while refresh tokens (long-lived) allow users to maintain their session without re-authenticating frequently. This pattern avoids requiring users to log in again every time their JWT expires.
 
 ### Why Use Access Tokens and Refresh Tokens?
 
-- **Access Token**: A short-lived token (e.g., 30 minutes) used for authorization in API requests. If compromised, its short lifespan limits the potential damage.
-- **Refresh Token**: A long-lived token (e.g., several days or weeks) stored securely and used to obtain new access tokens when the current one expires, without requiring the user to log in again.
-- **Security**: Since access tokens expire quickly, they reduce the risk of prolonged misuse if stolen. Refresh tokens are generally more securely stored (e.g., HttpOnly cookies) and can be revoked if a session is compromised.
+- __Access Token__: A short-lived token (e.g., 30 minutes) used for authorization in API requests. If compromised, its short lifespan limits the potential damage.
+- __Refresh Token__: A long-lived token (e.g., several days or weeks) stored securely and used to obtain new access tokens when the current one expires, without requiring the user to log in again.
+- __Security__: Since access tokens expire quickly, they reduce the risk of prolonged misuse if stolen. Refresh tokens are generally more securely stored (e.g., HttpOnly cookies) and can be revoked if a session is compromised.
 
 ### Recommended Flow: Access Token + Refresh Token
 
-1. **User logs in** and receives two tokens:
-   - **Access token** (short-lived JWT)
-   - **Refresh token** (long-lived)
+1. __User logs in__ and receives two tokens:
+   - __Access token__ (short-lived JWT)
+   - __Refresh token__ (long-lived)
 
-2. **Access token** is used in each API call to authenticate the user.
+2. __Access token__ is used in each API call to authenticate the user.
 
-3. When the **access token expires**, the frontend uses the **refresh token** to request a new access token from the backend.
+3. When the __access token expires__, the frontend uses the __refresh token__ to request a new access token from the backend.
 
-4. **Refresh token rotation**: Every time a new access token is issued, a new refresh token is issued as well, making the previous refresh token invalid. This minimizes the risk of refresh token replay attacks.
+4. __Refresh token rotation__: Every time a new access token is issued, a new refresh token is issued as well, making the previous refresh token invalid. This minimizes the risk of refresh token replay attacks.
 
-5. **Revoke tokens**: If the user logs out or if there is suspicious activity, both the access token and the refresh token are invalidated, forcing the user to log in again.
+5. __Revoke tokens__: If the user logs out or if there is suspicious activity, both the access token and the refresh token are invalidated, forcing the user to log in again.
 
 ### Implementation Details
 
-#### 1. **Login Endpoint with Refresh Token**
+#### 1. __Login Endpoint with Refresh Token__
 
 When the user logs in successfully, in addition to the access token, return a refresh token:
 
@@ -674,7 +676,7 @@ public async Task<IActionResult> Login([FromBody] LoginModel model)
 }
 ```
 
-#### 2. **Generate Refresh Token**
+#### 2. __Generate Refresh Token__
 
 A refresh token is typically a long random string. You’ll generate it using a cryptographically secure method:
 
@@ -692,7 +694,7 @@ private string GenerateRefreshToken()
 
 You would also need to store the refresh token in the database along with the user ID, its expiration time, and whether it has been revoked (if you’re using refresh token rotation).
 
-#### 3. **Token Refresh Endpoint**
+#### 3. __Token Refresh Endpoint__
 
 This endpoint is used by the client to get a new access token when the current one expires. The client sends the refresh token, and if it’s valid, the server issues a new access token (and possibly a new refresh token).
 
@@ -727,35 +729,35 @@ public async Task<IActionResult> Refresh([FromBody] TokenModel model)
 }
 ```
 
-#### 4. **Token Storage**
+#### 4. __Token Storage__
 
-- **Access token**: The frontend (React, Angular, Flutter) stores this in memory or local storage and includes it in the `Authorization` header when making API requests:
+- __Access token__: The frontend (React, Angular, Flutter) stores this in memory or local storage and includes it in the `Authorization` header when making API requests:
   
   ```
   Authorization: Bearer <access_token>
   ```
 
-- **Refresh token**: The refresh token should be stored securely. The safest place to store it in a web application is in an **HttpOnly cookie** that is only accessible by the server, preventing client-side JavaScript from accessing it (this mitigates XSS attacks). In mobile apps (Flutter), you can store it in secure storage.
+- __Refresh token__: The refresh token should be stored securely. The safest place to store it in a web application is in an __HttpOnly cookie__ that is only accessible by the server, preventing client-side JavaScript from accessing it (this mitigates XSS attacks). In mobile apps (Flutter), you can store it in secure storage.
 
-#### 5. **Security Best Practices**
+#### 5. __Security Best Practices__
 
-1. **Refresh Token Rotation**: Each time the client requests a new access token with the refresh token, return a new refresh token and invalidate the old one. This reduces the risk of a stolen refresh token being reused.
+1. __Refresh Token Rotation__: Each time the client requests a new access token with the refresh token, return a new refresh token and invalidate the old one. This reduces the risk of a stolen refresh token being reused.
 
-2. **Token Expiration**:
-   - **Access tokens** should have a short expiration time (e.g., 15–30 minutes).
-   - **Refresh tokens** should have a longer expiration time (e.g., days, weeks, or even months), but set a reasonable expiry to minimize long-term exposure.
+2. __Token Expiration__:
+   - __Access tokens__ should have a short expiration time (e.g., 15–30 minutes).
+   - __Refresh tokens__ should have a longer expiration time (e.g., days, weeks, or even months), but set a reasonable expiry to minimize long-term exposure.
 
-3. **Revoke Refresh Tokens**:
+3. __Revoke Refresh Tokens__:
    - Provide the ability to revoke refresh tokens when users log out or when suspicious activity is detected.
    - This requires storing refresh tokens in a database so that they can be invalidated if necessary.
 
-4. **Secure Storage**:
-   - **HttpOnly Cookies**: For web applications, store the refresh token in an HttpOnly, Secure cookie to prevent it from being accessed via JavaScript.
-   - **Secure Storage for Mobile**: For mobile applications (Flutter), use secure storage like `flutter_secure_storage` to store the refresh token safely.
+4. __Secure Storage__:
+   - __HttpOnly Cookies__: For web applications, store the refresh token in an HttpOnly, Secure cookie to prevent it from being accessed via JavaScript.
+   - __Secure Storage for Mobile__: For mobile applications (Flutter), use secure storage like `flutter_secure_storage` to store the refresh token safely.
 
-5. **Token Binding**: Optionally, bind the refresh token to some client-specific information (such as IP address or device) so that it can only be used from the original client that requested it.
+5. __Token Binding__: Optionally, bind the refresh token to some client-specific information (such as IP address or device) so that it can only be used from the original client that requested it.
 
-#### 6. **Logging Out**
+#### 6. __Logging Out__
 
 When the user logs out, both the access and refresh tokens should be invalidated.
 
@@ -787,8 +789,8 @@ When the user logs in, the server sends back both the access and refresh tokens:
 
 The frontend stores these tokens appropriately:
 
-- **Access token**: In local storage or memory (but never in cookies due to CSRF risk).
-- **Refresh token**: In a secure cookie (web) or secure storage (mobile).
+- __Access token__: In local storage or memory (but never in cookies due to CSRF risk).
+- __Refresh token__: In a secure cookie (web) or secure storage (mobile).
 
 ### Refresh Flow
 
@@ -800,9 +802,9 @@ The frontend stores these tokens appropriately:
 
 ### Summary of Benefits
 
-- **Improved Security**: By using short-lived access tokens, the risk from token theft is minimized. Refresh tokens can be stored securely and revoked if compromised.
-- **Better User Experience**: Users don't need to log in again after their access token expires, as long as they have a valid refresh token.
-- **Scalability**: The system can easily handle multiple devices or sessions per user by tracking refresh tokens in a database.
+- __Improved Security__: By using short-lived access tokens, the risk from token theft is minimized. Refresh tokens can be stored securely and revoked if compromised.
+- __Better User Experience__: Users don't need to log in again after their access token expires, as long as they have a valid refresh token.
+- __Scalability__: The system can easily handle multiple devices or sessions per user by tracking refresh tokens in a database.
 
 By following this approach, you'll create a secure, flexible, and user-friendly authentication system for your apps.
 
@@ -812,34 +814,34 @@ in case of the login through Sign in with Apple: how are refresh tokens handled?
 
 ### ChatGPT
 
-When integrating **Sign in with Apple** or other **OAuth2** providers (like Google, Facebook), refresh tokens are handled differently compared to local authentication (username/password). In OAuth2 flows, the **refresh token** is issued by the **OAuth provider** (in this case, Apple), not your backend server. Your role is to securely store and manage that refresh token, and use it to obtain new access tokens from Apple when needed.
+When integrating __Sign in with Apple__ or other __OAuth2__ providers (like Google, Facebook), refresh tokens are handled differently compared to local authentication (username/password). In OAuth2 flows, the __refresh token__ is issued by the __OAuth provider__ (in this case, Apple), not your backend server. Your role is to securely store and manage that refresh token, and use it to obtain new access tokens from Apple when needed.
 
-Here's how **refresh tokens** are handled when using **Sign in with Apple**:
+Here's how __refresh tokens__ are handled when using __Sign in with Apple__:
 
-### 1. **OAuth2 Flow with Apple (Authorization Code Flow)**
+### 1. __OAuth2 Flow with Apple (Authorization Code Flow)__
 
-**Sign in with Apple** follows the **OAuth2 Authorization Code Flow**, which looks like this:
+__Sign in with Apple__ follows the __OAuth2 Authorization Code Flow__, which looks like this:
 
-1. **User initiates sign-in**: The user clicks the "Sign in with Apple" button, which redirects them to Apple’s login page.
-2. **Authorization code is received**: After successful login, Apple redirects back to your backend with an **authorization code**.
-3. **Backend exchanges the authorization code**: Your backend server sends the authorization code to Apple's servers in exchange for:
-   - An **access token** (short-lived, typically ~60 minutes).
-   - A **refresh token** (long-lived, used to get new access tokens when the short-lived one expires).
-   - An **ID token** (which contains user information, similar to a JWT).
+1. __User initiates sign-in__: The user clicks the "Sign in with Apple" button, which redirects them to Apple’s login page.
+2. __Authorization code is received__: After successful login, Apple redirects back to your backend with an __authorization code__.
+3. __Backend exchanges the authorization code__: Your backend server sends the authorization code to Apple's servers in exchange for:
+   - An __access token__ (short-lived, typically ~60 minutes).
+   - A __refresh token__ (long-lived, used to get new access tokens when the short-lived one expires).
+   - An __ID token__ (which contains user information, similar to a JWT).
 
-### 2. **Apple’s Refresh Token Handling**
+### 2. __Apple’s Refresh Token Handling__
 
-- **Access tokens** (short-lived) are what you use to make API calls to Apple's services on behalf of the user.
-- **Refresh tokens** (long-lived) allow your backend to request new access tokens from Apple without requiring the user to log in again.
-- **Apple refresh tokens do not expire** unless they are explicitly revoked by the user or by Apple.
+- __Access tokens__ (short-lived) are what you use to make API calls to Apple's services on behalf of the user.
+- __Refresh tokens__ (long-lived) allow your backend to request new access tokens from Apple without requiring the user to log in again.
+- __Apple refresh tokens do not expire__ unless they are explicitly revoked by the user or by Apple.
 
-### 3. **Handling Refresh Tokens in Sign in with Apple Flow**
+### 3. __Handling Refresh Tokens in Sign in with Apple Flow__
 
-Here's how to manage refresh tokens for **Sign in with Apple**:
+Here's how to manage refresh tokens for __Sign in with Apple__:
 
-#### A. **Receiving and Storing the Refresh Token**
+#### A. __Receiving and Storing the Refresh Token__
 
-When your backend exchanges the authorization code for tokens, Apple responds with both an **access token** and a **refresh token**.
+When your backend exchanges the authorization code for tokens, Apple responds with both an __access token__ and a __refresh token__.
 
 Example of the token exchange request:
 
@@ -868,12 +870,12 @@ Apple's response will look like this:
 
 You should:
 
-1. **Store the access token** (in memory or cache) for immediate use in API calls (expires in ~60 minutes).
-2. **Store the refresh token securely** (e.g., in a database) to refresh the access token when it expires.
+1. __Store the access token__ (in memory or cache) for immediate use in API calls (expires in ~60 minutes).
+2. __Store the refresh token securely__ (e.g., in a database) to refresh the access token when it expires.
 
-#### B. **Refreshing the Access Token**
+#### B. __Refreshing the Access Token__
 
-When the access token expires, your backend uses the stored **refresh token** to get a new access token. This is similar to the `/refresh` token flow in local authentication, but you now send the refresh token to Apple's servers to get a new access token.
+When the access token expires, your backend uses the stored __refresh token__ to get a new access token. This is similar to the `/refresh` token flow in local authentication, but you now send the refresh token to Apple's servers to get a new access token.
 
 Example of refreshing the token:
 
@@ -900,18 +902,18 @@ Apple responds with a new access token:
 
 You can then:
 
-1. **Replace the old access token** with the new one.
-2. **Optionally replace the old refresh token** if Apple sends a new one (Apple may or may not return a new refresh token with each request).
+1. __Replace the old access token__ with the new one.
+2. __Optionally replace the old refresh token__ if Apple sends a new one (Apple may or may not return a new refresh token with each request).
 
-#### C. **Token Expiration and Revocation**
+#### C. __Token Expiration and Revocation__
 
-- **Access tokens** expire after a short period (~60 minutes), so you should refresh them when they expire.
-- **Refresh tokens** issued by Apple **don’t expire** but can be revoked:
+- __Access tokens__ expire after a short period (~60 minutes), so you should refresh them when they expire.
+- __Refresh tokens__ issued by Apple __don’t expire__ but can be revoked:
   - The user revokes authorization from the Apple ID settings.
   - The app is uninstalled, which invalidates the refresh token.
   - The backend should handle cases where a refresh token is revoked and guide the user to re-authenticate if needed.
 
-### 4. **Revoking Tokens (Logout/Signout)**
+### 4. __Revoking Tokens (Logout/Signout)__
 
 If the user logs out or you want to revoke their session, you can send a request to Apple's token revocation endpoint:
 
@@ -927,20 +929,20 @@ token_type_hint=refresh_token
 
 This endpoint allows you to revoke either the access token or refresh token, ensuring that the user's session is fully terminated.
 
-### 5. **Securing Refresh Tokens**
+### 5. __Securing Refresh Tokens__
 
-- **Secure storage**: Store refresh tokens securely in your database. Treat them like passwords; they should be encrypted or stored in a secure vault.
-- **Access token usage**: Only keep access tokens in memory or in a short-lived cache since they expire quickly and have limited use.
-- **Rotation**: Apple doesn’t typically rotate refresh tokens on each request, but you should be prepared to handle cases where Apple sends a new refresh token with the response.
+- __Secure storage__: Store refresh tokens securely in your database. Treat them like passwords; they should be encrypted or stored in a secure vault.
+- __Access token usage__: Only keep access tokens in memory or in a short-lived cache since they expire quickly and have limited use.
+- __Rotation__: Apple doesn’t typically rotate refresh tokens on each request, but you should be prepared to handle cases where Apple sends a new refresh token with the response.
 
 ### Example: Full Flow for Sign in with Apple
 
-1. **User initiates login via Apple**.
-2. **Backend exchanges the authorization code** for an access token, refresh token, and ID token.
-3. **Backend stores the refresh token** securely and uses the access token for immediate API calls.
-4. **Access token expires**: Backend detects this and uses the stored refresh token to request a new access token.
-5. **Access token is refreshed**: Backend stores the new access token and, if necessary, replaces the refresh token.
-6. **User logs out**: Backend revokes both the access token and refresh token via Apple’s revocation endpoint.
+1. __User initiates login via Apple__.
+2. __Backend exchanges the authorization code__ for an access token, refresh token, and ID token.
+3. __Backend stores the refresh token__ securely and uses the access token for immediate API calls.
+4. __Access token expires__: Backend detects this and uses the stored refresh token to request a new access token.
+5. __Access token is refreshed__: Backend stores the new access token and, if necessary, replaces the refresh token.
+6. __User logs out__: Backend revokes both the access token and refresh token via Apple’s revocation endpoint.
 
 ### Implementation Example in .NET
 
@@ -1010,8 +1012,8 @@ public async Task RevokeAppleToken(string token)
 
 ### Summary
 
-- **Access tokens** from Apple expire quickly (~60 minutes).
-- **Refresh tokens** are used to obtain new access tokens and are long-lived unless revoked.
+- __Access tokens__ from Apple expire quickly (~60 minutes).
+- __Refresh tokens__ are used to obtain new access tokens and are long-lived unless revoked.
 - You securely store refresh tokens in your database and use them to refresh access tokens as needed.
 - Apple's refresh tokens are not rotated frequently, but you must handle cases where they are.
 - In the case of token expiration or logout, tokens can be revoked using Apple's token revocation endpoint.
@@ -1022,61 +1024,61 @@ would you recommend using my own refresh tokens once a user has signed in with a
 
 ### ChatGPT
 
-Using your own **refresh tokens** in conjunction with an **OIDC provider** can be a practical and flexible approach, but it depends on your use case, security model, and how much control you want over the session lifecycle. Let me explain the pros and cons of handling **refresh tokens** yourself versus relying solely on the OIDC provider's refresh tokens.
+Using your own __refresh tokens__ in conjunction with an __OIDC provider__ can be a practical and flexible approach, but it depends on your use case, security model, and how much control you want over the session lifecycle. Let me explain the pros and cons of handling __refresh tokens__ yourself versus relying solely on the OIDC provider's refresh tokens.
 
 ### When to Use Your Own Refresh Tokens
 
-1. **Unified Token Management**: If you want to manage all user sessions (both local users and OIDC users) in a consistent way, handling your own **refresh tokens** provides you with full control over token expiration, revocation, and rotation.
+1. __Unified Token Management__: If you want to manage all user sessions (both local users and OIDC users) in a consistent way, handling your own __refresh tokens__ provides you with full control over token expiration, revocation, and rotation.
 
-2. **Custom Token Lifetimes**: You can define custom lifetimes for both access and refresh tokens that fit your application's needs. This allows you to control how long a user session lasts, independently of the OIDC provider's token expiration policies.
+2. __Custom Token Lifetimes__: You can define custom lifetimes for both access and refresh tokens that fit your application's needs. This allows you to control how long a user session lasts, independently of the OIDC provider's token expiration policies.
 
-3. **Improved Security Handling**:
+3. __Improved Security Handling__:
    - If you want to avoid storing or depending on the OIDC provider's refresh tokens in your backend (especially if the provider does not rotate refresh tokens), using your own refresh tokens can allow you to securely handle session persistence with regular token rotation.
-   - You can implement features like **refresh token rotation** and **revoke** refresh tokens on your own, giving you better control over security and preventing refresh token misuse or replay attacks.
+   - You can implement features like __refresh token rotation__ and __revoke__ refresh tokens on your own, giving you better control over security and preventing refresh token misuse or replay attacks.
 
-4. **Standardizing Across Providers**: Different providers (e.g., Google, Apple, Facebook) have varying token management mechanisms (e.g., Apple's refresh tokens don't expire but can be revoked, while Google rotates them). By issuing your own refresh tokens, you can standardize the way tokens are handled across all OIDC providers.
+4. __Standardizing Across Providers__: Different providers (e.g., Google, Apple, Facebook) have varying token management mechanisms (e.g., Apple's refresh tokens don't expire but can be revoked, while Google rotates them). By issuing your own refresh tokens, you can standardize the way tokens are handled across all OIDC providers.
 
-5. **Control Over Session Duration**: Some OIDC providers don’t give much flexibility in terms of token expiration and session management. By using your own refresh tokens, you can control session duration regardless of the provider’s limitations.
+5. __Control Over Session Duration__: Some OIDC providers don’t give much flexibility in terms of token expiration and session management. By using your own refresh tokens, you can control session duration regardless of the provider’s limitations.
 
-6. **Persistent Sessions Across Providers**: If your app supports multiple OIDC providers, issuing your own refresh tokens creates a unified mechanism for handling user sessions across various identity providers. This can simplify your backend logic and enable a more seamless session management approach.
+6. __Persistent Sessions Across Providers__: If your app supports multiple OIDC providers, issuing your own refresh tokens creates a unified mechanism for handling user sessions across various identity providers. This can simplify your backend logic and enable a more seamless session management approach.
 
 ### How It Works
 
-1. **User Signs In with OIDC Provider**: After the user successfully signs in with an OIDC provider (e.g., Apple, Google), you get an **access token** and a **refresh token** from the provider.
+1. __User Signs In with OIDC Provider__: After the user successfully signs in with an OIDC provider (e.g., Apple, Google), you get an __access token__ and a __refresh token__ from the provider.
 
-2. **Issue Your Own Access and Refresh Tokens**: After the user is authenticated, instead of using the provider's access token directly in your app, you issue your own **JWT-based access token** and a **refresh token**.
+2. __Issue Your Own Access and Refresh Tokens__: After the user is authenticated, instead of using the provider's access token directly in your app, you issue your own __JWT-based access token__ and a __refresh token__.
 
-   - **Access token**: Short-lived JWT token (e.g., 15–30 minutes) used to authenticate requests to your backend.
-   - **Refresh token**: Long-lived token (e.g., a few days or weeks) stored in your database and used to issue new access tokens when needed.
+   - __Access token__: Short-lived JWT token (e.g., 15–30 minutes) used to authenticate requests to your backend.
+   - __Refresh token__: Long-lived token (e.g., a few days or weeks) stored in your database and used to issue new access tokens when needed.
 
-3. **Handle Token Expiration and Refresh**:
+3. __Handle Token Expiration and Refresh__:
    - When the access token expires, the frontend can request a new one using your refresh token.
    - Your backend checks the validity of your refresh token and, if valid, issues a new access token and optionally a new refresh token.
-   - **Important**: You’ll need to ensure that the OIDC provider’s access token is still valid (since your tokens are independent), but you can do this in the background, asynchronously, or at regular intervals.
+   - __Important__: You’ll need to ensure that the OIDC provider’s access token is still valid (since your tokens are independent), but you can do this in the background, asynchronously, or at regular intervals.
 
-4. **Optional: Store OIDC Provider's Refresh Token**: You might still want to store the provider's refresh token in case your own tokens expire and you need to fetch a new access token from the provider to maintain the user's authenticated session. This can serve as a backup in case of extended sessions.
+4. __Optional: Store OIDC Provider's Refresh Token__: You might still want to store the provider's refresh token in case your own tokens expire and you need to fetch a new access token from the provider to maintain the user's authenticated session. This can serve as a backup in case of extended sessions.
 
-5. **Revoke OIDC Tokens Upon Logout**: When the user logs out, you should:
+5. __Revoke OIDC Tokens Upon Logout__: When the user logs out, you should:
    - Revoke both your own refresh token and access token.
    - Optionally revoke the OIDC provider's refresh token by calling the provider’s revocation endpoint.
 
 ### Example Flow
 
-#### 1. **Sign In with Google (OIDC)**
+#### 1. __Sign In with Google (OIDC)__
 
-- The user signs in using Google, and Google returns an **ID token**, **access token**, and optionally a **refresh token**.
+- The user signs in using Google, and Google returns an __ID token__, __access token__, and optionally a __refresh token__.
   
-#### 2. **Issue Your Own Tokens**
+#### 2. __Issue Your Own Tokens__
 
-- After verifying the Google ID token and user info, issue your own **JWT access token** (short-lived) and a **refresh token** (long-lived) to the user.
+- After verifying the Google ID token and user info, issue your own __JWT access token__ (short-lived) and a __refresh token__ (long-lived) to the user.
   
-#### 3. **Refresh Access Token**
+#### 3. __Refresh Access Token__
 
 - When the access token expires, the frontend sends a request to your `/refresh` endpoint, providing your refresh token.
   
-- Your backend checks your refresh token, and if valid, issues a new **access token** and optionally a new refresh token.
+- Your backend checks your refresh token, and if valid, issues a new __access token__ and optionally a new refresh token.
 
-#### 4. **Optional: Use OIDC Provider's Refresh Token**
+#### 4. __Optional: Use OIDC Provider's Refresh Token__
 
 - If your refresh token expires or the OIDC provider's access token expires, you can use the provider’s refresh token to get a new access token from them in the background.
 
@@ -1086,7 +1088,7 @@ Using your own **refresh tokens** in conjunction with an **OIDC provider** can b
 
 ### Example Implementation
 
-**1. Sign-In and Token Issuance (Backend)**:
+__1. Sign-In and Token Issuance (Backend)__:
 
 ```csharp
 [HttpPost("oidc-signin")]
@@ -1110,7 +1112,7 @@ public async Task<IActionResult> OidcSignIn([FromBody] OidcSignInModel model)
 }
 ```
 
-**2. Refresh Token Flow**:
+__2. Refresh Token Flow__:
 
 ```csharp
 [HttpPost("refresh")]
@@ -1132,7 +1134,7 @@ public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest model)
 }
 ```
 
-**3. Token Revocation (Logout)**:
+__3. Token Revocation (Logout)__:
 
 ```csharp
 [HttpPost("logout")]
@@ -1151,22 +1153,22 @@ public async Task<IActionResult> Logout([FromBody] LogoutModel model)
 
 ### Pros of Using Your Own Refresh Tokens
 
-1. **Consistency**: You have full control over how tokens are managed, regardless of which OIDC provider the user authenticates with. You can use the same token policies (expiration, rotation, revocation) for both local and external (OIDC) users.
+1. __Consistency__: You have full control over how tokens are managed, regardless of which OIDC provider the user authenticates with. You can use the same token policies (expiration, rotation, revocation) for both local and external (OIDC) users.
 
-2. **Custom Security**: You can implement custom security policies, such as more frequent token rotations, advanced session management, and custom token expiration settings, ensuring your application’s security model is followed.
+2. __Custom Security__: You can implement custom security policies, such as more frequent token rotations, advanced session management, and custom token expiration settings, ensuring your application’s security model is followed.
 
-3. **Flexibility**: You can easily extend or revoke sessions without relying on the OIDC provider’s token behavior.
+3. __Flexibility__: You can easily extend or revoke sessions without relying on the OIDC provider’s token behavior.
 
 ### Cons of Using Your Own Refresh Tokens
 
-1. **Complexity**: Adding your own token management system on top of OIDC can add complexity to your architecture. You’ll need to handle additional logic for checking the validity of your own tokens and potentially refreshing the OIDC provider’s tokens in the background.
+1. __Complexity__: Adding your own token management system on top of OIDC can add complexity to your architecture. You’ll need to handle additional logic for checking the validity of your own tokens and potentially refreshing the OIDC provider’s tokens in the background.
 
-2. **OIDC Refresh Token Usage**: In some cases, you may still need to store the OIDC provider’s refresh token (to get new access tokens from the provider), and managing both your refresh tokens and theirs can add some complexity.
+2. __OIDC Refresh Token Usage__: In some cases, you may still need to store the OIDC provider’s refresh token (to get new access tokens from the provider), and managing both your refresh tokens and theirs can add some complexity.
 
-3. **Extra Storage**: You’ll need to securely store your refresh tokens in a database and manage their lifecycle (rotation, expiration, revocation).
+3. __Extra Storage__: You’ll need to securely store your refresh tokens in a database and manage their lifecycle (rotation, expiration, revocation).
 
 ### Conclusion
 
-Using your own **refresh tokens** after a user signs in with an OIDC provider can offer significant benefits in terms of **unified session management**, **security control**, and **token consistency** across different authentication methods. However, it adds some complexity since you’ll need to maintain your own token infrastructure while potentially handling OIDC provider tokens in the background.
+Using your own __refresh tokens__ after a user signs in with an OIDC provider can offer significant benefits in terms of __unified session management__, __security control__, and __token consistency__ across different authentication methods. However, it adds some complexity since you’ll need to maintain your own token infrastructure while potentially handling OIDC provider tokens in the background.
 
 In most cases, it's a great approach if you want to standardize token management across your application, allowing you to handle sessions in a consistent and secure way.

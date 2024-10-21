@@ -55,6 +55,48 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<PlayerCharacterIdentifier>>
+      _playerCharacterCreatecharacterPost(
+          {required PlayerCharacterCreateDto? body}) {
+    final Uri $url = Uri.parse('/PlayerCharacter/createcharacter');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client
+        .send<PlayerCharacterIdentifier, PlayerCharacterIdentifier>($request);
+  }
+
+  @override
+  Future<Response<List<PlayerCharacter>>>
+      _playerCharacterGetplayercharactersGet() {
+    final Uri $url = Uri.parse('/PlayerCharacter/getplayercharacters');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<PlayerCharacter>, PlayerCharacter>($request);
+  }
+
+  @override
+  Future<Response<PlayerCharacter>>
+      _playerCharacterGetplayercharacterPlayercharacteridGet(
+          {required String? playercharacterid}) {
+    final Uri $url =
+        Uri.parse('/PlayerCharacter/getplayercharacter/${playercharacterid}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<PlayerCharacter, PlayerCharacter>($request);
+  }
+
+  @override
   Future<Response<String>> _publicGetminimalversionGet() {
     final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(

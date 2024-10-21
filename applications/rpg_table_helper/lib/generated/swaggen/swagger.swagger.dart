@@ -90,6 +90,58 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<Campagne>> _campagneGetcampagneCampagneidGet(
       {@Path('campagneid') required String? campagneid});
 
+  ///Creates a new player character with the calling user as owner.
+  Future<chopper.Response<PlayerCharacterIdentifier>>
+      playerCharacterCreatecharacterPost(
+          {required PlayerCharacterCreateDto? body}) {
+    generatedMapping.putIfAbsent(PlayerCharacterIdentifier,
+        () => PlayerCharacterIdentifier.fromJsonFactory);
+
+    return _playerCharacterCreatecharacterPost(body: body);
+  }
+
+  ///Creates a new player character with the calling user as owner.
+  @Post(
+    path: '/PlayerCharacter/createcharacter',
+    optionalBody: true,
+  )
+  Future<chopper.Response<PlayerCharacterIdentifier>>
+      _playerCharacterCreatecharacterPost(
+          {@Body() required PlayerCharacterCreateDto? body});
+
+  ///Returns a list of player characters for the calling user.
+  Future<chopper.Response<List<PlayerCharacter>>>
+      playerCharacterGetplayercharactersGet() {
+    generatedMapping.putIfAbsent(
+        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+
+    return _playerCharacterGetplayercharactersGet();
+  }
+
+  ///Returns a list of player characters for the calling user.
+  @Get(path: '/PlayerCharacter/getplayercharacters')
+  Future<chopper.Response<List<PlayerCharacter>>>
+      _playerCharacterGetplayercharactersGet();
+
+  ///Returns a single playerCharacter.
+  ///@param playercharacterid The id of the desired playerCharacter
+  Future<chopper.Response<PlayerCharacter>>
+      playerCharacterGetplayercharacterPlayercharacteridGet(
+          {required String? playercharacterid}) {
+    generatedMapping.putIfAbsent(
+        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+
+    return _playerCharacterGetplayercharacterPlayercharacteridGet(
+        playercharacterid: playercharacterid);
+  }
+
+  ///Returns a single playerCharacter.
+  ///@param playercharacterid The id of the desired playerCharacter
+  @Get(path: '/PlayerCharacter/getplayercharacter/{playercharacterid}')
+  Future<chopper.Response<PlayerCharacter>>
+      _playerCharacterGetplayercharacterPlayercharacteridGet(
+          {@Path('playercharacterid') required String? playercharacterid});
+
   ///Returns the minimal app version supported by this api.
   Future<chopper.Response<String>> publicGetminimalversionGet() {
     return _publicGetminimalversionGet();

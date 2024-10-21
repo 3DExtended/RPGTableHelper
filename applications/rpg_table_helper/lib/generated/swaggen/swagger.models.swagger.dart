@@ -288,6 +288,59 @@ extension $CampagneIdentifierExtension on CampagneIdentifier {
 }
 
 @JsonSerializable(explicitToJson: true)
+class CampagneIdentifierOption {
+  const CampagneIdentifierOption({
+    this.isNone,
+    this.isSome,
+  });
+
+  factory CampagneIdentifierOption.fromJson(Map<String, dynamic> json) =>
+      _$CampagneIdentifierOptionFromJson(json);
+
+  static const toJsonFactory = _$CampagneIdentifierOptionToJson;
+  Map<String, dynamic> toJson() => _$CampagneIdentifierOptionToJson(this);
+
+  @JsonKey(name: 'isNone')
+  final bool? isNone;
+  @JsonKey(name: 'isSome')
+  final bool? isSome;
+  static const fromJsonFactory = _$CampagneIdentifierOptionFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is CampagneIdentifierOption &&
+            (identical(other.isNone, isNone) ||
+                const DeepCollectionEquality().equals(other.isNone, isNone)) &&
+            (identical(other.isSome, isSome) ||
+                const DeepCollectionEquality().equals(other.isSome, isSome)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(isNone) ^
+      const DeepCollectionEquality().hash(isSome) ^
+      runtimeType.hashCode;
+}
+
+extension $CampagneIdentifierOptionExtension on CampagneIdentifierOption {
+  CampagneIdentifierOption copyWith({bool? isNone, bool? isSome}) {
+    return CampagneIdentifierOption(
+        isNone: isNone ?? this.isNone, isSome: isSome ?? this.isSome);
+  }
+
+  CampagneIdentifierOption copyWithWrapped(
+      {Wrapped<bool?>? isNone, Wrapped<bool?>? isSome}) {
+    return CampagneIdentifierOption(
+        isNone: (isNone != null ? isNone.value : this.isNone),
+        isSome: (isSome != null ? isSome.value : this.isSome));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class EncryptedMessageWrapperDto {
   const EncryptedMessageWrapperDto({
     this.encryptedMessage,
@@ -501,6 +554,248 @@ extension $LoginWithUsernameAndPasswordDtoExtension
             (userSecretByEncryptionChallenge != null
                 ? userSecretByEncryptionChallenge.value
                 : this.userSecretByEncryptionChallenge));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class PlayerCharacter {
+  const PlayerCharacter({
+    this.id,
+    this.creationDate,
+    this.lastModifiedAt,
+    this.rpgCharacterConfiguration,
+    this.characterName,
+    this.playerUserId,
+    this.campagneId,
+  });
+
+  factory PlayerCharacter.fromJson(Map<String, dynamic> json) =>
+      _$PlayerCharacterFromJson(json);
+
+  static const toJsonFactory = _$PlayerCharacterToJson;
+  Map<String, dynamic> toJson() => _$PlayerCharacterToJson(this);
+
+  @JsonKey(name: 'id')
+  final PlayerCharacterIdentifier? id;
+  @JsonKey(name: 'creationDate')
+  final DateTime? creationDate;
+  @JsonKey(name: 'lastModifiedAt')
+  final DateTime? lastModifiedAt;
+  @JsonKey(name: 'rpgCharacterConfiguration')
+  final StringOption? rpgCharacterConfiguration;
+  @JsonKey(name: 'characterName')
+  final String? characterName;
+  @JsonKey(name: 'playerUserId')
+  final UserIdentifier? playerUserId;
+  @JsonKey(name: 'campagneId')
+  final CampagneIdentifierOption? campagneId;
+  static const fromJsonFactory = _$PlayerCharacterFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is PlayerCharacter &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.creationDate, creationDate) ||
+                const DeepCollectionEquality()
+                    .equals(other.creationDate, creationDate)) &&
+            (identical(other.lastModifiedAt, lastModifiedAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.lastModifiedAt, lastModifiedAt)) &&
+            (identical(other.rpgCharacterConfiguration,
+                    rpgCharacterConfiguration) ||
+                const DeepCollectionEquality().equals(
+                    other.rpgCharacterConfiguration,
+                    rpgCharacterConfiguration)) &&
+            (identical(other.characterName, characterName) ||
+                const DeepCollectionEquality()
+                    .equals(other.characterName, characterName)) &&
+            (identical(other.playerUserId, playerUserId) ||
+                const DeepCollectionEquality()
+                    .equals(other.playerUserId, playerUserId)) &&
+            (identical(other.campagneId, campagneId) ||
+                const DeepCollectionEquality()
+                    .equals(other.campagneId, campagneId)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(id) ^
+      const DeepCollectionEquality().hash(creationDate) ^
+      const DeepCollectionEquality().hash(lastModifiedAt) ^
+      const DeepCollectionEquality().hash(rpgCharacterConfiguration) ^
+      const DeepCollectionEquality().hash(characterName) ^
+      const DeepCollectionEquality().hash(playerUserId) ^
+      const DeepCollectionEquality().hash(campagneId) ^
+      runtimeType.hashCode;
+}
+
+extension $PlayerCharacterExtension on PlayerCharacter {
+  PlayerCharacter copyWith(
+      {PlayerCharacterIdentifier? id,
+      DateTime? creationDate,
+      DateTime? lastModifiedAt,
+      StringOption? rpgCharacterConfiguration,
+      String? characterName,
+      UserIdentifier? playerUserId,
+      CampagneIdentifierOption? campagneId}) {
+    return PlayerCharacter(
+        id: id ?? this.id,
+        creationDate: creationDate ?? this.creationDate,
+        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+        rpgCharacterConfiguration:
+            rpgCharacterConfiguration ?? this.rpgCharacterConfiguration,
+        characterName: characterName ?? this.characterName,
+        playerUserId: playerUserId ?? this.playerUserId,
+        campagneId: campagneId ?? this.campagneId);
+  }
+
+  PlayerCharacter copyWithWrapped(
+      {Wrapped<PlayerCharacterIdentifier?>? id,
+      Wrapped<DateTime?>? creationDate,
+      Wrapped<DateTime?>? lastModifiedAt,
+      Wrapped<StringOption?>? rpgCharacterConfiguration,
+      Wrapped<String?>? characterName,
+      Wrapped<UserIdentifier?>? playerUserId,
+      Wrapped<CampagneIdentifierOption?>? campagneId}) {
+    return PlayerCharacter(
+        id: (id != null ? id.value : this.id),
+        creationDate:
+            (creationDate != null ? creationDate.value : this.creationDate),
+        lastModifiedAt: (lastModifiedAt != null
+            ? lastModifiedAt.value
+            : this.lastModifiedAt),
+        rpgCharacterConfiguration: (rpgCharacterConfiguration != null
+            ? rpgCharacterConfiguration.value
+            : this.rpgCharacterConfiguration),
+        characterName:
+            (characterName != null ? characterName.value : this.characterName),
+        playerUserId:
+            (playerUserId != null ? playerUserId.value : this.playerUserId),
+        campagneId: (campagneId != null ? campagneId.value : this.campagneId));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class PlayerCharacterCreateDto {
+  const PlayerCharacterCreateDto({
+    this.rpgCharacterConfiguration,
+    required this.characterName,
+    this.campagneId,
+  });
+
+  factory PlayerCharacterCreateDto.fromJson(Map<String, dynamic> json) =>
+      _$PlayerCharacterCreateDtoFromJson(json);
+
+  static const toJsonFactory = _$PlayerCharacterCreateDtoToJson;
+  Map<String, dynamic> toJson() => _$PlayerCharacterCreateDtoToJson(this);
+
+  @JsonKey(name: 'rpgCharacterConfiguration')
+  final String? rpgCharacterConfiguration;
+  @JsonKey(name: 'characterName')
+  final String characterName;
+  @JsonKey(name: 'campagneId')
+  final String? campagneId;
+  static const fromJsonFactory = _$PlayerCharacterCreateDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is PlayerCharacterCreateDto &&
+            (identical(other.rpgCharacterConfiguration,
+                    rpgCharacterConfiguration) ||
+                const DeepCollectionEquality().equals(
+                    other.rpgCharacterConfiguration,
+                    rpgCharacterConfiguration)) &&
+            (identical(other.characterName, characterName) ||
+                const DeepCollectionEquality()
+                    .equals(other.characterName, characterName)) &&
+            (identical(other.campagneId, campagneId) ||
+                const DeepCollectionEquality()
+                    .equals(other.campagneId, campagneId)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(rpgCharacterConfiguration) ^
+      const DeepCollectionEquality().hash(characterName) ^
+      const DeepCollectionEquality().hash(campagneId) ^
+      runtimeType.hashCode;
+}
+
+extension $PlayerCharacterCreateDtoExtension on PlayerCharacterCreateDto {
+  PlayerCharacterCreateDto copyWith(
+      {String? rpgCharacterConfiguration,
+      String? characterName,
+      String? campagneId}) {
+    return PlayerCharacterCreateDto(
+        rpgCharacterConfiguration:
+            rpgCharacterConfiguration ?? this.rpgCharacterConfiguration,
+        characterName: characterName ?? this.characterName,
+        campagneId: campagneId ?? this.campagneId);
+  }
+
+  PlayerCharacterCreateDto copyWithWrapped(
+      {Wrapped<String?>? rpgCharacterConfiguration,
+      Wrapped<String>? characterName,
+      Wrapped<String?>? campagneId}) {
+    return PlayerCharacterCreateDto(
+        rpgCharacterConfiguration: (rpgCharacterConfiguration != null
+            ? rpgCharacterConfiguration.value
+            : this.rpgCharacterConfiguration),
+        characterName:
+            (characterName != null ? characterName.value : this.characterName),
+        campagneId: (campagneId != null ? campagneId.value : this.campagneId));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class PlayerCharacterIdentifier {
+  const PlayerCharacterIdentifier({
+    this.$value,
+  });
+
+  factory PlayerCharacterIdentifier.fromJson(Map<String, dynamic> json) =>
+      _$PlayerCharacterIdentifierFromJson(json);
+
+  static const toJsonFactory = _$PlayerCharacterIdentifierToJson;
+  Map<String, dynamic> toJson() => _$PlayerCharacterIdentifierToJson(this);
+
+  @JsonKey(name: 'value')
+  final String? $value;
+  static const fromJsonFactory = _$PlayerCharacterIdentifierFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is PlayerCharacterIdentifier &&
+            (identical(other.$value, $value) ||
+                const DeepCollectionEquality().equals(other.$value, $value)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+}
+
+extension $PlayerCharacterIdentifierExtension on PlayerCharacterIdentifier {
+  PlayerCharacterIdentifier copyWith({String? $value}) {
+    return PlayerCharacterIdentifier($value: $value ?? this.$value);
+  }
+
+  PlayerCharacterIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+    return PlayerCharacterIdentifier(
+        $value: ($value != null ? $value.value : this.$value));
   }
 }
 
