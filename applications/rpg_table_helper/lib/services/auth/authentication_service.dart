@@ -35,8 +35,11 @@ abstract class IAuthenticationService {
 
   /// This method tries signup using username and password.
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
-  Future<HRResponse<SignInResult>> registerWithUsernameAndPassword(
-      {required String identityToken, required String authorizationCode});
+  Future<HRResponse<SignInResult>> registerWithUsernameAndPassword({
+    required String username,
+    required String email,
+    required String password,
+  });
 
   /// This method tries login using username and password.
   /// Returns, whether the login was successfull.
@@ -108,8 +111,11 @@ class AuthenticationService extends IAuthenticationService {
   }
 
   @override
-  Future<HRResponse<SignInResult>> registerWithUsernameAndPassword(
-      {required String identityToken, required String authorizationCode}) {
+  Future<HRResponse<SignInResult>> registerWithUsernameAndPassword({
+    required String username,
+    required String email,
+    required String password,
+  }) {
     // TODO: implement registerWithUsernameAndPassword
     throw UnimplementedError();
   }
@@ -145,8 +151,11 @@ class MockAuthenticationService extends IAuthenticationService {
   }
 
   @override
-  Future<HRResponse<SignInResult>> registerWithUsernameAndPassword(
-      {required String identityToken, required String authorizationCode}) {
+  Future<HRResponse<SignInResult>> registerWithUsernameAndPassword({
+    required String username,
+    required String email,
+    required String password,
+  }) {
     // TODO: implement registerWithUsernameAndPassword
     throw UnimplementedError();
   }

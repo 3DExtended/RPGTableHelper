@@ -9,6 +9,9 @@ import 'package:rpg_table_helper/components/signinbuttons/button_list.dart';
 import 'package:rpg_table_helper/components/signinbuttons/button_view.dart';
 import 'package:rpg_table_helper/components/signinbuttons/custom_sign_in_with_apple.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/helpers/validation_helpers.dart';
+import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -60,6 +63,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         passwordTextEditingController.text.length < 3) {
       return true;
     }
+    if (!usernameValid(usernameTextEditingController.text)) {
+      return true;
+    }
+    if (!passwordValid(passwordTextEditingController.text)) {
+      return true;
+    }
 
     return false;
   }
@@ -97,215 +106,222 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   borderRadius: BorderRadius.circular(32),
                 ),
-                child: SingleChildScrollView(
-                    child: FillRemainingSpace(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Login",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
+                child: Container(
+                  color: const Color.fromARGB(34, 67, 67, 67),
+                  child: SingleChildScrollView(
+                      child: FillRemainingSpace(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Login", // TODO localize
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium!
+                                .copyWith(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          HorizontalLine(),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          // LOGIN
+                          // Username Textfield
+                          CustomTextField(
+                            labelText: "Username", // TODO Localize
+                            textEditingController:
+                                usernameTextEditingController,
+                            keyboardType: TextInputType.name,
+                          ),
+
+                          // password Textfield
+                          CustomTextField(
+                            labelText: "Password", // TODO Localize
+                            textEditingController:
+                                passwordTextEditingController,
+                            password: true,
+                            keyboardType: TextInputType.visiblePassword,
+                          ),
+                          // login button
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: CustomButton(
+                                onPressed: isLoginButtonDisabled
+                                    ? null
+                                    : () async {
+                                        // TODO perform login
+                                        var service =
+                                            DependencyProvider.of(context)
+                                                .getService<
+                                                    IAuthenticationService>();
+
+                                        var signinResponse = await service
+                                            .loginWithUsernameAndPassword(
+                                                username:
+                                                    usernameTextEditingController
+                                                        .text,
+                                                password:
+                                                    passwordTextEditingController
+                                                        .text);
+                                        if (!mounted) return;
+
+                                        await signinResponse
+                                            .possiblyHandleError(context);
+
+                                        if (signinResponse.result == true) {
+                                          // TODO proceed to campagne or character selection
+                                        } else {
+                                          // TODO mark password and username fields as invalid
+                                        }
+                                      },
+                                label: "Login", // TODO localize
                               ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        HorizontalLine(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        // LOGIN
-                        // Username Textfield
-                        CustomTextField(
-                          labelText: "Username", // TODO Localize
-                          textEditingController: usernameTextEditingController,
-                          keyboardType: TextInputType.name,
-                        ),
-
-                        // password Textfield
-                        CustomTextField(
-                          labelText: "Password", // TODO Localize
-                          textEditingController: passwordTextEditingController,
-                          password: true,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                        // login button
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: CustomButton(
-                              onPressed: isLoginButtonDisabled
-                                  ? null
-                                  : () async {
-                                      // TODO perform login
-                                      var service = DependencyProvider.of(
-                                              context)
-                                          .getService<IAuthenticationService>();
-
-                                      var signinResponse = await service
-                                          .loginWithUsernameAndPassword(
-                                              username:
-                                                  usernameTextEditingController
-                                                      .text,
-                                              password:
-                                                  passwordTextEditingController
-                                                      .text);
-                                      if (!mounted) return;
-
-                                      await signinResponse
-                                          .possiblyHandleError(context);
-
-                                      if (signinResponse.result == true) {
-                                        // TODO proceed to campagne or character selection
-                                      } else {
-                                        // TODO mark password and username fields as invalid
-                                      }
-                                    },
-                              label: "Login",
                             ),
                           ),
-                        ),
 
-                        // Wrap if screen to small:
-                        // signin with apple button
+                          // Wrap if screen to small:
+                          // signin with apple button
 
-                        // signin with apple google
+                          // signin with apple google
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // apple sign in button
-                            Expanded(
-                              flex: 4,
-                              child: CustomSignInWithAppleButton(
-                                style: CustomSignInWithAppleButtonStyle.white,
-                                text: "Mit Apple anmelden",
-                                height: 55,
-                                onPressed: () async {
-                                  AuthorizationCredentialAppleID? credential;
-                                  try {
-                                    credential = await SignInWithApple
-                                        .getAppleIDCredential(
-                                      // nonce: DateTime.now().toUtc().microsecondsSinceEpoch.toString(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // apple sign in button
+                              Expanded(
+                                flex: 4,
+                                child: CustomSignInWithAppleButton(
+                                  style: CustomSignInWithAppleButtonStyle.white,
+                                  text: "Mit Apple anmelden",
+                                  height: 55,
+                                  onPressed: () async {
+                                    AuthorizationCredentialAppleID? credential;
+                                    try {
+                                      credential = await SignInWithApple
+                                          .getAppleIDCredential(
+                                        // nonce: DateTime.now().toUtc().microsecondsSinceEpoch.toString(),
+                                        scopes: [
+                                          AppleIDAuthorizationScopes.email,
+                                          AppleIDAuthorizationScopes.fullName,
+                                        ],
+                                      );
+                                    } catch (e) {
+                                      return;
+                                    }
+                                    var service = DependencyProvider.of(context)
+                                        .getService<IAuthenticationService>();
+
+                                    var signInResult =
+                                        await service.signInWithApple(
+                                            identityToken:
+                                                credential.identityToken!,
+                                            authorizationCode:
+                                                credential.authorizationCode);
+
+                                    if (!mounted) return;
+
+                                    await signInResult
+                                        .possiblyHandleError(context);
+
+                                    // TODO navigate
+                                  },
+                                ),
+                              ),
+
+                              Spacer(
+                                flex: 1,
+                              ),
+                              // GOOGLE SIGN IN BUTTON
+                              Expanded(
+                                flex: 4,
+                                child: SignInButton(
+                                  Buttons.Google,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(7))),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                                  text: "Sign in with Google",
+                                  onPressed: () async {
+                                    // Default definition
+                                    GoogleSignIn googleSignIn = GoogleSignIn(
+                                      clientId:
+                                          '301126660357-ro64929c9et8ome57r0vmk53vrn4754b.apps.googleusercontent.com', // TODO update me
                                       scopes: [
-                                        AppleIDAuthorizationScopes.email,
-                                        AppleIDAuthorizationScopes.fullName,
+                                        'email',
                                       ],
                                     );
-                                  } catch (e) {
-                                    return;
-                                  }
-                                  var service = DependencyProvider.of(context)
-                                      .getService<IAuthenticationService>();
 
-                                  var signInResult =
-                                      await service.signInWithApple(
-                                          identityToken:
-                                              credential.identityToken!,
-                                          authorizationCode:
-                                              credential.authorizationCode);
+                                    final GoogleSignInAccount? googleAccount =
+                                        await googleSignIn.signIn();
 
-                                  if (!mounted) return;
+                                    if (googleAccount == null) return;
 
-                                  await signInResult
-                                      .possiblyHandleError(context);
+                                    // If you want further information about Google accounts, such as authentication, use this.
+                                    final GoogleSignInAuthentication
+                                        googleAuthentication =
+                                        await googleAccount.authentication;
 
-                                  // TODO navigate
-                                },
+                                    var service = DependencyProvider.of(context)
+                                        .getService<IAuthenticationService>();
+
+                                    var signInResult =
+                                        await service.signInWithGoogle(
+                                            identityToken:
+                                                googleAuthentication.idToken!,
+                                            authorizationCode:
+                                                googleAuthentication
+                                                    .serverAuthCode!);
+
+                                    if (!mounted) return;
+
+                                    await signInResult
+                                        .possiblyHandleError(context);
+
+                                    // TODO navigate
+                                  },
+                                ),
                               ),
-                            ),
+                            ],
+                          ),
 
-                            Spacer(
-                              flex: 1,
-                            ),
-                            // GOOGLE SIGN IN BUTTON
-                            Expanded(
-                              flex: 4,
-                              child: SignInButton(
-                                Buttons.Google,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(7))),
-                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                                text: "Sign in with Google",
-                                onPressed: () async {
-                                  // Default definition
-                                  GoogleSignIn googleSignIn = GoogleSignIn(
-                                    clientId:
-                                        '301126660357-ro64929c9et8ome57r0vmk53vrn4754b.apps.googleusercontent.com', // TODO update me
-                                    scopes: [
-                                      'email',
-                                    ],
-                                  );
+                          SizedBox(
+                            height: 30,
+                          ),
+                          HorizontalLine(),
+                          SizedBox(
+                            height: 30,
+                          ),
 
-                                  final GoogleSignInAccount? googleAccount =
-                                      await googleSignIn.signIn();
+                          CustomButton(
+                              label: "Neuen Account anlegen", // TODO localize
+                              onPressed: () {
+                                // navigate to register screen
+                                navigatorKey.currentState!
+                                    .pushNamed(RegisterScreen.route);
+                              }),
+                          SizedBox(
+                            height: 10,
+                          ),
 
-                                  if (googleAccount == null) return;
-
-                                  // If you want further information about Google accounts, such as authentication, use this.
-                                  final GoogleSignInAuthentication
-                                      googleAuthentication =
-                                      await googleAccount.authentication;
-
-                                  var service = DependencyProvider.of(context)
-                                      .getService<IAuthenticationService>();
-
-                                  var signInResult = await service
-                                      .signInWithGoogle(
-                                          identityToken:
-                                              googleAuthentication.idToken!,
-                                          authorizationCode:
-                                              googleAuthentication
-                                                  .serverAuthCode!);
-
-                                  if (!mounted) return;
-
-                                  await signInResult
-                                      .possiblyHandleError(context);
-
-                                  // TODO navigate
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(
-                          height: 30,
-                        ),
-                        HorizontalLine(),
-                        SizedBox(
-                          height: 30,
-                        ),
-
-                        // Register stuff
-                        // open register page
-                        CustomButton(
-                            label: "Neuen Account anlegen", // TODO localize
-                            onPressed: () {
-                              // TODO navigate to register screen
-                            }),
-                        SizedBox(
-                          height: 10,
-                        ),
-
-                        // SizedBox(
-                        //     height: EdgeInsets.fromViewPadding(
-                        //             View.of(context).viewInsets,
-                        //             View.of(context).devicePixelRatio)
-                        //         .bottom),
-                      ],
+                          // SizedBox(
+                          //     height: EdgeInsets.fromViewPadding(
+                          //             View.of(context).viewInsets,
+                          //             View.of(context).devicePixelRatio)
+                          //         .bottom),
+                        ],
+                      ),
                     ),
-                  ),
-                )),
+                  )),
+                ),
               ),
             ),
           ),
