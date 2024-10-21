@@ -85,7 +85,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                 await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
                 // second inform user by email about reset token
-                var sendEmailResult = await new EmailSendQuery
+                await new EmailSendQuery
                 {
                     To = new EmailAddress { Name = dencryptedEmail.Get(), Email = dencryptedEmail.Get() },
                     CC = new List<EmailAddress>(),
@@ -105,7 +105,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                     .RunAsync(_queryProcessor, cancellationToken)
                     .ConfigureAwait(false);
 
-                return sendEmailResult;
+                return Unit.Value;
             }
         }
     }
