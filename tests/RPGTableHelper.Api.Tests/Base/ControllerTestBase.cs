@@ -21,12 +21,10 @@ using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.Api.Tests.Base;
 
-public abstract class ControllerTestBase
-    : IClassFixture<WebApplicationFactory<Program>>,
-        IDisposable
+public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
-    protected readonly HttpClient _client;
-    protected readonly WebApplicationFactory<Program> _factory;
+    protected HttpClient Client { get; }
+    protected WebApplicationFactory<Program> Factory { get; }
 
     protected IServiceProvider ServiceProvider { get; private set; } = default!;
     protected ISystemClock SystemClock { get; private set; } = default!;
@@ -43,7 +41,7 @@ public abstract class ControllerTestBase
     {
         _runIdentifier = Guid.NewGuid().ToString();
 
-        _factory = factory.WithWebHostBuilder(builder =>
+        Factory = factory.WithWebHostBuilder(builder =>
         {
             builder.UseEnvironment("E2ETest");
 
@@ -59,9 +57,7 @@ public abstract class ControllerTestBase
                 QueryProcessor = ServiceProvider.GetRequiredService<IQueryProcessor>();
                 JwtTokenGenerator = ServiceProvider.GetRequiredService<IJWTTokenGenerator>();
                 SystemClock = ServiceProvider.GetRequiredService<ISystemClock>();
-                ContextFactory = ServiceProvider.GetRequiredService<
-                    IDbContextFactory<RpgDbContext>
-                >();
+                ContextFactory = ServiceProvider.GetRequiredService<IDbContextFactory<RpgDbContext>>();
                 Context = ContextFactory.CreateDbContext();
                 Context.Database.OpenConnection();
                 Context.Database.EnsureCreated();
@@ -80,19 +76,68 @@ public abstract class ControllerTestBase
         });
 
         // Create HttpClient for making HTTP requests to the test server
-        _client = _factory.CreateClient();
+        Client = Factory.CreateClient();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            // free managed resources
+            Context?.Database.CloseConnection();
+            Context?.Dispose();
+        }
+
+        _isDisposed = true;
+    }
+
+    protected async Task<User> ConfigureLoggedInUser()
+    {
+        // arrange
+        var user = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!);
+
+        var jwtOptions = new JwtOptions
+        {
+            Issuer = "api",
+            Audience = "api",
+            Key = string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200)),
+            NumberOfSecondsToExpire = 12000,
+        };
+
+        var tokenGenerator = new JWTTokenGenerator(SystemClock, jwtOptions);
+
+        var jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
+
+        // act
+        var response = await Client.GetAsync("/SignIn/testlogin");
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        return user!;
     }
 
     private static void ReconfigureOptions(IServiceCollection services)
     {
-        var sendGridOptionDescriptor = services.SingleOrDefault(d =>
-            d.ServiceType == typeof(SendGridOptions)
-        );
+        var sendGridOptionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(SendGridOptions));
 
         if (sendGridOptionDescriptor != null)
         {
             services.Remove(sendGridOptionDescriptor);
         }
+
         services.AddSingleton(
             new SendGridOptions
             {
@@ -103,9 +148,7 @@ public abstract class ControllerTestBase
             }
         );
 
-        var rsaOptionDescriptor = services.SingleOrDefault(d =>
-            d.ServiceType == typeof(RSAOptions)
-        );
+        var rsaOptionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(RSAOptions));
 
         if (rsaOptionDescriptor != null)
         {
@@ -123,9 +166,7 @@ public abstract class ControllerTestBase
             }
         );
 
-        var jwtOptionDescriptor = services.SingleOrDefault(d =>
-            d.ServiceType == typeof(JwtOptions)
-        );
+        var jwtOptionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(JwtOptions));
 
         if (jwtOptionDescriptor != null)
         {
@@ -138,14 +179,12 @@ public abstract class ControllerTestBase
             {
                 Issuer = "api",
                 Audience = "api",
-                Key = string.Join("", Enumerable.Repeat("asdfasdf", 200)),
+                Key = string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200)),
                 NumberOfSecondsToExpire = 12000,
             }
         );
 
-        var appleOptionDescriptor = services.SingleOrDefault(d =>
-            d.ServiceType == typeof(AppleAuthOptions)
-        );
+        var appleOptionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(AppleAuthOptions));
 
         if (appleOptionDescriptor != null)
         {
@@ -192,55 +231,5 @@ public abstract class ControllerTestBase
         {
             options.UseSqlite($"DataSource=file:memdbapi{_runIdentifier}?mode=memory&cache=shared");
         });
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_isDisposed)
-        {
-            return;
-        }
-
-        if (disposing)
-        {
-            // free managed resources
-            Context?.Database.CloseConnection();
-            Context?.Dispose();
-        }
-
-        _isDisposed = true;
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected async Task<User> ConfigureLoggedInUser()
-    {
-        // arrange
-        var user = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!);
-
-        var jwtOptions = new JwtOptions
-        {
-            Issuer = "api",
-            Audience = "api",
-            Key = string.Join("", Enumerable.Repeat("asdfasdf", 200)),
-            NumberOfSecondsToExpire = 12000,
-        };
-
-        var tokenGenerator = new JWTTokenGenerator(SystemClock, jwtOptions);
-
-        var jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
-
-        // act
-        var response = await _client.GetAsync("/SignIn/testlogin");
-
-        // assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        return user!;
     }
 }

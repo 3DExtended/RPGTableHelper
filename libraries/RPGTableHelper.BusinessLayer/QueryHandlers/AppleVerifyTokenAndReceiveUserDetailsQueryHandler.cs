@@ -31,9 +31,7 @@ public class AppleVerifyTokenAndReceiveUserDetailsQueryHandler
         (string? internalId, string? email, string? appleRefreshToken)
     > Successor { get; set; } = default!;
 
-    public async Task<
-        Option<(string? internalId, string? email, string? appleRefreshToken)>
-    > RunQueryAsync(
+    public async Task<Option<(string? internalId, string? email, string? appleRefreshToken)>> RunQueryAsync(
         AppleVerifyTokenAndReceiveUserDetailsQuery query,
         CancellationToken cancellationToken
     )
@@ -49,17 +47,13 @@ public class AppleVerifyTokenAndReceiveUserDetailsQueryHandler
 
         // decode identitytoken
         var tokenDetails = query.LoginDetails.IdentityToken.GetTokenInfo();
-        var appleKeyForIdentityToken = appleKeys
-            .Get()
-            .Keys.Single(k => k.kid == tokenDetails["kid"]);
+        var appleKeyForIdentityToken = appleKeys.Get().Keys.Single(k => k.kid == tokenDetails["kid"]);
 
         // vertify token with public key:
         string[] parts = query.LoginDetails.IdentityToken.Split('.');
-        string header = parts[0];
-        string payload = parts[1];
         await ValidateJwsE256(appleKeyForIdentityToken, parts, cancellationToken);
 
-        // TODO nonce is something I pass in through flutter. I have to make sure, a given nonce is only used ONCE...
+        // NOTE nonce is something I pass in through flutter. I have to make sure, a given nonce is only used ONCE...
         // var nonce = tokenDetails["nonce"];
 
         // Verify that the iss field contains https://appleid.apple.com
@@ -90,7 +84,9 @@ public class AppleVerifyTokenAndReceiveUserDetailsQueryHandler
             .ConfigureAwait(false);
 
         if (appleTokenResponse.IsNone)
+        {
             return Option.None;
+        }
 
         // decode id token
         var appleAuthTokenDetails = appleTokenResponse.Get().id_token!.GetTokenInfo();
@@ -109,17 +105,13 @@ public class AppleVerifyTokenAndReceiveUserDetailsQueryHandler
         CancellationToken cancellationToken
     )
     {
-        var validationResult = await new JwsE256ValidationQuery
-        {
-            Key = appleKeyForIdentityToken,
-            StringParts = parts,
-        }
+        var validationResult = await new JwsE256ValidationQuery { Key = appleKeyForIdentityToken, StringParts = parts }
             .RunAsync(_queryProcessor, cancellationToken)
             .ConfigureAwait(false);
 
-        if (validationResult.IsNone || validationResult.Get() == false)
+        if (validationResult.IsNone || !validationResult.Get())
         {
-            throw new ApplicationException(string.Format("Invalid signature"));
+            throw new ApplicationException("Invalid signature");
         }
     }
 }

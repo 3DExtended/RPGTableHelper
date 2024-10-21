@@ -2,6 +2,9 @@
 
 namespace RPGTableHelper.BusinessLayer.Contracts.Models
 {
+    /// <summary>
+    /// The information a client has to provide in order to login with apple.
+    /// </summary>
     public class AppleLoginDetails
     {
         /// <summary>

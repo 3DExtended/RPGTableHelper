@@ -27,6 +27,6 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
         )
             : base(mapper, contextFactory, systemClock) { }
 
-        public User.UserIdentifier Configuration { set; get; } = default!;
+        public User.UserIdentifier Configuration { get; set; } = default!;
     }
 }

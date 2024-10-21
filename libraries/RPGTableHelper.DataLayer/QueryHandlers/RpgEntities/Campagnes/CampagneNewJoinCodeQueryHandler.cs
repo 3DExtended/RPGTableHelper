@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs;
-using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
@@ -15,15 +10,10 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.Campagnes
 {
     public class CampagneNewJoinCodeQueryHandler : IQueryHandler<CampagneNewJoinCodeQuery, string>
     {
-        private readonly IMapper _mapper;
         private readonly IDbContextFactory<RpgDbContext> _contextFactory;
 
-        public CampagneNewJoinCodeQueryHandler(
-            IMapper mapper,
-            IDbContextFactory<RpgDbContext> contextFactory
-        )
+        public CampagneNewJoinCodeQueryHandler(IMapper mapper, IDbContextFactory<RpgDbContext> contextFactory)
         {
-            _mapper = mapper;
             _contextFactory = contextFactory;
         }
 
@@ -34,11 +24,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.Campagnes
             CancellationToken cancellationToken
         )
         {
-            using (
-                var context = await _contextFactory
-                    .CreateDbContextAsync(cancellationToken)
-                    .ConfigureAwait(false)
-            )
+            using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
             {
                 int numberOfTriedCodes = 0;
                 while (true)
@@ -52,14 +38,17 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.Campagnes
                         .AnyAsync(cancellationToken)
                         .ConfigureAwait(false);
 
-                    if (foundCampagneWithJoinCode == false)
+                    if (!foundCampagneWithJoinCode)
                     {
                         return joinCodeToTry;
                     }
+
                     numberOfTriedCodes++;
 
                     if (numberOfTriedCodes >= 10)
+                    {
                         break;
+                    }
                 }
 
                 return Option.None;

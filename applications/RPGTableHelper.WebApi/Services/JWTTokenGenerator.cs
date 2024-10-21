@@ -9,8 +9,8 @@ namespace RPGTableHelper.WebApi.Services
 {
     public class JWTTokenGenerator : IJWTTokenGenerator
     {
-        public readonly JwtOptions _jwtOptions;
-        public readonly ISystemClock _systemClock;
+        private readonly JwtOptions _jwtOptions;
+        private readonly ISystemClock _systemClock;
 
         public JWTTokenGenerator(ISystemClock systemClock, JwtOptions jwtOptions)
         {
@@ -23,7 +23,7 @@ namespace RPGTableHelper.WebApi.Services
             var issuer = _jwtOptions.Issuer ?? "api";
             var audience = _jwtOptions.Audience ?? "api";
             var key = Encoding.ASCII.GetBytes(
-                _jwtOptions.Key ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
+                _jwtOptions.Key ?? string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200))
             );
 
             var tokenDescriptor = new SecurityTokenDescriptor

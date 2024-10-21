@@ -4,15 +4,15 @@ namespace RPGTableHelper.Shared.Extensions
 {
     public static class IEnumerableExtensions
     {
-        public static IEnumerable<TItem> RandomSample<TItem>(
-            this IReadOnlyList<TItem> items,
-            int count
-        )
+#pragma warning disable S4456 // Parameter validation in yielding methods should be wrapped
+        public static IEnumerable<TItem> RandomSample<TItem>(this IReadOnlyList<TItem> items, int count)
+#pragma warning restore S4456 // Parameter validation in yielding methods should be wrapped
         {
             if (count < 1 || count > items.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
+
             List<int> indexes = Enumerable.Range(0, items.Count).ToList();
             int yieldedCount = 0;
 

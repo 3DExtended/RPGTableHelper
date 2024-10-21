@@ -22,19 +22,12 @@ public class CampagneControllerTests : ControllerTestBase
     public async Task CreateNewCampagneAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            "asdfasdfasdsf"
-        );
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "asdfasdfasdsf");
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             "/campagne/createcampagne",
-            new CampagneCreateDto
-            {
-                CampagneName = "TestCampagneName",
-                RpgConfiguration = "fghjklkjhgfghjkl",
-            }
+            new CampagneCreateDto { CampagneName = "TestCampagneName", RpgConfiguration = "fghjklkjhgfghjkl" }
         );
 
         // assert
@@ -48,13 +41,9 @@ public class CampagneControllerTests : ControllerTestBase
         var user = await ConfigureLoggedInUser();
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             "/campagne/createcampagne",
-            new CampagneCreateDto
-            {
-                CampagneName = "TestCampagneName",
-                RpgConfiguration = "fghjklkjhgfghjkl",
-            }
+            new CampagneCreateDto { CampagneName = "TestCampagneName", RpgConfiguration = "fghjklkjhgfghjkl" }
         );
 
         // assert
@@ -76,13 +65,10 @@ public class CampagneControllerTests : ControllerTestBase
     public async Task GetCampagnesForUserAsDmAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            "asdfasdfasdsf"
-        );
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "asdfasdfasdsf");
 
         // act
-        var response = await _client.GetAsync("/campagne/getcampagnes");
+        var response = await Client.GetAsync("/campagne/getcampagnes");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -95,7 +81,7 @@ public class CampagneControllerTests : ControllerTestBase
         var user = await ConfigureLoggedInUser();
 
         // act
-        var response = await _client.GetAsync("/campagne/getcampagnes");
+        var response = await Client.GetAsync("/campagne/getcampagnes");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -109,11 +95,7 @@ public class CampagneControllerTests : ControllerTestBase
     {
         // arrange
         var user = await ConfigureLoggedInUser();
-        var user2 = await RpgDbContextHelpers.CreateUserInDb(
-            ContextFactory!,
-            Mapper!,
-            usernameOverride: "Username2"
-        );
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
 
         var entity1 = new CampagneEntity
         {
@@ -151,7 +133,7 @@ public class CampagneControllerTests : ControllerTestBase
         }
 
         // act
-        var response = await _client.GetAsync("/campagne/getcampagnes");
+        var response = await Client.GetAsync("/campagne/getcampagnes");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -166,15 +148,10 @@ public class CampagneControllerTests : ControllerTestBase
     public async Task GetCampagneByIdAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            "asdfasdfasdsf"
-        );
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "asdfasdfasdsf");
 
         // act
-        var response = await _client.GetAsync(
-            "/campagne/getcampagne/a25ca8ab-d8d4-4909-af94-4c08583a13ab"
-        );
+        var response = await Client.GetAsync("/campagne/getcampagne/a25ca8ab-d8d4-4909-af94-4c08583a13ab");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -185,11 +162,7 @@ public class CampagneControllerTests : ControllerTestBase
     {
         // arrange
         var user = await ConfigureLoggedInUser();
-        var user2 = await RpgDbContextHelpers.CreateUserInDb(
-            ContextFactory!,
-            Mapper!,
-            usernameOverride: "Username2"
-        );
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
 
         var entity1 = new CampagneEntity
         {
@@ -222,7 +195,7 @@ public class CampagneControllerTests : ControllerTestBase
         }
 
         // act
-        var response = await _client.GetAsync("/campagne/getcampagne/" + entity1.Id);
+        var response = await Client.GetAsync("/campagne/getcampagne/" + entity1.Id);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -236,16 +209,8 @@ public class CampagneControllerTests : ControllerTestBase
     {
         // arrange
         var user = await ConfigureLoggedInUser();
-        var user2 = await RpgDbContextHelpers.CreateUserInDb(
-            ContextFactory!,
-            Mapper!,
-            usernameOverride: "Username2"
-        );
-        var user3 = await RpgDbContextHelpers.CreateUserInDb(
-            ContextFactory!,
-            Mapper!,
-            usernameOverride: "Username3"
-        );
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
+        var user3 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username3");
 
         var entity1 = new CampagneEntity
         {
@@ -261,6 +226,7 @@ public class CampagneControllerTests : ControllerTestBase
             await context.Campagnes.AddAsync(entity1);
             await context.SaveChangesAsync();
         }
+
         var player1 = new PlayerCharacterEntity
         {
             Id = Guid.Empty,
@@ -276,7 +242,7 @@ public class CampagneControllerTests : ControllerTestBase
         }
 
         // act
-        var response = await _client.GetAsync("/campagne/getcampagne/" + entity1.Id);
+        var response = await Client.GetAsync("/campagne/getcampagne/" + entity1.Id);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

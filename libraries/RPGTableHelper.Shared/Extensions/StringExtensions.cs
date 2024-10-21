@@ -7,7 +7,7 @@ namespace RPGTableHelper.Shared.Extensions
     {
         public static string CustomNormalize(this string str)
         {
-            return Regex.Replace(str.ToLower(), "[^A-Za-z0-9 -]", "").Replace(" ", "");
+            return Regex.Replace(str.ToLower(), "[^A-Za-z0-9 -]", string.Empty).Replace(" ", string.Empty);
         }
 
         public static bool IsAlphaNumeric(this string input)
@@ -29,24 +29,25 @@ namespace RPGTableHelper.Shared.Extensions
                 throw new ArgumentNullException("token");
             }
 
-            var TokenInfo = new Dictionary<string, string>();
+            var tokenInfo = new Dictionary<string, string>();
 
             var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token ?? "");
+            var jwtSecurityToken = handler.ReadJwtToken(token);
             var claims = jwtSecurityToken.Claims.ToList();
 
             foreach (var claim in claims)
             {
-                TokenInfo.Add(claim.Type, claim.Value);
+                tokenInfo.Add(claim.Type, claim.Value);
             }
+
             var headers = jwtSecurityToken.Header.ToList();
 
             foreach (var header in headers)
             {
-                TokenInfo.Add(header.Key, (header.Value.ToString() ?? ""));
+                tokenInfo.Add(header.Key, header.Value.ToString() ?? string.Empty);
             }
 
-            return TokenInfo;
+            return tokenInfo;
         }
     }
 }

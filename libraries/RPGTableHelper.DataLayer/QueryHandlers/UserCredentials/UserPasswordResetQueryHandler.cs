@@ -29,16 +29,9 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 
         public IQueryHandler<UserPasswordResetQuery, Unit> Successor { get; set; } = default!;
 
-        public async Task<Option<Unit>> RunQueryAsync(
-            UserPasswordResetQuery query,
-            CancellationToken cancellationToken
-        )
+        public async Task<Option<Unit>> RunQueryAsync(UserPasswordResetQuery query, CancellationToken cancellationToken)
         {
-            using (
-                var context = await _contextFactory
-                    .CreateDbContextAsync(cancellationToken)
-                    .ConfigureAwait(false)
-            )
+            using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
             {
                 var entity = await context
                     .Set<UserCredentialEntity>()
@@ -47,10 +40,12 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                     .ConfigureAwait(false);
 
                 if (entity == null)
+                {
                     return Option.None;
+                }
 
                 if (
-                    entity.SignInProvider == true // resets are only valid for users registered with username and password
+                    entity.SignInProvider
                     || string.IsNullOrEmpty(entity.Email) // resets are only valid if a email is setup
                     || string.IsNullOrEmpty(entity.PasswordResetToken) // resets are only valid if the PasswordResetToken is set
                     || entity.PasswordResetTokenExpireDate == null // resets are only valid if a PasswordResetTokenExpireDate is set
@@ -62,10 +57,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 
                 // decode encrypted email
                 // decrypt stored email using cert
-                var dencryptedEmail = await new RSADecryptStringQuery
-                {
-                    StringToDecrypt = entity.Email,
-                }
+                var dencryptedEmail = await new RSADecryptStringQuery { StringToDecrypt = entity.Email }
                     .RunAsync(_queryProcessor, cancellationToken)
                     .ConfigureAwait(false);
 
@@ -80,7 +72,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                 }
 
                 // check if user provided reset token is valid
-                if (entity.PasswordResetToken.Replace("-", "") != query.ResetCode.Replace("-", ""))
+                if (entity.PasswordResetToken.Replace("-", string.Empty) != query.ResetCode.Replace("-", string.Empty))
                 {
                     return Option.None;
                 }
@@ -95,11 +87,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                 // second inform user by email about reset token
                 var sendEmailResult = await new EmailSendQuery
                 {
-                    To = new EmailAddress
-                    {
-                        Name = dencryptedEmail.Get(),
-                        Email = dencryptedEmail.Get(),
-                    },
+                    To = new EmailAddress { Name = dencryptedEmail.Get(), Email = dencryptedEmail.Get() },
                     CC = new List<EmailAddress>(),
                     Subject = "Passwort zurückgesetzt",
                     Body =
@@ -117,7 +105,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                     .RunAsync(_queryProcessor, cancellationToken)
                     .ConfigureAwait(false);
 
-                return Unit.Value;
+                return sendEmailResult;
             }
         }
     }

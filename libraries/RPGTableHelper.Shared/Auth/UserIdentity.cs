@@ -4,7 +4,6 @@ namespace RPGTableHelper.Shared.Auth
 {
     public class UserIdentity
     {
-        // TODO fill me out!
         public string? IdentityProviderId { get; set; }
 
         public User.UserIdentifier UserIdentifier

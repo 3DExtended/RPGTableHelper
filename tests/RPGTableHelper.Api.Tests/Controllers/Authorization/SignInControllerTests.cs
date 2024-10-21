@@ -47,7 +47,7 @@ public class SignInControllerTests : ControllerTestBase
         {
             Issuer = "api",
             Audience = "api",
-            Key = string.Join("", Enumerable.Repeat("asdfasdf", 200)),
+            Key = string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200)),
             NumberOfSecondsToExpire = 12000,
         };
 
@@ -86,10 +86,10 @@ public class SignInControllerTests : ControllerTestBase
                 break;
         }
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt!);
 
         // act
-        var response = await _client.GetAsync("/SignIn/testlogin");
+        var response = await Client.GetAsync("/SignIn/testlogin");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -100,7 +100,7 @@ public class SignInControllerTests : ControllerTestBase
     {
         // arrange
         var encryptedEmail = await new RSAEncryptStringQuery { StringToEncrypt = "asdf@asdf.de" }
-            .RunAsync(QueryProcessor, (default!))
+            .RunAsync(QueryProcessor, default!)
             .ConfigureAwait(true);
 
         // login using username and password
@@ -109,7 +109,7 @@ public class SignInControllerTests : ControllerTestBase
         );
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             $"/signin/requestresetpassword",
             new ResetPasswordRequestDto
             {
@@ -125,7 +125,7 @@ public class SignInControllerTests : ControllerTestBase
 
         // arrange
         string? resetCode;
-        using (var context = this.ContextFactory!.CreateDbContext())
+        using (var context = ContextFactory!.CreateDbContext())
         {
             var userCredentialEntity = await context.UserCredentials.ToListAsync(default);
             userCredentialEntity.Count.Should().Be(1);
@@ -133,7 +133,7 @@ public class SignInControllerTests : ControllerTestBase
         }
 
         // act
-        var resetResponse = await _client.PostAsJsonAsync(
+        var resetResponse = await Client.PostAsJsonAsync(
             $"/signin/resetpassword",
             new ResetPasswordDto
             {
@@ -149,7 +149,7 @@ public class SignInControllerTests : ControllerTestBase
         var resetResponseText = await resetResponse.Content.ReadAsStringAsync();
         resetResponseText.Should().Be("New password set");
 
-        using (var context = this.ContextFactory!.CreateDbContext())
+        using (var context = ContextFactory!.CreateDbContext())
         {
             var userCredentialEntity = await context.UserCredentials.ToListAsync(default);
             userCredentialEntity.Count.Should().Be(1);
@@ -157,37 +157,6 @@ public class SignInControllerTests : ControllerTestBase
             userCredentialEntity[0].PasswordResetTokenExpireDate.Should().BeNull();
             userCredentialEntity[0].HashedPassword.Should().Be("fghjklkjhgfhjkl");
         }
-    }
-
-    private async Task<(
-        User user,
-        EncryptionChallenge encryptionChallenge,
-        UserCredential userCredential,
-        string? jwt
-    )> LoginUsingUsernameAndPassowrd(string emailOverride)
-    {
-        var (user, encryptionChallenge, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory!,
-                Mapper!,
-                default,
-                email: emailOverride
-            );
-
-        var response = await _client.PostAsJsonAsync(
-            $"/signin/login",
-            new LoginWithUsernameAndPasswordDto
-            {
-                Username = user.Username,
-                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
-            }
-        );
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var jwtContent = await response.Content.ReadAsStringAsync();
-        jwtContent.Should().NotBeNull();
-        return (user, encryptionChallenge, userCredential, jwtContent);
     }
 
     [Fact]
@@ -201,15 +170,12 @@ public class SignInControllerTests : ControllerTestBase
                 default
             );
         var (mockedPublicAppPEM, mockedPrivateAppPEM) = GetPEMPairForMockedApp();
-        var encryptedAppPubKey = await new RSAEncryptStringQuery
-        {
-            StringToEncrypt = mockedPublicAppPEM,
-        }
-            .RunAsync(QueryProcessor, (default!))
+        var encryptedAppPubKey = await new RSAEncryptStringQuery { StringToEncrypt = mockedPublicAppPEM }
+            .RunAsync(QueryProcessor, default!)
             .ConfigureAwait(true);
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             $"/signin/getloginchallengeforusername/{user.Username}",
             new EncryptedMessageWrapperDto { EncryptedMessage = encryptedAppPubKey.Get() }
         );
@@ -225,13 +191,11 @@ public class SignInControllerTests : ControllerTestBase
             StringToDecrypt = encryptedContent,
             PrivateKeyOverride = mockedPrivateAppPEM,
         }
-            .RunAsync(QueryProcessor, (default!))
+            .RunAsync(QueryProcessor, default!)
             .ConfigureAwait(true);
 
         decryptedChallenge.IsSome.Should().BeTrue();
-        var challengeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
-            decryptedChallenge.Get()
-        );
+        var challengeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(decryptedChallenge.Get());
         challengeDict.Should().NotBeNull();
 
         challengeDict!["id"].ToString().Should().Be(encryptionChallenge.Id.Value.ToString());
@@ -251,7 +215,7 @@ public class SignInControllerTests : ControllerTestBase
             );
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             $"/signin/login",
             new LoginWithUsernameAndPasswordDto
             {
@@ -266,7 +230,7 @@ public class SignInControllerTests : ControllerTestBase
         var jwtContent = await response.Content.ReadAsStringAsync();
         jwtContent.Should().NotBeNull();
 
-        await RegisterControllerTests.VerifyLoginValidity(_client, jwtContent);
+        await RegisterControllerTests.VerifyLoginValidity(Client, jwtContent);
     }
 
     [Fact]
@@ -281,7 +245,7 @@ public class SignInControllerTests : ControllerTestBase
             );
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             $"/signin/login",
             new LoginWithUsernameAndPasswordDto
             {
@@ -309,7 +273,7 @@ public class SignInControllerTests : ControllerTestBase
             );
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             $"/signin/login",
             new LoginWithUsernameAndPasswordDto
             {
@@ -332,5 +296,36 @@ public class SignInControllerTests : ControllerTestBase
             "-----BEGIN PUBLIC KEY-----MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHLeHzeVyXHmHjGDTgQIBBN4G2IVI4Ecta7JOGNUqU29+mA+w8lS6k/HkW0vXZV7AJpSjeC10ZwvWqtjwPQ7xxdNgofl8ezy/QqlCxntYJq8lRn4CFcJi8uzbHYCp1DVxtUOdx/9vsYUKT2QiOtCL5/m23wDmTp4yxkeXWx2xm6rAgMBAAE=-----END PUBLIC KEY-----",
             "-----BEGIN RSA PRIVATE KEY-----MIICWgIBAAKBgHLeHzeVyXHmHjGDTgQIBBN4G2IVI4Ecta7JOGNUqU29+mA+w8lS6k/HkW0vXZV7AJpSjeC10ZwvWqtjwPQ7xxdNgofl8ezy/QqlCxntYJq8lRn4CFcJi8uzbHYCp1DVxtUOdx/9vsYUKT2QiOtCL5/m23wDmTp4yxkeXWx2xm6rAgMBAAECgYAI+VF3Bjy2qUOymo99wSKQYtHA1+XuMFABV7cQC40uhakJ291v3QpxMSYrYYfuJa3mYIy1AX9etFRhD2oDqqfjD1+kO9kA/9wKNmknA/ZPRsr0V1p4l2O+vz+TdOp4818CPBbQKfSsu+0gE7mvjh94Y6/uyduYV44CH7HNvNEgAQJBAKzU9E5vlrEsxREBHJdbBVjNVesq25FSLlVNZpB9ytiXFvkY7GTVe/9Jm1SrWSpVHY9XEJtcDqRnycwfIPtgo/0CQQCqJJieDBg2wvfbEh5HwWvvRM8ihkj6AhueNIZr3aFL/Q/ttzBb3o4NLjvKk86As8iVgEu3uELfRTnWDAXzdFnHAkAUHcVBy+MyRA+75vE4/LMmnt+9O4PK6lHSQ+wILVwK0asu2yPIqMCB+kNGG5uJPdbu9CdOrexWXm4yf/0KxTjRAkB2Nw0vKtocGmUZ+kG9u39h9J4yr7i+tH458ua+xXPPl1nc4d4gxsZOFCSJAR+GvuOMNGLnmIgmFzQzK5Fq8Rl7AkBVZC5f2WzOWP4Psf+VnGZgf6cSrkBJploIt5Ryk2/ENVXPr1AYeFmnB983BfwOxr50HhXOlLk/gZzUmj9uDl25-----END RSA PRIVATE KEY-----"
         );
+    }
+
+    private async Task<(
+        User user,
+        EncryptionChallenge encryptionChallenge,
+        UserCredential userCredential,
+        string? jwt
+    )> LoginUsingUsernameAndPassowrd(string emailOverride)
+    {
+        var (user, encryptionChallenge, userCredential) =
+            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+                ContextFactory!,
+                Mapper!,
+                default,
+                email: emailOverride
+            );
+
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username,
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+            }
+        );
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var jwtContent = await response.Content.ReadAsStringAsync();
+        jwtContent.Should().NotBeNull();
+        return (user, encryptionChallenge, userCredential, jwtContent);
     }
 }

@@ -30,15 +30,15 @@ public class RegisterControllerTests : ControllerTestBase
         // get encryption challenge
         Dictionary<string, object>? challengeDict = await GenerateAndReceiveEncryptionChallenge(
             QueryProcessor,
-            _client,
+            Client,
             Context!
         );
 
         // execute register as new user
-        string? jwtResult = await LoginAndReceiveJWT(QueryProcessor, _client, challengeDict);
+        string? jwtResult = await LoginAndReceiveJWT(QueryProcessor, Client, challengeDict);
 
         // verify jwt is valid for login
-        await VerifyLoginValidity(_client, jwtResult);
+        await VerifyLoginValidity(Client, jwtResult);
     }
 
     [Fact]
@@ -68,13 +68,13 @@ public class RegisterControllerTests : ControllerTestBase
         }
 
         var useridbase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(userEntity.Id.ToString()));
-        var useridsignature = await new RSASignStringQuery
-        {
-            MessageToSign = userEntity.Id.ToString(),
-        }.RunAsync(QueryProcessor, default);
+        var useridsignature = await new RSASignStringQuery { MessageToSign = userEntity.Id.ToString() }.RunAsync(
+            QueryProcessor,
+            default
+        );
 
         // act
-        var response = await _client.GetAsync(
+        var response = await Client.GetAsync(
             $"/register/verifyemail/{useridbase64.Replace('/', '_')}/{useridsignature.Get().Replace('/', '_')}"
         );
 
@@ -108,29 +108,22 @@ public class RegisterControllerTests : ControllerTestBase
             await context.SaveChangesAsync(default);
         }
 
-        var requestBody = new RegisterWithApiKeyDto
-        {
-            ApiKey = requestEntity.ExposedApiKey,
-            Username = "TestUsername",
-        };
+        var requestBody = new RegisterWithApiKeyDto { ApiKey = requestEntity.ExposedApiKey, Username = "TestUsername" };
 
         // act
-        var response = await _client.PostAsJsonAsync("/register/registerwithapikey", requestBody);
+        var response = await Client.PostAsJsonAsync("/register/registerwithapikey", requestBody);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var jwtResult = await response.Content.ReadAsStringAsync();
         jwtResult.Should().NotBeNullOrEmpty();
-        await VerifyLoginValidity(_client, jwtResult);
+        await VerifyLoginValidity(Client, jwtResult);
     }
 
     internal static async Task VerifyLoginValidity(HttpClient client, string? jwtResult)
     {
         // arrange
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            jwtResult
-        );
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtResult);
 
         // act
         var response = await client.GetAsync("/SignIn/testlogin");
@@ -166,21 +159,14 @@ public class RegisterControllerTests : ControllerTestBase
         };
 
         var serializedRegisterDto = JsonConvert.SerializeObject(registerDto);
-        var encryptedRegisterDto = await new RSAEncryptStringQuery
-        {
-            StringToEncrypt = serializedRegisterDto,
-        }
-            .RunAsync(queryProcessor, (default!))
+        var encryptedRegisterDto = await new RSAEncryptStringQuery { StringToEncrypt = serializedRegisterDto }
+            .RunAsync(queryProcessor, default!)
             .ConfigureAwait(true);
 
         // act
         var response = await client.PostAsync(
             "/register/register",
-            new StringContent(
-                $"\"{encryptedRegisterDto.Get()}\"",
-                Encoding.UTF8,
-                "application/json"
-            )
+            new StringContent($"\"{encryptedRegisterDto.Get()}\"", Encoding.UTF8, "application/json")
         );
 
         // assert
@@ -199,11 +185,8 @@ public class RegisterControllerTests : ControllerTestBase
     {
         // arrange
         var (mockedPublicAppPEM, mockedPrivateAppPEM) = GetPEMPairForMockedApp();
-        var encryptedAppPubKey = await new RSAEncryptStringQuery
-        {
-            StringToEncrypt = mockedPublicAppPEM,
-        }
-            .RunAsync(queryProcessor, (default!))
+        var encryptedAppPubKey = await new RSAEncryptStringQuery { StringToEncrypt = mockedPublicAppPEM }
+            .RunAsync(queryProcessor, default!)
             .ConfigureAwait(true);
 
         // Act
@@ -223,15 +206,13 @@ public class RegisterControllerTests : ControllerTestBase
             StringToDecrypt = encryptedContent,
             PrivateKeyOverride = mockedPrivateAppPEM,
         }
-            .RunAsync(queryProcessor, (default!))
+            .RunAsync(queryProcessor, default!)
             .ConfigureAwait(true);
 
         decryptedChallenge.IsSome.Should().BeTrue();
 
         // should be a dictionary
-        var challengeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
-            decryptedChallenge.Get()
-        );
+        var challengeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(decryptedChallenge.Get());
 
         // check if encryption challenge was successfully added to database
         var entities = rpgDbContext.EncryptionChallenges.ToList();

@@ -27,10 +27,7 @@ namespace RPGTableHelper.WebApi.Controllers
         private readonly IQueryProcessor _queryProcessor;
         private readonly IJWTTokenGenerator _jwtTokenGenerator;
 
-        public SignInController(
-            IQueryProcessor queryProcessor,
-            IJWTTokenGenerator jwtTokenGenerator
-        )
+        public SignInController(IQueryProcessor queryProcessor, IJWTTokenGenerator jwtTokenGenerator)
         {
             _queryProcessor = queryProcessor;
             _jwtTokenGenerator = jwtTokenGenerator;
@@ -95,9 +92,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
             if (decryptedMessageFromClient.IsNone)
             {
-                return BadRequest(
-                    "Could not decrypt message from app for challenge by username request"
-                );
+                return BadRequest("Could not decrypt message from app for challenge by username request");
             }
 
             var challengeAsJson = challenge.Get().GetChallengeDictSerialized();
@@ -166,17 +161,16 @@ namespace RPGTableHelper.WebApi.Controllers
                 .ConfigureAwait(false);
 
             if (appleDetails.IsNone)
+            {
                 return Unauthorized();
+            }
 
             var internalId = appleDetails.Get().internalId;
             var email = appleDetails.Get().email;
             var appleRefreshToken = appleDetails.Get().appleRefreshToken;
 
             // check if user exists in our db:
-            var possiblyExistingUserId = await new UserExistsByInternalIdQuery
-            {
-                SignInProviderId = internalId,
-            }
+            var possiblyExistingUserId = await new UserExistsByInternalIdQuery { SignInProviderId = internalId }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -244,6 +238,7 @@ namespace RPGTableHelper.WebApi.Controllers
             {
                 return BadRequest("Expected to find an AccessToken to send to google...");
             }
+
             if (loginDto.IdentityToken == null)
             {
                 return BadRequest("Expected to find an idtoken to validate...");
@@ -266,10 +261,7 @@ namespace RPGTableHelper.WebApi.Controllers
             var internalId = "google" + googleIdTokenDetails["sub"];
 
             // check if user exists in our db:
-            var possiblyExistingUserId = await new UserExistsByInternalIdQuery
-            {
-                SignInProviderId = internalId,
-            }
+            var possiblyExistingUserId = await new UserExistsByInternalIdQuery { SignInProviderId = internalId }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -313,7 +305,9 @@ namespace RPGTableHelper.WebApi.Controllers
                     .ConfigureAwait(false);
 
                 if (requestCreateResult.IsNone)
+                {
                     return BadRequest();
+                }
 
                 return Ok("redirect" + temporaryApiKey);
             }

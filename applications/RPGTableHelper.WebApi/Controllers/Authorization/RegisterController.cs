@@ -95,10 +95,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             }
 
             // save challenge in db
-            var challengeId = await new EncryptionChallengeCreateQuery
-            {
-                ModelToCreate = challenge.Get(),
-            }
+            var challengeId = await new EncryptionChallengeCreateQuery { ModelToCreate = challenge.Get() }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -152,10 +149,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             CancellationToken cancellationToken
         )
         {
-            var registerDtoString = await new RSADecryptStringQuery
-            {
-                StringToDecrypt = encryptedRegisterDto,
-            }
+            var registerDtoString = await new RSADecryptStringQuery { StringToDecrypt = encryptedRegisterDto }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -164,9 +158,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            var registerDto = JsonConvert.DeserializeObject<RegisterWithUsernamePasswordDto>(
-                registerDtoString.Get()
-            );
+            var registerDto = JsonConvert.DeserializeObject<RegisterWithUsernamePasswordDto>(registerDtoString.Get());
 
             if (
                 registerDto == null
@@ -188,10 +180,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             }
 
             // encrypt email so it is stored safely in database
-            var encryptedEmail = await new RSAEncryptStringQuery
-            {
-                StringToEncrypt = registerDto.Email,
-            }
+            var encryptedEmail = await new RSAEncryptStringQuery { StringToEncrypt = registerDto.Email }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -254,10 +243,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest("Could not send registration email to user");
             }
 
-            var token = _jwtTokenGenerator.GetJWTToken(
-                registerDto.Username,
-                usercreateresult.Get().Value.ToString()
-            );
+            var token = _jwtTokenGenerator.GetJWTToken(registerDto.Username, usercreateresult.Get().Value.ToString());
             return Ok(token);
         }
 
@@ -285,10 +271,12 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             // first ensure apikey is known:
             var apiKey = registerDto.ApiKey;
 
-            var signInProviderRegisterRequest =
-                await new OpenSignInProviderRegisterRequestExistsByApiKeyQuery { ApiKey = apiKey }
-                    .RunAsync(_queryProcessor, cancellationToken)
-                    .ConfigureAwait(false);
+            var signInProviderRegisterRequest = await new OpenSignInProviderRegisterRequestExistsByApiKeyQuery
+            {
+                ApiKey = apiKey,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
 
             if (signInProviderRegisterRequest.IsNone)
             {
@@ -347,7 +335,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 ModelToCreate = new UserCredential
                 {
                     EncryptionChallengeId = Option.None,
-                    HashedPassword = "",
+                    HashedPassword = string.Empty,
                     SignInProvider = true,
                     RefreshToken = refreshToken,
                     Email = encryptedEmail.Get(),
@@ -374,16 +362,10 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest("Could not send registration mail");
             }
 
-            var token = _jwtTokenGenerator.GetJWTToken(
-                registerDto.Username,
-                usercreateresult.Get().Value.ToString()
-            );
+            var token = _jwtTokenGenerator.GetJWTToken(registerDto.Username, usercreateresult.Get().Value.ToString());
 
             // delete request from db
-            await new OpenSignInProviderRegisterRequestDeleteQuery
-            {
-                Id = signInProviderRegisterRequest.Get().Id,
-            }
+            await new OpenSignInProviderRegisterRequestDeleteQuery { Id = signInProviderRegisterRequest.Get().Id }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -411,9 +393,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         )
         {
             // "https://www.your-shelf.app/api/register/verifyemail/?key={useridbase64}&sig={signbase64}"
-            var userIdStr = Encoding.UTF8.GetString(
-                Convert.FromBase64String(useridbase64.Replace('_', '/'))
-            );
+            var userIdStr = Encoding.UTF8.GetString(Convert.FromBase64String(useridbase64.Replace('_', '/')));
 
             // first verfiy signature for email verification
             var isVerified = await new RSAVerifySignatureForStringQuery
@@ -432,9 +412,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             // verify email
             var result = await new UserCredentialConfirmEmailQuery
             {
-                UserIdentifier = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(
-                    Guid.Parse(userIdStr)
-                ),
+                UserIdentifier = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(Guid.Parse(userIdStr)),
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);

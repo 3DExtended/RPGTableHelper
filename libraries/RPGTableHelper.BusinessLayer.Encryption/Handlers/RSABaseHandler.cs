@@ -8,12 +8,9 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
     {
         public IQueryHandler<TQuery, TResult> Successor { get; set; } = default!;
 
-        public abstract Task<Option<TResult>> RunQueryAsync(
-            TQuery query,
-            CancellationToken cancellationToken
-        );
+        public abstract Task<Option<TResult>> RunQueryAsync(TQuery query, CancellationToken cancellationToken);
 
-        protected RSA ImportPrivateKey(string pem)
+        protected static RSA ImportPrivateKey(string pem)
         {
             if (string.IsNullOrEmpty(pem))
             {
@@ -25,7 +22,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             return rsa;
         }
 
-        protected RSA ImportPublicKey(string pem)
+        protected static RSA ImportPublicKey(string pem)
         {
             if (string.IsNullOrEmpty(pem))
             {

@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
@@ -11,8 +10,7 @@ using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 {
-    public class UserRequestPasswordResetQueryHandler
-        : IQueryHandler<UserRequestPasswordResetQuery, Unit>
+    public class UserRequestPasswordResetQueryHandler : IQueryHandler<UserRequestPasswordResetQuery, Unit>
     {
         private readonly IDbContextFactory<RpgDbContext> _contextFactory;
         private readonly ISystemClock _systemClock;
@@ -29,19 +27,14 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
             _queryProcessor = queryProcessor;
         }
 
-        public IQueryHandler<UserRequestPasswordResetQuery, Unit> Successor { get; set; } =
-            default!;
+        public IQueryHandler<UserRequestPasswordResetQuery, Unit> Successor { get; set; } = default!;
 
         public async Task<Option<Unit>> RunQueryAsync(
             UserRequestPasswordResetQuery query,
             CancellationToken cancellationToken
         )
         {
-            using (
-                var context = await _contextFactory
-                    .CreateDbContextAsync(cancellationToken)
-                    .ConfigureAwait(false)
-            )
+            using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
             {
                 var entity = await context
                     .Set<UserCredentialEntity>()
@@ -50,10 +43,12 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                     .ConfigureAwait(false);
 
                 if (entity == null)
+                {
                     return Option.None;
+                }
 
                 if (
-                    entity.SignInProvider == true // resets are only valid for users registered with username and password
+                    entity.SignInProvider
                     || string.IsNullOrEmpty(entity.Email) // resets are only valid if a email is setup
                     || !string.IsNullOrEmpty(entity.PasswordResetToken) // requesting resets is only valid if there wasnt a request recently sent
                         && entity.PasswordResetTokenExpireDate != null
@@ -65,10 +60,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 
                 // decode encrypted email
                 // decrypt stored email using cert
-                var dencryptedEmail = await new RSADecryptStringQuery
-                {
-                    StringToDecrypt = entity.Email,
-                }
+                var dencryptedEmail = await new RSADecryptStringQuery { StringToDecrypt = entity.Email }
                     .RunAsync(_queryProcessor, cancellationToken)
                     .ConfigureAwait(false);
 
@@ -95,11 +87,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                 // second inform user by email about reset token
                 var sendEmailResult = await new EmailSendQuery
                 {
-                    To = new EmailAddress
-                    {
-                        Name = dencryptedEmail.Get(),
-                        Email = dencryptedEmail.Get(),
-                    },
+                    To = new EmailAddress { Name = dencryptedEmail.Get(), Email = dencryptedEmail.Get() },
                     CC = new List<EmailAddress>(),
                     Subject = "Passwort zurücksetzen",
                     Body =

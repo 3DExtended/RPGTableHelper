@@ -14,30 +14,20 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
         private readonly IMapper _mapper;
         private readonly IDbContextFactory<RpgDbContext> _contextFactory;
 
-        public EncryptionChallengeForUserQueryHandler(
-            IMapper mapper,
-            IDbContextFactory<RpgDbContext> contextFactory
-        )
+        public EncryptionChallengeForUserQueryHandler(IMapper mapper, IDbContextFactory<RpgDbContext> contextFactory)
         {
             _mapper = mapper;
             _contextFactory = contextFactory;
         }
 
-        public IQueryHandler<
-            EncryptionChallengeForUserQuery,
-            EncryptionChallenge
-        > Successor { get; set; } = default!;
+        public IQueryHandler<EncryptionChallengeForUserQuery, EncryptionChallenge> Successor { get; set; } = default!;
 
         public async Task<Option<EncryptionChallenge>> RunQueryAsync(
             EncryptionChallengeForUserQuery query,
             CancellationToken cancellationToken
         )
         {
-            using (
-                var context = await _contextFactory
-                    .CreateDbContextAsync(cancellationToken)
-                    .ConfigureAwait(false)
-            )
+            using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
             {
                 var entity = await context
                     .Set<EncryptionChallengeEntity>()
@@ -47,7 +37,9 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.EncryptionChallenges
                     .ConfigureAwait(false);
 
                 if (entity == null)
+                {
                     return Option.None;
+                }
 
                 return _mapper.Map<EncryptionChallenge>(entity);
             }

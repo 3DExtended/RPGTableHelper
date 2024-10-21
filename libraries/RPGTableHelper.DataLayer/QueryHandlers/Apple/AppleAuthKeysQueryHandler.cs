@@ -40,22 +40,20 @@ public class AppleAuthKeysQueryHandler : IQueryHandler<AppleAuthKeysQuery, Apple
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var content = await response
-                            .Content.ReadAsStringAsync()
-                            .ConfigureAwait(false);
+                        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         var appleKeys = JsonConvert.DeserializeObject<AppleKeysResponse>(content);
 
                         if (appleKeys != null)
+                        {
                             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(4);
+                        }
 
                         return appleKeys!;
                     }
                     else
                     {
                         // Handle error response here (e.g., log the status code, throw an exception, etc.)
-                        throw new HttpRequestException(
-                            $"Request failed with status code {response.StatusCode}"
-                        );
+                        throw new HttpRequestException($"Request failed with status code {response.StatusCode}");
                     }
                 }
             }

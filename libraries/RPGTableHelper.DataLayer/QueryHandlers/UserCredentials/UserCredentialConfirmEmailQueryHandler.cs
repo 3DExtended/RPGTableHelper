@@ -7,8 +7,7 @@ using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
 {
-    public class UserCredentialConfirmEmailQueryHandler
-        : IQueryHandler<UserCredentialConfirmEmailQuery, Unit>
+    public class UserCredentialConfirmEmailQueryHandler : IQueryHandler<UserCredentialConfirmEmailQuery, Unit>
     {
         private readonly IDbContextFactory<RpgDbContext> _contextFactory;
         private readonly ISystemClock _systemClock;
@@ -22,19 +21,14 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
             _systemClock = systemClock;
         }
 
-        public IQueryHandler<UserCredentialConfirmEmailQuery, Unit> Successor { get; set; } =
-            default!;
+        public IQueryHandler<UserCredentialConfirmEmailQuery, Unit> Successor { get; set; } = default!;
 
         public async Task<Option<Unit>> RunQueryAsync(
             UserCredentialConfirmEmailQuery query,
             CancellationToken cancellationToken
         )
         {
-            using (
-                var context = await _contextFactory
-                    .CreateDbContextAsync(cancellationToken)
-                    .ConfigureAwait(false)
-            )
+            using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
             {
                 var entity = await context
                     .Set<UserCredentialEntity>()
@@ -43,7 +37,9 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.UserCredentials
                     .ConfigureAwait(false);
 
                 if (entity == null)
+                {
                     return Option.None;
+                }
 
                 entity.EmailVerified = true;
                 entity.LastModifiedAt = _systemClock.Now;

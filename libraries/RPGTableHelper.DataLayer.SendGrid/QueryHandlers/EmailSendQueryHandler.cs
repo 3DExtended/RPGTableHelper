@@ -1,4 +1,4 @@
-using Prodot.Patterns.Cqrs;
+﻿using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using SendGrid;
@@ -17,13 +17,12 @@ namespace BookGram.DataLayer.SendGrid.QueryHandlers
 
         public IQueryHandler<EmailSendQuery, Unit> Successor { get; set; } = default!;
 
-        public async Task<Option<Unit>> RunQueryAsync(
-            EmailSendQuery query,
-            CancellationToken cancellationToken
-        )
+        public async Task<Option<Unit>> RunQueryAsync(EmailSendQuery query, CancellationToken cancellationToken)
         {
             if (_options.IsDisabled == true)
+            {
                 return Unit.Value;
+            }
 
             var apiKey = _options.ApiKey;
             var client = new SendGridClient(apiKey);
@@ -51,6 +50,11 @@ namespace BookGram.DataLayer.SendGrid.QueryHandlers
                 htmlContent
             );
             var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return Option.None;
+            }
 
             return Unit.Value;
         }

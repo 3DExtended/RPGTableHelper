@@ -20,13 +20,13 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             CancellationToken cancellationToken
         )
         {
-            var publicKey = ImportPublicKey(
-                query.PublicKeyOverride.GetOrRequiredElse(_options.PublicRsaKeyAsPEM)
-            );
+            var publicKey = ImportPublicKey(query.PublicKeyOverride.GetOrRequiredElse(_options.PublicRsaKeyAsPEM));
 
             var byteCode = Encoding.UTF8.GetBytes(query.StringToEncrypt);
 
+#pragma warning disable S5542 // Encryption algorithms should be used with secure mode and padding scheme
             var encryptedBytes = publicKey.Encrypt(byteCode, RSAEncryptionPadding.Pkcs1);
+#pragma warning restore S5542 // Encryption algorithms should be used with secure mode and padding scheme
 
             var cypherText = Convert.ToBase64String(encryptedBytes);
             publicKey.Clear();

@@ -17,23 +17,15 @@ namespace RPGTableHelper.DataLayer
             CreateModelMaps<Campagne, Campagne.CampagneIdentifier, Guid, CampagneEntity>();
             CreateMap<CampagneEntity, CampagneEntity>();
 
-            CreateModelMaps<
-                PlayerCharacter,
-                PlayerCharacter.PlayerCharacterIdentifier,
-                Guid,
-                PlayerCharacterEntity
-            >();
+            CreateModelMaps<PlayerCharacter, PlayerCharacter.PlayerCharacterIdentifier, Guid, PlayerCharacterEntity>();
             CreateMap<PlayerCharacterEntity, PlayerCharacterEntity>();
 
             CreateMap<Guid?, Option<Campagne.CampagneIdentifier>>()
                 .ConvertUsing(
-                    (tmid, _) =>
-                        Option.From(
-                            tmid == null ? null : Campagne.CampagneIdentifier.From(tmid.Value)
-                        )
+                    (tmid, _) => Option.From(tmid == null ? null : Campagne.CampagneIdentifier.From(tmid.Value))
                 );
             CreateMap<Option<Campagne.CampagneIdentifier>, Guid?>()
-                .ConvertUsing((tmid) => (Guid?)(tmid.IsNone ? (Guid?)null : tmid.Get().Value));
+                .ConvertUsing((tmid) => tmid.IsNone ? (Guid?)null : tmid.Get().Value);
 
             CreateOptionMapForType<SupportedSignInProviders>();
 
@@ -49,10 +41,7 @@ namespace RPGTableHelper.DataLayer
             CreateMap<EncryptionChallenge, EncryptionChallengeEntity>()
                 .ForMember(
                     dest => dest.UserId,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.UserId.Match<Guid?>((some) => some.Value, () => null)
-                        )
+                    opt => opt.MapFrom(src => src.UserId.Match<Guid?>((some) => some.Value, () => null))
                 )
                 .ReverseMap()
                 .ForMember(
@@ -60,9 +49,7 @@ namespace RPGTableHelper.DataLayer
                     opt =>
                         opt.MapFrom(src =>
                             Option.From(
-                                !src.UserId.HasValue
-                                    ? null
-                                    : new User.UserIdentifier { Value = src.UserId.Value }
+                                !src.UserId.HasValue ? null : new User.UserIdentifier { Value = src.UserId.Value }
                             )
                         )
                 );
@@ -72,10 +59,7 @@ namespace RPGTableHelper.DataLayer
             CreateMap<UserCredential, UserCredentialEntity>()
                 .ForMember(
                     dest => dest.EncryptionChallengeId,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.EncryptionChallengeId.Match<Guid?>((some) => some.Value, () => null)
-                        )
+                    opt => opt.MapFrom(src => src.EncryptionChallengeId.Match<Guid?>((some) => some.Value, () => null))
                 )
                 .ForMember(dest => dest.User, opt => opt.Ignore())
                 .ForMember(dest => dest.EncryptionChallengeOfUser, opt => opt.Ignore())
@@ -90,11 +74,7 @@ namespace RPGTableHelper.DataLayer
                     opt =>
                         opt.MapFrom(src =>
                             src.EncryptionChallengeId.ToOptionMapped(
-                                (guid) =>
-                                    new EncryptionChallenge.EncryptionChallengeIdentifier
-                                    {
-                                        Value = guid,
-                                    }
+                                (guid) => new EncryptionChallenge.EncryptionChallengeIdentifier { Value = guid }
                             )
                         )
                 );
@@ -104,8 +84,7 @@ namespace RPGTableHelper.DataLayer
             where T : struct
         {
             CreateMap<T?, Option<T>>().ConvertUsing((tmid, _) => Option.From(tmid));
-            CreateMap<Option<T>, T?>()
-                .ConvertUsing((tmid) => (T?)(tmid.IsNone ? null : tmid.Get()));
+            CreateMap<Option<T>, T?>().ConvertUsing((tmid) => (T?)(tmid.IsNone ? null : tmid.Get()));
         }
 
         private void CreateModelMaps<TModel, TIdentifier, TIdentifierValue, TEntity>()

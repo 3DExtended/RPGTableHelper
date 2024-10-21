@@ -1,5 +1,4 @@
-﻿using Prodot.Patterns.Cqrs;
-using Prodot.Patterns.Cqrs.EfCore;
+﻿using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 
 namespace RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests

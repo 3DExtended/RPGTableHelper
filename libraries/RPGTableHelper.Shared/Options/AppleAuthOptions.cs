@@ -6,9 +6,9 @@ namespace RPGTableHelper.Shared.Options
 
         public int ClientSecretExpiresAfterHours { get; set; } = 24;
 
-        ///
-        // Key as PEM format
-        ///
+        /// <summary>
+        /// Key as PEM format
+        /// </summary>
         public string? Key { get; set; }
 
         public string? KeyId { get; set; }

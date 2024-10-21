@@ -22,7 +22,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers
         where TContext : DbContext
         where TEntity : EntityBase<TIdentifierValue>
     {
-        private readonly ISystemClock systemClock;
+        private readonly ISystemClock _systemClock;
 
         protected EntityBaseCreateQueryHandlerBase(
             IMapper mapper,
@@ -31,7 +31,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers
         )
             : base(mapper, contextFactory)
         {
-            this.systemClock = systemClock;
+            _systemClock = systemClock;
         }
 
         protected override Task<Option<TModel>> PrepareModelAsync(
@@ -40,7 +40,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers
             CancellationToken cancellationToken
         )
         {
-            var now = systemClock.Now;
+            var now = _systemClock.Now;
 
             var modelWithTimesSet = model;
 

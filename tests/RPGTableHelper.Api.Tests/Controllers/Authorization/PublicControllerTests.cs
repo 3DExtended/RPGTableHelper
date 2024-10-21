@@ -15,7 +15,7 @@ public class PublicControllerTests : ControllerTestBase
     public async Task GetMinimalAppVersion_ShouldReturnSuccessAndMinimalVersion()
     {
         // Act
-        var response = await _client.GetAsync("/public/getminimalversion");
+        var response = await Client.GetAsync("/public/getminimalversion");
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

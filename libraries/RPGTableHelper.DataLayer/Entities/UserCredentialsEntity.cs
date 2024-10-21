@@ -27,7 +27,7 @@ namespace RPGTableHelper.DataLayer.Entities
         public bool SignInProvider { get; set; } = false;
 
         [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; } = default!;
+        public Guid UserId { get; set; } = Guid.Empty;
 
         public virtual UserEntity? User { get; set; }
     }

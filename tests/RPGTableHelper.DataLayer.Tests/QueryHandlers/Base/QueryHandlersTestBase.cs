@@ -10,8 +10,10 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
 {
     public abstract class QueryHandlersTestBase : IDisposable
     {
+        protected static DateTime SystemClockNow => new(2024, 01, 01, 10, 4, 15, DateTimeKind.Utc);
+        private readonly string _runIdentifier;
+
         private bool _isDisposed;
-        private string _runIdentifier;
 
         protected RpgDbContext Context { get; }
 
@@ -21,8 +23,6 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
         protected ISystemClock SystemClock { get; }
 
         protected IServiceProvider ServiceProvider { get; }
-
-        protected readonly DateTime SystemClockNow = new DateTime(2024, 01, 01, 10, 4, 15);
 
         protected QueryHandlersTestBase()
         {
@@ -48,18 +48,15 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
             Mapper = ServiceProvider.GetRequiredService<IMapper>();
         }
 
-        protected void AssertCorrectTime(
-            DateTimeOffset foundTime,
-            TimeSpan? differenceFromSystemClock = null
-        )
-        {
-            foundTime.Should().Be(SystemClockNow.Add(differenceFromSystemClock ?? TimeSpan.Zero));
-        }
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected void AssertCorrectTime(DateTimeOffset foundTime, TimeSpan? differenceFromSystemClock = null)
+        {
+            foundTime.Should().Be(SystemClockNow.Add(differenceFromSystemClock ?? TimeSpan.Zero));
         }
 
         protected virtual void Dispose(bool disposing)

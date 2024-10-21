@@ -14,10 +14,7 @@ namespace RPGTableHelper.Shared.Tests.Extensions
         [InlineData("123 ABC !!", "123abc")]
         [InlineData("___Special__!!", "special")]
         [InlineData("", "")]
-        public void CustomNormalize_ShouldRemoveSpecialCharactersAndSpaces(
-            string input,
-            string expected
-        )
+        public void CustomNormalize_ShouldRemoveSpecialCharactersAndSpaces(string input, string expected)
         {
             // Act
             var result = input.CustomNormalize();
@@ -30,13 +27,13 @@ namespace RPGTableHelper.Shared.Tests.Extensions
         public void CustomNormalize_ShouldHandleEmptyString()
         {
             // Arrange
-            string input = "";
+            string input = string.Empty;
 
             // Act
             var result = input.CustomNormalize();
 
             // Assert
-            Assert.Equal("", result);
+            Assert.Equal(string.Empty, result);
         }
 
         [Fact]
@@ -49,7 +46,7 @@ namespace RPGTableHelper.Shared.Tests.Extensions
             var result = input.CustomNormalize();
 
             // Assert
-            Assert.Equal("", result);
+            Assert.Equal(string.Empty, result);
         }
 
         [Theory]
@@ -59,7 +56,7 @@ namespace RPGTableHelper.Shared.Tests.Extensions
         [InlineData("abcABC", true)]
         [InlineData("abc 123", false)] // Contains space
         [InlineData("abc123!", false)] // Contains special character
-        [InlineData("", false)] // Empty string is not alphanumeric
+        [InlineData("string.Empty", false)] // Empty string is not alphanumeric
         public void IsAlphaNumeric_ShouldValidateAlphanumericStrings(string input, bool expected)
         {
             // Act
@@ -120,7 +117,7 @@ namespace RPGTableHelper.Shared.Tests.Extensions
         public void GetTokenInfo_ShouldHandleNullOrEmptyToken()
         {
             // Arrange
-            string emptyToken = "";
+            string emptyToken = string.Empty;
 
             // Act
             var emptyTokenInfoAction = () => emptyToken.GetTokenInfo();

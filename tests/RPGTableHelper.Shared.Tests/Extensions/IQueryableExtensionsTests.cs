@@ -45,11 +45,7 @@ namespace RPGTableHelper.Shared.Tests.Extensions
                 (2, "Bob"),
                 (3, "Alice"), // Same name as id 1
                 (4, "Charlie"),
-                (
-                    5,
-                    "Bob"
-                ) // Same name as id 2
-                ,
+                (5, "Bob"), // Same name as id 2
             }.AsQueryable();
 
             // Act
@@ -108,11 +104,7 @@ namespace RPGTableHelper.Shared.Tests.Extensions
                 (2, "Bob"),
                 (3, "Alice"), // Same name as id 1
                 (4, "Charlie"),
-                (
-                    5,
-                    "Bob"
-                ) // Same name as id 2
-                ,
+                (5, "Bob"), // Same name as id 2
             };
 
             // Act

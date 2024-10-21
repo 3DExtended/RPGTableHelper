@@ -79,19 +79,16 @@ public class Startup
                     OnTokenValidated = context =>
                     {
                         // Custom token validation logic
-                        var token =
-                            context.SecurityToken
-                            as Microsoft.IdentityModel.JsonWebTokens.JsonWebToken;
+                        var token = context.SecurityToken as Microsoft.IdentityModel.JsonWebTokens.JsonWebToken;
                         var tokenIdentifier = token?.Claims;
 
-                        var identityProviderClaim = token?.Claims.FirstOrDefault(c =>
-                            c.Type == "identityproviderid"
-                        );
+                        var identityProviderClaim = token?.Claims.FirstOrDefault(c => c.Type == "identityproviderid");
                         if (identityProviderClaim == null)
                         {
                             context.Fail("Token does not contain 'identityproviderid' claim.");
                             return Task.CompletedTask;
                         }
+
                         var identityProviderId = identityProviderClaim.Value;
 
                         // Access the service provider
@@ -100,21 +97,6 @@ public class Startup
                         // Retrieve a service from the service provider
                         var queryProcessor = serviceProvider.GetRequiredService<IQueryProcessor>();
                         var cancellationToken = context.HttpContext.RequestAborted;
-
-                        // Check if the token is revoked
-                        // var isTokenRevoked = await new UserIsDeletedQuery
-                        // {
-                        //     UserIdentifier = User.UserIdentifier.From(
-                        //         Guid.Parse(identityProviderId)
-                        //     ),
-                        // }
-                        //     .RunAsync(queryProcessor, cancellationToken)
-                        //     .ConfigureAwait(false);
-                        // // Implement logic to check if tokenIdentifier exists in revoked tokens list
-                        // if (isTokenRevoked.IsNone || isTokenRevoked.Get() == true)
-                        // {
-                        //     context.Fail("Token has been revoked.");
-                        // }
 
                         return Task.CompletedTask;
                     },
@@ -144,7 +126,7 @@ public class Startup
                     ValidAudience = jwtOptions?.Audience ?? "api",
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
-                            jwtOptions?.Key ?? string.Join("", Enumerable.Repeat("asdfasdf", 200))
+                            jwtOptions?.Key ?? string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200))
                         )
                     ),
                     ValidateIssuer = true,
@@ -167,9 +149,7 @@ public class Startup
             .AddNewtonsoftJson(j =>
             {
                 j.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None;
-                j.SerializerSettings.Converters.Add(
-                    new Newtonsoft.Json.Converters.StringEnumConverter()
-                );
+                j.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
             });
 
         services.AddEndpointsApiExplorer();
@@ -207,11 +187,7 @@ public class Startup
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer",
-                            },
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
                         },
                         new string[] { }
                     },
@@ -225,11 +201,7 @@ public class Startup
                 "CorsPolicy",
                 builder =>
                 {
-                    builder
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .SetIsOriginAllowed((host) => true)
-                        .AllowCredentials();
+                    builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed((host) => true).AllowCredentials();
                 }
             )
         );
@@ -243,58 +215,6 @@ public class Startup
         // );
     }
 
-    private void AddServiceOptions(IServiceCollection services)
-    {
-        var sendGridOptions = Configuration.GetSection("SendGrid").Get<SendGridOptions>();
-        if (sendGridOptions != null)
-            services.AddSingleton(sendGridOptions);
-
-        var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
-        if (jwtOptions != null)
-            services.AddSingleton(jwtOptions);
-
-        var sqlOptions = Configuration.GetSection("Sql").Get<SqlServerOptions>();
-        if (sqlOptions != null)
-            services.AddSingleton(sqlOptions!);
-        services.AddDbContextFactory<RpgDbContext>(options =>
-        {
-            options.UseSqlite($"DataSource=file:maindb?mode=memory&cache=shared");
-        });
-
-        services.AddSingleton<ISystemClock, RealSystemClock>();
-
-        var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
-        if (appleOptions != null)
-            services.AddSingleton(appleOptions!);
-
-        var rsaOptions = Configuration.GetSection("RSA").Get<RSAOptions>();
-        if (rsaOptions != null)
-            services.AddSingleton(rsaOptions!);
-    }
-
-    private static void AddCqrs(IServiceCollection services)
-    {
-        services.AddProdotPatternsCqrs(options =>
-            options
-                .WithQueryHandlersFrom(
-                    typeof(BusinessLayerPipelineProfile).Assembly,
-                    typeof(BusinessLayerEncryptionPipelineProfile).Assembly,
-                    typeof(DataLayerPipelineProfile).Assembly,
-                    typeof(DataLayerSendGridPipelineProfile).Assembly
-                )
-                .WithQueryHandlerPipelineConfiguration(config =>
-                    config
-                        .WithPipelineAutoRegistration() // using this, we can skip registration if there is an unambiguous mapping between query and handler
-                        .AddProfiles(
-                            typeof(BusinessLayerPipelineProfile).Assembly,
-                            typeof(BusinessLayerEncryptionPipelineProfile).Assembly,
-                            typeof(DataLayerPipelineProfile).Assembly,
-                            typeof(DataLayerSendGridPipelineProfile).Assembly
-                        )
-                )
-        );
-    }
-
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
@@ -306,17 +226,14 @@ public class Startup
             {
                 errorApp.Run(async context =>
                 {
-                    var exceptionHandlerPathFeature =
-                        context.Features.Get<IExceptionHandlerPathFeature>();
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
                     var exception = exceptionHandlerPathFeature?.Error;
 
                     // Log the exception
                     context.Response.StatusCode = 500;
                     Console.WriteLine(exception);
-                    await context.Response.WriteAsync(
-                        "An internal server error occurred.\n" + exception?.ToString()
-                    );
+                    await context.Response.WriteAsync("An internal server error occurred.\n" + exception?.ToString());
                 });
             });
         }
@@ -351,5 +268,68 @@ public class Startup
             endpoints.MapHub<RpgServerHub>("/Chat", (options) => { });
             endpoints.MapControllers();
         });
+    }
+
+    private static void AddCqrs(IServiceCollection services)
+    {
+        services.AddProdotPatternsCqrs(options =>
+            options
+                .WithQueryHandlersFrom(
+                    typeof(BusinessLayerPipelineProfile).Assembly,
+                    typeof(BusinessLayerEncryptionPipelineProfile).Assembly,
+                    typeof(DataLayerPipelineProfile).Assembly,
+                    typeof(DataLayerSendGridPipelineProfile).Assembly
+                )
+                .WithQueryHandlerPipelineConfiguration(config =>
+                    config
+                        .WithPipelineAutoRegistration() // using this, we can skip registration if there is an unambiguous mapping between query and handler
+                        .AddProfiles(
+                            typeof(BusinessLayerPipelineProfile).Assembly,
+                            typeof(BusinessLayerEncryptionPipelineProfile).Assembly,
+                            typeof(DataLayerPipelineProfile).Assembly,
+                            typeof(DataLayerSendGridPipelineProfile).Assembly
+                        )
+                )
+        );
+    }
+
+    private void AddServiceOptions(IServiceCollection services)
+    {
+        var sendGridOptions = Configuration.GetSection("SendGrid").Get<SendGridOptions>();
+        if (sendGridOptions != null)
+        {
+            services.AddSingleton(sendGridOptions);
+        }
+
+        var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
+        if (jwtOptions != null)
+        {
+            services.AddSingleton(jwtOptions);
+        }
+
+        var sqlOptions = Configuration.GetSection("Sql").Get<SqlServerOptions>();
+        if (sqlOptions != null)
+        {
+            services.AddSingleton(sqlOptions!);
+        }
+
+        services.AddDbContextFactory<RpgDbContext>(options =>
+        {
+            options.UseSqlite($"DataSource=file:maindb?mode=memory&cache=shared");
+        });
+
+        services.AddSingleton<ISystemClock, RealSystemClock>();
+
+        var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
+        if (appleOptions != null)
+        {
+            services.AddSingleton(appleOptions!);
+        }
+
+        var rsaOptions = Configuration.GetSection("RSA").Get<RSAOptions>();
+        if (rsaOptions != null)
+        {
+            services.AddSingleton(rsaOptions!);
+        }
     }
 }

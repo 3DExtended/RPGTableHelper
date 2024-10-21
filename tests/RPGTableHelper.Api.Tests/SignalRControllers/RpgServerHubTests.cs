@@ -17,22 +17,17 @@ public class PublicControllerTests : ControllerTestBase
     public async Task Echo_ShouldReturnSentString()
     {
         // arrange
-        Dictionary<string, object>? challengeDict =
-            await RegisterControllerTests.GenerateAndReceiveEncryptionChallenge(
-                QueryProcessor,
-                _client,
-                Context!
-            );
-
-        string? jwtResult = await RegisterControllerTests.LoginAndReceiveJWT(
+        Dictionary<string, object>? challengeDict = await RegisterControllerTests.GenerateAndReceiveEncryptionChallenge(
             QueryProcessor,
-            _client,
-            challengeDict
+            Client,
+            Context!
         );
 
-        await RegisterControllerTests.VerifyLoginValidity(_client, jwtResult);
+        string? jwtResult = await RegisterControllerTests.LoginAndReceiveJWT(QueryProcessor, Client, challengeDict);
 
-        var handle = _factory.Server.CreateHandler();
+        await RegisterControllerTests.VerifyLoginValidity(Client, jwtResult);
+
+        var handle = Factory.Server.CreateHandler();
         var connection = new HubConnectionBuilder()
             .WithUrl(
                 "wss://localhost" + "/Chat",
@@ -70,7 +65,7 @@ public class PublicControllerTests : ControllerTestBase
     public async Task Echo_ShouldFailIfUnauthorized()
     {
         // arrange
-        var handle = _factory.Server.CreateHandler();
+        var handle = Factory.Server.CreateHandler();
         var connection = new HubConnectionBuilder()
             .WithUrl(
                 "wss://localhost" + "/Chat",
@@ -100,8 +95,7 @@ public class PublicControllerTests : ControllerTestBase
         await Task.Delay(1000);
 
         // act
-        var task = () =>
-            connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
+        var task = () => connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
 
         // assert
         await task.Should().ThrowAsync<InvalidOperationException>();

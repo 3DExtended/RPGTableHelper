@@ -17,14 +17,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_SuccessfullyResetsPassword()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -43,11 +42,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -77,11 +72,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
         };
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -94,14 +85,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForExpiredToken()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: "expired-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(-1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: "expired-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(-1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -119,11 +109,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -136,15 +122,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForInvalidEmail()
     {
         // Arrange
-
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -162,11 +146,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -179,13 +159,12 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForInvalidResetCode()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -203,11 +182,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -220,14 +195,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForNullEmailAddress()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: null, // No email set up
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: null, // No email set up
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -239,11 +213,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
 
         var queryProcessor = Substitute.For<IQueryProcessor>();
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -256,14 +226,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForNullPasswordResetToken()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: null, // No password reset token
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: null, // No password reset token
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -281,11 +250,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -298,14 +263,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForNullPasswordResetTokenExpireDate()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: null // No expiration date
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: null // No expiration date
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -323,11 +287,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -340,14 +300,13 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
     public async Task RunQueryAsync_ShouldFailForMismatchedDecryptedEmail()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -365,33 +324,26 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
 
         // Assert
-        result
-            .IsSome.Should()
-            .BeFalse("because the decrypted email does not match the provided email");
+        result.IsSome.Should().BeFalse("because the decrypted email does not match the provided email");
     }
 
     [Fact]
     public async Task RunQueryAsync_ShouldSendEmailAfterPasswordReset()
     {
         // Arrange
-        var (user, _, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory,
-                Mapper,
-                email: "encrypted-email",
-                passwordResetToken: "valid-token",
-                passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory,
+            Mapper,
+            email: "encrypted-email",
+            passwordResetToken: "valid-token",
+            passwordResetTokenExpireDate: SystemClock.Now.AddHours(1)
+        );
 
         var query = new UserPasswordResetQuery
         {
@@ -409,11 +361,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
             )
             .Returns("decrypted-email");
 
-        var subjectUnderTest = new UserPasswordResetQueryHandler(
-            ContextFactory,
-            SystemClock,
-            queryProcessor
-        );
+        var subjectUnderTest = new UserPasswordResetQueryHandler(ContextFactory, SystemClock, queryProcessor);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);
@@ -423,10 +371,7 @@ public class UserPasswordResetQueryHandlerTests : QueryHandlersTestBase
 
         await queryProcessor
             .Received(1)
-            .RunQueryAsync<EmailSendQuery, Unit>(
-                Arg.Any<EmailSendQuery>(),
-                Arg.Any<CancellationToken>()
-            );
+            .RunQueryAsync<EmailSendQuery, Unit>(Arg.Any<EmailSendQuery>(), Arg.Any<CancellationToken>());
 
         using (var context = await ContextFactory.CreateDbContextAsync(default))
         {

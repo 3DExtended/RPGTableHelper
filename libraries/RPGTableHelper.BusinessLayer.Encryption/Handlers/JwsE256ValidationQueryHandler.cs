@@ -9,10 +9,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
     {
         public IQueryHandler<JwsE256ValidationQuery, bool> Successor { get; set; } = default!;
 
-        public Task<Option<bool>> RunQueryAsync(
-            JwsE256ValidationQuery query,
-            CancellationToken cancellationToken
-        )
+        public Task<Option<bool>> RunQueryAsync(JwsE256ValidationQuery query, CancellationToken cancellationToken)
         {
             // Decode the modulus and exponent
             byte[] modulus = Base64UrlDecode(query.Key.n);
@@ -36,12 +33,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
                     byte[] signature = Base64UrlDecode(query.StringParts[2]);
 
                     // Verify the signature
-                    bool isValid = rsa.VerifyHash(
-                        hash,
-                        signature,
-                        HashAlgorithmName.SHA256,
-                        RSASignaturePadding.Pkcs1
-                    );
+                    bool isValid = rsa.VerifyHash(hash, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
                     return Task.FromResult(Option.From(isValid));
                 }
@@ -53,7 +45,9 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             var output = input;
             output = output.Replace('-', '+'); // 62nd char of encoding
             output = output.Replace('_', '/'); // 63rd char of encoding
-            switch (output.Length % 4) // Pad with trailing '='s
+
+            // Pad with trailing '='s
+            switch (output.Length % 4)
             {
                 case 0:
                     break; // No pad chars in this case
@@ -69,6 +63,7 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
                 default:
                     throw new System.Exception("Illegal base64url string!");
             }
+
             var converted = Convert.FromBase64String(output); // Standard base64 decoder
             return converted;
         }

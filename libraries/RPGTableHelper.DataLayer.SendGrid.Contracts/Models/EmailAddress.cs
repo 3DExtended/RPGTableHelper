@@ -1,4 +1,4 @@
-namespace RPGTableHelper.DataLayer.SendGrid.Contracts.Models
+﻿namespace RPGTableHelper.DataLayer.SendGrid.Contracts.Models
 {
     /// <summary>
     /// Represents an email address with an optional associated name.

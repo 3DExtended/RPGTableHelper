@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Entities.Base;
 
 namespace RPGTableHelper.DataLayer.Entities.RpgEntities
@@ -17,7 +16,7 @@ namespace RPGTableHelper.DataLayer.Entities.RpgEntities
         /// The user of this character
         /// </summary>
         [ForeignKey(nameof(PlayerUser))]
-        public Guid PlayerUserId { get; set; } = default!;
+        public Guid PlayerUserId { get; set; } = Guid.Empty;
         public virtual UserEntity? PlayerUser { get; set; }
 
         /// <summary>

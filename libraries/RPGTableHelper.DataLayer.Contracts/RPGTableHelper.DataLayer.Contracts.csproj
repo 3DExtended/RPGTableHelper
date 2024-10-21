@@ -10,8 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.Abstractions\Prodot.Patterns.Cqrs.Abstractions.csproj" />
-    <ProjectReference Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.EfCore\Prodot.Patterns.Cqrs.EfCore.csproj" />
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.Abstractions\Prodot.Patterns.Cqrs.Abstractions.csproj" />
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.EfCore\Prodot.Patterns.Cqrs.EfCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

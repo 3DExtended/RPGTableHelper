@@ -22,13 +22,10 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     public async Task CreateNewPlayerCharacterAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            "asdfasdfasdsf"
-        );
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "asdfasdfasdsf");
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             "/PlayerCharacter/createcharacter",
             new PlayerCharacterCreateDto
             {
@@ -48,7 +45,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         var user = await ConfigureLoggedInUser();
 
         // act
-        var response = await _client.PostAsJsonAsync(
+        var response = await Client.PostAsJsonAsync(
             "/PlayerCharacter/createcharacter",
             new PlayerCharacterCreateDto
             {
@@ -61,9 +58,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         using (var context = ContextFactory!.CreateDbContext())
         {
-            var playerCharacters = await context
-                .PlayerCharacters.Include(c => c.PlayerUser)
-                .ToListAsync(default);
+            var playerCharacters = await context.PlayerCharacters.Include(c => c.PlayerUser).ToListAsync(default);
             playerCharacters.Count().Should().Be(1);
             playerCharacters[0].CharacterName.Should().Be("TestCharacterName");
             playerCharacters[0].RpgCharacterConfiguration.Should().Be("fghjklkjhgfghjkl");
@@ -77,13 +72,10 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     public async Task GetPlayerCharactersForUserAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            "asdfasdfasdsf"
-        );
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "asdfasdfasdsf");
 
         // act
-        var response = await _client.GetAsync("/PlayerCharacter/getplayercharacters");
+        var response = await Client.GetAsync("/PlayerCharacter/getplayercharacters");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -96,7 +88,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         var user = await ConfigureLoggedInUser();
 
         // act
-        var response = await _client.GetAsync("/PlayerCharacter/getplayercharacters");
+        var response = await Client.GetAsync("/PlayerCharacter/getplayercharacters");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -110,11 +102,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     {
         // arrange
         var user = await ConfigureLoggedInUser();
-        var user2 = await RpgDbContextHelpers.CreateUserInDb(
-            ContextFactory!,
-            Mapper!,
-            usernameOverride: "Username2"
-        );
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
 
         var entity1 = new PlayerCharacterEntity
         {
@@ -149,13 +137,11 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         }
 
         // act
-        var response = await _client.GetAsync("/PlayerCharacter/getplayercharacters");
+        var response = await Client.GetAsync("/PlayerCharacter/getplayercharacters");
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var responseParsed = await response.Content.ReadFromJsonAsync<
-            IReadOnlyList<PlayerCharacter>
-        >();
+        var responseParsed = await response.Content.ReadFromJsonAsync<IReadOnlyList<PlayerCharacter>>();
         responseParsed.Should().NotBeNull();
         responseParsed!.Count.Should().Be(2);
         responseParsed.Select(x => x.Id.Value).Should().Contain(entity1.Id);
@@ -166,13 +152,10 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     public async Task GetPlayerCharacterByIdAsync_ShouldReturnUnauthorizedIfJwtInvalid()
     {
         // arrange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            "asdfasdfasdsf"
-        );
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "asdfasdfasdsf");
 
         // act
-        var response = await _client.GetAsync(
+        var response = await Client.GetAsync(
             "/PlayerCharacter/getplayercharacter/a25ca8ab-d8d4-4909-af94-4c08583a13ab"
         );
 
@@ -201,7 +184,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         }
 
         // act
-        var response = await _client.GetAsync("/PlayerCharacter/getplayercharacter/" + entity1.Id);
+        var response = await Client.GetAsync("/PlayerCharacter/getplayercharacter/" + entity1.Id);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -215,11 +198,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     {
         // arrange
         var user = await ConfigureLoggedInUser();
-        var user2 = await RpgDbContextHelpers.CreateUserInDb(
-            ContextFactory!,
-            Mapper!,
-            usernameOverride: "Username2"
-        );
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
 
         var entity1 = new PlayerCharacterEntity
         {
@@ -236,7 +215,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         }
 
         // act
-        var response = await _client.GetAsync("/PlayerCharacter/getplayercharacter/" + entity1.Id);
+        var response = await Client.GetAsync("/PlayerCharacter/getplayercharacter/" + entity1.Id);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
