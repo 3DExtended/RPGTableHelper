@@ -26,6 +26,7 @@ public class Program
                                 (t) =>
                                     t.source
                                         is Microsoft.Extensions.Configuration.Json.JsonConfigurationSource jsonconfigsource
+                                    && jsonconfigsource.Path != null
                                     && jsonconfigsource.Path.Contains("secrets.json")
                             )
                             .FirstOptional();

@@ -1,5 +1,9 @@
 # RPGTableHelper
 
+## Update C# dependencies
+
+```dotnet outdated -u:Prompt -r```
+
 ## Code Coverage
 
 ```sh

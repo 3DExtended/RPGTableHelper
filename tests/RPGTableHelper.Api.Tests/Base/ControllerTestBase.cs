@@ -28,14 +28,14 @@ public abstract class ControllerTestBase
     protected readonly HttpClient _client;
     protected readonly WebApplicationFactory<Program> _factory;
 
-    protected IServiceProvider ServiceProvider { get; private set; }
-    protected ISystemClock SystemClock { get; private set; }
-    protected IQueryProcessor QueryProcessor { get; private set; }
-    protected IJWTTokenGenerator JwtTokenGenerator { get; private set; }
-    protected RpgDbContext? Context { get; private set; }
-    protected IMapper Mapper { get; private set; }
+    protected IServiceProvider ServiceProvider { get; private set; } = default!;
+    protected ISystemClock SystemClock { get; private set; } = default!;
+    protected IQueryProcessor QueryProcessor { get; private set; } = default!;
+    protected IJWTTokenGenerator JwtTokenGenerator { get; private set; } = default!;
+    protected RpgDbContext Context { get; private set; } = default!;
+    protected IMapper Mapper { get; private set; } = default!;
 
-    protected IDbContextFactory<RpgDbContext>? ContextFactory { get; private set; }
+    protected IDbContextFactory<RpgDbContext> ContextFactory { get; private set; } = default!;
     private bool _isDisposed;
     private string _runIdentifier;
 

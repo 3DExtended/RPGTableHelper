@@ -71,9 +71,7 @@ public class RegisterControllerTests : ControllerTestBase
         var useridsignature = await new RSASignStringQuery
         {
             MessageToSign = userEntity.Id.ToString(),
-        }
-            .RunAsync(QueryProcessor, default)
-            .ConfigureAwait(false);
+        }.RunAsync(QueryProcessor, default);
 
         // act
         var response = await _client.GetAsync(
@@ -161,7 +159,7 @@ public class RegisterControllerTests : ControllerTestBase
         {
             Username = "TestUser1",
             EncryptionChallengeIdentifier = EncryptionChallenge.EncryptionChallengeIdentifier.From(
-                Guid.Parse(challengeDict!["id"]!.ToString())
+                Guid.Parse(challengeDict!["id"]!.ToString()!)
             ),
             UserSecret = "mysupersecretpassword",
             Email = "asdf@asdf.de",
@@ -238,7 +236,7 @@ public class RegisterControllerTests : ControllerTestBase
         // check if encryption challenge was successfully added to database
         var entities = rpgDbContext.EncryptionChallenges.ToList();
         entities.Count.Should().Be(1);
-        entities[0].Id.ToString().Should().Be(challengeDict["id"].ToString());
+        entities[0].Id.ToString().Should().Be(challengeDict!["id"].ToString());
         entities[0].PasswordPrefix.ToString().Should().Be(challengeDict["pp"].ToString());
         entities[0].RndInt.ToString().Should().Be(challengeDict["ri"].ToString());
 

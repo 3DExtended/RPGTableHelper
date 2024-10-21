@@ -76,7 +76,7 @@ public class Startup
             {
                 o.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = async context =>
+                    OnTokenValidated = context =>
                     {
                         // Custom token validation logic
                         var token =
@@ -90,7 +90,7 @@ public class Startup
                         if (identityProviderClaim == null)
                         {
                             context.Fail("Token does not contain 'identityproviderid' claim.");
-                            return;
+                            return Task.CompletedTask;
                         }
                         var identityProviderId = identityProviderClaim.Value;
 
@@ -115,6 +115,8 @@ public class Startup
                         // {
                         //     context.Fail("Token has been revoked.");
                         // }
+
+                        return Task.CompletedTask;
                     },
                     OnAuthenticationFailed = jwtContext =>
                     {

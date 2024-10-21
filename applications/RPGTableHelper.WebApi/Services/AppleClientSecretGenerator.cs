@@ -100,6 +100,11 @@ namespace RPGTableHelper.WebApi.Services
         )
         {
             var expiresAt = DateTime.UtcNow.AddHours(context.ClientSecretExpiresAfterHours);
+            if (context.ClientId == null)
+            {
+                throw new ArgumentNullException(nameof(context.ClientId));
+            }
+
             var subject = new Claim("sub", context.ClientId);
 
             var tokenDescriptor = new SecurityTokenDescriptor()

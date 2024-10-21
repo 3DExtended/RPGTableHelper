@@ -101,7 +101,7 @@ public class RpgServerHub : Hub
     /// Grants a list of items to players.
     /// </summary>
     /// <param name="gameCode">the game code of the session</param>
-    /// <param name="json">The json encoded grant for dart type "List<GrantedItemsForPlayer>"</param>
+    /// <param name="json">The json encoded grant for dart type "List of GrantedItemsForPlayer"</param>
     public async Task SendGrantedItemsToPlayers(string gameCode, string json)
     {
         Console.WriteLine("A dm granted items to their players for code " + gameCode);
@@ -169,8 +169,8 @@ public class RpgServerHub : Hub
 
         // This console.WriteLine does print when I bring up the component in the front end.
         Console.WriteLine("Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
-        Console.WriteLine("Context.User:" + Context.User.ToString());
-        Console.WriteLine("Context.User.Identity.Name:" + Context.User.Identity.Name);
+        Console.WriteLine("Context.User:" + _userContext.User!.ToString());
+        Console.WriteLine("Context.User.Identity.Name:" + _userContext.User!.UserIdentifier.Value);
         Console.WriteLine("Context.UserIdentifier:" + Context.UserIdentifier);
 
         await base.OnConnectedAsync();

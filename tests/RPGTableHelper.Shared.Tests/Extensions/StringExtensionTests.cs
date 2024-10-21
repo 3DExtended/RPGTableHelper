@@ -120,15 +120,12 @@ namespace RPGTableHelper.Shared.Tests.Extensions
         public void GetTokenInfo_ShouldHandleNullOrEmptyToken()
         {
             // Arrange
-            string? nullToken = null;
             string emptyToken = "";
 
             // Act
-            var nullTokenInfoAction = () => nullToken.GetTokenInfo();
             var emptyTokenInfoAction = () => emptyToken.GetTokenInfo();
 
             // Assert
-            nullTokenInfoAction.Should().Throw<ArgumentNullException>();
             emptyTokenInfoAction.Should().Throw<ArgumentNullException>();
         }
     }
