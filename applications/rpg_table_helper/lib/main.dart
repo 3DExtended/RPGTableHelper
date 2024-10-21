@@ -6,6 +6,7 @@ import 'package:rpg_table_helper/components/tab_handler.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:rpg_table_helper/screens/preauthorized/login_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
@@ -70,13 +71,18 @@ class AppRoutingShell extends ConsumerWidget {
           ),
         ),
         navigatorKey: navigatorKey,
-        initialRoute: widget.initialRoute ?? AuthorizedScreenWrapper.route,
+        initialRoute: widget.initialRoute ?? LoginScreen.route,
         onGenerateRoute: (RouteSettings settings) {
           // add all routes which are accessible without authorization
           switch (settings.name) {
             case AuthorizedScreenWrapper.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => const AuthorizedScreenWrapper(),
+                builder: (_) => AuthorizedScreenWrapper(),
+                settings: settings,
+              );
+            case LoginScreen.route:
+              return MaterialWithModalsPageRoute(
+                builder: (_) => LoginScreen(),
                 settings: settings,
               );
           }

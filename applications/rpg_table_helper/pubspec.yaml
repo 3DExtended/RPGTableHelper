@@ -34,6 +34,7 @@ dependencies:
   pointycastle: ^3.9.1
   asn1lib: ^1.5.5
   encrypt: ^5.0.3
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +54,8 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - assets/extern/
+    - assets/extern/logos/
     - assets/
 
 fonts:

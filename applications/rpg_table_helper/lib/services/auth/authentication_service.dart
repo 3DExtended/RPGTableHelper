@@ -28,6 +28,11 @@ abstract class IAuthenticationService {
   Future<HRResponse<SignInResult>> signInWithApple(
       {required String identityToken, required String authorizationCode});
 
+  /// This method tries login in to the server using the SignInWithGoogle functionality.
+  /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
+  Future<HRResponse<SignInResult>> signInWithGoogle(
+      {required String identityToken, required String authorizationCode});
+
   /// This method tries signup using username and password.
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
   Future<HRResponse<SignInResult>> registerWithUsernameAndPassword(
@@ -36,7 +41,7 @@ abstract class IAuthenticationService {
   /// This method tries login using username and password.
   /// Returns, whether the login was successfull.
   Future<HRResponse<bool>> loginWithUsernameAndPassword(
-      {required String identityToken, required String authorizationCode});
+      {required String username, required String password});
 }
 
 class AuthenticationService extends IAuthenticationService {
@@ -52,7 +57,7 @@ class AuthenticationService extends IAuthenticationService {
 
   @override
   Future<HRResponse<bool>> loginWithUsernameAndPassword(
-      {required String identityToken, required String authorizationCode}) {
+      {required String username, required String password}) {
     // TODO: implement loginWithUsernameAndPassword
     throw UnimplementedError();
   }
@@ -68,6 +73,13 @@ class AuthenticationService extends IAuthenticationService {
   Future<HRResponse<SignInResult>> signInWithApple(
       {required String identityToken, required String authorizationCode}) {
     // TODO: implement signInWithApple
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<SignInResult>> signInWithGoogle(
+      {required String identityToken, required String authorizationCode}) {
+    // TODO: implement signInWithGoogle
     throw UnimplementedError();
   }
 }
@@ -88,7 +100,7 @@ class MockAuthenticationService extends IAuthenticationService {
 
   @override
   Future<HRResponse<bool>> loginWithUsernameAndPassword(
-      {required String identityToken, required String authorizationCode}) {
+      {required String username, required String password}) {
     // TODO: implement loginWithUsernameAndPassword
     throw UnimplementedError();
   }
@@ -104,6 +116,13 @@ class MockAuthenticationService extends IAuthenticationService {
   Future<HRResponse<SignInResult>> signInWithApple(
       {required String identityToken, required String authorizationCode}) {
     // TODO: implement signInWithApple
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<SignInResult>> signInWithGoogle(
+      {required String identityToken, required String authorizationCode}) {
+    // TODO: implement signInWithGoogle
     throw UnimplementedError();
   }
 }
