@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -99,9 +100,9 @@ public class PlayerCharacterControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var responseParsed = await response.Content.ReadAsAsync<IReadOnlyList<Campagne>>();
+        var responseParsed = await response.Content.ReadFromJsonAsync<IReadOnlyList<Campagne>>();
         responseParsed.Should().NotBeNull();
-        responseParsed.Count.Should().Be(0);
+        responseParsed!.Count.Should().Be(0);
     }
 
     [Fact]
@@ -152,9 +153,11 @@ public class PlayerCharacterControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var responseParsed = await response.Content.ReadAsAsync<IReadOnlyList<PlayerCharacter>>();
+        var responseParsed = await response.Content.ReadFromJsonAsync<
+            IReadOnlyList<PlayerCharacter>
+        >();
         responseParsed.Should().NotBeNull();
-        responseParsed.Count.Should().Be(2);
+        responseParsed!.Count.Should().Be(2);
         responseParsed.Select(x => x.Id.Value).Should().Contain(entity1.Id);
         responseParsed.Select(x => x.Id.Value).Should().Contain(entity3.Id);
     }
@@ -202,9 +205,9 @@ public class PlayerCharacterControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var responseParsed = await response.Content.ReadAsAsync<Campagne>();
+        var responseParsed = await response.Content.ReadFromJsonAsync<Campagne>();
         responseParsed.Should().NotBeNull();
-        responseParsed.Id.Value.Should().Be(entity1.Id);
+        responseParsed!.Id.Value.Should().Be(entity1.Id);
     }
 
     [Fact]

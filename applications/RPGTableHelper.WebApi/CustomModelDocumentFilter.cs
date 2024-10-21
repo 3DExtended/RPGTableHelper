@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RPGTableHelper.WebApi;
 
-public class CustomModelDocumentFilter<T> : Swashbuckle.AspNetCore.SwaggerGen.IDocumentFilter
+public class CustomModelDocumentFilter<T> : IDocumentFilter
     where T : class
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
