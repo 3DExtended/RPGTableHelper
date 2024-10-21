@@ -59,7 +59,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         using (var context = ContextFactory!.CreateDbContext())
         {
             var playerCharacters = await context.PlayerCharacters.Include(c => c.PlayerUser).ToListAsync(default);
-            playerCharacters.Count().Should().Be(1);
+            playerCharacters.Count.Should().Be(1);
             playerCharacters[0].CharacterName.Should().Be("TestCharacterName");
             playerCharacters[0].RpgCharacterConfiguration.Should().Be("fghjklkjhgfghjkl");
             playerCharacters[0].PlayerUserId.Should().Be(user.Id.Value);
@@ -85,7 +85,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     public async Task GetPlayerCharactersForUserAsync_ShouldBeSuccessfullOnEmptyLists()
     {
         // arrange
-        var user = await ConfigureLoggedInUser();
+        await ConfigureLoggedInUser();
 
         // act
         var response = await Client.GetAsync("/PlayerCharacter/getplayercharacters");
@@ -197,7 +197,7 @@ public class PlayerCharacterControllerTests : ControllerTestBase
     public async Task GetPlayerCharacterByIdAsync_ShouldReturnUnauthorizedForPlayerYouDontOwn()
     {
         // arrange
-        var user = await ConfigureLoggedInUser();
+        await ConfigureLoggedInUser();
         var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
 
         var entity1 = new PlayerCharacterEntity

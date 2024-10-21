@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +10,6 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
-using RPGTableHelper.DataLayer.EfCore;
-using RPGTableHelper.DataLayer.Entities;
-using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi;
@@ -36,12 +32,11 @@ public class SignInControllerTests : ControllerTestBase
     public async Task TestLogin_ShouldReturnUnauthorizedIfJwtNotValid(int jwtErrorType)
     {
         // arrange
-        var (user, encryptionChallenge, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory!,
-                Mapper!,
-                default
-            );
+        var (user, _, _) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
 
         var jwtOptions = new JwtOptions
         {
@@ -80,7 +75,6 @@ public class SignInControllerTests : ControllerTestBase
                 await Task.Delay(10000);
                 break;
 
-            case 3: // not expired but wrong issuer
             default:
                 jwt = tokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString());
                 break;
@@ -104,9 +98,7 @@ public class SignInControllerTests : ControllerTestBase
             .ConfigureAwait(true);
 
         // login using username and password
-        var (user, encryptionChallenge, userCredential, jwt) = await LoginUsingUsernameAndPassowrd(
-            emailOverride: encryptedEmail.Get()
-        );
+        var (user, _, _, _) = await LoginUsingUsernameAndPassowrd(emailOverride: encryptedEmail.Get());
 
         // act
         var response = await Client.PostAsJsonAsync(
@@ -163,7 +155,7 @@ public class SignInControllerTests : ControllerTestBase
     public async Task GetChallengeByUsername_ShouldBeSuccessful()
     {
         // arrange
-        var (user, encryptionChallenge, userCredential) =
+        var (user, encryptionChallenge, _) =
             await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
                 ContextFactory!,
                 Mapper!,
@@ -207,12 +199,11 @@ public class SignInControllerTests : ControllerTestBase
     public async Task LoginWithUsernameAndPassword_ShouldBeSuccessful()
     {
         // arrange
-        var (user, encryptionChallenge, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory!,
-                Mapper!,
-                default
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
 
         // act
         var response = await Client.PostAsJsonAsync(
@@ -237,12 +228,11 @@ public class SignInControllerTests : ControllerTestBase
     public async Task LoginWithUsernameAndPassword_ShouldReturnUnauthorizedForWrongUsername()
     {
         // arrange
-        var (user, encryptionChallenge, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory!,
-                Mapper!,
-                default
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
 
         // act
         var response = await Client.PostAsJsonAsync(
@@ -265,12 +255,11 @@ public class SignInControllerTests : ControllerTestBase
     public async Task LoginWithUsernameAndPassword_ShouldReturnUnauthorizedForWrongPassword()
     {
         // arrange
-        var (user, encryptionChallenge, userCredential) =
-            await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
-                ContextFactory!,
-                Mapper!,
-                default
-            );
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
 
         // act
         var response = await Client.PostAsJsonAsync(

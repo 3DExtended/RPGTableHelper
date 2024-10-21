@@ -215,7 +215,7 @@ public class RegisterControllerTests : ControllerTestBase
         var challengeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(decryptedChallenge.Get());
 
         // check if encryption challenge was successfully added to database
-        var entities = rpgDbContext.EncryptionChallenges.ToList();
+        var entities = await rpgDbContext.EncryptionChallenges.ToListAsync();
         entities.Count.Should().Be(1);
         entities[0].Id.ToString().Should().Be(challengeDict!["id"].ToString());
         entities[0].PasswordPrefix.ToString().Should().Be(challengeDict["pp"].ToString());

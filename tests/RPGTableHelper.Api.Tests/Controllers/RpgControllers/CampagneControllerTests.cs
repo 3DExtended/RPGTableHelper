@@ -51,7 +51,7 @@ public class CampagneControllerTests : ControllerTestBase
         using (var context = ContextFactory!.CreateDbContext())
         {
             var campagnes = await context.Campagnes.Include(c => c.DmUser).ToListAsync(default);
-            campagnes.Count().Should().Be(1);
+            campagnes.Count.Should().Be(1);
             campagnes[0].CampagneName.Should().Be("TestCampagneName");
             campagnes[0].JoinCode.Should().NotBeNullOrWhiteSpace();
             campagnes[0].RpgConfiguration.Should().Be("fghjklkjhgfghjkl");
@@ -78,7 +78,7 @@ public class CampagneControllerTests : ControllerTestBase
     public async Task GetCampagnesForUserAsDmAsync_ShouldBeSuccessfullOnEmptyLists()
     {
         // arrange
-        var user = await ConfigureLoggedInUser();
+        await ConfigureLoggedInUser();
 
         // act
         var response = await Client.GetAsync("/campagne/getcampagnes");
@@ -208,7 +208,7 @@ public class CampagneControllerTests : ControllerTestBase
     public async Task GetCampagneByIdAsync_ShouldReturnUnauthorizedForCampagneWhereUserIsNotPlayer()
     {
         // arrange
-        var user = await ConfigureLoggedInUser();
+        await ConfigureLoggedInUser();
         var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username2");
         var user3 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Username3");
 

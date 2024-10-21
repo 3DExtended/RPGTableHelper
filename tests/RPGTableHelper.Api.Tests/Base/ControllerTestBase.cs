@@ -4,7 +4,6 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Prodot.Patterns.Cqrs;
@@ -34,10 +33,10 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
     protected IMapper Mapper { get; private set; } = default!;
 
     protected IDbContextFactory<RpgDbContext> ContextFactory { get; private set; } = default!;
+    private readonly string _runIdentifier;
     private bool _isDisposed;
-    private string _runIdentifier;
 
-    public ControllerTestBase(WebApplicationFactory<Program> factory)
+    protected ControllerTestBase(WebApplicationFactory<Program> factory)
     {
         _runIdentifier = Guid.NewGuid().ToString();
 
