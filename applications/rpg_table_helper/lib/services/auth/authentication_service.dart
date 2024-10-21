@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.swagger.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
@@ -115,9 +116,71 @@ class AuthenticationService extends IAuthenticationService {
     required String username,
     required String email,
     required String password,
-  }) {
-    // TODO: implement registerWithUsernameAndPassword
-    throw UnimplementedError();
+  }) async {
+    var client = await apiConnectorService.getApiConnector(
+      requiresJwt: false, // as we try to obtain a jwt!
+    );
+    if (client == null) {
+      return HRResponse.error("Could not load apiConnectorClient",
+          "d6876051-c66d-462d-a0ef-35e43d646bbf");
+    }
+
+    // 0. we need to generate a public and private key pair for this app client
+    var keyPairTuple = await encryptionService.getKeysAndPublicPem();
+
+    // 1. we need to load the encyption challenge for the user
+    var encryptionChallengeResult = await HRResponse.fromApiFuture(
+        client.registerCreateencryptionchallengePost(
+          body: keyPairTuple.$2,
+        ),
+        "Could not load encryption challenge for register request",
+        "3679927b-e32a-42f6-b3dd-6c22687d3952");
+
+    if (!encryptionChallengeResult.isSuccessful) {
+      return encryptionChallengeResult.asT();
+    }
+
+    var encryptedMessage = encryptionChallengeResult.result;
+    var decryptedMessage =
+        RsaKeyHelper.decrypt(encryptedMessage!, keyPairTuple.$1);
+
+    Map<String, dynamic> challenge = jsonDecode(decryptedMessage);
+    String userSecret = encryptionService
+        .calculateUserSecretForEncryptionChallenge(challenge, password);
+
+    Map<String, dynamic> encryptedRegisterObj = {};
+
+    encryptedRegisterObj['email'] = email;
+    encryptedRegisterObj['username'] = username;
+    encryptedRegisterObj['userSecret'] = userSecret;
+    encryptedRegisterObj['encryptionChallengeIdentifier'] = {
+      'value': challenge['id']
+    };
+
+    var jsonObject = jsonEncode(encryptedRegisterObj);
+
+    // encrypt with serPub key
+    var serPubKey =
+        RsaKeyHelper.parsePublicKeyFromPem(rpgtablehelperPublicCertificate);
+
+    var encryptedObj = RsaKeyHelper.encrypt(jsonObject, serPubKey);
+    var registerResult = await HRResponse.fromApiFuture(
+        client.registerRegisterPost(body: encryptedObj),
+        "Could not register new user on server",
+        "7794b7bf-59c7-4f0b-9334-b613b18d62f1");
+
+    // THIS might return a statuscode 409 indicating that the username is taken
+    if (!registerResult.isSuccessful) {
+      return registerResult.asT<SignInResult>();
+    }
+
+    // set jwt!
+    apiConnectorService.setJwt(registerResult.result!);
+
+    return HRResponse.fromResult(
+      SignInResult.loginSucessfull,
+      statusCode: registerResult.statusCode,
+    );
   }
 
   @override
