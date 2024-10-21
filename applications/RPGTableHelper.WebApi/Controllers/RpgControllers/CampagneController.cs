@@ -63,7 +63,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     JoinCode = newJoinCode.Get(),
                     CampagneName = createDto.CampagneName,
                     DmUserId = _userContext.User.UserIdentifier,
-                    RpgConfiguration = createDto.RpgConfiguration.ToOption(),
+                    RpgConfiguration = Option.From(createDto.RpgConfiguration),
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)

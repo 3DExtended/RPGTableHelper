@@ -4,14 +4,11 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using RPGTableHelper.Api.Tests.Base;
-using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
-using RPGTableHelper.WebApi.Options;
-using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.Api.Tests.Controllers.RpgControllers;
 
