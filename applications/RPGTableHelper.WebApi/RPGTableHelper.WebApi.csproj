@@ -1,14 +1,61 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>4e11255f-84e3-49f0-a803-77ca888f26ea</UserSecretsId>
+
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.10" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="8.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection\Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.csproj" />
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.Abstractions\Prodot.Patterns.Cqrs.Abstractions.csproj" />
+    <ProjectReference Include="..\..\libraries\RPGTableHelper.Shared\RPGTableHelper.Shared.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.BusinessLayer.Contracts\RPGTableHelper.BusinessLayer.Contracts.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.BusinessLayer.Encryption.Contracts\RPGTableHelper.BusinessLayer.Encryption.Contracts.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer.Contracts\RPGTableHelper.DataLayer.Contracts.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer.SendGrid.Contracts\RPGTableHelper.DataLayer.SendGrid.Contracts.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer.SendGrid\RPGTableHelper.DataLayer.SendGrid.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer\RPGTableHelper.DataLayer.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.BusinessLayer\RPGTableHelper.BusinessLayer.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.BusinessLayer.Encryption\RPGTableHelper.BusinessLayer.Encryption.csproj" />
   </ItemGroup>
 
 </Project>
