@@ -16,8 +16,7 @@ public class RpgDbContext : DbContext
     public DbSet<UserCredentialEntity> UserCredentials { get; set; } = default!;
     public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
 
-    public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } =
-        default!;
+    public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +28,7 @@ public class RpgDbContext : DbContext
 
         modelBuilder.Entity<CampagneEntity>().HasIndex(entity => entity.JoinCode).IsUnique();
         modelBuilder.Entity<UserEntity>().HasIndex(entity => entity.Username).IsUnique();
+        modelBuilder.Entity<UserCredentialEntity>().HasIndex(entity => entity.Email).IsUnique();
 
         base.OnModelCreating(modelBuilder);
     }

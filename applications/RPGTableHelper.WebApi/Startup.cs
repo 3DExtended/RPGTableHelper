@@ -315,8 +315,12 @@ public class Startup
 
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
-            options.UseSqlite($"DataSource=file:maindb?mode=memory&cache=shared");
+            options.UseSqlite($"DataSource=file:maindb1?mode=memory&cache=shared");
         });
+
+        var db = services.BuildServiceProvider().GetRequiredService<RpgDbContext>();
+        db.Database.OpenConnection();
+        db.Database.Migrate();
 
         services.AddSingleton<ISystemClock, RealSystemClock>();
 

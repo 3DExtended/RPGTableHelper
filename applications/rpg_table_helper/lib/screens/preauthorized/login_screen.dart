@@ -231,7 +231,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     await signInResult
                                         .possiblyHandleError(context);
 
-                                    // TODO navigate
+                                    if (signInResult.isSuccessful &&
+                                        signInResult.result!.resultType ==
+                                            SignInResultType
+                                                .loginSucessfullButConfigurationMissing) {
+                                      // TODO navigate to complete sign in using sign in provider screen
+                                    } else if (signInResult.isSuccessful &&
+                                        signInResult.result!.resultType ==
+                                            SignInResultType.loginSucessfull) {
+                                      // TODO navigate
+                                    }
                                   },
                                 ),
                               ),

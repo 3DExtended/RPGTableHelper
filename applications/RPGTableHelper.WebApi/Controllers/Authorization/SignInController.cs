@@ -156,7 +156,7 @@ namespace RPGTableHelper.WebApi.Controllers
             CancellationToken cancellationToken
         )
         {
-            var appleDetails = await new AppleVerifyTokenAndReceiveUserDetailsQuery { }
+            var appleDetails = await new AppleVerifyTokenAndReceiveUserDetailsQuery { LoginDetails = loginDto }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 

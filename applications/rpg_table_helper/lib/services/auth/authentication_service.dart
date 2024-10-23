@@ -7,10 +7,17 @@ import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
 import 'package:rpg_table_helper/services/auth/encryption_service.dart';
 import 'package:rpg_table_helper/services/auth/rsa_key_helper.dart';
 
-enum SignInResult {
+enum SignInResultType {
   loginFailed,
   loginSucessfullButConfigurationMissing,
   loginSucessfull,
+}
+
+class SignInResult {
+  final SignInResultType resultType;
+  final String? additionalDetails;
+
+  SignInResult({required this.resultType, this.additionalDetails});
 }
 
 abstract class IAuthenticationService {
@@ -33,6 +40,8 @@ abstract class IAuthenticationService {
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
   Future<HRResponse<SignInResult>> signInWithGoogle(
       {required String identityToken, required String authorizationCode});
+
+  Future<HRResponse<bool>> testLogin();
 
   /// This method tries signup using username and password.
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
@@ -107,6 +116,7 @@ class AuthenticationService extends IAuthenticationService {
     }
 
     await apiConnectorService.setJwt(result.result!);
+    apiConnectorService.clearCache();
 
     return result.asT();
   }
@@ -176,18 +186,72 @@ class AuthenticationService extends IAuthenticationService {
 
     // set jwt!
     apiConnectorService.setJwt(registerResult.result!);
+    apiConnectorService.clearCache();
+    print("Successfully set jwt");
 
     return HRResponse.fromResult(
-      SignInResult.loginSucessfull,
+      SignInResult(resultType: SignInResultType.loginSucessfull),
       statusCode: registerResult.statusCode,
     );
   }
 
   @override
   Future<HRResponse<SignInResult>> signInWithApple(
-      {required String identityToken, required String authorizationCode}) {
-    // TODO: implement signInWithApple
-    throw UnimplementedError();
+      {required String identityToken,
+      required String authorizationCode}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: false);
+    if (api == null) {
+      return HRResponse.error<SignInResult>('Could not load api connector.',
+          'e7771d09-b2f5-4ea2-b0a7-8bebd0298d96');
+    }
+
+    // load loginChallenge for username
+    var loginWithAppleResult = await HRResponse.fromApiFuture(
+        api.signInLoginwithapplePost(
+          body: AppleLoginDetails(
+            authorizationCode: authorizationCode,
+            identityToken: identityToken,
+          ),
+        ),
+        'Could not login using apple sign in.',
+        '6b89a5e7-5ada-4a75-b574-c248ed0a59b2');
+
+    if (!loginWithAppleResult.isSuccessful) {
+      return loginWithAppleResult.asT<SignInResult>();
+    }
+
+    if (loginWithAppleResult.isSuccessful &&
+        loginWithAppleResult.result != null &&
+        loginWithAppleResult.result!.startsWith('redirect')) {
+      return HRResponse.fromResult(
+        SignInResult(
+          resultType: SignInResultType.loginSucessfullButConfigurationMissing,
+          additionalDetails:
+              loginWithAppleResult.result!.replaceAll('redirect', ''),
+        ),
+        statusCode: loginWithAppleResult.statusCode,
+      );
+    } else if (loginWithAppleResult.isSuccessful) {
+      var updateJwtResult = await HRResponse.fromFuture(
+        apiConnectorService.setJwt(loginWithAppleResult.result!),
+        'Could not update jwt.',
+        '58b6c194-7aaa-4fdf-810a-09ec6a684731',
+      );
+      apiConnectorService.clearCache();
+
+      if (!updateJwtResult.isSuccessful) {
+        return updateJwtResult.asT<SignInResult>();
+      }
+
+      return HRResponse.fromResult(
+        SignInResult(
+          resultType: SignInResultType.loginSucessfull,
+        ),
+        statusCode: loginWithAppleResult.statusCode,
+      );
+    }
+
+    return loginWithAppleResult.asT<SignInResult>();
   }
 
   @override
@@ -195,6 +259,26 @@ class AuthenticationService extends IAuthenticationService {
       {required String identityToken, required String authorizationCode}) {
     // TODO: implement signInWithGoogle
     throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> testLogin() async {
+    var client = await apiConnectorService.getApiConnector(
+      requiresJwt: true, // require a jwt for testing the login
+    );
+    if (client == null) {
+      return HRResponse.error("Could not load apiConnectorClient",
+          "06f9a01d-cf2d-4308-9b2d-95d306968386");
+    }
+
+    var result = await HRResponse.fromApiFuture(
+        client.signInTestloginGet(),
+        "Testing for a valid jwt failed.",
+        "844f0aa1-8dd8-45ed-8540-a98ad8906e07");
+
+    if (!result.isSuccessful) return result.asT();
+
+    return HRResponse.fromResult(true, statusCode: result.statusCode);
   }
 }
 
@@ -234,6 +318,12 @@ class MockAuthenticationService extends IAuthenticationService {
   Future<HRResponse<SignInResult>> signInWithGoogle(
       {required String identityToken, required String authorizationCode}) {
     // TODO: implement signInWithGoogle
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> testLogin() {
+    // TODO: implement testLogin
     throw UnimplementedError();
   }
 }

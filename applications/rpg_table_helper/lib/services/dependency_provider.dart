@@ -2,6 +2,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
+import 'package:rpg_table_helper/services/auth/authentication_service.dart';
+import 'package:rpg_table_helper/services/auth/encryption_service.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
@@ -49,6 +52,27 @@ class DependencyProvider extends InheritedWidget {
     // TODO add all services here
     _registerService<ISystemClockService>(
         () => SystemClockService(), () => MockSystemClockService());
+    _registerService<IEncryptionService>(
+        () => EncryptionService(), () => MockEncryptionService());
+
+    _registerService<IApiConnectorService>(
+        () => ApiConnectorService(), () => MockApiConnectorService());
+
+    _registerService<IAuthenticationService>(() {
+      var encryptionService = getService<IEncryptionService>();
+      var apiConnectorService = getService<IApiConnectorService>();
+      return AuthenticationService(
+          apiConnectorService: apiConnectorService,
+          encryptionService: encryptionService);
+    }, () {
+      var encryptionService = getService<IEncryptionService>();
+      var apiConnectorService = getService<IApiConnectorService>();
+
+      return MockAuthenticationService(
+          apiConnectorService: apiConnectorService,
+          encryptionService: encryptionService);
+    });
+
     _registerService<INavigationService>(
         () => NavigationService(), () => NavigationService());
 

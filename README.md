@@ -1,5 +1,12 @@
 # RPGTableHelper
 
+## Add efcore migration
+
+Run this in the root folder:
+```dotnet ef migrations add <Name> -c RpgDbContext -s applications/RPGTableHelper.WebApi -p libraries/RPGTableHelper.DataLayer```
+
+```dotnet ef database update -c RpgDbContext -s applications/RPGTableHelper.WebApi -p libraries/RPGTableHelper.DataLayer```
+
 ## Update C# dependencies
 
 ```dotnet outdated -u:Prompt -r```
@@ -224,7 +231,7 @@ Start with ASP.NET Core Identity to manage local signups and logins.
 #### 3. __Authorization__: Claims-based or Role-based Access Control
 
 - In .NET Core, you can define custom roles and policies to handle different levels of authorization.
-  
+
   ```csharp
   services.AddAuthorization(options =>
   {
@@ -315,7 +322,7 @@ public class AuthController : ControllerBase
 public class RegisterModel
 {
     public string Username { get; set; }
-    
+
     public string Email { get; set; }
 
     public string Password { get; set; }
@@ -597,7 +604,7 @@ Authorization: Bearer <token>
 ### Error Handling
 
 - If the user doesn’t exist or the password is incorrect, the server will return a 401 Unauthorized response with an appropriate message:
-  
+
 ```json
 {
     "message": "Invalid login attempt."
@@ -732,7 +739,7 @@ public async Task<IActionResult> Refresh([FromBody] TokenModel model)
 #### 4. __Token Storage__
 
 - __Access token__: The frontend (React, Angular, Flutter) stores this in memory or local storage and includes it in the `Authorization` header when making API requests:
-  
+
   ```
   Authorization: Bearer <access_token>
   ```
@@ -1067,15 +1074,15 @@ Using your own __refresh tokens__ in conjunction with an __OIDC provider__ can b
 #### 1. __Sign In with Google (OIDC)__
 
 - The user signs in using Google, and Google returns an __ID token__, __access token__, and optionally a __refresh token__.
-  
+
 #### 2. __Issue Your Own Tokens__
 
 - After verifying the Google ID token and user info, issue your own __JWT access token__ (short-lived) and a __refresh token__ (long-lived) to the user.
-  
+
 #### 3. __Refresh Access Token__
 
 - When the access token expires, the frontend sends a request to your `/refresh` endpoint, providing your refresh token.
-  
+
 - Your backend checks your refresh token, and if valid, issues a new __access token__ and optionally a new refresh token.
 
 #### 4. __Optional: Use OIDC Provider's Refresh Token__
@@ -1119,7 +1126,7 @@ __2. Refresh Token Flow__:
 public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest model)
 {
     var storedRefreshToken = await GetStoredRefreshToken(model.RefreshToken);
-    
+
     if (storedRefreshToken == null || storedRefreshToken.IsExpired)
     {
         return Unauthorized("Invalid refresh token.");
