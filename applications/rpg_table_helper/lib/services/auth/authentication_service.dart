@@ -36,6 +36,9 @@ abstract class IAuthenticationService {
   Future<HRResponse<SignInResult>> signInWithApple(
       {required String identityToken, required String authorizationCode});
 
+  Future<HRResponse<bool>> completeRegistration(
+      {required String apiKey, required String username});
+
   /// This method tries login in to the server using the SignInWithGoogle functionality.
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
   Future<HRResponse<SignInResult>> signInWithGoogle(
@@ -280,6 +283,28 @@ class AuthenticationService extends IAuthenticationService {
 
     return HRResponse.fromResult(true, statusCode: result.statusCode);
   }
+
+  @override
+  Future<HRResponse<bool>> completeRegistration(
+      {required String apiKey, required String username}) async {
+    var client = await apiConnectorService.getApiConnector(
+      requiresJwt: true, // require a jwt for testing the login
+    );
+    if (client == null) {
+      return HRResponse.error("Could not load apiConnectorClient",
+          "78a6f9b5-18fe-4107-9378-10fdf1de3c3d");
+    }
+
+    var result = await HRResponse.fromApiFuture(
+        client.registerRegisterwithapikeyPost(
+            body: RegisterWithApiKeyDto(apiKey: apiKey, username: username)),
+        "Could not complete registration for sign in provider.",
+        "55c7e10c-118b-4de1-9407-16b7800c9bcd");
+
+    if (!result.isSuccessful) return result.asT();
+
+    return HRResponse.fromResult(true, statusCode: result.statusCode);
+  }
 }
 
 class MockAuthenticationService extends IAuthenticationService {
@@ -324,6 +349,13 @@ class MockAuthenticationService extends IAuthenticationService {
   @override
   Future<HRResponse<bool>> testLogin() {
     // TODO: implement testLogin
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> completeRegistration(
+      {required String apiKey, required String username}) {
+    // TODO: implement completeRegistration
     throw UnimplementedError();
   }
 }

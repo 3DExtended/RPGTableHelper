@@ -11,6 +11,7 @@ import 'package:rpg_table_helper/components/signinbuttons/custom_sign_in_with_ap
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -226,7 +227,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             authorizationCode:
                                                 credential.authorizationCode);
 
-                                    if (!mounted) return;
+                                    if (!context.mounted) return;
 
                                     await signInResult
                                         .possiblyHandleError(context);
@@ -235,7 +236,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         signInResult.result!.resultType ==
                                             SignInResultType
                                                 .loginSucessfullButConfigurationMissing) {
-                                      // TODO navigate to complete sign in using sign in provider screen
+                                      // navigate to complete sign in using sign in provider screen
+                                      navigatorKey.currentState!
+                                          .pushNamedAndRemoveUntil(
+                                              CompleteSsoScreen.route,
+                                              (r) => false,
+                                              arguments: signInResult
+                                                  .result!.additionalDetails!
+                                                  .replaceAll('redirect', ''));
                                     } else if (signInResult.isSuccessful &&
                                         signInResult.result!.resultType ==
                                             SignInResultType.loginSucessfull) {
