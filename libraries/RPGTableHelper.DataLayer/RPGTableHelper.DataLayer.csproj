@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RPGTableHelper.DataLayer.Contracts\RPGTableHelper.DataLayer.Contracts.csproj" />
+    <ProjectReference Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.csproj" />
+    <ProjectReference Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.Abstractions\Prodot.Patterns.Cqrs.Abstractions.csproj" />
+    <ProjectReference Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.EfCore\Prodot.Patterns.Cqrs.EfCore.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.Shared\RPGTableHelper.Shared.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.BusinessLayer.Encryption.Contracts\RPGTableHelper.BusinessLayer.Encryption.Contracts.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.DataLayer.SendGrid.Contracts\RPGTableHelper.DataLayer.SendGrid.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>
