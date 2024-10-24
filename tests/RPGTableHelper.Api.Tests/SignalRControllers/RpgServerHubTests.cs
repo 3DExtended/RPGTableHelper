@@ -8,6 +8,7 @@ using RPGTableHelper.WebApi;
 
 namespace RPGTableHelper.Api.Tests.SignalRControllers;
 
+[Collection("Non-Parallel Collection")]
 public class PublicControllerTests : ControllerTestBase
 {
     public PublicControllerTests(WebApplicationFactory<Program> factory)

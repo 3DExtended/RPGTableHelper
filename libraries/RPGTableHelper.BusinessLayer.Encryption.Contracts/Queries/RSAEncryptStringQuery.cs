@@ -10,6 +10,6 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries
         public Option<string> PublicKeyOverride { get; set; } = Option.None;
 
         // has to be UTF-8
-        public string StringToEncrypt { get; set; } = default(string)!;
+        public string StringToEncrypt { get; set; } = default!;
     }
 }

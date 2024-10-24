@@ -13,6 +13,7 @@ using RPGTableHelper.WebApi.Dtos.RpgEntities;
 
 namespace RPGTableHelper.Api.Tests.Controllers.RpgControllers;
 
+[Collection("Non-Parallel Collection")]
 public class PlayerCharacterControllerTests : ControllerTestBase
 {
     public PlayerCharacterControllerTests(WebApplicationFactory<Program> factory)
