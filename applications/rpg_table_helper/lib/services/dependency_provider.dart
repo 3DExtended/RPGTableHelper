@@ -6,6 +6,7 @@ import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/auth/encryption_service.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
+import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
 import 'package:rpg_table_helper/services/systemclock_service.dart';
@@ -71,6 +72,19 @@ class DependencyProvider extends InheritedWidget {
       return MockAuthenticationService(
           apiConnectorService: apiConnectorService,
           encryptionService: encryptionService);
+    });
+
+    _registerService<IRpgEntityService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return RpgEntityService(
+        apiConnectorService: apiConnectorService,
+      );
+    }, () {
+      var apiConnectorService = getService<IApiConnectorService>();
+
+      return MockRpgEntityService(
+        apiConnectorService: apiConnectorService,
+      );
     });
 
     _registerService<INavigationService>(

@@ -13,6 +13,7 @@ import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
+import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -178,7 +179,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             .possiblyHandleError(context);
 
                                         if (signinResponse.result == true) {
-                                          // TODO proceed to campagne or character selection
+                                          // proceed to campagne or character selection
+                                          navigatorKey.currentState!
+                                              .pushNamedAndRemoveUntil(
+                                                  SelectGameModeScreen.route,
+                                                  (r) => false);
                                         } else {
                                           // TODO mark password and username fields as invalid
                                         }
@@ -187,11 +192,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                             ),
                           ),
-
-                          // Wrap if screen to small:
-                          // signin with apple button
-
-                          // signin with apple google
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -247,7 +247,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     } else if (signInResult.isSuccessful &&
                                         signInResult.result!.resultType ==
                                             SignInResultType.loginSucessfull) {
-                                      // TODO navigate
+                                      navigatorKey.currentState!
+                                          .pushNamedAndRemoveUntil(
+                                              SelectGameModeScreen.route,
+                                              (r) => false);
                                     }
                                   },
                                 ),
@@ -304,6 +307,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         .possiblyHandleError(context);
 
                                     // TODO navigate
+                                    if (signInResult.isSuccessful &&
+                                        signInResult.result!.resultType ==
+                                            SignInResultType.loginSucessfull) {
+                                      // proceed to campagne or character selection
+                                      navigatorKey.currentState!
+                                          .pushNamedAndRemoveUntil(
+                                              SelectGameModeScreen.route,
+                                              (r) => false);
+                                    } else if (signInResult.isSuccessful &&
+                                        signInResult.result!.resultType ==
+                                            SignInResultType
+                                                .loginSucessfullButConfigurationMissing) {
+                                      // navigate to complete sign in using sign in provider screen
+                                      navigatorKey.currentState!
+                                          .pushNamedAndRemoveUntil(
+                                              CompleteSsoScreen.route,
+                                              (r) => false,
+                                              arguments: signInResult
+                                                  .result!.additionalDetails!
+                                                  .replaceAll('redirect', ''));
+                                    }
                                   },
                                 ),
                               ),

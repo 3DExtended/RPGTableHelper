@@ -9,6 +9,7 @@ import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_obser
 import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/login_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
+import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
@@ -95,6 +96,11 @@ class AppRoutingShell extends ConsumerWidget {
             case CompleteSsoScreen.route:
               return MaterialWithModalsPageRoute(
                 builder: (_) => CompleteSsoScreen(),
+                settings: settings,
+              );
+            case SelectGameModeScreen.route:
+              return MaterialWithModalsPageRoute(
+                builder: (_) => SelectGameModeScreen(),
                 settings: settings,
               );
           }

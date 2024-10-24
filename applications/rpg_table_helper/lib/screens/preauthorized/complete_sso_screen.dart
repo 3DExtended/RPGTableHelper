@@ -6,6 +6,8 @@ import 'package:rpg_table_helper/components/fill_remaining_space.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
+import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
@@ -154,13 +156,17 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
                                                     usernameTextEditingController
                                                         .text,
                                                 apiKey: apiKey);
-                                        if (!mounted) return;
 
+                                        if (!context.mounted) return;
                                         await signinResponse
                                             .possiblyHandleError(context);
 
                                         if (signinResponse.result == true) {
-                                          // TODO proceed to campagne or character selection
+                                          // proceed to campagne or character selection
+                                          navigatorKey.currentState!
+                                              .pushNamedAndRemoveUntil(
+                                                  SelectGameModeScreen.route,
+                                                  (r) => false);
                                         } else {
                                           // TODO mark username fields as invalid
                                         }
