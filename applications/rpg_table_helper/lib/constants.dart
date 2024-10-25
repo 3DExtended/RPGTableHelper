@@ -29,7 +29,7 @@ const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 
 // The location of the SignalR Server.
 const apiBaseUrl =
-    kDebugMode ? "http://localhost:5012" : "https://rpghelper.peter-esser.de/";
+    kDebugMode ? "http://localhost:5012/" : "https://rpghelper.peter-esser.de/";
 const serverUrl = "${apiBaseUrl}Chat";
 
 const whiteBgTint = Color.fromARGB(33, 210, 191, 221);

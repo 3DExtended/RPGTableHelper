@@ -8,6 +8,7 @@ import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
 import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -15,10 +16,15 @@ import 'package:signalr_netcore/signalr_client.dart';
 abstract class IServerCommunicationService {
   final bool isMock;
   final WidgetRef widgetRef;
+  final IApiConnectorService apiConnectorService;
   const IServerCommunicationService({
     required this.isMock,
+    required this.apiConnectorService,
     required this.widgetRef,
   });
+
+  Future startConnection();
+  Future stopConnection();
 
   void updateRpgConfiguration(RpgConfigurationModel config) {
     widgetRef
@@ -45,8 +51,10 @@ abstract class IServerCommunicationService {
 class ServerCommunicationService extends IServerCommunicationService {
   bool connectionIsOpen = false;
   late HubConnection? hubConnection;
+
   ServerCommunicationService({
     required super.widgetRef,
+    required super.apiConnectorService,
   }) : super(isMock: false) {
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -56,13 +64,17 @@ class ServerCommunicationService extends IServerCommunicationService {
             ConnectionDetails.defaultValue());
 
     final defaultHeaders = MessageHeaders();
-    defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
-    defaultHeaders.setHeaderValue("HEADER_MOCK_2", "HEADER_VALUE_2");
+    // defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
+    // defaultHeaders.setHeaderValue("HEADER_MOCK_2", "HEADER_VALUE_2");
 
     final httpConnectionOptions = HttpConnectionOptions(
       httpClient: WebSupportingHttpClient(null,
           httpClientCreateCallback: httpClientCreateCallback),
-      accessTokenFactory: () => Future.value('JWT_TOKEN'), // TODO handle JWT...
+      accessTokenFactory: () async {
+        var apiConnectorService = this.apiConnectorService;
+        var jwt = await apiConnectorService.getJwt();
+        return Future.value(jwt ?? "JWT");
+      },
       logMessageContent: true,
       headers: defaultHeaders,
     );
@@ -115,9 +127,16 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     hubConnection!
         .on("aClientProvidedFunction", _handleAClientProvidedFunction);
-    Future.delayed(Duration.zero, () async {
-      await tryOpenConnection();
-    });
+  }
+
+  @override
+  Future startConnection() async {
+    await tryOpenConnection();
+  }
+
+  @override
+  Future stopConnection() async {
+    await hubConnection?.stop();
   }
 
   void _handleAClientProvidedFunction(List<Object?>? parameters) {
@@ -206,6 +225,7 @@ class MockServerCommunicationService extends IServerCommunicationService {
   final DateTime? nowOverride;
   const MockServerCommunicationService({
     required super.widgetRef,
+    required super.apiConnectorService,
     this.nowOverride,
   }) : super(isMock: true);
 
@@ -229,6 +249,16 @@ class MockServerCommunicationService extends IServerCommunicationService {
   @override
   void registerCallbackWithoutParameters(
       {required void Function() function, required String functionName}) {}
+
+  @override
+  Future startConnection() {
+    return Future.value();
+  }
+
+  @override
+  Future stopConnection() {
+    return Future.value();
+  }
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

@@ -90,9 +90,15 @@ class DependencyProvider extends InheritedWidget {
     _registerService<INavigationService>(
         () => NavigationService(), () => NavigationService());
 
-    _registerService<IServerCommunicationService>(
-        () => ServerCommunicationService(widgetRef: widgetRef),
-        () => MockServerCommunicationService(widgetRef: widgetRef));
+    _registerService<IServerCommunicationService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return ServerCommunicationService(
+          apiConnectorService: apiConnectorService, widgetRef: widgetRef);
+    }, () {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return MockServerCommunicationService(
+          apiConnectorService: apiConnectorService, widgetRef: widgetRef);
+    });
 
     _registerService<IServerMethodsService>(() {
       var serverCommunicationService =
