@@ -19,7 +19,6 @@ using RPGTableHelper.WebApi.Dtos;
 
 namespace RPGTableHelper.Shared.Tests.Controllers.Authorization;
 
-[Collection("Non-Parallel Collection")]
 public class RegisterControllerTests : ControllerTestBase
 {
     public RegisterControllerTests(WebApplicationFactory<Program> factory)

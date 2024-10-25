@@ -318,10 +318,6 @@ public class Startup
             options.UseSqlite($"DataSource=file:maindb1?mode=memory&cache=shared");
         });
 
-        var db = services.BuildServiceProvider().GetRequiredService<RpgDbContext>();
-        db.Database.OpenConnection();
-        db.Database.Migrate();
-
         services.AddSingleton<ISystemClock, RealSystemClock>();
 
         var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
