@@ -303,6 +303,9 @@ class AuthenticationService extends IAuthenticationService {
 
     if (!result.isSuccessful) return result.asT();
 
+    await apiConnectorService.setJwt(result.result!);
+    apiConnectorService.clearCache();
+
     return HRResponse.fromResult(true, statusCode: result.statusCode);
   }
 }

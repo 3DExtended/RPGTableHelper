@@ -5,7 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
+import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
 
@@ -94,6 +97,95 @@ Future<void> showOldVersionUpdateRequired(BuildContext context) async {
       ),
     ),
   );
+}
+
+Future<bool?> showSynchronizeLocallySavedRpgCampagne(BuildContext context,
+    {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+  // show error to user
+  return await customShowCupertinoModalBottomSheet<bool>(
+      isDismissible: false,
+      expand: false,
+      closeProgressThreshold: -50000,
+      enableDrag: false,
+      context: context,
+      overrideNavigatorKey: overrideNavigatorKey,
+      builder: (context) {
+        var modalPadding = 80.0;
+        if (MediaQuery.of(context).size.width < 800) {
+          modalPadding = 20.0;
+        }
+
+        return Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: modalPadding,
+              vertical: modalPadding), // TODO maybe percentage of total width?
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 800.0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StyledBox(
+                      borderThickness: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(21.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomMarkdownBody(
+                                    text:
+                                        "# ‼️ In die Cloud speichern ‼️\n\n__Nur für Marie!__\n\nWir haben festgestellt, dass du eine lokal gespeicherte Kampagne hast. Wenn du DM dieser Kampagne warst (ergo Marie heißt), solltest du die Kampagne jetzt online speichern! Falls du dies jedoch bereits gemacht hast, darfst du nun auf Abbrechen drücken.\n\n__Sage Peter bitte Bescheid, wenn du Fragen hast!__", // TODO localize/ switch text between add and edit
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                              child: Row(
+                                children: [
+                                  CustomButton(
+                                    label: "Abbrechen", // TODO localize
+                                    onPressed: () {
+                                      navigatorKey.currentState!.pop(null);
+                                    },
+                                  ),
+                                  const Spacer(),
+                                  CustomButton(
+                                    label: "Speichern", // TODO localize
+                                    onPressed: () {
+                                      navigatorKey.currentState!.pop(true);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        height: EdgeInsets.fromViewPadding(
+                                View.of(context).viewInsets,
+                                View.of(context).devicePixelRatio)
+                            .bottom),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      });
 }
 
 Future<void> showGenericErrorModal<T>(

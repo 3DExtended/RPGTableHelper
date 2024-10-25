@@ -13,6 +13,8 @@ abstract class IRpgEntityService {
   });
 
   Future<HRResponse<List<Campagne>>> getCampagnesWithPlayerAsDm();
+  Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
+      {required String campagneName, String? rpgConfig});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharacetersForPlayer();
 }
 
@@ -51,15 +53,39 @@ class RpgEntityService extends IRpgEntityService {
 
     return campagnesForUser;
   }
+
+  @override
+  Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
+      {required String campagneName, String? rpgConfig}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          '874ba02f-93e4-4dcc-99a7-8f95b0f86212');
+    }
+
+    var createCampagneResult = await HRResponse.fromApiFuture(
+        api.campagneCreatecampagnePost(
+          body: CampagneCreateDto(
+            campagneName: campagneName,
+            rpgConfiguration: rpgConfig,
+          ),
+        ),
+        'Could not create new campagne.',
+        '1b73d809-c524-445d-9832-02a1040b63fb');
+
+    return createCampagneResult;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<List<Campagne>>? getCampagnesWithPlayerAsDmOverride;
+  final HRResponse<CampagneIdentifier>? saveCampagneAsNewCampagneOverride;
   final HRResponse<List<PlayerCharacter>>?
       getPlayerCharacetersForPlayerOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
+    this.saveCampagneAsNewCampagneOverride,
     this.getPlayerCharacetersForPlayerOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
@@ -97,5 +123,14 @@ class MockRpgEntityService extends IRpgEntityService {
             rpgCharacterConfiguration: null,
           )
         ]));
+  }
+
+  @override
+  Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
+      {required String campagneName, String? rpgConfig}) {
+    return Future.value(saveCampagneAsNewCampagneOverride ??
+        HRResponse.fromResult(CampagneIdentifier(
+          $value: "74f73cf2-83e2-4c03-9ea1-9de7bef4d68e",
+        )));
   }
 }

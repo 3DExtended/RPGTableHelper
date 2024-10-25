@@ -63,7 +63,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     JoinCode = newJoinCode.Get(),
                     CampagneName = createDto.CampagneName,
                     DmUserId = _userContext.User.UserIdentifier,
-                    RpgConfiguration = Option.From(createDto.RpgConfiguration),
+                    RpgConfiguration = createDto.RpgConfiguration,
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
@@ -74,7 +74,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not create new campagne");
             }
 
-            return Ok(campagneId.Get().Value);
+            return Ok(campagneId.Get());
         }
 
         /// <summary>
@@ -93,10 +93,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             CancellationToken cancellationToken
         )
         {
-            var campagnes = await new CampagnesForUserAsDmQuery
-            {
-                UserId = _userContext.User.UserIdentifier,
-            }
+            var campagnes = await new CampagnesForUserAsDmQuery { UserId = _userContext.User.UserIdentifier }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -155,10 +152,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Unauthorized();
             }
 
-            var campagne = await new CampagneQuery
-            {
-                ModelId = Campagne.CampagneIdentifier.From(campagneidparsed),
-            }
+            var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(campagneidparsed) }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 

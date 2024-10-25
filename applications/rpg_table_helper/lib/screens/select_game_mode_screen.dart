@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,9 +14,12 @@ import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.da
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
+import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
   static const route = 'selectgamemode';
@@ -52,6 +57,40 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     });
 
     // TODO check if there is a cached player...
+
+    Future.delayed(Duration.zero, () async {
+      if (!mounted) return;
+
+      if (DependencyProvider.of(context).isMocked) return;
+      var prefs = await SharedPreferences.getInstance();
+
+      if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
+        var loadedJsonForRpgConfig =
+            prefs.getString(sharedPrefsKeyRpgConfigJson);
+        var parsedJson =
+            RpgConfigurationModel.fromJson(jsonDecode(loadedJsonForRpgConfig!));
+        if (!mounted) return;
+
+        await showSynchronizeLocallySavedRpgCampagne(context)
+            .then((value) async {
+          if (value != true) {
+            return;
+          }
+
+          // save to cloud
+          if (!mounted) return;
+
+          var service =
+              DependencyProvider.of(context).getService<IRpgEntityService>();
+          var createResult = await service.saveCampagneAsNewCampagne(
+              campagneName: parsedJson.rpgName,
+              rpgConfig: loadedJsonForRpgConfig);
+          if (!mounted) return;
+
+          await createResult.possiblyHandleError(context);
+        });
+      }
+    });
 
     super.initState();
   }
@@ -191,7 +230,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                                 subtitle:
                                                     "Join as Player", // TODO localize
                                                 subsubtitle:
-                                                    "You own ${campagnes?.length ?? 0} character.", // TODO localize
+                                                    "You own ${characters?.length ?? 0} character.", // TODO localize
                                                 onPressedHandler: () {}),
                                             ...getCharacters(),
                                           ]),
@@ -231,7 +270,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                           Expanded(
                             child: CustomMarkdownBody(
                                 text:
-                                    "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}"),
+                                    "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Join Code:__ ${campagne.joinCode}\n\n__Config Length (Debug):__ ${(campagne.rpgConfiguration?.length ?? 0).toString()}"),
                           ),
                         ],
                       ),

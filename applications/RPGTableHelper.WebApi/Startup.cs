@@ -315,7 +315,7 @@ public class Startup
 
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
-            options.UseSqlite($"DataSource=file:maindb1?mode=memory&cache=shared");
+            options.UseSqlite($"DataSource=file:maindb1");
         });
 
         services.AddSingleton<ISystemClock, RealSystemClock>();

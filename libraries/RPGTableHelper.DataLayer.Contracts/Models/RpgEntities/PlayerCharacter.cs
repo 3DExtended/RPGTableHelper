@@ -10,7 +10,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities
         /// <summary>
         /// This is the json serialized configuration of the character
         /// </summary>
-        public Option<string> RpgCharacterConfiguration { get; set; }
+        public string? RpgCharacterConfiguration { get; set; }
 
         public string CharacterName { get; set; } = default!;
 
@@ -22,7 +22,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities
         /// <summary>
         /// The id of the campagne for this character
         /// </summary>
-        public Option<Campagne.CampagneIdentifier> CampagneId { get; set; }
+        public Campagne.CampagneIdentifier? CampagneId { get; set; }
 
         public record PlayerCharacterIdentifier : Identifier<Guid, PlayerCharacterIdentifier> { }
     }

@@ -31,10 +31,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// <response code="200">The id of the newly created player character</response>
         /// <response code="400">If the data provided is invalid</response>
         /// <response code="401">If you are not logged in</response>
-        [ProducesResponseType(
-            typeof(PlayerCharacter.PlayerCharacterIdentifier),
-            StatusCodes.Status200OK
-        )]
+        [ProducesResponseType(typeof(PlayerCharacter.PlayerCharacterIdentifier), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("createcharacter")]
@@ -55,7 +52,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     Id = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Empty),
                     CharacterName = createDto.CharacterName,
                     PlayerUserId = _userContext.User.UserIdentifier,
-                    RpgCharacterConfiguration = Option.From(createDto.RpgCharacterConfiguration),
+                    RpgCharacterConfiguration = createDto.RpgCharacterConfiguration,
                 },
             }
                 .RunAsync(_queryProcessor, cancellationToken)
@@ -66,7 +63,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not create new player character");
             }
 
-            return Ok(playerId.Get().Value);
+            return Ok(playerId.Get());
         }
 
         /// <summary>
@@ -81,9 +78,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("getplayercharacters")]
-        public async Task<
-            ActionResult<IReadOnlyList<PlayerCharacter>>
-        > GetPlayerCharactersForUserAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IReadOnlyList<PlayerCharacter>>> GetPlayerCharactersForUserAsync(
+            CancellationToken cancellationToken
+        )
         {
             var playerCharacters = await new PlayerCharactersForUserAsPlayerQuery
             {

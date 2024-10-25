@@ -23,14 +23,10 @@ public class PlayerCharacterCreateQueryHandlerTests : QueryHandlersTestBase
             Id = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Empty),
             CharacterName = "Bla",
             PlayerUserId = user.Id,
-            RpgCharacterConfiguration = Option.None,
+            RpgCharacterConfiguration = null,
         };
         var query = new PlayerCharacterCreateQuery { ModelToCreate = model };
-        var subjectUnderTest = new PlayerCharacterCreateQueryHandler(
-            Mapper,
-            ContextFactory,
-            SystemClock
-        );
+        var subjectUnderTest = new PlayerCharacterCreateQueryHandler(Mapper, ContextFactory, SystemClock);
 
         // Act
         var result = await subjectUnderTest.RunQueryAsync(query, default);

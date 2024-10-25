@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -67,7 +66,9 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
       Future.delayed(Duration.zero, () async {
         var serializedConfig = jsonEncode(castedData.requireValue);
         var prefs = await SharedPreferences.getInstance();
-        await prefs.setString(sharedPrefsKeyRpgConfigJson, serializedConfig);
+        // TODO remove me
+        // do I even need this class still?
+        // await prefs.setString(sharedPrefsKeyRpgConfigJson, serializedConfig);
       });
     }
   }

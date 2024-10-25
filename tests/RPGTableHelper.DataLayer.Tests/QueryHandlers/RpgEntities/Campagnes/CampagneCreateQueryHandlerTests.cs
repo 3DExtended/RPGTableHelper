@@ -21,7 +21,7 @@ public class CampagneCreateQueryHandlerTests : QueryHandlersTestBase
             Id = Campagne.CampagneIdentifier.From(Guid.Empty),
             CampagneName = "Bla",
             DmUserId = user.Id,
-            RpgConfiguration = Option.None,
+            RpgConfiguration = null,
             JoinCode = "123-123",
         };
         var query = new CampagneCreateQuery { ModelToCreate = model };

@@ -27,11 +27,7 @@ public class DataLayerEntitiesMapperProfileTests
     public void UserToUserEntity_ShouldMapSuccessfully()
     {
         // Arrange
-        var user = new User
-        {
-            Username = "TestUser",
-            Id = User.UserIdentifier.From(Guid.NewGuid()),
-        };
+        var user = new User { Username = "TestUser", Id = User.UserIdentifier.From(Guid.NewGuid()) };
 
         // Act
         var userEntity = _mapper.Map<UserEntity>(user);
@@ -76,16 +72,13 @@ public class DataLayerEntitiesMapperProfileTests
             IdentityProviderId = Guid.NewGuid().ToString(),
             SignInProviderRefreshToken = "fghjkuztgvbnjkiuzhgbn",
             SignInProviderUsed = SupportedSignInProviders.Apple,
-            Id = OpenSignInProviderRegisterRequest.OpenSignInProviderRegisterRequestIdentifier.From(
-                Guid.NewGuid()
-            ),
+            Id = OpenSignInProviderRegisterRequest.OpenSignInProviderRegisterRequestIdentifier.From(Guid.NewGuid()),
         };
 
         // Act
-        var openSignOpenSignInProviderRegisterRequestEntity =
-            _mapper.Map<OpenSignInProviderRegisterRequestEntity>(
-                openSignOpenSignInProviderRegisterRequest
-            );
+        var openSignOpenSignInProviderRegisterRequestEntity = _mapper.Map<OpenSignInProviderRegisterRequestEntity>(
+            openSignOpenSignInProviderRegisterRequest
+        );
 
         // Assert
         openSignOpenSignInProviderRegisterRequestEntity.Should().NotBeNull();
@@ -114,24 +107,22 @@ public class DataLayerEntitiesMapperProfileTests
     public void OpenSignInProviderRegisterRequestEntityToOpenSignInProviderRegisterRequest_ShouldMapSuccessfully()
     {
         // Arrange
-        var openSignOpenSignInProviderRegisterRequestEntity =
-            new OpenSignInProviderRegisterRequestEntity
-            {
-                ExposedApiKey = "TestOpenSignInProviderRegisterRequest",
-                Email = "asdf@asdf.de",
-                IdentityProviderId = Guid.NewGuid().ToString(),
-                SignInProviderRefreshToken = "fghjkuztgvbnjkiuzhgbn",
-                SignInProviderUsed = SupportedSignInProviders.Apple,
-                Id = Guid.NewGuid(),
-                CreationDate = DateTimeOffset.UtcNow,
-                LastModifiedAt = DateTimeOffset.UtcNow,
-            };
+        var openSignOpenSignInProviderRegisterRequestEntity = new OpenSignInProviderRegisterRequestEntity
+        {
+            ExposedApiKey = "TestOpenSignInProviderRegisterRequest",
+            Email = "asdf@asdf.de",
+            IdentityProviderId = Guid.NewGuid().ToString(),
+            SignInProviderRefreshToken = "fghjkuztgvbnjkiuzhgbn",
+            SignInProviderUsed = SupportedSignInProviders.Apple,
+            Id = Guid.NewGuid(),
+            CreationDate = DateTimeOffset.UtcNow,
+            LastModifiedAt = DateTimeOffset.UtcNow,
+        };
 
         // Act
-        var openSignOpenSignInProviderRegisterRequest =
-            _mapper.Map<OpenSignInProviderRegisterRequest>(
-                openSignOpenSignInProviderRegisterRequestEntity
-            );
+        var openSignOpenSignInProviderRegisterRequest = _mapper.Map<OpenSignInProviderRegisterRequest>(
+            openSignOpenSignInProviderRegisterRequestEntity
+        );
 
         // Assert
         openSignOpenSignInProviderRegisterRequest.Should().NotBeNull();
@@ -226,20 +217,10 @@ public class DataLayerEntitiesMapperProfileTests
             Deleted = true,
             Email = "asdf@asdf.de",
             EmailVerified = Option.None,
-            EncryptionChallengeId = EncryptionChallenge.EncryptionChallengeIdentifier.From(
-                Guid.NewGuid()
-            ),
+            EncryptionChallengeId = EncryptionChallenge.EncryptionChallengeIdentifier.From(Guid.NewGuid()),
             HashedPassword = Option.None,
             PasswordResetToken = "asdfewflkjwefökj",
-            PasswordResetTokenExpireDate = new DateTimeOffset(
-                2024,
-                10,
-                10,
-                10,
-                10,
-                10,
-                TimeSpan.Zero
-            ),
+            PasswordResetTokenExpireDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             RefreshToken = "ghjkl",
             SignInProvider = false,
             UserId = User.UserIdentifier.From(Guid.NewGuid()),
@@ -258,13 +239,9 @@ public class DataLayerEntitiesMapperProfileTests
         userCredentialEntity.Email!.Should().Be(userCredential.Email.Get());
         userCredentialEntity.EmailVerified.Should().BeNull();
         userCredentialEntity.EncryptionChallengeId.HasValue.Should().BeTrue();
-        userCredentialEntity
-            .EncryptionChallengeId!.Value.Should()
-            .Be(userCredential.EncryptionChallengeId.Get().Value);
+        userCredentialEntity.EncryptionChallengeId!.Value.Should().Be(userCredential.EncryptionChallengeId.Get().Value);
         userCredentialEntity.HashedPassword.Should().BeNull();
-        userCredentialEntity
-            .PasswordResetToken.Should()
-            .Be(userCredential.PasswordResetToken.Get());
+        userCredentialEntity.PasswordResetToken.Should().Be(userCredential.PasswordResetToken.Get());
         userCredentialEntity
             .PasswordResetTokenExpireDate.Should()
             .Be(userCredential.PasswordResetTokenExpireDate.Get());
@@ -291,15 +268,7 @@ public class DataLayerEntitiesMapperProfileTests
             EncryptionChallengeId = Guid.NewGuid(),
             HashedPassword = null,
             PasswordResetToken = "asdfewflkjwefökj",
-            PasswordResetTokenExpireDate = new DateTimeOffset(
-                2024,
-                10,
-                10,
-                10,
-                10,
-                10,
-                TimeSpan.Zero
-            ),
+            PasswordResetTokenExpireDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             RefreshToken = "ghjkl",
             SignInProvider = false,
             UserId = Guid.NewGuid(),
@@ -320,15 +289,9 @@ public class DataLayerEntitiesMapperProfileTests
         userCredential.EmailVerified.IsNone.Should().BeTrue();
 
         userCredential.EncryptionChallengeId.IsSome.Should().BeTrue();
-        userCredential
-            .EncryptionChallengeId.Get()
-            .Value.Should()
-            .Be(userCredentialEntity.EncryptionChallengeId.Value);
+        userCredential.EncryptionChallengeId.Get().Value.Should().Be(userCredentialEntity.EncryptionChallengeId.Value);
         userCredential.HashedPassword.IsNone.Should().BeTrue();
-        userCredential
-            .PasswordResetToken.Get()
-            .Should()
-            .Be(userCredentialEntity.PasswordResetToken!);
+        userCredential.PasswordResetToken.Get().Should().Be(userCredentialEntity.PasswordResetToken!);
         userCredential
             .PasswordResetTokenExpireDate.Get()
             .Should()
@@ -355,7 +318,7 @@ public class DataLayerEntitiesMapperProfileTests
 
         // Assert
         campagneEntity.Should().NotBeNull();
-        campagneEntity.RpgConfiguration.Should().Be(campagne.RpgConfiguration.Get());
+        campagneEntity.RpgConfiguration.Should().Be(campagne.RpgConfiguration);
         campagneEntity.CampagneName.Should().Be(campagne.CampagneName);
         campagneEntity.Id.Should().Be(campagne.Id.Value);
         campagneEntity.DmUserId.Should().Be(campagne.DmUserId.Value);
@@ -382,7 +345,7 @@ public class DataLayerEntitiesMapperProfileTests
         // Assert
         campagne.Should().NotBeNull();
         campagne.CampagneName.Should().Be(campagneEntity.CampagneName);
-        campagne.RpgConfiguration.Get().Should().Be(campagneEntity.RpgConfiguration);
+        campagne.RpgConfiguration.Should().Be(campagneEntity.RpgConfiguration);
         campagne.DmUserId.Value.Should().Be(campagneEntity.DmUserId);
         campagne.Id.Value.Should().Be(campagneEntity.Id);
         campagne.CreationDate.Should().Be(campagneEntity.CreationDate);
@@ -399,7 +362,7 @@ public class DataLayerEntitiesMapperProfileTests
             Id = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.NewGuid()),
             PlayerUserId = User.UserIdentifier.From(Guid.NewGuid()),
             RpgCharacterConfiguration = "fghjklkjhgfghjklkjhgfhjklö",
-            CampagneId = Option.None,
+            CampagneId = null,
         };
 
         // Act
@@ -407,9 +370,7 @@ public class DataLayerEntitiesMapperProfileTests
 
         // Assert
         playerCharacterEntity.Should().NotBeNull();
-        playerCharacterEntity
-            .RpgCharacterConfiguration.Should()
-            .Be(playerCharacter.RpgCharacterConfiguration.Get());
+        playerCharacterEntity.RpgCharacterConfiguration.Should().Be(playerCharacter.RpgCharacterConfiguration);
         playerCharacterEntity.CharacterName.Should().Be(playerCharacter.CharacterName);
         playerCharacterEntity.Id.Should().Be(playerCharacter.Id.Value);
         playerCharacterEntity.PlayerUserId.Should().Be(playerCharacter.PlayerUserId.Value);
@@ -437,9 +398,7 @@ public class DataLayerEntitiesMapperProfileTests
         // Assert
         playerCharacter.Should().NotBeNull();
         playerCharacter.CharacterName.Should().Be(playerCharacterEntity.CharacterName);
-        playerCharacter
-            .RpgCharacterConfiguration.Should()
-            .Be(playerCharacterEntity.RpgCharacterConfiguration);
+        playerCharacter.RpgCharacterConfiguration.Should().Be(playerCharacterEntity.RpgCharacterConfiguration);
         playerCharacter.PlayerUserId.Value.Should().Be(playerCharacterEntity.PlayerUserId);
         playerCharacter.Id.Value.Should().Be(playerCharacterEntity.Id);
         playerCharacter.CreationDate.Should().Be(playerCharacterEntity.CreationDate);

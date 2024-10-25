@@ -15,7 +15,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities
         /// <summary>
         /// This is the json serialized configuration of the rpg
         /// </summary>
-        public Option<string> RpgConfiguration { get; set; }
+        public string? RpgConfiguration { get; set; }
 
         public string CampagneName { get; set; } = default!;
 

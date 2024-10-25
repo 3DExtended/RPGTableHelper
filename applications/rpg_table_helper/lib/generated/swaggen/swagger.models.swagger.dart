@@ -91,7 +91,7 @@ class Campagne {
   @JsonKey(name: 'lastModifiedAt')
   final DateTime? lastModifiedAt;
   @JsonKey(name: 'rpgConfiguration')
-  final StringOption? rpgConfiguration;
+  final String? rpgConfiguration;
   @JsonKey(name: 'campagneName')
   final String? campagneName;
   @JsonKey(name: 'joinCode')
@@ -146,7 +146,7 @@ extension $CampagneExtension on Campagne {
       {CampagneIdentifier? id,
       DateTime? creationDate,
       DateTime? lastModifiedAt,
-      StringOption? rpgConfiguration,
+      String? rpgConfiguration,
       String? campagneName,
       String? joinCode,
       UserIdentifier? dmUserId}) {
@@ -164,7 +164,7 @@ extension $CampagneExtension on Campagne {
       {Wrapped<CampagneIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
-      Wrapped<StringOption?>? rpgConfiguration,
+      Wrapped<String?>? rpgConfiguration,
       Wrapped<String?>? campagneName,
       Wrapped<String?>? joinCode,
       Wrapped<UserIdentifier?>? dmUserId}) {
@@ -284,59 +284,6 @@ extension $CampagneIdentifierExtension on CampagneIdentifier {
   CampagneIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return CampagneIdentifier(
         $value: ($value != null ? $value.value : this.$value));
-  }
-}
-
-@JsonSerializable(explicitToJson: true)
-class CampagneIdentifierOption {
-  const CampagneIdentifierOption({
-    this.isNone,
-    this.isSome,
-  });
-
-  factory CampagneIdentifierOption.fromJson(Map<String, dynamic> json) =>
-      _$CampagneIdentifierOptionFromJson(json);
-
-  static const toJsonFactory = _$CampagneIdentifierOptionToJson;
-  Map<String, dynamic> toJson() => _$CampagneIdentifierOptionToJson(this);
-
-  @JsonKey(name: 'isNone')
-  final bool? isNone;
-  @JsonKey(name: 'isSome')
-  final bool? isSome;
-  static const fromJsonFactory = _$CampagneIdentifierOptionFromJson;
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other is CampagneIdentifierOption &&
-            (identical(other.isNone, isNone) ||
-                const DeepCollectionEquality().equals(other.isNone, isNone)) &&
-            (identical(other.isSome, isSome) ||
-                const DeepCollectionEquality().equals(other.isSome, isSome)));
-  }
-
-  @override
-  String toString() => jsonEncode(this);
-
-  @override
-  int get hashCode =>
-      const DeepCollectionEquality().hash(isNone) ^
-      const DeepCollectionEquality().hash(isSome) ^
-      runtimeType.hashCode;
-}
-
-extension $CampagneIdentifierOptionExtension on CampagneIdentifierOption {
-  CampagneIdentifierOption copyWith({bool? isNone, bool? isSome}) {
-    return CampagneIdentifierOption(
-        isNone: isNone ?? this.isNone, isSome: isSome ?? this.isSome);
-  }
-
-  CampagneIdentifierOption copyWithWrapped(
-      {Wrapped<bool?>? isNone, Wrapped<bool?>? isSome}) {
-    return CampagneIdentifierOption(
-        isNone: (isNone != null ? isNone.value : this.isNone),
-        isSome: (isSome != null ? isSome.value : this.isSome));
   }
 }
 
@@ -582,13 +529,13 @@ class PlayerCharacter {
   @JsonKey(name: 'lastModifiedAt')
   final DateTime? lastModifiedAt;
   @JsonKey(name: 'rpgCharacterConfiguration')
-  final StringOption? rpgCharacterConfiguration;
+  final String? rpgCharacterConfiguration;
   @JsonKey(name: 'characterName')
   final String? characterName;
   @JsonKey(name: 'playerUserId')
   final UserIdentifier? playerUserId;
   @JsonKey(name: 'campagneId')
-  final CampagneIdentifierOption? campagneId;
+  final CampagneIdentifier? campagneId;
   static const fromJsonFactory = _$PlayerCharacterFromJson;
 
   @override
@@ -639,10 +586,10 @@ extension $PlayerCharacterExtension on PlayerCharacter {
       {PlayerCharacterIdentifier? id,
       DateTime? creationDate,
       DateTime? lastModifiedAt,
-      StringOption? rpgCharacterConfiguration,
+      String? rpgCharacterConfiguration,
       String? characterName,
       UserIdentifier? playerUserId,
-      CampagneIdentifierOption? campagneId}) {
+      CampagneIdentifier? campagneId}) {
     return PlayerCharacter(
         id: id ?? this.id,
         creationDate: creationDate ?? this.creationDate,
@@ -658,10 +605,10 @@ extension $PlayerCharacterExtension on PlayerCharacter {
       {Wrapped<PlayerCharacterIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
-      Wrapped<StringOption?>? rpgCharacterConfiguration,
+      Wrapped<String?>? rpgCharacterConfiguration,
       Wrapped<String?>? characterName,
       Wrapped<UserIdentifier?>? playerUserId,
-      Wrapped<CampagneIdentifierOption?>? campagneId}) {
+      Wrapped<CampagneIdentifier?>? campagneId}) {
     return PlayerCharacter(
         id: (id != null ? id.value : this.id),
         creationDate:
@@ -1161,59 +1108,6 @@ extension $ResetPasswordRequestDtoExtension on ResetPasswordRequestDto {
     return ResetPasswordRequestDto(
         email: (email != null ? email.value : this.email),
         username: (username != null ? username.value : this.username));
-  }
-}
-
-@JsonSerializable(explicitToJson: true)
-class StringOption {
-  const StringOption({
-    this.isNone,
-    this.isSome,
-  });
-
-  factory StringOption.fromJson(Map<String, dynamic> json) =>
-      _$StringOptionFromJson(json);
-
-  static const toJsonFactory = _$StringOptionToJson;
-  Map<String, dynamic> toJson() => _$StringOptionToJson(this);
-
-  @JsonKey(name: 'isNone')
-  final bool? isNone;
-  @JsonKey(name: 'isSome')
-  final bool? isSome;
-  static const fromJsonFactory = _$StringOptionFromJson;
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other is StringOption &&
-            (identical(other.isNone, isNone) ||
-                const DeepCollectionEquality().equals(other.isNone, isNone)) &&
-            (identical(other.isSome, isSome) ||
-                const DeepCollectionEquality().equals(other.isSome, isSome)));
-  }
-
-  @override
-  String toString() => jsonEncode(this);
-
-  @override
-  int get hashCode =>
-      const DeepCollectionEquality().hash(isNone) ^
-      const DeepCollectionEquality().hash(isSome) ^
-      runtimeType.hashCode;
-}
-
-extension $StringOptionExtension on StringOption {
-  StringOption copyWith({bool? isNone, bool? isSome}) {
-    return StringOption(
-        isNone: isNone ?? this.isNone, isSome: isSome ?? this.isSome);
-  }
-
-  StringOption copyWithWrapped(
-      {Wrapped<bool?>? isNone, Wrapped<bool?>? isSome}) {
-    return StringOption(
-        isNone: (isNone != null ? isNone.value : this.isNone),
-        isSome: (isSome != null ? isSome.value : this.isSome));
   }
 }
 

@@ -28,10 +28,7 @@ Campagne _$CampagneFromJson(Map<String, dynamic> json) => Campagne(
       lastModifiedAt: json['lastModifiedAt'] == null
           ? null
           : DateTime.parse(json['lastModifiedAt'] as String),
-      rpgConfiguration: json['rpgConfiguration'] == null
-          ? null
-          : StringOption.fromJson(
-              json['rpgConfiguration'] as Map<String, dynamic>),
+      rpgConfiguration: json['rpgConfiguration'] as String?,
       campagneName: json['campagneName'] as String?,
       joinCode: json['joinCode'] as String?,
       dmUserId: json['dmUserId'] == null
@@ -43,7 +40,7 @@ Map<String, dynamic> _$CampagneToJson(Campagne instance) => <String, dynamic>{
       'id': instance.id?.toJson(),
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
-      'rpgConfiguration': instance.rpgConfiguration?.toJson(),
+      'rpgConfiguration': instance.rpgConfiguration,
       'campagneName': instance.campagneName,
       'joinCode': instance.joinCode,
       'dmUserId': instance.dmUserId?.toJson(),
@@ -69,20 +66,6 @@ CampagneIdentifier _$CampagneIdentifierFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$CampagneIdentifierToJson(CampagneIdentifier instance) =>
     <String, dynamic>{
       'value': instance.$value,
-    };
-
-CampagneIdentifierOption _$CampagneIdentifierOptionFromJson(
-        Map<String, dynamic> json) =>
-    CampagneIdentifierOption(
-      isNone: json['isNone'] as bool?,
-      isSome: json['isSome'] as bool?,
-    );
-
-Map<String, dynamic> _$CampagneIdentifierOptionToJson(
-        CampagneIdentifierOption instance) =>
-    <String, dynamic>{
-      'isNone': instance.isNone,
-      'isSome': instance.isSome,
     };
 
 EncryptedMessageWrapperDto _$EncryptedMessageWrapperDtoFromJson(
@@ -149,10 +132,7 @@ PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
       lastModifiedAt: json['lastModifiedAt'] == null
           ? null
           : DateTime.parse(json['lastModifiedAt'] as String),
-      rpgCharacterConfiguration: json['rpgCharacterConfiguration'] == null
-          ? null
-          : StringOption.fromJson(
-              json['rpgCharacterConfiguration'] as Map<String, dynamic>),
+      rpgCharacterConfiguration: json['rpgCharacterConfiguration'] as String?,
       characterName: json['characterName'] as String?,
       playerUserId: json['playerUserId'] == null
           ? null
@@ -160,7 +140,7 @@ PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
               json['playerUserId'] as Map<String, dynamic>),
       campagneId: json['campagneId'] == null
           ? null
-          : CampagneIdentifierOption.fromJson(
+          : CampagneIdentifier.fromJson(
               json['campagneId'] as Map<String, dynamic>),
     );
 
@@ -169,7 +149,7 @@ Map<String, dynamic> _$PlayerCharacterToJson(PlayerCharacter instance) =>
       'id': instance.id?.toJson(),
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
-      'rpgCharacterConfiguration': instance.rpgCharacterConfiguration?.toJson(),
+      'rpgCharacterConfiguration': instance.rpgCharacterConfiguration,
       'characterName': instance.characterName,
       'playerUserId': instance.playerUserId?.toJson(),
       'campagneId': instance.campagneId?.toJson(),
@@ -283,17 +263,6 @@ Map<String, dynamic> _$ResetPasswordRequestDtoToJson(
     <String, dynamic>{
       'email': instance.email,
       'username': instance.username,
-    };
-
-StringOption _$StringOptionFromJson(Map<String, dynamic> json) => StringOption(
-      isNone: json['isNone'] as bool?,
-      isSome: json['isSome'] as bool?,
-    );
-
-Map<String, dynamic> _$StringOptionToJson(StringOption instance) =>
-    <String, dynamic>{
-      'isNone': instance.isNone,
-      'isSome': instance.isSome,
     };
 
 UserIdentifier _$UserIdentifierFromJson(Map<String, dynamic> json) =>

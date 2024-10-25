@@ -1,1760 +1,1734 @@
 {
-    "openapi": "3.0.1",
-    "info": {
-        "title": "Main API v1.0",
-        "version": "v1.0"
-    },
-    "paths": {
-        "/Campagne/createcampagne": {
-            "post": {
-                "tags": [
-                    "Campagne"
-                ],
-                "summary": "Creates a new campagne with the calling user as dm.",
-                "requestBody": {
-                    "description": "The creation details",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CampagneCreateDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CampagneCreateDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CampagneCreateDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CampagneCreateDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "The id of the newly created campagne",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CampagneIdentifier"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CampagneIdentifier"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CampagneIdentifier"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If the data provided is invalid",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If you are not logged in",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
-                }
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Main API v1.0",
+    "version": "v1.0"
+  },
+  "paths": {
+    "/Campagne/createcampagne": {
+      "post": {
+        "tags": [
+          "Campagne"
+        ],
+        "summary": "Creates a new campagne with the calling user as dm.",
+        "requestBody": {
+          "description": "The creation details",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneCreateDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneCreateDto"
+              }
             }
+          }
         },
-        "/Campagne/getcampagnes": {
-            "get": {
-                "tags": [
-                    "Campagne"
-                ],
-                "summary": "Returns a list of campagnes this user is the dm of.",
-                "responses": {
-                    "200": {
-                        "description": "A list of all campagnes for this user as dm",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Campagne"
-                                    }
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Campagne"
-                                    }
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Campagne"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If there was an error retrieving the campagnes",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If you are not logged in",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+        "responses": {
+          "200": {
+            "description": "The id of the newly created campagne",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampagneIdentifier"
                 }
-            }
-        },
-        "/Campagne/getcampagne/{campagneid}": {
-            "get": {
-                "tags": [
-                    "Campagne"
-                ],
-                "summary": "Returns a single of campagne.",
-                "description": "You must be the dm or a player in this campagne",
-                "parameters": [{
-                    "name": "campagneid",
-                    "in": "path",
-                    "description": "The id of the desired campagne",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "The campagne",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Campagne"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Campagne"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Campagne"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If there was an error retrieving the campagnes",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If you are not logged in or you are not allowed to see this campagne",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampagneIdentifier"
                 }
-            }
-        },
-        "/PlayerCharacter/createcharacter": {
-            "post": {
-                "tags": [
-                    "PlayerCharacter"
-                ],
-                "summary": "Creates a new player character with the calling user as owner.",
-                "requestBody": {
-                    "description": "The creation details",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "The id of the newly created player character",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PlayerCharacterIdentifier"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PlayerCharacterIdentifier"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PlayerCharacterIdentifier"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If the data provided is invalid",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If you are not logged in",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampagneIdentifier"
                 }
+              }
             }
-        },
-        "/PlayerCharacter/getplayercharacters": {
-            "get": {
-                "tags": [
-                    "PlayerCharacter"
-                ],
-                "summary": "Returns a list of player characters for the calling user.",
-                "responses": {
-                    "200": {
-                        "description": "A list of all playerCharacters for this user",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PlayerCharacter"
-                                    }
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PlayerCharacter"
-                                    }
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PlayerCharacter"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If there was an error retrieving the playerCharacters",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If you are not logged in",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+          },
+          "400": {
+            "description": "If the data provided is invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
-            }
-        },
-        "/PlayerCharacter/getplayercharacter/{playercharacterid}": {
-            "get": {
-                "tags": [
-                    "PlayerCharacter"
-                ],
-                "summary": "Returns a single playerCharacter.",
-                "description": "You must be the owner of this playerCharacter",
-                "parameters": [{
-                    "name": "playercharacterid",
-                    "in": "path",
-                    "description": "The id of the desired playerCharacter",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "The playerCharacter",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PlayerCharacter"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PlayerCharacter"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PlayerCharacter"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If there was an error retrieving the playerCharacters",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If you are not logged in or you are not allowed to see this playerCharacter",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
-            }
-        },
-        "/Public/getminimalversion": {
-            "get": {
-                "tags": [
-                    "Public"
-                ],
-                "summary": "Returns the minimal app version supported by this api.",
-                "responses": {
-                    "200": {
-                        "description": "The minimal app version supported",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
                 }
+              }
             }
-        },
-        "/Register/createencryptionchallenge": {
-            "post": {
-                "tags": [
-                    "Register"
-                ],
-                "summary": "This method generates a new encryptionChallenge and stores it in the db.\r\nUse this method as first start point for a register operation.",
-                "description": "Additionally, it uses rsa encryption to comunicate: the client has to provide a public pem\r\ncertificate encrypted with the public pem of this server and receives the encryption challenge\r\nRSA encrypted with the provided public cert.\r\nThis way, no man in the middle can pretend to be the server as each client has a copy of the public cert of the server.",
-                "requestBody": {
-                    "description": "RSA encrpyted public pem cert of the client.",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the JWT for the user.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If the passed user input is invalid",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
-            }
-        },
-        "/Register/register": {
-            "post": {
-                "tags": [
-                    "Register"
-                ],
-                "summary": "Creates a new user with \"username and password\" sign in.",
-                "description": "In order to signup the provided body must be RSA encrypted with\r\nthe public certificate of this server. The dto must be of type\r\nRPGTableHelper.WebApi.Dtos.RegisterWithUsernamePasswordDto.",
-                "requestBody": {
-                    "description": "The encrypted register dto",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the JWT for the user.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If the passed user input is invalid",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "If the desired username is already taken",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
-            }
-        },
-        "/Register/registerwithapikey": {
-            "post": {
-                "tags": [
-                    "Register"
-                ],
-                "summary": "Creates a new user for an open sign OpenSignInProviderRegisterRequest.",
-                "requestBody": {
-                    "description": "The register dto providing apikey and username",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the JWT for the user.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If there was an issue",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If there is no open RPGTableHelper.DataLayer.Contracts.Models.Auth.OpenSignInProviderRegisterRequest",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "If the open OpenSignInProviderRegisterRequest does not have an email or the username is already taken",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
+              }
             }
-        },
-        "/Register/verifyemail/{useridbase64}/{signaturebase64}": {
-            "get": {
-                "tags": [
-                    "Register"
-                ],
-                "summary": "Lets the user verify their email.",
-                "description": "This link is send via email to the user after registration (and only if the user used username and password login).",
-                "parameters": [{
-                        "name": "useridbase64",
-                        "in": "path",
-                        "description": "The base64 encoded userid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "signaturebase64",
-                        "in": "path",
-                        "description": "The server generated signature for the userid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the JWT for the user.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If there was an issue",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/testlogin": {
-            "get": {
-                "tags": [
-                    "SignIn"
-                ],
-                "summary": "This method returns \"Welcome\" when the provided JWT is valid.",
-                "responses": {
-                    "200": {
-                        "description": "Returns the JWT for the user.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If the used jwt is not valid",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetails"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/getloginchallengeforusername/{username}": {
-            "post": {
-                "tags": [
-                    "SignIn"
-                ],
-                "summary": "Returns the encryption challenge for a given username.",
-                "description": "Please note that the client has to provide an RSA public\r\nkey in order to receive the encrypted challenge dictionary.",
-                "parameters": [{
-                    "name": "username",
-                    "in": "path",
-                    "description": "The username of the desired encryption challenge",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }],
-                "requestBody": {
-                    "description": "The public RSA key of the client",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the encrypted challenge dict for the user.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If request is not valid (user not found, key not valid, etc.)",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/login": {
-            "post": {
-                "tags": [
-                    "SignIn"
-                ],
-                "summary": "Performs the login with username and password.",
-                "requestBody": {
-                    "description": "The username and password",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the jwt for the user",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "If username or password did not match",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/loginwithapple": {
-            "post": {
-                "tags": [
-                    "SignIn"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDetails"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDetails"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDetails"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AppleLoginDetails"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/loginwithgoogle": {
-            "post": {
-                "tags": [
-                    "SignIn"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GoogleLoginDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GoogleLoginDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GoogleLoginDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GoogleLoginDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/requestresetpassword": {
-            "post": {
-                "tags": [
-                    "SignIn"
-                ],
-                "summary": "Requests an reset password email for the user.",
-                "requestBody": {
-                    "description": "The username and email for the user requesting the reset",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordRequestDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordRequestDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordRequestDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordRequestDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the text \"Email sent\"",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If username or password did not match",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/SignIn/resetpassword": {
-            "post": {
-                "tags": [
-                    "SignIn"
-                ],
-                "summary": "Completes the password reset requests by providing the reset code from the email.",
-                "requestBody": {
-                    "description": "The username and email for the user requesting the reset",
-                    "content": {
-                        "application/json-patch+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordDto"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordDto"
-                            }
-                        },
-                        "text/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordDto"
-                            }
-                        },
-                        "application/*+json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns the text \"New password set\"",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "If username, email or reset code did not match",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "text/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
     },
-    "components": {
-        "schemas": {
-            "AppleLoginDetails": {
-                "required": [
-                    "authorizationCode",
-                    "identityToken"
-                ],
-                "type": "object",
-                "properties": {
-                    "authorizationCode": {
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "identityToken": {
-                        "minLength": 1,
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "Campagne": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/CampagneIdentifier"
-                    },
-                    "creationDate": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "lastModifiedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "rpgConfiguration": {
-                        "$ref": "#/components/schemas/StringOption"
-                    },
-                    "campagneName": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "joinCode": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "dmUserId": {
-                        "$ref": "#/components/schemas/UserIdentifier"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "CampagneCreateDto": {
-                "required": [
-                    "campagneName"
-                ],
-                "type": "object",
-                "properties": {
-                    "rpgConfiguration": {
-                        "type": "string",
-                        "description": "This is the json serialized configuration of the rpg",
-                        "nullable": true
-                    },
-                    "campagneName": {
-                        "minLength": 1,
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "CampagneIdentifier": {
-                "type": "object",
-                "properties": {
-                    "value": {
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "CampagneIdentifierOption": {
-                "type": "object",
-                "properties": {
-                    "isNone": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "isSome": {
-                        "type": "boolean",
-                        "readOnly": true
-                    }
-                },
-                "additionalProperties": false
-            },
-            "EncryptedMessageWrapperDto": {
-                "type": "object",
-                "properties": {
-                    "encryptedMessage": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "additionalProperties": false,
-                "description": "Represents a data transfer object for encapsulating encrypted messages."
-            },
-            "EncryptionChallengeIdentifier": {
-                "type": "object",
-                "properties": {
-                    "value": {
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "GoogleLoginDto": {
-                "required": [
-                    "accessToken",
-                    "identityToken"
-                ],
-                "type": "object",
-                "properties": {
-                    "accessToken": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the Google Access Token."
-                    },
-                    "identityToken": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the Google Identity Token."
-                    }
-                },
-                "additionalProperties": false,
-                "description": "Data Transfer Object for Google login information."
-            },
-            "LoginWithUsernameAndPasswordDto": {
-                "required": [
-                    "username",
-                    "userSecretByEncryptionChallenge"
-                ],
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the username of the user."
-                    },
-                    "userSecretByEncryptionChallenge": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the hashed password of the user.\r\nEither this has to be set or the ApiKey.\r\n            \r\nIf this is set, the user is registering in with username + password, if not set,\r\nthe user is providing username and password after the sign in using a OIDC Provider\r\n(like apple or google)."
-                    }
-                },
-                "additionalProperties": false,
-                "description": "Data Transfer Object for user login information."
-            },
-            "PlayerCharacter": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "$ref": "#/components/schemas/PlayerCharacterIdentifier"
-                    },
-                    "creationDate": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "lastModifiedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "rpgCharacterConfiguration": {
-                        "$ref": "#/components/schemas/StringOption"
-                    },
-                    "characterName": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "playerUserId": {
-                        "$ref": "#/components/schemas/UserIdentifier"
-                    },
-                    "campagneId": {
-                        "$ref": "#/components/schemas/CampagneIdentifierOption"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "PlayerCharacterCreateDto": {
-                "required": [
-                    "characterName"
-                ],
-                "type": "object",
-                "properties": {
-                    "rpgCharacterConfiguration": {
-                        "type": "string",
-                        "description": "This is the json serialized configuration of the character",
-                        "nullable": true
-                    },
-                    "characterName": {
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "campagneId": {
-                        "type": "string",
-                        "description": "The id of the campagne for this character",
-                        "format": "uuid",
-                        "nullable": true
-                    }
-                },
-                "additionalProperties": false
-            },
-            "PlayerCharacterIdentifier": {
-                "type": "object",
-                "properties": {
-                    "value": {
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "additionalProperties": false
-            },
-            "ProblemDetails": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "title": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "status": {
-                        "type": "integer",
-                        "format": "int32",
-                        "nullable": true
-                    },
-                    "detail": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "instance": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "additionalProperties": {}
-            },
-            "RegisterWithApiKeyDto": {
-                "required": [
-                    "apiKey",
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "apiKey": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the api key of this user register request.\r\nEither this has to be set or the UserSecret."
-                    },
-                    "username": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the username of the user."
-                    }
-                },
-                "additionalProperties": false
-            },
-            "RegisterWithUsernamePasswordDto": {
-                "required": [
-                    "email",
-                    "encryptionChallengeIdentifier",
-                    "username",
-                    "userSecret"
-                ],
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the email address of the user.",
-                        "format": "email"
-                    },
-                    "encryptionChallengeIdentifier": {
-                        "$ref": "#/components/schemas/EncryptionChallengeIdentifier"
-                    },
-                    "username": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the username of the user."
-                    },
-                    "userSecret": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the hashed password of the user.\r\nEither this has to be set or the ApiKey.\r\n            \r\nIf this is set, the user is registering in with username + password, if not set,\r\nthe user is providing username and password after the sign in using a OIDC Provider\r\n(like apple or google)."
-                    }
-                },
-                "additionalProperties": false
-            },
-            "ResetPasswordDto": {
-                "required": [
-                    "email",
-                    "newHashedPassword",
-                    "resetCode",
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the email address of the user requesting a password reset.",
-                        "format": "email"
-                    },
-                    "newHashedPassword": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the user requested updated password of the user."
-                    },
-                    "resetCode": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the users reset code for the reset password operation."
-                    },
-                    "username": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the username of the user requesting a password reset."
-                    }
-                },
-                "additionalProperties": false
-            },
-            "ResetPasswordRequestDto": {
-                "required": [
-                    "email",
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the email address of the user requesting a password reset.",
-                        "format": "email"
-                    },
-                    "username": {
-                        "minLength": 1,
-                        "type": "string",
-                        "description": "Gets or sets the username of the user requesting a password reset."
-                    }
-                },
-                "additionalProperties": false,
-                "description": "Data Transfer Object for password reset requests."
-            },
-            "StringOption": {
-                "type": "object",
-                "properties": {
-                    "isNone": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "isSome": {
-                        "type": "boolean",
-                        "readOnly": true
-                    }
-                },
-                "additionalProperties": false
-            },
-            "UserIdentifier": {
-                "type": "object",
-                "properties": {
-                    "value": {
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "additionalProperties": false
+    "/Campagne/getcampagnes": {
+      "get": {
+        "tags": [
+          "Campagne"
+        ],
+        "summary": "Returns a list of campagnes this user is the dm of.",
+        "responses": {
+          "200": {
+            "description": "A list of all campagnes for this user as dm",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Campagne"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Campagne"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Campagne"
+                  }
+                }
+              }
             }
-        },
-        "securitySchemes": {
-            "Bearer": {
-                "type": "apiKey",
-                "description": "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
-                "name": "Authorization",
-                "in": "header"
+          },
+          "400": {
+            "description": "If there was an error retrieving the campagnes",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
         }
+      }
     },
-    "security": [{
-        "Bearer": []
-    }]
+    "/Campagne/getcampagne/{campagneid}": {
+      "get": {
+        "tags": [
+          "Campagne"
+        ],
+        "summary": "Returns a single of campagne.",
+        "description": "You must be the dm or a player in this campagne",
+        "parameters": [{
+          "name": "campagneid",
+          "in": "path",
+          "description": "The id of the desired campagne",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The campagne",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campagne"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campagne"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campagne"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the campagnes",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this campagne",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PlayerCharacter/createcharacter": {
+      "post": {
+        "tags": [
+          "PlayerCharacter"
+        ],
+        "summary": "Creates a new player character with the calling user as owner.",
+        "requestBody": {
+          "description": "The creation details",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayerCharacterCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the newly created player character",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the data provided is invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PlayerCharacter/getplayercharacters": {
+      "get": {
+        "tags": [
+          "PlayerCharacter"
+        ],
+        "summary": "Returns a list of player characters for the calling user.",
+        "responses": {
+          "200": {
+            "description": "A list of all playerCharacters for this user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the playerCharacters",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PlayerCharacter/getplayercharacter/{playercharacterid}": {
+      "get": {
+        "tags": [
+          "PlayerCharacter"
+        ],
+        "summary": "Returns a single playerCharacter.",
+        "description": "You must be the owner of this playerCharacter",
+        "parameters": [{
+          "name": "playercharacterid",
+          "in": "path",
+          "description": "The id of the desired playerCharacter",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The playerCharacter",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerCharacter"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerCharacter"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerCharacter"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the playerCharacters",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this playerCharacter",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Public/getminimalversion": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Returns the minimal app version supported by this api.",
+        "responses": {
+          "200": {
+            "description": "The minimal app version supported",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Register/createencryptionchallenge": {
+      "post": {
+        "tags": [
+          "Register"
+        ],
+        "summary": "This method generates a new encryptionChallenge and stores it in the db.\r\nUse this method as first start point for a register operation.",
+        "description": "Additionally, it uses rsa encryption to comunicate: the client has to provide a public pem\r\ncertificate encrypted with the public pem of this server and receives the encryption challenge\r\nRSA encrypted with the provided public cert.\r\nThis way, no man in the middle can pretend to be the server as each client has a copy of the public cert of the server.",
+        "requestBody": {
+          "description": "RSA encrpyted public pem cert of the client.",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the JWT for the user.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the passed user input is invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Register/register": {
+      "post": {
+        "tags": [
+          "Register"
+        ],
+        "summary": "Creates a new user with \"username and password\" sign in.",
+        "description": "In order to signup the provided body must be RSA encrypted with\r\nthe public certificate of this server. The dto must be of type\r\nRPGTableHelper.WebApi.Dtos.RegisterWithUsernamePasswordDto.",
+        "requestBody": {
+          "description": "The encrypted register dto",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the JWT for the user.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the passed user input is invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "If the desired username is already taken",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Register/registerwithapikey": {
+      "post": {
+        "tags": [
+          "Register"
+        ],
+        "summary": "Creates a new user for an open sign OpenSignInProviderRegisterRequest.",
+        "requestBody": {
+          "description": "The register dto providing apikey and username",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterWithApiKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the JWT for the user.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an issue",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If there is no open RPGTableHelper.DataLayer.Contracts.Models.Auth.OpenSignInProviderRegisterRequest",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "If the open OpenSignInProviderRegisterRequest does not have an email or the username is already taken",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Register/verifyemail/{useridbase64}/{signaturebase64}": {
+      "get": {
+        "tags": [
+          "Register"
+        ],
+        "summary": "Lets the user verify their email.",
+        "description": "This link is send via email to the user after registration (and only if the user used username and password login).",
+        "parameters": [{
+            "name": "useridbase64",
+            "in": "path",
+            "description": "The base64 encoded userid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "signaturebase64",
+            "in": "path",
+            "description": "The server generated signature for the userid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the JWT for the user.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an issue",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/testlogin": {
+      "get": {
+        "tags": [
+          "SignIn"
+        ],
+        "summary": "This method returns \"Welcome\" when the provided JWT is valid.",
+        "responses": {
+          "200": {
+            "description": "Returns the JWT for the user.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If the used jwt is not valid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/getloginchallengeforusername/{username}": {
+      "post": {
+        "tags": [
+          "SignIn"
+        ],
+        "summary": "Returns the encryption challenge for a given username.",
+        "description": "Please note that the client has to provide an RSA public\r\nkey in order to receive the encrypted challenge dictionary.",
+        "parameters": [{
+          "name": "username",
+          "in": "path",
+          "description": "The username of the desired encryption challenge",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "description": "The public RSA key of the client",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the encrypted challenge dict for the user.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If request is not valid (user not found, key not valid, etc.)",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/login": {
+      "post": {
+        "tags": [
+          "SignIn"
+        ],
+        "summary": "Performs the login with username and password.",
+        "requestBody": {
+          "description": "The username and password",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the jwt for the user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If username or password did not match",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/loginwithapple": {
+      "post": {
+        "tags": [
+          "SignIn"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleLoginDetails"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleLoginDetails"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleLoginDetails"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleLoginDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/loginwithgoogle": {
+      "post": {
+        "tags": [
+          "SignIn"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/requestresetpassword": {
+      "post": {
+        "tags": [
+          "SignIn"
+        ],
+        "summary": "Requests an reset password email for the user.",
+        "requestBody": {
+          "description": "The username and email for the user requesting the reset",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the text \"Email sent\"",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If username or password did not match",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SignIn/resetpassword": {
+      "post": {
+        "tags": [
+          "SignIn"
+        ],
+        "summary": "Completes the password reset requests by providing the reset code from the email.",
+        "requestBody": {
+          "description": "The username and email for the user requesting the reset",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the text \"New password set\"",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If username, email or reset code did not match",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppleLoginDetails": {
+        "required": [
+          "authorizationCode",
+          "identityToken"
+        ],
+        "type": "object",
+        "properties": {
+          "authorizationCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "identityToken": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Campagne": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CampagneIdentifier"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rpgConfiguration": {
+            "type": "string",
+            "nullable": true
+          },
+          "campagneName": {
+            "type": "string",
+            "nullable": true
+          },
+          "joinCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "dmUserId": {
+            "$ref": "#/components/schemas/UserIdentifier"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CampagneCreateDto": {
+        "required": [
+          "campagneName"
+        ],
+        "type": "object",
+        "properties": {
+          "rpgConfiguration": {
+            "type": "string",
+            "description": "This is the json serialized configuration of the rpg",
+            "nullable": true
+          },
+          "campagneName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CampagneIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EncryptedMessageWrapperDto": {
+        "type": "object",
+        "properties": {
+          "encryptedMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a data transfer object for encapsulating encrypted messages."
+      },
+      "EncryptionChallengeIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GoogleLoginDto": {
+        "required": [
+          "accessToken",
+          "identityToken"
+        ],
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the Google Access Token."
+          },
+          "identityToken": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the Google Identity Token."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Data Transfer Object for Google login information."
+      },
+      "LoginWithUsernameAndPasswordDto": {
+        "required": [
+          "username",
+          "userSecretByEncryptionChallenge"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the username of the user."
+          },
+          "userSecretByEncryptionChallenge": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the hashed password of the user.\r\nEither this has to be set or the ApiKey.\r\n            \r\nIf this is set, the user is registering in with username + password, if not set,\r\nthe user is providing username and password after the sign in using a OIDC Provider\r\n(like apple or google)."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Data Transfer Object for user login information."
+      },
+      "PlayerCharacter": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rpgCharacterConfiguration": {
+            "type": "string",
+            "nullable": true
+          },
+          "characterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerUserId": {
+            "$ref": "#/components/schemas/UserIdentifier"
+          },
+          "campagneId": {
+            "$ref": "#/components/schemas/CampagneIdentifier"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayerCharacterCreateDto": {
+        "required": [
+          "characterName"
+        ],
+        "type": "object",
+        "properties": {
+          "rpgCharacterConfiguration": {
+            "type": "string",
+            "description": "This is the json serialized configuration of the character",
+            "nullable": true
+          },
+          "characterName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "campagneId": {
+            "type": "string",
+            "description": "The id of the campagne for this character",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayerCharacterIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "RegisterWithApiKeyDto": {
+        "required": [
+          "apiKey",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "apiKey": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the api key of this user register request.\r\nEither this has to be set or the UserSecret."
+          },
+          "username": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the username of the user."
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterWithUsernamePasswordDto": {
+        "required": [
+          "email",
+          "encryptionChallengeIdentifier",
+          "username",
+          "userSecret"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the email address of the user.",
+            "format": "email"
+          },
+          "encryptionChallengeIdentifier": {
+            "$ref": "#/components/schemas/EncryptionChallengeIdentifier"
+          },
+          "username": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the username of the user."
+          },
+          "userSecret": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the hashed password of the user.\r\nEither this has to be set or the ApiKey.\r\n            \r\nIf this is set, the user is registering in with username + password, if not set,\r\nthe user is providing username and password after the sign in using a OIDC Provider\r\n(like apple or google)."
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResetPasswordDto": {
+        "required": [
+          "email",
+          "newHashedPassword",
+          "resetCode",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the email address of the user requesting a password reset.",
+            "format": "email"
+          },
+          "newHashedPassword": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the user requested updated password of the user."
+          },
+          "resetCode": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the users reset code for the reset password operation."
+          },
+          "username": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the username of the user requesting a password reset."
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResetPasswordRequestDto": {
+        "required": [
+          "email",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the email address of the user requesting a password reset.",
+            "format": "email"
+          },
+          "username": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Gets or sets the username of the user requesting a password reset."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Data Transfer Object for password reset requests."
+      },
+      "UserIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [{
+    "Bearer": []
+  }]
 }
