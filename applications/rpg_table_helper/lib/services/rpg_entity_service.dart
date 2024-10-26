@@ -1,3 +1,4 @@
+import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
@@ -12,10 +13,15 @@ abstract class IRpgEntityService {
     required this.apiConnectorService,
   });
 
+  Future<HRResponse<bool>> handleJoinRequest(
+      {required String campagneJoinRequestId,
+      required HandleJoinRequestType typeOfHandle});
   Future<HRResponse<List<Campagne>>> getCampagnesWithPlayerAsDm();
   Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
       {required String campagneName, String? rpgConfig});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharacetersForPlayer();
+
+  // TODO add methods for creating join requests and loading them for a given campagne WILO
 }
 
 class RpgEntityService extends IRpgEntityService {
@@ -75,6 +81,34 @@ class RpgEntityService extends IRpgEntityService {
 
     return createCampagneResult;
   }
+
+  @override
+  Future<HRResponse<bool>> handleJoinRequest(
+      {required String campagneJoinRequestId,
+      required HandleJoinRequestType typeOfHandle}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          '6fe2d1d8-302a-49d6-a7f4-2bcbe1f3deac');
+    }
+
+    var handleCampagneJoinRequestResult = await HRResponse.fromApiFuture(
+        api.campagneJoinRequestHandlejoinrequestPost(
+          body: HandleJoinRequestDto(
+            campagneJoinRequestId: campagneJoinRequestId,
+            type: typeOfHandle,
+          ),
+        ),
+        'Could not create new campagne join request.',
+        'c3100c78-81a2-4a01-bb55-e5cad110fd4b');
+
+    if (!handleCampagneJoinRequestResult.isSuccessful) {
+      return handleCampagneJoinRequestResult.asT();
+    }
+
+    return HRResponse.fromResult(true,
+        statusCode: handleCampagneJoinRequestResult.statusCode);
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -83,10 +117,13 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<List<PlayerCharacter>>?
       getPlayerCharacetersForPlayerOverride;
 
+  final HRResponse<bool>? handleJoinRequestOverride;
+
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
     this.saveCampagneAsNewCampagneOverride,
     this.getPlayerCharacetersForPlayerOverride,
+    this.handleJoinRequestOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
 
@@ -132,5 +169,13 @@ class MockRpgEntityService extends IRpgEntityService {
         HRResponse.fromResult(CampagneIdentifier(
           $value: "74f73cf2-83e2-4c03-9ea1-9de7bef4d68e",
         )));
+  }
+
+  @override
+  Future<HRResponse<bool>> handleJoinRequest(
+      {required String campagneJoinRequestId,
+      required HandleJoinRequestType typeOfHandle}) {
+    return Future.value(
+        handleJoinRequestOverride ?? HRResponse.fromResult(true));
   }
 }

@@ -351,13 +351,31 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 onPressed: () async {
                   if (character.campagneId != null &&
                       character.campagneId!.$value != null) {
+                    // TODO set rpg config and id to connection details
+
+                    // start SignalR connection
+                    var serverCommunicationService =
+                        DependencyProvider.of(context)
+                            .getService<IServerCommunicationService>();
+                    await serverCommunicationService.startConnection();
+                    if (!mounted) return;
+
                     // the player is assigned to a campagne. hence we can start the signal r process here
                     final com = DependencyProvider.of(context)
                         .getService<IServerMethodsService>();
                     await com.joinGameSession(
                         playerCharacterId: character.id!.$value!);
+
+                    // navigate to main game screen (auth screen wrapper)
+                    navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                        AuthorizedScreenWrapper.route, (r) => false);
+                  } else {
+                    // TODO what happens here
+                    // 1. show modal for entering a join code
+                    // 2. create new join request for campagne with join code
+                    // 3. wait for "joinrequesthandled" signalR method
+                    // 4. block user from creating more join requsts...
                   }
-                  // TODO what happens here
                 },
                 child: StyledBox(
                   child: Padding(

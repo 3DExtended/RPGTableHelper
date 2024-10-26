@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.CampagneJoinRequests;
@@ -18,11 +19,17 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
     {
         private readonly IUserContext _userContext;
         private readonly IQueryProcessor _queryProcessor;
+        private readonly IHubContext<RpgServerSignalRHub>? _hubContext;
 
-        public CampagneJoinRequestController(IUserContext userContext, IQueryProcessor queryProcessor)
+        public CampagneJoinRequestController(
+            IUserContext userContext,
+            IQueryProcessor queryProcessor,
+            IHubContext<RpgServerSignalRHub>? hubContext
+        )
         {
             _userContext = userContext;
             _queryProcessor = queryProcessor;
+            _hubContext = hubContext;
         }
 
         /// <summary>
@@ -54,6 +61,18 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Missing createDto");
             }
 
+            var playerCharacter = await new PlayerCharacterQuery
+            {
+                ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(createDto.PlayerCharacterId)),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
+            {
+                return BadRequest("Could not verify player character");
+            }
+
             var campagneJoinRequestId = await new CampagneJoinRequestCreateQuery
             {
                 ModelToCreate = new CampagneJoinRequest
@@ -70,6 +89,20 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (campagneJoinRequestId.IsNone)
             {
                 return BadRequest("Could not create new campagneJoinRequest");
+            }
+
+            if (_hubContext != null)
+            {
+                await _hubContext
+                    .Clients.Group(campagneJoinRequestId + "_Dm")
+                    .SendAsync(
+                        "requestJoinPermission",
+                        playerCharacter.Get().CharacterName,
+                        _userContext.User.Username,
+                        playerCharacter.Get().Id.Value.ToString(),
+                        campagneJoinRequestId.Get().Value.ToString(),
+                        cancellationToken
+                    );
             }
 
             return Ok(campagneJoinRequestId.Get());
@@ -154,6 +187,18 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (deleteRequestResult.IsNone)
             {
                 return BadRequest("Could not delete CampagneJoinRequest (but updated player).");
+            }
+
+            if (_hubContext != null)
+            {
+                await _hubContext
+                    .Clients.All.SendAsync(
+                        "joinrequesthandled",
+                        joinRequest.Get().Id.Value.ToString(),
+                        handleJoinRequestDto.Type.ToString(),
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
             }
 
             return Ok();

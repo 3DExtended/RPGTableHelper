@@ -45,6 +45,12 @@ abstract class IServerCommunicationService {
           function,
       required String functionName});
 
+  void registerCallbackFourStrings(
+      {required void Function(
+              String param1, String param2, String param3, String param4)
+          function,
+      required String functionName});
+
   Future executeServerFunction(String functionName, {List<Object>? args});
 }
 
@@ -197,6 +203,35 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   @override
+  void registerCallbackFourStrings(
+      {required void Function(
+              String param1, String param2, String param3, String param4)
+          function,
+      required String functionName}) {
+    hubConnection!.on(functionName, (List<Object?>? parameters) {
+      if (parameters == null || parameters.isEmpty) return;
+
+      final String? param1 =
+          parameters[0] != null ? parameters[0] as String : null;
+      final String? param2 =
+          parameters[1] != null ? parameters[1] as String : null;
+      final String? param3 =
+          parameters[2] != null ? parameters[2] as String : null;
+      final String? param4 =
+          parameters[3] != null ? parameters[3] as String : null;
+
+      if (param1 == null ||
+          param2 == null ||
+          param3 == null ||
+          param4 == null) {
+        return;
+      }
+
+      function(param1, param2, param3, param4);
+    });
+  }
+
+  @override
   Future executeServerFunction(String functionName,
       {List<Object>? args}) async {
     if (!connectionIsOpen) {
@@ -261,6 +296,13 @@ class MockServerCommunicationService extends IServerCommunicationService {
   Future stopConnection() {
     return Future.value();
   }
+
+  @override
+  void registerCallbackFourStrings(
+      {required void Function(
+              String param1, String param2, String param3, String param4)
+          function,
+      required String functionName}) {}
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

@@ -25,7 +25,7 @@ abstract class IServerMethodsService {
       functionName: "registerGameResponse",
     );
 
-    serverCommunicationService.registerCallbackThreeStrings(
+    serverCommunicationService.registerCallbackFourStrings(
       function: requestJoinPermission,
       functionName: "requestJoinPermission",
     );
@@ -53,8 +53,8 @@ abstract class IServerMethodsService {
 
   // this should contain every method that is callable by the server
   void registerGameResponse(String parameter);
-  void requestJoinPermission(
-      String playerName, String gameCode, String connectionId);
+  void requestJoinPermission(String playerName, String username,
+      String playerCharacterId, String campagneJoinRequestId);
   void joinRequestAccepted();
   void updateRpgConfig(String parameter);
   void updateRpgCharacterConfigOnDmSide(String parameter);
@@ -63,11 +63,7 @@ abstract class IServerMethodsService {
   // this should contain every method that call the server
   Future registerGame({required String campagneId});
   Future joinGameSession({required String playerCharacterId});
-  Future acceptJoinRequest(
-      {required String playerName,
-      required String gameCode,
-      required String connectionId,
-      required RpgConfigurationModel rpgConfig});
+
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig, required String campagneId});
 
@@ -105,8 +101,8 @@ class ServerMethodsService extends IServerMethodsService {
         (widgetRef.read(connectionDetailsProvider).value ??
                 ConnectionDetails.defaultValue())
             .copyWith(
-                isConnected: false,
-                isConnecting: true,
+                isConnected: true,
+                isConnecting: false,
                 playerCharacterId: playerCharacterId));
 
     await serverCommunicationService
@@ -129,8 +125,8 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  void requestJoinPermission(
-      String playerName, String gameCode, String connectionId) {
+  void requestJoinPermission(String playerName, String username,
+      String playerCharacterId, String campagneJoinRequestId) {
     log("requestJoinPermission:");
 
     List<PlayerJoinRequests> openRequests = [
@@ -138,8 +134,9 @@ class ServerMethodsService extends IServerMethodsService {
           []),
       PlayerJoinRequests(
         playerName: playerName,
-        gameCode: gameCode,
-        connectionId: connectionId,
+        username: username,
+        playerCharacterId: playerCharacterId,
+        campagneJoinRequestId: campagneJoinRequestId,
       ),
     ];
 
@@ -178,16 +175,6 @@ class ServerMethodsService extends IServerMethodsService {
 
     var receivedConfig = RpgConfigurationModel.fromJson(map);
     serverCommunicationService.updateRpgConfiguration(receivedConfig);
-  }
-
-  @override
-  Future acceptJoinRequest(
-      {required String playerName,
-      required String gameCode,
-      required String connectionId,
-      required RpgConfigurationModel rpgConfig}) async {
-    await serverCommunicationService.executeServerFunction("AcceptJoinRequest",
-        args: [playerName, gameCode, connectionId, jsonEncode(rpgConfig)]);
   }
 
   @override

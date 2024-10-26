@@ -21,6 +21,8 @@ void main() {
       isConnecting: false,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -31,6 +33,8 @@ void main() {
       isConnecting: false,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -41,6 +45,8 @@ void main() {
       isConnecting: true,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -51,6 +57,8 @@ void main() {
       isConnecting: true,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -61,6 +69,8 @@ void main() {
       isConnecting: false,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -71,6 +81,8 @@ void main() {
       isConnecting: false,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -81,6 +93,8 @@ void main() {
       isConnecting: true,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -91,6 +105,8 @@ void main() {
       isConnecting: true,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -101,6 +117,8 @@ void main() {
       isConnecting: false,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -111,6 +129,8 @@ void main() {
       isConnecting: false,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -121,6 +141,8 @@ void main() {
       isConnecting: true,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -131,6 +153,8 @@ void main() {
       isConnecting: true,
       isDm: true,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -141,6 +165,8 @@ void main() {
       isConnecting: false,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -151,6 +177,8 @@ void main() {
       isConnecting: false,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -161,6 +189,8 @@ void main() {
       isConnecting: true,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
     ConnectionDetails(
       lastGrantedItems: null,
@@ -171,6 +201,8 @@ void main() {
       isConnecting: true,
       isDm: false,
       sessionConnectionNumberForPlayers: null,
+      campagneId: null,
+      playerCharacterId: null,
     ),
   ];
 

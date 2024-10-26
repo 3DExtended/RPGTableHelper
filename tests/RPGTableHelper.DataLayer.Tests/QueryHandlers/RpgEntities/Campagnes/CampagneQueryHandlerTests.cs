@@ -6,6 +6,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.QueryHandlers.Users;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers.Base;
 

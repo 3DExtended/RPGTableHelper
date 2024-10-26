@@ -6,11 +6,11 @@ import 'package:rpg_table_helper/components/fill_remaining_space.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 
 class CharacterScreen extends ConsumerWidget {
   static String route = "character";
@@ -185,16 +185,15 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                                 ),
                                 onPressed: () async {
                                   var com = DependencyProvider.of(context)
-                                      .getService<IServerMethodsService>();
+                                      .getService<IRpgEntityService>();
 
-                                  com.acceptJoinRequest(
-                                    connectionId: request.value.connectionId,
-                                    gameCode: request.value.gameCode,
-                                    playerName: request.value.playerName,
-                                    rpgConfig: ref
-                                        .read(rpgConfigurationProvider)
-                                        .requireValue,
-                                  );
+                                  var response = await com.handleJoinRequest(
+                                      campagneJoinRequestId:
+                                          request.value.campagneJoinRequestId,
+                                      typeOfHandle:
+                                          HandleJoinRequestType.accept);
+
+                                  await response.possiblyHandleError(context);
 
                                   // remove this particular request from open requests
                                   deleteJoinRequestAt(request, ref);
@@ -213,7 +212,15 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                                             255, 255, 79, 79),
                                       ),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
+                                  var com = DependencyProvider.of(context)
+                                      .getService<IRpgEntityService>();
+
+                                  var response = await com.handleJoinRequest(
+                                      campagneJoinRequestId:
+                                          request.value.campagneJoinRequestId,
+                                      typeOfHandle: HandleJoinRequestType.deny);
+                                  await response.possiblyHandleError(context);
                                   // remove this particular request from open requests
                                   deleteJoinRequestAt(request, ref);
                                 }),

@@ -38,6 +38,7 @@ public class RpgDbContext : DbContext
             .Entity<CampagneJoinRequestEntity>()
             .HasIndex(entity => new { entity.CampagneId, entity.PlayerId })
             .IsUnique();
+
         modelBuilder.Entity<UserEntity>().HasIndex(entity => entity.Username).IsUnique();
         modelBuilder.Entity<UserCredentialEntity>().HasIndex(entity => entity.Email).IsUnique();
 

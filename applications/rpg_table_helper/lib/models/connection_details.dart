@@ -8,13 +8,15 @@ part 'connection_details.g.dart';
 @CopyWith()
 class PlayerJoinRequests {
   final String playerName;
-  final String gameCode;
-  final String connectionId;
+  final String username;
+  final String playerCharacterId;
+  final String campagneJoinRequestId;
 
   PlayerJoinRequests(
       {required this.playerName,
-      required this.gameCode,
-      required this.connectionId});
+      required this.username,
+      required this.campagneJoinRequestId,
+      required this.playerCharacterId});
   factory PlayerJoinRequests.fromJson(Map<String, dynamic> json) =>
       _$PlayerJoinRequestsFromJson(json);
 

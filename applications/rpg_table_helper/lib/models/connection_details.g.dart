@@ -9,9 +9,11 @@ part of 'connection_details.dart';
 abstract class _$PlayerJoinRequestsCWProxy {
   PlayerJoinRequests playerName(String playerName);
 
-  PlayerJoinRequests gameCode(String gameCode);
+  PlayerJoinRequests username(String username);
 
-  PlayerJoinRequests connectionId(String connectionId);
+  PlayerJoinRequests campagneJoinRequestId(String campagneJoinRequestId);
+
+  PlayerJoinRequests playerCharacterId(String playerCharacterId);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PlayerJoinRequests(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -21,8 +23,9 @@ abstract class _$PlayerJoinRequestsCWProxy {
   /// ````
   PlayerJoinRequests call({
     String? playerName,
-    String? gameCode,
-    String? connectionId,
+    String? username,
+    String? campagneJoinRequestId,
+    String? playerCharacterId,
   });
 }
 
@@ -37,11 +40,15 @@ class _$PlayerJoinRequestsCWProxyImpl implements _$PlayerJoinRequestsCWProxy {
       this(playerName: playerName);
 
   @override
-  PlayerJoinRequests gameCode(String gameCode) => this(gameCode: gameCode);
+  PlayerJoinRequests username(String username) => this(username: username);
 
   @override
-  PlayerJoinRequests connectionId(String connectionId) =>
-      this(connectionId: connectionId);
+  PlayerJoinRequests campagneJoinRequestId(String campagneJoinRequestId) =>
+      this(campagneJoinRequestId: campagneJoinRequestId);
+
+  @override
+  PlayerJoinRequests playerCharacterId(String playerCharacterId) =>
+      this(playerCharacterId: playerCharacterId);
 
   @override
 
@@ -53,8 +60,9 @@ class _$PlayerJoinRequestsCWProxyImpl implements _$PlayerJoinRequestsCWProxy {
   /// ````
   PlayerJoinRequests call({
     Object? playerName = const $CopyWithPlaceholder(),
-    Object? gameCode = const $CopyWithPlaceholder(),
-    Object? connectionId = const $CopyWithPlaceholder(),
+    Object? username = const $CopyWithPlaceholder(),
+    Object? campagneJoinRequestId = const $CopyWithPlaceholder(),
+    Object? playerCharacterId = const $CopyWithPlaceholder(),
   }) {
     return PlayerJoinRequests(
       playerName:
@@ -62,15 +70,21 @@ class _$PlayerJoinRequestsCWProxyImpl implements _$PlayerJoinRequestsCWProxy {
               ? _value.playerName
               // ignore: cast_nullable_to_non_nullable
               : playerName as String,
-      gameCode: gameCode == const $CopyWithPlaceholder() || gameCode == null
-          ? _value.gameCode
+      username: username == const $CopyWithPlaceholder() || username == null
+          ? _value.username
           // ignore: cast_nullable_to_non_nullable
-          : gameCode as String,
-      connectionId:
-          connectionId == const $CopyWithPlaceholder() || connectionId == null
-              ? _value.connectionId
+          : username as String,
+      campagneJoinRequestId:
+          campagneJoinRequestId == const $CopyWithPlaceholder() ||
+                  campagneJoinRequestId == null
+              ? _value.campagneJoinRequestId
               // ignore: cast_nullable_to_non_nullable
-              : connectionId as String,
+              : campagneJoinRequestId as String,
+      playerCharacterId: playerCharacterId == const $CopyWithPlaceholder() ||
+              playerCharacterId == null
+          ? _value.playerCharacterId
+          // ignore: cast_nullable_to_non_nullable
+          : playerCharacterId as String,
     );
   }
 }
@@ -339,15 +353,17 @@ extension $ConnectionDetailsCopyWith on ConnectionDetails {
 PlayerJoinRequests _$PlayerJoinRequestsFromJson(Map<String, dynamic> json) =>
     PlayerJoinRequests(
       playerName: json['playerName'] as String,
-      gameCode: json['gameCode'] as String,
-      connectionId: json['connectionId'] as String,
+      username: json['username'] as String,
+      campagneJoinRequestId: json['campagneJoinRequestId'] as String,
+      playerCharacterId: json['playerCharacterId'] as String,
     );
 
 Map<String, dynamic> _$PlayerJoinRequestsToJson(PlayerJoinRequests instance) =>
     <String, dynamic>{
       'playerName': instance.playerName,
-      'gameCode': instance.gameCode,
-      'connectionId': instance.connectionId,
+      'username': instance.username,
+      'playerCharacterId': instance.playerCharacterId,
+      'campagneJoinRequestId': instance.campagneJoinRequestId,
     };
 
 GrantedItemsForPlayer _$GrantedItemsForPlayerFromJson(

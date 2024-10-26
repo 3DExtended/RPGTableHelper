@@ -51,13 +51,15 @@ void main() {
               openPlayerRequests: [
                 PlayerJoinRequests(
                   playerName: "Bilbo",
-                  gameCode: "123-123",
-                  connectionId: "asdf234easdf",
+                  campagneJoinRequestId: "e330ad74-2769-47bc-8320-02d451ea46c8",
+                  playerCharacterId: "1ec467ee-54e3-4ab4-977b-0a617bc489d6",
+                  username: "petefdr",
                 ),
                 PlayerJoinRequests(
                   playerName: "Frodo",
-                  gameCode: "123-123",
-                  connectionId: "fghjkweiee",
+                  campagneJoinRequestId: "e330ad74-2769-47bc-8320-02d451ea46c8",
+                  playerCharacterId: "1ec467ee-54e3-4ab4-977b-0a617bc489d6",
+                  username: "peteffeeefer",
                 ),
               ],
             )),
@@ -75,13 +77,15 @@ void main() {
             openPlayerRequests: [
               PlayerJoinRequests(
                 playerName: "Bilbo",
-                gameCode: "123-123",
-                connectionId: "asdf234easdf",
+                campagneJoinRequestId: "e330ad74-2769-47bc-8320-02d451ea46c8",
+                playerCharacterId: "1ec467ee-54e3-4ab4-977b-0a617bc489d6",
+                username: "peteasr",
               ),
               PlayerJoinRequests(
                 playerName: "Frodo",
-                gameCode: "123-123",
-                connectionId: "fghjkweiee",
+                campagneJoinRequestId: "e330ad74-2769-47bc-8320-02d451ea46c8",
+                playerCharacterId: "1ec467ee-54e3-4ab4-977b-0a617bc489d6",
+                username: "petersss",
               ),
             ],
             playerProfiles: [

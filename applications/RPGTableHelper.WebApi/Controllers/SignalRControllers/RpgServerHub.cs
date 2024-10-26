@@ -61,7 +61,6 @@ public class RpgServerSignalRHub : Hub
     /// </summary>
     public async Task JoinGame(string playercharacterid)
     {
-        // TODO make a RequestJoinGame method...
         var playerCharacter = await new PlayerCharacterQuery
         {
             ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
@@ -185,21 +184,6 @@ public class RpgServerSignalRHub : Hub
         await Clients
             .OthersInGroup(campagneId + "_All")
             .SendAsync("grantPlayerItems", json, (CancellationToken)default);
-    }
-
-    /// <summary>
-    /// Dm Method to accept a join request
-    /// </summary>
-    public async Task AcceptJoinRequest(string playerName, string gameCode, string connectionId, string rpgConfig)
-    {
-        // TODO update me for new flow
-        Console.WriteLine($"A player named {playerName} was accepted to game {gameCode}");
-
-        // ask DM for joining permissions:
-        await Groups.AddToGroupAsync(connectionId, gameCode + "_All", (CancellationToken)default);
-        await Clients.Client(connectionId).SendAsync("joinRequestAccepted", (CancellationToken)default);
-
-        await Clients.Group(gameCode + "_All").SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
     }
 
     /// <summary>
