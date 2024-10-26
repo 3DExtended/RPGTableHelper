@@ -47,7 +47,8 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
 
         if (connectionDetails != null &&
             connectionDetails.isConnected &&
-            connectionDetails.isPlayer) {
+            connectionDetails.isPlayer &&
+            connectionDetails.playerCharacterId != null) {
           // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
           DependencyProvider.getIt!
               .get<IServerMethodsService>()
