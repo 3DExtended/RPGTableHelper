@@ -15,6 +15,13 @@ namespace RPGTableHelper.DataLayer
             CreateModelMaps<User, User.UserIdentifier, Guid, UserEntity>();
 
             CreateModelMaps<Campagne, Campagne.CampagneIdentifier, Guid, CampagneEntity>();
+            CreateModelMaps<
+                CampagneJoinRequest,
+                CampagneJoinRequest.CampagneJoinRequestIdentifier,
+                Guid,
+                CampagneJoinRequestEntity
+            >();
+
             CreateMap<CampagneEntity, CampagneEntity>();
 
             CreateModelMaps<PlayerCharacter, PlayerCharacter.PlayerCharacterIdentifier, Guid, PlayerCharacterEntity>();

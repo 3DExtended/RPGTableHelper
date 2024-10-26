@@ -53,8 +53,7 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
               .get<IServerMethodsService>()
               .sendUpdatedRpgCharacterConfig(
                   charConfig: newValue.requireValue,
-                  gameCode:
-                      connectionDetails.sessionConnectionNumberForPlayers!);
+                  playercharacterid: connectionDetails.playerCharacterId!);
         }
       }
     }

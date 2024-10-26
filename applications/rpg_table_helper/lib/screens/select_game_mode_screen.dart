@@ -345,23 +345,38 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     return characters!
         .map((character) => Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-              child: StyledBox(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            child: CustomMarkdownBody(
-                                text:
-                                    "# ${character.characterName!}\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}"),
-                          ),
-                        ],
-                      ),
-                    ],
+              child: CupertinoButton(
+                minSize: 0,
+                padding: EdgeInsets.all(0),
+                onPressed: () async {
+                  if (character.campagneId != null &&
+                      character.campagneId!.$value != null) {
+                    // the player is assigned to a campagne. hence we can start the signal r process here
+                    final com = DependencyProvider.of(context)
+                        .getService<IServerMethodsService>();
+                    await com.joinGameSession(
+                        playerCharacterId: character.id!.$value!);
+                  }
+                  // TODO what happens here
+                },
+                child: StyledBox(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: CustomMarkdownBody(
+                                  text:
+                                      "# ${character.characterName!}\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}"),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

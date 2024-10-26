@@ -23,48 +23,6 @@ class PlayerJoinRequests {
 
 @JsonSerializable()
 @CopyWith()
-class ConnectionDetails {
-  final bool isConnected;
-  final bool isConnecting;
-  final bool isInSession;
-  final String? sessionConnectionNumberForPlayers;
-  final List<PlayerJoinRequests>? openPlayerRequests;
-  final List<RpgCharacterConfiguration>? playerProfiles;
-  final bool isDm;
-  final List<GrantedItemsForPlayer>? lastGrantedItems;
-
-  ConnectionDetails({
-    required this.openPlayerRequests,
-    required this.isConnected,
-    required this.sessionConnectionNumberForPlayers,
-    required this.isConnecting,
-    required this.playerProfiles,
-    required this.isInSession,
-    required this.isDm,
-    required this.lastGrantedItems,
-  });
-
-  static ConnectionDetails defaultValue() => ConnectionDetails(
-        isConnected: false,
-        isConnecting: false,
-        isInSession: false,
-        isDm: false,
-        sessionConnectionNumberForPlayers: null,
-        playerProfiles: [],
-        lastGrantedItems: null,
-        openPlayerRequests: [],
-      );
-
-  bool get isPlayer => !isDm;
-
-  factory ConnectionDetails.fromJson(Map<String, dynamic> json) =>
-      _$ConnectionDetailsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ConnectionDetailsToJson(this);
-}
-
-@JsonSerializable()
-@CopyWith()
 class GrantedItemsForPlayer {
   final String characterName;
   final String playerId;
@@ -80,4 +38,53 @@ class GrantedItemsForPlayer {
       _$GrantedItemsForPlayerFromJson(json);
 
   Map<String, dynamic> toJson() => _$GrantedItemsForPlayerToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
+class ConnectionDetails {
+  final bool isConnected;
+  final bool isConnecting;
+  final bool isInSession;
+  final String? sessionConnectionNumberForPlayers;
+  final List<PlayerJoinRequests>? openPlayerRequests;
+  final List<RpgCharacterConfiguration>? playerProfiles;
+  final bool isDm;
+  final List<GrantedItemsForPlayer>? lastGrantedItems;
+
+  final String? campagneId;
+  final String? playerCharacterId;
+
+  ConnectionDetails({
+    required this.openPlayerRequests,
+    required this.isConnected,
+    required this.sessionConnectionNumberForPlayers,
+    required this.isConnecting,
+    required this.playerProfiles,
+    required this.isInSession,
+    required this.isDm,
+    required this.lastGrantedItems,
+    required this.campagneId,
+    required this.playerCharacterId,
+  });
+
+  static ConnectionDetails defaultValue() => ConnectionDetails(
+        isConnected: false,
+        isConnecting: false,
+        isInSession: false,
+        isDm: false,
+        sessionConnectionNumberForPlayers: null,
+        playerProfiles: [],
+        lastGrantedItems: null,
+        openPlayerRequests: [],
+        campagneId: null,
+        playerCharacterId: null,
+      );
+
+  bool get isPlayer => !isDm;
+
+  factory ConnectionDetails.fromJson(Map<String, dynamic> json) =>
+      _$ConnectionDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ConnectionDetailsToJson(this);
 }

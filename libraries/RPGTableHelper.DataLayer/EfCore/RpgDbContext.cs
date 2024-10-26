@@ -16,6 +16,8 @@ public class RpgDbContext : DbContext
     public DbSet<UserCredentialEntity> UserCredentials { get; set; } = default!;
     public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
 
+    public DbSet<CampagneJoinRequestEntity> CampagneJoinRequests { get; set; } = default!;
+
     public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,6 +29,15 @@ public class RpgDbContext : DbContext
             .HasForeignKey(e => e.CampagneId);
 
         modelBuilder.Entity<CampagneEntity>().HasIndex(entity => entity.JoinCode).IsUnique();
+        modelBuilder
+            .Entity<CampagneJoinRequestEntity>()
+            .HasIndex(entity => new { entity.CampagneId, entity.UserId })
+            .IsUnique();
+
+        modelBuilder
+            .Entity<CampagneJoinRequestEntity>()
+            .HasIndex(entity => new { entity.CampagneId, entity.PlayerId })
+            .IsUnique();
         modelBuilder.Entity<UserEntity>().HasIndex(entity => entity.Username).IsUnique();
         modelBuilder.Entity<UserCredentialEntity>().HasIndex(entity => entity.Email).IsUnique();
 

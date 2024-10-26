@@ -4,6 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:collection/collection.dart';
 import 'dart:convert';
 
+import 'swagger.enums.swagger.dart' as enums;
+
 part 'swagger.models.swagger.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -288,6 +290,214 @@ extension $CampagneIdentifierExtension on CampagneIdentifier {
 }
 
 @JsonSerializable(explicitToJson: true)
+class CampagneJoinRequest {
+  const CampagneJoinRequest({
+    this.id,
+    this.creationDate,
+    this.lastModifiedAt,
+    this.userId,
+    this.playerId,
+    this.campagneId,
+  });
+
+  factory CampagneJoinRequest.fromJson(Map<String, dynamic> json) =>
+      _$CampagneJoinRequestFromJson(json);
+
+  static const toJsonFactory = _$CampagneJoinRequestToJson;
+  Map<String, dynamic> toJson() => _$CampagneJoinRequestToJson(this);
+
+  @JsonKey(name: 'id')
+  final CampagneJoinRequestIdentifier? id;
+  @JsonKey(name: 'creationDate')
+  final DateTime? creationDate;
+  @JsonKey(name: 'lastModifiedAt')
+  final DateTime? lastModifiedAt;
+  @JsonKey(name: 'userId')
+  final UserIdentifier? userId;
+  @JsonKey(name: 'playerId')
+  final PlayerCharacterIdentifier? playerId;
+  @JsonKey(name: 'campagneId')
+  final CampagneIdentifier? campagneId;
+  static const fromJsonFactory = _$CampagneJoinRequestFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is CampagneJoinRequest &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.creationDate, creationDate) ||
+                const DeepCollectionEquality()
+                    .equals(other.creationDate, creationDate)) &&
+            (identical(other.lastModifiedAt, lastModifiedAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.lastModifiedAt, lastModifiedAt)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
+            (identical(other.playerId, playerId) ||
+                const DeepCollectionEquality()
+                    .equals(other.playerId, playerId)) &&
+            (identical(other.campagneId, campagneId) ||
+                const DeepCollectionEquality()
+                    .equals(other.campagneId, campagneId)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(id) ^
+      const DeepCollectionEquality().hash(creationDate) ^
+      const DeepCollectionEquality().hash(lastModifiedAt) ^
+      const DeepCollectionEquality().hash(userId) ^
+      const DeepCollectionEquality().hash(playerId) ^
+      const DeepCollectionEquality().hash(campagneId) ^
+      runtimeType.hashCode;
+}
+
+extension $CampagneJoinRequestExtension on CampagneJoinRequest {
+  CampagneJoinRequest copyWith(
+      {CampagneJoinRequestIdentifier? id,
+      DateTime? creationDate,
+      DateTime? lastModifiedAt,
+      UserIdentifier? userId,
+      PlayerCharacterIdentifier? playerId,
+      CampagneIdentifier? campagneId}) {
+    return CampagneJoinRequest(
+        id: id ?? this.id,
+        creationDate: creationDate ?? this.creationDate,
+        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+        userId: userId ?? this.userId,
+        playerId: playerId ?? this.playerId,
+        campagneId: campagneId ?? this.campagneId);
+  }
+
+  CampagneJoinRequest copyWithWrapped(
+      {Wrapped<CampagneJoinRequestIdentifier?>? id,
+      Wrapped<DateTime?>? creationDate,
+      Wrapped<DateTime?>? lastModifiedAt,
+      Wrapped<UserIdentifier?>? userId,
+      Wrapped<PlayerCharacterIdentifier?>? playerId,
+      Wrapped<CampagneIdentifier?>? campagneId}) {
+    return CampagneJoinRequest(
+        id: (id != null ? id.value : this.id),
+        creationDate:
+            (creationDate != null ? creationDate.value : this.creationDate),
+        lastModifiedAt: (lastModifiedAt != null
+            ? lastModifiedAt.value
+            : this.lastModifiedAt),
+        userId: (userId != null ? userId.value : this.userId),
+        playerId: (playerId != null ? playerId.value : this.playerId),
+        campagneId: (campagneId != null ? campagneId.value : this.campagneId));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class CampagneJoinRequestCreateDto {
+  const CampagneJoinRequestCreateDto({
+    required this.campagneId,
+    required this.playerCharacterId,
+  });
+
+  factory CampagneJoinRequestCreateDto.fromJson(Map<String, dynamic> json) =>
+      _$CampagneJoinRequestCreateDtoFromJson(json);
+
+  static const toJsonFactory = _$CampagneJoinRequestCreateDtoToJson;
+  Map<String, dynamic> toJson() => _$CampagneJoinRequestCreateDtoToJson(this);
+
+  @JsonKey(name: 'campagneId')
+  final String campagneId;
+  @JsonKey(name: 'playerCharacterId')
+  final String playerCharacterId;
+  static const fromJsonFactory = _$CampagneJoinRequestCreateDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is CampagneJoinRequestCreateDto &&
+            (identical(other.campagneId, campagneId) ||
+                const DeepCollectionEquality()
+                    .equals(other.campagneId, campagneId)) &&
+            (identical(other.playerCharacterId, playerCharacterId) ||
+                const DeepCollectionEquality()
+                    .equals(other.playerCharacterId, playerCharacterId)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(campagneId) ^
+      const DeepCollectionEquality().hash(playerCharacterId) ^
+      runtimeType.hashCode;
+}
+
+extension $CampagneJoinRequestCreateDtoExtension
+    on CampagneJoinRequestCreateDto {
+  CampagneJoinRequestCreateDto copyWith(
+      {String? campagneId, String? playerCharacterId}) {
+    return CampagneJoinRequestCreateDto(
+        campagneId: campagneId ?? this.campagneId,
+        playerCharacterId: playerCharacterId ?? this.playerCharacterId);
+  }
+
+  CampagneJoinRequestCreateDto copyWithWrapped(
+      {Wrapped<String>? campagneId, Wrapped<String>? playerCharacterId}) {
+    return CampagneJoinRequestCreateDto(
+        campagneId: (campagneId != null ? campagneId.value : this.campagneId),
+        playerCharacterId: (playerCharacterId != null
+            ? playerCharacterId.value
+            : this.playerCharacterId));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class CampagneJoinRequestIdentifier {
+  const CampagneJoinRequestIdentifier({
+    this.$value,
+  });
+
+  factory CampagneJoinRequestIdentifier.fromJson(Map<String, dynamic> json) =>
+      _$CampagneJoinRequestIdentifierFromJson(json);
+
+  static const toJsonFactory = _$CampagneJoinRequestIdentifierToJson;
+  Map<String, dynamic> toJson() => _$CampagneJoinRequestIdentifierToJson(this);
+
+  @JsonKey(name: 'value')
+  final String? $value;
+  static const fromJsonFactory = _$CampagneJoinRequestIdentifierFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is CampagneJoinRequestIdentifier &&
+            (identical(other.$value, $value) ||
+                const DeepCollectionEquality().equals(other.$value, $value)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+}
+
+extension $CampagneJoinRequestIdentifierExtension
+    on CampagneJoinRequestIdentifier {
+  CampagneJoinRequestIdentifier copyWith({String? $value}) {
+    return CampagneJoinRequestIdentifier($value: $value ?? this.$value);
+  }
+
+  CampagneJoinRequestIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+    return CampagneJoinRequestIdentifier(
+        $value: ($value != null ? $value.value : this.$value));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class EncryptedMessageWrapperDto {
   const EncryptedMessageWrapperDto({
     this.encryptedMessage,
@@ -435,6 +645,142 @@ extension $GoogleLoginDtoExtension on GoogleLoginDto {
             (accessToken != null ? accessToken.value : this.accessToken),
         identityToken:
             (identityToken != null ? identityToken.value : this.identityToken));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class HandleJoinRequestDto {
+  const HandleJoinRequestDto({
+    required this.campagneJoinRequestId,
+    required this.type,
+  });
+
+  factory HandleJoinRequestDto.fromJson(Map<String, dynamic> json) =>
+      _$HandleJoinRequestDtoFromJson(json);
+
+  static const toJsonFactory = _$HandleJoinRequestDtoToJson;
+  Map<String, dynamic> toJson() => _$HandleJoinRequestDtoToJson(this);
+
+  @JsonKey(name: 'campagneJoinRequestId')
+  final String campagneJoinRequestId;
+  @JsonKey(
+    name: 'type',
+    toJson: handleJoinRequestTypeToJson,
+    fromJson: handleJoinRequestTypeFromJson,
+  )
+  final enums.HandleJoinRequestType type;
+  static const fromJsonFactory = _$HandleJoinRequestDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is HandleJoinRequestDto &&
+            (identical(other.campagneJoinRequestId, campagneJoinRequestId) ||
+                const DeepCollectionEquality().equals(
+                    other.campagneJoinRequestId, campagneJoinRequestId)) &&
+            (identical(other.type, type) ||
+                const DeepCollectionEquality().equals(other.type, type)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(campagneJoinRequestId) ^
+      const DeepCollectionEquality().hash(type) ^
+      runtimeType.hashCode;
+}
+
+extension $HandleJoinRequestDtoExtension on HandleJoinRequestDto {
+  HandleJoinRequestDto copyWith(
+      {String? campagneJoinRequestId, enums.HandleJoinRequestType? type}) {
+    return HandleJoinRequestDto(
+        campagneJoinRequestId:
+            campagneJoinRequestId ?? this.campagneJoinRequestId,
+        type: type ?? this.type);
+  }
+
+  HandleJoinRequestDto copyWithWrapped(
+      {Wrapped<String>? campagneJoinRequestId,
+      Wrapped<enums.HandleJoinRequestType>? type}) {
+    return HandleJoinRequestDto(
+        campagneJoinRequestId: (campagneJoinRequestId != null
+            ? campagneJoinRequestId.value
+            : this.campagneJoinRequestId),
+        type: (type != null ? type.value : this.type));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class JoinRequestForCampagneDto {
+  const JoinRequestForCampagneDto({
+    required this.request,
+    required this.playerCharacter,
+    required this.username,
+  });
+
+  factory JoinRequestForCampagneDto.fromJson(Map<String, dynamic> json) =>
+      _$JoinRequestForCampagneDtoFromJson(json);
+
+  static const toJsonFactory = _$JoinRequestForCampagneDtoToJson;
+  Map<String, dynamic> toJson() => _$JoinRequestForCampagneDtoToJson(this);
+
+  @JsonKey(name: 'request')
+  final CampagneJoinRequest request;
+  @JsonKey(name: 'playerCharacter')
+  final PlayerCharacter playerCharacter;
+  @JsonKey(name: 'username')
+  final String username;
+  static const fromJsonFactory = _$JoinRequestForCampagneDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is JoinRequestForCampagneDto &&
+            (identical(other.request, request) ||
+                const DeepCollectionEquality()
+                    .equals(other.request, request)) &&
+            (identical(other.playerCharacter, playerCharacter) ||
+                const DeepCollectionEquality()
+                    .equals(other.playerCharacter, playerCharacter)) &&
+            (identical(other.username, username) ||
+                const DeepCollectionEquality()
+                    .equals(other.username, username)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(request) ^
+      const DeepCollectionEquality().hash(playerCharacter) ^
+      const DeepCollectionEquality().hash(username) ^
+      runtimeType.hashCode;
+}
+
+extension $JoinRequestForCampagneDtoExtension on JoinRequestForCampagneDto {
+  JoinRequestForCampagneDto copyWith(
+      {CampagneJoinRequest? request,
+      PlayerCharacter? playerCharacter,
+      String? username}) {
+    return JoinRequestForCampagneDto(
+        request: request ?? this.request,
+        playerCharacter: playerCharacter ?? this.playerCharacter,
+        username: username ?? this.username);
+  }
+
+  JoinRequestForCampagneDto copyWithWrapped(
+      {Wrapped<CampagneJoinRequest>? request,
+      Wrapped<PlayerCharacter>? playerCharacter,
+      Wrapped<String>? username}) {
+    return JoinRequestForCampagneDto(
+        request: (request != null ? request.value : this.request),
+        playerCharacter: (playerCharacter != null
+            ? playerCharacter.value
+            : this.playerCharacter),
+        username: (username != null ? username.value : this.username));
   }
 }
 
@@ -1152,6 +1498,80 @@ extension $UserIdentifierExtension on UserIdentifier {
     return UserIdentifier(
         $value: ($value != null ? $value.value : this.$value));
   }
+}
+
+String? handleJoinRequestTypeNullableToJson(
+    enums.HandleJoinRequestType? handleJoinRequestType) {
+  return handleJoinRequestType?.value;
+}
+
+String? handleJoinRequestTypeToJson(
+    enums.HandleJoinRequestType handleJoinRequestType) {
+  return handleJoinRequestType.value;
+}
+
+enums.HandleJoinRequestType handleJoinRequestTypeFromJson(
+  Object? handleJoinRequestType, [
+  enums.HandleJoinRequestType? defaultValue,
+]) {
+  return enums.HandleJoinRequestType.values.firstWhereOrNull((e) =>
+          e.value.toString().toLowerCase() ==
+          handleJoinRequestType?.toString().toLowerCase()) ??
+      defaultValue ??
+      enums.HandleJoinRequestType.swaggerGeneratedUnknown;
+}
+
+enums.HandleJoinRequestType? handleJoinRequestTypeNullableFromJson(
+  Object? handleJoinRequestType, [
+  enums.HandleJoinRequestType? defaultValue,
+]) {
+  if (handleJoinRequestType == null) {
+    return null;
+  }
+  return enums.HandleJoinRequestType.values.firstWhereOrNull((e) =>
+          e.value.toString().toLowerCase() ==
+          handleJoinRequestType.toString().toLowerCase()) ??
+      defaultValue;
+}
+
+String handleJoinRequestTypeExplodedListToJson(
+    List<enums.HandleJoinRequestType>? handleJoinRequestType) {
+  return handleJoinRequestType?.map((e) => e.value!).join(',') ?? '';
+}
+
+List<String> handleJoinRequestTypeListToJson(
+    List<enums.HandleJoinRequestType>? handleJoinRequestType) {
+  if (handleJoinRequestType == null) {
+    return [];
+  }
+
+  return handleJoinRequestType.map((e) => e.value!).toList();
+}
+
+List<enums.HandleJoinRequestType> handleJoinRequestTypeListFromJson(
+  List? handleJoinRequestType, [
+  List<enums.HandleJoinRequestType>? defaultValue,
+]) {
+  if (handleJoinRequestType == null) {
+    return defaultValue ?? [];
+  }
+
+  return handleJoinRequestType
+      .map((e) => handleJoinRequestTypeFromJson(e.toString()))
+      .toList();
+}
+
+List<enums.HandleJoinRequestType>? handleJoinRequestTypeNullableListFromJson(
+  List? handleJoinRequestType, [
+  List<enums.HandleJoinRequestType>? defaultValue,
+]) {
+  if (handleJoinRequestType == null) {
+    return defaultValue;
+  }
+
+  return handleJoinRequestType
+      .map((e) => handleJoinRequestTypeFromJson(e.toString()))
+      .toList();
 }
 
 // ignore: unused_element

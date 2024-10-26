@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 
 namespace RPGTableHelper.WebApi;
@@ -50,56 +51,140 @@ public class RpgServerSignalRHub : Hub
     /// <summary>
     /// Test method for testing connections
     /// </summary>
-    public async Task Echo(string text)
+    public Task Echo(string text)
     {
-        await Clients.Caller.SendAsync("Echo", text, (CancellationToken)default);
+        return Clients.Caller.SendAsync("Echo", text, (CancellationToken)default);
     }
 
     /// <summary>
     /// Player Method to join a game
     /// </summary>
-    public async Task JoinGame(string playerName, string gameCode)
+    public async Task JoinGame(string playercharacterid)
     {
-        // TODO update me for new flow
+        // TODO make a RequestJoinGame method...
+        var playerCharacter = await new PlayerCharacterQuery
+        {
+            ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (
+            playerCharacter.IsNone
+            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
+            || playerCharacter.Get().CampagneId == null
+        )
+        {
+            return;
+        }
+
+        var campagneOfCharacter = await new CampagneQuery { ModelId = playerCharacter.Get().CampagneId! }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagneOfCharacter.IsNone)
+        {
+            return;
+        }
+
         Console.WriteLine(
-            "A player with the name " + playerName + " would like to join the game with code " + gameCode
+            "A player with the name "
+                + playerCharacter.Get().CharacterName
+                + " would like to join the game with code "
+                + campagneOfCharacter.Get().JoinCode
         );
 
         // ask DM for joining permissions:
-        await Clients
-            .Group(gameCode + "_Dms")
-            .SendAsync("requestJoinPermission", playerName, gameCode, Context.ConnectionId, (CancellationToken)default);
+        await Groups.AddToGroupAsync(
+            Context.ConnectionId,
+            campagneOfCharacter.Get().Id.Value + "_All",
+            (CancellationToken)default
+        );
+        await Clients.Caller.SendAsync("joinRequestAccepted", (CancellationToken)default);
+
+        if (campagneOfCharacter.Get().RpgConfiguration != null)
+        {
+            await Clients.Caller.SendAsync(
+                "updateRpgConfig",
+                campagneOfCharacter.Get().RpgConfiguration,
+                (CancellationToken)default
+            );
+        }
     }
 
     /// <summary>
     /// When a player updated their config (e.g. got an item, changed their HP etc.),
     /// this method sends this updated config to the dm.
     /// </summary>
-    /// <param name="gameCode">the game code of the session</param>
+    /// <param name="playercharacterid">the playercharacterid of the session</param>
     /// <param name="characterConfig">JSON string</param>
-    public async Task SendUpdatedRpgCharacterConfigToDm(string gameCode, string characterConfig)
+    public async Task SendUpdatedRpgCharacterConfigToDm(string playercharacterid, string characterConfig)
     {
-        // TODO update me for new flow
-        Console.WriteLine("A player updated their character for code " + gameCode);
+        var playerCharacter = await new PlayerCharacterQuery
+        {
+            ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (
+            playerCharacter.IsNone
+            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
+            || playerCharacter.Get().CampagneId == null
+        )
+        {
+            return;
+        }
+
+        var campagneOfCharacter = await new CampagneQuery { ModelId = playerCharacter.Get().CampagneId! }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagneOfCharacter.IsNone)
+        {
+            return;
+        }
+
+        var updatedPlayerCharacter = playerCharacter.Get();
+        updatedPlayerCharacter.RpgCharacterConfiguration = characterConfig;
+        var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updatedPlayerCharacter }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+        if (updateResult.IsNone)
+        {
+            return;
+        }
+
+        Console.WriteLine("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
         // ask DM for joining permissions:
         await Clients
-            .Group(gameCode + "_Dms")
+            .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
             .SendAsync("updateRpgCharacterConfigOnDmSide", characterConfig, (CancellationToken)default);
     }
 
     /// <summary>
     /// Grants a list of items to players.
     /// </summary>
-    /// <param name="gameCode">the game code of the session</param>
+    /// <param name="campagneId">the campagneId of the session</param>
     /// <param name="json">The json encoded grant for dart type "List of GrantedItemsForPlayer"</param>
-    public async Task SendGrantedItemsToPlayers(string gameCode, string json)
+    public async Task SendGrantedItemsToPlayers(string campagneId, string json)
     {
-        // TODO update me for new flow
-        Console.WriteLine("A dm granted items to their players for code " + gameCode);
+        // ensure that user is dm for campagne
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
 
         // ask DM for joining permissions:
-        await Clients.Group(gameCode + "_All").SendAsync("grantPlayerItems", json, (CancellationToken)default);
+        await Clients
+            .OthersInGroup(campagneId + "_All")
+            .SendAsync("grantPlayerItems", json, (CancellationToken)default);
     }
 
     /// <summary>
@@ -120,17 +205,36 @@ public class RpgServerSignalRHub : Hub
     /// <summary>
     /// Dm Method for updating all rpg configs
     /// </summary>
-    public async Task SendUpdatedRpgConfig(string gameCode, string rpgConfig)
+    public async Task SendUpdatedRpgConfig(string campagneId, string rpgConfig)
     {
-        // TODO update me for new flow
-        Console.WriteLine($"The DM sent an updated RPG config for game {gameCode}");
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        var updateCampagne = campagne.Get();
+        updateCampagne.RpgConfiguration = rpgConfig;
+
+        var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (updateResult.IsNone)
+        {
+            return;
+        }
 
         await Clients
-            .OthersInGroup(gameCode + "_All")
+            .OthersInGroup(campagneId + "_All")
             .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
 
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
-        string fileName = $"{timestamp}-rpgbackup.json";
+        string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";
         string currentDirectory = Directory.GetCurrentDirectory();
         string filePath = Path.Combine(currentDirectory, fileName);
         try
@@ -169,27 +273,5 @@ public class RpgServerSignalRHub : Hub
         Console.WriteLine("Disconnected: Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
 
         return base.OnDisconnectedAsync(exception);
-    }
-
-    /// <summary>
-    /// Generates a random string with pattern 000-000
-    /// </summary>
-    /// <returns>string</returns>
-    private static string GenerateRefreshToken()
-    {
-        // Create a buffer to hold random bytes
-        byte[] randomBytes = new byte[4]; // We need 2 random numbers, each fitting in an int (which is 4 bytes)
-
-        // Generate the random bytes using RandomNumberGenerator
-        RandomNumberGenerator.Fill(randomBytes);
-
-        // Convert the first two bytes into a number between 0 and 999
-        int firstPart = BitConverter.ToUInt16(randomBytes, 0) % 1000;
-
-        // Convert the next two bytes into a number between 0 and 999
-        int secondPart = BitConverter.ToUInt16(randomBytes, 2) % 1000;
-
-        // Format the numbers to ensure they are 3 digits, padded with zeros if necessary
-        return $"{firstPart:000}-{secondPart:000}";
     }
 }

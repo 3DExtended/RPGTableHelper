@@ -13,6 +13,8 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart' show MultipartFile;
 import 'package:chopper/chopper.dart' as chopper;
+import 'swagger.enums.swagger.dart' as enums;
+export 'swagger.enums.swagger.dart';
 export 'swagger.models.swagger.dart';
 
 part 'swagger.swagger.chopper.dart';
@@ -89,6 +91,58 @@ abstract class Swagger extends ChopperService {
   @Get(path: '/Campagne/getcampagne/{campagneid}')
   Future<chopper.Response<Campagne>> _campagneGetcampagneCampagneidGet(
       {@Path('campagneid') required String? campagneid});
+
+  ///Creates a new campagneJoinRequest with the calling user as dm.
+  Future<chopper.Response<CampagneJoinRequestIdentifier>>
+      campagneJoinRequestCreatecampagneJoinRequestPost(
+          {required CampagneJoinRequestCreateDto? body}) {
+    generatedMapping.putIfAbsent(CampagneJoinRequestIdentifier,
+        () => CampagneJoinRequestIdentifier.fromJsonFactory);
+
+    return _campagneJoinRequestCreatecampagneJoinRequestPost(body: body);
+  }
+
+  ///Creates a new campagneJoinRequest with the calling user as dm.
+  @Post(
+    path: '/CampagneJoinRequest/createcampagneJoinRequest',
+    optionalBody: true,
+  )
+  Future<chopper.Response<CampagneJoinRequestIdentifier>>
+      _campagneJoinRequestCreatecampagneJoinRequestPost(
+          {@Body() required CampagneJoinRequestCreateDto? body});
+
+  ///Accepts or denies a campagneJoinRequest with the calling user as dm.
+  Future<chopper.Response> campagneJoinRequestHandlejoinrequestPost(
+      {required HandleJoinRequestDto? body}) {
+    return _campagneJoinRequestHandlejoinrequestPost(body: body);
+  }
+
+  ///Accepts or denies a campagneJoinRequest with the calling user as dm.
+  @Post(
+    path: '/CampagneJoinRequest/handlejoinrequest',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _campagneJoinRequestHandlejoinrequestPost(
+      {@Body() required HandleJoinRequestDto? body});
+
+  ///Returns a list of campagneJoinRequests for a campagne this user is the dm of.
+  ///@param campagneId campagneId
+  Future<chopper.Response<List<JoinRequestForCampagneDto>>>
+      campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
+          {required String? campagneId}) {
+    generatedMapping.putIfAbsent(JoinRequestForCampagneDto,
+        () => JoinRequestForCampagneDto.fromJsonFactory);
+
+    return _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
+        campagneId: campagneId);
+  }
+
+  ///Returns a list of campagneJoinRequests for a campagne this user is the dm of.
+  ///@param campagneId campagneId
+  @Get(path: '/CampagneJoinRequest/getcampagneJoinRequests/{campagneId}')
+  Future<chopper.Response<List<JoinRequestForCampagneDto>>>
+      _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
+          {@Path('campagneId') required String? campagneId});
 
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>

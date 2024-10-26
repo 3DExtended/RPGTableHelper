@@ -9,11 +9,8 @@ import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
 
 import '../../../helpers/modal_helpers.dart';
 
@@ -286,45 +283,46 @@ class _ChoosePlayerOrDmModalContentState
                       const SizedBox(
                         height: 10,
                       ),
-                      Center(
-                        child: CustomButton(
-                          label: "Session beitreten", // TODO localize
-                          onPressed: isJoinSessionButtonDisabled
-                              ? null
-                              : () async {
-                                  ref
-                                      .read(connectionDetailsProvider.notifier)
-                                      .updateConfiguration(ref
-                                          .read(connectionDetailsProvider)
-                                          .requireValue
-                                          .copyWith(
-                                              sessionConnectionNumberForPlayers:
-                                                  sessionCodeController.text));
+                      // Center(
+                      //   child: CustomButton(
+                      //     label: "Session beitreten", // TODO localize
+                      //     onPressed: isJoinSessionButtonDisabled
+                      //         ? null
+                      //         : () async {
+                      //             ref
+                      //                 .read(connectionDetailsProvider.notifier)
+                      //                 .updateConfiguration(ref
+                      //                     .read(connectionDetailsProvider)
+                      //                     .requireValue
+                      //                     .copyWith(
+                      //                         sessionConnectionNumberForPlayers:
+                      //                             sessionCodeController.text));
+//
+                      //             var currentPlayerModel = ref
+                      //                 .read(rpgCharacterConfigurationProvider)
+                      //                 .requireValue;
+//
+                      //             ref
+                      //                 .read(rpgCharacterConfigurationProvider
+                      //                     .notifier)
+                      //                 .updateConfiguration(
+                      //                     currentPlayerModel.copyWith(
+                      //                         characterName:
+                      //                             playerNameController.text));
+//
+                      //             // add register game button
+                      //             final com = DependencyProvider.of(context)
+                      //                 .getService<IServerMethodsService>();
+                      //             await com.joinGameSession(
+                      //                 gameCode: sessionCodeController.text,
+                      //                 playerCharacterId: playerNameController.text);
+                      //             if (!context.mounted) return;
+                      //             // TODO show loading spinner?
+                      //             Navigator.of(context).pop();
+                      //           },
+                      //   ),
+                      // ),
 
-                                  var currentPlayerModel = ref
-                                      .read(rpgCharacterConfigurationProvider)
-                                      .requireValue;
-
-                                  ref
-                                      .read(rpgCharacterConfigurationProvider
-                                          .notifier)
-                                      .updateConfiguration(
-                                          currentPlayerModel.copyWith(
-                                              characterName:
-                                                  playerNameController.text));
-
-                                  // add register game button
-                                  final com = DependencyProvider.of(context)
-                                      .getService<IServerMethodsService>();
-                                  await com.joinGameSession(
-                                      gameCode: sessionCodeController.text,
-                                      playerName: playerNameController.text);
-                                  if (!context.mounted) return;
-                                  // TODO show loading spinner?
-                                  Navigator.of(context).pop();
-                                },
-                        ),
-                      ),
                       const SizedBox(
                         height: 10,
                       ),

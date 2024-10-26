@@ -55,6 +55,52 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<CampagneJoinRequestIdentifier>>
+      _campagneJoinRequestCreatecampagneJoinRequestPost(
+          {required CampagneJoinRequestCreateDto? body}) {
+    final Uri $url =
+        Uri.parse('/CampagneJoinRequest/createcampagneJoinRequest');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<CampagneJoinRequestIdentifier,
+        CampagneJoinRequestIdentifier>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _campagneJoinRequestHandlejoinrequestPost(
+      {required HandleJoinRequestDto? body}) {
+    final Uri $url = Uri.parse('/CampagneJoinRequest/handlejoinrequest');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<List<JoinRequestForCampagneDto>>>
+      _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
+          {required String? campagneId}) {
+    final Uri $url =
+        Uri.parse('/CampagneJoinRequest/getcampagneJoinRequests/${campagneId}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<JoinRequestForCampagneDto>,
+        JoinRequestForCampagneDto>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {

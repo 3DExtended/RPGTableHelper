@@ -259,6 +259,267 @@
         }
       }
     },
+    "/CampagneJoinRequest/createcampagneJoinRequest": {
+      "post": {
+        "tags": [
+          "CampagneJoinRequest"
+        ],
+        "summary": "Creates a new campagneJoinRequest with the calling user as dm.",
+        "requestBody": {
+          "description": "The creation details",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneJoinRequestCreateDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneJoinRequestCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneJoinRequestCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampagneJoinRequestCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the newly created campagneJoinRequest",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampagneJoinRequestIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampagneJoinRequestIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampagneJoinRequestIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the data provided is invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/CampagneJoinRequest/handlejoinrequest": {
+      "post": {
+        "tags": [
+          "CampagneJoinRequest"
+        ],
+        "summary": "Accepts or denies a campagneJoinRequest with the calling user as dm.",
+        "requestBody": {
+          "description": "The handle details",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleJoinRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleJoinRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleJoinRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleJoinRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the newly created campagneJoinRequest"
+          },
+          "400": {
+            "description": "If the data provided is invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/CampagneJoinRequest/getcampagneJoinRequests/{campagneId}": {
+      "get": {
+        "tags": [
+          "CampagneJoinRequest"
+        ],
+        "summary": "Returns a list of campagneJoinRequests for a campagne this user is the dm of.",
+        "parameters": [{
+          "name": "campagneId",
+          "in": "path",
+          "description": "campagneId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "A list of all campagneJoinRequests for this user as dm",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JoinRequestForCampagneDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JoinRequestForCampagneDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JoinRequestForCampagneDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the campagneJoinRequests",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/PlayerCharacter/createcharacter": {
       "post": {
         "tags": [
@@ -1447,6 +1708,60 @@
         },
         "additionalProperties": false
       },
+      "CampagneJoinRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CampagneJoinRequestIdentifier"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "$ref": "#/components/schemas/UserIdentifier"
+          },
+          "playerId": {
+            "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+          },
+          "campagneId": {
+            "$ref": "#/components/schemas/CampagneIdentifier"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CampagneJoinRequestCreateDto": {
+        "required": [
+          "campagneId",
+          "playerCharacterId"
+        ],
+        "type": "object",
+        "properties": {
+          "campagneId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "playerCharacterId": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CampagneJoinRequestIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "EncryptedMessageWrapperDto": {
         "type": "object",
         "properties": {
@@ -1488,6 +1803,51 @@
         },
         "additionalProperties": false,
         "description": "Data Transfer Object for Google login information."
+      },
+      "HandleJoinRequestDto": {
+        "required": [
+          "campagneJoinRequestId",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "campagneJoinRequestId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/HandleJoinRequestType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HandleJoinRequestType": {
+        "enum": [
+          "Accept",
+          "Deny"
+        ],
+        "type": "string"
+      },
+      "JoinRequestForCampagneDto": {
+        "required": [
+          "playerCharacter",
+          "request",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/CampagneJoinRequest"
+          },
+          "playerCharacter": {
+            "$ref": "#/components/schemas/PlayerCharacter"
+          },
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       },
       "LoginWithUsernameAndPasswordDto": {
         "required": [

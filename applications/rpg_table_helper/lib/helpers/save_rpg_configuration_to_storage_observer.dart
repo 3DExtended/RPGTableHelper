@@ -48,14 +48,14 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
 
         if (connectionDetails != null &&
             connectionDetails.isConnected &&
-            connectionDetails.isDm) {
+            connectionDetails.isDm &&
+            connectionDetails.campagneId != null) {
           // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
           DependencyProvider.getIt!
               .get<IServerMethodsService>()
               .sendUpdatedRpgConfig(
                   rpgConfig: newValue.requireValue,
-                  gameCode:
-                      connectionDetails.sessionConnectionNumberForPlayers!);
+                  campagneId: connectionDetails.campagneId!);
         }
       }
     }

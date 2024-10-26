@@ -68,6 +68,68 @@ Map<String, dynamic> _$CampagneIdentifierToJson(CampagneIdentifier instance) =>
       'value': instance.$value,
     };
 
+CampagneJoinRequest _$CampagneJoinRequestFromJson(Map<String, dynamic> json) =>
+    CampagneJoinRequest(
+      id: json['id'] == null
+          ? null
+          : CampagneJoinRequestIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+      userId: json['userId'] == null
+          ? null
+          : UserIdentifier.fromJson(json['userId'] as Map<String, dynamic>),
+      playerId: json['playerId'] == null
+          ? null
+          : PlayerCharacterIdentifier.fromJson(
+              json['playerId'] as Map<String, dynamic>),
+      campagneId: json['campagneId'] == null
+          ? null
+          : CampagneIdentifier.fromJson(
+              json['campagneId'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$CampagneJoinRequestToJson(
+        CampagneJoinRequest instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'userId': instance.userId?.toJson(),
+      'playerId': instance.playerId?.toJson(),
+      'campagneId': instance.campagneId?.toJson(),
+    };
+
+CampagneJoinRequestCreateDto _$CampagneJoinRequestCreateDtoFromJson(
+        Map<String, dynamic> json) =>
+    CampagneJoinRequestCreateDto(
+      campagneId: json['campagneId'] as String,
+      playerCharacterId: json['playerCharacterId'] as String,
+    );
+
+Map<String, dynamic> _$CampagneJoinRequestCreateDtoToJson(
+        CampagneJoinRequestCreateDto instance) =>
+    <String, dynamic>{
+      'campagneId': instance.campagneId,
+      'playerCharacterId': instance.playerCharacterId,
+    };
+
+CampagneJoinRequestIdentifier _$CampagneJoinRequestIdentifierFromJson(
+        Map<String, dynamic> json) =>
+    CampagneJoinRequestIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$CampagneJoinRequestIdentifierToJson(
+        CampagneJoinRequestIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
+    };
+
 EncryptedMessageWrapperDto _$EncryptedMessageWrapperDtoFromJson(
         Map<String, dynamic> json) =>
     EncryptedMessageWrapperDto(
@@ -102,6 +164,38 @@ Map<String, dynamic> _$GoogleLoginDtoToJson(GoogleLoginDto instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
       'identityToken': instance.identityToken,
+    };
+
+HandleJoinRequestDto _$HandleJoinRequestDtoFromJson(
+        Map<String, dynamic> json) =>
+    HandleJoinRequestDto(
+      campagneJoinRequestId: json['campagneJoinRequestId'] as String,
+      type: handleJoinRequestTypeFromJson(json['type']),
+    );
+
+Map<String, dynamic> _$HandleJoinRequestDtoToJson(
+        HandleJoinRequestDto instance) =>
+    <String, dynamic>{
+      'campagneJoinRequestId': instance.campagneJoinRequestId,
+      'type': handleJoinRequestTypeToJson(instance.type),
+    };
+
+JoinRequestForCampagneDto _$JoinRequestForCampagneDtoFromJson(
+        Map<String, dynamic> json) =>
+    JoinRequestForCampagneDto(
+      request:
+          CampagneJoinRequest.fromJson(json['request'] as Map<String, dynamic>),
+      playerCharacter: PlayerCharacter.fromJson(
+          json['playerCharacter'] as Map<String, dynamic>),
+      username: json['username'] as String,
+    );
+
+Map<String, dynamic> _$JoinRequestForCampagneDtoToJson(
+        JoinRequestForCampagneDto instance) =>
+    <String, dynamic>{
+      'request': instance.request.toJson(),
+      'playerCharacter': instance.playerCharacter.toJson(),
+      'username': instance.username,
     };
 
 LoginWithUsernameAndPasswordDto _$LoginWithUsernameAndPasswordDtoFromJson(

@@ -7,25 +7,26 @@ using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.CampagneJoinRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 
-namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.Campagnes
+namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.CampagneJoinRequests
 {
-    public class CampagneQueryHandler
+    public class CampagneJoinRequestQueryHandler
         : SingleModelQueryHandlerBase<
-            CampagneQuery,
-            Campagne,
-            Campagne.CampagneIdentifier,
+            CampagneJoinRequestQuery,
+            CampagneJoinRequest,
+            CampagneJoinRequest.CampagneJoinRequestIdentifier,
             Guid,
             RpgDbContext,
-            CampagneEntity
+            CampagneJoinRequestEntity
         >
     {
-        public CampagneQueryHandler(IMapper mapper, IDbContextFactory<RpgDbContext> contextFactory)
+        public CampagneJoinRequestQueryHandler(IMapper mapper, IDbContextFactory<RpgDbContext> contextFactory)
             : base(mapper, contextFactory) { }
     }
 }

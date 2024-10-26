@@ -63,8 +63,9 @@ class ServerCommunicationService extends IServerCommunicationService {
                 ) ??
             ConnectionDetails.defaultValue());
 
+    // NOTE: Headers are not working in this current signal r version...
     final defaultHeaders = MessageHeaders();
-    defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
+    // defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
     // defaultHeaders.setHeaderValue("HEADER_MOCK_2", "HEADER_VALUE_2");
 
     final httpConnectionOptions = HttpConnectionOptions(
