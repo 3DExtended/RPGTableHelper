@@ -64,12 +64,13 @@ class ServerCommunicationService extends IServerCommunicationService {
             ConnectionDetails.defaultValue());
 
     final defaultHeaders = MessageHeaders();
-    // defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
+    defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
     // defaultHeaders.setHeaderValue("HEADER_MOCK_2", "HEADER_VALUE_2");
 
     final httpConnectionOptions = HttpConnectionOptions(
       httpClient: WebSupportingHttpClient(null,
           httpClientCreateCallback: httpClientCreateCallback),
+      // transport: HttpTransportType.ServerSentEvents,
       accessTokenFactory: () async {
         var apiConnectorService = this.apiConnectorService;
         var jwt = await apiConnectorService.getJwt();

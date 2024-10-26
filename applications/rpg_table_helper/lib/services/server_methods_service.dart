@@ -61,7 +61,7 @@ abstract class IServerMethodsService {
   void grantPlayerItems(String grantedItemsJson);
 
   // this should contain every method that call the server
-  Future registerGame({required String campagneName});
+  Future registerGame({required String campagneId});
   Future joinGameSession(
       {required String playerName, required String gameCode});
   Future acceptJoinRequest(
@@ -87,9 +87,9 @@ class ServerMethodsService extends IServerMethodsService {
       : super(isMock: false);
 
   @override
-  Future registerGame({required String campagneName}) async {
+  Future registerGame({required String campagneId}) async {
     await serverCommunicationService
-        .executeServerFunction("RegisterGame", args: [campagneName]);
+        .executeServerFunction("RegisterGame", args: [campagneId]);
   }
 
   @override

@@ -23,6 +23,7 @@ import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_co
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
@@ -296,10 +297,18 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                             RpgConfigurationModel.getBaseConfiguration());
                   }
 
+                  // start SignalR connection
                   var serverCommunicationService =
                       DependencyProvider.of(context)
                           .getService<IServerCommunicationService>();
                   await serverCommunicationService.startConnection();
+                  if (!mounted) return;
+
+                  // register game in signalr
+                  final com = DependencyProvider.of(context)
+                      .getService<IServerMethodsService>();
+                  await com.registerGame(campagneId: campagne.id!.$value!);
+                  if (!mounted) return;
 
                   // navigate to main game screen (auth screen wrapper)
                   navigatorKey.currentState!.pushNamedAndRemoveUntil(

@@ -215,21 +215,21 @@ class _ChoosePlayerOrDmModalContentState
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CustomButton(
-                              label: "Session beginnen", // TODO localize
-                              onPressed: isStartSessionButtonDisabled
-                                  ? null
-                                  : () async {
-                                      // add register game button
-                                      final com = DependencyProvider.of(context)
-                                          .getService<IServerMethodsService>();
-                                      await com.registerGame(
-                                          campagneName:
-                                              dmCampagneNameController.text);
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop();
-                                    },
-                            ),
+                            // CustomButton(
+                            //   label: "Session beginnen", // TODO localize
+                            //   onPressed: isStartSessionButtonDisabled
+                            //       ? null
+                            //       : () async {
+                            //           // add register game button
+                            //           final com = DependencyProvider.of(context)
+                            //               .getService<IServerMethodsService>();
+                            //           await com.registerGame(
+                            //               campagneId:
+                            //                   dmCampagneNameController.text);
+                            //           if (!context.mounted) return;
+                            //           Navigator.of(context).pop();
+                            //         },
+                            // ),
                             SizedBox(
                               width: DependencyProvider.of(context).isMocked
                                   ? 10

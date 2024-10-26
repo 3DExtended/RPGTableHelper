@@ -265,7 +265,7 @@ public class Startup
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<RpgServerHub>("/Chat", (options) => { });
+            endpoints.MapHub<RpgServerSignalRHub>("/Chat", (options) => { });
             endpoints.MapControllers();
         });
     }

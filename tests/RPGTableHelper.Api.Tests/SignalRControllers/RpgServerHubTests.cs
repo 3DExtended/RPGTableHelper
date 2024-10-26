@@ -51,7 +51,7 @@ public class PublicControllerTests : ControllerTestBase
         var message = "Ich komme aus dem Test";
 
         // act
-        await connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
+        await connection.InvokeAsync(nameof(RpgServerSignalRHub.Echo), message, CancellationToken.None);
 
         // wait so that server can invoke "Echo" on this connection
         await Task.Delay(1000);
@@ -95,7 +95,7 @@ public class PublicControllerTests : ControllerTestBase
         await Task.Delay(1000);
 
         // act
-        var task = () => connection.InvokeAsync(nameof(RpgServerHub.Echo), message, CancellationToken.None);
+        var task = () => connection.InvokeAsync(nameof(RpgServerSignalRHub.Echo), message, CancellationToken.None);
 
         // assert
         await task.Should().ThrowAsync<InvalidOperationException>();
