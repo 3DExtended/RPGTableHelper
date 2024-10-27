@@ -328,10 +328,6 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
       ? MaterialLocalizations.of(context).modalBarrierDismissLabel
       : '';
 
-  // var nav = DependencyProvider.of(context)
-  //     .getService<INavigationService>()
-  //     .getNavigationKeys()[TabItem.search]!.currentState!; // TODO this was TabItem.base...
-  // var nav = Navigator.of(context);
   var nav = overrideNavigatorKey?.currentState ?? navigatorKey.currentState!;
 
   final result = await nav.push(

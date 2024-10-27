@@ -6,13 +6,6 @@ namespace RPGTableHelper.WebApi;
 
 public class ChatHub : Hub
 {
-    // public void Send(string name, string message)
-    // {
-    //     Console.WriteLine("name: " + name + ", message: " + message);
-    //     // Call the "OnMessage" method to update clients.
-    //     Clients.All.SendAsync("OnMessage", name, message);
-    // }
-
     /// <summary>
     /// DM Method for starting a session
     /// </summary>
@@ -64,6 +57,12 @@ public class ChatHub : Hub
             );
     }
 
+    /// <summary>
+    /// When a player updated their config (e.g. got an item, changed their HP etc.),
+    /// this method sends this updated config to the dm.
+    /// </summary>
+    /// <param name="gameCode">the game code of the session</param>
+    /// <param name="characterConfig">JSON string</param>
     public async Task SendUpdatedRpgCharacterConfigToDm(string gameCode, string characterConfig)
     {
         Console.WriteLine("A player updated their character for code " + gameCode);
@@ -78,6 +77,11 @@ public class ChatHub : Hub
             );
     }
 
+    /// <summary>
+    /// Grants a list of items to players.
+    /// </summary>
+    /// <param name="gameCode">the game code of the session</param>
+    /// <param name="json">The json encoded grant for dart type "List<GrantedItemsForPlayer>"</param>
     public async Task SendGrantedItemsToPlayers(string gameCode, string json)
     {
         Console.WriteLine("A dm granted items to their players for code " + gameCode);
@@ -159,6 +163,10 @@ public class ChatHub : Hub
         return base.OnDisconnectedAsync(exception);
     }
 
+    /// <summary>
+    /// Generates a random string with pattern 000-000
+    /// </summary>
+    /// <returns>string</returns>
     private static string GenerateRefreshToken()
     {
         // Create a buffer to hold random bytes

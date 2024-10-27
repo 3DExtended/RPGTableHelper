@@ -36,9 +36,9 @@ class RpgConfigurationModel {
         currencyDefinition: CurrencyDefinition(
           currencyTypes: [
             CurrencyType(name: "Kupfer", multipleOfPreviousValue: null),
-            CurrencyType(name: "Silber", multipleOfPreviousValue: 10),
-            CurrencyType(name: "Gold", multipleOfPreviousValue: 10),
-            CurrencyType(name: "Platin", multipleOfPreviousValue: 10),
+            CurrencyType(name: "Silber", multipleOfPreviousValue: 100),
+            CurrencyType(name: "Gold", multipleOfPreviousValue: 100),
+            CurrencyType(name: "Platin", multipleOfPreviousValue: 100),
           ],
         ),
         placesOfFindings: [
@@ -225,6 +225,37 @@ class RpgConfigurationModel {
             createdItem: CraftingRecipeIngredientPair(
               itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
               amountOfUsedItem: 1,
+            ),
+          ),
+          CraftingRecipe(
+            recipeUuid: "7790055d-7421-4608-a824-59d3b1a12d0f",
+            ingredients: [
+              CraftingRecipeIngredientPair(
+                  itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
+                  amountOfUsedItem: 4),
+              CraftingRecipeIngredientPair(
+                  itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
+                  amountOfUsedItem: 2),
+            ],
+            requiredItemIds: [
+              "dc497952-1989-40d1-9d50-a5b4e53dd1be",
+            ],
+            createdItem: CraftingRecipeIngredientPair(
+              itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
+              amountOfUsedItem: 2,
+            ),
+          ),
+          CraftingRecipe(
+            recipeUuid: "b8a86775-8680-47a5-b55c-cd2287d3584e",
+            ingredients: [
+              CraftingRecipeIngredientPair(
+                  itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
+                  amountOfUsedItem: 65),
+            ],
+            requiredItemIds: [],
+            createdItem: CraftingRecipeIngredientPair(
+              itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
+              amountOfUsedItem: 2,
             ),
           )
         ],

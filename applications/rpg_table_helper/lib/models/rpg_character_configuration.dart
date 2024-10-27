@@ -30,10 +30,15 @@ class RpgCharacterConfiguration {
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
         uuid: const UuidV7().generate(),
-        characterName: "",
+        characterName: "Gandalf",
         characterStats: [],
-        inventory: [],
-        moneyInBaseType: 0,
+        inventory: [
+          RpgCharacterOwnedItemPair(
+              itemUuid: "a7537746-260d-4aed-b182-26768a9c2d51", amount: 2),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7", amount: 1)
+        ],
+        moneyInBaseType: 23456,
       );
 }
 

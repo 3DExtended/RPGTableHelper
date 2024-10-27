@@ -2,7 +2,7 @@ name: rpg_table_helper
 description: "A tablet app helping with your favorite RPG table top games!"
 publish_to: 'none'
 
-version: 0.1.0+53
+version: 0.2.0+59
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -39,6 +39,8 @@ dev_dependencies:
   json_serializable: ^6.8.0
   build_runner: ^2.3.3
   copy_with_extension_gen: ^5.0.4
+  flutter_launcher_icons: "^0.14.1"
+
 
 
 
@@ -61,3 +63,9 @@ fonts:
 
 flutter_intl:
   enabled: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/icon.jpg"
+  min_sdk_android: 21 # android min sdk min:16, default 21

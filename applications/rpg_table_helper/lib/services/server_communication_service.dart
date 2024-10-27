@@ -41,11 +41,6 @@ abstract class IServerCommunicationService {
   Future executeServerFunction(String functionName, {List<Object>? args});
 }
 
-////
-////
-//// WILO: I need to write a riverpod provider for keeping track of the connection details of this service and use this service somewhere to run the constructor...
-////
-////
 class ServerCommunicationService extends IServerCommunicationService {
   bool connectionIsOpen = false;
   late HubConnection? hubConnection;
@@ -199,7 +194,9 @@ class ServerCommunicationService extends IServerCommunicationService {
                     isConnecting: false,
                   ) ??
               ConnectionDetails.defaultValue());
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
@@ -214,13 +211,10 @@ class MockServerCommunicationService extends IServerCommunicationService {
   void registerCallbackSingleString({
     required void Function(String parameter) function,
     required String functionName,
-  }) {
-    // TODO: implement registerCallbackSingleString
-  }
+  }) {}
 
   @override
   Future executeServerFunction(String s, {List<Object>? args}) {
-    // TODO: implement executeServerFunction
     throw UnimplementedError();
   }
 
@@ -228,15 +222,11 @@ class MockServerCommunicationService extends IServerCommunicationService {
   void registerCallbackThreeStrings(
       {required void Function(String param1, String param2, String param3)
           function,
-      required String functionName}) {
-    // TODO: implement registerCallbackThreeStrings
-  }
+      required String functionName}) {}
 
   @override
   void registerCallbackWithoutParameters(
-      {required void Function() function, required String functionName}) {
-    // TODO: implement registerCallbackWithoutParameters
-  }
+      {required void Function() function, required String functionName}) {}
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

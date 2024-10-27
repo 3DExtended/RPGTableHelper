@@ -15,10 +15,16 @@ class TwoPartWizardStepBody extends StatelessWidget {
     required this.onPreviousBtnPressed,
     required this.onNextBtnPressed,
     required this.contentChildren,
+    this.titleWidgetRight,
+    this.contentWidget,
     this.footerWidget,
     this.centerNavBarWidget,
+    this.sideBarFlex = 1,
+    this.contentFlex = 1,
   });
 
+  final int? sideBarFlex;
+  final int? contentFlex;
   final String wizardTitle;
   final bool isLandscapeMode;
   final String stepTitle;
@@ -28,6 +34,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final List<Widget> contentChildren;
   final Widget? footerWidget;
   final Widget? centerNavBarWidget;
+  final Widget? contentWidget;
+  final Widget? titleWidgetRight;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +48,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const Spacer(),
               Text(
                 wizardTitle,
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
@@ -48,6 +57,9 @@ class TwoPartWizardStepBody extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
+              titleWidgetRight == null
+                  ? const Spacer()
+                  : Expanded(child: titleWidgetRight!),
             ],
           ),
         ),
@@ -58,6 +70,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
+                flex: sideBarFlex ?? 1,
                 child: Container(
                     color: whiteBgTint,
                     child: LayoutBuilder(builder: (context, constraints) {
@@ -86,12 +99,17 @@ class TwoPartWizardStepBody extends StatelessWidget {
               ),
               if (!isLandscapeMode) const HorizontalLine(),
               Expanded(
+                flex: contentFlex ?? 1,
                 child: Container(
                   color: const Color.fromARGB(65, 39, 39, 39),
                   child: Column(
                     children: [
                       Expanded(
                           child: LayoutBuilder(builder: (context, constraints) {
+                        if (contentWidget != null) {
+                          return contentWidget!;
+                        }
+
                         return SingleChildScrollView(
                           child: Padding(
                             padding: const EdgeInsets.all(20),

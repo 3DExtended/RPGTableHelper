@@ -31,7 +31,7 @@ sleep 6
 
 # open ios/Runner.xcworkspace 
 
-flutter build appbundle --no-tree-shake-icons  --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
+flutter build appbundle --no-tree-shake-icons --no-shrink --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
 
 git add obfuscation/*
 git commit -m "chore: Checkin symbols for $version" 

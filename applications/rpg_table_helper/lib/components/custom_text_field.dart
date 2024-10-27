@@ -22,7 +22,7 @@ class CustomTextField extends StatelessWidget {
         keyboardType: keyboardType,
         textCapitalization: TextCapitalization.sentences,
         enableSuggestions: true,
-        scribbleEnabled: false,
+        scribbleEnabled: true,
         decoration: InputDecoration(
           labelText: labelText, // TODO localize
           alignLabelWithHint: true,

@@ -1,12 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal.dart';
@@ -29,7 +32,10 @@ class _RpgConfigurationWizardStep6ItemsState
   bool hasDataLoaded = false;
   bool isFormValid = false;
 
+  String? selectedItemCategoryId;
+
   List<RpgItem> _items = [];
+  List<ItemCategory> _allItemCategories = [];
 
   void _updateStateForFormValidation() {
     var newIsFormValid = getIsFormValid();
@@ -48,6 +54,7 @@ class _RpgConfigurationWizardStep6ItemsState
         setState(() {
           hasDataLoaded = true;
           _items = data.allItems;
+          _allItemCategories = data.itemCategories;
         });
         _updateStateForFormValidation();
       }
@@ -77,158 +84,64 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
-      contentChildren: [
-        ..._items.asMap().entries.map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: StyledBox(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 20.0, bottom: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                item.value.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                    ),
-                              ),
-                            ),
-
-                            // Duplicate Button
-                            Container(
-                              height: 50,
-                              width: 50,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () async {
-                                  // open edit modal with clicked item
-                                  await showCreateOrEditItemModal(
-                                      context,
-                                      item.value.copyWith(
-                                        uuid: const UuidV7().generate(),
-                                      )).then((returnValue) {
-                                    if (returnValue == null) {
-                                      return;
-                                    }
-
-                                    setState(() {
-                                      _items.add(returnValue);
-                                      saveChanges();
-                                    });
-                                  });
-                                },
-                                icon: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.clone),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-
-                            // Edit Button
-                            Container(
-                              height: 50,
-                              width: 50,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () async {
-                                  // open edit modal with clicked item
-                                  await showCreateOrEditItemModal(
-                                          context, item.value)
-                                      .then((returnValue) {
-                                    if (returnValue == null) {
-                                      return;
-                                    }
-
-                                    setState(() {
-                                      _items.removeAt(item.key);
-                                      _items.insert(item.key, returnValue);
-                                      saveChanges();
-                                    });
-                                  });
-                                },
-                                icon: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.penToSquare),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-
-                            // Remove button
-                            Container(
-                              height: 50,
-                              width: 50,
-                              clipBehavior: Clip.none,
-                              child: CustomButton(
-                                onPressed: () {
-                                  // remove this pair from list
-                                  // TODO check if assigned...
-                                  setState(() {
-                                    _items.removeAt(item.key);
-                                  });
-                                },
-                                icon: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.trashCan),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                          ],
-                        ),
-                        _LabeledRow(
-                          label: "Kategorie:", // TODO localize
-                          text: getItemCategoryPathName(
-                            getItemCategoryById(item.value.categoryId),
-                          ),
-                        ),
-                        if (item.value.placeOfFindings.isNotEmpty)
-                          _LabeledRow(
-                            label: "Fundort:", // TODO localize
-                            // TODO append difficulty and patchSize
-                            text: item.value.placeOfFindings.isNotEmpty
-                                ? item.value.placeOfFindings
-                                    .map((plid) =>
-                                        formatRpgItemRarityToString(plid))
-                                    .join(", ")
-                                : "N/A",
-                          ),
-                        if (item.value.placeOfFindings.isNotEmpty)
-                          _LabeledRow(
-                            label: "Fundgröße:", // TODO localize
-                            text: item.value.patchSize?.toString() ?? "N/A",
-                          ),
-                        _LabeledRow(
-                          label: "Verkaufswert:", // TODO localize
-                          text: getValueOfItem(item.value.baseCurrencyPrice),
-                        ),
-                        Text(
-                          "Beschreibung:",
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: MarkdownBody(
-                            data: item.value.description,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+      sideBarFlex: 1,
+      contentFlex: 2,
+      titleWidgetRight: Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: kDebugMode == true ? 0 : 20),
+        child: CustomDropdownMenu(
+            selectedValueTemp: selectedItemCategoryId,
+            setter: (newValue) {
+              setState(() {
+                selectedItemCategoryId = newValue;
+              });
+            },
+            label: 'Kategorie Filter', // TODO localize
+            items: [
+              ItemCategory(
+                name: "Alles",
+                subCategories: [],
+                uuid: "",
+                hideInInventoryFilters: false,
               ),
-            ),
+              ...(ItemCategory.flattenCategoriesRecursive(
+                      categories: _allItemCategories,
+                      combineCategoryNames: true)
+                  .sortBy((e) => e.name)),
+            ].map((category) {
+              return DropdownMenuItem<String?>(
+                value: category.uuid == "" ? null : category.uuid,
+                child: Text(category.name),
+              );
+            }).toList()),
+      ),
+      contentWidget: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Builder(builder: (context) {
+          var itemsAsMapList = _items
+              .asMap()
+              .entries
+              .where((it) =>
+                  selectedItemCategoryId == null ||
+                  it.value.categoryId == selectedItemCategoryId)
+              .toList();
+          return ListView.builder(
+            itemCount: itemsAsMapList.length,
+            prototypeItem: itemsAsMapList.isEmpty
+                ? null
+                : getItemVisualisation(itemsAsMapList[0], context),
+            itemBuilder: (context, index) {
+              var item = itemsAsMapList[index];
+              return getItemVisualisation(item, context);
+            },
+          );
+        }),
+      ),
+
+      contentChildren: const [
+        //  ..._items.asMap().entries.map(
+        //        (item) => getItemVisualisation(item, context),
+        //      ),
       ],
       centerNavBarWidget: CustomButton(
         onPressed: () async {
@@ -271,6 +184,165 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                 height: 24,
                 alignment: AlignmentDirectional.center,
                 child: const FaIcon(FontAwesomeIcons.plus))),
+      ),
+    );
+  }
+
+  Padding getItemVisualisation(
+      MapEntry<int, RpgItem> item, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: StyledBox(
+        child: SizedBox(
+          height: 250,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10.0, left: 20.0, bottom: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.value.name,
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                      ),
+                    ),
+
+                    // Duplicate Button
+                    Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () async {
+                          // open edit modal with clicked item
+                          await showCreateOrEditItemModal(
+                              context,
+                              item.value.copyWith(
+                                uuid: const UuidV7().generate(),
+                              )).then((returnValue) {
+                            if (returnValue == null) {
+                              return;
+                            }
+
+                            setState(() {
+                              _items.add(returnValue);
+                              saveChanges();
+                            });
+                          });
+                        },
+                        icon: const CustomFaIcon(icon: FontAwesomeIcons.clone),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+
+                    // Edit Button
+                    Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () async {
+                          // open edit modal with clicked item
+                          await showCreateOrEditItemModal(context, item.value)
+                              .then((returnValue) {
+                            if (returnValue == null) {
+                              return;
+                            }
+
+                            setState(() {
+                              _items.removeAt(item.key);
+                              _items.insert(item.key, returnValue);
+                              saveChanges();
+                            });
+                          });
+                        },
+                        icon: const CustomFaIcon(
+                            icon: FontAwesomeIcons.penToSquare),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+
+                    // Remove button
+                    Container(
+                      height: 50,
+                      width: 50,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () {
+                          // remove this pair from list
+                          // TODO check if assigned...
+                          setState(() {
+                            _items.removeAt(item.key);
+                          });
+                        },
+                        icon:
+                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _LabeledRow(
+                          label: "Kategorie:", // TODO localize
+                          text: getItemCategoryPathName(
+                            getItemCategoryById(item.value.categoryId),
+                          ),
+                        ),
+                        if (item.value.placeOfFindings.isNotEmpty)
+                          _LabeledRow(
+                            label: "Fundort:", // TODO localize
+                            // TODO append difficulty and patchSize
+                            text: item.value.placeOfFindings.isNotEmpty
+                                ? item.value.placeOfFindings
+                                    .map((plid) =>
+                                        formatRpgItemRarityToString(plid))
+                                    .join(", ")
+                                : "N/A",
+                          ),
+                        if (item.value.placeOfFindings.isNotEmpty)
+                          _LabeledRow(
+                            label: "Fundgröße:", // TODO localize
+                            text: item.value.patchSize?.toString() ?? "N/A",
+                          ),
+                        _LabeledRow(
+                          label: "Verkaufswert:", // TODO localize
+                          text: getValueOfItem(item.value.baseCurrencyPrice),
+                        ),
+                        Text(
+                          "Beschreibung:",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: MarkdownBody(
+                            data: item.value.description,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
