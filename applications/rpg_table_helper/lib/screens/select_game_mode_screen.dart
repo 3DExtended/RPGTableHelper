@@ -15,10 +15,14 @@ import 'package:rpg_table_helper/components/tab_handler.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -46,6 +50,71 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     Future.delayed(Duration.zero, () async {
       if (!mounted) return;
 
+      if (!DependencyProvider.of(context).isMocked) {
+        var prefs = await SharedPreferences.getInstance();
+
+        // synchronize local campagnes
+        if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
+          var loadedJsonForRpgConfig =
+              prefs.getString(sharedPrefsKeyRpgConfigJson);
+          var parsedJson = RpgConfigurationModel.fromJson(
+              jsonDecode(loadedJsonForRpgConfig!));
+          if (!mounted) return;
+
+          await showSynchronizeLocallySavedRpgCampagne(context)
+              .then((value) async {
+            if (value != true) {
+              return;
+            }
+
+            // save to cloud
+            if (!mounted) return;
+
+            var service =
+                DependencyProvider.of(context).getService<IRpgEntityService>();
+            var createResult = await service.saveCampagneAsNewCampagne(
+                campagneName: parsedJson.rpgName,
+                rpgConfig: loadedJsonForRpgConfig);
+            if (!mounted) return;
+
+            await createResult.possiblyHandleError(context);
+          });
+        }
+
+        // synchronize local characters
+        if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
+          var loadedJsonForRpgCharacterConfig =
+              prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
+
+          var parsedJson = RpgCharacterConfiguration.fromJson(
+              jsonDecode(loadedJsonForRpgCharacterConfig!));
+
+          if (!mounted) return;
+
+          await showSynchronizeLocallySavedRpgPlayerCharacter(context)
+              .then((value) async {
+            if (value != true) {
+              return;
+            }
+
+            // save to cloud
+            if (!mounted) return;
+
+            var service =
+                DependencyProvider.of(context).getService<IRpgEntityService>();
+            var createResult = await service.savePlayerCharacterAsNewCharacter(
+                characterName: parsedJson.characterName,
+                characterConfigJson: loadedJsonForRpgCharacterConfig);
+            if (!mounted) return;
+
+            await createResult.possiblyHandleError(context);
+          });
+        }
+      }
+
+      // load campagnes and players
+      if (!mounted) return;
+
       var service =
           DependencyProvider.of(context).getService<IRpgEntityService>();
       var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
@@ -60,42 +129,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         campagnes = campagnesResponse.result ?? [];
         characters = charactersResponse.result ?? [];
       });
-    });
-
-    // TODO check if there is a cached player...
-
-    Future.delayed(Duration.zero, () async {
-      if (!mounted) return;
-
-      if (DependencyProvider.of(context).isMocked) return;
-      var prefs = await SharedPreferences.getInstance();
-
-      if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
-        var loadedJsonForRpgConfig =
-            prefs.getString(sharedPrefsKeyRpgConfigJson);
-        var parsedJson =
-            RpgConfigurationModel.fromJson(jsonDecode(loadedJsonForRpgConfig!));
-        if (!mounted) return;
-
-        await showSynchronizeLocallySavedRpgCampagne(context)
-            .then((value) async {
-          if (value != true) {
-            return;
-          }
-
-          // save to cloud
-          if (!mounted) return;
-
-          var service =
-              DependencyProvider.of(context).getService<IRpgEntityService>();
-          var createResult = await service.saveCampagneAsNewCampagne(
-              campagneName: parsedJson.rpgName,
-              rpgConfig: loadedJsonForRpgConfig);
-          if (!mounted) return;
-
-          await createResult.possiblyHandleError(context);
-        });
-      }
     });
 
     super.initState();
@@ -353,7 +386,22 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 onPressed: () async {
                   if (character.campagneId != null &&
                       character.campagneId!.$value != null) {
-                    // TODO set rpg config and id to connection details
+                    if (character.rpgCharacterConfiguration != null &&
+                        character.rpgCharacterConfiguration!.isNotEmpty) {
+                      var parsedJson = RpgCharacterConfiguration.fromJson(
+                          jsonDecode(character.rpgCharacterConfiguration!));
+                      ref
+                          .read(rpgCharacterConfigurationProvider.notifier)
+                          .updateConfiguration(parsedJson);
+                    }
+
+                    ref
+                        .read(connectionDetailsProvider.notifier)
+                        .updateConfiguration(
+                            (ref.read(connectionDetailsProvider).valueOrNull ??
+                                    ConnectionDetails.defaultValue())
+                                .copyWith(
+                                    playerCharacterId: character.id!.$value!));
 
                     // start SignalR connection
                     var serverCommunicationService =

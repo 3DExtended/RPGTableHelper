@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final rpgCharacterConfigurationProvider = StateNotifierProvider<
     RpgCharacterConfigurationNotifier,
@@ -42,21 +38,20 @@ class RpgCharacterConfigurationNotifier
 
     state = const AsyncValue.loading();
 
-    String? loadedJson;
-    var prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
-      loadedJson = prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
-    }
-
-    if (loadedJson != null) {
-      var parsedJson =
-          RpgCharacterConfiguration.fromJson(jsonDecode(loadedJson));
-      state = AsyncValue.data(parsedJson);
-    } else {
-      state = AsyncValue.data(RpgCharacterConfiguration.getBaseConfiguration(
-        null,
-      ));
-    }
+    // String? loadedJson;
+    // var prefs = await SharedPreferences.getInstance();
+    // if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
+    //   loadedJson = prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
+    // }
+    // if (loadedJson != null) {
+    //   var parsedJson =
+    //       RpgCharacterConfiguration.fromJson(jsonDecode(loadedJson));
+    //   state = AsyncValue.data(parsedJson);
+    // } else {
+    //   state = AsyncValue.data(RpgCharacterConfiguration.getBaseConfiguration(
+    //     null,
+    //   ));
+    // }
   }
 
   void updateConfiguration(RpgCharacterConfiguration config) {

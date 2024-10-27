@@ -190,6 +190,96 @@ Future<bool?> showSynchronizeLocallySavedRpgCampagne(BuildContext context,
       });
 }
 
+Future<bool?> showSynchronizeLocallySavedRpgPlayerCharacter(
+    BuildContext context,
+    {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+  // show error to user
+  return await customShowCupertinoModalBottomSheet<bool>(
+      isDismissible: false,
+      expand: false,
+      closeProgressThreshold: -50000,
+      enableDrag: false,
+      context: context,
+      overrideNavigatorKey: overrideNavigatorKey,
+      builder: (context) {
+        var modalPadding = 80.0;
+        if (MediaQuery.of(context).size.width < 800) {
+          modalPadding = 20.0;
+        }
+
+        return Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: modalPadding,
+              vertical: modalPadding), // TODO maybe percentage of total width?
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 800.0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StyledBox(
+                      borderThickness: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(21.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomMarkdownBody(
+                                    text:
+                                        "# ‼️ In die Cloud speichern ‼️\n\n__Für alle Spieler außer Marie (Rachel, Lukas, Tobias, Peter)!__\n\nWir haben festgestellt, dass du einen lokal gespeicherten Charakter hast. Dies ist deine Möglichkeit, diesen Charakter in die Cloud zu speichern. Dies solltest du umbedingt (genau ein mal!) tun! Falls du dies jedoch bereits gemacht hast, darfst du nun auf Abbrechen drücken.\n\n__Sage Peter bitte Bescheid, wenn du Fragen hast!__", // TODO localize/ switch text between add and edit
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                              child: Row(
+                                children: [
+                                  CustomButton(
+                                    label: "Abbrechen", // TODO localize
+                                    onPressed: () {
+                                      navigatorKey.currentState!.pop(null);
+                                    },
+                                  ),
+                                  const Spacer(),
+                                  CustomButton(
+                                    label: "Speichern", // TODO localize
+                                    onPressed: () {
+                                      navigatorKey.currentState!.pop(true);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        height: EdgeInsets.fromViewPadding(
+                                View.of(context).viewInsets,
+                                View.of(context).devicePixelRatio)
+                            .bottom),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+}
+
 Future<String?> askForCampagneJoinCode(BuildContext context,
     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   // show error to user

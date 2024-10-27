@@ -29,7 +29,9 @@ abstract class IRpgEntityService {
   Future<HRResponse<List<JoinRequestForCampagneDto>>>
       getOpenJoinRequestsForCampagne({required CampagneIdentifier campagneId});
 
-  // TODO use methods for creating join requests and loading them for a given campagne WILO
+  Future<HRResponse<PlayerCharacterIdentifier>>
+      savePlayerCharacterAsNewCharacter(
+          {required String characterName, String? characterConfigJson});
 }
 
 class RpgEntityService extends IRpgEntityService {
@@ -163,6 +165,29 @@ class RpgEntityService extends IRpgEntityService {
 
     return joinRequestsForCampagne;
   }
+
+  @override
+  Future<HRResponse<PlayerCharacterIdentifier>>
+      savePlayerCharacterAsNewCharacter(
+          {required String characterName, String? characterConfigJson}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          '8153c7f9-010c-468a-a967-369491776bcd');
+    }
+
+    var createPlayerCharacterResult = await HRResponse.fromApiFuture(
+        api.playerCharacterCreatecharacterPost(
+          body: PlayerCharacterCreateDto(
+            characterName: characterName,
+            rpgCharacterConfiguration: characterConfigJson,
+          ),
+        ),
+        'Could not create new player character.',
+        '6b72682c-538a-42b1-9390-b682a4b582dd');
+
+    return createPlayerCharacterResult;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -246,6 +271,14 @@ class MockRpgEntityService extends IRpgEntityService {
   Future<HRResponse<List<JoinRequestForCampagneDto>>>
       getOpenJoinRequestsForCampagne({required CampagneIdentifier campagneId}) {
     // TODO: implement getOpenJoinRequestsForCampagne
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<PlayerCharacterIdentifier>>
+      savePlayerCharacterAsNewCharacter(
+          {required String characterName, String? characterConfigJson}) {
+    // TODO: implement savePlayerCharacterAsNewCharacter
     throw UnimplementedError();
   }
 }

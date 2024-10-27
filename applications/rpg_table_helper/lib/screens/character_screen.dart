@@ -151,7 +151,6 @@ class _OpenPlayerJoinRequestsState
       var campagneId =
           ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
       if (campagneId == null) {
-        print("error!!!!");
         return;
       }
 
