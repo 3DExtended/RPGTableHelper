@@ -396,7 +396,7 @@ extension $CampagneJoinRequestExtension on CampagneJoinRequest {
 @JsonSerializable(explicitToJson: true)
 class CampagneJoinRequestCreateDto {
   const CampagneJoinRequestCreateDto({
-    required this.campagneId,
+    required this.campagneJoinCode,
     required this.playerCharacterId,
   });
 
@@ -406,8 +406,8 @@ class CampagneJoinRequestCreateDto {
   static const toJsonFactory = _$CampagneJoinRequestCreateDtoToJson;
   Map<String, dynamic> toJson() => _$CampagneJoinRequestCreateDtoToJson(this);
 
-  @JsonKey(name: 'campagneId')
-  final String campagneId;
+  @JsonKey(name: 'campagneJoinCode')
+  final String campagneJoinCode;
   @JsonKey(name: 'playerCharacterId')
   final String playerCharacterId;
   static const fromJsonFactory = _$CampagneJoinRequestCreateDtoFromJson;
@@ -416,9 +416,9 @@ class CampagneJoinRequestCreateDto {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is CampagneJoinRequestCreateDto &&
-            (identical(other.campagneId, campagneId) ||
+            (identical(other.campagneJoinCode, campagneJoinCode) ||
                 const DeepCollectionEquality()
-                    .equals(other.campagneId, campagneId)) &&
+                    .equals(other.campagneJoinCode, campagneJoinCode)) &&
             (identical(other.playerCharacterId, playerCharacterId) ||
                 const DeepCollectionEquality()
                     .equals(other.playerCharacterId, playerCharacterId)));
@@ -429,7 +429,7 @@ class CampagneJoinRequestCreateDto {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash(campagneId) ^
+      const DeepCollectionEquality().hash(campagneJoinCode) ^
       const DeepCollectionEquality().hash(playerCharacterId) ^
       runtimeType.hashCode;
 }
@@ -437,16 +437,18 @@ class CampagneJoinRequestCreateDto {
 extension $CampagneJoinRequestCreateDtoExtension
     on CampagneJoinRequestCreateDto {
   CampagneJoinRequestCreateDto copyWith(
-      {String? campagneId, String? playerCharacterId}) {
+      {String? campagneJoinCode, String? playerCharacterId}) {
     return CampagneJoinRequestCreateDto(
-        campagneId: campagneId ?? this.campagneId,
+        campagneJoinCode: campagneJoinCode ?? this.campagneJoinCode,
         playerCharacterId: playerCharacterId ?? this.playerCharacterId);
   }
 
   CampagneJoinRequestCreateDto copyWithWrapped(
-      {Wrapped<String>? campagneId, Wrapped<String>? playerCharacterId}) {
+      {Wrapped<String>? campagneJoinCode, Wrapped<String>? playerCharacterId}) {
     return CampagneJoinRequestCreateDto(
-        campagneId: (campagneId != null ? campagneId.value : this.campagneId),
+        campagneJoinCode: (campagneJoinCode != null
+            ? campagneJoinCode.value
+            : this.campagneJoinCode),
         playerCharacterId: (playerCharacterId != null
             ? playerCharacterId.value
             : this.playerCharacterId));

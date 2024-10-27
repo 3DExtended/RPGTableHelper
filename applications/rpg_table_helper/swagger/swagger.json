@@ -1736,12 +1736,12 @@
       },
       "CampagneJoinRequestCreateDto": {
         "required": [
-          "campagneId",
+          "campagneJoinCode",
           "playerCharacterId"
         ],
         "type": "object",
         "properties": {
-          "campagneId": {
+          "campagneJoinCode": {
             "minLength": 1,
             "type": "string"
           },

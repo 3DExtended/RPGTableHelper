@@ -54,7 +54,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         {
             if (
                 createDto == null
-                || string.IsNullOrWhiteSpace(createDto.CampagneId)
+                || string.IsNullOrWhiteSpace(createDto.CampagneJoinCode)
                 || string.IsNullOrWhiteSpace(createDto.PlayerCharacterId)
             )
             {
@@ -73,12 +73,21 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not verify player character");
             }
 
+            var campagneForJoinCode = await new CampagneByJoinCodeQuery { JoinCode = createDto.CampagneJoinCode }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (campagneForJoinCode.IsNone)
+            {
+                return BadRequest("Could not find campagne for join code");
+            }
+
             var campagneJoinRequestId = await new CampagneJoinRequestCreateQuery
             {
                 ModelToCreate = new CampagneJoinRequest
                 {
                     Id = CampagneJoinRequest.CampagneJoinRequestIdentifier.From(Guid.Empty),
-                    CampagneId = Campagne.CampagneIdentifier.From(Guid.Parse(createDto.CampagneId)),
+                    CampagneId = campagneForJoinCode.Get().Id,
                     PlayerId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(createDto.PlayerCharacterId)),
                     UserId = _userContext.User.UserIdentifier,
                 },

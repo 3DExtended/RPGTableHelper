@@ -17,3 +17,6 @@ bool passwordValid(String password) =>
 
 bool resetCodeValid(String resetCode) =>
     RegExp(r'^\d{3}-?\d{3}$').hasMatch(resetCode);
+
+bool joinCodeValid(String joinCode) =>
+    RegExp(r'^\d{3}-?\d{3}$').hasMatch(joinCode);

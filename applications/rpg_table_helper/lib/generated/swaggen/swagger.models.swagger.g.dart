@@ -107,14 +107,14 @@ Map<String, dynamic> _$CampagneJoinRequestToJson(
 CampagneJoinRequestCreateDto _$CampagneJoinRequestCreateDtoFromJson(
         Map<String, dynamic> json) =>
     CampagneJoinRequestCreateDto(
-      campagneId: json['campagneId'] as String,
+      campagneJoinCode: json['campagneJoinCode'] as String,
       playerCharacterId: json['playerCharacterId'] as String,
     );
 
 Map<String, dynamic> _$CampagneJoinRequestCreateDtoToJson(
         CampagneJoinRequestCreateDto instance) =>
     <String, dynamic>{
-      'campagneId': instance.campagneId,
+      'campagneJoinCode': instance.campagneJoinCode,
       'playerCharacterId': instance.playerCharacterId,
     };
 

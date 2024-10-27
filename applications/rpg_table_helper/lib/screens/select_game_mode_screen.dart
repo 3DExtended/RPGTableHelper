@@ -370,11 +370,28 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                     navigatorKey.currentState!.pushNamedAndRemoveUntil(
                         AuthorizedScreenWrapper.route, (r) => false);
                   } else {
-                    // TODO what happens here
                     // 1. show modal for entering a join code
-                    // 2. create new join request for campagne with join code
-                    // 3. wait for "joinrequesthandled" signalR method
-                    // 4. block user from creating more join requsts...
+                    await askForCampagneJoinCode(context)
+                        .then((joinCode) async {
+                      if (joinCode == null) {
+                        return;
+                      }
+
+                      // 2. create new join request for campagne with join code
+                      var service = DependencyProvider.of(context)
+                          .getService<IRpgEntityService>();
+                      var createResponse =
+                          await service.createNewCampagneJoinRequest(
+                        joinCode: joinCode,
+                        playerCharacterId: character.id!,
+                      );
+
+                      await createResponse.possiblyHandleError(context);
+
+                      // 3. TODO wait for "joinrequesthandled" signalR method
+                      // 4. TODO block user from creating more join requsts...
+                      // 5. TODO reload this screen after "joinrequesthandled" for this player
+                    });
                   }
                 },
                 child: StyledBox(
