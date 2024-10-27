@@ -6,21 +6,28 @@ class CustomTextField extends StatelessWidget {
     required this.labelText,
     required this.textEditingController,
     required this.keyboardType,
+    this.password,
   });
 
   final TextInputType keyboardType;
   final String labelText;
   final TextEditingController textEditingController;
+  final bool? password;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextField(
-        minLines: keyboardType == TextInputType.multiline ? 5 : null,
-        maxLines: keyboardType == TextInputType.multiline ? 5 : null,
+        minLines: keyboardType == TextInputType.multiline
+            ? 5
+            : (password == true ? 1 : null),
+        maxLines: keyboardType == TextInputType.multiline
+            ? 5
+            : (password == true ? 1 : null),
         keyboardType: keyboardType,
         textCapitalization: TextCapitalization.sentences,
+        obscureText: password ?? false,
         enableSuggestions: true,
         scribbleEnabled: true,
         decoration: InputDecoration(

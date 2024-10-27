@@ -316,7 +316,7 @@ class _DmGrantItemsScreenContentState
         DependencyProvider.of(context).getService<IServerMethodsService>();
     if (connectionDetails.sessionConnectionNumberForPlayers != null) {
       com.sendGrantedItemsToPlayers(
-        gameCode: connectionDetails.sessionConnectionNumberForPlayers!,
+        campagneId: connectionDetails.campagneId!,
         grantedItems: result,
       );
     }

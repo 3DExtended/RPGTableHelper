@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RPGTableHelper.BusinessLayer.Encryption.Contracts\RPGTableHelper.BusinessLayer.Encryption.Contracts.csproj" />
+    <ProjectReference Include="..\RPGTableHelper.Shared\RPGTableHelper.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

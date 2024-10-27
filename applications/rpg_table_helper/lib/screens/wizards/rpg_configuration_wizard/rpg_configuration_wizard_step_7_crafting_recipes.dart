@@ -58,7 +58,7 @@ class _RpgConfigurationWizardStep7CraftingRecipesState
 
 Nachdem du nun alle Items hinzugefügt hast, kannst du deinen Spieler Rezepte hinzufügen, damit sie selber bspw. Heiltränke craften können.
 
-Für manche Rezepte ist es natürlich Voraussetzung, dass du ein Tool (wie ein Kräuterkunde-Set) hast. 
+Für manche Rezepte ist es natürlich Voraussetzung, dass du ein Tool (wie ein Kräuterkunde-Set) hast.
 Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen dann die entsprechenden Tools um die Rezepte nutzen zu können.
 '''; // TODO localize
 
@@ -375,7 +375,7 @@ class ConditionalWidgetWrapper extends StatelessWidget {
 
   final bool condition;
   final Expanded Function(BuildContext context, Widget child) wrapper;
-  final Text child;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

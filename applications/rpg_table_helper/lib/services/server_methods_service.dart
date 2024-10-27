@@ -25,7 +25,7 @@ abstract class IServerMethodsService {
       functionName: "registerGameResponse",
     );
 
-    serverCommunicationService.registerCallbackThreeStrings(
+    serverCommunicationService.registerCallbackFourStrings(
       function: requestJoinPermission,
       functionName: "requestJoinPermission",
     );
@@ -53,31 +53,26 @@ abstract class IServerMethodsService {
 
   // this should contain every method that is callable by the server
   void registerGameResponse(String parameter);
-  void requestJoinPermission(
-      String playerName, String gameCode, String connectionId);
+  void requestJoinPermission(String playerName, String username,
+      String playerCharacterId, String campagneJoinRequestId);
   void joinRequestAccepted();
   void updateRpgConfig(String parameter);
   void updateRpgCharacterConfigOnDmSide(String parameter);
   void grantPlayerItems(String grantedItemsJson);
 
   // this should contain every method that call the server
-  Future registerGame({required String campagneName});
-  Future joinGameSession(
-      {required String playerName, required String gameCode});
-  Future acceptJoinRequest(
-      {required String playerName,
-      required String gameCode,
-      required String connectionId,
-      required RpgConfigurationModel rpgConfig});
+  Future registerGame({required String campagneId});
+  Future joinGameSession({required String playerCharacterId});
+
   Future sendUpdatedRpgConfig(
-      {required RpgConfigurationModel rpgConfig, required String gameCode});
+      {required RpgConfigurationModel rpgConfig, required String campagneId});
 
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
-      required String gameCode});
+      required String playercharacterid});
 
   Future sendGrantedItemsToPlayers(
-      {required String gameCode,
+      {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems});
 }
 
@@ -87,16 +82,31 @@ class ServerMethodsService extends IServerMethodsService {
       : super(isMock: false);
 
   @override
-  Future registerGame({required String campagneName}) async {
+  Future registerGame({required String campagneId}) async {
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        (widgetRef.read(connectionDetailsProvider).value ??
+                ConnectionDetails.defaultValue())
+            .copyWith(
+                isConnected: false,
+                isConnecting: true,
+                campagneId: campagneId));
+
     await serverCommunicationService
-        .executeServerFunction("RegisterGame", args: [campagneName]);
+        .executeServerFunction("RegisterGame", args: [campagneId]);
   }
 
   @override
-  Future joinGameSession(
-      {required String playerName, required String gameCode}) async {
+  Future joinGameSession({required String playerCharacterId}) async {
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        (widgetRef.read(connectionDetailsProvider).value ??
+                ConnectionDetails.defaultValue())
+            .copyWith(
+                isConnected: true,
+                isConnecting: false,
+                playerCharacterId: playerCharacterId));
+
     await serverCommunicationService
-        .executeServerFunction("JoinGame", args: [playerName, gameCode]);
+        .executeServerFunction("JoinGame", args: [playerCharacterId]);
   }
 
   @override
@@ -104,18 +114,19 @@ class ServerMethodsService extends IServerMethodsService {
     log("Gamecode: $parameter");
     // as we have loaded the session here, we now can update the riverpod state to reflect that
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        widgetRef.read(connectionDetailsProvider).value?.copyWith(
+        (widgetRef.read(connectionDetailsProvider).value ??
+                ConnectionDetails.defaultValue())
+            .copyWith(
                 isConnected: true,
                 isConnecting: false,
                 isDm: true,
                 isInSession: true,
-                sessionConnectionNumberForPlayers: parameter) ??
-            ConnectionDetails.defaultValue());
+                sessionConnectionNumberForPlayers: parameter));
   }
 
   @override
-  void requestJoinPermission(
-      String playerName, String gameCode, String connectionId) {
+  void requestJoinPermission(String playerName, String username,
+      String playerCharacterId, String campagneJoinRequestId) {
     log("requestJoinPermission:");
 
     List<PlayerJoinRequests> openRequests = [
@@ -123,8 +134,9 @@ class ServerMethodsService extends IServerMethodsService {
           []),
       PlayerJoinRequests(
         playerName: playerName,
-        gameCode: gameCode,
-        connectionId: connectionId,
+        username: username,
+        playerCharacterId: playerCharacterId,
+        campagneJoinRequestId: campagneJoinRequestId,
       ),
     ];
 
@@ -152,7 +164,7 @@ class ServerMethodsService extends IServerMethodsService {
 
     sendUpdatedRpgCharacterConfig(
       charConfig: charDetails,
-      gameCode: connectionDetails.sessionConnectionNumberForPlayers!,
+      playercharacterid: connectionDetails.playerCharacterId!,
     );
   }
 
@@ -166,40 +178,30 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  Future acceptJoinRequest(
-      {required String playerName,
-      required String gameCode,
-      required String connectionId,
-      required RpgConfigurationModel rpgConfig}) async {
-    await serverCommunicationService.executeServerFunction("AcceptJoinRequest",
-        args: [playerName, gameCode, connectionId, jsonEncode(rpgConfig)]);
-  }
-
-  @override
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig,
-      required String gameCode}) async {
+      required String campagneId}) async {
     await serverCommunicationService.executeServerFunction(
         "SendUpdatedRpgConfig",
-        args: [gameCode, jsonEncode(rpgConfig)]);
+        args: [campagneId, jsonEncode(rpgConfig)]);
   }
 
   @override
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
-      required String gameCode}) async {
+      required String playercharacterid}) async {
     await serverCommunicationService.executeServerFunction(
         "SendUpdatedRpgCharacterConfigToDm",
-        args: [gameCode, jsonEncode(charConfig)]);
+        args: [playercharacterid, jsonEncode(charConfig)]);
   }
 
   @override
   Future sendGrantedItemsToPlayers(
-      {required String gameCode,
+      {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems}) async {
     await serverCommunicationService.executeServerFunction(
         "SendGrantedItemsToPlayers",
-        args: [gameCode, jsonEncode(grantedItems)]);
+        args: [campagneId, jsonEncode(grantedItems)]);
   }
 
   @override

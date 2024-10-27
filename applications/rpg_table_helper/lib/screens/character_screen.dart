@@ -6,19 +6,76 @@ import 'package:rpg_table_helper/components/fill_remaining_space.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 
-class CharacterScreen extends ConsumerWidget {
+class CharacterScreen extends ConsumerStatefulWidget {
   static String route = "character";
 
   const CharacterScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CharacterScreen> createState() => _CharacterScreenState();
+}
+
+class _CharacterScreenState extends ConsumerState<CharacterScreen> {
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      // check once if there are open join requests for this campagne if you are the dm
+      if (ref.read(connectionDetailsProvider).valueOrNull?.isDm != true) {
+        return;
+      }
+
+      var campagneId =
+          ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+      if (campagneId == null) {
+        return;
+      }
+
+      var service =
+          DependencyProvider.of(context).getService<IRpgEntityService>();
+      var loadJoinRequestsResponse =
+          await service.getOpenJoinRequestsForCampagne(
+              campagneId: CampagneIdentifier($value: campagneId));
+
+      await loadJoinRequestsResponse.possiblyHandleError(context);
+
+      if (loadJoinRequestsResponse.isSuccessful) {
+        var currentlyLoadedOpenRequests = ref
+                .read(connectionDetailsProvider)
+                .requireValue
+                .openPlayerRequests ??
+            [];
+
+        currentlyLoadedOpenRequests.addAll(loadJoinRequestsResponse.result!.map(
+          (e) => PlayerJoinRequests(
+              campagneJoinRequestId: e.request.id!.$value!,
+              playerCharacterId: e.playerCharacter.id!.$value!,
+              playerName: e.playerCharacter.characterName!,
+              username: e.username),
+        ));
+
+        currentlyLoadedOpenRequests = currentlyLoadedOpenRequests
+            .distinct(by: (e) => e.campagneJoinRequestId)
+            .toList();
+
+        ref.read(connectionDetailsProvider.notifier).updateConfiguration(ref
+            .read(connectionDetailsProvider)
+            .requireValue
+            .copyWith(openPlayerRequests: currentlyLoadedOpenRequests));
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
 
     return connectionDetails?.isDm == true
@@ -124,7 +181,7 @@ class CharacterScreen extends ConsumerWidget {
   }
 }
 
-class OpenPlayerJoinRequests extends ConsumerWidget {
+class OpenPlayerJoinRequests extends ConsumerStatefulWidget {
   const OpenPlayerJoinRequests({
     super.key,
     required this.connectionDetails,
@@ -133,13 +190,25 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
   final ConnectionDetails connectionDetails;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OpenPlayerJoinRequests> createState() =>
+      _OpenPlayerJoinRequestsState();
+}
+
+class _OpenPlayerJoinRequestsState
+    extends ConsumerState<OpenPlayerJoinRequests> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.start,
       spacing: 10,
       runSpacing: 10,
       children: [
-        ...connectionDetails.openPlayerRequests!
+        ...widget.connectionDetails.openPlayerRequests!
             .asMap()
             .entries
             .map((request) => Row(
@@ -185,16 +254,15 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                                 ),
                                 onPressed: () async {
                                   var com = DependencyProvider.of(context)
-                                      .getService<IServerMethodsService>();
+                                      .getService<IRpgEntityService>();
 
-                                  com.acceptJoinRequest(
-                                    connectionId: request.value.connectionId,
-                                    gameCode: request.value.gameCode,
-                                    playerName: request.value.playerName,
-                                    rpgConfig: ref
-                                        .read(rpgConfigurationProvider)
-                                        .requireValue,
-                                  );
+                                  var response = await com.handleJoinRequest(
+                                      campagneJoinRequestId:
+                                          request.value.campagneJoinRequestId,
+                                      typeOfHandle:
+                                          HandleJoinRequestType.accept);
+
+                                  await response.possiblyHandleError(context);
 
                                   // remove this particular request from open requests
                                   deleteJoinRequestAt(request, ref);
@@ -213,7 +281,15 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
                                             255, 255, 79, 79),
                                       ),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
+                                  var com = DependencyProvider.of(context)
+                                      .getService<IRpgEntityService>();
+
+                                  var response = await com.handleJoinRequest(
+                                      campagneJoinRequestId:
+                                          request.value.campagneJoinRequestId,
+                                      typeOfHandle: HandleJoinRequestType.deny);
+                                  await response.possiblyHandleError(context);
                                   // remove this particular request from open requests
                                   deleteJoinRequestAt(request, ref);
                                 }),
@@ -235,11 +311,11 @@ class OpenPlayerJoinRequests extends ConsumerWidget {
 
   void deleteJoinRequestAt(
       MapEntry<int, PlayerJoinRequests> request, WidgetRef ref) {
-    var newRequests = [...connectionDetails.openPlayerRequests!];
+    var newRequests = [...widget.connectionDetails.openPlayerRequests!];
     newRequests.removeAt(request.key);
     ref
         .read(connectionDetailsProvider.notifier)
-        .updateConfiguration(connectionDetails.copyWith(
+        .updateConfiguration(widget.connectionDetails.copyWith(
           openPlayerRequests: newRequests,
         ));
   }
