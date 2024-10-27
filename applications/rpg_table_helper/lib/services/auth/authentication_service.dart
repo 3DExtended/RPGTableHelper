@@ -121,7 +121,7 @@ class AuthenticationService extends IAuthenticationService {
     await apiConnectorService.setJwt(result.result!);
     apiConnectorService.clearCache();
 
-    return result.asT();
+    return HRResponse.fromResult(true, statusCode: result.statusCode);
   }
 
   @override

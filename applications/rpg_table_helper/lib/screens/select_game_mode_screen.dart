@@ -103,7 +103,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
             var service =
                 DependencyProvider.of(context).getService<IRpgEntityService>();
             var createResult = await service.savePlayerCharacterAsNewCharacter(
-                characterName: parsedJson.characterName,
+                characterName: parsedJson.characterName.isNotEmpty
+                    ? parsedJson.characterName
+                    : "SomePlayerCharacterName",
                 characterConfigJson: loadedJsonForRpgCharacterConfig);
             if (!mounted) return;
 
@@ -332,6 +334,17 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                             RpgConfigurationModel.getBaseConfiguration());
                   }
 
+                  ref
+                      .read(connectionDetailsProvider.notifier)
+                      .updateConfiguration(
+                          (ref.read(connectionDetailsProvider).valueOrNull ??
+                                  ConnectionDetails.defaultValue())
+                              .copyWith(
+                                  isDm: true,
+                                  campagneId: campagne.id!.$value!,
+                                  sessionConnectionNumberForPlayers:
+                                      campagne.joinCode));
+
                   // start SignalR connection
                   var serverCommunicationService =
                       DependencyProvider.of(context)
@@ -456,7 +469,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                             Expanded(
                               child: CustomMarkdownBody(
                                   text:
-                                      "# ${character.characterName!}\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}"),
+                                      "# ${character.characterName!}\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}"),
                             ),
                           ],
                         ),

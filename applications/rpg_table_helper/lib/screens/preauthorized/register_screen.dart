@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
@@ -204,8 +205,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                           await registerResponse
                                               .possiblyHandleError(context);
 
-                                          if (registerResponse.result == true) {
-                                            // TODO proceed to campagne or character selection
+                                          if (registerResponse
+                                                  .result?.resultType ==
+                                              SignInResultType
+                                                  .loginSucessfull) {
+                                            // proceed to campagne or character selection
+                                            navigatorKey.currentState!
+                                                .pushNamedAndRemoveUntil(
+                                                    SelectGameModeScreen.route,
+                                                    (r) => false);
                                           } else {
                                             // TODO mark password and username fields as invalid
                                           }

@@ -45,6 +45,8 @@ namespace RPGTableHelper.DataLayer
 
             // EncryptionChallenge Mappings
             CreateMapBetweenIdentifiers<EncryptionChallenge.EncryptionChallengeIdentifier, Guid>();
+            CreateMap<EncryptionChallengeEntity, EncryptionChallengeEntity>();
+
             CreateMap<EncryptionChallenge, EncryptionChallengeEntity>()
                 .ForMember(
                     dest => dest.UserId,

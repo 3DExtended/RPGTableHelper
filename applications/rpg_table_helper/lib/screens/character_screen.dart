@@ -9,17 +9,73 @@ import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.da
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 
-class CharacterScreen extends ConsumerWidget {
+class CharacterScreen extends ConsumerStatefulWidget {
   static String route = "character";
 
   const CharacterScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CharacterScreen> createState() => _CharacterScreenState();
+}
+
+class _CharacterScreenState extends ConsumerState<CharacterScreen> {
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      // check once if there are open join requests for this campagne if you are the dm
+      if (ref.read(connectionDetailsProvider).valueOrNull?.isDm != true) {
+        return;
+      }
+
+      var campagneId =
+          ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+      if (campagneId == null) {
+        return;
+      }
+
+      var service =
+          DependencyProvider.of(context).getService<IRpgEntityService>();
+      var loadJoinRequestsResponse =
+          await service.getOpenJoinRequestsForCampagne(
+              campagneId: CampagneIdentifier($value: campagneId));
+
+      await loadJoinRequestsResponse.possiblyHandleError(context);
+
+      if (loadJoinRequestsResponse.isSuccessful) {
+        var currentlyLoadedOpenRequests = ref
+                .read(connectionDetailsProvider)
+                .requireValue
+                .openPlayerRequests ??
+            [];
+
+        currentlyLoadedOpenRequests.addAll(loadJoinRequestsResponse.result!.map(
+          (e) => PlayerJoinRequests(
+              campagneJoinRequestId: e.request.id!.$value!,
+              playerCharacterId: e.playerCharacter.id!.$value!,
+              playerName: e.playerCharacter.characterName!,
+              username: e.username),
+        ));
+
+        currentlyLoadedOpenRequests = currentlyLoadedOpenRequests
+            .distinct(by: (e) => e.campagneJoinRequestId)
+            .toList();
+
+        ref.read(connectionDetailsProvider.notifier).updateConfiguration(ref
+            .read(connectionDetailsProvider)
+            .requireValue
+            .copyWith(openPlayerRequests: currentlyLoadedOpenRequests));
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
 
     return connectionDetails?.isDm == true
@@ -142,48 +198,6 @@ class _OpenPlayerJoinRequestsState
     extends ConsumerState<OpenPlayerJoinRequests> {
   @override
   void initState() {
-    Future.delayed(Duration.zero, () async {
-      // check once if there are open join requests for this campagne if you are the dm
-      if (ref.read(connectionDetailsProvider).valueOrNull?.isDm != true) {
-        return;
-      }
-
-      var campagneId =
-          ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
-      if (campagneId == null) {
-        return;
-      }
-
-      var service =
-          DependencyProvider.of(context).getService<IRpgEntityService>();
-      var loadJoinRequestsResponse =
-          await service.getOpenJoinRequestsForCampagne(
-              campagneId: CampagneIdentifier($value: campagneId));
-
-      await loadJoinRequestsResponse.possiblyHandleError(context);
-
-      if (loadJoinRequestsResponse.isSuccessful) {
-        var currentlyLoadedOpenRequests = ref
-                .read(connectionDetailsProvider)
-                .requireValue
-                .openPlayerRequests ??
-            [];
-
-        currentlyLoadedOpenRequests.addAll(loadJoinRequestsResponse.result!.map(
-          (e) => PlayerJoinRequests(
-              campagneJoinRequestId: e.request.id!.$value!,
-              playerCharacterId: e.playerCharacter.id!.$value!,
-              playerName: e.playerCharacter.characterName!,
-              username: e.username),
-        ));
-
-        ref.read(connectionDetailsProvider.notifier).updateConfiguration(ref
-            .read(connectionDetailsProvider)
-            .requireValue
-            .copyWith(openPlayerRequests: currentlyLoadedOpenRequests));
-      }
-    });
-
     super.initState();
   }
 

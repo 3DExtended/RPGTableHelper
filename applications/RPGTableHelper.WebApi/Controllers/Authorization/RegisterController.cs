@@ -207,6 +207,31 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
+            // update encryption challenge and set user id...
+            var encryptionChallenge = await new EncryptionChallengeQuery
+            {
+                ModelId = registerDto.EncryptionChallengeIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (encryptionChallenge.IsNone)
+            {
+                return BadRequest();
+            }
+
+            var challengeToUpdate = encryptionChallenge.Get();
+            challengeToUpdate.UserId = usercreateresult.Get();
+
+            var challengeUpdateResult = await new EncryptionChallengeUpdateQuery { UpdatedModel = challengeToUpdate }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (challengeUpdateResult.IsNone)
+            {
+                return BadRequest();
+            }
+
             var refreshToken = ApiKeyGenerator.GenerateKey(32);
 
             var userCredentialCreateResult = await new UserCredentialCreateQuery

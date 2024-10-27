@@ -174,7 +174,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not validate player");
             }
 
-            if (handleJoinRequestDto.Type == HandleJoinRequestType.Accept && player.Get().CampagneId != null)
+            if (handleJoinRequestDto.Type == HandleJoinRequestType.Accept && player.Get().CampagneId == null)
             {
                 var playerToUpdate = player.Get();
                 playerToUpdate.CampagneId = campagne.Get().Id;
