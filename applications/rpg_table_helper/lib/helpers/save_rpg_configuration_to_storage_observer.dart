@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +5,6 @@ import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
   SaveRpgConfigurationToStorageObserver();
@@ -64,9 +62,9 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
   void _handleAsyncData(AsyncData<RpgConfigurationModel> castedData) {
     if (castedData.hasValue == true) {
       Future.delayed(Duration.zero, () async {
-        var serializedConfig = jsonEncode(castedData.requireValue);
-        var prefs = await SharedPreferences.getInstance();
         // TODO remove me
+        // var serializedConfig = jsonEncode(castedData.requireValue);
+        // var prefs = await SharedPreferences.getInstance();
         // do I even need this class still?
         // await prefs.setString(sharedPrefsKeyRpgConfigJson, serializedConfig);
       });

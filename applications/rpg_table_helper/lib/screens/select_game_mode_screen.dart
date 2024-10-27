@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -111,7 +112,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     var height = MediaQuery.of(context).size.height;
 
     var isLandscape = width >= height;
-    isLandscape = true;
+    // TODO remove me
+    if (kDebugMode || !kDebugMode) isLandscape = true;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
