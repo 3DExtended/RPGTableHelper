@@ -11,7 +11,6 @@ import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/components/tab_handler.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
@@ -24,12 +23,12 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
   static const route = 'selectgamemode';
@@ -51,67 +50,56 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       if (!mounted) return;
 
       if (!DependencyProvider.of(context).isMocked) {
-        var prefs = await SharedPreferences.getInstance();
-
-        // synchronize local campagnes
-        if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
-          var loadedJsonForRpgConfig =
-              prefs.getString(sharedPrefsKeyRpgConfigJson);
-          var parsedJson = RpgConfigurationModel.fromJson(
-              jsonDecode(loadedJsonForRpgConfig!));
-          if (!mounted) return;
-
-          await showSynchronizeLocallySavedRpgCampagne(context)
-              .then((value) async {
-            if (value != true) {
-              return;
-            }
-
-            // save to cloud
-            if (!mounted) return;
-
-            var service =
-                DependencyProvider.of(context).getService<IRpgEntityService>();
-            var createResult = await service.saveCampagneAsNewCampagne(
-                campagneName: parsedJson.rpgName,
-                rpgConfig: loadedJsonForRpgConfig);
-            if (!mounted) return;
-
-            await createResult.possiblyHandleError(context);
-          });
-        }
-
-        // synchronize local characters
-        if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
-          var loadedJsonForRpgCharacterConfig =
-              prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
-
-          var parsedJson = RpgCharacterConfiguration.fromJson(
-              jsonDecode(loadedJsonForRpgCharacterConfig!));
-
-          if (!mounted) return;
-
-          await showSynchronizeLocallySavedRpgPlayerCharacter(context)
-              .then((value) async {
-            if (value != true) {
-              return;
-            }
-
-            // save to cloud
-            if (!mounted) return;
-
-            var service =
-                DependencyProvider.of(context).getService<IRpgEntityService>();
-            var createResult = await service.savePlayerCharacterAsNewCharacter(
-                characterName: parsedJson.characterName.isNotEmpty
-                    ? parsedJson.characterName
-                    : "SomePlayerCharacterName",
-                characterConfigJson: loadedJsonForRpgCharacterConfig);
-            if (!mounted) return;
-
-            await createResult.possiblyHandleError(context);
-          });
-        }
+        // TODO can i remove this code?
+        //var prefs = await SharedPreferences.getInstance();
+        //// synchronize local campagnes
+        //if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
+        //  var loadedJsonForRpgConfig =
+        //      prefs.getString(sharedPrefsKeyRpgConfigJson);
+        //  var parsedJson = RpgConfigurationModel.fromJson(
+        //      jsonDecode(loadedJsonForRpgConfig!));
+        //  if (!mounted) return;
+        //  await showSynchronizeLocallySavedRpgCampagne(context)
+        //      .then((value) async {
+        //    if (value != true) {
+        //      return;
+        //    }
+        //    // save to cloud
+        //    if (!mounted) return;
+        //    var service =
+        //        DependencyProvider.of(context).getService<IRpgEntityService>();
+        //    var createResult = await service.saveCampagneAsNewCampagne(
+        //        campagneName: parsedJson.rpgName,
+        //        rpgConfig: loadedJsonForRpgConfig);
+        //    if (!mounted) return;
+        //    await createResult.possiblyHandleError(context);
+        //  });
+        //}
+        //// synchronize local characters
+        //if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
+        //  var loadedJsonForRpgCharacterConfig =
+        //      prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
+        //  var parsedJson = RpgCharacterConfiguration.fromJson(
+        //      jsonDecode(loadedJsonForRpgCharacterConfig!));
+        //  if (!mounted) return;
+        //  await showSynchronizeLocallySavedRpgPlayerCharacter(context)
+        //      .then((value) async {
+        //    if (value != true) {
+        //      return;
+        //    }
+        //    // save to cloud
+        //    if (!mounted) return;
+        //    var service =
+        //        DependencyProvider.of(context).getService<IRpgEntityService>();
+        //    var createResult = await service.savePlayerCharacterAsNewCharacter(
+        //        characterName: parsedJson.characterName.isNotEmpty
+        //            ? parsedJson.characterName
+        //            : "SomePlayerCharacterName",
+        //        characterConfigJson: loadedJsonForRpgCharacterConfig);
+        //    if (!mounted) return;
+        //    await createResult.possiblyHandleError(context);
+        //  });
+        //}
       }
 
       // load campagnes and players

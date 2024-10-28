@@ -1,5 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 
 part 'connection_details.g.dart';
@@ -44,13 +45,32 @@ class GrantedItemsForPlayer {
 
 @JsonSerializable()
 @CopyWith()
+class OpenPlayerConnection {
+  final RpgCharacterConfiguration configuration;
+  final UserIdentifier userId;
+  final PlayerCharacterIdentifier playerCharacterId;
+
+  OpenPlayerConnection({
+    required this.userId,
+    required this.playerCharacterId,
+    required this.configuration,
+  });
+
+  factory OpenPlayerConnection.fromJson(Map<String, dynamic> json) =>
+      _$OpenPlayerConnectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OpenPlayerConnectionToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
 class ConnectionDetails {
   final bool isConnected;
   final bool isConnecting;
   final bool isInSession;
   final String? sessionConnectionNumberForPlayers;
   final List<PlayerJoinRequests>? openPlayerRequests;
-  final List<RpgCharacterConfiguration>? playerProfiles;
+  final List<OpenPlayerConnection>? connectedPlayers;
   final bool isDm;
   final List<GrantedItemsForPlayer>? lastGrantedItems;
 
@@ -62,7 +82,7 @@ class ConnectionDetails {
     required this.isConnected,
     required this.sessionConnectionNumberForPlayers,
     required this.isConnecting,
-    required this.playerProfiles,
+    required this.connectedPlayers,
     required this.isInSession,
     required this.isDm,
     required this.lastGrantedItems,
@@ -76,7 +96,7 @@ class ConnectionDetails {
         isInSession: false,
         isDm: false,
         sessionConnectionNumberForPlayers: null,
-        playerProfiles: [],
+        connectedPlayers: [],
         lastGrantedItems: null,
         openPlayerRequests: [],
         campagneId: null,

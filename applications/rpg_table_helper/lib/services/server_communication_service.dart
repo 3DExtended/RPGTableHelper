@@ -9,6 +9,8 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -122,9 +124,19 @@ class ServerCommunicationService extends IServerCommunicationService {
               ConnectionDetails.defaultValue());
     });
 
-    hubConnection!.onreconnected(({connectionId}) {
+    hubConnection!.onreconnected(({connectionId}) async {
       log("onreconnected called");
       connectionIsOpen = true;
+
+      // users cannot be assigned to signalR groups (see here: https://github.com/dotnet/aspnetcore/issues/26133)
+      // hence, everytime a user is reconnected, we must ensure we add them to the appropiate groups
+      // hence, we read the connectionDetailsProvider to get both campagneId and playerCharacterId
+      // and call readdToSignalRGroups() on the server.
+      // TODO this is an ugly hack to obtain the instance of IServerMethodsService...
+      var serverMethods =
+          DependencyProvider.getIt!.get<IServerMethodsService>();
+      await serverMethods.readdToSignalRGroups();
+
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
                     isConnected: true,

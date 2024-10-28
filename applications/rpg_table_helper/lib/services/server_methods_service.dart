@@ -3,22 +3,28 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 
 abstract class IServerMethodsService {
   final bool isMock;
   final WidgetRef widgetRef;
   final IServerCommunicationService serverCommunicationService;
+  final INavigationService navigationService;
 
   IServerMethodsService({
     required this.isMock,
     required this.widgetRef,
     required this.serverCommunicationService,
+    required this.navigationService,
   }) {
     serverCommunicationService.registerCallbackSingleString(
       function: registerGameResponse,
@@ -34,13 +40,17 @@ abstract class IServerMethodsService {
       function: joinRequestAccepted,
       functionName: "joinRequestAccepted",
     );
+    serverCommunicationService.registerCallbackWithoutParameters(
+      function: requestStatusFromPlayers,
+      functionName: "requestStatusFromPlayers",
+    );
 
     serverCommunicationService.registerCallbackSingleString(
       function: updateRpgConfig,
       functionName: "updateRpgConfig",
     );
 
-    serverCommunicationService.registerCallbackSingleString(
+    serverCommunicationService.registerCallbackThreeStrings(
       function: updateRpgCharacterConfigOnDmSide,
       functionName: "updateRpgCharacterConfigOnDmSide",
     );
@@ -48,6 +58,10 @@ abstract class IServerMethodsService {
     serverCommunicationService.registerCallbackSingleString(
       function: grantPlayerItems,
       functionName: "grantPlayerItems",
+    );
+    serverCommunicationService.registerCallbackSingleString(
+      function: clientDisconnected,
+      functionName: "clientDisconnected",
     );
   }
 
@@ -57,11 +71,15 @@ abstract class IServerMethodsService {
       String playerCharacterId, String campagneJoinRequestId);
   void joinRequestAccepted();
   void updateRpgConfig(String parameter);
-  void updateRpgCharacterConfigOnDmSide(String parameter);
+  void updateRpgCharacterConfigOnDmSide(
+      String config, String playerId, String userId);
   void grantPlayerItems(String grantedItemsJson);
+  void requestStatusFromPlayers();
+  void clientDisconnected(String userId);
 
   // this should contain every method that call the server
   Future registerGame({required String campagneId});
+  Future readdToSignalRGroups();
   Future joinGameSession({required String playerCharacterId});
 
   Future sendUpdatedRpgConfig(
@@ -78,7 +96,9 @@ abstract class IServerMethodsService {
 
 class ServerMethodsService extends IServerMethodsService {
   ServerMethodsService(
-      {required super.serverCommunicationService, required super.widgetRef})
+      {required super.serverCommunicationService,
+      required super.navigationService,
+      required super.widgetRef})
       : super(isMock: false);
 
   @override
@@ -205,12 +225,13 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  void updateRpgCharacterConfigOnDmSide(String parameter) {
+  void updateRpgCharacterConfigOnDmSide(
+      String config, String playerId, String userId) {
     if (kDebugMode == true) {
       log("Received new rpg character config");
     }
 
-    Map<String, dynamic> map = jsonDecode(parameter);
+    Map<String, dynamic> map = jsonDecode(config);
 
     var receivedConfig = RpgCharacterConfiguration.fromJson(map);
 
@@ -218,22 +239,28 @@ class ServerMethodsService extends IServerMethodsService {
     var currentConnectionDetails =
         widgetRef.read(connectionDetailsProvider).requireValue;
 
-    List<RpgCharacterConfiguration> updatedPlayerProfiles = [
-      ...(currentConnectionDetails.playerProfiles ?? [])
+    List<OpenPlayerConnection> updatedPlayerProfiles = [
+      ...(currentConnectionDetails.connectedPlayers ?? [])
     ];
 
-    var indexOfExistingPlayerWithName =
-        updatedPlayerProfiles.indexWhere((p) => p.uuid == receivedConfig.uuid);
+    var indexOfExistingPlayer = updatedPlayerProfiles
+        .indexWhere((p) => p.playerCharacterId.$value! == playerId);
 
-    if (indexOfExistingPlayerWithName == -1) {
-      updatedPlayerProfiles.add(receivedConfig);
+    var connectionObject = OpenPlayerConnection(
+      configuration: receivedConfig,
+      playerCharacterId: PlayerCharacterIdentifier($value: playerId),
+      userId: UserIdentifier($value: userId),
+    );
+
+    if (indexOfExistingPlayer == -1) {
+      updatedPlayerProfiles.add(connectionObject);
     } else {
-      updatedPlayerProfiles[indexOfExistingPlayerWithName] = (receivedConfig);
+      updatedPlayerProfiles[indexOfExistingPlayer] = connectionObject;
     }
 
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         currentConnectionDetails.copyWith(
-            playerProfiles: updatedPlayerProfiles));
+            connectedPlayers: updatedPlayerProfiles));
   }
 
   @override
@@ -260,6 +287,72 @@ class ServerMethodsService extends IServerMethodsService {
         .read(rpgCharacterConfigurationProvider.notifier)
         .grantItems(myNewItems);
 
-    // TODO show modal
+    var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
+
+    var navKey = navigationService.getCurrentNavigationKey();
+
+    // show modal
+    showPlayerHasBeenGrantedItemsThroughDmModal(
+      navKey.currentContext!,
+      grantedItems: myNewItems,
+      rpgConfig: rpgConfig,
+    );
+  }
+
+  @override
+  void requestStatusFromPlayers() {
+    var connectionDetails =
+        widgetRef.read(connectionDetailsProvider).requireValue;
+    var charDetails =
+        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
+
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        connectionDetails.copyWith(
+            isConnected: true, isConnecting: false, isInSession: true));
+
+    sendUpdatedRpgCharacterConfig(
+      charConfig: charDetails,
+      playercharacterid: connectionDetails.playerCharacterId!,
+    );
+  }
+
+  @override
+  Future readdToSignalRGroups() async {
+    var connectionDetails =
+        widgetRef.read(connectionDetailsProvider).requireValue;
+
+    // ReaddToSignalRGroups(string? campagneId, string? characterId)
+    await serverCommunicationService
+        .executeServerFunction("ReaddToSignalRGroups", args: [
+      connectionDetails.campagneId ?? "NULL",
+      connectionDetails.playerCharacterId ?? "NULL"
+    ]);
+  }
+
+  @override
+  void clientDisconnected(String userId) {
+    // we should update the connection info with this player data
+    var currentConnectionDetails =
+        widgetRef.read(connectionDetailsProvider).valueOrNull;
+    if (currentConnectionDetails == null) {
+      return;
+    }
+
+    List<OpenPlayerConnection> updatedPlayerProfiles = [
+      ...(currentConnectionDetails.connectedPlayers ?? [])
+    ];
+
+    var indexOfExistingPlayer =
+        updatedPlayerProfiles.indexWhere((p) => p.userId.$value! == userId);
+
+    if (indexOfExistingPlayer < 0) {
+      return;
+    }
+
+    updatedPlayerProfiles.removeAt(indexOfExistingPlayer);
+
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        currentConnectionDetails.copyWith(
+            connectedPlayers: updatedPlayerProfiles));
   }
 }

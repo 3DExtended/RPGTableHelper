@@ -38,9 +38,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
 
-    if (connectionDetails != null &&
-        connectionDetails.isDm &&
-        connectionDetails.isConnected) {
+    if (connectionDetails != null && connectionDetails.isDm) {
       return const DmGrantItemsScreenContent();
     }
 

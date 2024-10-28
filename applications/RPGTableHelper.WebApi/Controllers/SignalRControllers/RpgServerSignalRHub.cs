@@ -1,10 +1,7 @@
 using System.Security.Cryptography;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-
 using Prodot.Patterns.Cqrs;
-
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
@@ -106,14 +103,95 @@ public class RpgServerSignalRHub : Hub
         await base.OnConnectedAsync();
     }
 
-    public override Task OnDisconnectedAsync(Exception? exception)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
         Console.Write(Context.GetHttpContext()?.Request.Headers);
+        await Clients
+            .Group("AllCampagnes_Dms")
+            .SendAsync("clientDisconnected", _userContext.User.UserIdentifier.Value.ToString());
 
-        // TODO update me for new flow
-        Console.WriteLine("Disconnected: Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
+        Console.WriteLine("Disconnected: Context.Username:" + Context.UserIdentifier); // This one is the only one filled...
 
-        return base.OnDisconnectedAsync(exception);
+        await base.OnDisconnectedAsync(exception);
+    }
+
+    /// <summary>
+    /// This method can be called after a reconnect happend to add a client to their appropiate groups
+    /// </summary>
+    /// <param name="campagneId">The campagne the client wants to join</param>
+    /// <param name="characterId">The playerid the client wants to use</param>
+    public async Task ReaddToSignalRGroups(string? campagneId, string? characterId)
+    {
+        campagneId = campagneId == "NULL" ? null : campagneId;
+        characterId = characterId == "NULL" ? null : characterId;
+
+        if (campagneId == null && characterId == null)
+        {
+            return;
+        }
+
+        Campagne.CampagneIdentifier? campagneIdParsed = null;
+        bool isDm = false;
+
+        if (campagneId != null)
+        {
+            var campagne = await new CampagneQuery
+            {
+                ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId!)),
+            }
+                .RunAsync(_queryProcessor, default)
+                .ConfigureAwait(false);
+
+            if (campagne.IsNone)
+            {
+                return;
+            }
+
+            campagneIdParsed = campagne.Get().Id;
+            isDm = campagne.Get().DmUserId == _userContext.User.UserIdentifier;
+        }
+
+        if (campagneIdParsed == null && characterId != null)
+        {
+            var playerCharacter = await new PlayerCharacterQuery
+            {
+                ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(characterId!)),
+            }
+                .RunAsync(_queryProcessor, default)
+                .ConfigureAwait(false);
+            if (playerCharacter.IsNone)
+            {
+                return;
+            }
+
+            campagneIdParsed = playerCharacter.Get().CampagneId;
+            isDm = false;
+        }
+
+        if (campagneIdParsed != null)
+        {
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId,
+                campagneIdParsed.Value + "_All",
+                (CancellationToken)default
+            );
+
+            if (isDm)
+            {
+                await Groups.AddToGroupAsync(
+                    Context.ConnectionId,
+                    campagneIdParsed.Value + "_Dms",
+                    (CancellationToken)default
+                );
+
+                await Groups.AddToGroupAsync(Context.ConnectionId, "AllCampagnes_Dms", (CancellationToken)default);
+
+                // in this case we want to request an update from each client...
+                await Clients
+                    .OthersInGroup(campagneIdParsed.Value + "_All")
+                    .SendAsync("requestStatusFromPlayers", (CancellationToken)default);
+            }
+        }
     }
 
     /// <summary>
@@ -136,8 +214,14 @@ public class RpgServerSignalRHub : Hub
 
         await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_All", (CancellationToken)default);
         await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_Dms", (CancellationToken)default);
+        await Groups.AddToGroupAsync(Context.ConnectionId, "AllCampagnes_Dms", (CancellationToken)default);
 
         await Clients.Caller.SendAsync("registerGameResponse", campagne.Get().JoinCode, (CancellationToken)default);
+
+        // in this case we want to request an update from each client...
+        await Clients
+            .OthersInGroup(campagneId + "_All")
+            .SendAsync("requestStatusFromPlayers", (CancellationToken)default);
     }
 
     /// <summary>
@@ -210,7 +294,8 @@ public class RpgServerSignalRHub : Hub
         Console.WriteLine("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
-        string fileName = $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
+        string fileName =
+            $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
         string currentDirectory = Directory.GetCurrentDirectory();
         string filePath = Path.Combine(currentDirectory, fileName);
         try
@@ -227,7 +312,13 @@ public class RpgServerSignalRHub : Hub
         // ask DM for joining permissions:
         await Clients
             .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
-            .SendAsync("updateRpgCharacterConfigOnDmSide", characterConfig, (CancellationToken)default);
+            .SendAsync(
+                "updateRpgCharacterConfigOnDmSide",
+                characterConfig,
+                updatedPlayerCharacter.Id.Value.ToString(),
+                updatedPlayerCharacter.PlayerUserId.Value.ToString(),
+                (CancellationToken)default
+            );
     }
 
     /// <summary>

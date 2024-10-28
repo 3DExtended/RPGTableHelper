@@ -103,13 +103,18 @@ class DependencyProvider extends InheritedWidget {
     _registerService<IServerMethodsService>(() {
       var serverCommunicationService =
           getService<IServerCommunicationService>();
+      var navService = getService<INavigationService>();
       return ServerMethodsService(
+          navigationService: navService,
           serverCommunicationService: serverCommunicationService,
           widgetRef: widgetRef);
     }, () {
       var serverCommunicationService =
           getService<IServerCommunicationService>();
+      var navService = getService<INavigationService>();
+
       return ServerMethodsService(
+          navigationService: navService,
           serverCommunicationService: serverCommunicationService,
           widgetRef: widgetRef);
     });

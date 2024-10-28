@@ -31,6 +31,7 @@ class _DmGrantItemsScreenContentState
   List<(String uuid, String playerName, TextEditingController)> playerRolls =
       [];
   var isSendItemsButtonDisabled = true;
+  List<String> excludedItems = [];
 
   bool _getIsSendItemsButtonDisabled() {
     if (selectedPlaceOfFindingId == null) {
@@ -57,17 +58,9 @@ class _DmGrantItemsScreenContentState
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
 
     ref.watch(connectionDetailsProvider).whenData((cb) {
-      var playerIds = (cb.playerProfiles ?? [])
-          .map((p) => (p.uuid, p.characterName))
+      var playerIds = (cb.connectedPlayers ?? [])
+          .map((p) => (p.configuration.uuid, p.configuration.characterName))
           .toList();
-
-      // TODO remove me
-      if (playerIds.isEmpty) {
-        playerIds = [
-          ("4ada920c-fd40-45ec-9892-a16a822fbc47", "Kardan"),
-          ("9877f8bf-4ef1-4dcd-b922-b29e3e90c4ae", "Marie")
-        ];
-      }
 
       for (var playerId in playerIds) {
         if (playerRolls.every((pr) => pr.$1 != playerId.$1)) {
@@ -150,7 +143,6 @@ class _DmGrantItemsScreenContentState
                                 text: getLastGrantedItemsMarkdownText(
                                     rpgConfig, connectionDetails)),
                           ),
-                        // TODO build me...
                       ],
                     ),
                   ),
@@ -216,7 +208,8 @@ class _DmGrantItemsScreenContentState
                               Expanded(
                                 flex: 3,
                                 child: CustomMarkdownBody(
-                                    text: "Spieler __${playerRollPair.$2}__"),
+                                    text:
+                                        "Spieler __${playerRollPair.$2.isNotEmpty ? playerRollPair.$2 : "Player Name"}__"),
                               ),
                               SizedBox(
                                 width: 80,
@@ -249,9 +242,13 @@ class _DmGrantItemsScreenContentState
                         const HorizontalLine(),
                         Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: CustomMarkdownBody(
-                              text: getTextOfFindableItemsInPlaceOfFinding(
-                                  rpgConfig, selectedPlaceOfFindingId)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...getWidgetsOfFindableItemsInPlaceOfFinding(
+                                  rpgConfig, selectedPlaceOfFindingId)
+                            ],
+                          ),
                         ),
                         SizedBox(
                             height: EdgeInsets.fromViewPadding(
@@ -275,6 +272,11 @@ class _DmGrantItemsScreenContentState
     List<(RpgItem, int)> itemsInPlaceOfFinding =
         getItemsForSelectedPlaceOfFinding(
             rpgConfig!, selectedPlaceOfFindingId!);
+
+    // remove manually excluded items:
+    itemsInPlaceOfFinding = itemsInPlaceOfFinding
+        .where((t) => !excludedItems.contains(t.$1.uuid))
+        .toList();
 
     for (var playerTuple in playerRolls) {
       var playerId = playerTuple.$1;
@@ -322,25 +324,58 @@ class _DmGrantItemsScreenContentState
     }
   }
 
-  String getTextOfFindableItemsInPlaceOfFinding(
+  List<Widget> getWidgetsOfFindableItemsInPlaceOfFinding(
     RpgConfigurationModel? rpgConfig,
     String? selectedPlaceOfFindingId,
   ) {
-    var result = "## Auffindbare Items in Fundort: ";
+    List<Widget> result = [
+      CustomMarkdownBody(
+        text: "## Auffindbare Items in Fundort: ",
+      )
+    ];
 
     if (rpgConfig == null) return result;
-    result += "\n\n";
+
     if (selectedPlaceOfFindingId == null) {
-      result += "Es wurde noch kein Fundort ausgewählt.";
+      result.add(CustomMarkdownBody(
+        text: "Es wurde noch kein Fundort ausgewählt.",
+      ));
     } else {
-      result += "Diese Items gibt es am/im Fundort:\n";
+      result.add(CustomMarkdownBody(
+        text: "Diese Items gibt es am/im Fundort:",
+      ));
 
       List<(RpgItem, int)> itemsWithTheirDcSorted =
           getItemsForSelectedPlaceOfFinding(
               rpgConfig, selectedPlaceOfFindingId);
 
       for (var item in itemsWithTheirDcSorted) {
-        result += "\n- ${item.$1.name} (DC: ${item.$2})";
+        result.add(CheckboxListTile.adaptive(
+          controlAffinity: ListTileControlAffinity.leading,
+          contentPadding: EdgeInsets.all(0),
+          splashRadius: 0,
+          dense: true,
+          checkColor: const Color.fromARGB(255, 12, 163, 90),
+          activeColor: const Color.fromARGB(126, 90, 90, 90),
+          visualDensity: VisualDensity(vertical: -2),
+          title: Text(
+            "${item.$1.name} (DC: ${item.$2})",
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(color: Colors.white),
+          ),
+          value: !excludedItems.contains(item.$1.uuid),
+          onChanged: (val) {
+            setState(() {
+              if (excludedItems.contains(item.$1.uuid)) {
+                excludedItems.removeWhere((e) => e == item.$1.uuid);
+              } else {
+                excludedItems.add(item.$1.uuid);
+              }
+            });
+          },
+        ));
       }
     }
 
@@ -385,7 +420,8 @@ class _DmGrantItemsScreenContentState
 
     for (var grantForPlayer in (connectionDetails.lastGrantedItems ??
         List<GrantedItemsForPlayer>.empty())) {
-      result += "- Spieler: __${grantForPlayer.characterName}:__\n";
+      result +=
+          "- Spieler __${grantForPlayer.characterName.isNotEmpty ? grantForPlayer.characterName : "Player Name"}:__\n";
 
       if (grantForPlayer.grantedItems.isEmpty) {
         result += "  - Keine Items in dieser Runde\n";
