@@ -2,8 +2,6 @@
 import os
 import re
 
-import fire
-
 version_filepath = os.path.join('.', 'pubspec.yaml')
 # version_pattern = re.compile(fr'^version:\s*\d+.\d+.\d+\+(\d+)?$')
 regex = r"^version:\s*\d+.\d+.\d+\+(\d+)?$"

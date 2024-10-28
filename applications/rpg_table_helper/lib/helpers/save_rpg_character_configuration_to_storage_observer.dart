@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
   SaveRpgCharacterConfigurationToStorageObserver();
@@ -63,10 +60,10 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
   void _handleAsyncData(AsyncData<RpgCharacterConfiguration> castedData) {
     if (castedData.hasValue == true) {
       Future.delayed(Duration.zero, () async {
-        var serializedConfig = jsonEncode(castedData.requireValue);
-        var prefs = await SharedPreferences.getInstance();
-        await prefs.setString(
-            sharedPrefsKeyRpgCharacterConfigJson, serializedConfig);
+        // var serializedConfig = jsonEncode(castedData.requireValue);
+        // var prefs = await SharedPreferences.getInstance();
+        // await prefs.setString(
+        //     sharedPrefsKeyRpgCharacterConfigJson, serializedConfig);
       });
     }
   }

@@ -288,7 +288,7 @@ class AuthenticationService extends IAuthenticationService {
   Future<HRResponse<bool>> completeRegistration(
       {required String apiKey, required String username}) async {
     var client = await apiConnectorService.getApiConnector(
-      requiresJwt: true, // require a jwt for testing the login
+      requiresJwt: false, // doesnt require a jwt since apiKey is set
     );
     if (client == null) {
       return HRResponse.error("Could not load apiConnectorClient",
