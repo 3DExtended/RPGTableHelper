@@ -1,6 +1,8 @@
 // cannot figure out how to fix the canLaunch stuff in here...
 // ignore_for_file: deprecated_member_use
 
+import 'dart:math';
+
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 Future<void> showOldVersionUpdateRequired(BuildContext context) async {
@@ -293,6 +296,134 @@ Future showPlayerHasBeenGrantedItemsThroughDmModal(BuildContext context,
                             ],
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+Future showItemVisualizationWithRecipeDetailsModal(BuildContext context,
+    {required CraftingRecipe recipe,
+    required RpgItem itemToRender,
+    required RpgConfigurationModel rpgConfig,
+    required RpgCharacterConfiguration rpgCharConfig,
+    GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+  // show error to user
+  await customShowCupertinoModalBottomSheet(
+      isDismissible: true,
+      expand: true,
+      closeProgressThreshold: -50000,
+      enableDrag: true,
+      context: context,
+      backgroundColor: const Color.fromARGB(158, 49, 49, 49),
+      overrideNavigatorKey: overrideNavigatorKey,
+      builder: (context) {
+        var modalPadding = 80.0;
+        if (MediaQuery.of(context).size.width < 800) {
+          modalPadding = 20.0;
+        }
+
+        var minWidthHeight = min(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height) *
+            0.7;
+
+        minWidthHeight = min(400, minWidthHeight);
+
+        return Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: modalPadding,
+              vertical: modalPadding), // TODO maybe percentage of total width?
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: StyledBox(
+                borderThickness: 1,
+                child: SizedBox(
+                  height: minWidthHeight,
+                  width: minWidthHeight,
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            itemToRender.name,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(child: SingleChildScrollView(
+                          child: Builder(builder: (context) {
+                            var result = "## Beschreibung\n\n";
+                            result += itemToRender.description;
+                            result += "\n\n";
+
+                            result += "## Herstellung\n\n";
+
+                            if (recipe.requiredItemIds.isNotEmpty) {
+                              result += "### Voraussetzung\n\n";
+
+                              for (var requirement in recipe.requiredItemIds) {
+                                var requirementItem = rpgConfig.allItems
+                                    .firstWhereOrNull(
+                                        (i) => i.uuid == requirement);
+                                if (requirementItem == null) continue;
+
+                                result += "- ${requirementItem.name}\n";
+                              }
+
+                              result += "### Zutaten\n\n";
+                            }
+
+                            for (var ingredientPair in recipe.ingredients) {
+                              var ingredientItem = rpgConfig.allItems
+                                  .firstWhereOrNull(
+                                      (i) => i.uuid == ingredientPair.itemUuid);
+                              if (ingredientItem == null) continue;
+
+                              int numberOfIngredientsInInventar = rpgCharConfig
+                                      .inventory
+                                      .firstWhereOrNull((inv) =>
+                                          inv.itemUuid ==
+                                          ingredientPair.itemUuid)
+                                      ?.amount ??
+                                  0;
+
+                              var numberOfIngredientsInInventarText =
+                                  numberOfIngredientsInInventar.toString();
+
+                              if (numberOfIngredientsInInventar <
+                                  ingredientPair.amountOfUsedItem) {
+                                numberOfIngredientsInInventarText += " ❌";
+                                //"❗️";
+                              } else {
+                                numberOfIngredientsInInventarText += " ✅";
+                              }
+
+                              result +=
+                                  "- ${ingredientPair.amountOfUsedItem}x ${ingredientItem.name}, in Besitz: $numberOfIngredientsInInventarText\n";
+                            }
+
+                            return CustomMarkdownBody(text: result);
+                          }),
+                        )),
                       ],
                     ),
                   ),
