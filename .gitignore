@@ -517,3 +517,4 @@ applications/rpg_table_helper/coverage/lcov.info
 coveragereport/
 Cobertura.xml
 applications/RPGTableHelper.WebApi/maindb1
+applications/RPGTableHelper.WebApi/maindb2.db
