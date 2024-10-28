@@ -1,7 +1,10 @@
 using System.Security.Cryptography;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+
 using Prodot.Patterns.Cqrs;
+
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
@@ -12,8 +15,8 @@ namespace RPGTableHelper.WebApi;
 [Authorize] // NOTE this does not work. I am using the IUserContext to ensure authorization!
 public class RpgServerSignalRHub : Hub
 {
-    private readonly IUserContext _userContext;
     private readonly IQueryProcessor _queryProcessor;
+    private readonly IUserContext _userContext;
 
     public RpgServerSignalRHub(IUserContext userContext, IQueryProcessor queryProcessor)
     {
@@ -22,30 +25,6 @@ public class RpgServerSignalRHub : Hub
         // Hence, I am using the IUserContext to guard this Hub.
         _userContext = userContext;
         _queryProcessor = queryProcessor;
-    }
-
-    /// <summary>
-    /// DM Method for starting a session
-    /// </summary>
-    public async Task RegisterGame(string campagneId)
-    {
-        // ensure that user is dm for campagne
-        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
-            .RunAsync(_queryProcessor, default)
-            .ConfigureAwait(false);
-
-        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
-        {
-            // TODO how do i handle exceptions in signalr?
-            return;
-        }
-
-        Console.WriteLine("New game initiated for campagne: " + campagneId);
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_All", (CancellationToken)default);
-        await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_Dms", (CancellationToken)default);
-
-        await Clients.Caller.SendAsync("registerGameResponse", campagne.Get().JoinCode, (CancellationToken)default);
     }
 
     /// <summary>
@@ -111,6 +90,80 @@ public class RpgServerSignalRHub : Hub
         }
     }
 
+    public override async Task OnConnectedAsync()
+    {
+        Console.Write(Context.GetHttpContext()?.Request.Headers);
+        // TODO update me for new flow
+        // This newMessage call is what is not being received on the front end
+        await Clients.All.SendAsync("aClientProvidedFunction", "ich bin ein test");
+
+        // This console.WriteLine does print when I bring up the component in the front end.
+        Console.WriteLine("Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
+        Console.WriteLine("Context.User:" + _userContext.User!.ToString());
+        Console.WriteLine("Context.User.Identity.Name:" + _userContext.User!.UserIdentifier.Value);
+        Console.WriteLine("Context.UserIdentifier:" + Context.UserIdentifier);
+
+        await base.OnConnectedAsync();
+    }
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        Console.Write(Context.GetHttpContext()?.Request.Headers);
+
+        // TODO update me for new flow
+        Console.WriteLine("Disconnected: Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
+
+        return base.OnDisconnectedAsync(exception);
+    }
+
+    /// <summary>
+    /// DM Method for starting a session
+    /// </summary>
+    public async Task RegisterGame(string campagneId)
+    {
+        // ensure that user is dm for campagne
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        Console.WriteLine("New game initiated for campagne: " + campagneId);
+
+        await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_All", (CancellationToken)default);
+        await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_Dms", (CancellationToken)default);
+
+        await Clients.Caller.SendAsync("registerGameResponse", campagne.Get().JoinCode, (CancellationToken)default);
+    }
+
+    /// <summary>
+    /// Grants a list of items to players.
+    /// </summary>
+    /// <param name="campagneId">the campagneId of the session</param>
+    /// <param name="json">The json encoded grant for dart type "List of GrantedItemsForPlayer"</param>
+    public async Task SendGrantedItemsToPlayers(string campagneId, string json)
+    {
+        // ensure that user is dm for campagne
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        // ask DM for joining permissions:
+        await Clients
+            .OthersInGroup(campagneId + "_All")
+            .SendAsync("grantPlayerItems", json, (CancellationToken)default);
+    }
+
     /// <summary>
     /// When a player updated their config (e.g. got an item, changed their HP etc.),
     /// this method sends this updated config to the dm.
@@ -156,34 +209,25 @@ public class RpgServerSignalRHub : Hub
 
         Console.WriteLine("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
-        // ask DM for joining permissions:
-        await Clients
-            .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
-            .SendAsync("updateRpgCharacterConfigOnDmSide", characterConfig, (CancellationToken)default);
-    }
-
-    /// <summary>
-    /// Grants a list of items to players.
-    /// </summary>
-    /// <param name="campagneId">the campagneId of the session</param>
-    /// <param name="json">The json encoded grant for dart type "List of GrantedItemsForPlayer"</param>
-    public async Task SendGrantedItemsToPlayers(string campagneId, string json)
-    {
-        // ensure that user is dm for campagne
-        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
-            .RunAsync(_queryProcessor, default)
-            .ConfigureAwait(false);
-
-        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        string timestamp = DateTime.Now.ToString("yyyyMMdd");
+        string fileName = $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
+        string currentDirectory = Directory.GetCurrentDirectory();
+        string filePath = Path.Combine(currentDirectory, fileName);
+        try
         {
-            // TODO how do i handle exceptions in signalr?
-            return;
+            // Write the long string to the file
+            await File.WriteAllTextAsync(filePath, characterConfig, (CancellationToken)default);
+            Console.WriteLine($"File saved to {filePath}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
         }
 
         // ask DM for joining permissions:
         await Clients
-            .OthersInGroup(campagneId + "_All")
-            .SendAsync("grantPlayerItems", json, (CancellationToken)default);
+            .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
+            .SendAsync("updateRpgCharacterConfigOnDmSide", characterConfig, (CancellationToken)default);
     }
 
     /// <summary>
@@ -231,31 +275,5 @@ public class RpgServerSignalRHub : Hub
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
-    }
-
-    public override async Task OnConnectedAsync()
-    {
-        Console.Write(Context.GetHttpContext()?.Request.Headers);
-        // TODO update me for new flow
-        // This newMessage call is what is not being received on the front end
-        await Clients.All.SendAsync("aClientProvidedFunction", "ich bin ein test");
-
-        // This console.WriteLine does print when I bring up the component in the front end.
-        Console.WriteLine("Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
-        Console.WriteLine("Context.User:" + _userContext.User!.ToString());
-        Console.WriteLine("Context.User.Identity.Name:" + _userContext.User!.UserIdentifier.Value);
-        Console.WriteLine("Context.UserIdentifier:" + Context.UserIdentifier);
-
-        await base.OnConnectedAsync();
-    }
-
-    public override Task OnDisconnectedAsync(Exception? exception)
-    {
-        Console.Write(Context.GetHttpContext()?.Request.Headers);
-
-        // TODO update me for new flow
-        Console.WriteLine("Disconnected: Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
-
-        return base.OnDisconnectedAsync(exception);
     }
 }

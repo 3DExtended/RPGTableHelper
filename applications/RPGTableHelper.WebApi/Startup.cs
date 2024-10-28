@@ -315,7 +315,7 @@ public class Startup
 
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
-            options.UseSqlite($"DataSource=file:maindb1");
+            options.UseSqlite($"DataSource=file:maindb2");
         });
 
         services.AddSingleton<ISystemClock, RealSystemClock>();
