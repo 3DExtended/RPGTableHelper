@@ -5,6 +5,7 @@ A new Flutter project.
 ## TODOs
 
 - [ ] Add character screens
+- [ ] Every delete icon should result in an "Are you sure" modal...
 - [ ] Add Money calculator
 - [ ] Add forgot password screen
 - [ ] JoinCampagneRequests
