@@ -57,17 +57,9 @@ class _DmGrantItemsScreenContentState
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
 
     ref.watch(connectionDetailsProvider).whenData((cb) {
-      var playerIds = (cb.playerProfiles ?? [])
-          .map((p) => (p.uuid, p.characterName))
+      var playerIds = (cb.connectedPlayers ?? [])
+          .map((p) => (p.configuration.uuid, p.configuration.characterName))
           .toList();
-
-      // TODO remove me
-      if (playerIds.isEmpty) {
-        playerIds = [
-          ("4ada920c-fd40-45ec-9892-a16a822fbc47", "Kardan"),
-          ("9877f8bf-4ef1-4dcd-b922-b29e3e90c4ae", "Marie")
-        ];
-      }
 
       for (var playerId in playerIds) {
         if (playerRolls.every((pr) => pr.$1 != playerId.$1)) {

@@ -131,14 +131,14 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
                       runSpacing: 10,
                       spacing: 10,
                       children: [
-                        ...(connectionDetails.playerProfiles ?? []).map(
+                        ...(connectionDetails.connectedPlayers ?? []).map(
                           (player) => StyledBox(
                             child: Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Column(
                                 children: [
                                   Text(
-                                    "Spielername: ${player.characterName}",
+                                    "Spielername: ${player.configuration.characterName}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -150,7 +150,7 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
                                     height: 20,
                                   ),
                                   Text(
-                                    "Anzahl Items: ${player.inventory.map((it) => it.amount).sum}",
+                                    "Anzahl Items: ${player.configuration.inventory.map((it) => it.amount).sum}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!

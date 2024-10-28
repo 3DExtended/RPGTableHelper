@@ -175,6 +175,85 @@ extension $GrantedItemsForPlayerCopyWith on GrantedItemsForPlayer {
       _$GrantedItemsForPlayerCWProxyImpl(this);
 }
 
+abstract class _$OpenPlayerConnectionCWProxy {
+  OpenPlayerConnection userId(UserIdentifier userId);
+
+  OpenPlayerConnection playerCharacterId(
+      PlayerCharacterIdentifier playerCharacterId);
+
+  OpenPlayerConnection configuration(RpgCharacterConfiguration configuration);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OpenPlayerConnection(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// OpenPlayerConnection(...).copyWith(id: 12, name: "My name")
+  /// ````
+  OpenPlayerConnection call({
+    UserIdentifier? userId,
+    PlayerCharacterIdentifier? playerCharacterId,
+    RpgCharacterConfiguration? configuration,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfOpenPlayerConnection.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfOpenPlayerConnection.copyWith.fieldName(...)`
+class _$OpenPlayerConnectionCWProxyImpl
+    implements _$OpenPlayerConnectionCWProxy {
+  const _$OpenPlayerConnectionCWProxyImpl(this._value);
+
+  final OpenPlayerConnection _value;
+
+  @override
+  OpenPlayerConnection userId(UserIdentifier userId) => this(userId: userId);
+
+  @override
+  OpenPlayerConnection playerCharacterId(
+          PlayerCharacterIdentifier playerCharacterId) =>
+      this(playerCharacterId: playerCharacterId);
+
+  @override
+  OpenPlayerConnection configuration(RpgCharacterConfiguration configuration) =>
+      this(configuration: configuration);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OpenPlayerConnection(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// OpenPlayerConnection(...).copyWith(id: 12, name: "My name")
+  /// ````
+  OpenPlayerConnection call({
+    Object? userId = const $CopyWithPlaceholder(),
+    Object? playerCharacterId = const $CopyWithPlaceholder(),
+    Object? configuration = const $CopyWithPlaceholder(),
+  }) {
+    return OpenPlayerConnection(
+      userId: userId == const $CopyWithPlaceholder() || userId == null
+          ? _value.userId
+          // ignore: cast_nullable_to_non_nullable
+          : userId as UserIdentifier,
+      playerCharacterId: playerCharacterId == const $CopyWithPlaceholder() ||
+              playerCharacterId == null
+          ? _value.playerCharacterId
+          // ignore: cast_nullable_to_non_nullable
+          : playerCharacterId as PlayerCharacterIdentifier,
+      configuration:
+          configuration == const $CopyWithPlaceholder() || configuration == null
+              ? _value.configuration
+              // ignore: cast_nullable_to_non_nullable
+              : configuration as RpgCharacterConfiguration,
+    );
+  }
+}
+
+extension $OpenPlayerConnectionCopyWith on OpenPlayerConnection {
+  /// Returns a callable class that can be used as follows: `instanceOfOpenPlayerConnection.copyWith(...)` or like so:`instanceOfOpenPlayerConnection.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$OpenPlayerConnectionCWProxy get copyWith =>
+      _$OpenPlayerConnectionCWProxyImpl(this);
+}
+
 abstract class _$ConnectionDetailsCWProxy {
   ConnectionDetails openPlayerRequests(
       List<PlayerJoinRequests>? openPlayerRequests);
@@ -186,8 +265,8 @@ abstract class _$ConnectionDetailsCWProxy {
 
   ConnectionDetails isConnecting(bool isConnecting);
 
-  ConnectionDetails playerProfiles(
-      List<RpgCharacterConfiguration>? playerProfiles);
+  ConnectionDetails connectedPlayers(
+      List<OpenPlayerConnection>? connectedPlayers);
 
   ConnectionDetails isInSession(bool isInSession);
 
@@ -211,7 +290,7 @@ abstract class _$ConnectionDetailsCWProxy {
     bool? isConnected,
     String? sessionConnectionNumberForPlayers,
     bool? isConnecting,
-    List<RpgCharacterConfiguration>? playerProfiles,
+    List<OpenPlayerConnection>? connectedPlayers,
     bool? isInSession,
     bool? isDm,
     List<GrantedItemsForPlayer>? lastGrantedItems,
@@ -246,9 +325,9 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
       this(isConnecting: isConnecting);
 
   @override
-  ConnectionDetails playerProfiles(
-          List<RpgCharacterConfiguration>? playerProfiles) =>
-      this(playerProfiles: playerProfiles);
+  ConnectionDetails connectedPlayers(
+          List<OpenPlayerConnection>? connectedPlayers) =>
+      this(connectedPlayers: connectedPlayers);
 
   @override
   ConnectionDetails isInSession(bool isInSession) =>
@@ -283,7 +362,7 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
     Object? isConnected = const $CopyWithPlaceholder(),
     Object? sessionConnectionNumberForPlayers = const $CopyWithPlaceholder(),
     Object? isConnecting = const $CopyWithPlaceholder(),
-    Object? playerProfiles = const $CopyWithPlaceholder(),
+    Object? connectedPlayers = const $CopyWithPlaceholder(),
     Object? isInSession = const $CopyWithPlaceholder(),
     Object? isDm = const $CopyWithPlaceholder(),
     Object? lastGrantedItems = const $CopyWithPlaceholder(),
@@ -310,10 +389,10 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
               ? _value.isConnecting
               // ignore: cast_nullable_to_non_nullable
               : isConnecting as bool,
-      playerProfiles: playerProfiles == const $CopyWithPlaceholder()
-          ? _value.playerProfiles
+      connectedPlayers: connectedPlayers == const $CopyWithPlaceholder()
+          ? _value.connectedPlayers
           // ignore: cast_nullable_to_non_nullable
-          : playerProfiles as List<RpgCharacterConfiguration>?,
+          : connectedPlayers as List<OpenPlayerConnection>?,
       isInSession:
           isInSession == const $CopyWithPlaceholder() || isInSession == null
               ? _value.isInSession
@@ -385,6 +464,24 @@ Map<String, dynamic> _$GrantedItemsForPlayerToJson(
       'grantedItems': instance.grantedItems,
     };
 
+OpenPlayerConnection _$OpenPlayerConnectionFromJson(
+        Map<String, dynamic> json) =>
+    OpenPlayerConnection(
+      userId: UserIdentifier.fromJson(json['userId'] as Map<String, dynamic>),
+      playerCharacterId: PlayerCharacterIdentifier.fromJson(
+          json['playerCharacterId'] as Map<String, dynamic>),
+      configuration: RpgCharacterConfiguration.fromJson(
+          json['configuration'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$OpenPlayerConnectionToJson(
+        OpenPlayerConnection instance) =>
+    <String, dynamic>{
+      'configuration': instance.configuration,
+      'userId': instance.userId,
+      'playerCharacterId': instance.playerCharacterId,
+    };
+
 ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
     ConnectionDetails(
       openPlayerRequests: (json['openPlayerRequests'] as List<dynamic>?)
@@ -394,9 +491,8 @@ ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
       sessionConnectionNumberForPlayers:
           json['sessionConnectionNumberForPlayers'] as String?,
       isConnecting: json['isConnecting'] as bool,
-      playerProfiles: (json['playerProfiles'] as List<dynamic>?)
-          ?.map((e) =>
-              RpgCharacterConfiguration.fromJson(e as Map<String, dynamic>))
+      connectedPlayers: (json['connectedPlayers'] as List<dynamic>?)
+          ?.map((e) => OpenPlayerConnection.fromJson(e as Map<String, dynamic>))
           .toList(),
       isInSession: json['isInSession'] as bool,
       isDm: json['isDm'] as bool,
@@ -416,7 +512,7 @@ Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
       'sessionConnectionNumberForPlayers':
           instance.sessionConnectionNumberForPlayers,
       'openPlayerRequests': instance.openPlayerRequests,
-      'playerProfiles': instance.playerProfiles,
+      'connectedPlayers': instance.connectedPlayers,
       'isDm': instance.isDm,
       'lastGrantedItems': instance.lastGrantedItems,
       'campagneId': instance.campagneId,
