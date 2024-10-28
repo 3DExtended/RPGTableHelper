@@ -5,21 +5,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 
 abstract class IServerMethodsService {
   final bool isMock;
   final WidgetRef widgetRef;
   final IServerCommunicationService serverCommunicationService;
+  final INavigationService navigationService;
 
   IServerMethodsService({
     required this.isMock,
     required this.widgetRef,
     required this.serverCommunicationService,
+    required this.navigationService,
   }) {
     serverCommunicationService.registerCallbackSingleString(
       function: registerGameResponse,
@@ -91,7 +96,9 @@ abstract class IServerMethodsService {
 
 class ServerMethodsService extends IServerMethodsService {
   ServerMethodsService(
-      {required super.serverCommunicationService, required super.widgetRef})
+      {required super.serverCommunicationService,
+      required super.navigationService,
+      required super.widgetRef})
       : super(isMock: false);
 
   @override
@@ -280,7 +287,16 @@ class ServerMethodsService extends IServerMethodsService {
         .read(rpgCharacterConfigurationProvider.notifier)
         .grantItems(myNewItems);
 
-    // TODO show modal
+    var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
+
+    var navKey = navigationService.getCurrentNavigationKey();
+
+    // show modal
+    showPlayerHasBeenGrantedItemsThroughDmModal(
+      navKey.currentContext!,
+      grantedItems: myNewItems,
+      rpgConfig: rpgConfig,
+    );
   }
 
   @override

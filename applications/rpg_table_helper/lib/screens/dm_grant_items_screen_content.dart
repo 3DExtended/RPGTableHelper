@@ -420,7 +420,8 @@ class _DmGrantItemsScreenContentState
 
     for (var grantForPlayer in (connectionDetails.lastGrantedItems ??
         List<GrantedItemsForPlayer>.empty())) {
-      result += "- Spieler: __${grantForPlayer.characterName}:__\n";
+      result +=
+          "- Spieler __${grantForPlayer.characterName.isNotEmpty ? grantForPlayer.characterName : "Player Name"}:__\n";
 
       if (grantForPlayer.grantedItems.isEmpty) {
         result += "  - Keine Items in dieser Runde\n";

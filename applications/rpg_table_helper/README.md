@@ -4,16 +4,21 @@ A new Flutter project.
 
 ## TODOs
 
-- [ ] Add Money calculator
 - [ ] Add character screens
-- [ ] Reconnect creates new ConnectionIds which then are not within the SignalR Groups related to the group.
+- [ ] You can not see which items you are missing for crafting a recipe...
+- [ ] Add Money calculator
+- [ ] Add forgot password screen
+- [ ] JoinCampagneRequests
+  - [ ] The dm is currently not notified through signalr that a player has opened a new join request. Theoretically, only the client part should be needed as i have implemented the backend part already
+  - [ ] Currently, after a player has requested a join request to a campagne they are not notified after they have been accepted or denied...
+- [x] add a popup when the player has received items from the dm through the ```grantPlayerItems``` method
+- [x] Add usage of jwt for signalr connection
+- [x] add screen for selecting Campagnes (as DM) or a character
+- [x] Add screen for joining a session
+- [x] Add complete SSO screen
+- [x] Reconnect creates new ConnectionIds which then are not within the SignalR Groups related to the group.
   - The correct way to fix this is using logins, however for the first working prototype we might get away with adding everyone to only one group without differentiating between dm group and all group.
     - This might be an issue though since the "isDm" flag might be set somewhere else in the client
-- [ ] Add complete SSO screen
-- [ ] Add forgot password screen
-- [ ] Add usage of jwt for signalr connection
-- [ ] add screen for selecting Campagnes (as DM) or a character
-- [ ] Add screen for joining a session
 - [x] Make a screen for showing and changing the currency for the players
 - [x] Players should be able to consume items...
 - [x] Send Items based on "search" to clients

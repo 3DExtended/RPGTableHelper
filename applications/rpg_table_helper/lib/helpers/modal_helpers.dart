@@ -1,6 +1,7 @@
 // cannot figure out how to fix the canLaunch stuff in here...
 // ignore_for_file: deprecated_member_use
 
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +13,9 @@ import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 Future<void> showOldVersionUpdateRequired(BuildContext context) async {
   // show error to user
@@ -101,15 +104,111 @@ Future<void> showOldVersionUpdateRequired(BuildContext context) async {
   );
 }
 
-Future<bool?> showSynchronizeLocallySavedRpgCampagne(BuildContext context,
-    {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+// Future<bool?> showSynchronizeLocallySavedRpgCampagne(BuildContext context,
+//     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+//   // show error to user
+//   return await customShowCupertinoModalBottomSheet<bool>(
+//       isDismissible: false,
+//       expand: false,
+//       closeProgressThreshold: -50000,
+//       enableDrag: false,
+//       context: context,
+//       overrideNavigatorKey: overrideNavigatorKey,
+//       builder: (context) {
+//         var modalPadding = 80.0;
+//         if (MediaQuery.of(context).size.width < 800) {
+//           modalPadding = 20.0;
+//         }
+//
+//         return Padding(
+//           padding: EdgeInsets.symmetric(
+//               horizontal: modalPadding,
+//               vertical: modalPadding), // TODO maybe percentage of total width?
+//           child: Scaffold(
+//             resizeToAvoidBottomInset: false,
+//             backgroundColor: Colors.transparent,
+//             body: Center(
+//               child: ConstrainedBox(
+//                 constraints: const BoxConstraints(
+//                   maxWidth: 800.0,
+//                 ),
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     StyledBox(
+//                       borderThickness: 1,
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(21.0),
+//                         child: Column(
+//                           children: [
+//                             Row(
+//                               children: [
+//                                 Expanded(
+//                                   child: CustomMarkdownBody(
+//                                     text:
+//                                         "# ‼️ In die Cloud speichern ‼️\n\n__Nur für Marie!__\n\nWir haben festgestellt, dass du eine lokal gespeicherte Kampagne hast. Wenn du DM dieser Kampagne warst (ergo Marie heißt), solltest du die Kampagne jetzt online speichern! Falls du dies jedoch bereits gemacht hast, darfst du nun auf Abbrechen drücken.\n\n__Sage Peter bitte Bescheid, wenn du Fragen hast!__", // TODO localize/ switch text between add and edit
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             const SizedBox(
+//                               height: 20,
+//                             ),
+//                             Padding(
+//                               padding:
+//                                   const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+//                               child: Row(
+//                                 children: [
+//                                   CustomButton(
+//                                     label: "Abbrechen", // TODO localize
+//                                     onPressed: () {
+//                                       navigatorKey.currentState!.pop(null);
+//                                     },
+//                                   ),
+//                                   const Spacer(),
+//                                   CustomButton(
+//                                     label: "Speichern", // TODO localize
+//                                     onPressed: () {
+//                                       navigatorKey.currentState!.pop(true);
+//                                     },
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                     SizedBox(
+//                         height: EdgeInsets.fromViewPadding(
+//                                 View.of(context).viewInsets,
+//                                 View.of(context).devicePixelRatio)
+//                             .bottom),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         );
+//       });
+// }
+
+Future showPlayerHasBeenGrantedItemsThroughDmModal(BuildContext context,
+    {required GrantedItemsForPlayer grantedItems,
+    required RpgConfigurationModel rpgConfig,
+    GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+  var numberOfReceivedItems =
+      grantedItems.grantedItems.map((gi) => gi.amount).toList().sum;
+  if (numberOfReceivedItems <= 0) return;
+
   // show error to user
-  return await customShowCupertinoModalBottomSheet<bool>(
-      isDismissible: false,
-      expand: false,
+  await customShowCupertinoModalBottomSheet(
+      isDismissible: true,
+      expand: true,
       closeProgressThreshold: -50000,
       enableDrag: false,
       context: context,
+      backgroundColor: const Color.fromARGB(158, 49, 49, 49),
       overrideNavigatorKey: overrideNavigatorKey,
       builder: (context) {
         var modalPadding = 80.0;
@@ -126,62 +225,77 @@ Future<bool?> showSynchronizeLocallySavedRpgCampagne(BuildContext context,
             backgroundColor: Colors.transparent,
             body: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 800.0,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    StyledBox(
-                      borderThickness: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(21.0),
-                        child: Column(
-                          children: [
-                            Row(
+                constraints: BoxConstraints(
+                    maxWidth: 800.0,
+                    maxHeight: MediaQuery.of(context).size.height * 0.5),
+                child: StyledBox(
+                  borderThickness: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(21.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
                               children: [
-                                Expanded(
-                                  child: CustomMarkdownBody(
-                                    text:
-                                        "# ‼️ In die Cloud speichern ‼️\n\n__Nur für Marie!__\n\nWir haben festgestellt, dass du eine lokal gespeicherte Kampagne hast. Wenn du DM dieser Kampagne warst (ergo Marie heißt), solltest du die Kampagne jetzt online speichern! Falls du dies jedoch bereits gemacht hast, darfst du nun auf Abbrechen drücken.\n\n__Sage Peter bitte Bescheid, wenn du Fragen hast!__", // TODO localize/ switch text between add and edit
-                                  ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Builder(builder: (context) {
+                                        var text = numberOfReceivedItems > 1
+                                            ? "# Neue Items" // TODO localize
+                                            : "# Neues Item"; // TODO localize
+                                        text += "\n\n";
+                                        text += numberOfReceivedItems > 1
+                                            ? "Du hast $numberOfReceivedItems neue Items erhalten:"
+                                            : "Du hast ein neues Item erhalten";
+                                        text += "\n\n";
+
+                                        for (var itemPair
+                                            in grantedItems.grantedItems) {
+                                          var itemFromId = rpgConfig.allItems
+                                              .singleWhereOrNull((i) =>
+                                                  i.uuid == itemPair.itemUuid);
+                                          if (itemFromId == null) continue;
+
+                                          text +=
+                                              "\n- ${itemPair.amount}x ${itemFromId.name}";
+                                        }
+                                        text += "\n\n";
+
+                                        return CustomMarkdownBody(
+                                          text: text,
+                                        );
+                                      }),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                              child: Row(
-                                children: [
-                                  CustomButton(
-                                    label: "Abbrechen", // TODO localize
-                                    onPressed: () {
-                                      navigatorKey.currentState!.pop(null);
-                                    },
-                                  ),
-                                  const Spacer(),
-                                  CustomButton(
-                                    label: "Speichern", // TODO localize
-                                    onPressed: () {
-                                      navigatorKey.currentState!.pop(true);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                          child: Row(
+                            children: [
+                              const Spacer(),
+                              CustomButton(
+                                label: "Ok", // TODO localize
+                                onPressed: () {
+                                  navigatorKey.currentState!.pop(null);
+                                },
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                        height: EdgeInsets.fromViewPadding(
-                                View.of(context).viewInsets,
-                                View.of(context).devicePixelRatio)
-                            .bottom),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -190,95 +304,95 @@ Future<bool?> showSynchronizeLocallySavedRpgCampagne(BuildContext context,
       });
 }
 
-Future<bool?> showSynchronizeLocallySavedRpgPlayerCharacter(
-    BuildContext context,
-    {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
-  // show error to user
-  return await customShowCupertinoModalBottomSheet<bool>(
-      isDismissible: false,
-      expand: false,
-      closeProgressThreshold: -50000,
-      enableDrag: false,
-      context: context,
-      overrideNavigatorKey: overrideNavigatorKey,
-      builder: (context) {
-        var modalPadding = 80.0;
-        if (MediaQuery.of(context).size.width < 800) {
-          modalPadding = 20.0;
-        }
-
-        return Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: modalPadding,
-              vertical: modalPadding), // TODO maybe percentage of total width?
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.transparent,
-            body: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 800.0,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    StyledBox(
-                      borderThickness: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(21.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: CustomMarkdownBody(
-                                    text:
-                                        "# ‼️ In die Cloud speichern ‼️\n\n__Für alle Spieler außer Marie (Rachel, Lukas, Tobias, Peter)!__\n\nWir haben festgestellt, dass du einen lokal gespeicherten Charakter hast. Dies ist deine Möglichkeit, diesen Charakter in die Cloud zu speichern. Dies solltest du umbedingt (genau ein mal!) tun! Falls du dies jedoch bereits gemacht hast, darfst du nun auf Abbrechen drücken.\n\n__Sage Peter bitte Bescheid, wenn du Fragen hast!__", // TODO localize/ switch text between add and edit
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                              child: Row(
-                                children: [
-                                  CustomButton(
-                                    label: "Abbrechen", // TODO localize
-                                    onPressed: () {
-                                      navigatorKey.currentState!.pop(null);
-                                    },
-                                  ),
-                                  const Spacer(),
-                                  CustomButton(
-                                    label: "Speichern", // TODO localize
-                                    onPressed: () {
-                                      navigatorKey.currentState!.pop(true);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                        height: EdgeInsets.fromViewPadding(
-                                View.of(context).viewInsets,
-                                View.of(context).devicePixelRatio)
-                            .bottom),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      });
-}
+// Future<bool?> showSynchronizeLocallySavedRpgPlayerCharacter(
+//     BuildContext context,
+//     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
+//   // show error to user
+//   return await customShowCupertinoModalBottomSheet<bool>(
+//       isDismissible: false,
+//       expand: false,
+//       closeProgressThreshold: -50000,
+//       enableDrag: false,
+//       context: context,
+//       overrideNavigatorKey: overrideNavigatorKey,
+//       builder: (context) {
+//         var modalPadding = 80.0;
+//         if (MediaQuery.of(context).size.width < 800) {
+//           modalPadding = 20.0;
+//         }
+//
+//         return Padding(
+//           padding: EdgeInsets.symmetric(
+//               horizontal: modalPadding,
+//               vertical: modalPadding), // TODO maybe percentage of total width?
+//           child: Scaffold(
+//             resizeToAvoidBottomInset: false,
+//             backgroundColor: Colors.transparent,
+//             body: Center(
+//               child: ConstrainedBox(
+//                 constraints: const BoxConstraints(
+//                   maxWidth: 800.0,
+//                 ),
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     StyledBox(
+//                       borderThickness: 1,
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(21.0),
+//                         child: Column(
+//                           children: [
+//                             Row(
+//                               children: [
+//                                 Expanded(
+//                                   child: CustomMarkdownBody(
+//                                     text:
+//                                         "# ‼️ In die Cloud speichern ‼️\n\n__Für alle Spieler außer Marie (Rachel, Lukas, Tobias, Peter)!__\n\nWir haben festgestellt, dass du einen lokal gespeicherten Charakter hast. Dies ist deine Möglichkeit, diesen Charakter in die Cloud zu speichern. Dies solltest du umbedingt (genau ein mal!) tun! Falls du dies jedoch bereits gemacht hast, darfst du nun auf Abbrechen drücken.\n\n__Sage Peter bitte Bescheid, wenn du Fragen hast!__", // TODO localize/ switch text between add and edit
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             const SizedBox(
+//                               height: 20,
+//                             ),
+//                             Padding(
+//                               padding:
+//                                   const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+//                               child: Row(
+//                                 children: [
+//                                   CustomButton(
+//                                     label: "Abbrechen", // TODO localize
+//                                     onPressed: () {
+//                                       navigatorKey.currentState!.pop(null);
+//                                     },
+//                                   ),
+//                                   const Spacer(),
+//                                   CustomButton(
+//                                     label: "Speichern", // TODO localize
+//                                     onPressed: () {
+//                                       navigatorKey.currentState!.pop(true);
+//                                     },
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                     SizedBox(
+//                         height: EdgeInsets.fromViewPadding(
+//                                 View.of(context).viewInsets,
+//                                 View.of(context).devicePixelRatio)
+//                             .bottom),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         );
+//       });
+// }
 
 Future<String?> askForCampagneJoinCode(BuildContext context,
     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
