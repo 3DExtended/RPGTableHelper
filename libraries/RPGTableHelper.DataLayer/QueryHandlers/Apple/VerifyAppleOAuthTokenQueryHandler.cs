@@ -64,7 +64,7 @@ public class VerifyAppleOAuthTokenQueryHandler
                     .Content.ReadAsStringAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-                if (appleTokenString.Contains("error_description"))
+                if (appleTokenString.Contains("error_description") || appleTokenString.Contains("invalid_client"))
                 {
                     return Option.None;
                 }
