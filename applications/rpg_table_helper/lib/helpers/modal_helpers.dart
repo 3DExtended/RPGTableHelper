@@ -332,7 +332,7 @@ Future showItemVisualizationWithRecipeDetailsModal(BuildContext context,
                 MediaQuery.of(context).size.height) *
             0.7;
 
-        minWidthHeight = min(400, minWidthHeight);
+        minWidthHeight = min(470, minWidthHeight);
 
         return Padding(
           padding: EdgeInsets.symmetric(
@@ -381,12 +381,29 @@ Future showItemVisualizationWithRecipeDetailsModal(BuildContext context,
                               result += "### Voraussetzung\n\n";
 
                               for (var requirement in recipe.requiredItemIds) {
+                                int numberOfIngredientsInInventar =
+                                    rpgCharConfig.inventory
+                                            .firstWhereOrNull((inv) =>
+                                                inv.itemUuid == requirement)
+                                            ?.amount ??
+                                        0;
+
+                                var numberOfIngredientsInInventarText =
+                                    numberOfIngredientsInInventar.toString();
+
+                                if (numberOfIngredientsInInventar < 1) {
+                                  numberOfIngredientsInInventarText += " ❌";
+                                } else {
+                                  numberOfIngredientsInInventarText += " ✅";
+                                }
+
                                 var requirementItem = rpgConfig.allItems
                                     .firstWhereOrNull(
                                         (i) => i.uuid == requirement);
                                 if (requirementItem == null) continue;
 
-                                result += "- ${requirementItem.name}\n";
+                                result +=
+                                    "- ${requirementItem.name}, in Besitz: $numberOfIngredientsInInventarText\n";
                               }
 
                               result += "### Zutaten\n\n";
@@ -412,7 +429,6 @@ Future showItemVisualizationWithRecipeDetailsModal(BuildContext context,
                               if (numberOfIngredientsInInventar <
                                   ingredientPair.amountOfUsedItem) {
                                 numberOfIngredientsInInventarText += " ❌";
-                                //"❗️";
                               } else {
                                 numberOfIngredientsInInventarText += " ✅";
                               }
