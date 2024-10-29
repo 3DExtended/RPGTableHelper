@@ -47,6 +47,22 @@ List<
     )
   ),
   (
+    "multiselect, static",
+    CharacterStatDefinition(
+      valueType: CharacterStatValueType.multiselect,
+      editType: CharacterStatEditType.static,
+      name: "Saving Throws",
+      statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
+      helperText: "Where is your character proficient?",
+      jsonSerializedAdditionalData:
+          '[{"label": "DEX", "description": "Dexterity"}, {"label": "WIS", "description": "Wisdom"}, {"label": "INT", "description": "Intelligence"}]',
+    ),
+    RpgCharacterStatValue(
+      statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
+      serializedValue: '{"values": ["DEX", "WIS"]}',
+    )
+  ),
+  (
     "int, static",
     CharacterStatDefinition(
       valueType: CharacterStatValueType.int,

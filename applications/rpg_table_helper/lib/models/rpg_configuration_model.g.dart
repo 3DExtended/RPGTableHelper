@@ -507,6 +507,9 @@ abstract class _$CharacterStatDefinitionCWProxy {
 
   CharacterStatDefinition editType(CharacterStatEditType editType);
 
+  CharacterStatDefinition jsonSerializedAdditionalData(
+      String? jsonSerializedAdditionalData);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -519,6 +522,7 @@ abstract class _$CharacterStatDefinitionCWProxy {
     String? helperText,
     CharacterStatValueType? valueType,
     CharacterStatEditType? editType,
+    String? jsonSerializedAdditionalData,
   });
 }
 
@@ -548,6 +552,11 @@ class _$CharacterStatDefinitionCWProxyImpl
       this(editType: editType);
 
   @override
+  CharacterStatDefinition jsonSerializedAdditionalData(
+          String? jsonSerializedAdditionalData) =>
+      this(jsonSerializedAdditionalData: jsonSerializedAdditionalData);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -561,6 +570,7 @@ class _$CharacterStatDefinitionCWProxyImpl
     Object? helperText = const $CopyWithPlaceholder(),
     Object? valueType = const $CopyWithPlaceholder(),
     Object? editType = const $CopyWithPlaceholder(),
+    Object? jsonSerializedAdditionalData = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatDefinition(
       statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
@@ -584,6 +594,11 @@ class _$CharacterStatDefinitionCWProxyImpl
           ? _value.editType
           // ignore: cast_nullable_to_non_nullable
           : editType as CharacterStatEditType,
+      jsonSerializedAdditionalData:
+          jsonSerializedAdditionalData == const $CopyWithPlaceholder()
+              ? _value.jsonSerializedAdditionalData
+              // ignore: cast_nullable_to_non_nullable
+              : jsonSerializedAdditionalData as String?,
     );
   }
 }
@@ -1117,6 +1132,8 @@ CharacterStatDefinition _$CharacterStatDefinitionFromJson(
       valueType:
           $enumDecode(_$CharacterStatValueTypeEnumMap, json['valueType']),
       editType: $enumDecode(_$CharacterStatEditTypeEnumMap, json['editType']),
+      jsonSerializedAdditionalData:
+          json['jsonSerializedAdditionalData'] as String?,
     );
 
 Map<String, dynamic> _$CharacterStatDefinitionToJson(
@@ -1127,6 +1144,7 @@ Map<String, dynamic> _$CharacterStatDefinitionToJson(
       'helperText': instance.helperText,
       'valueType': _$CharacterStatValueTypeEnumMap[instance.valueType]!,
       'editType': _$CharacterStatEditTypeEnumMap[instance.editType]!,
+      'jsonSerializedAdditionalData': instance.jsonSerializedAdditionalData,
     };
 
 const _$CharacterStatValueTypeEnumMap = {
@@ -1134,6 +1152,8 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.singleLineText: 'singleLineText',
   CharacterStatValueType.int: 'int',
   CharacterStatValueType.intWithMaxValue: 'intWithMaxValue',
+  CharacterStatValueType.multiselect: 'multiselect',
+  CharacterStatValueType.intCounter: 'intCounter',
   CharacterStatValueType.bool: 'bool',
   CharacterStatValueType.double: 'double',
 };

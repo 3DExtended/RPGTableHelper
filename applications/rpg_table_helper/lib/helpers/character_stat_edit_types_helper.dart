@@ -1,8 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
+import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -52,6 +56,10 @@ class _ShowGetDmConfigurationModalContentState
   var nameTextEditor = TextEditingController();
   var helperTextEditor = TextEditingController();
 
+  // stored as [{"label": "asdf", "description": "asdf"}] in additionalValues
+  List<(TextEditingController label, TextEditingController description)>
+      multiselectOptions = [];
+
   CharacterStatEditType? selectedEditType = CharacterStatEditType.static;
   CharacterStatValueType? selectedValueType =
       CharacterStatValueType.singleLineText;
@@ -70,6 +78,22 @@ class _ShowGetDmConfigurationModalContentState
           selectedValueType = widget.predefinedConfiguration!.valueType;
 
           // what to do about additionaldetails
+          if (selectedValueType == CharacterStatValueType.multiselect) {
+            // Decode JSON string to a list of dynamic maps
+            List<dynamic> jsonList = jsonDecode(
+                widget.predefinedConfiguration?.jsonSerializedAdditionalData ??
+                    "[]");
+
+            for (var item in jsonList) {
+              var label = (item as Map<String, dynamic>)["label"];
+              var description = (item)["description"];
+
+              multiselectOptions.add((
+                TextEditingController(text: label),
+                TextEditingController(text: description)
+              ));
+            }
+          }
         });
       }
     });
@@ -92,6 +116,16 @@ class _ShowGetDmConfigurationModalContentState
             valueType: selectedValueType!,
             editType: selectedEditType!,
           );
+
+          if (selectedValueType == CharacterStatValueType.multiselect) {
+            var serializedAdditionalData = jsonEncode(multiselectOptions
+                .map((e) => {"label": e.$1.text, "description": e.$2.text})
+                .toList());
+
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: serializedAdditionalData);
+          }
+
           if (widget.predefinedConfiguration == null) {
             return tempResult;
           } else {
@@ -118,7 +152,40 @@ class _ShowGetDmConfigurationModalContentState
             SizedBox(
               height: 10,
             ),
-            // edit type
+            CustomDropdownMenu(
+                selectedValueTemp: selectedEditType?.name,
+                setter: (newValue) {
+                  setState(() {
+                    if (newValue == null) {
+                      selectedEditType = null;
+                    } else {
+                      selectedEditType = CharacterStatEditType.values
+                          .singleWhere((e) => e.name == newValue);
+                    }
+                  });
+                },
+                items: CharacterStatEditType.values.map((e) {
+                  switch (e) {
+                    case CharacterStatEditType.oneTap:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(
+                            "Häufig verändert (bspw. jede Session)"), // TODO localize
+                      );
+                    case CharacterStatEditType.static:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(
+                            "Selten verändert (bspw. je Level-Up)"), // TODO localize
+                      );
+                    default:
+                      throw NotImplementedException();
+                  }
+                }).toList(),
+                label: "Veränderungshäufigkeit"),
+            SizedBox(
+              height: 15,
+            ),
             CustomDropdownMenu(
                 selectedValueTemp: selectedValueType?.name,
                 setter: (newValue) {
@@ -178,47 +245,126 @@ class _ShowGetDmConfigurationModalContentState
                   }
                 }).toList(),
                 label: "Art der Eigenschaft"),
-            SizedBox(
-              height: 15,
-            ),
-            // edit type
-            CustomDropdownMenu(
-                selectedValueTemp: selectedEditType?.name,
-                setter: (newValue) {
-                  setState(() {
-                    if (newValue == null) {
-                      selectedEditType = null;
-                    } else {
-                      selectedEditType = CharacterStatEditType.values
-                          .singleWhere((e) => e.name == newValue);
-                    }
-                  });
-                },
-                items: CharacterStatEditType.values.map((e) {
-                  switch (e) {
-                    case CharacterStatEditType.oneTap:
-                      return DropdownMenuItem<String?>(
-                        value: e.name,
-                        child: Text(
-                            "Häufig verändert (bspw. jede Session)"), // TODO localize
-                      );
-                    case CharacterStatEditType.static:
-                      return DropdownMenuItem<String?>(
-                        value: e.name,
-                        child: Text(
-                            "Selten verändert (bspw. je Level-Up)"), // TODO localize
-                      );
-                    default:
-                      throw NotImplementedException();
-                  }
-                }).toList(),
-                label: "Veränderungshäufigkeit"),
+            ...getAdditionalDetailsWidgets(),
             SizedBox(
                 height: EdgeInsets.fromViewPadding(View.of(context).viewInsets,
                         View.of(context).devicePixelRatio)
                     .bottom),
           ],
         ));
+  }
+
+  List<Widget> getAdditionalDetailsWidgets() {
+    // TODO add all items which need additionalDetails here
+    var typesWithAdditionalConfigurationRequired = [
+      CharacterStatValueType.multiselect,
+    ];
+
+    if (selectedValueType == null) return [];
+    if (!typesWithAdditionalConfigurationRequired.contains(selectedValueType)) {
+      return [];
+    }
+
+    if (selectedValueType == CharacterStatValueType.multiselect) {
+      return [
+        SizedBox(
+          height: 20,
+        ),
+        HorizontalLine(),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          "Optionen für Mehrfach-Auswahl",
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+
+        // we should have tuples of "option label" and "option description"
+        ...multiselectOptions.asMap().entries.map(
+              (tuple) => Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        labelText: "Name:",
+                        textEditingController: tuple.value.$1,
+                        keyboardType: TextInputType.text,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: CustomTextField(
+                        labelText: "Beschreibung:",
+                        textEditingController: tuple.value.$2,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      width: 70,
+                      clipBehavior: Clip.none,
+                      child: CustomButton(
+                        onPressed: () {
+                          setState(() {
+                            multiselectOptions.removeAt(tuple.key);
+                          });
+                        },
+                        icon:
+                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+          child: CustomButton(
+            isSubbutton: true,
+            onPressed: () {
+              setState(() {
+                multiselectOptions
+                    .add((TextEditingController(), TextEditingController()));
+              });
+            },
+            label: "Neues Element",
+            icon: Theme(
+                data: ThemeData(
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  textTheme: const TextTheme(
+                    bodyMedium: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: Container(
+                      width: 16,
+                      height: 16,
+                      alignment: AlignmentDirectional.center,
+                      child: const FaIcon(FontAwesomeIcons.plus)),
+                )),
+          ),
+        ),
+      ];
+    }
+
+    return [];
   }
 }
 
