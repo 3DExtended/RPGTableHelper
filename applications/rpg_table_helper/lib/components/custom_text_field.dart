@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({
-    super.key,
-    required this.labelText,
-    required this.textEditingController,
-    required this.keyboardType,
-    this.password,
-  });
+  const CustomTextField(
+      {super.key,
+      required this.labelText,
+      required this.textEditingController,
+      required this.keyboardType,
+      this.password,
+      this.placeholderText});
 
   final TextInputType keyboardType;
   final String labelText;
   final TextEditingController textEditingController;
+  final String? placeholderText;
   final bool? password;
 
   @override
@@ -31,6 +32,7 @@ class CustomTextField extends StatelessWidget {
         enableSuggestions: true,
         scribbleEnabled: true,
         decoration: InputDecoration(
+          helperText: placeholderText,
           labelText: labelText, // TODO localize
           alignLabelWithHint: true,
           border: const OutlineInputBorder(),

@@ -12,7 +12,7 @@ class RpgConfigurationModel {
   final List<RpgItem> allItems;
   final List<PlaceOfFinding> placesOfFindings;
   final List<ItemCategory> itemCategories;
-  final CharacterStatsDefinition characterStatsDefinition;
+  final List<CharacterStatsTabDefinition> characterStatTabsDefinition;
   final List<CraftingRecipe> craftingRecipes;
   final CurrencyDefinition currencyDefinition;
 
@@ -25,7 +25,7 @@ class RpgConfigurationModel {
     required this.placesOfFindings,
     required this.currencyDefinition,
     required this.itemCategories,
-    required this.characterStatsDefinition,
+    required this.characterStatTabsDefinition,
     required this.craftingRecipes,
   });
 
@@ -259,26 +259,109 @@ class RpgConfigurationModel {
             ),
           )
         ],
-        characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
-                name: "HP",
-                helperText: "Health Points",
-                valueType: CharacterStatValueType.intWithMaxValue,
-                editType: CharacterStatEditType.oneTap),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "886df3c2-a93f-47ae-931f-86153997860d",
-                name: "AC",
-                helperText: "Armor Class",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "082e62cb-7c17-4702-8529-172fb8e74c04",
-                name: "SP",
-                helperText: "Speed",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: []),
+        characterStatTabsDefinition: [
+          CharacterStatsTabDefinition(
+              tabName: "Background",
+              isOptional: false,
+              statsInTab: [
+                CharacterStatDefinition(
+                  statUuid: "30e18433-748d-458c-bd5e-373c38e762bf",
+                  name: "Herkunft",
+                  helperText: "Wo kommt dein Charakter her?",
+                  valueType: CharacterStatValueType.multiLineText,
+                  editType: CharacterStatEditType.static,
+                ),
+                CharacterStatDefinition(
+                  statUuid: "37862834-261a-47b5-bd5c-9e315b8d26aa",
+                  name: "Antrieb",
+                  helperText: "Was treibt deinen Charakter an?",
+                  valueType: CharacterStatValueType.multiLineText,
+                  editType: CharacterStatEditType.static,
+                ),
+              ]),
+          CharacterStatsTabDefinition(
+              tabName: "Stats",
+              isOptional: false,
+              statsInTab: [
+                CharacterStatDefinition(
+                    statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
+                    name: "HP",
+                    helperText: "Health Points",
+                    valueType: CharacterStatValueType.intWithMaxValue,
+                    editType: CharacterStatEditType.oneTap),
+                CharacterStatDefinition(
+                    statUuid: "886df3c2-a93f-47ae-931f-86153997860d",
+                    name: "AC",
+                    helperText: "Armor Class",
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static),
+                CharacterStatDefinition(
+                    statUuid: "082e62cb-7c17-4702-8529-172fb8e74c04",
+                    name: "SP",
+                    helperText: "Speed",
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static),
+                CharacterStatDefinition(
+                    statUuid: "1ce2f567-d540-498a-a677-9776d518622d",
+                    name: "Saving Throws",
+                    helperText: "Proficencies on saving throws",
+                    valueType: CharacterStatValueType.multiselect,
+                    editType: CharacterStatEditType.static,
+                    jsonSerializedAdditionalData:
+                        '[{uuid: "5becf30f-2723-4efb-9e80-1a6212e0ee18", title: "Strength", description: ""}, {uuid: "673dc4ff-af76-4e26-afab-9ef2755138f5", title: "Dexterity", description: ""},{uuid: "1ac48887-7427-4906-b4c4-57d03de94b26", title: "Constitution", description: ""},{uuid: "acc44f05-d60a-41ea-bb4b-36961055f6ed", title: "Intelligence", description: ""},{uuid: "9dc62400-4d3e-4029-a73e-eda1b800b4cd", title: "Wisdom", description: ""},{uuid: "98fbbffb-0c2e-47a6-a999-66737d9cc164", title: "Charisma", description: ""},]'),
+              ]),
+          CharacterStatsTabDefinition(
+              tabName: "Features",
+              isOptional: false,
+              statsInTab: [
+                CharacterStatDefinition(
+                    statUuid: "893bab17-6c13-4ed5-a287-8eaa135a54ef",
+                    name: "Features",
+                    helperText: "Charakter Eigenschaften",
+                    valueType: CharacterStatValueType.multiLineText,
+                    editType: CharacterStatEditType.static),
+              ]),
+          CharacterStatsTabDefinition(
+              tabName: "Attacks",
+              isOptional: false,
+              statsInTab: [
+                CharacterStatDefinition(
+                    statUuid: "3219934b-09fc-409b-8413-9e56b864c664",
+                    name: "Attacken",
+                    helperText: "Physische Attacken",
+                    valueType: CharacterStatValueType.multiLineText,
+                    editType: CharacterStatEditType.static),
+              ]),
+          CharacterStatsTabDefinition(
+              tabName: "Spells",
+              isOptional: true,
+              statsInTab: [
+                CharacterStatDefinition(
+                    statUuid: "c1b7a131-c239-4d56-8008-b3d4b654189d",
+                    name: "Zaubertricks",
+                    helperText: "Welche Zaubertricks kennst du?",
+                    valueType: CharacterStatValueType.multiselect,
+                    editType: CharacterStatEditType.static,
+                    jsonSerializedAdditionalData:
+                        '[{uuid: "6b4f7658-9781-44d7-9d7d-2ec946f8dad7", title: "Kalte Hand", description: "Kalte Hand Beschreibung"}]'),
+                CharacterStatDefinition(
+                  statUuid: "18877c24-515a-4788-a657-d50915a5c0cc",
+                  name: "Zauber Stufe 1 benutzt",
+                  helperText:
+                      "Wieviele Zauber der Stufe 1 hast du heute gemacht?",
+                  valueType: CharacterStatValueType.intCounter,
+                  editType: CharacterStatEditType.oneTap,
+                ),
+                CharacterStatDefinition(
+                    statUuid: "31a52ed2-3e7b-42ac-8f3e-490b3a04027a",
+                    name: "Zauber Stufe 1",
+                    helperText: "Welche Zauber der Stufe 1 kennst du?",
+                    valueType: CharacterStatValueType.multiselect,
+                    editType: CharacterStatEditType.static,
+                    jsonSerializedAdditionalData:
+                        '[{uuid: "a4570a95-6d87-40e9-b1bf-2f3845dc61a4", title: "Identifizieren", description: "Identifizieren Beschreibung"}]'),
+              ]),
+        ],
       );
 }
 
@@ -437,9 +520,14 @@ enum CharacterStatEditType {
 
 @JsonEnum()
 enum CharacterStatValueType {
-  string,
-  int,
+  multiLineText, // => RpgCharacterStatValue.serializedValue == {"value": "asdf"}
+  singleLineText, // => RpgCharacterStatValue.serializedValue == {"value": "asdf"}
+  int, // => RpgCharacterStatValue.serializedValue == {"value": 17}
   intWithMaxValue,
+
+  multiselect, // jsonSerializedAdditionalData is filled with [{uuid: "", title: "", description: ""}]
+  intCounter,
+
   bool,
   double,
 }
@@ -453,12 +541,15 @@ class CharacterStatDefinition {
   final CharacterStatValueType valueType;
   final CharacterStatEditType editType;
 
+  final String? jsonSerializedAdditionalData;
+
   CharacterStatDefinition({
     required this.statUuid,
     required this.name,
     required this.helperText,
     required this.valueType,
     required this.editType,
+    this.jsonSerializedAdditionalData,
   });
 
   factory CharacterStatDefinition.fromJson(Map<String, dynamic> json) =>
@@ -469,22 +560,19 @@ class CharacterStatDefinition {
 
 @JsonSerializable()
 @CopyWith()
-class CharacterStatsDefinition {
-  final CharacterStatDefinition mainPlayerStat;
-  final CharacterStatDefinition secondaryPlayerStat;
-  final CharacterStatDefinition thirdPlayerStat;
-  final List<CharacterStatDefinition> otherPlayerStats;
-  CharacterStatsDefinition({
-    required this.mainPlayerStat,
-    required this.secondaryPlayerStat,
-    required this.thirdPlayerStat,
-    required this.otherPlayerStats,
+class CharacterStatsTabDefinition {
+  final String tabName;
+  final bool isOptional;
+  final List<CharacterStatDefinition> statsInTab;
+  CharacterStatsTabDefinition({
+    required this.tabName,
+    required this.isOptional,
+    required this.statsInTab,
   });
 
-  factory CharacterStatsDefinition.fromJson(Map<String, dynamic> json) =>
-      _$CharacterStatsDefinitionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CharacterStatsDefinitionToJson(this);
+  factory CharacterStatsTabDefinition.fromJson(Map<String, dynamic> json) =>
+      _$CharacterStatsTabDefinitionFromJson(json);
+  Map<String, dynamic> toJson() => _$CharacterStatsTabDefinitionToJson(this);
 }
 
 @JsonSerializable()

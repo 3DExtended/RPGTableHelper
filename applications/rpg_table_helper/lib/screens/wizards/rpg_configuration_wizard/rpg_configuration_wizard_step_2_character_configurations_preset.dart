@@ -60,7 +60,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
       onPreviousBtnPressed: widget.onPreviousBtnPressed,
       sideBarFlex: 1,
       contentFlex: 2,
-      contentChildren: const [],
+      contentChildren: [],
     );
   }
 }

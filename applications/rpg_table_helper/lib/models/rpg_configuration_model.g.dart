@@ -18,8 +18,8 @@ abstract class _$RpgConfigurationModelCWProxy {
 
   RpgConfigurationModel itemCategories(List<ItemCategory> itemCategories);
 
-  RpgConfigurationModel characterStatsDefinition(
-      CharacterStatsDefinition characterStatsDefinition);
+  RpgConfigurationModel characterStatTabsDefinition(
+      List<CharacterStatsTabDefinition> characterStatTabsDefinition);
 
   RpgConfigurationModel craftingRecipes(List<CraftingRecipe> craftingRecipes);
 
@@ -35,7 +35,7 @@ abstract class _$RpgConfigurationModelCWProxy {
     List<PlaceOfFinding>? placesOfFindings,
     CurrencyDefinition? currencyDefinition,
     List<ItemCategory>? itemCategories,
-    CharacterStatsDefinition? characterStatsDefinition,
+    List<CharacterStatsTabDefinition>? characterStatTabsDefinition,
     List<CraftingRecipe>? craftingRecipes,
   });
 }
@@ -69,9 +69,9 @@ class _$RpgConfigurationModelCWProxyImpl
       this(itemCategories: itemCategories);
 
   @override
-  RpgConfigurationModel characterStatsDefinition(
-          CharacterStatsDefinition characterStatsDefinition) =>
-      this(characterStatsDefinition: characterStatsDefinition);
+  RpgConfigurationModel characterStatTabsDefinition(
+          List<CharacterStatsTabDefinition> characterStatTabsDefinition) =>
+      this(characterStatTabsDefinition: characterStatTabsDefinition);
 
   @override
   RpgConfigurationModel craftingRecipes(List<CraftingRecipe> craftingRecipes) =>
@@ -91,7 +91,7 @@ class _$RpgConfigurationModelCWProxyImpl
     Object? placesOfFindings = const $CopyWithPlaceholder(),
     Object? currencyDefinition = const $CopyWithPlaceholder(),
     Object? itemCategories = const $CopyWithPlaceholder(),
-    Object? characterStatsDefinition = const $CopyWithPlaceholder(),
+    Object? characterStatTabsDefinition = const $CopyWithPlaceholder(),
     Object? craftingRecipes = const $CopyWithPlaceholder(),
   }) {
     return RpgConfigurationModel(
@@ -118,12 +118,12 @@ class _$RpgConfigurationModelCWProxyImpl
           ? _value.itemCategories
           // ignore: cast_nullable_to_non_nullable
           : itemCategories as List<ItemCategory>,
-      characterStatsDefinition:
-          characterStatsDefinition == const $CopyWithPlaceholder() ||
-                  characterStatsDefinition == null
-              ? _value.characterStatsDefinition
-              // ignore: cast_nullable_to_non_nullable
-              : characterStatsDefinition as CharacterStatsDefinition,
+      characterStatTabsDefinition: characterStatTabsDefinition ==
+                  const $CopyWithPlaceholder() ||
+              characterStatTabsDefinition == null
+          ? _value.characterStatTabsDefinition
+          // ignore: cast_nullable_to_non_nullable
+          : characterStatTabsDefinition as List<CharacterStatsTabDefinition>,
       craftingRecipes: craftingRecipes == const $CopyWithPlaceholder() ||
               craftingRecipes == null
           ? _value.craftingRecipes
@@ -595,105 +595,83 @@ extension $CharacterStatDefinitionCopyWith on CharacterStatDefinition {
       _$CharacterStatDefinitionCWProxyImpl(this);
 }
 
-abstract class _$CharacterStatsDefinitionCWProxy {
-  CharacterStatsDefinition mainPlayerStat(
-      CharacterStatDefinition mainPlayerStat);
+abstract class _$CharacterStatsTabDefinitionCWProxy {
+  CharacterStatsTabDefinition tabName(String tabName);
 
-  CharacterStatsDefinition secondaryPlayerStat(
-      CharacterStatDefinition secondaryPlayerStat);
+  CharacterStatsTabDefinition isOptional(bool isOptional);
 
-  CharacterStatsDefinition thirdPlayerStat(
-      CharacterStatDefinition thirdPlayerStat);
+  CharacterStatsTabDefinition statsInTab(
+      List<CharacterStatDefinition> statsInTab);
 
-  CharacterStatsDefinition otherPlayerStats(
-      List<CharacterStatDefinition> otherPlayerStats);
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
   /// ```dart
-  /// CharacterStatsDefinition(...).copyWith(id: 12, name: "My name")
+  /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
-  CharacterStatsDefinition call({
-    CharacterStatDefinition? mainPlayerStat,
-    CharacterStatDefinition? secondaryPlayerStat,
-    CharacterStatDefinition? thirdPlayerStat,
-    List<CharacterStatDefinition>? otherPlayerStats,
+  CharacterStatsTabDefinition call({
+    String? tabName,
+    bool? isOptional,
+    List<CharacterStatDefinition>? statsInTab,
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCharacterStatsDefinition.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCharacterStatsDefinition.copyWith.fieldName(...)`
-class _$CharacterStatsDefinitionCWProxyImpl
-    implements _$CharacterStatsDefinitionCWProxy {
-  const _$CharacterStatsDefinitionCWProxyImpl(this._value);
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCharacterStatsTabDefinition.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCharacterStatsTabDefinition.copyWith.fieldName(...)`
+class _$CharacterStatsTabDefinitionCWProxyImpl
+    implements _$CharacterStatsTabDefinitionCWProxy {
+  const _$CharacterStatsTabDefinitionCWProxyImpl(this._value);
 
-  final CharacterStatsDefinition _value;
-
-  @override
-  CharacterStatsDefinition mainPlayerStat(
-          CharacterStatDefinition mainPlayerStat) =>
-      this(mainPlayerStat: mainPlayerStat);
+  final CharacterStatsTabDefinition _value;
 
   @override
-  CharacterStatsDefinition secondaryPlayerStat(
-          CharacterStatDefinition secondaryPlayerStat) =>
-      this(secondaryPlayerStat: secondaryPlayerStat);
+  CharacterStatsTabDefinition tabName(String tabName) => this(tabName: tabName);
 
   @override
-  CharacterStatsDefinition thirdPlayerStat(
-          CharacterStatDefinition thirdPlayerStat) =>
-      this(thirdPlayerStat: thirdPlayerStat);
+  CharacterStatsTabDefinition isOptional(bool isOptional) =>
+      this(isOptional: isOptional);
 
   @override
-  CharacterStatsDefinition otherPlayerStats(
-          List<CharacterStatDefinition> otherPlayerStats) =>
-      this(otherPlayerStats: otherPlayerStats);
+  CharacterStatsTabDefinition statsInTab(
+          List<CharacterStatDefinition> statsInTab) =>
+      this(statsInTab: statsInTab);
 
   @override
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
   /// ```dart
-  /// CharacterStatsDefinition(...).copyWith(id: 12, name: "My name")
+  /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
-  CharacterStatsDefinition call({
-    Object? mainPlayerStat = const $CopyWithPlaceholder(),
-    Object? secondaryPlayerStat = const $CopyWithPlaceholder(),
-    Object? thirdPlayerStat = const $CopyWithPlaceholder(),
-    Object? otherPlayerStats = const $CopyWithPlaceholder(),
+  CharacterStatsTabDefinition call({
+    Object? tabName = const $CopyWithPlaceholder(),
+    Object? isOptional = const $CopyWithPlaceholder(),
+    Object? statsInTab = const $CopyWithPlaceholder(),
   }) {
-    return CharacterStatsDefinition(
-      mainPlayerStat: mainPlayerStat == const $CopyWithPlaceholder() ||
-              mainPlayerStat == null
-          ? _value.mainPlayerStat
+    return CharacterStatsTabDefinition(
+      tabName: tabName == const $CopyWithPlaceholder() || tabName == null
+          ? _value.tabName
           // ignore: cast_nullable_to_non_nullable
-          : mainPlayerStat as CharacterStatDefinition,
-      secondaryPlayerStat:
-          secondaryPlayerStat == const $CopyWithPlaceholder() ||
-                  secondaryPlayerStat == null
-              ? _value.secondaryPlayerStat
+          : tabName as String,
+      isOptional:
+          isOptional == const $CopyWithPlaceholder() || isOptional == null
+              ? _value.isOptional
               // ignore: cast_nullable_to_non_nullable
-              : secondaryPlayerStat as CharacterStatDefinition,
-      thirdPlayerStat: thirdPlayerStat == const $CopyWithPlaceholder() ||
-              thirdPlayerStat == null
-          ? _value.thirdPlayerStat
-          // ignore: cast_nullable_to_non_nullable
-          : thirdPlayerStat as CharacterStatDefinition,
-      otherPlayerStats: otherPlayerStats == const $CopyWithPlaceholder() ||
-              otherPlayerStats == null
-          ? _value.otherPlayerStats
-          // ignore: cast_nullable_to_non_nullable
-          : otherPlayerStats as List<CharacterStatDefinition>,
+              : isOptional as bool,
+      statsInTab:
+          statsInTab == const $CopyWithPlaceholder() || statsInTab == null
+              ? _value.statsInTab
+              // ignore: cast_nullable_to_non_nullable
+              : statsInTab as List<CharacterStatDefinition>,
     );
   }
 }
 
-extension $CharacterStatsDefinitionCopyWith on CharacterStatsDefinition {
-  /// Returns a callable class that can be used as follows: `instanceOfCharacterStatsDefinition.copyWith(...)` or like so:`instanceOfCharacterStatsDefinition.copyWith.fieldName(...)`.
+extension $CharacterStatsTabDefinitionCopyWith on CharacterStatsTabDefinition {
+  /// Returns a callable class that can be used as follows: `instanceOfCharacterStatsTabDefinition.copyWith(...)` or like so:`instanceOfCharacterStatsTabDefinition.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
-  _$CharacterStatsDefinitionCWProxy get copyWith =>
-      _$CharacterStatsDefinitionCWProxyImpl(this);
+  _$CharacterStatsTabDefinitionCWProxy get copyWith =>
+      _$CharacterStatsTabDefinitionCWProxyImpl(this);
 }
 
 abstract class _$PlaceOfFindingCWProxy {
@@ -1031,8 +1009,11 @@ RpgConfigurationModel _$RpgConfigurationModelFromJson(
       itemCategories: (json['itemCategories'] as List<dynamic>)
           .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
-      characterStatsDefinition: CharacterStatsDefinition.fromJson(
-          json['characterStatsDefinition'] as Map<String, dynamic>),
+      characterStatTabsDefinition: (json['characterStatTabsDefinition']
+              as List<dynamic>)
+          .map((e) =>
+              CharacterStatsTabDefinition.fromJson(e as Map<String, dynamic>))
+          .toList(),
       craftingRecipes: (json['craftingRecipes'] as List<dynamic>)
           .map((e) => CraftingRecipe.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -1045,7 +1026,7 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
       'allItems': instance.allItems,
       'placesOfFindings': instance.placesOfFindings,
       'itemCategories': instance.itemCategories,
-      'characterStatsDefinition': instance.characterStatsDefinition,
+      'characterStatTabsDefinition': instance.characterStatTabsDefinition,
       'craftingRecipes': instance.craftingRecipes,
       'currencyDefinition': instance.currencyDefinition,
     };
@@ -1149,7 +1130,8 @@ Map<String, dynamic> _$CharacterStatDefinitionToJson(
     };
 
 const _$CharacterStatValueTypeEnumMap = {
-  CharacterStatValueType.string: 'string',
+  CharacterStatValueType.multiLineText: 'multiLineText',
+  CharacterStatValueType.singleLineText: 'singleLineText',
   CharacterStatValueType.int: 'int',
   CharacterStatValueType.intWithMaxValue: 'intWithMaxValue',
   CharacterStatValueType.bool: 'bool',
@@ -1161,28 +1143,23 @@ const _$CharacterStatEditTypeEnumMap = {
   CharacterStatEditType.oneTap: 'oneTap',
 };
 
-CharacterStatsDefinition _$CharacterStatsDefinitionFromJson(
+CharacterStatsTabDefinition _$CharacterStatsTabDefinitionFromJson(
         Map<String, dynamic> json) =>
-    CharacterStatsDefinition(
-      mainPlayerStat: CharacterStatDefinition.fromJson(
-          json['mainPlayerStat'] as Map<String, dynamic>),
-      secondaryPlayerStat: CharacterStatDefinition.fromJson(
-          json['secondaryPlayerStat'] as Map<String, dynamic>),
-      thirdPlayerStat: CharacterStatDefinition.fromJson(
-          json['thirdPlayerStat'] as Map<String, dynamic>),
-      otherPlayerStats: (json['otherPlayerStats'] as List<dynamic>)
+    CharacterStatsTabDefinition(
+      tabName: json['tabName'] as String,
+      isOptional: json['isOptional'] as bool,
+      statsInTab: (json['statsInTab'] as List<dynamic>)
           .map((e) =>
               CharacterStatDefinition.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$CharacterStatsDefinitionToJson(
-        CharacterStatsDefinition instance) =>
+Map<String, dynamic> _$CharacterStatsTabDefinitionToJson(
+        CharacterStatsTabDefinition instance) =>
     <String, dynamic>{
-      'mainPlayerStat': instance.mainPlayerStat,
-      'secondaryPlayerStat': instance.secondaryPlayerStat,
-      'thirdPlayerStat': instance.thirdPlayerStat,
-      'otherPlayerStats': instance.otherPlayerStats,
+      'tabName': instance.tabName,
+      'isOptional': instance.isOptional,
+      'statsInTab': instance.statsInTab,
     };
 
 PlaceOfFinding _$PlaceOfFindingFromJson(Map<String, dynamic> json) =>

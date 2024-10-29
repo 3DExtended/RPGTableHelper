@@ -67,6 +67,7 @@ void testConfigurations({
         debugShowMaterialGrid: false,
         themeMode: ThemeMode.dark,
         title: 'TriviaCrusher',
+        color: Colors.black,
         theme: ThemeData.dark(useMaterial3: true),
         builder: (BuildContext context, Widget? child) {
           // Set a custom screen size for the test

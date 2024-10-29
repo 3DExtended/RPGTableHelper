@@ -47,30 +47,34 @@ void main() {
           ],
           placesOfFindings: [],
           itemCategories: [],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-              statUuid: 'stat1',
-              name: 'Strength',
-              helperText: 'Character strength',
-              valueType: CharacterStatValueType.int,
-              editType: CharacterStatEditType.static,
-            ),
-            secondaryPlayerStat: CharacterStatDefinition(
-              statUuid: 'stat2',
-              name: 'Dexterity',
-              helperText: 'Character dexterity',
-              valueType: CharacterStatValueType.int,
-              editType: CharacterStatEditType.static,
-            ),
-            thirdPlayerStat: CharacterStatDefinition(
-              statUuid: 'stat3',
-              name: 'Intelligence',
-              helperText: 'Character intelligence',
-              valueType: CharacterStatValueType.int,
-              editType: CharacterStatEditType.static,
-            ),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           currencyDefinition: CurrencyDefinition(
             currencyTypes: [
               CurrencyType(name: 'Gold', multipleOfPreviousValue: 1),
@@ -221,27 +225,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
@@ -281,27 +292,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
@@ -353,27 +371,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2, item3],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
@@ -421,27 +446,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
@@ -483,27 +515,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
@@ -545,27 +584,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
@@ -615,27 +661,34 @@ void main() {
           placeOfFindings: []);
       var rpgConfig = RpgConfigurationModel(
           allItems: [item1, item2],
-          characterStatsDefinition: CharacterStatsDefinition(
-            mainPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            secondaryPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            thirdPlayerStat: CharacterStatDefinition(
-                statUuid: "statUuid",
-                name: "name",
-                helperText: "helperText",
-                valueType: CharacterStatValueType.string,
-                editType: CharacterStatEditType.static),
-            otherPlayerStats: [],
-          ),
+          characterStatTabsDefinition: [
+            CharacterStatsTabDefinition(
+                isOptional: false,
+                tabName: "Test",
+                statsInTab: [
+                  CharacterStatDefinition(
+                    statUuid: 'stat1',
+                    name: 'Strength',
+                    helperText: 'Character strength',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat2',
+                    name: 'Dexterity',
+                    helperText: 'Character dexterity',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                  CharacterStatDefinition(
+                    statUuid: 'stat3',
+                    name: 'Intelligence',
+                    helperText: 'Character intelligence',
+                    valueType: CharacterStatValueType.int,
+                    editType: CharacterStatEditType.static,
+                  ),
+                ]),
+          ],
           craftingRecipes: [],
           currencyDefinition: CurrencyDefinition(currencyTypes: []),
           itemCategories: [],
