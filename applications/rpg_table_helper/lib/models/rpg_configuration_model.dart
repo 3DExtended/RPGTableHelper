@@ -525,7 +525,7 @@ enum CharacterStatValueType {
   int, // => RpgCharacterStatValue.serializedValue == {"value": 17}
   intWithMaxValue,
 
-  multiselect, // jsonSerializedAdditionalData is filled with [{label: "", description: ""}]
+  multiselect, // jsonSerializedAdditionalData is filled with [{label: "", description: ""}], => RpgCharacterStatValue.serializedValue == {"values": ["asdf", "asdf2"]}
   intCounter,
 
   bool,
