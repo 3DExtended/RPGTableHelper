@@ -31,7 +31,34 @@ Widget getPlayerVisualizationWidget({
             height: 10,
           ),
           Text(
-            parsedValue["value"],
+            parsedValue["value"].toString(),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 16),
+          ),
+        ],
+      );
+
+    case CharacterStatValueType.int:
+      // characterValue.serializedValue = {"value": 1}
+      var parsedValue = jsonDecode(characterValue.serializedValue);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            parsedValue["value"].toString(),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 32),
+          ),
+          SizedBox(
+            height: 0,
+          ),
+          Text(
+            statConfiguration.name,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
@@ -108,7 +135,7 @@ Widget getPlayerVisualizationWidget({
       return Container(
         height: 50,
         width: 50,
-        color: Colors.red,
+        color: Colors.green,
       );
   }
 }
