@@ -161,7 +161,7 @@ Widget getPlayerVisualizationWidget({
       return Container(
         height: 50,
         width: 50,
-        color: Colors.green,
+        color: Colors.red,
       );
   }
 }

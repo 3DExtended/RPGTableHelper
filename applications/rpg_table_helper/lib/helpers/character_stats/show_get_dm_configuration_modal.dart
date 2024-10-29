@@ -219,21 +219,21 @@ class _ShowGetDmConfigurationModalContentState
                         value: e.name,
                         child: Text("Zahl mit maximal Wert"), // TODO localize
                       );
-                    case CharacterStatValueType.intCounter:
-                      return DropdownMenuItem<String?>(
-                        value: e.name,
-                        child: Text("Zähler/Counter"), // TODO localize
-                      );
-                    case CharacterStatValueType.bool:
-                      return DropdownMenuItem<String?>(
-                        value: e.name,
-                        child: Text("Ja/Nein"), // TODO localize
-                      );
-                    case CharacterStatValueType.double:
-                      return DropdownMenuItem<String?>(
-                        value: e.name,
-                        child: Text("Komma-Zahl"), // TODO localize
-                      );
+                    // case CharacterStatValueType.intCounter:
+                    //   return DropdownMenuItem<String?>(
+                    //     value: e.name,
+                    //     child: Text("Zähler/Counter"), // TODO localize
+                    //   );
+                    // case CharacterStatValueType.bool:
+                    //   return DropdownMenuItem<String?>(
+                    //     value: e.name,
+                    //     child: Text("Ja/Nein"), // TODO localize
+                    //   );
+                    // case CharacterStatValueType.double:
+                    //   return DropdownMenuItem<String?>(
+                    //     value: e.name,
+                    //     child: Text("Komma-Zahl"), // TODO localize
+                    //   );
                     case CharacterStatValueType.multiselect:
                       return DropdownMenuItem<String?>(
                         value: e.name,

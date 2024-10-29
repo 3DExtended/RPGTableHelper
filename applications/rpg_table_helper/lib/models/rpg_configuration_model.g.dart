@@ -1153,9 +1153,6 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.int: 'int',
   CharacterStatValueType.intWithMaxValue: 'intWithMaxValue',
   CharacterStatValueType.multiselect: 'multiselect',
-  CharacterStatValueType.intCounter: 'intCounter',
-  CharacterStatValueType.bool: 'bool',
-  CharacterStatValueType.double: 'double',
 };
 
 const _$CharacterStatEditTypeEnumMap = {

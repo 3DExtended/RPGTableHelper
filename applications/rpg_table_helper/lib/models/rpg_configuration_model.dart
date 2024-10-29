@@ -349,7 +349,7 @@ class RpgConfigurationModel {
                   name: "Zauber Stufe 1 benutzt",
                   helperText:
                       "Wieviele Zauber der Stufe 1 hast du heute gemacht?",
-                  valueType: CharacterStatValueType.intCounter,
+                  valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
                 CharacterStatDefinition(
@@ -523,13 +523,8 @@ enum CharacterStatValueType {
   multiLineText, // => RpgCharacterStatValue.serializedValue == {"value": "asdf"}
   singleLineText, // => RpgCharacterStatValue.serializedValue == {"value": "asdf"}
   int, // => RpgCharacterStatValue.serializedValue == {"value": 17}
-  intWithMaxValue,
-
+  intWithMaxValue, // => RpgCharacterStatValue.serializedValue == {"value": 12, "maxValue": 17}
   multiselect, // jsonSerializedAdditionalData is filled with [{label: "", description: ""}], => RpgCharacterStatValue.serializedValue == {"values": ["asdf", "asdf2"]}
-  intCounter,
-
-  bool,
-  double,
 }
 
 @JsonSerializable()
