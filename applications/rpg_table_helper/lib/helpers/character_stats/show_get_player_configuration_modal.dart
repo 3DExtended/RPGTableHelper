@@ -51,19 +51,32 @@ class ShowGetPlayerConfigurationModalContent extends StatefulWidget {
 class _ShowGetPlayerConfigurationModalContentState
     extends State<ShowGetPlayerConfigurationModalContent> {
   var textEditController = TextEditingController();
+  var textEditController2 = TextEditingController();
 
   @override
   void initState() {
     if (widget.statConfiguration.valueType ==
             CharacterStatValueType.singleLineText ||
         widget.statConfiguration.valueType ==
-            CharacterStatValueType.multiLineText) {
+            CharacterStatValueType.multiLineText ||
+        widget.statConfiguration.valueType == CharacterStatValueType.int ||
+        widget.statConfiguration.valueType ==
+            CharacterStatValueType.intWithMaxValue) {
       if (widget.characterValue == null) {
         textEditController = TextEditingController();
+        textEditController2 = TextEditingController();
       } else {
-        var parsedValue =
-            (jsonDecode(widget.characterValue!.serializedValue)["value"]);
-        textEditController = TextEditingController(text: parsedValue);
+        Map<String, dynamic> tempDecode =
+            jsonDecode(widget.characterValue!.serializedValue);
+        var parsedValue = tempDecode["value"];
+        textEditController =
+            TextEditingController(text: parsedValue.toString());
+
+        // for CharacterStatValueType.intWithMaxValue
+        if (tempDecode.containsKey("maxValue")) {
+          textEditController2 =
+              TextEditingController(text: tempDecode["maxValue"].toString());
+        }
       }
     }
 
@@ -72,15 +85,37 @@ class _ShowGetPlayerConfigurationModalContentState
 
   @override
   Widget build(BuildContext context) {
-    return ModalContentWrapper(
+    return ModalContentWrapper<RpgCharacterStatValue>(
         title: "Eigenschaften konfigurieren",
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},
-        onSave: () async {
-          return null;
 
-          // TODO make me
-          // return CharacterStatDefinition();
+        // TODO onSave should be null if this modal is invalid
+        onSave: () async {
+          switch (widget.statConfiguration.valueType) {
+            case CharacterStatValueType.multiLineText:
+            case CharacterStatValueType.singleLineText:
+              return RpgCharacterStatValue(
+                serializedValue: jsonEncode({"value": textEditController.text}),
+                statUuid: widget.statConfiguration.statUuid,
+              );
+            case CharacterStatValueType.int:
+              return RpgCharacterStatValue(
+                serializedValue:
+                    jsonEncode({"value": int.parse(textEditController.text)}),
+                statUuid: widget.statConfiguration.statUuid,
+              );
+            case CharacterStatValueType.intWithMaxValue:
+              return RpgCharacterStatValue(
+                serializedValue: jsonEncode({
+                  "value": int.parse(textEditController.text),
+                  "maxValue": int.parse(textEditController2.text)
+                }),
+                statUuid: widget.statConfiguration.statUuid,
+              );
+            default:
+          }
+          return null;
         },
         child: Builder(builder: (context) {
           switch (widget.statConfiguration.valueType) {
@@ -108,10 +143,59 @@ class _ShowGetPlayerConfigurationModalContentState
                     textEditingController: textEditController,
                     keyboardType: TextInputType.number,
                   ),
-                  // TODO make me
-                  // CustomDropdownMenu(selectedValueTemp: selectedValueTemp, setter: setter, items: items, label: label)
                 ],
               );
+
+            case CharacterStatValueType.intWithMaxValue:
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.statConfiguration.name,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                  ),
+                  SizedBox(
+                    height: 0,
+                  ),
+                  Text(
+                    widget.statConfiguration.helperText,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                          labelText: "Current Value",
+                          placeholderText: "The current value.",
+                          textEditingController: textEditController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: CustomTextField(
+                          labelText: "Max Value",
+                          placeholderText: "The maximum value you could get.",
+                          textEditingController: textEditController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+
             default:
               return Container(
                 height: 50,

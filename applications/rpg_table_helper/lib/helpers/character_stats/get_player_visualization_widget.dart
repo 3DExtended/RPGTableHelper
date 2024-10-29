@@ -66,6 +66,32 @@ Widget getPlayerVisualizationWidget({
           ),
         ],
       );
+    case CharacterStatValueType.intWithMaxValue:
+      // characterValue.serializedValue = {"value": 1, "maxValue": 17}
+      var parsedValue = jsonDecode(characterValue.serializedValue);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "${parsedValue["value"]} / ${parsedValue["maxValue"]}",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 32),
+          ),
+          SizedBox(
+            height: 0,
+          ),
+          Text(
+            statConfiguration.name,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 16),
+          ),
+        ],
+      );
 
     case CharacterStatValueType.multiselect:
       // statConfiguration.jsonSerializedAdditionalData = [{"label": "asdf", "description": "asdf"}]

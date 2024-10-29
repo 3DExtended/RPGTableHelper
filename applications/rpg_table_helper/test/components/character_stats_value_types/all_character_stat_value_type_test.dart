@@ -79,6 +79,21 @@ List<
       serializedValue: '{"value": 17}',
     )
   ),
+  (
+    "intWithMaxValue, static",
+    CharacterStatDefinition(
+      valueType: CharacterStatValueType.intWithMaxValue,
+      editType: CharacterStatEditType.static,
+      name: "HP",
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      helperText: "How many health points do you have?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      serializedValue: '{"value": 17, "maxValue": 23}',
+    )
+  ),
 ];
 
 void main() {
