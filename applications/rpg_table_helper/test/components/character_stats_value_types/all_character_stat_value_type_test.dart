@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/components/characterStatEditTypes/helper.dart';
+import 'package:rpg_table_helper/helpers/character_stat_edit_types_helper.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -42,8 +42,23 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
-      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      statUuid: "1aa3ef8a-6b18-4131-8b43-810dcceba9a5",
       serializedValue: '{"value": "Peter"}',
+    )
+  ),
+  (
+    "int, static",
+    CharacterStatDefinition(
+      valueType: CharacterStatValueType.int,
+      editType: CharacterStatEditType.static,
+      name: "Alter",
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      helperText: "How old is your character?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      serializedValue: '{"value": 17}',
     )
   ),
 ];

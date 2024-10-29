@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 
 class ModalContentWrapper<T> extends StatelessWidget {
   const ModalContentWrapper({
@@ -34,63 +33,64 @@ class ModalContentWrapper<T> extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.transparent,
           body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                StyledBox(
-                  borderThickness: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(21.0),
-                    child: Column(
-                      children: [
-                        Row(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: StyledBox(
+                borderThickness: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(21.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: Colors.white, fontSize: 32),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Expanded(child: SingleChildScrollView(child: child)),
+                      const SizedBox(
+                        height: 0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                        child: Row(
                           children: [
-                            Expanded(
-                                child: CustomMarkdownBody(text: "# $title"))
+                            CustomButton(
+                              label: "Abbrechen", // TODO localize
+                              onPressed: () async {
+                                await onCancel();
+                                navigatorKey.currentState!.pop(null);
+                              },
+                            ),
+                            const Spacer(),
+                            CustomButton(
+                              label: "Speichern", // TODO localize
+                              onPressed: onSave == null
+                                  ? null
+                                  : () async {
+                                      var result = await onSave!();
+
+                                      navigatorKey.currentState!.pop(result);
+                                    },
+                            ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        child,
-                        const SizedBox(
-                          height: 0,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                          child: Row(
-                            children: [
-                              CustomButton(
-                                label: "Abbrechen", // TODO localize
-                                onPressed: () async {
-                                  await onCancel();
-                                  navigatorKey.currentState!.pop(null);
-                                },
-                              ),
-                              const Spacer(),
-                              CustomButton(
-                                label: "Speichern", // TODO localize
-                                onPressed: onSave == null
-                                    ? null
-                                    : () async {
-                                        var result = await onSave!();
-
-                                        navigatorKey.currentState!.pop(result);
-                                      },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                    height: EdgeInsets.fromViewPadding(
-                            View.of(context).viewInsets,
-                            View.of(context).devicePixelRatio)
-                        .bottom),
-              ],
+              ),
             ),
           ),
         ),
