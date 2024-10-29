@@ -209,7 +209,7 @@ class _DmGrantItemsScreenContentState
                                 flex: 3,
                                 child: CustomMarkdownBody(
                                     text:
-                                        "Spieler __${playerRollPair.$2.isNotEmpty ? playerRollPair.$2 : "Player Name"}__"),
+                                        "Spieler __${playerRollPair.$2.isNotEmpty ? playerRollPair.$2.trim() : "Player Name"}__"),
                               ),
                               SizedBox(
                                 width: 80,
@@ -421,7 +421,7 @@ class _DmGrantItemsScreenContentState
     for (var grantForPlayer in (connectionDetails.lastGrantedItems ??
         List<GrantedItemsForPlayer>.empty())) {
       result +=
-          "- Spieler __${grantForPlayer.characterName.isNotEmpty ? grantForPlayer.characterName : "Player Name"}:__\n";
+          "- Spieler __${grantForPlayer.characterName.isNotEmpty ? grantForPlayer.characterName.trim() : "Player Name"}:__\n";
 
       if (grantForPlayer.grantedItems.isEmpty) {
         result += "  - Keine Items in dieser Runde\n";

@@ -11,6 +11,7 @@ A new Flutter project.
 - [ ] JoinCampagneRequests
   - [ ] The dm is currently not notified through signalr that a player has opened a new join request. Theoretically, only the client part should be needed as i have implemented the backend part already
   - [ ] Currently, after a player has requested a join request to a campagne they are not notified after they have been accepted or denied...
+- [X] Add sorting to the "add item modal" and a category with "all items".
 - [x] You can not see which items you are missing for crafting a recipe...
 - [x] add a popup when the player has received items from the dm through the ```grantPlayerItems``` method
 - [x] Add usage of jwt for signalr connection

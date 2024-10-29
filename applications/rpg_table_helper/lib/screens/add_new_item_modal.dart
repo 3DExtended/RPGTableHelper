@@ -139,6 +139,10 @@ class _AddNewItemModalContentState
                                         label:
                                             'Kategorie Filter', // TODO localize
                                         items: [
+                                          ItemCategory(
+                                              uuid: "NULL",
+                                              name: "Alle",
+                                              subCategories: []),
                                           ...(ItemCategory
                                                   .flattenCategoriesRecursive(
                                                       categories:
@@ -148,7 +152,9 @@ class _AddNewItemModalContentState
                                               .sortBy((e) => e.name)),
                                         ].map((category) {
                                           return DropdownMenuItem<String?>(
-                                            value: category.uuid,
+                                            value: category.uuid == "NULL"
+                                                ? null
+                                                : category.uuid,
                                             child: Text(category.name),
                                           );
                                         }).toList()),
@@ -173,36 +179,42 @@ class _AddNewItemModalContentState
                                           });
                                         },
                                         label: 'Item Auswahl', // TODO localize
-                                        items: _allItems.where((it) {
-                                          if (selectedItemCategoryId == null) {
-                                            return true;
-                                          }
+                                        items: _allItems
+                                            .where((it) {
+                                              if (selectedItemCategoryId ==
+                                                  null) {
+                                                return true;
+                                              }
 
-                                          if (it.categoryId ==
-                                              selectedItemCategoryId) {
-                                            return true;
-                                          }
+                                              if (it.categoryId ==
+                                                  selectedItemCategoryId) {
+                                                return true;
+                                              }
 
-                                          // check if selectedItemCategoryId is a parent category. if so, we must return true for the case the current item (it) is in any of its subCategory
-                                          var index = _allItemCategories
-                                              .indexWhere((ic) =>
-                                                  ic.uuid ==
-                                                  selectedItemCategoryId);
-                                          if (index != -1) {
-                                            var category =
-                                                _allItemCategories[index];
-                                            return category.subCategories.any(
-                                                (sc) =>
-                                                    sc.uuid == it.categoryId);
-                                          }
+                                              // check if selectedItemCategoryId is a parent category. if so, we must return true for the case the current item (it) is in any of its subCategory
+                                              var index = _allItemCategories
+                                                  .indexWhere((ic) =>
+                                                      ic.uuid ==
+                                                      selectedItemCategoryId);
+                                              if (index != -1) {
+                                                var category =
+                                                    _allItemCategories[index];
+                                                return category.subCategories
+                                                    .any((sc) =>
+                                                        sc.uuid ==
+                                                        it.categoryId);
+                                              }
 
-                                          return false;
-                                        }).map((item) {
-                                          return DropdownMenuEntry<String?>(
-                                            value: item.uuid,
-                                            label: item.name,
-                                          );
-                                        }).toList()),
+                                              return false;
+                                            })
+                                            .sortBy((i) => i.name)
+                                            .map((item) {
+                                              return DropdownMenuEntry<String?>(
+                                                value: item.uuid,
+                                                label: item.name,
+                                              );
+                                            })
+                                            .toList()),
                                   ),
                                   const SizedBox(
                                     width: 10,

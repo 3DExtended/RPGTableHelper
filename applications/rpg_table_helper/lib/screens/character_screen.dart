@@ -138,7 +138,7 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
                               child: Column(
                                 children: [
                                   Text(
-                                    "Spielername: ${player.configuration.characterName}",
+                                    "Spielername: ${player.configuration.characterName.trim()}",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
