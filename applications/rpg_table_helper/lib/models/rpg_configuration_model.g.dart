@@ -19,7 +19,7 @@ abstract class _$RpgConfigurationModelCWProxy {
   RpgConfigurationModel itemCategories(List<ItemCategory> itemCategories);
 
   RpgConfigurationModel characterStatTabsDefinition(
-      List<CharacterStatsTabDefinition> characterStatTabsDefinition);
+      List<CharacterStatsTabDefinition>? characterStatTabsDefinition);
 
   RpgConfigurationModel craftingRecipes(List<CraftingRecipe> craftingRecipes);
 
@@ -70,7 +70,7 @@ class _$RpgConfigurationModelCWProxyImpl
 
   @override
   RpgConfigurationModel characterStatTabsDefinition(
-          List<CharacterStatsTabDefinition> characterStatTabsDefinition) =>
+          List<CharacterStatsTabDefinition>? characterStatTabsDefinition) =>
       this(characterStatTabsDefinition: characterStatTabsDefinition);
 
   @override
@@ -119,11 +119,10 @@ class _$RpgConfigurationModelCWProxyImpl
           // ignore: cast_nullable_to_non_nullable
           : itemCategories as List<ItemCategory>,
       characterStatTabsDefinition: characterStatTabsDefinition ==
-                  const $CopyWithPlaceholder() ||
-              characterStatTabsDefinition == null
+              const $CopyWithPlaceholder()
           ? _value.characterStatTabsDefinition
           // ignore: cast_nullable_to_non_nullable
-          : characterStatTabsDefinition as List<CharacterStatsTabDefinition>,
+          : characterStatTabsDefinition as List<CharacterStatsTabDefinition>?,
       craftingRecipes: craftingRecipes == const $CopyWithPlaceholder() ||
               craftingRecipes == null
           ? _value.craftingRecipes
@@ -1025,8 +1024,8 @@ RpgConfigurationModel _$RpgConfigurationModelFromJson(
           .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
       characterStatTabsDefinition: (json['characterStatTabsDefinition']
-              as List<dynamic>)
-          .map((e) =>
+              as List<dynamic>?)
+          ?.map((e) =>
               CharacterStatsTabDefinition.fromJson(e as Map<String, dynamic>))
           .toList(),
       craftingRecipes: (json['craftingRecipes'] as List<dynamic>)

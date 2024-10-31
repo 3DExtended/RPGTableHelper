@@ -53,8 +53,8 @@ class _ShowGetPlayerConfigurationModalContentState
   var textEditController = TextEditingController();
   var textEditController2 = TextEditingController();
 
-  List<(String label, String description, bool selected)> multiselectOptions =
-      [];
+  List<(String label, String description, bool selected, String uuid)>
+      multiselectOptions = [];
 
   @override
   void initState() {
@@ -78,12 +78,11 @@ class _ShowGetPlayerConfigurationModalContentState
           return (
             e["label"] as String,
             e["description"] as String,
-            selectedValues.contains(e["label"] as String)
+            selectedValues.contains(e["uuid"] as String),
+            e["uuid"] as String,
           );
         },
       ).toList();
-
-      // multiselectOptions
     }
 
     if (widget.statConfiguration.valueType ==
@@ -211,7 +210,7 @@ class _ShowGetPlayerConfigurationModalContentState
 
                               setState(() {
                                 multiselectOptions[e.key] =
-                                    (e.value.$1, e.value.$2, val);
+                                    (e.value.$1, e.value.$2, val, e.value.$4);
                               });
                             },
                           )),

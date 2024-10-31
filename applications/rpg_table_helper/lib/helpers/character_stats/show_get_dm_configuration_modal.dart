@@ -56,8 +56,12 @@ class _ShowGetDmConfigurationModalContentState
   var helperTextEditor = TextEditingController();
 
   // stored as [{"label": "asdf", "description": "asdf"}] in additionalValues
-  List<(TextEditingController label, TextEditingController description)>
-      multiselectOptions = [];
+  List<
+      (
+        String uuid,
+        TextEditingController label,
+        TextEditingController description
+      )> multiselectOptions = [];
 
   CharacterStatEditType? selectedEditType = CharacterStatEditType.static;
   CharacterStatValueType? selectedValueType =
@@ -85,9 +89,11 @@ class _ShowGetDmConfigurationModalContentState
 
             for (var item in jsonList) {
               var label = (item as Map<String, dynamic>)["label"];
+              var uuid = (item)["uuid"];
               var description = (item)["description"];
 
               multiselectOptions.add((
+                uuid,
                 TextEditingController(text: label),
                 TextEditingController(text: description)
               ));
@@ -118,7 +124,11 @@ class _ShowGetDmConfigurationModalContentState
 
           if (selectedValueType == CharacterStatValueType.multiselect) {
             var serializedAdditionalData = jsonEncode(multiselectOptions
-                .map((e) => {"label": e.$1.text, "description": e.$2.text})
+                .map((e) => {
+                      "uuid": e.$1,
+                      "label": e.$2.text,
+                      "description": e.$3.text
+                    })
                 .toList());
 
             tempResult = tempResult.copyWith(
@@ -294,7 +304,7 @@ class _ShowGetDmConfigurationModalContentState
                     Expanded(
                       child: CustomTextField(
                         labelText: "Name:",
-                        textEditingController: tuple.value.$1,
+                        textEditingController: tuple.value.$2,
                         keyboardType: TextInputType.text,
                       ),
                     ),
@@ -304,7 +314,7 @@ class _ShowGetDmConfigurationModalContentState
                     Expanded(
                       child: CustomTextField(
                         labelText: "Beschreibung:",
-                        textEditingController: tuple.value.$2,
+                        textEditingController: tuple.value.$3,
                         keyboardType: TextInputType.multiline,
                       ),
                     ),
@@ -333,8 +343,11 @@ class _ShowGetDmConfigurationModalContentState
             isSubbutton: true,
             onPressed: () {
               setState(() {
-                multiselectOptions
-                    .add((TextEditingController(), TextEditingController()));
+                multiselectOptions.add((
+                  UuidV7().generate(),
+                  TextEditingController(),
+                  TextEditingController()
+                ));
               });
             },
             label: "Neues Element",

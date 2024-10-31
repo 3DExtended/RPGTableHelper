@@ -94,8 +94,8 @@ Widget getPlayerVisualizationWidget({
       );
 
     case CharacterStatValueType.multiselect:
-      // statConfiguration.jsonSerializedAdditionalData = [{"label": "asdf", "description": "asdf"}]
-      // characterValue.serializedValue = {"values": ["asdf"]}
+      // statConfiguration.jsonSerializedAdditionalData = [{"uuid":"c4c08d74-effb-4457-9c3a-d60b611f6986","label": "asdf", "description": "asdf"}]
+      // characterValue.serializedValue = {"values": ["c4c08d74-effb-4457-9c3a-d60b611f6986"]}
       List<String> parsedValue =
           (jsonDecode(characterValue.serializedValue)["values"]
                   as List<dynamic>)
@@ -107,7 +107,11 @@ Widget getPlayerVisualizationWidget({
 
       var config = asdf
           .map(
-            (e) => (e["label"] as String, e["description"] as String),
+            (e) => (
+              e["uuid"] as String,
+              e["label"] as String,
+              e["description"] as String
+            ),
           )
           .toList();
 
@@ -126,33 +130,33 @@ Widget getPlayerVisualizationWidget({
             height: 10,
           ),
           ...parsedValue.map(
-            (e) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "- $e",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.white, fontSize: 16),
-                ),
-                Builder(builder: (context) {
-                  var descriptionTuple =
-                      config.firstWhereOrNull((es) => es.$1 == e);
-                  if (descriptionTuple == null) return Container();
-                  return Padding(
+            (e) => Builder(builder: (context) {
+              var valuePair = config.firstWhereOrNull((es) => es.$1 == e);
+              if (valuePair == null) return Container();
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "- ${valuePair.$2}",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Colors.white, fontSize: 16),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Text(
-                      descriptionTuple.$2,
+                      valuePair.$3,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium!
                           .copyWith(color: Colors.white, fontSize: 16),
                     ),
-                  );
-                }),
-              ],
-            ),
+                  ),
+                ],
+              );
+            }),
           )
         ],
       );

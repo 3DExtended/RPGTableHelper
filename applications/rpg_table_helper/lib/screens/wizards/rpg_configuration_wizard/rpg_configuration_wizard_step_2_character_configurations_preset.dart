@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 class RpgConfigurationWizardStep2CharacterConfigurationsPreset
     extends WizardStepBase {
@@ -22,7 +23,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
     extends ConsumerState<
         RpgConfigurationWizardStep2CharacterConfigurationsPreset> {
   bool hasDataLoaded = false;
-
+  List<CharacterStatsTabDefinition> tabsToEdit = [];
   @override
   void initState() {
     super.initState();
@@ -33,6 +34,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
     ref.watch(rpgConfigurationProvider).whenData((data) {
       setState(() {
         hasDataLoaded = true;
+        tabsToEdit = data.characterStatTabsDefinition ??
+            RpgConfigurationModel.getBaseConfiguration()
+                .characterStatTabsDefinition!;
       });
     });
 

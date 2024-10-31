@@ -57,11 +57,12 @@ List<
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       helperText: "Where is your character proficient?",
       jsonSerializedAdditionalData:
-          '[{"label": "DEX", "description": "Dexterity"}, {"label": "WIS", "description": "Wisdom"}, {"label": "INT", "description": "Intelligence"}]',
+          '[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]',
     ),
     RpgCharacterStatValue(
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
-      serializedValue: '{"values": ["DEX", "WIS"]}',
+      serializedValue:
+          '{"values": ["4d07fc3c-daed-4a69-9f5b-76d0bea09059", "7df3a676-7138-4435-a109-15052405181d"]}',
     )
   ),
   (
