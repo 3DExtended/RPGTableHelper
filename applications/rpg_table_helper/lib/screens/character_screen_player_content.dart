@@ -159,8 +159,8 @@ class _CharacterScreenPlayerContentState
                 CharacterStatValueType? lastStatTypeUsed;
                 return Wrap(
                   alignment: WrapAlignment.center,
-                  spacing: 50,
-                  runSpacing: 20,
+                  spacing: 20,
+                  runSpacing: 10,
                   children: tabs
                           .singleWhereOrNull((tab) => tab.uuid == selectedTab)
                           ?.statsInTab

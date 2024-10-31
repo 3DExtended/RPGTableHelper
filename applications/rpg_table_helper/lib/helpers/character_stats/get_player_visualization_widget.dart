@@ -25,7 +25,7 @@ Widget getPlayerVisualizationWidget({
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 24),
+                .copyWith(color: Colors.white, fontSize: 20),
           ),
           SizedBox(
             height: 10,
@@ -52,7 +52,7 @@ Widget getPlayerVisualizationWidget({
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 32),
+                .copyWith(color: Colors.white, fontSize: 20),
           ),
           SizedBox(
             height: 0,
@@ -78,7 +78,7 @@ Widget getPlayerVisualizationWidget({
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 32),
+                .copyWith(color: Colors.white, fontSize: 20),
           ),
           SizedBox(
             height: 0,
@@ -105,7 +105,7 @@ Widget getPlayerVisualizationWidget({
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 32),
+                .copyWith(color: Colors.white, fontSize: 20),
           ),
           Text(
             statConfiguration.name,
@@ -115,7 +115,7 @@ Widget getPlayerVisualizationWidget({
           Text(
             "${parsedValue["value"]}",
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: const Color.fromARGB(255, 134, 134, 134), fontSize: 24),
+                color: const Color.fromARGB(255, 134, 134, 134), fontSize: 20),
           ),
         ],
       );
@@ -159,7 +159,7 @@ Widget getPlayerVisualizationWidget({
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 24),
+                .copyWith(color: Colors.white, fontSize: 20),
           ),
           SizedBox(
             height: 10,
