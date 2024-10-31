@@ -308,23 +308,4 @@ class _CharacterScreenPlayerContentState
       }
     });
   }
-
-  bool areTwoValueTypesSimilar(CharacterStatValueType valueType,
-      CharacterStatValueType? lastStatTypeUsed) {
-    if (lastStatTypeUsed == null) {
-      false;
-    }
-
-    if (lastStatTypeUsed == valueType) return true;
-    if (lastStatTypeUsed == CharacterStatValueType.multiLineText &&
-        valueType == CharacterStatValueType.singleLineText) {
-      return true;
-    }
-    if (valueType == CharacterStatValueType.multiLineText &&
-        lastStatTypeUsed == CharacterStatValueType.singleLineText) {
-      return true;
-    }
-
-    return false;
-  }
 }

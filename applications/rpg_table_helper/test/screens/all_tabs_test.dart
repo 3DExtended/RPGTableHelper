@@ -95,17 +95,17 @@ void main() {
                     $value: "73216e0e-bb87-49e6-88cf-7037ae0189c2"),
                 playerCharacterId: PlayerCharacterIdentifier(
                     $value: "f525cd7f-0ae6-4f96-8cb6-3a106341e69d"),
-                configuration:
-                    RpgCharacterConfiguration.getBaseConfiguration(null),
+                configuration: RpgCharacterConfiguration.getBaseConfiguration(
+                    RpgConfigurationModel.getBaseConfiguration()),
               ),
               OpenPlayerConnection(
                 userId: UserIdentifier(
                     $value: "76d50e3e-66eb-4342-9c33-f31a946b16b0"),
                 playerCharacterId: PlayerCharacterIdentifier(
                     $value: "902135d6-0a69-4572-a6a5-a7e0aa93bd8e"),
-                configuration:
-                    RpgCharacterConfiguration.getBaseConfiguration(null)
-                        .copyWith(
+                configuration: RpgCharacterConfiguration.getBaseConfiguration(
+                        RpgConfigurationModel.getBaseConfiguration())
+                    .copyWith(
                   characterName: "Frodo",
                   inventory: [],
                 ),
