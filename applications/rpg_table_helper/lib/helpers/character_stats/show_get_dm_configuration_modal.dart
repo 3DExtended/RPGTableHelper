@@ -23,7 +23,7 @@ Future<CharacterStatDefinition?> showGetDmConfigurationModal({
       isDismissible: true,
       expand: true,
       closeProgressThreshold: -50000,
-      enableDrag: true,
+      enableDrag: false,
       context: context,
       backgroundColor: const Color.fromARGB(158, 49, 49, 49),
       overrideNavigatorKey: overrideNavigatorKey,

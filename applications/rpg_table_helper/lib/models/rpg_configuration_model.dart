@@ -737,8 +737,8 @@ class CharacterStatsTabDefinition {
   final String tabName;
   final bool isOptional;
   final bool isDefaultTab;
-
   final List<CharacterStatDefinition> statsInTab;
+
   CharacterStatsTabDefinition({
     required this.uuid,
     required this.tabName,
