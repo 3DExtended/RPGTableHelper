@@ -24,6 +24,8 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
         RpgConfigurationWizardStep2CharacterConfigurationsPreset> {
   bool hasDataLoaded = false;
   List<CharacterStatsTabDefinition> tabsToEdit = [];
+
+  bool isFormValid = true;
   @override
   void initState() {
     super.initState();
@@ -60,11 +62,26 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
           MediaQuery.of(context).size.height,
       stepTitle: "Character Stats", // TODO Localize,
       stepHelperText: stepHelperText,
-      onNextBtnPressed: widget.onNextBtnPressed,
-      onPreviousBtnPressed: widget.onPreviousBtnPressed,
+      onNextBtnPressed: !isFormValid
+          ? null
+          : () {
+              saveChanges();
+              widget.onNextBtnPressed();
+            },
+      onPreviousBtnPressed: () {
+        saveChanges();
+
+        widget.onPreviousBtnPressed();
+      },
       sideBarFlex: 1,
       contentFlex: 2,
       contentChildren: [],
     );
+  }
+
+  void saveChanges() {
+    ref
+        .read(rpgConfigurationProvider.notifier)
+        .updateCharacterScreenStatsTabs(tabsToEdit);
   }
 }

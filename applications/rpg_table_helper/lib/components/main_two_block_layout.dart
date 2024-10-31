@@ -127,6 +127,7 @@ class MainTwoBlockLayout extends ConsumerWidget {
             !isLandscape ? outerPadding : outerPadding * 2,
           ),
           child: StyledBox(
+            disableShadow: true,
             overrideInnerDecoration: BoxDecoration(
               color: Colors.transparent,
               image: const DecorationImage(

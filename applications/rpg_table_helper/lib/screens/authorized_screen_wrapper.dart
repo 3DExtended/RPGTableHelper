@@ -31,11 +31,15 @@ class _AuthorizedScreenWrapperState
     extends ConsumerState<AuthorizedScreenWrapper> {
   var _currentTab = TabItem.character;
 
+  var characterScreenKey = LabeledGlobalKey("characterScreenKey");
+
   Map<String, Widget Function(BuildContext)> _routeBuilders(
       BuildContext context) {
     var result = {
       LoreScreen.route: (context) => const LoreScreen(),
-      CharacterScreen.route: (context) => const CharacterScreen(),
+      CharacterScreen.route: (context) => CharacterScreen(
+            key: characterScreenKey,
+          ),
       InventoryScreen.route: (context) => const InventoryScreen(),
       CraftingScreen.route: (context) => const CraftingScreen(),
       SearchScreen.route: (context) => const SearchScreen(),
@@ -183,8 +187,8 @@ class _AuthorizedScreenWrapperState
             settings: routeSettings,
             builder: (context) {
               var selectedId = TabItem.values.indexOf(tabItem);
-              var routeChild = routeBuilders[routeSettings.name!]!(context);
 
+              var routeChild = routeBuilders[routeSettings.name!]!(context);
               if (_doesRouteImplementOwnTabHandler(routeSettings.name!)) {
                 return routeChild;
               } else {

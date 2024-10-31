@@ -78,4 +78,10 @@ class RpgConfigurationNotifier
   void updateConfiguration(RpgConfigurationModel config) {
     state = AsyncValue.data(config);
   }
+
+  void updateCharacterScreenStatsTabs(
+      List<CharacterStatsTabDefinition> tabsToEdit) {
+    state = AsyncValue.data(
+        state.requireValue.copyWith(characterStatTabsDefinition: tabsToEdit));
+  }
 }

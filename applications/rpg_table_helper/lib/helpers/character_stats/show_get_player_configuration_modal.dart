@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
@@ -18,7 +19,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
       isDismissible: true,
       expand: true,
       closeProgressThreshold: -50000,
-      enableDrag: true,
+      enableDrag: false,
       context: context,
       backgroundColor: const Color.fromARGB(158, 49, 49, 49),
       overrideNavigatorKey: overrideNavigatorKey,
@@ -61,8 +62,11 @@ class _ShowGetPlayerConfigurationModalContentState
     if (widget.statConfiguration.valueType ==
         CharacterStatValueType.multiselect) {
       // jsonSerializedAdditionalData is filled with [{label: "", description: ""}]
-      List<dynamic> asdf = jsonDecode(
-          widget.statConfiguration.jsonSerializedAdditionalData ?? "[]");
+      List<dynamic> asdf = jsonDecode(widget
+              .statConfiguration.jsonSerializedAdditionalData
+              ?.replaceAll("},]", "}]")
+              .replaceAll('"}]"}]', '"}]') ??
+          "[]");
 
       List<String> selectedValues = [];
       if (widget.characterValue?.serializedValue != null) {
@@ -143,6 +147,17 @@ class _ShowGetPlayerConfigurationModalContentState
                 }),
                 statUuid: widget.statConfiguration.statUuid,
               );
+
+            case CharacterStatValueType.multiselect:
+              return RpgCharacterStatValue(
+                serializedValue: jsonEncode({
+                  "values": multiselectOptions
+                      .where((e) => e.$3)
+                      .map((e) => e.$4)
+                      .toList(),
+                }),
+                statUuid: widget.statConfiguration.statUuid,
+              );
             default:
           }
           return null;
@@ -189,6 +204,7 @@ class _ShowGetPlayerConfigurationModalContentState
                   ...multiselectOptions
                       .asMap()
                       .entries
+                      .sortedBy((e) => e.value.$1)
                       .map((e) => CheckboxListTile.adaptive(
                             controlAffinity: ListTileControlAffinity.leading,
                             contentPadding: EdgeInsets.all(0),
@@ -198,7 +214,14 @@ class _ShowGetPlayerConfigurationModalContentState
                             activeColor: const Color.fromARGB(126, 90, 90, 90),
                             visualDensity: VisualDensity(vertical: -2),
                             title: Text(
-                              "${e.value.$1} - ${e.value.$2}",
+                              e.value.$1,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(color: Colors.white, fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              e.value.$2,
                               style: Theme.of(context)
                                   .textTheme
                                   .labelMedium!
@@ -209,8 +232,12 @@ class _ShowGetPlayerConfigurationModalContentState
                               if (val == null) return;
 
                               setState(() {
-                                multiselectOptions[e.key] =
+                                var deepCopy = [...multiselectOptions];
+
+                                deepCopy[e.key] =
                                     (e.value.$1, e.value.$2, val, e.value.$4);
+
+                                multiselectOptions = deepCopy;
                               });
                             },
                           )),
@@ -242,7 +269,7 @@ class _ShowGetPlayerConfigurationModalContentState
                         child: CustomTextField(
                           labelText: "Max Value",
                           placeholderText: "The maximum value you could get.",
-                          textEditingController: textEditController,
+                          textEditingController: textEditController2,
                           keyboardType: TextInputType.number,
                         ),
                       ),

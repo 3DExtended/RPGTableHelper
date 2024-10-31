@@ -254,8 +254,6 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
   }
 
   void saveChanges() {
-    // TODO change me
-
     var newCurrencyMapping = CurrencyDefinition(currencyTypes: []);
     newCurrencyMapping.currencyTypes.add(CurrencyType(
         name: smallestCurrencyNameTextEditingController.text,

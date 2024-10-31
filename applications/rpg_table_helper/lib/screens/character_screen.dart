@@ -11,6 +11,7 @@ import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:rpg_table_helper/screens/character_screen_player_content.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 
@@ -73,6 +74,8 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
     });
     super.initState();
   }
+
+  var characterPlayerContentKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -170,14 +173,9 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
               ),
             ),
           ))
-        : FillRemainingSpace(
-            child: Container(
-            padding: const EdgeInsets.all(20),
-            child: const Text(
-              "CharacterScreen",
-              style: TextStyle(color: Colors.white),
-            ),
-          ));
+        : CharacterScreenPlayerContent(
+            key: characterPlayerContentKey,
+          );
   }
 }
 
