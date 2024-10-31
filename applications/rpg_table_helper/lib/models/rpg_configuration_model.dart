@@ -331,7 +331,7 @@ class RpgConfigurationModel {
                     valueType: CharacterStatValueType.intWithMaxValue,
                     editType: CharacterStatEditType.oneTap),
                 CharacterStatDefinition(
-                    statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
+                    statUuid: "bb3b77c1-cbdb-49b4-b2b5-6b24d20f4383",
                     name: "Temp HP",
                     helperText: "Temporäre Lebenspunkte",
                     valueType: CharacterStatValueType.int,
@@ -736,7 +736,7 @@ class CharacterStatsTabDefinition {
   final String uuid;
   final String tabName;
   final bool isOptional;
-  final bool? isDefaultTab;
+  final bool isDefaultTab;
 
   final List<CharacterStatDefinition> statsInTab;
   CharacterStatsTabDefinition({

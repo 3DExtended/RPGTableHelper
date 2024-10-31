@@ -164,7 +164,8 @@ void main() {
               rpgCharacterConfigurationProvider.overrideWith((ref) {
                 return RpgCharacterConfigurationNotifier(
                   decks: AsyncValue.data(
-                    RpgCharacterConfiguration.getBaseConfiguration(null),
+                    RpgCharacterConfiguration.getBaseConfiguration(
+                        RpgConfigurationModel.getBaseConfiguration()),
                   ),
                   ref: ref,
                   runningInTests: true,

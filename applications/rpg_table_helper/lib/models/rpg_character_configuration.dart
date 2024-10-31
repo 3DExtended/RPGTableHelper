@@ -1,6 +1,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:signalr_netcore/errors.dart';
 import 'package:uuid/v7.dart';
 
 part 'rpg_character_configuration.g.dart';
@@ -31,7 +32,51 @@ class RpgCharacterConfiguration {
       RpgCharacterConfiguration(
         uuid: const UuidV7().generate(),
         characterName: "Gandalf",
-        characterStats: [],
+        characterStats:
+            rpgConfig == null || rpgConfig.characterStatTabsDefinition == null
+                ? []
+                : rpgConfig.characterStatTabsDefinition!
+                    .firstWhere((t) => t.isDefaultTab == true)
+                    .statsInTab
+                    .map((stat) {
+                    switch (stat.valueType) {
+                      case CharacterStatValueType.int:
+                        return RpgCharacterStatValue(
+                          statUuid: stat.statUuid,
+                          serializedValue: '{"value": 17}',
+                        );
+                      case CharacterStatValueType.intWithMaxValue:
+                        return RpgCharacterStatValue(
+                          statUuid: stat.statUuid,
+                          serializedValue: '{"value": 17, "maxValue": 21}',
+                        );
+                      case CharacterStatValueType.intWithCalculatedValue:
+                        return RpgCharacterStatValue(
+                          statUuid: stat.statUuid,
+                          serializedValue: '{"value": 17, "otherValue": 2}',
+                        );
+                      case CharacterStatValueType.multiLineText:
+                        return RpgCharacterStatValue(
+                          statUuid: stat.statUuid,
+                          serializedValue:
+                              '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
+                        );
+                      case CharacterStatValueType.singleLineText:
+                        return RpgCharacterStatValue(
+                          statUuid: stat.statUuid,
+                          serializedValue:
+                              '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr."}',
+                        );
+                      case CharacterStatValueType.multiselect:
+                        return RpgCharacterStatValue(
+                          statUuid: stat.statUuid,
+                          serializedValue: '{"values": []}',
+                        );
+
+                      default:
+                        throw NotImplementedException();
+                    }
+                  }).toList(),
         inventory: [
           RpgCharacterOwnedItemPair(
               itemUuid: "a7537746-260d-4aed-b182-26768a9c2d51", amount: 2),

@@ -101,31 +101,21 @@ Widget getPlayerVisualizationWidget({
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            statConfiguration.name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 16),
-          ),
-          SizedBox(
-            height: 0,
-          ),
-          Text(
-            "${parsedValue["value"]}",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 24),
-          ),
-          SizedBox(
-            height: 0,
-          ),
-          Text(
             "${parsedValue["otherValue"]}",
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
                 .copyWith(color: Colors.white, fontSize: 32),
+          ),
+          Text(
+            statConfiguration.name,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: const Color.fromARGB(255, 255, 255, 255), fontSize: 16),
+          ),
+          Text(
+            "${parsedValue["value"]}",
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: const Color.fromARGB(255, 134, 134, 134), fontSize: 24),
           ),
         ],
       );

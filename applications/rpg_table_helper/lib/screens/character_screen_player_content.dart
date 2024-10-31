@@ -49,12 +49,12 @@ class _CharacterScreenPlayerContentState
       (value) {
         rpgConfig = value;
         rpgConfigurationLoaded = true;
-        handlePossiblyMissingCharacterStats();
+        handlePossiblyMissingCharacterStats(null);
 
         var defaultTab = value.characterStatTabsDefinition
             ?.firstWhere((tab) => tab.isDefaultTab == true);
 
-        if (defaultTab != null) {
+        if (defaultTab != null && selectedTab == null) {
           setState(() {
             selectedTab = defaultTab.uuid;
           });
@@ -65,7 +65,7 @@ class _CharacterScreenPlayerContentState
       (value) {
         characterConfig = value;
         rpgCharacterConfigurationLoaded = true;
-        handlePossiblyMissingCharacterStats();
+        handlePossiblyMissingCharacterStats(null);
       },
     );
 
@@ -133,13 +133,16 @@ class _CharacterScreenPlayerContentState
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 20.0),
-                  child: CustomButton(
-                    isSubbutton: true,
-                    onPressed: () async {
-                      // TODO configure character
-                    },
-                    icon: const CustomFaIcon(icon: FontAwesomeIcons.gear),
-                  ),
+                  child: selectedTab == null
+                      ? Container()
+                      : CustomButton(
+                          isSubbutton: true,
+                          onPressed: () async {
+                            // TODO configure character
+                            handlePossiblyMissingCharacterStats(selectedTab);
+                          },
+                          icon: const CustomFaIcon(icon: FontAwesomeIcons.gear),
+                        ),
                 ),
               ],
             ))
@@ -233,10 +236,10 @@ class _CharacterScreenPlayerContentState
     );
   }
 
-  void handlePossiblyMissingCharacterStats() {
+  void handlePossiblyMissingCharacterStats(String? tabFilter) {
     if (!rpgCharacterConfigurationLoaded ||
         !rpgConfigurationLoaded ||
-        possiblyMissingCharacterStatsHandled ||
+        (possiblyMissingCharacterStatsHandled && tabFilter == null) ||
         DependencyProvider.of(context).isMocked) {
       return;
     }
@@ -246,15 +249,18 @@ class _CharacterScreenPlayerContentState
     Future.delayed(Duration.zero, () async {
       // find all stat uuids:
       var listOfStats = rpgConfig!.characterStatTabsDefinition
-              ?.map((t) => t.statsInTab)
+              ?.where((tab) => tabFilter == null || tab.uuid == tabFilter)
+              .map((t) => t.statsInTab)
               .expand((i) => i)
               .toList() ??
           [];
 
       var anyStatNotFilledYet = listOfStats
-          .where((st) => !characterConfig!.characterStats
-              .map((charstat) => charstat.statUuid)
-              .contains(st.statUuid))
+          .where((st) =>
+              tabFilter != null ||
+              !characterConfig!.characterStats
+                  .map((charstat) => charstat.statUuid)
+                  .contains(st.statUuid))
           .toList();
 
       if (anyStatNotFilledYet.isNotEmpty) {
@@ -262,8 +268,14 @@ class _CharacterScreenPlayerContentState
 
         List<RpgCharacterStatValue> updatedCharacterStats = [];
         for (var statToFill in anyStatNotFilledYet) {
+          // check if the user already configured some stats
+          var possiblyFilledStat = characterConfig!.characterStats
+              .firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
+
           var modalResult = await showGetPlayerConfigurationModal(
-              context: context, statConfiguration: statToFill);
+              context: context,
+              statConfiguration: statToFill,
+              characterValue: possiblyFilledStat);
 
           if (modalResult != null) {
             updatedCharacterStats.add(modalResult);
@@ -283,10 +295,15 @@ class _CharacterScreenPlayerContentState
               .any((upst) => upst.statUuid == st.statUuid));
           mergedStats.addAll(updatedCharacterStats);
 
-          ref
-              .read(rpgCharacterConfigurationProvider.notifier)
-              .updateConfiguration(
-                  newestCharacterConfig.copyWith(characterStats: mergedStats));
+          setState(() {
+            characterConfig =
+                characterConfig!.copyWith(characterStats: mergedStats);
+
+            ref
+                .read(rpgCharacterConfigurationProvider.notifier)
+                .updateConfiguration(newestCharacterConfig.copyWith(
+                    characterStats: mergedStats));
+          });
         }
       }
     });

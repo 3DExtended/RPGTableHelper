@@ -619,7 +619,7 @@ abstract class _$CharacterStatsTabDefinitionCWProxy {
   CharacterStatsTabDefinition statsInTab(
       List<CharacterStatDefinition> statsInTab);
 
-  CharacterStatsTabDefinition isDefaultTab(bool? isDefaultTab);
+  CharacterStatsTabDefinition isDefaultTab(bool isDefaultTab);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -659,7 +659,7 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
       this(statsInTab: statsInTab);
 
   @override
-  CharacterStatsTabDefinition isDefaultTab(bool? isDefaultTab) =>
+  CharacterStatsTabDefinition isDefaultTab(bool isDefaultTab) =>
       this(isDefaultTab: isDefaultTab);
 
   @override
@@ -696,10 +696,11 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
               ? _value.statsInTab
               // ignore: cast_nullable_to_non_nullable
               : statsInTab as List<CharacterStatDefinition>,
-      isDefaultTab: isDefaultTab == const $CopyWithPlaceholder()
-          ? _value.isDefaultTab
-          // ignore: cast_nullable_to_non_nullable
-          : isDefaultTab as bool?,
+      isDefaultTab:
+          isDefaultTab == const $CopyWithPlaceholder() || isDefaultTab == null
+              ? _value.isDefaultTab
+              // ignore: cast_nullable_to_non_nullable
+              : isDefaultTab as bool,
     );
   }
 }
@@ -1175,6 +1176,7 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.int: 'int',
   CharacterStatValueType.intWithMaxValue: 'intWithMaxValue',
   CharacterStatValueType.multiselect: 'multiselect',
+  CharacterStatValueType.intWithCalculatedValue: 'intWithCalculatedValue',
 };
 
 const _$CharacterStatEditTypeEnumMap = {
@@ -1192,7 +1194,7 @@ CharacterStatsTabDefinition _$CharacterStatsTabDefinitionFromJson(
           .map((e) =>
               CharacterStatDefinition.fromJson(e as Map<String, dynamic>))
           .toList(),
-      isDefaultTab: json['isDefaultTab'] as bool?,
+      isDefaultTab: json['isDefaultTab'] as bool,
     );
 
 Map<String, dynamic> _$CharacterStatsTabDefinitionToJson(
