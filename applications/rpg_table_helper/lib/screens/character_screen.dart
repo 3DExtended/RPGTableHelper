@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
@@ -131,7 +132,15 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
                       spacing: 10,
                       children: [
                         ...(connectionDetails.connectedPlayers ?? []).map(
-                          (player) => StyledBox(
+                          (player) => Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(156, 255, 255, 255),
+                              ),
+                              color: whiteBgTint,
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            padding: EdgeInsets.all(10),
                             child: Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Column(

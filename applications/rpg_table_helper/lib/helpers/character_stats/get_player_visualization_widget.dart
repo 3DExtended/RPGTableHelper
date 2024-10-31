@@ -181,7 +181,7 @@ Widget getPlayerVisualizationWidget({
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Colors.white, fontSize: 20),
+                        .copyWith(color: Colors.white, fontSize: 16),
                   ),
                   if (e.$2!.$3.isNotEmpty)
                     Padding(
