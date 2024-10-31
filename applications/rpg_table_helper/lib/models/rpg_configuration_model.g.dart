@@ -610,12 +610,16 @@ extension $CharacterStatDefinitionCopyWith on CharacterStatDefinition {
 }
 
 abstract class _$CharacterStatsTabDefinitionCWProxy {
+  CharacterStatsTabDefinition uuid(String uuid);
+
   CharacterStatsTabDefinition tabName(String tabName);
 
   CharacterStatsTabDefinition isOptional(bool isOptional);
 
   CharacterStatsTabDefinition statsInTab(
       List<CharacterStatDefinition> statsInTab);
+
+  CharacterStatsTabDefinition isDefaultTab(bool? isDefaultTab);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -624,9 +628,11 @@ abstract class _$CharacterStatsTabDefinitionCWProxy {
   /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
   CharacterStatsTabDefinition call({
+    String? uuid,
     String? tabName,
     bool? isOptional,
     List<CharacterStatDefinition>? statsInTab,
+    bool? isDefaultTab,
   });
 }
 
@@ -636,6 +642,9 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
   const _$CharacterStatsTabDefinitionCWProxyImpl(this._value);
 
   final CharacterStatsTabDefinition _value;
+
+  @override
+  CharacterStatsTabDefinition uuid(String uuid) => this(uuid: uuid);
 
   @override
   CharacterStatsTabDefinition tabName(String tabName) => this(tabName: tabName);
@@ -650,6 +659,10 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
       this(statsInTab: statsInTab);
 
   @override
+  CharacterStatsTabDefinition isDefaultTab(bool? isDefaultTab) =>
+      this(isDefaultTab: isDefaultTab);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -658,11 +671,17 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
   /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
   CharacterStatsTabDefinition call({
+    Object? uuid = const $CopyWithPlaceholder(),
     Object? tabName = const $CopyWithPlaceholder(),
     Object? isOptional = const $CopyWithPlaceholder(),
     Object? statsInTab = const $CopyWithPlaceholder(),
+    Object? isDefaultTab = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatsTabDefinition(
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+          ? _value.uuid
+          // ignore: cast_nullable_to_non_nullable
+          : uuid as String,
       tabName: tabName == const $CopyWithPlaceholder() || tabName == null
           ? _value.tabName
           // ignore: cast_nullable_to_non_nullable
@@ -677,6 +696,10 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
               ? _value.statsInTab
               // ignore: cast_nullable_to_non_nullable
               : statsInTab as List<CharacterStatDefinition>,
+      isDefaultTab: isDefaultTab == const $CopyWithPlaceholder()
+          ? _value.isDefaultTab
+          // ignore: cast_nullable_to_non_nullable
+          : isDefaultTab as bool?,
     );
   }
 }
@@ -1162,19 +1185,23 @@ const _$CharacterStatEditTypeEnumMap = {
 CharacterStatsTabDefinition _$CharacterStatsTabDefinitionFromJson(
         Map<String, dynamic> json) =>
     CharacterStatsTabDefinition(
+      uuid: json['uuid'] as String,
       tabName: json['tabName'] as String,
       isOptional: json['isOptional'] as bool,
       statsInTab: (json['statsInTab'] as List<dynamic>)
           .map((e) =>
               CharacterStatDefinition.fromJson(e as Map<String, dynamic>))
           .toList(),
+      isDefaultTab: json['isDefaultTab'] as bool?,
     );
 
 Map<String, dynamic> _$CharacterStatsTabDefinitionToJson(
         CharacterStatsTabDefinition instance) =>
     <String, dynamic>{
+      'uuid': instance.uuid,
       'tabName': instance.tabName,
       'isOptional': instance.isOptional,
+      'isDefaultTab': instance.isDefaultTab,
       'statsInTab': instance.statsInTab,
     };
 

@@ -49,6 +49,8 @@ void main() {
           itemCategories: [],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "8416802b-4785-446d-af1d-c6bd97385810",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -227,6 +229,8 @@ void main() {
           allItems: [item1, item2],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: false,
+                uuid: "bb06054e-7507-4234-8e9e-5625ab3d726d",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -294,6 +298,8 @@ void main() {
           allItems: [item1, item2],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "c76e99fe-e57f-431c-96b4-3dab8b26d7f2",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -373,6 +379,8 @@ void main() {
           allItems: [item1, item2, item3],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "9c71700e-886b-48d5-8030-6acccdfa31c5",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -448,6 +456,8 @@ void main() {
           allItems: [item1, item2],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "050845f9-fa4c-4dc1-897c-e81d633aadeb",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -517,6 +527,8 @@ void main() {
           allItems: [item1, item2],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "90e5a327-7f5e-48f2-8615-fa592be43efe",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -586,6 +598,8 @@ void main() {
           allItems: [item1, item2],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "8f6faec8-26cd-42fd-88da-5b6e9a984aa5",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [
@@ -663,6 +677,8 @@ void main() {
           allItems: [item1, item2],
           characterStatTabsDefinition: [
             CharacterStatsTabDefinition(
+                isDefaultTab: null,
+                uuid: "d257e1cb-8ae2-4532-b078-bcb53235f2c0",
                 isOptional: false,
                 tabName: "Test",
                 statsInTab: [

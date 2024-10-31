@@ -93,6 +93,43 @@ Widget getPlayerVisualizationWidget({
         ],
       );
 
+    case CharacterStatValueType.intWithCalculatedValue:
+      // characterValue.serializedValue = {"value": 12, "otherValue": 2}
+      var parsedValue = jsonDecode(characterValue.serializedValue);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            statConfiguration.name,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 16),
+          ),
+          SizedBox(
+            height: 0,
+          ),
+          Text(
+            "${parsedValue["value"]}",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 24),
+          ),
+          SizedBox(
+            height: 0,
+          ),
+          Text(
+            "${parsedValue["otherValue"]}",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white, fontSize: 32),
+          ),
+        ],
+      );
+
     case CharacterStatValueType.multiselect:
       // statConfiguration.jsonSerializedAdditionalData = [{"uuid":"c4c08d74-effb-4457-9c3a-d60b611f6986","label": "asdf", "description": "asdf"}]
       // characterValue.serializedValue = {"values": ["c4c08d74-effb-4457-9c3a-d60b611f6986"]}
@@ -102,8 +139,11 @@ Widget getPlayerVisualizationWidget({
               .map((e) => e as String)
               .toList();
 
-      List<dynamic> asdf =
-          jsonDecode(statConfiguration.jsonSerializedAdditionalData ?? "[]");
+      List<dynamic> asdf = jsonDecode(statConfiguration
+              .jsonSerializedAdditionalData
+              ?.replaceAll("},]", "}]")
+              .replaceAll('"}]"}]', '"}]') ??
+          "[]");
 
       var config = asdf
           .map(
@@ -114,6 +154,11 @@ Widget getPlayerVisualizationWidget({
             ),
           )
           .toList();
+
+      var valueToConfigMapped = parsedValue
+          .map((pv) => (pv, config.firstWhereOrNull((es) => es.$1 == pv)))
+          .where((pv) => pv.$2 != null)
+          .sortedBy((pv) => pv.$2!.$2);
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,31 +174,36 @@ Widget getPlayerVisualizationWidget({
           SizedBox(
             height: 10,
           ),
-          ...parsedValue.map(
+          if (valueToConfigMapped.isEmpty)
+            Text(
+              "- Nichts ausgewählt -",
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: const Color.fromARGB(255, 193, 193, 193),
+                  fontSize: 16),
+            ),
+          ...valueToConfigMapped.map(
             (e) => Builder(builder: (context) {
-              var valuePair = config.firstWhereOrNull((es) => es.$1 == e);
-              if (valuePair == null) return Container();
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "- ${valuePair.$2}",
+                    "- ${e.$2!.$2}",
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Colors.white, fontSize: 16),
+                        .copyWith(color: Colors.white, fontSize: 20),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      valuePair.$3,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.white, fontSize: 16),
+                  if (e.$2!.$3.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, bottom: 20),
+                      child: Text(
+                        e.$2!.$3,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Colors.white, fontSize: 16),
+                      ),
                     ),
-                  ),
                 ],
               );
             }),

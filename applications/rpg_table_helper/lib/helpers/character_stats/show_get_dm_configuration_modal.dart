@@ -229,6 +229,12 @@ class _ShowGetDmConfigurationModalContentState
                         value: e.name,
                         child: Text("Zahl mit maximal Wert"), // TODO localize
                       );
+                    case CharacterStatValueType.intWithCalculatedValue:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child:
+                            Text("Zahl mit berechnetem Wert"), // TODO localize
+                      );
                     // case CharacterStatValueType.intCounter:
                     //   return DropdownMenuItem<String?>(
                     //     value: e.name,

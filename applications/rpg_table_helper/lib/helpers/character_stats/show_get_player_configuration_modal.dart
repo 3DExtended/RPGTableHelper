@@ -95,7 +95,9 @@ class _ShowGetPlayerConfigurationModalContentState
             CharacterStatValueType.multiLineText ||
         widget.statConfiguration.valueType == CharacterStatValueType.int ||
         widget.statConfiguration.valueType ==
-            CharacterStatValueType.intWithMaxValue) {
+            CharacterStatValueType.intWithMaxValue ||
+        widget.statConfiguration.valueType ==
+            CharacterStatValueType.intWithCalculatedValue) {
       if (widget.characterValue == null) {
         textEditController = TextEditingController();
         textEditController2 = TextEditingController();
@@ -110,6 +112,11 @@ class _ShowGetPlayerConfigurationModalContentState
         if (tempDecode.containsKey("maxValue")) {
           textEditController2 =
               TextEditingController(text: tempDecode["maxValue"].toString());
+        }
+        // for CharacterStatValueType.intWithCalculatedValue
+        if (tempDecode.containsKey("otherValue")) {
+          textEditController2 =
+              TextEditingController(text: tempDecode["otherValue"].toString());
         }
       }
     }
@@ -144,6 +151,15 @@ class _ShowGetPlayerConfigurationModalContentState
                 serializedValue: jsonEncode({
                   "value": int.parse(textEditController.text),
                   "maxValue": int.parse(textEditController2.text)
+                }),
+                statUuid: widget.statConfiguration.statUuid,
+              );
+
+            case CharacterStatValueType.intWithCalculatedValue:
+              return RpgCharacterStatValue(
+                serializedValue: jsonEncode({
+                  "value": int.parse(textEditController.text),
+                  "otherValue": int.parse(textEditController2.text)
                 }),
                 statUuid: widget.statConfiguration.statUuid,
               );
@@ -269,6 +285,41 @@ class _ShowGetPlayerConfigurationModalContentState
                         child: CustomTextField(
                           labelText: "Max Value",
                           placeholderText: "The maximum value you could get.",
+                          textEditingController: textEditController2,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+
+            case CharacterStatValueType.intWithCalculatedValue:
+              var statTitle = widget.statConfiguration.name;
+              var statDescription = widget.statConfiguration.helperText;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  PlayerConfigModalNonDefaultTitleAndHelperText(
+                      statTitle: statTitle, statDescription: statDescription),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                          labelText: "First Value",
+                          placeholderText: "The first value.",
+                          textEditingController: textEditController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: CustomTextField(
+                          labelText: "Second Value",
+                          placeholderText:
+                              "The computed value based on the first value.",
                           textEditingController: textEditController2,
                           keyboardType: TextInputType.number,
                         ),
