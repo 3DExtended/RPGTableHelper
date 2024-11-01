@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/categorized_item_layout.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
@@ -16,6 +16,8 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:signalr_netcore/errors.dart';
+import 'package:uuid/v7.dart';
 
 class CharacterScreenPlayerContent extends ConsumerStatefulWidget {
   const CharacterScreenPlayerContent({
@@ -43,13 +45,15 @@ class _CharacterScreenPlayerContentState
     super.initState();
   }
 
+  String? selectedCharacterId;
+
   @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData(
       (value) {
         rpgConfig = value;
         rpgConfigurationLoaded = true;
-        handlePossiblyMissingCharacterStats(null);
+        handlePossiblyMissingCharacterStats(null, null);
 
         var defaultTab = value.characterStatTabsDefinition
             ?.firstWhere((tab) => tab.isDefaultTab == true);
@@ -64,8 +68,15 @@ class _CharacterScreenPlayerContentState
     ref.watch(rpgCharacterConfigurationProvider).whenData(
       (value) {
         characterConfig = value;
-        rpgCharacterConfigurationLoaded = true;
-        handlePossiblyMissingCharacterStats(null);
+
+        if (!rpgCharacterConfigurationLoaded) {
+          setState(() {
+            selectedCharacterId = characterConfig!.uuid;
+          });
+          rpgCharacterConfigurationLoaded = true;
+        }
+
+        handlePossiblyMissingCharacterStats(null, null);
       },
     );
 
@@ -74,10 +85,77 @@ class _CharacterScreenPlayerContentState
     return CategorizedItemLayout(
       categoryColumns: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: CustomMarkdownBody(
-              text:
-                  "# ${characterConfig?.characterName == null || characterConfig!.characterName.isEmpty ? "Player Name" : characterConfig!.characterName}"),
+          padding: const EdgeInsets.fromLTRB(10, 0, 20, 11),
+          child: CustomDropdownMenu(
+              selectedValueTemp: selectedCharacterId,
+              setter: (newValue) {
+                Future.delayed(Duration.zero, () async {
+                  if (newValue == "new") {
+                    // create a new alternate character
+                    var playerCharacterName =
+                        await askPlayerForCharacterName(context: context);
+
+                    if (playerCharacterName == null) return;
+
+                    var newAlternateCharacter =
+                        RpgAlternateCharacterConfiguration(
+                            uuid: UuidV7().generate(),
+                            characterName: playerCharacterName,
+                            characterStats: []);
+
+                    var currentAlternateCharacters = ref
+                            .read(rpgCharacterConfigurationProvider)
+                            .requireValue
+                            .alternateCharacters ??
+                        [];
+
+                    ref
+                        .read(rpgCharacterConfigurationProvider.notifier)
+                        .updateConfiguration(ref
+                            .read(rpgCharacterConfigurationProvider)
+                            .requireValue
+                            .copyWith(alternateCharacters: [
+                          ...currentAlternateCharacters,
+                          newAlternateCharacter
+                        ]));
+                    setState(() {
+                      selectedCharacterId = newAlternateCharacter.uuid;
+                    });
+                  } else {
+                    setState(() {
+                      selectedCharacterId = newValue;
+                    });
+                  }
+
+                  // ensure stats are filled for that character
+                  handlePossiblyMissingCharacterStats(null, true);
+                });
+              },
+              noBorder: true,
+              items: characterConfig == null
+                  ? []
+                  : [
+                      DropdownMenuItem(
+                        value: characterConfig!.uuid,
+                        child: Text(characterConfig?.characterName == null ||
+                                characterConfig!.characterName.isEmpty
+                            ? "Player Name"
+                            : characterConfig!.characterName),
+                      ),
+                      ...(characterConfig!.alternateCharacters ?? []).map(
+                        (altChar) => DropdownMenuItem(
+                          value: altChar.uuid,
+                          child: Text(altChar.characterName.isEmpty
+                              ? "Player Name"
+                              : altChar.characterName),
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "new",
+                        child: Text("Neu"),
+                      ),
+                    ],
+              label: ""),
         ),
         const HorizontalLine(),
         ...tabs.map(
@@ -118,7 +196,7 @@ class _CharacterScreenPlayerContentState
           children: [
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 14.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 23.0),
               child: Text(
                 "Charakter Sheet", // TODO localize
                 style: Theme.of(context)
@@ -138,8 +216,8 @@ class _CharacterScreenPlayerContentState
                       : CustomButton(
                           isSubbutton: true,
                           onPressed: () async {
-                            // TODO configure character
-                            handlePossiblyMissingCharacterStats(selectedTab);
+                            handlePossiblyMissingCharacterStats(
+                                selectedTab, null);
                           },
                           icon: const CustomFaIcon(icon: FontAwesomeIcons.gear),
                         ),
@@ -165,10 +243,14 @@ class _CharacterScreenPlayerContentState
                           .singleWhereOrNull((tab) => tab.uuid == selectedTab)
                           ?.statsInTab
                           .where((statInTab) {
-                            var matchingPlayerCharacterStat = characterConfig
-                                ?.characterStats
-                                .firstWhereOrNull((stat) =>
-                                    statInTab.statUuid == stat.statUuid);
+                            List<RpgCharacterStatValue>?
+                                selectedCharacterStats =
+                                getSelectedCharacterStats();
+
+                            var matchingPlayerCharacterStat =
+                                selectedCharacterStats?.firstWhereOrNull(
+                                    (stat) =>
+                                        statInTab.statUuid == stat.statUuid);
                             if (matchingPlayerCharacterStat == null) {
                               return false;
                             }
@@ -179,10 +261,15 @@ class _CharacterScreenPlayerContentState
                           .entries
                           .map((statInTab) {
                             List<Widget> result = [];
-                            var matchingPlayerCharacterStat = characterConfig
-                                ?.characterStats
-                                .firstWhereOrNull((stat) =>
-                                    statInTab.value.statUuid == stat.statUuid);
+                            List<RpgCharacterStatValue>?
+                                selectedCharacterStats =
+                                getSelectedCharacterStats();
+
+                            var matchingPlayerCharacterStat =
+                                selectedCharacterStats?.firstWhereOrNull(
+                                    (stat) =>
+                                        statInTab.value.statUuid ==
+                                        stat.statUuid);
 
                             if (!areTwoValueTypesSimilar(
                                 statInTab.value.valueType, lastStatTypeUsed)) {
@@ -236,15 +323,41 @@ class _CharacterScreenPlayerContentState
     );
   }
 
-  void handlePossiblyMissingCharacterStats(String? tabFilter) {
+  List<RpgCharacterStatValue>? getSelectedCharacterStats(
+      {RpgCharacterConfiguration? overrideRpgCharConfig}) {
+    return getSelectedCharacterBase(
+            overrideRpgCharConfig: overrideRpgCharConfig)
+        ?.characterStats;
+  }
+
+  RpgCharacterConfigurationBase? getSelectedCharacterBase(
+      {RpgCharacterConfiguration? overrideRpgCharConfig}) {
+    var charConfigToUse = overrideRpgCharConfig ?? characterConfig;
+
+    if (selectedCharacterId != null && charConfigToUse != null) {
+      if (charConfigToUse.uuid == selectedCharacterId) {
+        return charConfigToUse;
+      } else {
+        return charConfigToUse.alternateCharacters
+            ?.firstWhereOrNull((alt) => alt.uuid == selectedCharacterId);
+      }
+    }
+    return charConfigToUse;
+  }
+
+  void handlePossiblyMissingCharacterStats(
+      String? tabFilter, bool? ignorePossiblyMissingCharacterStatsHandled) {
     if (!rpgCharacterConfigurationLoaded ||
         !rpgConfigurationLoaded ||
-        (possiblyMissingCharacterStatsHandled && tabFilter == null) ||
+        (ignorePossiblyMissingCharacterStatsHandled != true &&
+            (possiblyMissingCharacterStatsHandled && tabFilter == null)) ||
         DependencyProvider.of(context).isMocked) {
       return;
     }
 
-    possiblyMissingCharacterStatsHandled = true;
+    if (ignorePossiblyMissingCharacterStatsHandled != true) {
+      possiblyMissingCharacterStatsHandled = true;
+    }
 
     Future.delayed(Duration.zero, () async {
       // find all stat uuids:
@@ -255,10 +368,12 @@ class _CharacterScreenPlayerContentState
               .toList() ??
           [];
 
+      var selectedCharacterStats = getSelectedCharacterStats();
+
       var anyStatNotFilledYet = listOfStats
           .where((st) =>
               tabFilter != null ||
-              !characterConfig!.characterStats
+              !(selectedCharacterStats ?? [])
                   .map((charstat) => charstat.statUuid)
                   .contains(st.statUuid))
           .toList();
@@ -267,15 +382,18 @@ class _CharacterScreenPlayerContentState
         // TODO show modal asking the user if they want to configure their character now or later
 
         List<RpgCharacterStatValue> updatedCharacterStats = [];
+        var characterName = getSelectedCharacterBase()?.characterName;
         for (var statToFill in anyStatNotFilledYet) {
           // check if the user already configured some stats
-          var possiblyFilledStat = characterConfig!.characterStats
-              .firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
+          var possiblyFilledStat = selectedCharacterStats
+              ?.firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
 
           var modalResult = await showGetPlayerConfigurationModal(
-              context: context,
-              statConfiguration: statToFill,
-              characterValue: possiblyFilledStat);
+            context: context,
+            statConfiguration: statToFill,
+            characterValue: possiblyFilledStat,
+            characterName: characterName,
+          );
 
           if (modalResult != null) {
             updatedCharacterStats.add(modalResult);
@@ -290,19 +408,49 @@ class _CharacterScreenPlayerContentState
           var newestCharacterConfig =
               ref.read(rpgCharacterConfigurationProvider).requireValue;
 
-          var mergedStats = newestCharacterConfig.characterStats;
+          var mergedStatsForSelectedCharacter = getSelectedCharacterStats(
+              overrideRpgCharConfig: newestCharacterConfig);
+
+          var mergedStats = mergedStatsForSelectedCharacter ?? [];
           mergedStats.removeWhere((st) => updatedCharacterStats
               .any((upst) => upst.statUuid == st.statUuid));
           mergedStats.addAll(updatedCharacterStats);
 
           setState(() {
-            characterConfig =
-                characterConfig!.copyWith(characterStats: mergedStats);
+            var isUpdatingMainCharacter = selectedCharacterId == null ||
+                selectedCharacterId == characterConfig!.uuid;
 
-            ref
-                .read(rpgCharacterConfigurationProvider.notifier)
-                .updateConfiguration(newestCharacterConfig.copyWith(
-                    characterStats: mergedStats));
+            if (isUpdatingMainCharacter) {
+              characterConfig =
+                  newestCharacterConfig.copyWith(characterStats: mergedStats);
+
+              ref
+                  .read(rpgCharacterConfigurationProvider.notifier)
+                  .updateConfiguration(newestCharacterConfig.copyWith(
+                      characterStats: mergedStats));
+            } else {
+              List<RpgAlternateCharacterConfiguration> alternateCharactersCopy =
+                  [...(newestCharacterConfig.alternateCharacters ?? [])];
+
+              var indexOfSelectedAltChar = alternateCharactersCopy
+                  .indexWhere((e) => e.uuid == selectedCharacterId!);
+
+              if (indexOfSelectedAltChar == -1) {
+                throw NotImplementedException();
+              } else {
+                alternateCharactersCopy[indexOfSelectedAltChar] =
+                    alternateCharactersCopy[indexOfSelectedAltChar]
+                        .copyWith(characterStats: mergedStats);
+
+                characterConfig = newestCharacterConfig.copyWith(
+                    alternateCharacters: alternateCharactersCopy);
+
+                ref
+                    .read(rpgCharacterConfigurationProvider.notifier)
+                    .updateConfiguration(newestCharacterConfig.copyWith(
+                        alternateCharacters: alternateCharactersCopy));
+              }
+            }
           });
         }
       }

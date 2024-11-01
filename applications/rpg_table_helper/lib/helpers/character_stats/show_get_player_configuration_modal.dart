@@ -14,6 +14,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   required CharacterStatDefinition statConfiguration,
   RpgCharacterStatValue? characterValue,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
+  String? characterName,
 }) async {
   return await customShowCupertinoModalBottomSheet<RpgCharacterStatValue>(
       isDismissible: true,
@@ -28,6 +29,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
           statConfiguration: statConfiguration,
           characterValue: characterValue,
           overrideNavigatorKey: overrideNavigatorKey,
+          characterName: characterName,
         );
       });
 }
@@ -38,8 +40,10 @@ class ShowGetPlayerConfigurationModalContent extends StatefulWidget {
     required this.statConfiguration,
     this.characterValue,
     this.overrideNavigatorKey,
+    this.characterName,
   });
 
+  final String? characterName;
   final CharacterStatDefinition statConfiguration;
   final RpgCharacterStatValue? characterValue;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
@@ -127,7 +131,8 @@ class _ShowGetPlayerConfigurationModalContentState
   @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<RpgCharacterStatValue>(
-        title: "Eigenschaften konfigurieren",
+        title:
+            "Eigenschaften konfigurieren${widget.characterName == null ? "" : " (für ${widget.characterName})"}",
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},
 

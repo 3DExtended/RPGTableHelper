@@ -6,6 +6,86 @@ part of 'rpg_character_configuration.dart';
 // CopyWithGenerator
 // **************************************************************************
 
+abstract class _$RpgAlternateCharacterConfigurationCWProxy {
+  RpgAlternateCharacterConfiguration uuid(String uuid);
+
+  RpgAlternateCharacterConfiguration characterName(String characterName);
+
+  RpgAlternateCharacterConfiguration characterStats(
+      List<RpgCharacterStatValue> characterStats);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgAlternateCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// RpgAlternateCharacterConfiguration(...).copyWith(id: 12, name: "My name")
+  /// ````
+  RpgAlternateCharacterConfiguration call({
+    String? uuid,
+    String? characterName,
+    List<RpgCharacterStatValue>? characterStats,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfRpgAlternateCharacterConfiguration.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfRpgAlternateCharacterConfiguration.copyWith.fieldName(...)`
+class _$RpgAlternateCharacterConfigurationCWProxyImpl
+    implements _$RpgAlternateCharacterConfigurationCWProxy {
+  const _$RpgAlternateCharacterConfigurationCWProxyImpl(this._value);
+
+  final RpgAlternateCharacterConfiguration _value;
+
+  @override
+  RpgAlternateCharacterConfiguration uuid(String uuid) => this(uuid: uuid);
+
+  @override
+  RpgAlternateCharacterConfiguration characterName(String characterName) =>
+      this(characterName: characterName);
+
+  @override
+  RpgAlternateCharacterConfiguration characterStats(
+          List<RpgCharacterStatValue> characterStats) =>
+      this(characterStats: characterStats);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgAlternateCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// RpgAlternateCharacterConfiguration(...).copyWith(id: 12, name: "My name")
+  /// ````
+  RpgAlternateCharacterConfiguration call({
+    Object? uuid = const $CopyWithPlaceholder(),
+    Object? characterName = const $CopyWithPlaceholder(),
+    Object? characterStats = const $CopyWithPlaceholder(),
+  }) {
+    return RpgAlternateCharacterConfiguration(
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+          ? _value.uuid
+          // ignore: cast_nullable_to_non_nullable
+          : uuid as String,
+      characterName:
+          characterName == const $CopyWithPlaceholder() || characterName == null
+              ? _value.characterName
+              // ignore: cast_nullable_to_non_nullable
+              : characterName as String,
+      characterStats: characterStats == const $CopyWithPlaceholder() ||
+              characterStats == null
+          ? _value.characterStats
+          // ignore: cast_nullable_to_non_nullable
+          : characterStats as List<RpgCharacterStatValue>,
+    );
+  }
+}
+
+extension $RpgAlternateCharacterConfigurationCopyWith
+    on RpgAlternateCharacterConfiguration {
+  /// Returns a callable class that can be used as follows: `instanceOfRpgAlternateCharacterConfiguration.copyWith(...)` or like so:`instanceOfRpgAlternateCharacterConfiguration.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$RpgAlternateCharacterConfigurationCWProxy get copyWith =>
+      _$RpgAlternateCharacterConfigurationCWProxyImpl(this);
+}
+
 abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration uuid(String uuid);
 
@@ -19,6 +99,9 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration inventory(
       List<RpgCharacterOwnedItemPair> inventory);
 
+  RpgCharacterConfiguration alternateCharacters(
+      List<RpgAlternateCharacterConfiguration>? alternateCharacters);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -31,6 +114,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
     int? moneyInBaseType,
     List<RpgCharacterStatValue>? characterStats,
     List<RpgCharacterOwnedItemPair>? inventory,
+    List<RpgAlternateCharacterConfiguration>? alternateCharacters,
   });
 }
 
@@ -63,6 +147,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(inventory: inventory);
 
   @override
+  RpgCharacterConfiguration alternateCharacters(
+          List<RpgAlternateCharacterConfiguration>? alternateCharacters) =>
+      this(alternateCharacters: alternateCharacters);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -76,6 +165,7 @@ class _$RpgCharacterConfigurationCWProxyImpl
     Object? moneyInBaseType = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
+    Object? alternateCharacters = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterConfiguration(
       uuid: uuid == const $CopyWithPlaceholder() || uuid == null
@@ -100,6 +190,10 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.inventory
           // ignore: cast_nullable_to_non_nullable
           : inventory as List<RpgCharacterOwnedItemPair>,
+      alternateCharacters: alternateCharacters == const $CopyWithPlaceholder()
+          ? _value.alternateCharacters
+          // ignore: cast_nullable_to_non_nullable
+          : alternateCharacters as List<RpgAlternateCharacterConfiguration>?,
     );
   }
 }
@@ -242,6 +336,24 @@ extension $RpgCharacterOwnedItemPairCopyWith on RpgCharacterOwnedItemPair {
 // JsonSerializableGenerator
 // **************************************************************************
 
+RpgAlternateCharacterConfiguration _$RpgAlternateCharacterConfigurationFromJson(
+        Map<String, dynamic> json) =>
+    RpgAlternateCharacterConfiguration(
+      uuid: json['uuid'] as String,
+      characterName: json['characterName'] as String,
+      characterStats: (json['characterStats'] as List<dynamic>)
+          .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$RpgAlternateCharacterConfigurationToJson(
+        RpgAlternateCharacterConfiguration instance) =>
+    <String, dynamic>{
+      'uuid': instance.uuid,
+      'characterName': instance.characterName,
+      'characterStats': instance.characterStats,
+    };
+
 RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
         Map<String, dynamic> json) =>
     RpgCharacterConfiguration(
@@ -255,6 +367,10 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
           .map((e) =>
               RpgCharacterOwnedItemPair.fromJson(e as Map<String, dynamic>))
           .toList(),
+      alternateCharacters: (json['alternateCharacters'] as List<dynamic>?)
+          ?.map((e) => RpgAlternateCharacterConfiguration.fromJson(
+              e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$RpgCharacterConfigurationToJson(
@@ -262,9 +378,10 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
     <String, dynamic>{
       'uuid': instance.uuid,
       'characterName': instance.characterName,
-      'moneyInBaseType': instance.moneyInBaseType,
       'characterStats': instance.characterStats,
+      'moneyInBaseType': instance.moneyInBaseType,
       'inventory': instance.inventory,
+      'alternateCharacters': instance.alternateCharacters,
     };
 
 RpgCharacterStatValue _$RpgCharacterStatValueFromJson(

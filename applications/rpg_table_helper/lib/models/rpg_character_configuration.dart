@@ -6,23 +6,53 @@ import 'package:uuid/v7.dart';
 
 part 'rpg_character_configuration.g.dart';
 
-@JsonSerializable()
-@CopyWith()
-class RpgCharacterConfiguration {
+abstract class RpgCharacterConfigurationBase {
   final String uuid;
   final String characterName;
-  final int? moneyInBaseType;
   final List<RpgCharacterStatValue> characterStats;
+
+  RpgCharacterConfigurationBase(
+      {required this.uuid,
+      required this.characterName,
+      required this.characterStats});
+}
+
+@JsonSerializable()
+@CopyWith()
+class RpgAlternateCharacterConfiguration extends RpgCharacterConfigurationBase {
+  // this can be used to create pets or other forms (like a druid might have)
+  factory RpgAlternateCharacterConfiguration.fromJson(
+          Map<String, dynamic> json) =>
+      _$RpgAlternateCharacterConfigurationFromJson(json);
+
+  RpgAlternateCharacterConfiguration({
+    required super.uuid,
+    required super.characterName,
+    required super.characterStats,
+  });
+
+  Map<String, dynamic> toJson() =>
+      _$RpgAlternateCharacterConfigurationToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
+class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
+  final int? moneyInBaseType;
   final List<RpgCharacterOwnedItemPair> inventory;
+  // this can be used to create pets or other forms (like a druid might have)
+  final List<RpgAlternateCharacterConfiguration>? alternateCharacters;
+
   factory RpgCharacterConfiguration.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterConfigurationFromJson(json);
 
   RpgCharacterConfiguration({
-    required this.uuid,
-    required this.characterName,
+    required super.uuid,
+    required super.characterName,
     required this.moneyInBaseType,
-    required this.characterStats,
+    required super.characterStats,
     required this.inventory,
+    required this.alternateCharacters,
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterConfigurationToJson(this);
@@ -30,6 +60,7 @@ class RpgCharacterConfiguration {
   static RpgCharacterConfiguration getBaseConfiguration(
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
+        alternateCharacters: [],
         uuid: const UuidV7().generate(),
         characterName: "Gandalf",
         characterStats:

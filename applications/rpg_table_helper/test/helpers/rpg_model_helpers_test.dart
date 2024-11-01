@@ -99,6 +99,7 @@ void main() {
         );
 
         character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "f2d956b6-a739-451a-8213-c60a2337868d",
           characterName: 'Hero',
           moneyInBaseType: 100,
@@ -263,6 +264,7 @@ void main() {
           placesOfFindings: [],
           rpgName: "asdf");
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "70cafb00-e08a-473c-9d57-10b712c5b9b0",
           inventory: [],
           characterName: "",
@@ -334,6 +336,7 @@ void main() {
       var inventoryItem =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid1', amount: 1);
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "b29172ae-c46d-4ac1-9736-8f70d56e53b1",
           inventory: [inventoryItem],
           characterName: "",
@@ -417,6 +420,7 @@ void main() {
       var inventoryItem2 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid2', amount: 2);
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "09f070d6-dd4a-4b5b-bb92-9c085fa0b507",
           inventory: [inventoryItem1, inventoryItem2],
           characterName: "",
@@ -492,6 +496,7 @@ void main() {
       var inventoryItem1 = RpgCharacterOwnedItemPair(
           itemUuid: 'uuid3', amount: 5); // Not in rpgConfig.allItems
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "e7f433f9-4c48-47b6-bd14-927f7bd1a71a",
           inventory: [inventoryItem1],
           characterName: "",
@@ -563,6 +568,7 @@ void main() {
       var inventoryItem1 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid1', amount: 0);
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "b3d29e6d-05d1-4aa2-b17a-a8b0b541995f",
           inventory: [inventoryItem1],
           characterName: "",
@@ -636,6 +642,7 @@ void main() {
       var inventoryItem2 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid2', amount: 3);
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "0398ad10-1469-40e6-9e92-ef1ce483e284",
           inventory: [inventoryItem1, inventoryItem2],
           characterName: "",
@@ -711,6 +718,7 @@ void main() {
           placesOfFindings: [],
           rpgName: "asdf");
       var character = RpgCharacterConfiguration(
+          alternateCharacters: [],
           uuid: "cfada5f0-6f72-48d2-a5f6-4ab3d660ba0f",
           inventory: [],
           characterName: "",

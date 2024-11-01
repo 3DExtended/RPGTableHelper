@@ -7,8 +7,10 @@ class CustomDropdownMenu extends StatelessWidget {
     required this.setter,
     required this.items,
     required this.label,
+    this.noBorder,
   });
   final String label;
+  final bool? noBorder;
   final String? selectedValueTemp;
   final Null Function(String? newValue) setter;
   final List<DropdownMenuItem<String?>> items;
@@ -18,16 +20,20 @@ class CustomDropdownMenu extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: Color(0xff938f99),
-              )),
+              enabledBorder: noBorder == true
+                  ? InputBorder.none
+                  : const OutlineInputBorder(
+                      borderSide: BorderSide(
+                      color: Color(0xff938f99),
+                    )),
             ),
       ),
       child: DropdownButtonFormField<String?>(
         borderRadius: BorderRadius.circular(10),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
               color: Colors.white,
+              fontSize: noBorder == true ? 24 : null,
+              height: noBorder == true ? 1 : null,
             ),
         decoration: InputDecoration(
           labelStyle: Theme.of(context)
@@ -37,7 +43,8 @@ class CustomDropdownMenu extends StatelessWidget {
           filled: true,
           fillColor: const Color.fromARGB(0, 0, 0, 0),
           labelText: label,
-          border: const OutlineInputBorder(),
+          border:
+              noBorder == true ? InputBorder.none : const OutlineInputBorder(),
         ),
         value: selectedValueTemp,
         isDense: true,

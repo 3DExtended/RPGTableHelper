@@ -265,6 +265,7 @@ void main() {
                           context: context,
                           statConfiguration: testConfiguration.$2,
                           characterValue: null,
+                          characterName: "Frodo",
                           overrideNavigatorKey: navigatorKey);
                     },
                     child: const Text("Click me"));
