@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -6,9 +7,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -62,11 +66,193 @@ class _RpgConfigurationWizardStep6ItemsState
 
     var stepHelperText = '''
 
-Nun ist es Zeit, die Items des RPGs zu hinterlegen. Egal ob Heiltränke, Waffen, Questitems oder Zutaten für Gifte, hier kannst du alles anlegen was in die Taschen deiner Player wandern könnte. 
+Nun ist es Zeit, die Items des RPGs zu hinterlegen. Egal ob Heiltränke, Waffen, Questitems oder Zutaten für Gifte, hier kannst du alles anlegen was in die Taschen deiner Player wandern könnte.
 
-Außerdem kannst du hier auch hinterlegen, welche Wirkungen ein Trank hat. 
+Außerdem kannst du hier auch hinterlegen, welche Wirkungen ein Trank hat.
 
 Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Beschreibung zu stellen, damit deine Spieler die wichtigsten Infos auf den ersten Blick sehen können!'''; // TODO localize
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    ...[
+                      ItemCategory(
+                        name: "Alles",
+                        subCategories: [],
+                        uuid: "",
+                        hideInInventoryFilters: false,
+                      ),
+                      ..._allItemCategories.sortBy((e) => e.name),
+                    ].map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(right: 25),
+                        child: CustomButtonNewdesign(
+                          variant: (selectedItemCategoryId == e.uuid ||
+                                  (e.uuid == "" &&
+                                      selectedItemCategoryId == null))
+                              ? CustomButtonNewdesignVariant.DarkButton
+                              : CustomButtonNewdesignVariant.Default,
+                          onPressed: () {
+                            setState(() {
+                              selectedItemCategoryId =
+                                  e.uuid == "" ? null : e.uuid;
+                            });
+                          },
+                          label: e.name,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 50,
+            ),
+            CustomButtonNewdesign(
+              onPressed: () async {
+                // open create modal with new item
+                await showCreateOrEditItemModal(
+                    context,
+                    RpgItem(
+                      baseCurrencyPrice: 0,
+                      categoryId: "",
+                      description: "",
+                      name: "",
+                      placeOfFindings: [],
+                      patchSize: null,
+                      uuid: const UuidV7().generate(),
+                    )).then((returnValue) {
+                  if (returnValue == null) {
+                    return;
+                  }
+
+                  setState(() {
+                    _items.add(returnValue);
+                    saveChanges();
+                  });
+                });
+              },
+              label: "+ Hinzufügen",
+            )
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Expanded(child: LayoutBuilder(builder: (context, constraints) {
+          var layoutWidth = constraints.maxWidth;
+
+          const targetedCardWidth = 361.25;
+          const targetedCardHeight = 528.75;
+          const itemCardPadding = 20.0;
+
+          var numberOfColumnsOnScreen = 1;
+          var calculatedWidth = itemCardPadding + targetedCardWidth;
+
+          while (calculatedWidth < layoutWidth) {
+            calculatedWidth += itemCardPadding + targetedCardWidth;
+            numberOfColumnsOnScreen++;
+          }
+
+          numberOfColumnsOnScreen--;
+
+          var itemsAsMapList = _items.asMap().entries.where((it) {
+            var itemCategoryForItem =
+                ItemCategory.parentCategoryForCategoryIdRecursive(
+                    categories: _allItemCategories,
+                    categoryId: it.value.categoryId);
+
+            return selectedItemCategoryId == null ||
+                it.value.categoryId == selectedItemCategoryId ||
+                (itemCategoryForItem != null &&
+                    itemCategoryForItem.uuid == selectedItemCategoryId);
+          }).toList();
+
+          if (itemsAsMapList.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  "Keine Items unter dieser Kategorie",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontSize: 24, color: darkTextColor),
+                ),
+              ],
+            );
+          }
+
+          return ListView.builder(
+            itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
+                        numberOfColumnsOnScreen ==
+                    itemsAsMapList.length)
+                ? (itemsAsMapList.length ~/ numberOfColumnsOnScreen)
+                : (itemsAsMapList.length ~/ numberOfColumnsOnScreen) + 1,
+            itemExtent: targetedCardHeight + itemCardPadding,
+            itemBuilder: (context, index) {
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: itemCardPadding,
+                    ),
+                    ...List.generate(numberOfColumnsOnScreen, (subindex) {
+                      var indexOfItemToRender =
+                          index * numberOfColumnsOnScreen + subindex;
+                      if (indexOfItemToRender >= itemsAsMapList.length) {
+                        return [
+                          Container(),
+                        ];
+                      }
+
+                      var itemToRender = itemsAsMapList[indexOfItemToRender];
+                      return [
+                        CupertinoButton(
+                          minSize: 0,
+                          padding: EdgeInsets.all(0),
+                          onPressed: () async {
+                            // open edit modal with clicked item
+                            await showCreateOrEditItemModal(
+                                    context, itemToRender.value)
+                                .then((returnValue) {
+                              if (returnValue == null) {
+                                return;
+                              }
+
+                              setState(() {
+                                _items.removeAt(itemToRender.key);
+                                _items.insert(itemToRender.key, returnValue);
+                                saveChanges();
+                              });
+                            });
+                          },
+                          child: CustomItemCard(
+                              title: itemToRender.value.name,
+                              description: itemToRender.value.description),
+                        ),
+                        SizedBox(
+                          width: itemCardPadding,
+                        ),
+                      ];
+                    }).expand((i) => i),
+                  ]);
+            },
+          );
+        }))
+      ],
+    );
 
     return TwoPartWizardStepBody(
       wizardTitle: "RPG Configuration", // TODO localize

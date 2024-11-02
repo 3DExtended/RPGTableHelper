@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -588,6 +589,21 @@ class ItemCategory {
   });
 
   Map<String, dynamic> toJson() => _$ItemCategoryToJson(this);
+
+  static ItemCategory? parentCategoryForCategoryIdRecursive({
+    required String categoryId,
+    required List<ItemCategory> categories,
+  }) {
+    var mainCategoryWithSameId =
+        categories.firstWhereOrNull((e) => e.uuid == categoryId);
+
+    if (mainCategoryWithSameId != null) return mainCategoryWithSameId;
+
+    var parentCategoryForId = categories.firstWhereOrNull(
+        (e) => e.subCategories.any((se) => se.uuid == categoryId));
+
+    return parentCategoryForId;
+  }
 
   static List<ItemCategory> flattenCategoriesRecursive({
     required List<ItemCategory> categories,

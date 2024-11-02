@@ -7,6 +7,8 @@ const bgColor = Color(0xffFDF0E3);
 const textColor = Color(0xffffffff);
 const accentColor = Color(0xffF96F3D);
 
+const darkTextColor = darkColor;
+
 // -----------
 
 const borderGradient = LinearGradient(

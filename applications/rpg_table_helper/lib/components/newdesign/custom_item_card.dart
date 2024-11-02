@@ -98,18 +98,28 @@ class CustomItemCard extends StatelessWidget {
                                           borderRadius: 4,
                                           color: lightColor,
                                           borderSize: 4,
-                                          child: Text(
-                                            description,
-                                            softWrap: false,
-                                            maxLines: 5,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium!
-                                                .copyWith(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: darkColor),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  description,
+                                                  softWrap: false,
+                                                  maxLines: 5,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headlineMedium!
+                                                      .copyWith(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: darkColor),
+                                                ),
+                                              ),
+                                            ],
                                           ))))),
                         )
                       ],
