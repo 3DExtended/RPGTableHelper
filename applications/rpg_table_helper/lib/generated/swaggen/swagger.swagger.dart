@@ -144,6 +144,38 @@ abstract class Swagger extends ChopperService {
       _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
           {@Path('campagneId') required String? campagneId});
 
+  ///
+  ///@param campagneid
+  Future<chopper.Response<String>> imageGenerateimageCampagneidPost({
+    required String? campagneid,
+    required String? body,
+  }) {
+    return _imageGenerateimageCampagneidPost(
+        campagneid: campagneid, body: body);
+  }
+
+  ///
+  ///@param campagneid
+  @Post(
+    path: '/Image/generateimage/{campagneid}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<String>> _imageGenerateimageCampagneidPost({
+    @Path('campagneid') required String? campagneid,
+    @Body() required String? body,
+  });
+
+  ///
+  ///@param uuid
+  Future<chopper.Response> imageGetimageGet({String? uuid}) {
+    return _imageGetimageGet(uuid: uuid);
+  }
+
+  ///
+  ///@param uuid
+  @Get(path: '/Image/getimage')
+  Future<chopper.Response> _imageGetimageGet({@Query('uuid') String? uuid});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(

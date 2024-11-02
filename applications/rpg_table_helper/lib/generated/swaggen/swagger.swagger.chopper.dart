@@ -101,6 +101,35 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<String>> _imageGenerateimageCampagneidPost({
+    required String? campagneid,
+    required String? body,
+  }) {
+    final Uri $url = Uri.parse('/Image/generateimage/${campagneid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _imageGetimageGet({String? uuid}) {
+    final Uri $url = Uri.parse('/Image/getimage');
+    final Map<String, dynamic> $params = <String, dynamic>{'uuid': uuid};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {

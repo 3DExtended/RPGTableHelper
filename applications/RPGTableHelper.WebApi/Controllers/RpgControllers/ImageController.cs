@@ -94,8 +94,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             return Ok(newMetadata.Id.Value);
         }
 
-        [HttpGet("{uuid}")]
-        public async Task<IActionResult> GetImageFromUuid([FromRoute] string uuid, CancellationToken cancellationToken)
+        [HttpGet("getimage")]
+        public async Task<IActionResult> GetImageFromUuid([FromQuery] string uuid, CancellationToken cancellationToken)
         {
             var imageMetaData = await new ImageMetaDataQuery
             {
