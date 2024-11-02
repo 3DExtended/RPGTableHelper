@@ -1,6 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+const darkColor = Color(0xff312D28);
+const middleBgColor = Color(0xffE4D5C5);
+const bgColor = Color(0xffFDF0E3);
+const textColor = Color(0xffffffff);
+const accentColor = Color(0xffF96F3D);
+
+// -----------
+
 const borderGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

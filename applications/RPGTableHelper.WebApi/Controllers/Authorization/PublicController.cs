@@ -28,5 +28,21 @@ namespace RPGTableHelper.WebApi.Controllers
         {
             return Task.FromResult<ActionResult<string>>(Ok(MinimalAppVersionSupported));
         }
+
+        // TODO remove me
+        [HttpPost("getimage")]
+        public async Task<IActionResult> CreateImage([FromQuery] string prompt, CancellationToken cancellationToken)
+        {
+            var imageGenerationResult = await new AiGenerateImageQuery { ImagePrompt = prompt }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (imageGenerationResult.IsNone)
+            {
+                return BadRequest();
+            }
+
+            return File(imageGenerationResult.Get(), "image/png");
+        }
     }
 }
