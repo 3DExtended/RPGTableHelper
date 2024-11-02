@@ -17,6 +17,8 @@ using RPGTableHelper.DataLayer;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.Users;
 using RPGTableHelper.DataLayer.EfCore;
+using RPGTableHelper.DataLayer.OpenAI;
+using RPGTableHelper.DataLayer.OpenAI.Contracts.Options;
 using RPGTableHelper.DataLayer.SendGrid;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Auth;
@@ -278,6 +280,7 @@ public class Startup
                     typeof(BusinessLayerPipelineProfile).Assembly,
                     typeof(BusinessLayerEncryptionPipelineProfile).Assembly,
                     typeof(DataLayerPipelineProfile).Assembly,
+                    typeof(DataLayerOpenAIPipelineProfile).Assembly,
                     typeof(DataLayerSendGridPipelineProfile).Assembly
                 )
                 .WithQueryHandlerPipelineConfiguration(config =>
@@ -287,6 +290,7 @@ public class Startup
                             typeof(BusinessLayerPipelineProfile).Assembly,
                             typeof(BusinessLayerEncryptionPipelineProfile).Assembly,
                             typeof(DataLayerPipelineProfile).Assembly,
+                            typeof(DataLayerOpenAIPipelineProfile).Assembly,
                             typeof(DataLayerSendGridPipelineProfile).Assembly
                         )
                 )
@@ -299,6 +303,12 @@ public class Startup
         if (sendGridOptions != null)
         {
             services.AddSingleton(sendGridOptions);
+        }
+
+        var openAiOptions = Configuration.GetSection("OpenAi").Get<OpenAIOptions>();
+        if (openAiOptions != null)
+        {
+            services.AddSingleton(openAiOptions);
         }
 
         var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();

@@ -37,6 +37,9 @@ Widget getPlayerVisualizationWidget({
                 .bodyMedium!
                 .copyWith(color: Colors.white, fontSize: 16),
           ),
+          SizedBox(
+            height: 10,
+          ),
         ],
       );
 

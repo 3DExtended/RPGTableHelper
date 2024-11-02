@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Prodot.Patterns.Cqrs;
+using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 
 namespace RPGTableHelper.WebApi.Controllers
 {
@@ -7,8 +9,12 @@ namespace RPGTableHelper.WebApi.Controllers
     public class PublicController : ControllerBase
     {
         public static readonly string MinimalAppVersionSupported = "1.0.0";
+        private readonly IQueryProcessor _queryProcessor;
 
-        public PublicController() { }
+        public PublicController(IQueryProcessor queryProcessor)
+        {
+            _queryProcessor = queryProcessor;
+        }
 
         /// <summary>
         /// Returns the minimal app version supported by this api.
@@ -21,6 +27,25 @@ namespace RPGTableHelper.WebApi.Controllers
         public Task<ActionResult<string>> GetMinimalAppVersion(CancellationToken cancellationToken)
         {
             return Task.FromResult<ActionResult<string>>(Ok(MinimalAppVersionSupported));
+        }
+
+        // TODO remove me
+        [HttpPost("openaiimages")]
+        public async Task<ActionResult<string>> GetOpenAIImageForQuery(
+            [FromBody] string prompt,
+            CancellationToken cancellationToken
+        )
+        {
+            var result = await new AiGenerateImageQuery { ImagePrompt = prompt }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (result.IsNone)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result.Get());
         }
     }
 }
