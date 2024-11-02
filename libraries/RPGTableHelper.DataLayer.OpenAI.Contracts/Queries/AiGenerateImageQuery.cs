@@ -6,7 +6,7 @@ using Prodot.Patterns.Cqrs;
 
 namespace RPGTableHelper.DataLayer.OpenAI.Contracts.Queries
 {
-    public class AiGenerateImageQuery : IQuery<string, AiGenerateImageQuery>
+    public class AiGenerateImageQuery : IQuery<Stream, AiGenerateImageQuery>
     {
         public string ImagePrompt { get; set; } = default!;
     }

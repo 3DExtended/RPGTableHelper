@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 
 namespace RPGTableHelper.DataLayer.EfCore;
@@ -15,6 +16,7 @@ public class RpgDbContext : DbContext
     public DbSet<UserEntity> Users { get; set; } = default!;
     public DbSet<UserCredentialEntity> UserCredentials { get; set; } = default!;
     public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
+    public DbSet<ImageMetaDataEntity> imageMetaDatas { get; set; } = default!;
 
     public DbSet<CampagneJoinRequestEntity> CampagneJoinRequests { get; set; } = default!;
 

@@ -2,8 +2,10 @@ using AutoMapper;
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Models.Images;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 
 namespace RPGTableHelper.DataLayer
@@ -13,6 +15,7 @@ namespace RPGTableHelper.DataLayer
         public DataLayerEntitiesMapperProfile()
         {
             CreateModelMaps<User, User.UserIdentifier, Guid, UserEntity>();
+            CreateModelMaps<ImageMetaData, ImageMetaData.ImageMetaDataIdentifier, Guid, ImageMetaDataEntity>();
 
             CreateModelMaps<Campagne, Campagne.CampagneIdentifier, Guid, CampagneEntity>();
             CreateModelMaps<
@@ -35,6 +38,7 @@ namespace RPGTableHelper.DataLayer
                 .ConvertUsing((tmid) => tmid.IsNone ? (Guid?)null : tmid.Get().Value);
 
             CreateOptionMapForType<SupportedSignInProviders>();
+            CreateOptionMapForType<ImageType>();
 
             CreateModelMaps<
                 OpenSignInProviderRegisterRequest,

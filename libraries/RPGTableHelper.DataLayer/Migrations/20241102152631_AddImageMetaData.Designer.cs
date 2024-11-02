@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RPGTableHelper.DataLayer.EfCore;
 
@@ -10,9 +11,11 @@ using RPGTableHelper.DataLayer.EfCore;
 namespace RPGTableHelper.DataLayer.Migrations
 {
     [DbContext(typeof(RpgDbContext))]
-    partial class RpgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241102152631_AddImageMetaData")]
+    partial class AddImageMetaData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -315,7 +318,7 @@ namespace RPGTableHelper.DataLayer.Migrations
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.Images.ImageMetaDataEntity", b =>
                 {
-                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", "CreatedForCampagne")
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "CreatedForCampagne")
                         .WithMany()
                         .HasForeignKey("CreatedForCampagneId")
                         .OnDelete(DeleteBehavior.Cascade)
