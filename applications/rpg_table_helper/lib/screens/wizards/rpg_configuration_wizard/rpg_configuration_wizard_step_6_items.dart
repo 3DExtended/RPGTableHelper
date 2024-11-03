@@ -72,81 +72,84 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
 
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    ...[
-                      ItemCategory(
-                        colorCode: null,
-                        iconName: null,
-                        name: "Alles",
-                        subCategories: [],
-                        uuid: "",
-                        hideInInventoryFilters: false,
-                      ),
-                      ..._allItemCategories.sortBy((e) => e.name),
-                    ].map(
-                      (e) => Padding(
-                        padding: const EdgeInsets.only(right: 25),
-                        child: CustomButtonNewdesign(
-                          variant: (selectedItemCategoryId == e.uuid ||
-                                  (e.uuid == "" &&
-                                      selectedItemCategoryId == null))
-                              ? CustomButtonNewdesignVariant.DarkButton
-                              : CustomButtonNewdesignVariant.Default,
-                          onPressed: () {
-                            setState(() {
-                              selectedItemCategoryId =
-                                  e.uuid == "" ? null : e.uuid;
-                            });
-                          },
-                          label: e.name,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ...[
+                        ItemCategory(
+                          colorCode: null,
+                          iconName: null,
+                          name: "Alles",
+                          subCategories: [],
+                          uuid: "",
+                          hideInInventoryFilters: false,
+                        ),
+                        ..._allItemCategories.sortBy((e) => e.name),
+                      ].map(
+                        (e) => Padding(
+                          padding: const EdgeInsets.only(right: 25),
+                          child: CustomButtonNewdesign(
+                            variant: (selectedItemCategoryId == e.uuid ||
+                                    (e.uuid == "" &&
+                                        selectedItemCategoryId == null))
+                                ? CustomButtonNewdesignVariant.DarkButton
+                                : CustomButtonNewdesignVariant.Default,
+                            onPressed: () {
+                              setState(() {
+                                selectedItemCategoryId =
+                                    e.uuid == "" ? null : e.uuid;
+                              });
+                            },
+                            label: e.name,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: 50,
-            ),
-            CustomButtonNewdesign(
-              onPressed: () async {
-                // open create modal with new item
-                await showCreateOrEditItemModalNewDesign(
-                    context,
-                    RpgItem(
-                      imageDescription: null,
-                      imageUrlWithoutBasePath: null,
-                      baseCurrencyPrice: 0,
-                      categoryId: "",
-                      description: "",
-                      name: "",
-                      placeOfFindings: [],
-                      patchSize: null,
-                      uuid: const UuidV7().generate(),
-                    )).then((returnValue) {
-                  if (returnValue == null) {
-                    return;
-                  }
+              SizedBox(
+                width: 50,
+              ),
+              CustomButtonNewdesign(
+                onPressed: () async {
+                  // open create modal with new item
+                  await showCreateOrEditItemModalNewDesign(
+                      context,
+                      RpgItem(
+                        imageDescription: null,
+                        imageUrlWithoutBasePath: null,
+                        baseCurrencyPrice: 0,
+                        categoryId: "",
+                        description: "",
+                        name: "",
+                        placeOfFindings: [],
+                        patchSize: null,
+                        uuid: const UuidV7().generate(),
+                      )).then((returnValue) {
+                    if (returnValue == null) {
+                      return;
+                    }
 
-                  setState(() {
-                    _items.add(returnValue);
-                    saveChanges();
+                    setState(() {
+                      _items.add(returnValue);
+                      saveChanges();
+                    });
                   });
-                });
-              },
-              label: "+ Hinzufügen",
-            )
-          ],
+                },
+                label: "+ Hinzufügen",
+              )
+            ],
+          ),
         ),
         SizedBox(
-          height: 20,
+          height: 0,
         ),
         Expanded(child: LayoutBuilder(builder: (context, constraints) {
           var layoutWidth = constraints.maxWidth;
@@ -157,7 +160,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
 
           const targetedCardHeight = cardHeight;
           const targetedCardWidth = cardWidth;
-          const itemCardPadding = 20.0;
+          const itemCardPadding = 13.0;
 
           var numberOfColumnsOnScreen = 1;
           var calculatedWidth = itemCardPadding + targetedCardWidth;
@@ -168,6 +171,9 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
           }
 
           numberOfColumnsOnScreen--;
+
+          // print(
+          //     "I am missing: ${calculatedWidth - layoutWidth}px for a column more...");
 
           var itemsAsMapList = _items.asMap().entries.where((it) {
             var itemCategoryForItem =

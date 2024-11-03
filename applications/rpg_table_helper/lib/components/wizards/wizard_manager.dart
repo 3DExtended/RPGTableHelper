@@ -145,12 +145,9 @@ class _WizardManagerState extends State<WizardManager> {
             color: _currentStep == 5
                 ? bgColor
                 : const Color.fromARGB(35, 29, 22, 22),
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: widget.stepBuilders[_currentStep](
-                _goToPreviousStep,
-                _goToNextStep,
-              ),
+            child: widget.stepBuilders[_currentStep](
+              _goToPreviousStep,
+              _goToNextStep,
             ),
           ),
         ),

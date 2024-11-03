@@ -127,8 +127,8 @@ class CustomItemCard extends StatelessWidget {
                                                               FontWeight.bold,
                                                           color: darkColor),
                                                   minFontSize: 10,
-                                                  maxFontSize: 16,
-                                                  maxLines: 8,
+                                                  maxFontSize: 12,
+                                                  maxLines: 4,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 ),
