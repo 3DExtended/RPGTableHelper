@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
-import 'package:rpg_table_helper/constants.dart';
 
 class TwoPartWizardStepBody extends StatelessWidget {
   const TwoPartWizardStepBody({
     super.key,
-    required this.wizardTitle,
     required this.isLandscapeMode,
     required this.stepTitle,
     required this.stepHelperText,
@@ -25,7 +23,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
 
   final int? sideBarFlex;
   final int? contentFlex;
-  final String wizardTitle;
   final bool isLandscapeMode;
   final String stepTitle;
   final String stepHelperText;
@@ -41,29 +38,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          color: whiteBgTint,
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Text(
-                wizardTitle,
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              titleWidgetRight == null
-                  ? const Spacer()
-                  : Expanded(child: titleWidgetRight!),
-            ],
-          ),
-        ),
-        const HorizontalLine(),
         Expanded(
           child: RowColumnFlipper(
             isLandscapeMode: isLandscapeMode,
@@ -71,9 +45,42 @@ class TwoPartWizardStepBody extends StatelessWidget {
             children: [
               Expanded(
                 flex: sideBarFlex ?? 1,
-                child: Container(
-                    color: whiteBgTint,
-                    child: LayoutBuilder(builder: (context, constraints) {
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Column(
+                          children: [
+                            CustomMarkdownBody(
+                                isNewDesign: true,
+                                text: "# $stepTitle\n\n$stepHelperText"),
+                            SizedBox(
+                                height: EdgeInsets.fromViewPadding(
+                                        View.of(context).viewInsets,
+                                        View.of(context).devicePixelRatio)
+                                    .bottom),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              if (!isLandscapeMode) const HorizontalLine(),
+              Expanded(
+                flex: contentFlex ?? 1,
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                      if (contentWidget != null) {
+                        return contentWidget!;
+                      }
+
                       return SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(20),
@@ -83,8 +90,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
                             ),
                             child: Column(
                               children: [
-                                CustomMarkdownBody(
-                                    text: "# $stepTitle\n\n$stepHelperText"),
+                                ...contentChildren,
                                 SizedBox(
                                     height: EdgeInsets.fromViewPadding(
                                             View.of(context).viewInsets,
@@ -96,64 +102,28 @@ class TwoPartWizardStepBody extends StatelessWidget {
                         ),
                       );
                     })),
-              ),
-              if (!isLandscapeMode) const HorizontalLine(),
-              Expanded(
-                flex: contentFlex ?? 1,
-                child: Container(
-                  color: const Color.fromARGB(65, 39, 39, 39),
-                  child: Column(
-                    children: [
-                      Expanded(
-                          child: LayoutBuilder(builder: (context, constraints) {
-                        if (contentWidget != null) {
-                          return contentWidget!;
-                        }
-
-                        return SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minHeight: constraints.maxHeight,
-                              ),
-                              child: Column(
-                                children: [
-                                  ...contentChildren,
-                                  SizedBox(
-                                      height: EdgeInsets.fromViewPadding(
-                                              View.of(context).viewInsets,
-                                              View.of(context).devicePixelRatio)
-                                          .bottom),
-                                ],
-                              ),
-                            ),
+                    if (footerWidget != null) footerWidget!,
+                    const HorizontalLine(),
+                    Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
+                      child: Row(
+                        children: [
+                          CustomButtonNewdesign(
+                            label: "Zurück", // TODO localize
+                            onPressed: onPreviousBtnPressed,
                           ),
-                        );
-                      })),
-                      if (footerWidget != null) footerWidget!,
-                      const HorizontalLine(),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
-                        child: Row(
-                          children: [
-                            CustomButton(
-                              label: "Zurück", // TODO localize
-                              onPressed: onPreviousBtnPressed,
-                            ),
-                            const Spacer(),
-                            if (centerNavBarWidget != null) centerNavBarWidget!,
-                            if (centerNavBarWidget != null) const Spacer(),
-                            CustomButton(
-                              label: "Weiter", // TODO localize
-                              onPressed: onNextBtnPressed,
-                            ),
-                          ],
-                        ),
+                          const Spacer(),
+                          if (centerNavBarWidget != null) centerNavBarWidget!,
+                          if (centerNavBarWidget != null) const Spacer(),
+                          CustomButtonNewdesign(
+                            label: "Weiter", // TODO localize
+                            onPressed: onNextBtnPressed,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],

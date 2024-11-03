@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
@@ -94,7 +95,6 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepTitle: "Währungen", // TODO Localize,
@@ -114,7 +114,12 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           const HorizontalLine(),
           Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 30),
-            child: Text(buildTextForCurrencyComparison()),
+            child: Text(
+              buildTextForCurrencyComparison(),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: darkTextColor,
+                  ),
+            ),
           ),
         ],
       ),
@@ -123,6 +128,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           children: [
             Expanded(
               child: CustomTextField(
+                newDesign: true,
                 keyboardType: TextInputType.text,
                 labelText: "Name der kleinsten Währung:", // TODO localize
                 textEditingController:
@@ -152,6 +158,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                 children: [
                   Expanded(
                     child: CustomTextField(
+                      newDesign: true,
                       keyboardType: TextInputType.text,
 
                       labelText:
@@ -161,16 +168,22 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   ),
                   Container(
                     height: 50,
-                    width: 70,
+                    width: 40,
                     clipBehavior: Clip.none,
-                    child: CustomButton(
+                    child: CustomButtonNewdesign(
+                      isSubbutton: true,
+                      variant: CustomButtonNewdesignVariant.FlatButton,
                       onPressed: () {
                         // remove this pair from list
                         setState(() {
                           currencyControllerPairs.removeAt(e.key);
                         });
                       },
-                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        color: darkColor,
+                        size: 16,
+                      ),
                     ),
                   ),
                 ],
@@ -182,6 +195,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                 children: [
                   Expanded(
                     child: CustomTextField(
+                      newDesign: true,
+
                       keyboardType: TextInputType.number,
 
                       labelText:
@@ -208,7 +223,9 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
             ],
           );
         }),
-        CustomButton(
+        CustomButtonNewdesign(
+          variant: CustomButtonNewdesignVariant.Default,
+          isSubbutton: true,
           onPressed: () {
             setState(() {
               addNewCurrencyPair("New", "10");
@@ -217,12 +234,12 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           icon: Theme(
               data: ThemeData(
                 iconTheme: const IconThemeData(
-                  color: Colors.white,
+                  color: darkColor,
                   size: 16,
                 ),
                 textTheme: const TextTheme(
                   bodyMedium: TextStyle(
-                    color: Colors.white,
+                    color: darkColor,
                   ),
                 ),
               ),

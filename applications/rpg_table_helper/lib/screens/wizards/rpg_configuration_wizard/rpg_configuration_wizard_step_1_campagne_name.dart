@@ -67,7 +67,6 @@ Wir beginnen mit der wohl schwierigsten Frage überhaupt:
 Wie heißt deine Kampagne?'''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepTitle: "Kampangen Name", // TODO Localize,
@@ -84,6 +83,7 @@ Wie heißt deine Kampagne?'''; // TODO localize
       },
       contentChildren: [
         CustomTextField(
+            newDesign: true,
             labelText: "Campagne Name:",
             keyboardType: TextInputType.text,
             textEditingController: textEditingController),

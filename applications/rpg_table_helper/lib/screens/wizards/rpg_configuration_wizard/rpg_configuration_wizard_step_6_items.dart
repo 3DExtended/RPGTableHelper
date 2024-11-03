@@ -160,7 +160,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
 
           const targetedCardHeight = cardHeight;
           const targetedCardWidth = cardWidth;
-          const itemCardPadding = 13.0;
+          const itemCardPadding = 9.0;
 
           var numberOfColumnsOnScreen = 1;
           var calculatedWidth = itemCardPadding + targetedCardWidth;
@@ -221,9 +221,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       var indexOfItemToRender =
                           index * numberOfColumnsOnScreen + subindex;
                       if (indexOfItemToRender >= itemsAsMapList.length) {
-                        return [
-                          Container(),
-                        ];
+                        return List<Widget>.empty();
                       }
 
                       var itemToRender = itemsAsMapList[indexOfItemToRender];

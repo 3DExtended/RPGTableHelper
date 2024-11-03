@@ -142,9 +142,7 @@ class _WizardManagerState extends State<WizardManager> {
         }),
         Expanded(
           child: Container(
-            color: _currentStep == 5
-                ? bgColor
-                : const Color.fromARGB(35, 29, 22, 22),
+            color: bgColor,
             child: widget.stepBuilders[_currentStep](
               _goToPreviousStep,
               _goToNextStep,

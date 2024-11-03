@@ -40,7 +40,12 @@ class CustomTextField extends StatelessWidget {
           helperText: placeholderText,
           labelText: labelText,
           alignLabelWithHint: true,
-          border: const OutlineInputBorder(),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(width: 1, color: darkColor),
+          ),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(width: 1, color: darkColor),
+          ),
           hintStyle: Theme.of(context)
               .textTheme
               .labelLarge!

@@ -63,7 +63,6 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepTitle: "Rezepte", // TODO Localize,

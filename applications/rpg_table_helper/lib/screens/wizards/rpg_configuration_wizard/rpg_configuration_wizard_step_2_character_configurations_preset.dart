@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -89,7 +88,6 @@ Für jede Eigenschaft muss du, also der DM, definieren, wie die Spieler mit dies
 Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen Konfigurationen und entsprechendem Aussehen auf den Character Sheets finden:'''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepTitle: "Character Stats", // TODO Localize,
@@ -116,6 +114,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                 children: [
                   Expanded(
                     child: CustomTextField(
+                      newDesign: true,
                       labelText: "Tab Title",
                       textEditingController: tab.value.$2,
                       keyboardType: TextInputType.text,
@@ -127,13 +126,18 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("Default Tab"),
+                      Text(
+                        "Default Tab",
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(color: darkTextColor),
+                      ),
                       SizedBox(
                         height: 5,
                       ),
-                      CupertinoButton(
-                        minSize: 0,
-                        padding: EdgeInsets.all(0),
+                      CustomButtonNewdesign(
+                        isSubbutton: true,
                         onPressed: () {
                           setState(() {
                             var newTabsToEdit = [...tabsToEdit];
@@ -148,14 +152,10 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                             tabsToEdit = newTabsToEdit;
                           });
                         },
-                        child: StyledBox(
-                          child: Container(
-                            width: 20,
-                            height: 20,
-                            color: tab.value.$4
-                                ? Colors.white
-                                : Colors.transparent,
-                          ),
+                        icon: Container(
+                          width: 20,
+                          height: 20,
+                          color: tab.value.$4 ? darkColor : Colors.transparent,
                         ),
                       ),
                       SizedBox(
@@ -177,8 +177,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: const Color.fromARGB(
-                                        156, 255, 255, 255),
+                                    color: darkColor,
                                   ),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
@@ -187,6 +186,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                   children: [
                                     Expanded(
                                       child: CustomMarkdownBody(
+                                        isNewDesign: true,
                                         text:
                                             "### ${e.value.name} (${e.value.valueType.toCustomString()})",
                                       ),
@@ -201,9 +201,11 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                         // Edit Button
                         Container(
                           height: 50,
-                          width: 50,
+                          width: 40,
                           clipBehavior: Clip.none,
-                          child: CustomButton(
+                          child: CustomButtonNewdesign(
+                            variant: CustomButtonNewdesignVariant.FlatButton,
+                            isSubbutton: true,
                             onPressed: () async {
                               await showGetDmConfigurationModal(
                                       context: context,
@@ -218,20 +220,26 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                               });
                             },
                             icon: const CustomFaIcon(
+                                size: 16,
+                                color: darkColor,
                                 icon: FontAwesomeIcons.penToSquare),
                           ),
                         ),
                         Container(
                           height: 50,
-                          width: 70,
+                          width: 40,
                           clipBehavior: Clip.none,
-                          child: CustomButton(
+                          child: CustomButtonNewdesign(
+                            isSubbutton: true,
+                            variant: CustomButtonNewdesignVariant.FlatButton,
                             onPressed: () {
                               setState(() {
                                 statsUnderTab[tab.value.$1]!.removeAt(e.key);
                               });
                             },
                             icon: const CustomFaIcon(
+                                size: 16,
+                                color: darkColor,
                                 icon: FontAwesomeIcons.trashCan),
                           ),
                         ),
@@ -242,7 +250,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
               // add new stat beneath
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                child: CustomButton(
+                child: CustomButtonNewdesign(
                   isSubbutton: true,
                   onPressed: () async {
                     // open new modal for dm config
@@ -263,12 +271,12 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                   icon: Theme(
                       data: ThemeData(
                         iconTheme: const IconThemeData(
-                          color: Colors.white,
+                          color: darkTextColor,
                           size: 16,
                         ),
                         textTheme: const TextTheme(
                           bodyMedium: TextStyle(
-                            color: Colors.white,
+                            color: darkTextColor,
                           ),
                         ),
                       ),
@@ -287,19 +295,21 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
         }),
 
         // add new tab button
-        CustomButton(
+        CustomButtonNewdesign(
+          variant: CustomButtonNewdesignVariant.Default,
           onPressed: () {
             addNewTab();
           },
+          label: "Neuer Tab",
           icon: Theme(
               data: ThemeData(
                 iconTheme: const IconThemeData(
-                  color: Colors.white,
+                  color: darkColor,
                   size: 16,
                 ),
                 textTheme: const TextTheme(
                   bodyMedium: TextStyle(
-                    color: Colors.white,
+                    color: darkColor,
                   ),
                 ),
               ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:uuid/v7.dart';
@@ -120,7 +121,6 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepTitle: "Item Kategorien", // TODO Localize,
@@ -146,6 +146,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                 children: [
                   Expanded(
                     child: CustomTextField(
+                      newDesign: true,
                       keyboardType: TextInputType.text,
                       labelText: "Name der Kategorie:", // TODO localize
                       textEditingController: e.value.nameController,
@@ -153,9 +154,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                   ),
                   Container(
                     height: 50,
-                    width: 70,
+                    width: 40,
                     clipBehavior: Clip.none,
-                    child: CustomButton(
+                    child: CustomButtonNewdesign(
+                      variant: CustomButtonNewdesignVariant.FlatButton,
+                      isSubbutton: true,
                       onPressed: () {
                         // remove this pair from list
                         // TODO check if assigned...
@@ -164,7 +167,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                           categories.removeAt(e.key);
                         });
                       },
-                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        color: darkColor,
+                        size: 16,
+                      ),
                     ),
                   ),
                 ],
@@ -177,6 +184,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         children: [
                           Expanded(
                             child: CustomTextField(
+                              newDesign: true,
                               keyboardType: TextInputType.text,
                               labelText:
                                   "Name der Sub-Kategorie:", // TODO localize
@@ -186,9 +194,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                           ),
                           Container(
                             height: 50,
-                            width: 70,
+                            width: 40,
                             clipBehavior: Clip.none,
-                            child: CustomButton(
+                            child: CustomButtonNewdesign(
+                              variant: CustomButtonNewdesignVariant.FlatButton,
+                              isSubbutton: true,
                               onPressed: () {
                                 // remove this pair from list
                                 // TODO check if assigned...
@@ -199,24 +209,15 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                       .removeAt(subCat.key);
                                 });
                               },
-                              icon: Theme(
-                                  data: ThemeData(
-                                    iconTheme: const IconThemeData(
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                    textTheme: const TextTheme(
-                                      bodyMedium: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Container(
-                                      width: 24,
-                                      height: 24,
-                                      alignment: AlignmentDirectional.center,
-                                      child: const FaIcon(
-                                          FontAwesomeIcons.trashCan))),
+                              icon: Container(
+                                  width: 24,
+                                  height: 24,
+                                  alignment: AlignmentDirectional.center,
+                                  child: const CustomFaIcon(
+                                    icon: FontAwesomeIcons.trashCan,
+                                    color: darkColor,
+                                    size: 16,
+                                  )),
                             ),
                           ),
                         ],
@@ -226,7 +227,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: CustomButton(
+                child: CustomButtonNewdesign(
                   isSubbutton: true,
                   onPressed: () {
                     setState(() {
@@ -242,26 +243,17 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     });
                   },
                   label: "Neue Sub-Kategorie",
-                  icon: Theme(
-                      data: ThemeData(
-                        iconTheme: const IconThemeData(
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        textTheme: const TextTheme(
-                          bodyMedium: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                        child: Container(
-                            width: 16,
-                            height: 16,
-                            alignment: AlignmentDirectional.center,
-                            child: const FaIcon(FontAwesomeIcons.plus)),
-                      )),
+                  icon: Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: Container(
+                        width: 16,
+                        height: 16,
+                        alignment: AlignmentDirectional.center,
+                        child: const CustomFaIcon(
+                          icon: FontAwesomeIcons.plus,
+                          color: darkColor,
+                        )),
+                  ),
                 ),
               ),
               // const SizedBox(
@@ -274,7 +266,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
             ],
           );
         }),
-        CustomButton(
+        CustomButtonNewdesign(
+          variant: CustomButtonNewdesignVariant.Default,
           onPressed: () {
             setState(() {
               addNewItemCategory(_ItemCategoryEdit.fromItemCategory(
@@ -287,23 +280,15 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                   _updateStateForFormValidation));
             });
           },
-          icon: Theme(
-              data: ThemeData(
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
-                ),
-                textTheme: const TextTheme(
-                  bodyMedium: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              child: Container(
-                  width: 24,
-                  height: 24,
-                  alignment: AlignmentDirectional.center,
-                  child: const FaIcon(FontAwesomeIcons.plus))),
+          icon: Container(
+              width: 24,
+              height: 24,
+              alignment: AlignmentDirectional.center,
+              child: const CustomFaIcon(
+                icon: FontAwesomeIcons.plus,
+                size: 16,
+                color: darkColor,
+              )),
         ),
         const SizedBox(
           height: 20,

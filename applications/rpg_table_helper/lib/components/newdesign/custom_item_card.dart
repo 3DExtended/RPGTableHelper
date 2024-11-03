@@ -173,40 +173,43 @@ class CardTitleWithIcon extends StatelessWidget {
         Row(
           children: [
             Expanded(
-                child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                  15 * scalar, 4 * scalar, 8 * scalar, 4 * scalar),
-              child: CardBorder(
-                borderRadius: 5 * scalar,
-                borderSize: 3 * scalar,
-                color: lightColor,
+                child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 50),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                    15 * scalar, 4 * scalar, 8 * scalar, 4 * scalar),
                 child: CardBorder(
-                  borderRadius: 3 * scalar,
-                  borderSize: 1 * scalar,
-                  color: backgroundColor,
+                  borderRadius: 5 * scalar,
+                  borderSize: 3 * scalar,
+                  color: lightColor,
                   child: CardBorder(
-                    borderRadius: 2 * scalar,
-                    borderSize: 5 * scalar,
-                    color: lightColor,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 35.0 * scalar),
-                      child: Container(
-                        color: lightColor,
-                        child: AutoSizeText(
-                          softWrap: true,
-                          textAlign: TextAlign.center,
-                          title ?? "Empty title",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: darkColor),
-                          minFontSize: 10,
-                          maxFontSize: 16,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                    borderRadius: 3 * scalar,
+                    borderSize: 1 * scalar,
+                    color: backgroundColor,
+                    child: CardBorder(
+                      borderRadius: 2 * scalar,
+                      borderSize: 5 * scalar,
+                      color: lightColor,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 35.0 * scalar),
+                        child: Container(
+                          color: lightColor,
+                          child: AutoSizeText(
+                            softWrap: true,
+                            textAlign: TextAlign.center,
+                            title ?? "Empty title",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium!
+                                .copyWith(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: darkColor),
+                            minFontSize: 10,
+                            maxFontSize: 32,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ),
