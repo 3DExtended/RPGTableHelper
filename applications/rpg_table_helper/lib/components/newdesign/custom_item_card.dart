@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -114,12 +115,9 @@ class CustomItemCard extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Expanded(
-                                                child: Text(
-                                                  description,
-                                                  softWrap: false,
-                                                  maxLines: 5,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                child: AutoSizeText(
+                                                  description ??
+                                                      "Empty description",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .headlineMedium!
@@ -128,6 +126,11 @@ class CustomItemCard extends StatelessWidget {
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: darkColor),
+                                                  minFontSize: 10,
+                                                  maxFontSize: 16,
+                                                  maxLines: 8,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
@@ -171,7 +174,8 @@ class CardTitleWithIcon extends StatelessWidget {
           children: [
             Expanded(
                 child: Padding(
-              padding: EdgeInsets.fromLTRB(15 * scalar, 0, 8 * scalar, 0),
+              padding: EdgeInsets.fromLTRB(
+                  15 * scalar, 4 * scalar, 8 * scalar, 4 * scalar),
               child: CardBorder(
                 borderRadius: 5 * scalar,
                 borderSize: 3 * scalar,
@@ -182,30 +186,27 @@ class CardTitleWithIcon extends StatelessWidget {
                   color: backgroundColor,
                   child: CardBorder(
                     borderRadius: 2 * scalar,
-                    borderSize: 10 * scalar,
+                    borderSize: 5 * scalar,
                     color: lightColor,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 24.0 * scalar),
+                      padding: EdgeInsets.only(left: 35.0 * scalar),
                       child: Container(
                         color: lightColor,
-                        height: 8 * scalar,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                          child: Text(
-                            title,
-                            textAlign: TextAlign.center,
-                            softWrap: false,
-                            maxLines: 2,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
-                                .copyWith(
-                                    fontSize: 32,
-                                    height: 0.7,
-                                    fontWeight: FontWeight.bold,
-                                    color: darkColor),
-                          ),
+                        child: AutoSizeText(
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          title ?? "Empty title",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: darkColor),
+                          minFontSize: 10,
+                          maxFontSize: 16,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
