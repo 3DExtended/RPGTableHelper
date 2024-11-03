@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class HorizontalLine extends StatelessWidget {
   const HorizontalLine({
@@ -12,7 +13,7 @@ class HorizontalLine extends StatelessWidget {
         Expanded(
           child: Container(
             height: 1,
-            color: const Color.fromARGB(78, 255, 255, 255),
+            color: middleBgColor,
           ),
         ),
       ],
