@@ -200,7 +200,7 @@ class _CreateOrEditItemModalContentState
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge!
-                          .copyWith(color: textColor, fontSize: 32),
+                          .copyWith(color: textColor, fontSize: 24),
                     ),
                   ),
                   Expanded(

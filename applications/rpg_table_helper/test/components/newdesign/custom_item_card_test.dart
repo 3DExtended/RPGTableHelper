@@ -37,6 +37,15 @@ void main() {
         description:
             "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
       ),
+
+      // test test asset image override
+      CustomItemCard(
+        title: "Small Healing Potion",
+        imageUrl: "assets/images/itemhealingpotion.png",
+        description:
+            "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
+        scalarOverride: 0.9,
+      ),
     ];
 
     for (var i = 0; i < itemCards.length; i++) {

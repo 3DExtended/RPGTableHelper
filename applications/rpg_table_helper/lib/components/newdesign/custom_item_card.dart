@@ -411,7 +411,7 @@ class GetBorderCornerStone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(1.0),
+      padding: const EdgeInsets.all(0.0),
       child: Align(
         alignment: alignment,
         child: Transform.translate(
@@ -421,7 +421,7 @@ class GetBorderCornerStone extends StatelessWidget {
             child: Container(
               width: 25 * scalar,
               height: 25 * scalar,
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(0),
               child: Container(color: backgroundColor),
             ),
           ),
