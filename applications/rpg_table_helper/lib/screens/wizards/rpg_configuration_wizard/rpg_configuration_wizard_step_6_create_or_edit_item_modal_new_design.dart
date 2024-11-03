@@ -172,75 +172,78 @@ class _CreateOrEditItemModalContentState
       modalPadding = 20.0;
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-          bottom: 20,
-          top: MediaQuery.of(context).padding.top,
-          left: modalPadding,
-          right: modalPadding), // TODO maybe percentage of total width?
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
-            child: Container(
-              color: bgColor,
-              child: Column(
-                children: [
-                  NavbarNewDesign(
-                    backInsteadOfCloseIcon: false,
-                    closeFunction: () {
-                      navigatorKey.currentState!.pop(null);
-                    },
-                    menuOpen: null,
-                    useTopSafePadding: false,
-                    titleWidget: Text(
-                      "Item bearbeiten", // TODO localize/ switch text between add and edit
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: textColor, fontSize: 24),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(
-                                    color: darkColor,
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 20.0),
-                                child: SingleChildScrollView(
-                                    child: getLeftModalColumn(context)),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: SingleChildScrollView(
-                                  child: getRightModalColumn(context)),
-                            ),
-                          ),
-                        ],
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        top: true,
+        bottom: true,
+        right: false,
+        left: false,
+        child: Padding(
+          padding: EdgeInsets.only(
+              bottom: 20, top: 20, left: modalPadding, right: modalPadding),
+          child: Center(
+            child: ShadowWidget(
+              offset: Offset(-4, 4),
+              blurRadius: 5,
+              child: Container(
+                color: bgColor,
+                child: Column(
+                  children: [
+                    NavbarNewDesign(
+                      backInsteadOfCloseIcon: false,
+                      closeFunction: () {
+                        navigatorKey.currentState!.pop(null);
+                      },
+                      menuOpen: null,
+                      useTopSafePadding: false,
+                      titleWidget: Text(
+                        "Item bearbeiten", // TODO localize/ switch text between add and edit
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: textColor, fontSize: 24),
                       ),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: darkColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 20.0),
+                                  child: SingleChildScrollView(
+                                      child: getLeftModalColumn(context)),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: SingleChildScrollView(
+                                    child: getRightModalColumn(context)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 class CustomLoadingSpinner extends StatelessWidget {
@@ -22,11 +23,11 @@ class CustomLoadingSpinner extends StatelessWidget {
 
                 /// Required, The loading type of the widget
                 colors: [
-                  Colors.white.withAlpha(50),
-                  Colors.white.withAlpha(100),
-                  Colors.white.withAlpha(150),
-                  Colors.white.withAlpha(200),
-                  Colors.white,
+                  accentColor.withAlpha(100),
+                  accentColor.withAlpha(130),
+                  accentColor.withAlpha(180),
+                  accentColor.withAlpha(215),
+                  accentColor,
                 ],
 
                 /// Optional, The color collections

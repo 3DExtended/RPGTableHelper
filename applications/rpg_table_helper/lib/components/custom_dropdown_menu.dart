@@ -33,6 +33,9 @@ class CustomDropdownMenu extends StatelessWidget {
             ),
       ),
       child: DropdownButtonFormField<String?>(
+        iconEnabledColor: newDesign != true ? null : darkColor,
+        iconDisabledColor:
+            newDesign != true ? null : const Color.fromARGB(255, 140, 133, 125),
         borderRadius: BorderRadius.circular(10),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
               color: newDesign == true ? darkTextColor : textColor,

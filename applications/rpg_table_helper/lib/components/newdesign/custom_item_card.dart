@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -320,13 +321,21 @@ class ImageBorders extends StatelessWidget {
                         },
                         imageUrl: imageUrl!,
                         fit: BoxFit.fitWidth,
+                        fadeInDuration: const Duration(milliseconds: 500),
+                        fadeOutDuration: const Duration(milliseconds: 500),
                       ),
                     ),
                   if (!Platform.environment.containsKey('FLUTTER_TEST') &&
                       isLoadingNewImage == true)
-                    const Center(
-                        child:
-                            CircularProgressIndicator()), // TODO use yourshelf loading spinner...
+                    Positioned.fill(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 500),
+                        color: const Color.fromARGB(174, 40, 40, 40),
+                      ),
+                    ),
+                  if (!Platform.environment.containsKey('FLUTTER_TEST') &&
+                      isLoadingNewImage == true)
+                    const Center(child: CustomLoadingSpinner()),
                 ],
               ),
             ),
