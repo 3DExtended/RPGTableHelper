@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CustomItemCard extends StatelessWidget {
   final String? imageUrl;
@@ -309,8 +311,14 @@ class ImageBorders extends StatelessWidget {
                   if (!Platform.environment.containsKey('FLUTTER_TEST') &&
                       imageUrl != null)
                     Center(
-                      child: Image.network(
-                        imageUrl!,
+                      child: CachedNetworkImage(
+                        placeholder: (context, url) {
+                          return Image.memory(
+                            kTransparentImage,
+                            fit: BoxFit.fitWidth,
+                          );
+                        },
+                        imageUrl: imageUrl!,
                         fit: BoxFit.fitWidth,
                       ),
                     ),
