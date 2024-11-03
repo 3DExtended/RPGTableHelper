@@ -40,11 +40,15 @@ class CustomTextField extends StatelessWidget {
           helperText: placeholderText,
           labelText: labelText,
           alignLabelWithHint: true,
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(width: 1, color: darkColor),
-          ),
-          border: const OutlineInputBorder(
-            borderSide: BorderSide(width: 1, color: darkColor),
+          enabledBorder: newDesign != true
+              ? null
+              : OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: darkColor),
+                ),
+          border: OutlineInputBorder(
+            borderSide: newDesign != true
+                ? BorderSide()
+                : BorderSide(width: 1, color: darkColor),
           ),
           hintStyle: Theme.of(context)
               .textTheme

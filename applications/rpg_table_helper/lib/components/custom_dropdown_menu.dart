@@ -18,6 +18,21 @@ class CustomDropdownMenu extends StatelessWidget {
   final Null Function(String? newValue) setter;
   final List<DropdownMenuItem<String?>> items;
 
+/*
+
+enabledBorder: newDesign != true
+              ? null
+              : OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: darkColor),
+                ),
+          border: OutlineInputBorder(
+            borderSide: newDesign != true
+                ? BorderSide()
+                : BorderSide(width: 1, color: darkColor),
+          ),
+
+ */
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -26,9 +41,9 @@ class CustomDropdownMenu extends StatelessWidget {
               fillColor: newDesign == true ? darkColor : null,
               enabledBorder: noBorder == true
                   ? InputBorder.none
-                  : const OutlineInputBorder(
+                  : OutlineInputBorder(
                       borderSide: BorderSide(
-                      color: Color(0xff938f99),
+                      color: newDesign == true ? darkColor : Color(0xff938f99),
                     )),
             ),
       ),
@@ -50,8 +65,12 @@ class CustomDropdownMenu extends StatelessWidget {
           filled: true,
           fillColor: const Color.fromARGB(0, 0, 0, 0),
           labelText: label,
-          border:
-              noBorder == true ? InputBorder.none : const OutlineInputBorder(),
+          border: noBorder == true
+              ? InputBorder.none
+              : OutlineInputBorder(
+                  borderSide: BorderSide(
+                  color: newDesign == true ? darkColor : Color(0xff938f99),
+                )),
         ),
         dropdownColor: newDesign == true ? bgColor : null,
         value: selectedValueTemp,
