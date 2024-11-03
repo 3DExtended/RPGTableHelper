@@ -464,7 +464,7 @@ class _CreateOrEditItemModalContentState
               ),
             ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+          padding: const EdgeInsets.fromLTRB(20, 00, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -692,7 +692,7 @@ class _CreateOrEditItemModalContentState
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 20),
             child: CustomButtonNewdesign(
-              variant: CustomButtonNewdesignVariant.Default,
+              variant: CustomButtonNewdesignVariant.AccentButton,
 
               label: "Speichern", // TODO localize
               onPressed: () {

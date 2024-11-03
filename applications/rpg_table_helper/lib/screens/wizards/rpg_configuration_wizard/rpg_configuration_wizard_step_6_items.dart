@@ -118,6 +118,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                 width: 50,
               ),
               CustomButtonNewdesign(
+                variant: CustomButtonNewdesignVariant.AccentButton,
                 onPressed: () async {
                   // open create modal with new item
                   await showCreateOrEditItemModalNewDesign(
