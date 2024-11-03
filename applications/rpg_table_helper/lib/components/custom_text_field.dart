@@ -58,6 +58,10 @@ class CustomTextField extends StatelessWidget {
               .textTheme
               .labelLarge!
               .copyWith(color: newDesign == true ? darkTextColor : textColor),
+          helperStyle: Theme.of(context)
+              .textTheme
+              .labelSmall!
+              .copyWith(color: newDesign == true ? darkTextColor : textColor),
         ),
         style: Theme.of(context)
             .textTheme

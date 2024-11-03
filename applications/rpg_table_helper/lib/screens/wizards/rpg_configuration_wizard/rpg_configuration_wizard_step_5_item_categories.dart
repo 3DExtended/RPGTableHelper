@@ -92,12 +92,15 @@ class _RpgConfigurationWizardStep5ItemCategories
     super.dispose();
   }
 
+  RpgConfigurationModel? rpgConfig;
+
   @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData((data) {
       if (!hasDataLoaded) {
         setState(() {
           hasDataLoaded = true;
+          rpgConfig = data;
 
           var loadedItemCategories = data.itemCategories;
           if (loadedItemCategories.isNotEmpty) {
@@ -150,6 +153,9 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                       keyboardType: TextInputType.text,
                       labelText: "Name der Kategorie:", // TODO localize
                       textEditingController: e.value.nameController,
+                      placeholderText: rpgConfig == null
+                          ? null
+                          : "In dieser Kategorie sind ${getNumberOfToCategoryAssignedItems(rpgConfig!, e.value.uuid)} Items.",
                     ),
                   ),
                   Container(
@@ -190,6 +196,9 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                   "Name der Sub-Kategorie:", // TODO localize
                               textEditingController:
                                   subCat.value.nameController,
+                              placeholderText: rpgConfig == null
+                                  ? null
+                                  : "In dieser Kategorie sind ${getNumberOfToCategoryAssignedItems(rpgConfig!, subCat.value.uuid)} Items.",
                             ),
                           ),
                           Container(
@@ -345,5 +354,12 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
     }
 
     return true;
+  }
+
+  int getNumberOfToCategoryAssignedItems(
+      RpgConfigurationModel rpgConfigurationModel, String uuid) {
+    return rpgConfigurationModel.allItems
+        .where((it) => it.categoryId == uuid)
+        .length;
   }
 }

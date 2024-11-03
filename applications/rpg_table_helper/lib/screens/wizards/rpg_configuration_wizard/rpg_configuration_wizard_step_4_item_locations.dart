@@ -28,7 +28,7 @@ class _RpgConfigurationWizardStep4ItemLocations
     extends ConsumerState<RpgConfigurationWizardStep4ItemLocations> {
   bool hasDataLoaded = false;
   bool isFormValid = false;
-
+  RpgConfigurationModel? rpgConfig;
   List<(String uuid, TextEditingController nameControlle)> locationPairs = [];
 
   void _updateStateForFormValidation() {
@@ -57,6 +57,8 @@ class _RpgConfigurationWizardStep4ItemLocations
       if (!hasDataLoaded) {
         setState(() {
           hasDataLoaded = true;
+
+          rpgConfig = data;
 
           var loadedItemLocations = data.placesOfFindings;
           if (loadedItemLocations.isNotEmpty) {
@@ -109,6 +111,9 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                     child: CustomTextField(
                       newDesign: true,
                       keyboardType: TextInputType.text,
+                      placeholderText: rpgConfig == null
+                          ? null
+                          : "An diesem Fundort können ${getNumberOfToPlaceAssignedItems(rpgConfig!, e.value.$1)} Items gefunden werden.",
 
                       labelText: "Fundort #${e.key + 1}", // TODO localize
                       textEditingController: e.value.$2,
@@ -156,26 +161,14 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
               addNewLocationPair("", const UuidV7().generate());
             });
           },
-          icon: Theme(
-              data: ThemeData(
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
-                ),
-                textTheme: const TextTheme(
-                  bodyMedium: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              child: Container(
-                  width: 24,
-                  height: 24,
-                  alignment: AlignmentDirectional.center,
-                  child: const FaIcon(
-                    FontAwesomeIcons.plus,
-                    color: darkColor,
-                  ))),
+          icon: Container(
+              width: 24,
+              height: 24,
+              alignment: AlignmentDirectional.center,
+              child: const FaIcon(
+                FontAwesomeIcons.plus,
+                color: darkColor,
+              )),
         ),
         const SizedBox(
           height: 20,
@@ -227,5 +220,15 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
     }
 
     return true;
+  }
+
+  int getNumberOfToPlaceAssignedItems(
+      RpgConfigurationModel rpgConfig, String placeOfFindingUuid) {
+    var itemsWithSamePlaceOfFindingAssigned = rpgConfig.allItems
+        .where((it) => it.placeOfFindings
+            .any((pof) => pof.placeOfFindingId == placeOfFindingUuid))
+        .length;
+
+    return itemsWithSamePlaceOfFindingAssigned;
   }
 }
