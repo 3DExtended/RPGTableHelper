@@ -188,7 +188,7 @@ class RpgConfigurationModel {
         allItems: [
           RpgItem(
             imageDescription: null,
-            imageUuid: null,
+            imageUrlWithoutBasePath: null,
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
             uuid: "a7537746-260d-4aed-b182-26768a9c2d51",
             name: "Kl. Heiltrank",
@@ -200,7 +200,7 @@ class RpgConfigurationModel {
           ),
           RpgItem(
               imageDescription: null,
-              imageUuid: null,
+              imageUrlWithoutBasePath: null,
               uuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
               name: "Rote Vitus Blüte",
               categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
@@ -232,7 +232,7 @@ class RpgConfigurationModel {
                   "Ein Blütenblatt der Roten Vitus Blüte\n\nSehr fragil und muss mit Vorsicht geerntet werden!"),
           RpgItem(
             imageDescription: null,
-            imageUuid: null,
+            imageUrlWithoutBasePath: null,
             uuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
             name: "Fuchsschwanz",
             categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
@@ -243,7 +243,7 @@ class RpgConfigurationModel {
           ),
           RpgItem(
             imageDescription: null,
-            imageUuid: null,
+            imageUrlWithoutBasePath: null,
             uuid: "dc497952-1989-40d1-9d50-a5b4e53dd1be",
             name: "Kräuterkunde-Set",
             categoryId: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
@@ -884,7 +884,7 @@ class RpgItem {
   final String description;
   final String categoryId;
 
-  final String? imageUuid;
+  final String? imageUrlWithoutBasePath;
   final String? imageDescription;
 
   final List<RpgItemRarity> placeOfFindings;
@@ -899,7 +899,7 @@ class RpgItem {
   RpgItem({
     required this.uuid,
     required this.name,
-    required this.imageUuid,
+    required this.imageUrlWithoutBasePath,
     required this.patchSize,
     required this.categoryId,
     required this.description,

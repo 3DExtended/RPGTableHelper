@@ -16,7 +16,7 @@ void main() {
           allItems: [
             RpgItem(
                 imageDescription: null,
-                imageUuid: null,
+                imageUrlWithoutBasePath: null,
                 uuid: 'item1',
                 name: 'Iron Ore',
                 categoryId: 'cat1',
@@ -28,7 +28,7 @@ void main() {
                 description: "Eine Beschreibung"),
             RpgItem(
                 imageDescription: null,
-                imageUuid: null,
+                imageUrlWithoutBasePath: null,
                 uuid: 'item2',
                 name: 'Wood',
                 categoryId: 'cat1',
@@ -40,7 +40,7 @@ void main() {
                 description: "Eine Beschreibung"),
             RpgItem(
                 imageDescription: null,
-                imageUuid: null,
+                imageUrlWithoutBasePath: null,
                 uuid: 'item3',
                 name: 'Iron Sword',
                 categoryId: 'cat2',
@@ -218,7 +218,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -228,7 +228,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -292,7 +292,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -302,7 +302,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -370,7 +370,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -380,7 +380,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -390,7 +390,7 @@ void main() {
           placeOfFindings: []);
       var item3 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid3',
@@ -462,7 +462,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -472,7 +472,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -538,7 +538,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -548,7 +548,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -614,7 +614,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -624,7 +624,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -698,7 +698,7 @@ void main() {
       // Arrange
       var item1 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -708,7 +708,7 @@ void main() {
           placeOfFindings: []);
       var item2 = RpgItem(
           imageDescription: null,
-          imageUuid: null,
+          imageUrlWithoutBasePath: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rpg_table_helper/constants.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class CustomItemCard extends StatelessWidget {
   final String? imageUrl;
@@ -12,11 +11,13 @@ class CustomItemCard extends StatelessWidget {
   final Widget? categoryIconOverride;
   final Color? cardBgColorOverride;
   final double? scalarOverride;
+  final bool? isLoadingNewImage;
   const CustomItemCard({
     super.key,
     required this.title,
     required this.description,
     this.scalarOverride,
+    this.isLoadingNewImage,
     this.imageUrl,
     this.cardBgColorOverride,
     this.categoryIconOverride,
@@ -24,6 +25,10 @@ class CustomItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var fullImageUrl = imageUrl == null
+        ? null
+        : (apiBaseUrl +
+            (imageUrl!.startsWith("/") ? imageUrl!.substring(1) : imageUrl!));
     var backgroundColor = cardBgColorOverride ?? darkColor;
     var lightColor = bgColor;
 
@@ -81,7 +86,8 @@ class CustomItemCard extends StatelessWidget {
                         ImageBorders(
                           lightColor: lightColor,
                           backgroundColor: backgroundColor,
-                          imageUrl: imageUrl,
+                          imageUrl: fullImageUrl,
+                          isLoadingNewImage: isLoadingNewImage,
                         ),
 
                         // description
@@ -265,11 +271,13 @@ class ImageBorders extends StatelessWidget {
     required this.lightColor,
     required this.backgroundColor,
     required this.imageUrl,
+    this.isLoadingNewImage,
   });
 
   final Color lightColor;
   final Color backgroundColor;
   final String? imageUrl;
+  final bool? isLoadingNewImage;
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +298,7 @@ class ImageBorders extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(14),
               child: Stack(
+                alignment: Alignment.center,
                 children: <Widget>[
                   Image.asset(
                     imageUrl != null && imageUrl!.startsWith("assets/")
@@ -299,19 +308,17 @@ class ImageBorders extends StatelessWidget {
                   ),
                   if (!Platform.environment.containsKey('FLUTTER_TEST') &&
                       imageUrl != null)
+                    Center(
+                      child: Image.network(
+                        imageUrl!,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                  if (!Platform.environment.containsKey('FLUTTER_TEST') &&
+                      isLoadingNewImage == true)
                     const Center(
                         child:
                             CircularProgressIndicator()), // TODO use yourshelf loading spinner...
-                  if (!Platform.environment.containsKey('FLUTTER_TEST') &&
-                      imageUrl != null)
-                    Center(
-                        child: FadeInImage(
-                      placeholder: MemoryImage(kTransparentImage),
-                      fit: BoxFit.fitWidth,
-                      image: NetworkImage(imageUrl!, headers: {
-                        "Authorization": "Bearer " ""
-                      }), // TODO how do we get an jwt here...
-                    )),
                 ],
               ),
             ),

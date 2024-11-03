@@ -122,7 +122,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                     context,
                     RpgItem(
                       imageDescription: null,
-                      imageUuid: null,
+                      imageUrlWithoutBasePath: null,
                       baseCurrencyPrice: 0,
                       categoryId: "",
                       description: "",
@@ -243,6 +243,8 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                           },
                           child: CustomItemCard(
                               scalarOverride: scalar,
+                              imageUrl:
+                                  itemToRender.value.imageUrlWithoutBasePath,
                               title: itemToRender.value.name,
                               description: itemToRender.value.description),
                         ),

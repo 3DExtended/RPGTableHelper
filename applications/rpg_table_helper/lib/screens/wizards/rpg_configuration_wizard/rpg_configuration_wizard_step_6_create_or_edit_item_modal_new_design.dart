@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,10 +12,14 @@ import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.da
 import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/image_generation_service.dart';
 import 'package:shadow_widget/shadow_widget.dart';
 
 import '../../../helpers/modal_helpers.dart';
@@ -57,6 +63,10 @@ class _CreateOrEditItemModalContentState
 
   bool hasDataLoaded = false;
   bool isSaveButtonDisabled = true;
+  bool isLoadingNewImage = false;
+
+  List<String> _urlsOfGeneratedImages = [];
+  int? _selectedGeneratedImage;
 
   List<ItemCategory> _allItemCategories = [];
   CurrencyDefinition? _currencyDefinition;
@@ -101,6 +111,12 @@ class _CreateOrEditItemModalContentState
       patchSizeTextController.addListener(_updateStateForFormValidation);
 
       setState(() {
+        if (widget.itemToEdit.imageUrlWithoutBasePath != null &&
+            widget.itemToEdit.imageUrlWithoutBasePath!.isNotEmpty) {
+          _selectedGeneratedImage = 0;
+          _urlsOfGeneratedImages = [widget.itemToEdit.imageUrlWithoutBasePath!];
+        }
+
         nameController.text = widget.itemToEdit.name;
         descriptionController.text = widget.itemToEdit.description;
         imageDescriptionController.text =
@@ -555,25 +571,116 @@ class _CreateOrEditItemModalContentState
               description: descriptionController.text.isEmpty
                   ? "Enter some description on the left"
                   : descriptionController.text,
+              imageUrl: _urlsOfGeneratedImages.isEmpty
+                  ? null
+                  : _urlsOfGeneratedImages[_selectedGeneratedImage!],
+              isLoadingNewImage: isLoadingNewImage,
             ),
             SizedBox(
               height: 12,
             ),
-            CupertinoButton(
-              onPressed: () {
-                // TODO generate image!
-              },
-              minSize: 0,
-              padding: EdgeInsets.all(0),
-              child: Text(
-                "Generate new image",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: accentColor,
-                      decoration: TextDecoration.underline,
-                      decorationColor: accentColor,
-                      fontSize: 16,
+            Row(
+              children: [
+                CustomButtonNewdesign(
+                    variant: CustomButtonNewdesignVariant.FlatButton,
+                    icon: CustomFaIcon(
+                      icon: FontAwesomeIcons.chevronLeft,
+                      color: isShowPreviousGeneratedImageButtonDisabled
+                          ? middleBgColor
+                          : darkColor,
                     ),
-              ),
+                    onPressed: isShowPreviousGeneratedImageButtonDisabled
+                        ? null
+                        : () {
+                            setState(() {
+                              if (_selectedGeneratedImage != null) {
+                                _selectedGeneratedImage =
+                                    max(_selectedGeneratedImage! - 1, 0);
+                              }
+                            });
+                          }),
+                Spacer(),
+                CupertinoButton(
+                  onPressed: isLoadingNewImage == true
+                      ? null
+                      : () async {
+                          // TODO show loading spinner...
+                          if (imageDescriptionController.text == "" ||
+                              imageDescriptionController.text.length < 5) {
+                            return;
+                          }
+
+                          var connectionDetails =
+                              ref.read(connectionDetailsProvider).requireValue;
+                          var campagneId = connectionDetails.campagneId;
+                          if (campagneId == null) return;
+
+                          setState(() {
+                            isLoadingNewImage = true;
+                          });
+
+                          // TODO generate image!
+                          var service = DependencyProvider.of(context)
+                              .getService<IImageGenerationService>();
+
+                          var generationResult =
+                              await service.createNewImageAndGetUrl(
+                            prompt: imageDescriptionController.text,
+                            campagneId: CampagneIdentifier($value: campagneId),
+                          );
+
+                          if (!context.mounted) return;
+                          await generationResult.possiblyHandleError(context);
+                          if (!context.mounted) return;
+
+                          if (generationResult.isSuccessful &&
+                              generationResult.result != null) {
+                            setState(() {
+                              _urlsOfGeneratedImages
+                                  .add(generationResult.result!);
+                              _selectedGeneratedImage =
+                                  _urlsOfGeneratedImages.length - 1;
+                            });
+                          }
+                          setState(() {
+                            isLoadingNewImage = false;
+                          });
+                        },
+                  minSize: 0,
+                  padding: EdgeInsets.all(0),
+                  child: Text(
+                    "Neues Bild",
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color:
+                              isLoadingNewImage ? middleBgColor : accentColor,
+                          decoration: TextDecoration.underline,
+                          decorationColor:
+                              isLoadingNewImage ? middleBgColor : accentColor,
+                          fontSize: 16,
+                        ),
+                  ),
+                ),
+                Spacer(),
+                CustomButtonNewdesign(
+                    variant: CustomButtonNewdesignVariant.FlatButton,
+                    icon: CustomFaIcon(
+                      icon: FontAwesomeIcons.chevronRight,
+                      color: isShowNextGeneratedButtonDisabled
+                          ? middleBgColor
+                          : darkColor,
+                    ),
+                    onPressed: isShowNextGeneratedButtonDisabled
+                        ? null
+                        : () {
+                            setState(() {
+                              if (_selectedGeneratedImage != null) {
+                                _selectedGeneratedImage = min(
+                                    _selectedGeneratedImage! + 1,
+                                    _urlsOfGeneratedImages.length - 1);
+                              }
+                            });
+                          }),
+              ],
             ),
           ],
         ),
@@ -589,7 +696,9 @@ class _CreateOrEditItemModalContentState
                     selectedItemCategoryId!.isEmpty) return;
 
                 navigatorKey.currentState!.pop(RpgItem(
-                    imageUuid: null,
+                    imageUrlWithoutBasePath: _urlsOfGeneratedImages.isEmpty
+                        ? null
+                        : _urlsOfGeneratedImages[_selectedGeneratedImage!],
                     uuid: widget.itemToEdit.uuid,
                     name: nameController.text,
                     categoryId: selectedItemCategoryId!,
@@ -608,5 +717,14 @@ class _CreateOrEditItemModalContentState
         ),
       ],
     );
+  }
+
+  bool get isShowPreviousGeneratedImageButtonDisabled {
+    return _selectedGeneratedImage == null || _selectedGeneratedImage == 0;
+  }
+
+  bool get isShowNextGeneratedButtonDisabled {
+    return _selectedGeneratedImage == null ||
+        _selectedGeneratedImage! >= _urlsOfGeneratedImages.length - 1;
   }
 }

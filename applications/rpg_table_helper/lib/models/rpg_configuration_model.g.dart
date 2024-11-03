@@ -863,7 +863,7 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem name(String name);
 
-  RpgItem imageUuid(String? imageUuid);
+  RpgItem imageUrlWithoutBasePath(String? imageUrlWithoutBasePath);
 
   RpgItem patchSize(DiceRoll? patchSize);
 
@@ -886,7 +886,7 @@ abstract class _$RpgItemCWProxy {
   RpgItem call({
     String? uuid,
     String? name,
-    String? imageUuid,
+    String? imageUrlWithoutBasePath,
     DiceRoll? patchSize,
     String? categoryId,
     String? description,
@@ -909,7 +909,8 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem name(String name) => this(name: name);
 
   @override
-  RpgItem imageUuid(String? imageUuid) => this(imageUuid: imageUuid);
+  RpgItem imageUrlWithoutBasePath(String? imageUrlWithoutBasePath) =>
+      this(imageUrlWithoutBasePath: imageUrlWithoutBasePath);
 
   @override
   RpgItem patchSize(DiceRoll? patchSize) => this(patchSize: patchSize);
@@ -943,7 +944,7 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
-    Object? imageUuid = const $CopyWithPlaceholder(),
+    Object? imageUrlWithoutBasePath = const $CopyWithPlaceholder(),
     Object? patchSize = const $CopyWithPlaceholder(),
     Object? categoryId = const $CopyWithPlaceholder(),
     Object? description = const $CopyWithPlaceholder(),
@@ -960,10 +961,11 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
-      imageUuid: imageUuid == const $CopyWithPlaceholder()
-          ? _value.imageUuid
-          // ignore: cast_nullable_to_non_nullable
-          : imageUuid as String?,
+      imageUrlWithoutBasePath:
+          imageUrlWithoutBasePath == const $CopyWithPlaceholder()
+              ? _value.imageUrlWithoutBasePath
+              // ignore: cast_nullable_to_non_nullable
+              : imageUrlWithoutBasePath as String?,
       patchSize: patchSize == const $CopyWithPlaceholder()
           ? _value.patchSize
           // ignore: cast_nullable_to_non_nullable
@@ -1283,7 +1285,7 @@ Map<String, dynamic> _$RpgItemRarityToJson(RpgItemRarity instance) =>
 RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
-      imageUuid: json['imageUuid'] as String?,
+      imageUrlWithoutBasePath: json['imageUrlWithoutBasePath'] as String?,
       patchSize: json['patchSize'] == null
           ? null
           : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
@@ -1301,7 +1303,7 @@ Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'categoryId': instance.categoryId,
-      'imageUuid': instance.imageUuid,
+      'imageUrlWithoutBasePath': instance.imageUrlWithoutBasePath,
       'imageDescription': instance.imageDescription,
       'placeOfFindings': instance.placeOfFindings,
       'patchSize': instance.patchSize,

@@ -77,7 +77,7 @@ void main() {
                         context,
                         RpgItem(
                             imageDescription: null,
-                            imageUuid: null,
+                            imageUrlWithoutBasePath: null,
                             uuid: "asdf",
                             name: "Test",
                             categoryId: "",

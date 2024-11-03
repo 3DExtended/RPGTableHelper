@@ -30,7 +30,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         [HttpPost("generateimage/{campagneid}")]
-        public async Task<ActionResult<Guid>> GetOpenAIImageForQuery(
+        public async Task<ActionResult<string>> GetOpenAIImageForQuery(
             [FromBody] string prompt,
             [FromRoute] string campagneid,
             CancellationToken cancellationToken
@@ -58,11 +58,12 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest();
             }
 
+            var apikey = ApiKeyGenerator.GenerateKey(32);
             var newMetadata = new ImageMetaData
             {
                 CreatedForCampagneId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneid)),
                 CreatorId = _userContext.User.UserIdentifier,
-                ApiKey = ApiKeyGenerator.GenerateKey(32),
+                ApiKey = apikey,
                 ImageType = ImageType.PNG,
                 LocallyStored = true,
             };
@@ -93,7 +94,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
             await imageGenerationResult.Get().DisposeAsync().ConfigureAwait(false);
 
-            return Ok(newMetadata.Id.Value);
+            var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}";
+            return Ok(urlForImage);
         }
     }
 }
