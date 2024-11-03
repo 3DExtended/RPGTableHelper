@@ -193,6 +193,9 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
               ),
               Row(
                 children: [
+                  const SizedBox(
+                    width: 30,
+                  ),
                   Expanded(
                     child: CustomTextField(
                       newDesign: true,
@@ -205,11 +208,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                     ),
                   ),
                   const SizedBox(
-                    width: 20,
-                  ),
-                  const SizedBox(
                     height: 50,
-                    width: 50,
+                    width: 40,
                   ),
                 ],
               ),
