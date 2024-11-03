@@ -11,14 +11,18 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:shadow_widget/shadow_widget.dart';
 
 Future<void> showOldVersionUpdateRequired(BuildContext context) async {
   // show error to user
@@ -211,7 +215,7 @@ Future showPlayerHasBeenGrantedItemsThroughDmModal(BuildContext context,
       closeProgressThreshold: -50000,
       enableDrag: false,
       context: context,
-      backgroundColor: const Color.fromARGB(158, 49, 49, 49),
+      backgroundColor: const Color.fromARGB(192, 21, 21, 21),
       overrideNavigatorKey: overrideNavigatorKey,
       builder: (context) {
         var modalPadding = 80.0;
@@ -219,26 +223,40 @@ Future showPlayerHasBeenGrantedItemsThroughDmModal(BuildContext context,
           modalPadding = 20.0;
         }
 
-        return Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: modalPadding,
-              vertical: modalPadding), // TODO maybe percentage of total width?
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.transparent,
-            body: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxWidth: 800.0,
-                    maxHeight: MediaQuery.of(context).size.height * 0.5),
-                child: StyledBox(
-                  borderThickness: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(21.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          body: Padding(
+            padding: EdgeInsets.only(
+                bottom: 20, top: 20, left: modalPadding, right: modalPadding),
+            child: Center(
+              child: ShadowWidget(
+                offset: Offset(-4, 4),
+                blurRadius: 5,
+                child: Container(
+                  color: bgColor,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      NavbarNewDesign(
+                        backInsteadOfCloseIcon: false,
+                        closeFunction: () {
+                          navigatorKey.currentState!.pop(null);
+                        },
+                        menuOpen: null,
+                        useTopSafePadding: false,
+                        titleWidget: Text(
+                          "Neue Items", // TODO localize/ switch text between add and edit
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(color: textColor, fontSize: 24),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -268,6 +286,7 @@ Future showPlayerHasBeenGrantedItemsThroughDmModal(BuildContext context,
                                         text += "\n\n";
 
                                         return CustomMarkdownBody(
+                                          isNewDesign: true,
                                           text: text,
                                         );
                                       }),
@@ -278,26 +297,26 @@ Future showPlayerHasBeenGrantedItemsThroughDmModal(BuildContext context,
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 20,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                        child: Row(
+                          children: [
+                            const Spacer(),
+                            CustomButtonNewdesign(
+                              label: "Ok", // TODO localize
+                              onPressed: () {
+                                navigatorKey.currentState!.pop(null);
+                              },
+                            ),
+                            const Spacer(),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                          child: Row(
-                            children: [
-                              const Spacer(),
-                              CustomButton(
-                                label: "Ok", // TODO localize
-                                onPressed: () {
-                                  navigatorKey.currentState!.pop(null);
-                                },
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
