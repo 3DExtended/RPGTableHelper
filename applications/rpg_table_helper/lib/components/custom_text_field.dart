@@ -23,6 +23,8 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: TextField(
+        scrollPadding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16),
         minLines: keyboardType == TextInputType.multiline
             ? 5
             : (password == true ? 1 : null),

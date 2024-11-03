@@ -173,11 +173,13 @@ class _CreateOrEditItemModalContentState
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: modalPadding,
-          vertical: modalPadding), // TODO maybe percentage of total width?
+      padding: EdgeInsets.only(
+          bottom: 20,
+          top: MediaQuery.of(context).padding.top,
+          left: modalPadding,
+          right: modalPadding), // TODO maybe percentage of total width?
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.transparent,
         body: Center(
           child: ShadowWidget(
@@ -209,28 +211,31 @@ class _CreateOrEditItemModalContentState
                       child: Row(
                         children: [
                           Expanded(
-                              flex: 3,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      right: BorderSide(
-                                        color: darkColor,
-                                        width: 1,
-                                      ),
-                                    ),
+                            flex: 3,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  right: BorderSide(
+                                    color: darkColor,
+                                    width: 1,
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: SingleChildScrollView(
-                                        child: getLeftModalColumn(context)),
-                                  ))),
-                          Expanded(
-                              flex: 2,
+                                ),
+                              ),
                               child: Padding(
-                                padding: const EdgeInsets.only(left: 20.0),
+                                padding: const EdgeInsets.only(right: 20.0),
                                 child: SingleChildScrollView(
-                                    child: getRightModalColumn(context)),
-                              )),
+                                    child: getLeftModalColumn(context)),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: SingleChildScrollView(
+                                  child: getRightModalColumn(context)),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -502,10 +507,6 @@ class _CreateOrEditItemModalContentState
         SizedBox(
           height: 20,
         ),
-        SizedBox(
-            height: EdgeInsets.fromViewPadding(View.of(context).viewInsets,
-                    View.of(context).devicePixelRatio)
-                .bottom),
       ],
     );
   }
@@ -564,7 +565,7 @@ class _CreateOrEditItemModalContentState
               height: 12,
             ),
             CustomItemCard(
-              scalarOverride: 0.9,
+              scalarOverride: 1,
               title: nameController.text.isEmpty
                   ? "Enter a name"
                   : nameController.text,
@@ -686,7 +687,7 @@ class _CreateOrEditItemModalContentState
         ),
         Center(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 30, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 20),
             child: CustomButtonNewdesign(
               variant: CustomButtonNewdesignVariant.Default,
 
