@@ -47,26 +47,111 @@ void main() {
                 ]),
           ],
           itemCategories: [
-            ItemCategory(uuid: "0", name: "Kleidung", subCategories: [
-              ItemCategory(uuid: "01", name: "Rüstung", subCategories: []),
-              ItemCategory(uuid: "02", name: "Accessoire", subCategories: []),
-            ]),
-            ItemCategory(uuid: "6", name: "Zutaten", subCategories: []),
-            ItemCategory(uuid: "1", name: "Trank", subCategories: [
-              ItemCategory(uuid: "11", name: "Heilung", subCategories: []),
-              ItemCategory(uuid: "12", name: "Gift", subCategories: []),
-              ItemCategory(uuid: "13", name: "Gegengift", subCategories: []),
-              ItemCategory(uuid: "14", name: "Buff", subCategories: []),
-            ]),
-            ItemCategory(uuid: "2", name: "Waffen", subCategories: [
-              ItemCategory(uuid: "21", name: "Finesse", subCategories: []),
-              ItemCategory(uuid: "22", name: "Fernkampf", subCategories: []),
-              ItemCategory(uuid: "23", name: "Magie", subCategories: []),
-              ItemCategory(uuid: "24", name: "Wurfwaffe", subCategories: []),
-            ]),
-            ItemCategory(uuid: "3", name: "Schätze", subCategories: []),
-            ItemCategory(uuid: "4", name: "Tools", subCategories: []),
-            ItemCategory(uuid: "5", name: "Sonstiges", subCategories: []),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "0",
+                name: "Kleidung",
+                subCategories: [
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "01",
+                      name: "Rüstung",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "02",
+                      name: "Accessoire",
+                      subCategories: []),
+                ]),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "6",
+                name: "Zutaten",
+                subCategories: []),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "1",
+                name: "Trank",
+                subCategories: [
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "11",
+                      name: "Heilung",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "12",
+                      name: "Gift",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "13",
+                      name: "Gegengift",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "14",
+                      name: "Buff",
+                      subCategories: []),
+                ]),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "2",
+                name: "Waffen",
+                subCategories: [
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "21",
+                      name: "Finesse",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "22",
+                      name: "Fernkampf",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "23",
+                      name: "Magie",
+                      subCategories: []),
+                  ItemCategory(
+                      colorCode: null,
+                      iconName: null,
+                      uuid: "24",
+                      name: "Wurfwaffe",
+                      subCategories: []),
+                ]),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "3",
+                name: "Schätze",
+                subCategories: []),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "4",
+                name: "Tools",
+                subCategories: []),
+            ItemCategory(
+                colorCode: null,
+                iconName: null,
+                uuid: "5",
+                name: "Sonstiges",
+                subCategories: []),
           ],
           placesOfFindings: [
             PlaceOfFinding(uuid: "wald", name: "Wald"),
@@ -80,6 +165,7 @@ void main() {
           ],
           allItems: [
             RpgItem(
+                imageUuid: null,
                 uuid: "asdf",
                 name: "Ascheveilchen",
                 categoryId: "6",
@@ -91,6 +177,7 @@ void main() {
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
+                imageUuid: null,
                 uuid: "asdfew",
                 name: "Aloe Vera",
                 categoryId: "6",
@@ -103,6 +190,7 @@ void main() {
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
+                imageUuid: null,
                 uuid: "asdeefew",
                 name: "Aurora Rose",
                 categoryId: "6",
@@ -115,6 +203,7 @@ void main() {
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
+                imageUuid: null,
                 uuid: "asde323efew",
                 name: "Roter Amanita Pilz",
                 categoryId: "6",
@@ -127,6 +216,7 @@ void main() {
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
+                imageUuid: null,
                 uuid: "Lebenslikörasdf",
                 name: "Lebenslikör",
                 categoryId: "11",
@@ -157,7 +247,7 @@ void main() {
 
       // assert
       expect(serializedText,
-          '{"rpgName":"DnD - Marie config","allItems":[{"uuid":"asdf","name":"Ascheveilchen","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":2},{"placeOfFindingId":"berg","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":20000},{"uuid":"asdfew","name":"Aloe Vera","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"savanne","diceChallenge":22},{"placeOfFindingId":"wüste","diceChallenge":2},{"placeOfFindingId":"steppe","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":200300},{"uuid":"asdeefew","name":"Aurora Rose","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":5},{"placeOfFindingId":"berg","diceChallenge":2},{"placeOfFindingId":"grasland","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":2300},{"uuid":"asde323efew","name":"Roter Amanita Pilz","description":"Eine Beschreibung","categoryId":"6","placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":7},{"placeOfFindingId":"sümpfe","diceChallenge":2},{"placeOfFindingId":"höhle","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":232100},{"uuid":"Lebenslikörasdf","name":"Lebenslikör","description":"Eine Beschreibung","categoryId":"11","placeOfFindings":[],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":232133300}],"placesOfFindings":[{"uuid":"wald","name":"Wald"},{"uuid":"grasland","name":"Grasland"},{"uuid":"berg","name":"Berg"},{"uuid":"steppe","name":"Steppe"},{"uuid":"wüste","name":"Wüste"},{"uuid":"savanne","name":"Savanne"},{"uuid":"sümpfe","name":"Sümpfe"},{"uuid":"höhle","name":"Höhle"}],"itemCategories":[{"uuid":"0","name":"Kleidung","subCategories":[{"uuid":"01","name":"Rüstung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"02","name":"Accessoire","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"6","name":"Zutaten","subCategories":[],"hideInInventoryFilters":false},{"uuid":"1","name":"Trank","subCategories":[{"uuid":"11","name":"Heilung","subCategories":[],"hideInInventoryFilters":false},{"uuid":"12","name":"Gift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"13","name":"Gegengift","subCategories":[],"hideInInventoryFilters":false},{"uuid":"14","name":"Buff","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"2","name":"Waffen","subCategories":[{"uuid":"21","name":"Finesse","subCategories":[],"hideInInventoryFilters":false},{"uuid":"22","name":"Fernkampf","subCategories":[],"hideInInventoryFilters":false},{"uuid":"23","name":"Magie","subCategories":[],"hideInInventoryFilters":false},{"uuid":"24","name":"Wurfwaffe","subCategories":[],"hideInInventoryFilters":false}],"hideInInventoryFilters":false},{"uuid":"3","name":"Schätze","subCategories":[],"hideInInventoryFilters":false},{"uuid":"4","name":"Tools","subCategories":[],"hideInInventoryFilters":false},{"uuid":"5","name":"Sonstiges","subCategories":[],"hideInInventoryFilters":false}],"characterStatTabsDefinition":[{"uuid":"38413393-765a-4718-b1b3-af6b3ee2a130","tabName":"Test","isOptional":false,"isDefaultTab":false,"statsInTab":[{"name":"Strength","statUuid":"stat1","helperText":"Character strength","valueType":"int","editType":"static","jsonSerializedAdditionalData":null},{"name":"Dexterity","statUuid":"stat2","helperText":"Character dexterity","valueType":"int","editType":"static","jsonSerializedAdditionalData":null},{"name":"Intelligence","statUuid":"stat3","helperText":"Character intelligence","valueType":"int","editType":"static","jsonSerializedAdditionalData":null}]}],"craftingRecipes":[{"recipeUuid":"123456789087654321","ingredients":[{"itemUuid":"asdfew","amountOfUsedItem":1},{"itemUuid":"asdeefew","amountOfUsedItem":1},{"itemUuid":"asde323efew","amountOfUsedItem":1}],"createdItem":{"itemUuid":"Lebenslikörasdf","amountOfUsedItem":1},"requiredItemIds":[]}],"currencyDefinition":{"currencyTypes":[{"name":"Kupfer","multipleOfPreviousValue":null},{"name":"Silber","multipleOfPreviousValue":10},{"name":"Gold","multipleOfPreviousValue":10},{"name":"Platin","multipleOfPreviousValue":10}]}}');
+          '{"rpgName":"DnD - Marie config","allItems":[{"uuid":"asdf","name":"Ascheveilchen","description":"Eine Beschreibung","categoryId":"6","imageUuid":null,"placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":2},{"placeOfFindingId":"berg","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":20000},{"uuid":"asdfew","name":"Aloe Vera","description":"Eine Beschreibung","categoryId":"6","imageUuid":null,"placeOfFindings":[{"placeOfFindingId":"savanne","diceChallenge":22},{"placeOfFindingId":"wüste","diceChallenge":2},{"placeOfFindingId":"steppe","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":200300},{"uuid":"asdeefew","name":"Aurora Rose","description":"Eine Beschreibung","categoryId":"6","imageUuid":null,"placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":5},{"placeOfFindingId":"berg","diceChallenge":2},{"placeOfFindingId":"grasland","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":2300},{"uuid":"asde323efew","name":"Roter Amanita Pilz","description":"Eine Beschreibung","categoryId":"6","imageUuid":null,"placeOfFindings":[{"placeOfFindingId":"wald","diceChallenge":7},{"placeOfFindingId":"sümpfe","diceChallenge":2},{"placeOfFindingId":"höhle","diceChallenge":2}],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":232100},{"uuid":"Lebenslikörasdf","name":"Lebenslikör","description":"Eine Beschreibung","categoryId":"11","imageUuid":null,"placeOfFindings":[],"patchSize":{"numDice":22,"diceSides":6,"modifier":1},"baseCurrencyPrice":232133300}],"placesOfFindings":[{"uuid":"wald","name":"Wald"},{"uuid":"grasland","name":"Grasland"},{"uuid":"berg","name":"Berg"},{"uuid":"steppe","name":"Steppe"},{"uuid":"wüste","name":"Wüste"},{"uuid":"savanne","name":"Savanne"},{"uuid":"sümpfe","name":"Sümpfe"},{"uuid":"höhle","name":"Höhle"}],"itemCategories":[{"uuid":"0","name":"Kleidung","subCategories":[{"uuid":"01","name":"Rüstung","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"02","name":"Accessoire","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null}],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"6","name":"Zutaten","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"1","name":"Trank","subCategories":[{"uuid":"11","name":"Heilung","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"12","name":"Gift","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"13","name":"Gegengift","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"14","name":"Buff","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null}],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"2","name":"Waffen","subCategories":[{"uuid":"21","name":"Finesse","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"22","name":"Fernkampf","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"23","name":"Magie","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"24","name":"Wurfwaffe","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null}],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"3","name":"Schätze","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"4","name":"Tools","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null},{"uuid":"5","name":"Sonstiges","subCategories":[],"hideInInventoryFilters":false,"colorCode":null,"iconName":null}],"characterStatTabsDefinition":[{"uuid":"38413393-765a-4718-b1b3-af6b3ee2a130","tabName":"Test","isOptional":false,"isDefaultTab":false,"statsInTab":[{"name":"Strength","statUuid":"stat1","helperText":"Character strength","valueType":"int","editType":"static","jsonSerializedAdditionalData":null},{"name":"Dexterity","statUuid":"stat2","helperText":"Character dexterity","valueType":"int","editType":"static","jsonSerializedAdditionalData":null},{"name":"Intelligence","statUuid":"stat3","helperText":"Character intelligence","valueType":"int","editType":"static","jsonSerializedAdditionalData":null}]}],"craftingRecipes":[{"recipeUuid":"123456789087654321","ingredients":[{"itemUuid":"asdfew","amountOfUsedItem":1},{"itemUuid":"asdeefew","amountOfUsedItem":1},{"itemUuid":"asde323efew","amountOfUsedItem":1}],"createdItem":{"itemUuid":"Lebenslikörasdf","amountOfUsedItem":1},"requiredItemIds":[]}],"currencyDefinition":{"currencyTypes":[{"name":"Kupfer","multipleOfPreviousValue":null},{"name":"Silber","multipleOfPreviousValue":10},{"name":"Gold","multipleOfPreviousValue":10},{"name":"Platin","multipleOfPreviousValue":10}]}}');
     });
   });
 
@@ -171,30 +261,40 @@ void main() {
     setUp(() {
       // Setup sample categories
       categoryA1 = ItemCategory(
+        colorCode: null,
+        iconName: null,
         uuid: '1-1',
         name: 'Category A1',
         subCategories: [],
       );
 
       categoryA2 = ItemCategory(
+        colorCode: null,
+        iconName: null,
         uuid: '1-2',
         name: 'Category A2',
         subCategories: [],
       );
 
       categoryA = ItemCategory(
+        colorCode: null,
+        iconName: null,
         uuid: '1',
         name: 'Category A',
         subCategories: [categoryA1, categoryA2],
       );
 
       categoryB1 = ItemCategory(
+        colorCode: null,
+        iconName: null,
         uuid: '2-1',
         name: 'Category B1',
         subCategories: [],
       );
 
       categoryB = ItemCategory(
+        colorCode: null,
+        iconName: null,
         uuid: '2',
         name: 'Category B',
         subCategories: [categoryB1],
@@ -250,14 +350,20 @@ void main() {
     test('should flatten deeply nested categories', () {
       // Arrange
       final deeplyNestedCategory = ItemCategory(
+        colorCode: null,
+        iconName: null,
         uuid: '1',
         name: 'Category A',
         subCategories: [
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: '1-1',
             name: 'Category A1',
             subCategories: [
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: '1-1-1',
                 name: 'Category A1A',
                 subCategories: [],

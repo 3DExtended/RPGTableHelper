@@ -11,10 +11,12 @@ class CustomItemCard extends StatelessWidget {
   final String description;
   final Widget? categoryIconOverride;
   final Color? cardBgColorOverride;
+  final double? scalarOverride;
   const CustomItemCard({
     super.key,
     required this.title,
     required this.description,
+    this.scalarOverride,
     this.imageUrl,
     this.cardBgColorOverride,
     this.categoryIconOverride,
@@ -31,7 +33,7 @@ class CustomItemCard extends StatelessWidget {
           semanticsLabel: 'My SVG Image',
         );
 
-    var scalar = 1.25;
+    var scalar = scalarOverride ?? 1.25;
 
     // First dark border
     return SizedBox(

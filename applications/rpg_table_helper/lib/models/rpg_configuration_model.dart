@@ -70,15 +70,21 @@ class RpgConfigurationModel {
         ],
         itemCategories: [
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: "d0a0168f-02d0-4205-b0af-689b52f24186",
             name: "Kleidung",
             subCategories: [
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "263dc67f-bfae-4559-a909-1479e24354a6",
                 name: "Rüstung",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "544cdaac-a8d2-4ee6-8a8f-4772bfb95a93",
                 name: "Accessoire",
                 subCategories: [],
@@ -86,30 +92,42 @@ class RpgConfigurationModel {
             ],
           ),
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: "b895a30a-2c0a-4aba-8629-9a363e405281",
             name: "Zutat",
             subCategories: [],
           ),
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: "4bba577f-c4c0-43a4-bc70-cbb39cbb7bee",
             name: "Trank",
             subCategories: [
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "79773521-2fd6-4aff-942e-87b9e4bb6599",
                 name: "Heilung",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "64031e58-a816-4c84-9ca8-d80cd514a908",
                 name: "Gift",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "b0b0b636-6637-48c2-a899-4bd62435dba0",
                 name: "Gegengift",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "04b75751-0a85-4d82-8b66-361f47743797",
                 name: "Buff",
                 subCategories: [],
@@ -117,25 +135,35 @@ class RpgConfigurationModel {
             ],
           ),
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: "f9cc6513-36b4-4e4e-b3ba-dd9f40fca078",
             name: "Waffe",
             subCategories: [
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "1666d606-b839-4664-930d-2f51b552111c",
                 name: "Finesse",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "4ab9bded-a516-4a1b-a66d-fd5d972957cf",
                 name: "Fernkampf",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "8d86c1df-fe26-420d-8ccf-f5ef0af535a3",
                 name: "Magie",
                 subCategories: [],
               ),
               ItemCategory(
+                colorCode: null,
+                iconName: null,
                 uuid: "1d21556e-8993-4883-a9a5-f9853697f21e",
                 name: "Wurfwaffe",
                 subCategories: [],
@@ -143,11 +171,15 @@ class RpgConfigurationModel {
             ],
           ),
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: "c7690cb0-39b4-45d2-b7c5-75b6e8eeb88f",
             name: "Schatz",
             subCategories: [],
           ),
           ItemCategory(
+            colorCode: null,
+            iconName: null,
             uuid: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
             name: "Tool",
             subCategories: [],
@@ -155,6 +187,7 @@ class RpgConfigurationModel {
         ],
         allItems: [
           RpgItem(
+            imageUuid: null,
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
             uuid: "a7537746-260d-4aed-b182-26768a9c2d51",
             name: "Kl. Heiltrank",
@@ -165,6 +198,7 @@ class RpgConfigurationModel {
                 "1D4 Heilung bei Konsum\n\nEin kleiner Heiltrank der auf natürliche (und nicht magische) Weise Lebenspunkte wiederherstellt.\nDieser Gegenstand ist fast unerlässlich für Kämpfe!",
           ),
           RpgItem(
+              imageUuid: null,
               uuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
               name: "Rote Vitus Blüte",
               categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
@@ -195,6 +229,7 @@ class RpgConfigurationModel {
               description:
                   "Ein Blütenblatt der Roten Vitus Blüte\n\nSehr fragil und muss mit Vorsicht geerntet werden!"),
           RpgItem(
+            imageUuid: null,
             uuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
             name: "Fuchsschwanz",
             categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
@@ -204,6 +239,7 @@ class RpgConfigurationModel {
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
           ),
           RpgItem(
+            imageUuid: null,
             uuid: "dc497952-1989-40d1-9d50-a5b4e53dd1be",
             name: "Kräuterkunde-Set",
             categoryId: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
@@ -578,12 +614,17 @@ class ItemCategory {
   final List<ItemCategory> subCategories;
   final bool hideInInventoryFilters;
 
+  final String? colorCode;
+  final String? iconName;
+
   factory ItemCategory.fromJson(Map<String, dynamic> json) =>
       _$ItemCategoryFromJson(json);
 
   ItemCategory({
     required this.uuid,
     required this.name,
+    required this.colorCode,
+    required this.iconName,
     required this.subCategories,
     this.hideInInventoryFilters = false,
   });
@@ -839,6 +880,8 @@ class RpgItem {
   final String description;
   final String categoryId;
 
+  final String? imageUuid;
+
   final List<RpgItemRarity> placeOfFindings;
   final DiceRoll? patchSize;
 
@@ -851,6 +894,7 @@ class RpgItem {
   RpgItem({
     required this.uuid,
     required this.name,
+    required this.imageUuid,
     required this.patchSize,
     required this.categoryId,
     required this.description,

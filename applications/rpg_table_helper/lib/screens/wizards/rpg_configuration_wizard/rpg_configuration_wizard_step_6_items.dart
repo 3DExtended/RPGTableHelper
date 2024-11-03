@@ -1,16 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
@@ -64,6 +61,7 @@ class _RpgConfigurationWizardStep6ItemsState
       }
     });
 
+    // TODO where do I show this?
     var stepHelperText = '''
 
 Nun ist es Zeit, die Items des RPGs zu hinterlegen. Egal ob Heiltränke, Waffen, Questitems oder Zutaten für Gifte, hier kannst du alles anlegen was in die Taschen deiner Player wandern könnte.
@@ -83,6 +81,8 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                   children: [
                     ...[
                       ItemCategory(
+                        colorCode: null,
+                        iconName: null,
                         name: "Alles",
                         subCategories: [],
                         uuid: "",
@@ -121,6 +121,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                 await showCreateOrEditItemModal(
                     context,
                     RpgItem(
+                      imageUuid: null,
                       baseCurrencyPrice: 0,
                       categoryId: "",
                       description: "",
@@ -148,9 +149,13 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         ),
         Expanded(child: LayoutBuilder(builder: (context, constraints) {
           var layoutWidth = constraints.maxWidth;
+          const scalar = 1.0;
 
-          const targetedCardWidth = 361.25;
-          const targetedCardHeight = 528.75;
+          const cardHeight = 423 * scalar;
+          const cardWidth = 289 * scalar;
+
+          const targetedCardHeight = cardHeight;
+          const targetedCardWidth = cardWidth;
           const itemCardPadding = 20.0;
 
           var numberOfColumnsOnScreen = 1;
@@ -205,9 +210,6 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
               return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: itemCardPadding,
-                    ),
                     ...List.generate(numberOfColumnsOnScreen, (subindex) {
                       var indexOfItemToRender =
                           index * numberOfColumnsOnScreen + subindex;
@@ -239,12 +241,14 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                             });
                           },
                           child: CustomItemCard(
+                              scalarOverride: scalar,
                               title: itemToRender.value.name,
                               description: itemToRender.value.description),
                         ),
-                        SizedBox(
-                          width: itemCardPadding,
-                        ),
+                        if (numberOfColumnsOnScreen != subindex + 1)
+                          SizedBox(
+                            width: itemCardPadding,
+                          ),
                       ];
                     }).expand((i) => i),
                   ]);
@@ -253,127 +257,9 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         }))
       ],
     );
-
-    return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
-      isLandscapeMode: MediaQuery.of(context).size.width >
-          MediaQuery.of(context).size.height,
-      stepTitle: "Items", // TODO Localize,
-      stepHelperText: stepHelperText,
-      onNextBtnPressed: !isFormValid
-          ? null
-          : () {
-              saveChanges();
-              widget.onNextBtnPressed();
-            },
-      onPreviousBtnPressed: () {
-        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-        widget.onPreviousBtnPressed();
-      },
-      sideBarFlex: 1,
-      contentFlex: 2,
-      titleWidgetRight: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: kDebugMode == true ? 0 : 20),
-        child: CustomDropdownMenu(
-            selectedValueTemp: selectedItemCategoryId,
-            setter: (newValue) {
-              setState(() {
-                selectedItemCategoryId = newValue;
-              });
-            },
-            label: 'Kategorie Filter', // TODO localize
-            items: [
-              ItemCategory(
-                name: "Alles",
-                subCategories: [],
-                uuid: "",
-                hideInInventoryFilters: false,
-              ),
-              ...(ItemCategory.flattenCategoriesRecursive(
-                      categories: _allItemCategories,
-                      combineCategoryNames: true)
-                  .sortBy((e) => e.name)),
-            ].map((category) {
-              return DropdownMenuItem<String?>(
-                value: category.uuid == "" ? null : category.uuid,
-                child: Text(category.name),
-              );
-            }).toList()),
-      ),
-      contentWidget: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Builder(builder: (context) {
-          var itemsAsMapList = _items
-              .asMap()
-              .entries
-              .where((it) =>
-                  selectedItemCategoryId == null ||
-                  it.value.categoryId == selectedItemCategoryId)
-              .toList();
-          return ListView.builder(
-            itemCount: itemsAsMapList.length,
-            prototypeItem: itemsAsMapList.isEmpty
-                ? null
-                : getItemVisualisation(itemsAsMapList[0], context),
-            itemBuilder: (context, index) {
-              var item = itemsAsMapList[index];
-              return getItemVisualisation(item, context);
-            },
-          );
-        }),
-      ),
-
-      contentChildren: const [
-        //  ..._items.asMap().entries.map(
-        //        (item) => getItemVisualisation(item, context),
-        //      ),
-      ],
-      centerNavBarWidget: CustomButton(
-        onPressed: () async {
-          // open create modal with new item
-          await showCreateOrEditItemModal(
-              context,
-              RpgItem(
-                baseCurrencyPrice: 0,
-                categoryId: "",
-                description: "",
-                name: "",
-                placeOfFindings: [],
-                patchSize: null,
-                uuid: const UuidV7().generate(),
-              )).then((returnValue) {
-            if (returnValue == null) {
-              return;
-            }
-
-            setState(() {
-              _items.add(returnValue);
-              saveChanges();
-            });
-          });
-        },
-        icon: Theme(
-            data: ThemeData(
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
-              ),
-              textTheme: const TextTheme(
-                bodyMedium: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            child: Container(
-                width: 24,
-                height: 24,
-                alignment: AlignmentDirectional.center,
-                child: const FaIcon(FontAwesomeIcons.plus))),
-      ),
-    );
   }
 
+  // TODO see what we need from this...
   Padding getItemVisualisation(
       MapEntry<int, RpgItem> item, BuildContext context) {
     return Padding(

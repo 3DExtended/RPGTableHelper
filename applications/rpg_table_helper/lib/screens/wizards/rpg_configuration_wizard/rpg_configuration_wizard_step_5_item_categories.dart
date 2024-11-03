@@ -25,6 +25,8 @@ class _ItemCategoryEdit {
 
   ItemCategory toItemCategory() {
     return ItemCategory(
+      colorCode: null,
+      iconName: null,
       uuid: uuid,
       name: nameController.text,
       subCategories: subCategories.isNotEmpty
@@ -110,7 +112,7 @@ class _RpgConfigurationWizardStep5ItemCategories
 
     var stepHelperText = '''
 
-Damit die Spieler ihre Items filtern können, wollen wir die Items in bestimmte Kategorien einsortieren. Hierzu haben wir dir eine Reihe von Kategorien und Subkategorien vorbereitet. 
+Damit die Spieler ihre Items filtern können, wollen wir die Items in bestimmte Kategorien einsortieren. Hierzu haben wir dir eine Reihe von Kategorien und Subkategorien vorbereitet.
 
 Nimm gerne Anpassungen vor, wenn diese Kategorien nicht zu eurem RPG passen!
 
@@ -231,6 +233,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                       categories[e.key].subCategories.add(
                           _ItemCategoryEdit.fromItemCategory(
                               ItemCategory(
+                                  colorCode: null,
+                                  iconName: null,
                                   uuid: const UuidV7().generate(),
                                   name: "Neu",
                                   subCategories: []),
@@ -275,6 +279,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
             setState(() {
               addNewItemCategory(_ItemCategoryEdit.fromItemCategory(
                   ItemCategory(
+                      colorCode: null,
+                      iconName: null,
                       uuid: const UuidV7().generate(),
                       name: "Neu",
                       subCategories: []),

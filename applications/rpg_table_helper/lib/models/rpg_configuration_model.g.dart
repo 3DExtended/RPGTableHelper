@@ -144,6 +144,10 @@ abstract class _$ItemCategoryCWProxy {
 
   ItemCategory name(String name);
 
+  ItemCategory colorCode(String? colorCode);
+
+  ItemCategory iconName(String? iconName);
+
   ItemCategory subCategories(List<ItemCategory> subCategories);
 
   ItemCategory hideInInventoryFilters(bool hideInInventoryFilters);
@@ -157,6 +161,8 @@ abstract class _$ItemCategoryCWProxy {
   ItemCategory call({
     String? uuid,
     String? name,
+    String? colorCode,
+    String? iconName,
     List<ItemCategory>? subCategories,
     bool? hideInInventoryFilters,
   });
@@ -173,6 +179,12 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
 
   @override
   ItemCategory name(String name) => this(name: name);
+
+  @override
+  ItemCategory colorCode(String? colorCode) => this(colorCode: colorCode);
+
+  @override
+  ItemCategory iconName(String? iconName) => this(iconName: iconName);
 
   @override
   ItemCategory subCategories(List<ItemCategory> subCategories) =>
@@ -193,6 +205,8 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
   ItemCategory call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
+    Object? colorCode = const $CopyWithPlaceholder(),
+    Object? iconName = const $CopyWithPlaceholder(),
     Object? subCategories = const $CopyWithPlaceholder(),
     Object? hideInInventoryFilters = const $CopyWithPlaceholder(),
   }) {
@@ -205,6 +219,14 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
+      colorCode: colorCode == const $CopyWithPlaceholder()
+          ? _value.colorCode
+          // ignore: cast_nullable_to_non_nullable
+          : colorCode as String?,
+      iconName: iconName == const $CopyWithPlaceholder()
+          ? _value.iconName
+          // ignore: cast_nullable_to_non_nullable
+          : iconName as String?,
       subCategories:
           subCategories == const $CopyWithPlaceholder() || subCategories == null
               ? _value.subCategories
@@ -841,6 +863,8 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem name(String name);
 
+  RpgItem imageUuid(String? imageUuid);
+
   RpgItem patchSize(DiceRoll? patchSize);
 
   RpgItem categoryId(String categoryId);
@@ -860,6 +884,7 @@ abstract class _$RpgItemCWProxy {
   RpgItem call({
     String? uuid,
     String? name,
+    String? imageUuid,
     DiceRoll? patchSize,
     String? categoryId,
     String? description,
@@ -879,6 +904,9 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
 
   @override
   RpgItem name(String name) => this(name: name);
+
+  @override
+  RpgItem imageUuid(String? imageUuid) => this(imageUuid: imageUuid);
 
   @override
   RpgItem patchSize(DiceRoll? patchSize) => this(patchSize: patchSize);
@@ -908,6 +936,7 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
+    Object? imageUuid = const $CopyWithPlaceholder(),
     Object? patchSize = const $CopyWithPlaceholder(),
     Object? categoryId = const $CopyWithPlaceholder(),
     Object? description = const $CopyWithPlaceholder(),
@@ -923,6 +952,10 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
+      imageUuid: imageUuid == const $CopyWithPlaceholder()
+          ? _value.imageUuid
+          // ignore: cast_nullable_to_non_nullable
+          : imageUuid as String?,
       patchSize: patchSize == const $CopyWithPlaceholder()
           ? _value.patchSize
           // ignore: cast_nullable_to_non_nullable
@@ -1072,6 +1105,8 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
 ItemCategory _$ItemCategoryFromJson(Map<String, dynamic> json) => ItemCategory(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
+      colorCode: json['colorCode'] as String?,
+      iconName: json['iconName'] as String?,
       subCategories: (json['subCategories'] as List<dynamic>)
           .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -1084,6 +1119,8 @@ Map<String, dynamic> _$ItemCategoryToJson(ItemCategory instance) =>
       'name': instance.name,
       'subCategories': instance.subCategories,
       'hideInInventoryFilters': instance.hideInInventoryFilters,
+      'colorCode': instance.colorCode,
+      'iconName': instance.iconName,
     };
 
 CurrencyType _$CurrencyTypeFromJson(Map<String, dynamic> json) => CurrencyType(
@@ -1234,6 +1271,7 @@ Map<String, dynamic> _$RpgItemRarityToJson(RpgItemRarity instance) =>
 RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
       uuid: json['uuid'] as String,
       name: json['name'] as String,
+      imageUuid: json['imageUuid'] as String?,
       patchSize: json['patchSize'] == null
           ? null
           : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
@@ -1250,6 +1288,7 @@ Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'categoryId': instance.categoryId,
+      'imageUuid': instance.imageUuid,
       'placeOfFindings': instance.placeOfFindings,
       'patchSize': instance.patchSize,
       'baseCurrencyPrice': instance.baseCurrencyPrice,

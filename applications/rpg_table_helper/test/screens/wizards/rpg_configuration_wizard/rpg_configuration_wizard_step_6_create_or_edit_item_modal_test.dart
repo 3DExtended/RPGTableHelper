@@ -76,6 +76,7 @@ void main() {
                         overrideNavigatorKey: navigatorKey,
                         context,
                         RpgItem(
+                            imageUuid: null,
                             uuid: "asdf",
                             name: "Test",
                             categoryId: "",

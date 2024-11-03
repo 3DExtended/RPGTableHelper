@@ -15,6 +15,7 @@ void main() {
           rpgName: 'Test RPG',
           allItems: [
             RpgItem(
+                imageUuid: null,
                 uuid: 'item1',
                 name: 'Iron Ore',
                 categoryId: 'cat1',
@@ -25,6 +26,7 @@ void main() {
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
+                imageUuid: null,
                 uuid: 'item2',
                 name: 'Wood',
                 categoryId: 'cat1',
@@ -35,6 +37,7 @@ void main() {
                 ],
                 description: "Eine Beschreibung"),
             RpgItem(
+                imageUuid: null,
                 uuid: 'item3',
                 name: 'Iron Sword',
                 categoryId: 'cat2',
@@ -211,6 +214,7 @@ void main() {
     test('Character with no items in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           description: "Eine Beschreibung",
           uuid: 'uuid1',
           name: 'Sword',
@@ -219,6 +223,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           description: "Eine Beschreibung",
           uuid: 'uuid2',
           name: 'Shield',
@@ -281,6 +286,7 @@ void main() {
     test('Character with one item in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -289,6 +295,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -355,6 +362,7 @@ void main() {
     test('Character with multiple items in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -363,6 +371,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -371,6 +380,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item3 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid3',
@@ -441,6 +451,7 @@ void main() {
     test('Character with items not in global item list', () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -449,6 +460,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -513,6 +525,7 @@ void main() {
     test('Character with items having zero quantity in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -521,6 +534,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -585,6 +599,7 @@ void main() {
     test('Character with all items from the list in inventory', () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -593,6 +608,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',
@@ -665,6 +681,7 @@ void main() {
         () {
       // Arrange
       var item1 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid1',
@@ -673,6 +690,7 @@ void main() {
           categoryId: "",
           placeOfFindings: []);
       var item2 = RpgItem(
+          imageUuid: null,
           patchSize: DiceRoll(numDice: 1, diceSides: 4, modifier: -1),
           description: "Eine Beschreibung",
           uuid: 'uuid2',

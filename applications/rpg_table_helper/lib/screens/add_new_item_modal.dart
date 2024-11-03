@@ -140,6 +140,8 @@ class _AddNewItemModalContentState
                                             'Kategorie Filter', // TODO localize
                                         items: [
                                           ItemCategory(
+                                              colorCode: null,
+                                              iconName: null,
                                               uuid: "NULL",
                                               name: "Alle",
                                               subCategories: []),
