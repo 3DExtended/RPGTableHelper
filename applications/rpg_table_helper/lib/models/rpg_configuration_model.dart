@@ -187,6 +187,7 @@ class RpgConfigurationModel {
         ],
         allItems: [
           RpgItem(
+            imageDescription: null,
             imageUuid: null,
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
             uuid: "a7537746-260d-4aed-b182-26768a9c2d51",
@@ -198,6 +199,7 @@ class RpgConfigurationModel {
                 "1D4 Heilung bei Konsum\n\nEin kleiner Heiltrank der auf natürliche (und nicht magische) Weise Lebenspunkte wiederherstellt.\nDieser Gegenstand ist fast unerlässlich für Kämpfe!",
           ),
           RpgItem(
+              imageDescription: null,
               imageUuid: null,
               uuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
               name: "Rote Vitus Blüte",
@@ -229,6 +231,7 @@ class RpgConfigurationModel {
               description:
                   "Ein Blütenblatt der Roten Vitus Blüte\n\nSehr fragil und muss mit Vorsicht geerntet werden!"),
           RpgItem(
+            imageDescription: null,
             imageUuid: null,
             uuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
             name: "Fuchsschwanz",
@@ -239,6 +242,7 @@ class RpgConfigurationModel {
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
           ),
           RpgItem(
+            imageDescription: null,
             imageUuid: null,
             uuid: "dc497952-1989-40d1-9d50-a5b4e53dd1be",
             name: "Kräuterkunde-Set",
@@ -881,6 +885,7 @@ class RpgItem {
   final String categoryId;
 
   final String? imageUuid;
+  final String? imageDescription;
 
   final List<RpgItemRarity> placeOfFindings;
   final DiceRoll? patchSize;
@@ -898,6 +903,7 @@ class RpgItem {
     required this.patchSize,
     required this.categoryId,
     required this.description,
+    required this.imageDescription,
     required this.baseCurrencyPrice,
     required this.placeOfFindings,
   });

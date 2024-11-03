@@ -117,19 +117,6 @@ final class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<dynamic>> _imageGetimageGet({String? uuid}) {
-    final Uri $url = Uri.parse('/Image/getimage');
-    final Map<String, dynamic> $params = <String, dynamic>{'uuid': uuid};
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {
@@ -180,6 +167,33 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
     );
     return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _publicCreateimagePost({String? prompt}) {
+    final Uri $url = Uri.parse('/Public/createimage');
+    final Map<String, dynamic> $params = <String, dynamic>{'prompt': prompt};
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _publicGetimageUuidApikeyGet({
+    required String? uuid,
+    required String? apikey,
+  }) {
+    final Uri $url = Uri.parse('/Public/getimage/${uuid}/${apikey}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override

@@ -9,6 +9,7 @@ public class ImageMetaData : NodeModelBase<ImageMetaData.ImageMetaDataIdentifier
 {
     public Campagne.CampagneIdentifier CreatedForCampagneId { get; set; } = default!;
     public bool LocallyStored { get; set; } = default!;
+    public string ApiKey { get; set; } = default!;
 
     public User.UserIdentifier CreatorId { get; set; } = default!;
     public ImageType ImageType { get; set; } = default!;

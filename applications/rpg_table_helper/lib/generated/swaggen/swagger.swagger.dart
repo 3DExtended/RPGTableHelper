@@ -165,17 +165,6 @@ abstract class Swagger extends ChopperService {
     @Body() required String? body,
   });
 
-  ///
-  ///@param uuid
-  Future<chopper.Response> imageGetimageGet({String? uuid}) {
-    return _imageGetimageGet(uuid: uuid);
-  }
-
-  ///
-  ///@param uuid
-  @Get(path: '/Image/getimage')
-  Future<chopper.Response> _imageGetimageGet({@Query('uuid') String? uuid});
-
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(
@@ -236,6 +225,40 @@ abstract class Swagger extends ChopperService {
   ///Returns the minimal app version supported by this api.
   @Get(path: '/Public/getminimalversion')
   Future<chopper.Response<String>> _publicGetminimalversionGet();
+
+  ///
+  ///@param prompt
+  Future<chopper.Response> publicCreateimagePost({String? prompt}) {
+    return _publicCreateimagePost(prompt: prompt);
+  }
+
+  ///
+  ///@param prompt
+  @Post(
+    path: '/Public/createimage',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _publicCreateimagePost(
+      {@Query('prompt') String? prompt});
+
+  ///
+  ///@param uuid
+  ///@param apikey
+  Future<chopper.Response> publicGetimageUuidApikeyGet({
+    required String? uuid,
+    required String? apikey,
+  }) {
+    return _publicGetimageUuidApikeyGet(uuid: uuid, apikey: apikey);
+  }
+
+  ///
+  ///@param uuid
+  ///@param apikey
+  @Get(path: '/Public/getimage/{uuid}/{apikey}')
+  Future<chopper.Response> _publicGetimageUuidApikeyGet({
+    @Path('uuid') required String? uuid,
+    @Path('apikey') required String? apikey,
+  });
 
   ///This method generates a new encryptionChallenge and stores it in the db.
   ///Use this method as first start point for a register operation.

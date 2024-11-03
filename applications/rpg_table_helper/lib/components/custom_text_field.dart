@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField(
@@ -6,10 +7,12 @@ class CustomTextField extends StatelessWidget {
       required this.labelText,
       required this.textEditingController,
       required this.keyboardType,
+      this.newDesign,
       this.password,
       this.placeholderText});
 
   final TextInputType keyboardType;
+  final bool? newDesign;
   final String labelText;
   final TextEditingController textEditingController;
   final String? placeholderText;
@@ -33,22 +36,22 @@ class CustomTextField extends StatelessWidget {
         scribbleEnabled: true,
         decoration: InputDecoration(
           helperText: placeholderText,
-          labelText: labelText, // TODO localize
+          labelText: labelText,
           alignLabelWithHint: true,
           border: const OutlineInputBorder(),
           hintStyle: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: Colors.white),
+              .copyWith(color: newDesign == true ? darkTextColor : textColor),
           labelStyle: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: Colors.white),
+              .copyWith(color: newDesign == true ? darkTextColor : textColor),
         ),
         style: Theme.of(context)
             .textTheme
             .labelLarge!
-            .copyWith(color: Colors.white),
+            .copyWith(color: newDesign == true ? darkTextColor : textColor),
         controller: textEditingController,
       ),
     );

@@ -871,6 +871,8 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem description(String description);
 
+  RpgItem imageDescription(String? imageDescription);
+
   RpgItem baseCurrencyPrice(int baseCurrencyPrice);
 
   RpgItem placeOfFindings(List<RpgItemRarity> placeOfFindings);
@@ -888,6 +890,7 @@ abstract class _$RpgItemCWProxy {
     DiceRoll? patchSize,
     String? categoryId,
     String? description,
+    String? imageDescription,
     int? baseCurrencyPrice,
     List<RpgItemRarity>? placeOfFindings,
   });
@@ -918,6 +921,10 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   RpgItem description(String description) => this(description: description);
 
   @override
+  RpgItem imageDescription(String? imageDescription) =>
+      this(imageDescription: imageDescription);
+
+  @override
   RpgItem baseCurrencyPrice(int baseCurrencyPrice) =>
       this(baseCurrencyPrice: baseCurrencyPrice);
 
@@ -940,6 +947,7 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
     Object? patchSize = const $CopyWithPlaceholder(),
     Object? categoryId = const $CopyWithPlaceholder(),
     Object? description = const $CopyWithPlaceholder(),
+    Object? imageDescription = const $CopyWithPlaceholder(),
     Object? baseCurrencyPrice = const $CopyWithPlaceholder(),
     Object? placeOfFindings = const $CopyWithPlaceholder(),
   }) {
@@ -970,6 +978,10 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
               ? _value.description
               // ignore: cast_nullable_to_non_nullable
               : description as String,
+      imageDescription: imageDescription == const $CopyWithPlaceholder()
+          ? _value.imageDescription
+          // ignore: cast_nullable_to_non_nullable
+          : imageDescription as String?,
       baseCurrencyPrice: baseCurrencyPrice == const $CopyWithPlaceholder() ||
               baseCurrencyPrice == null
           ? _value.baseCurrencyPrice
@@ -1277,6 +1289,7 @@ RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
           : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
       categoryId: json['categoryId'] as String,
       description: json['description'] as String,
+      imageDescription: json['imageDescription'] as String?,
       baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
       placeOfFindings: (json['placeOfFindings'] as List<dynamic>)
           .map((e) => RpgItemRarity.fromJson(e as Map<String, dynamic>))
@@ -1289,6 +1302,7 @@ Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
       'description': instance.description,
       'categoryId': instance.categoryId,
       'imageUuid': instance.imageUuid,
+      'imageDescription': instance.imageDescription,
       'placeOfFindings': instance.placeOfFindings,
       'patchSize': instance.patchSize,
       'baseCurrencyPrice': instance.baseCurrencyPrice,

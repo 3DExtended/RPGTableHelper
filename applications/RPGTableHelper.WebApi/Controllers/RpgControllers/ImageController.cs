@@ -11,6 +11,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.Images;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -61,6 +62,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             {
                 CreatedForCampagneId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneid)),
                 CreatorId = _userContext.User.UserIdentifier,
+                ApiKey = ApiKeyGenerator.GenerateKey(32),
                 ImageType = ImageType.PNG,
                 LocallyStored = true,
             };
@@ -92,46 +94,6 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             await imageGenerationResult.Get().DisposeAsync().ConfigureAwait(false);
 
             return Ok(newMetadata.Id.Value);
-        }
-
-        [HttpGet("getimage")]
-        public async Task<IActionResult> GetImageFromUuid([FromQuery] string uuid, CancellationToken cancellationToken)
-        {
-            var imageMetaData = await new ImageMetaDataQuery
-            {
-                ModelId = ImageMetaData.ImageMetaDataIdentifier.From(Guid.Parse(uuid)),
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (imageMetaData.IsNone)
-            {
-                return BadRequest();
-            }
-
-            var hasPermission = await new CampagneIsUserInCampagneQuery
-            {
-                CampagneId = imageMetaData.Get().CreatedForCampagneId,
-                UserIdToCheck = _userContext.User.UserIdentifier,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (hasPermission.IsNone || !hasPermission.Get())
-            {
-                return BadRequest();
-            }
-
-            var streamForImage = await new ImageLoadQuery { MetaData = imageMetaData.Get() }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (streamForImage.IsNone)
-            {
-                return BadRequest();
-            }
-
-            return File(streamForImage.Get(), "image/" + imageMetaData.Get().ImageType.ToString().ToLower());
         }
     }
 }

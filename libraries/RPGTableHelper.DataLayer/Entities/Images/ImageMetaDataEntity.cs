@@ -16,6 +16,7 @@ public class ImageMetaDataEntity : EntityBase<Guid>
     public Guid CreatedForCampagneId { get; set; }
 
     public virtual CampagneEntity? CreatedForCampagne { get; set; }
+    public string ApiKey { get; set; } = default!;
 
     public bool LocallyStored { get; set; } = default!;
 

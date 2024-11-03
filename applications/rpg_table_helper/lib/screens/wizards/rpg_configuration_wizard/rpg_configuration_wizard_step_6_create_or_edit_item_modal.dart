@@ -417,6 +417,7 @@ class _CreateOrEditItemModalContentState
                                   selectedItemCategoryId!.isEmpty) return;
 
                               navigatorKey.currentState!.pop(RpgItem(
+                                  imageDescription: null,
                                   imageUuid: null,
                                   uuid: widget.itemToEdit.uuid,
                                   name: nameController.text,

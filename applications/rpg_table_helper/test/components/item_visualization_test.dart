@@ -9,6 +9,7 @@ import '../test_configuration.dart';
 void main() {
   group('ItemVisualization rendering', () {
     var baseItem = RpgItem(
+        imageDescription: null,
         imageUuid: null,
         uuid: "864c10b9-a6d7-4cbb-862f-c35d51459546",
         name: "Schaufel",

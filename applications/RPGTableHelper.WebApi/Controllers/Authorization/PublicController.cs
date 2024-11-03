@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Prodot.Patterns.Cqrs;
+using RPGTableHelper.DataLayer.Contracts.Models.Images;
+using RPGTableHelper.DataLayer.Contracts.Queries.Images;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 
 namespace RPGTableHelper.WebApi.Controllers
@@ -30,7 +33,7 @@ namespace RPGTableHelper.WebApi.Controllers
         }
 
         // TODO remove me
-        [HttpPost("getimage")]
+        [HttpPost("createimage")]
         public async Task<IActionResult> CreateImage([FromQuery] string prompt, CancellationToken cancellationToken)
         {
             var imageGenerationResult = await new AiGenerateImageQuery { ImagePrompt = prompt }
@@ -43,6 +46,42 @@ namespace RPGTableHelper.WebApi.Controllers
             }
 
             return File(imageGenerationResult.Get(), "image/png");
+        }
+
+        [HttpGet("getimage/{uuid}/{apikey}")]
+        public async Task<IActionResult> GetImageFromUuidAndApiKey(
+            [FromRoute] string uuid,
+            [FromRoute] string apikey,
+            CancellationToken cancellationToken
+        )
+        {
+            var imageMetaData = await new ImageMetaDataQuery
+            {
+                ModelId = ImageMetaData.ImageMetaDataIdentifier.From(Guid.Parse(uuid)),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (imageMetaData.IsNone)
+            {
+                return BadRequest();
+            }
+
+            if (imageMetaData.Get().ApiKey != apikey)
+            {
+                return BadRequest();
+            }
+
+            var streamForImage = await new ImageLoadQuery { MetaData = imageMetaData.Get() }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (streamForImage.IsNone)
+            {
+                return BadRequest();
+            }
+
+            return File(streamForImage.Get(), "image/" + imageMetaData.Get().ImageType.ToString().ToLower());
         }
     }
 }

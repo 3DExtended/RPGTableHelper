@@ -13,7 +13,7 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep6Items extends WizardStepBase {
@@ -118,9 +118,10 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
             CustomButtonNewdesign(
               onPressed: () async {
                 // open create modal with new item
-                await showCreateOrEditItemModal(
+                await showCreateOrEditItemModalNewDesign(
                     context,
                     RpgItem(
+                      imageDescription: null,
                       imageUuid: null,
                       baseCurrencyPrice: 0,
                       categoryId: "",
@@ -226,7 +227,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                           padding: EdgeInsets.all(0),
                           onPressed: () async {
                             // open edit modal with clicked item
-                            await showCreateOrEditItemModal(
+                            await showCreateOrEditItemModalNewDesign(
                                     context, itemToRender.value)
                                 .then((returnValue) {
                               if (returnValue == null) {
@@ -292,7 +293,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       child: CustomButton(
                         onPressed: () async {
                           // open edit modal with clicked item
-                          await showCreateOrEditItemModal(
+                          await showCreateOrEditItemModalNewDesign(
                               context,
                               item.value.copyWith(
                                 uuid: const UuidV7().generate(),
@@ -320,7 +321,8 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       child: CustomButton(
                         onPressed: () async {
                           // open edit modal with clicked item
-                          await showCreateOrEditItemModal(context, item.value)
+                          await showCreateOrEditItemModalNewDesign(
+                                  context, item.value)
                               .then((returnValue) {
                             if (returnValue == null) {
                               return;

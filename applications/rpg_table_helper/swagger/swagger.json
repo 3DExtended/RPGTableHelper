@@ -584,25 +584,6 @@
         }
       }
     },
-    "/Image/getimage": {
-      "get": {
-        "tags": [
-          "Image"
-        ],
-        "parameters": [{
-          "name": "uuid",
-          "in": "query",
-          "schema": {
-            "type": "string"
-          }
-        }],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/PlayerCharacter/createcharacter": {
       "post": {
         "tags": [
@@ -883,6 +864,54 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/Public/createimage": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "parameters": [{
+          "name": "prompt",
+          "in": "query",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Public/getimage/{uuid}/{apikey}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "parameters": [{
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "apikey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
