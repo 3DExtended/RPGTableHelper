@@ -56,17 +56,16 @@ void main() {
                         grantedItems: GrantedItemsForPlayer(
                             characterName: "Player",
                             playerId: "6e574e88-630e-4728-a113-0f3f96a0f0ed",
-                            grantedItems: List.generate(
-                              50,
-                              (index) => RpgCharacterOwnedItemPair(
-                                amount: 3,
-                                itemUuid:
-                                    RpgConfigurationModel.getBaseConfiguration()
-                                        .allItems
-                                        .first
-                                        .uuid,
-                              ),
-                            )),
+                            grantedItems:
+                                RpgConfigurationModel.getBaseConfiguration()
+                                    .allItems
+                                    .map(
+                                      (e) => RpgCharacterOwnedItemPair(
+                                        amount: 3,
+                                        itemUuid: e.uuid,
+                                      ),
+                                    )
+                                    .toList()),
                         rpgConfig: RpgConfigurationModel.getBaseConfiguration(),
                         overrideNavigatorKey: navigatorKey,
                         context,

@@ -475,7 +475,7 @@ class ConditionalWidgetWrapper extends StatelessWidget {
   });
 
   final bool condition;
-  final Expanded Function(BuildContext context, Widget child) wrapper;
+  final Widget Function(BuildContext context, Widget child) wrapper;
   final Widget child;
 
   @override
