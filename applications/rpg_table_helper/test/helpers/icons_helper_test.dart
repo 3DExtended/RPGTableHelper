@@ -171,12 +171,12 @@ var allIconNames = [
 ];
 
 void main() {
-  group('CustomButton rendering', () {
+  group('AllCategoryIcons rendering', () {
     for (var i = 0; i < allIconNames.length; i++) {
       var iconNameToTest = allIconNames[i];
       testConfigurations(
         disableLocals: true,
-        widgetName: 'CustomButton$i',
+        widgetName: 'AllCategoryIcons$i',
         useMaterialAppWrapper: true,
         screenFactory: (Locale locale) => getIconForIdentifier(
           name: iconNameToTest,
