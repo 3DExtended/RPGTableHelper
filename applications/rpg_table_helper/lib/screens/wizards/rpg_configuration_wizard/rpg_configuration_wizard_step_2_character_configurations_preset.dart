@@ -19,6 +19,7 @@ class RpgConfigurationWizardStep2CharacterConfigurationsPreset
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -44,6 +45,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
   bool isFormValid = true;
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Character Stats");
+    });
     super.initState();
   }
 
@@ -90,7 +94,6 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Character Stats", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null

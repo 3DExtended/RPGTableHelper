@@ -3,7 +3,9 @@ import 'package:rpg_table_helper/components/wizards/wizard_manager.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 
 class WizardConfiguration {
-  final List<WizardStepBase Function(void Function(), void Function())>
+  final List<
+          WizardStepBase Function(
+              void Function(), void Function(), void Function(String newTitle))>
       stepBuilders;
 
   WizardConfiguration({required this.stepBuilders});
@@ -21,7 +23,7 @@ class WizardRendererForConfiguration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: WizardManager(
         startStepIndex: startStepIndex,
         stepBuilders: configuration.stepBuilders,

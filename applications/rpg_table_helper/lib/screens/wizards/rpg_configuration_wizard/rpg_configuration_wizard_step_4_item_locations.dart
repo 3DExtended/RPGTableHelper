@@ -17,6 +17,7 @@ class RpgConfigurationWizardStep4ItemLocations extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -43,6 +44,10 @@ class _RpgConfigurationWizardStep4ItemLocations
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Fundorte");
+    });
+
     super.initState();
   }
 
@@ -86,7 +91,6 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Fundorte", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null

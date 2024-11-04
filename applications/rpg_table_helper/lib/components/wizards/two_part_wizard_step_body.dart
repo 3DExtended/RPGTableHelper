@@ -8,7 +8,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
   const TwoPartWizardStepBody({
     super.key,
     required this.isLandscapeMode,
-    required this.stepTitle,
     required this.stepHelperText,
     required this.onPreviousBtnPressed,
     required this.onNextBtnPressed,
@@ -24,7 +23,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final int? sideBarFlex;
   final int? contentFlex;
   final bool isLandscapeMode;
-  final String stepTitle;
   final String stepHelperText;
   final void Function()? onPreviousBtnPressed;
   final void Function()? onNextBtnPressed;
@@ -56,8 +54,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
                         child: Column(
                           children: [
                             CustomMarkdownBody(
-                                isNewDesign: true,
-                                text: "# $stepTitle\n\n$stepHelperText"),
+                                isNewDesign: true, text: stepHelperText),
                             SizedBox(
                                 height: EdgeInsets.fromViewPadding(
                                         View.of(context).viewInsets,

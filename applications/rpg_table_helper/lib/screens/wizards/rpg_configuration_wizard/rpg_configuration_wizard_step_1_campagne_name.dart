@@ -9,6 +9,7 @@ class RpgConfigurationWizardStep1CampagneName extends WizardStepBase {
   const RpgConfigurationWizardStep1CampagneName({
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
+    required super.setWizardTitle,
     super.key,
   });
 
@@ -35,6 +36,9 @@ class _RpgConfigurationWizardStep1CampagneNameState
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Kampangen Name");
+    });
     textEditingController.addListener(_updateStateForFormValidation);
     super.initState();
   }
@@ -69,7 +73,6 @@ Wie heißt deine Kampagne?'''; // TODO localize
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Kampangen Name", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null

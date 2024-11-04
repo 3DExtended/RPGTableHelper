@@ -7,7 +7,9 @@ import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
 
 class WizardManager extends StatefulWidget {
-  final List<WizardStepBase Function(void Function(), void Function())>
+  final List<
+          WizardStepBase Function(
+              void Function(), void Function(), void Function(String newTitle))>
       stepBuilders;
   final VoidCallback onFinish;
 
@@ -26,6 +28,7 @@ class WizardManager extends StatefulWidget {
 
 class _WizardManagerState extends State<WizardManager> {
   int _currentStep = 0;
+  String? _currentTitleOverride;
 
   @override
   void initState() {
@@ -33,10 +36,17 @@ class _WizardManagerState extends State<WizardManager> {
     super.initState();
   }
 
+  void _setStepTitle(String newTitle) {
+    setState(() {
+      _currentTitleOverride = newTitle;
+    });
+  }
+
   void _goToNextStep() {
     if (_currentStep < widget.stepBuilders.length - 1) {
       setState(() {
         _currentStep++;
+        _currentTitleOverride = null;
       });
     } else {
       widget.onFinish();
@@ -47,6 +57,7 @@ class _WizardManagerState extends State<WizardManager> {
     if (_currentStep > 0) {
       setState(() {
         _currentStep--;
+        _currentTitleOverride = null;
       });
     } else {
       Navigator.of(context).pop();
@@ -106,14 +117,23 @@ class _WizardManagerState extends State<WizardManager> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                  child: Text(
-                    (_currentStep + 1).toString(), // TODO get wizard step title
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: textColor,
-                          fontSize: 24,
-                        ),
-                  ),
+                  child: Stack(children: [
+                    AnimatedOpacity(
+                      opacity: _currentTitleOverride != null ? 1 : 0,
+                      duration: Durations.short2,
+                      child: Text(
+                        _currentTitleOverride ?? "",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: textColor,
+                              fontSize: 24,
+                            ),
+                      ),
+                    ),
+                  ]),
                 ),
                 ...List.generate(
                   widget.stepBuilders.length - (_currentStep + 1),
@@ -146,6 +166,7 @@ class _WizardManagerState extends State<WizardManager> {
             child: widget.stepBuilders[_currentStep](
               _goToPreviousStep,
               _goToNextStep,
+              _setStepTitle,
             ),
           ),
         ),

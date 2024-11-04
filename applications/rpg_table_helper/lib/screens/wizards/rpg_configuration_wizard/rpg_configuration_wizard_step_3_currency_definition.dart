@@ -16,6 +16,7 @@ class RpgConfigurationWizardStep3CurrencyDefinition extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -48,6 +49,11 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
   void initState() {
     smallestCurrencyNameTextEditingController
         .addListener(_updateStateForFormValidation);
+
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Währungen");
+    });
+
     super.initState();
   }
 
@@ -97,7 +103,6 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Währungen", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null

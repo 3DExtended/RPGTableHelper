@@ -58,6 +58,7 @@ class RpgConfigurationWizardStep5ItemCategories extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -84,6 +85,10 @@ class _RpgConfigurationWizardStep5ItemCategories
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Item Kategorien");
+    });
+
     super.initState();
   }
 
@@ -126,7 +131,6 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Item Kategorien", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null

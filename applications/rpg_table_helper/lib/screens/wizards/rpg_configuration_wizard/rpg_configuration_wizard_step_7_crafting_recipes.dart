@@ -16,6 +16,7 @@ class RpgConfigurationWizardStep7CraftingRecipes extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -42,6 +43,14 @@ class _RpgConfigurationWizardStep7CraftingRecipesState
   }
 
   @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Rezepte");
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData((data) {
       if (!hasDataLoaded) {
@@ -65,7 +74,6 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Rezepte", // TODO Localize,
       stepHelperText: stepHelperText,
       sideBarFlex: 1,
       contentFlex: 2,

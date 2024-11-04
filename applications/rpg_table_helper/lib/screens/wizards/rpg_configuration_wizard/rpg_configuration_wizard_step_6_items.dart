@@ -21,6 +21,7 @@ class RpgConfigurationWizardStep6Items extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -46,6 +47,14 @@ class _RpgConfigurationWizardStep6ItemsState
         isFormValid = newIsFormValid;
       });
     }
+  }
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Items");
+    });
+    super.initState();
   }
 
   @override
