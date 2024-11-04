@@ -205,7 +205,7 @@ const allIconNames = [
   "spellbook-svgrepo-com",
   "sword-svgrepo-com-2",
   "sword-svgrepo-com-3",
-  "sword-svgrepo-com-4",
+
   "sword-svgrepo-com",
   "tools-svgrepo-com",
   "treasure-chest-free-illustration-4-svgrepo-com",
@@ -589,16 +589,6 @@ const allIconNames = [
         "sword-svgrepo-com-3",
         SvgPicture.asset(
             "assets/icons/inappcategoryicons/sword-svgrepo-com-3.svg",
-            colorFilter:
-                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
-            width: size,
-            height: size)
-      );
-    case "sword-svgrepo-com-4":
-      return (
-        "sword-svgrepo-com-4",
-        SvgPicture.asset(
-            "assets/icons/inappcategoryicons/sword-svgrepo-com-4.svg",
             colorFilter:
                 color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
             width: size,

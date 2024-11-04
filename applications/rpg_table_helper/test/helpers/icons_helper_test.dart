@@ -12,7 +12,7 @@ void main() {
       var iconNameToTest = allIconNames[i];
       testConfigurations(
         disableLocals: true,
-        widgetName: 'AllCategoryIcons$i',
+        widgetName: 'AllCategoryIcons_$iconNameToTest',
         useMaterialAppWrapper: true,
         screenFactory: (Locale locale) => getIconForIdentifier(
           name: iconNameToTest,
@@ -34,5 +34,33 @@ void main() {
         ]),
       );
     }
+
+    testConfigurations(
+      disableLocals: true,
+      widgetName: 'AllCategoryIconsWrapped',
+      useMaterialAppWrapper: true,
+      screenFactory: (Locale locale) => Wrap(
+        children: allIconNames
+            .map((name) => getIconForIdentifier(
+                  name: name,
+                  color: darkColor,
+                  size: 32,
+                ).$2)
+            .toList(),
+      ),
+      getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        MapEntry(
+          'default',
+          DependencyProvider.getMockedDependecyProvider(
+            child: Container(
+              color: bgColor,
+              child: Center(
+                child: widgetToTest,
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
   });
 }
