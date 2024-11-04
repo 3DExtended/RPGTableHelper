@@ -37,7 +37,7 @@ class _RpgConfigurationWizardStep1CampagneNameState
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Kampangen Name");
+      widget.setWizardTitle("Kampagnen Name");
     });
     textEditingController.addListener(_updateStateForFormValidation);
     super.initState();

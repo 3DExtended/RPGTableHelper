@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
@@ -72,85 +75,176 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      isLandscapeMode: MediaQuery.of(context).size.width >
-          MediaQuery.of(context).size.height,
-      stepHelperText: stepHelperText,
-      sideBarFlex: 1,
-      contentFlex: 2,
-      onNextBtnPressed: !isFormValid
-          ? null
-          : () {
-              saveChanges();
-              widget.onNextBtnPressed();
-            },
-      onPreviousBtnPressed: () {
-        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-        widget.onPreviousBtnPressed();
-      },
-      contentWidget: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Builder(builder: (context) {
-          var recipesAsMapList = _recipes.asMap().entries.toList();
-          return ListView.builder(
-            itemCount: recipesAsMapList.length,
-            prototypeItem: recipesAsMapList.isEmpty
-                ? null
-                : getRecipeVisualisation(recipesAsMapList[0], context),
-            itemBuilder: (context, index) {
-              var recipe = recipesAsMapList[index];
-              return getRecipeVisualisation(recipe, context);
-            },
-          );
-        }),
-      ),
-      contentChildren: const [
-        //  ..._recipes.asMap().entries.map(
-        //        (item) => getRecipeVisualisation(item, context),
-        //      ),
-      ],
-      centerNavBarWidget: CustomButton(
-        onPressed: () async {
-          // open create modal with new item
-          await showCreateOrEditCraftingRecipeModal(
-              context,
-              CraftingRecipe(
-                recipeUuid: const UuidV7().generate(),
-                ingredients: [],
-                requiredItemIds: [],
-                createdItem: CraftingRecipeIngredientPair(
-                  itemUuid: "",
-                  amountOfUsedItem: 1,
-                ),
-              )).then((returnValue) {
-            if (returnValue == null) {
-              return;
-            }
-
-            setState(() {
-              _recipes.add(returnValue);
-              saveChanges();
-            });
-          });
+        isLandscapeMode: MediaQuery.of(context).size.width >
+            MediaQuery.of(context).size.height,
+        stepHelperText: stepHelperText,
+        sideBarFlex: 1,
+        contentFlex: 2,
+        onNextBtnPressed: !isFormValid
+            ? null
+            : () {
+                saveChanges();
+                widget.onNextBtnPressed();
+              },
+        onPreviousBtnPressed: () {
+          // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
+          widget.onPreviousBtnPressed();
         },
-        icon: Theme(
-            data: ThemeData(
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
-              ),
-              textTheme: const TextTheme(
-                bodyMedium: TextStyle(
-                  color: Colors.white,
-                ),
+        contentWidget: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
+              child: Row(
+                children: [
+                  Spacer(),
+                  CustomButtonNewdesign(
+                    variant: CustomButtonNewdesignVariant.AccentButton,
+                    onPressed: () async {
+                      await showCreateOrEditCraftingRecipeModal(
+                          context,
+                          CraftingRecipe(
+                            recipeUuid: const UuidV7().generate(),
+                            ingredients: [],
+                            requiredItemIds: [],
+                            createdItem: CraftingRecipeIngredientPair(
+                              itemUuid: "",
+                              amountOfUsedItem: 1,
+                            ),
+                          )).then((returnValue) {
+                        if (returnValue == null) {
+                          return;
+                        }
+
+                        setState(() {
+                          _recipes.add(returnValue);
+                          saveChanges();
+                        });
+                      });
+                    },
+                    label: "+ Hinzufügen",
+                  )
+                ],
               ),
             ),
-            child: Container(
-                width: 24,
-                height: 24,
-                alignment: AlignmentDirectional.center,
-                child: const FaIcon(FontAwesomeIcons.plus))),
-      ),
-    );
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  var layoutWidth = constraints.maxWidth;
+                  const scalar = 1.0;
+
+                  const cardHeight = 423 * scalar;
+                  const cardWidth = 289 * scalar;
+
+                  const targetedCardHeight = cardHeight;
+                  const targetedCardWidth = cardWidth;
+                  const itemCardPadding = 9.0;
+
+                  var numberOfColumnsOnScreen = 1;
+                  var calculatedWidth = itemCardPadding + targetedCardWidth;
+
+                  while (calculatedWidth < layoutWidth) {
+                    calculatedWidth += itemCardPadding + targetedCardWidth;
+                    numberOfColumnsOnScreen++;
+                  }
+
+                  numberOfColumnsOnScreen--;
+
+                  var recipesAsMapList = _recipes.asMap().entries.toList();
+                  return ListView.builder(
+                    itemCount: ((recipesAsMapList.length ~/
+                                    numberOfColumnsOnScreen) *
+                                numberOfColumnsOnScreen ==
+                            recipesAsMapList.length)
+                        ? (recipesAsMapList.length ~/ numberOfColumnsOnScreen)
+                        : (recipesAsMapList.length ~/ numberOfColumnsOnScreen) +
+                            1,
+                    itemExtent: targetedCardHeight + itemCardPadding,
+                    itemBuilder: (context, index) {
+                      var recipe = recipesAsMapList[index];
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ...List.generate(numberOfColumnsOnScreen, (subindex) {
+                            var indexOfRecipeToRender =
+                                index * numberOfColumnsOnScreen + subindex;
+                            if (indexOfRecipeToRender >=
+                                recipesAsMapList.length) {
+                              return List<Widget>.empty();
+                            }
+
+                            var recipeToRender =
+                                recipesAsMapList[indexOfRecipeToRender];
+
+                            var createdItem = getItemForId(
+                                recipeToRender.value.createdItem.itemUuid);
+                            if (createdItem == null) {
+                              return List<Widget>.empty();
+                            }
+
+                            List<CustomRecipeCardItemPair> requirements =
+                                recipeToRender.value.requiredItemIds
+                                    .map((ingred) {
+                              var ingredItem = getItemForId(ingred);
+                              return CustomRecipeCardItemPair(
+                                  amount: 1, itemName: ingredItem?.name ?? "");
+                            }).toList();
+
+                            List<CustomRecipeCardItemPair> ingredients =
+                                recipeToRender.value.ingredients.map((ingred) {
+                              var ingredItem = getItemForId(ingred.itemUuid);
+                              return CustomRecipeCardItemPair(
+                                  amount: ingred.amountOfUsedItem,
+                                  itemName: ingredItem?.name ?? "");
+                            }).toList();
+
+                            return [
+                              CupertinoButton(
+                                minSize: 0,
+                                padding: EdgeInsets.all(0),
+                                onPressed: () async {
+                                  // open edit modal with clicked item
+                                  await showCreateOrEditCraftingRecipeModal(
+                                      context,
+                                      recipeToRender.value.copyWith(
+                                        recipeUuid: const UuidV7().generate(),
+                                      )).then((returnValue) {
+                                    if (returnValue == null) {
+                                      return;
+                                    }
+
+                                    setState(() {
+                                      _recipes.add(returnValue);
+                                      saveChanges();
+                                    });
+                                  });
+                                },
+                                child: CustomRecipeCard(
+                                  imageUrl: createdItem.imageUrlWithoutBasePath,
+                                  title: createdItem.name,
+                                  requirements: requirements,
+                                  ingedients: ingredients,
+                                ),
+                              ),
+                              if (numberOfColumnsOnScreen != subindex + 1)
+                                SizedBox(
+                                  width: itemCardPadding,
+                                ),
+                            ];
+                          }).expand((i) => i),
+                        ],
+                      );
+                    },
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
+        contentChildren: const [],
+        centerNavBarWidget: null);
   }
 
   Padding getRecipeVisualisation(

@@ -44,26 +44,52 @@ class TwoPartWizardStepBody extends StatelessWidget {
               Expanded(
                 flex: sideBarFlex ?? 1,
                 child: LayoutBuilder(builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight,
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
+                              ),
+                              child: Column(
+                                children: [
+                                  CustomMarkdownBody(
+                                      isNewDesign: true, text: stepHelperText),
+                                  SizedBox(
+                                      height: EdgeInsets.fromViewPadding(
+                                              View.of(context).viewInsets,
+                                              View.of(context).devicePixelRatio)
+                                          .bottom),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Column(
+                      ),
+                      const HorizontalLine(),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
+                        child: Row(
                           children: [
-                            CustomMarkdownBody(
-                                isNewDesign: true, text: stepHelperText),
-                            SizedBox(
-                                height: EdgeInsets.fromViewPadding(
-                                        View.of(context).viewInsets,
-                                        View.of(context).devicePixelRatio)
-                                    .bottom),
+                            CustomButtonNewdesign(
+                              label: "Zurück", // TODO localize
+                              onPressed: onPreviousBtnPressed,
+                            ),
+                            const Spacer(),
+                            if (centerNavBarWidget != null) centerNavBarWidget!,
+                            if (centerNavBarWidget != null) const Spacer(),
+                            CustomButtonNewdesign(
+                              label: "Weiter", // TODO localize
+                              onPressed: onNextBtnPressed,
+                            ),
                           ],
                         ),
                       ),
-                    ),
+                    ],
                   );
                 }),
               ),
@@ -100,26 +126,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
                       );
                     })),
                     if (footerWidget != null) footerWidget!,
-                    const HorizontalLine(),
-                    Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
-                      child: Row(
-                        children: [
-                          CustomButtonNewdesign(
-                            label: "Zurück", // TODO localize
-                            onPressed: onPreviousBtnPressed,
-                          ),
-                          const Spacer(),
-                          if (centerNavBarWidget != null) centerNavBarWidget!,
-                          if (centerNavBarWidget != null) const Spacer(),
-                          CustomButtonNewdesign(
-                            label: "Weiter", // TODO localize
-                            onPressed: onNextBtnPressed,
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
