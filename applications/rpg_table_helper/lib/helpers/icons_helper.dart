@@ -1,10 +1,700 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+
+const allIconNames = [
+  "anchor",
+  "biohazard",
+  "bolt",
+  "bolt-lightning",
+  "bomb",
+  "bone",
+  "book",
+  "book-open",
+  "broom",
+  "burst",
+  "campground",
+  "carrot",
+  "cat",
+  "chess-rook",
+  "chess-king",
+  "chess-queen",
+  "chess-knight",
+  "circle-radiation",
+  "clock",
+  "cloud-bolt",
+  "cloud-moon",
+  "cloud-showers-heavy",
+  "cloud-sun",
+  "clover",
+  "comment",
+  "comments",
+  "compass",
+  "compass-drafting",
+  "cow",
+  "cross",
+  "crosshairs",
+  "crow",
+  "crown",
+  "dice",
+  "dice-d20",
+  "dice-six",
+  "dog",
+  "dove",
+  "dragon",
+  "droplet",
+  "drumstick-bite",
+  "dungeon",
+  "earth-europe",
+  "egg",
+  "envelope",
+  "explosion",
+  "eye",
+  "feather",
+  "feather-pointed",
+  "file",
+  "fingerprint",
+  "fire",
+  "fire-flame-curved",
+  "fish-fins",
+  "flag",
+  "flask",
+  "frog",
+  "gavel",
+  "gear",
+  "gears",
+  "gem",
+  "ghost",
+  "gift",
+  "glasses",
+  "gun",
+  "hammer",
+  "hand-holding-heart",
+  "hand-holding-medical",
+  "hat-cowboy",
+  "hat-wizard",
+  "heart",
+  "heart-circle-bolt",
+  "helicopter",
+  "hippo",
+  "horse",
+  "hourglass",
+  "hourglass-half",
+  "house-chimney",
+  "house",
+  "ice-cream",
+  "igloo",
+  "industry",
+  "infinity",
+  "jet-fighter",
+  "jet-fighter-up",
+  "key",
+  "kiwi-bird",
+  "landmark",
+  "leaf",
+  "lemon",
+  "lightbulb",
+  "link",
+  "link-slash",
+  "list",
+  "list-check",
+  "location-arrow",
+  "location-crosshairs",
+  "location-dot",
+  "lock",
+  "lock-open",
+  "magnifying-glass",
+  "map",
+  "map-location-dot",
+  "martini-glass",
+  "medal",
+  "meteor",
+  "microchip",
+  "microphone",
+  "microphone-slash",
+  "moon",
+  "mortar-pestle",
+  "mosque",
+  "motorcycle",
+  "mountain",
+  "mountain-sun",
+  "music",
+  "otter",
+  "paintbrush",
+  "palette",
+  "paw",
+  "pen-nib",
+  "people-group",
+  "pepper-hot",
+  "person-running",
+  "person-swimming",
+  "piggy-bank",
+  "place-of-worship",
+  "plane",
+  "puzzle-piece",
+  "radiation",
+  "receipt",
+  "robot",
+  "rocket",
+  "sailboat",
+  "scale-balanced",
+  "screwdriver-wrench",
+  "seedling",
+  "shield",
+  "shield-halved",
+  "shield-heart",
+  "shoe-prints",
+  "shop",
+  "shrimp",
+  "shuttle-space",
+  "skull",
+  "skull-crossbones",
+  "snowflake",
+  "spider",
+  "star",
+  "store",
+  "sun",
+  "tag",
+  "tent",
+  "tents",
+  "tooth",
+  "tree",
+  "trophy",
+  "user-shield",
+  "wand-magic-sparkles",
+  "wand-sparkles",
+  "yin-yang",
+
+  // -------
+  "backpack-svgrepo-com-2",
+  "armoury-body-svgrepo-com",
+  "axe-svgrepo-com",
+  "backpack-luggage-svgrepo-com",
+  "backpack-svgrepo-com",
+  "bat-svgrepo-com",
+  "black-cat-pet-svgrepo-com",
+  "bow-and-arrow-svgrepo-com",
+  "castle-svgrepo-com-2",
+  "castle-svgrepo-com",
+  "castle-with-three-towers-svgrepo-com",
+  "catalyst-svgrepo-com",
+  "cauldron-svgrepo-com",
+  "creepy-devil-evil-pentagram-scary-svgrepo-com",
+  "crossbow-svgrepo-com",
+  "culture-glass-ball-looking-svgrepo-com",
+  "goblet-svgrepo-com",
+  "halloween-bones-stew-in-a-pot-outline-svgrepo-com",
+  "halloween-potion-svgrepo-com",
+  "helmet-svgrepo-com",
+  "jewelry-store-svgrepo-com",
+  "key-svgrepo-com",
+  "mace-svgrepo-com",
+  "magic-ball-future-svgrepo-com",
+  "magic-wand-svgrepo-com",
+  "magic-wand-witch-svgrepo-com",
+  "money-bag-svgrepo-com",
+  "plant-botanical-svgrepo-com",
+  "plant-leaf-svgrepo-com",
+  "potion-svgrepo-com",
+  "rum-svgrepo-com",
+  "sand-castle-castle-svgrepo-com",
+  "skull-and-bones-svgrepo-com",
+  "skull-svgrepo-com",
+  "spellbook-legend-svgrepo-com",
+  "spellbook-svgrepo-com",
+  "sword-svgrepo-com-2",
+  "sword-svgrepo-com-3",
+  "sword-svgrepo-com-4",
+  "sword-svgrepo-com",
+  "tools-svgrepo-com",
+  "treasure-chest-free-illustration-4-svgrepo-com",
+  "treasure-map-svgrepo-com-2",
+  "treasure-map-svgrepo-com",
+  "vault-weapons-svgrepo-com",
+  "weapon-fantasy-spell-book-magig-svgrepo-com",
+  "viking-svgrepo-com",
+];
 
 (String, Widget) getIconForIdentifier(
     {required String name, double? size, Color? color}) {
   switch (name) {
+    case "backpack-svgrepo-com-2":
+      return (
+        "backpack-svgrepo-com-2",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/backpack-svgrepo-com-2.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "armoury-body-svgrepo-com":
+      return (
+        "armoury-body-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/armoury-body-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "axe-svgrepo-com":
+      return (
+        "axe-svgrepo-com",
+        SvgPicture.asset("assets/icons/inappcategoryicons/axe-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "backpack-luggage-svgrepo-com":
+      return (
+        "backpack-luggage-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/backpack-luggage-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "backpack-svgrepo-com":
+      return (
+        "backpack-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/backpack-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "bat-svgrepo-com":
+      return (
+        "bat-svgrepo-com",
+        SvgPicture.asset("assets/icons/inappcategoryicons/bat-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "black-cat-pet-svgrepo-com":
+      return (
+        "black-cat-pet-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/black-cat-pet-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "bow-and-arrow-svgrepo-com":
+      return (
+        "bow-and-arrow-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/bow-and-arrow-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "castle-svgrepo-com-2":
+      return (
+        "castle-svgrepo-com-2",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/castle-svgrepo-com-2.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "castle-svgrepo-com":
+      return (
+        "castle-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/castle-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "castle-with-three-towers-svgrepo-com":
+      return (
+        "castle-with-three-towers-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/castle-with-three-towers-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "catalyst-svgrepo-com":
+      return (
+        "catalyst-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/catalyst-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "cauldron-svgrepo-com":
+      return (
+        "cauldron-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/cauldron-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "creepy-devil-evil-pentagram-scary-svgrepo-com":
+      return (
+        "creepy-devil-evil-pentagram-scary-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/creepy-devil-evil-pentagram-scary-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "crossbow-svgrepo-com":
+      return (
+        "crossbow-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/crossbow-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "culture-glass-ball-looking-svgrepo-com":
+      return (
+        "culture-glass-ball-looking-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/culture-glass-ball-looking-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "goblet-svgrepo-com":
+      return (
+        "goblet-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/goblet-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "halloween-bones-stew-in-a-pot-outline-svgrepo-com":
+      return (
+        "halloween-bones-stew-in-a-pot-outline-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/halloween-bones-stew-in-a-pot-outline-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "halloween-potion-svgrepo-com":
+      return (
+        "halloween-potion-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/halloween-potion-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "helmet-svgrepo-com":
+      return (
+        "helmet-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/helmet-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "jewelry-store-svgrepo-com":
+      return (
+        "jewelry-store-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/jewelry-store-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "key-svgrepo-com":
+      return (
+        "key-svgrepo-com",
+        SvgPicture.asset("assets/icons/inappcategoryicons/key-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "mace-svgrepo-com":
+      return (
+        "mace-svgrepo-com",
+        SvgPicture.asset("assets/icons/inappcategoryicons/mace-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "magic-ball-future-svgrepo-com":
+      return (
+        "magic-ball-future-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/magic-ball-future-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "magic-wand-svgrepo-com":
+      return (
+        "magic-wand-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/magic-wand-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "magic-wand-witch-svgrepo-com":
+      return (
+        "magic-wand-witch-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/magic-wand-witch-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "money-bag-svgrepo-com":
+      return (
+        "money-bag-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/money-bag-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "plant-botanical-svgrepo-com":
+      return (
+        "plant-botanical-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/plant-botanical-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "plant-leaf-svgrepo-com":
+      return (
+        "plant-leaf-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/plant-leaf-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "potion-svgrepo-com":
+      return (
+        "potion-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/potion-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "rum-svgrepo-com":
+      return (
+        "rum-svgrepo-com",
+        SvgPicture.asset("assets/icons/inappcategoryicons/rum-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "sand-castle-castle-svgrepo-com":
+      return (
+        "sand-castle-castle-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/sand-castle-castle-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "skull-and-bones-svgrepo-com":
+      return (
+        "skull-and-bones-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/skull-and-bones-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "skull-svgrepo-com":
+      return (
+        "skull-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/skull-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "spellbook-legend-svgrepo-com":
+      return (
+        "spellbook-legend-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/spellbook-legend-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "spellbook-svgrepo-com":
+      return (
+        "spellbook-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/spellbook-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "sword-svgrepo-com-2":
+      return (
+        "sword-svgrepo-com-2",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/sword-svgrepo-com-2.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "sword-svgrepo-com-3":
+      return (
+        "sword-svgrepo-com-3",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/sword-svgrepo-com-3.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "sword-svgrepo-com-4":
+      return (
+        "sword-svgrepo-com-4",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/sword-svgrepo-com-4.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "sword-svgrepo-com":
+      return (
+        "sword-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/sword-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "tools-svgrepo-com":
+      return (
+        "tools-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/tools-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "treasure-chest-free-illustration-4-svgrepo-com":
+      return (
+        "treasure-chest-free-illustration-4-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/treasure-chest-free-illustration-4-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "treasure-map-svgrepo-com-2":
+      return (
+        "treasure-map-svgrepo-com-2",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/treasure-map-svgrepo-com-2.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "treasure-map-svgrepo-com":
+      return (
+        "treasure-map-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/treasure-map-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "vault-weapons-svgrepo-com":
+      return (
+        "vault-weapons-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/vault-weapons-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+
+    case "weapon-fantasy-spell-book-magig-svgrepo-com":
+      return (
+        "weapon-fantasy-spell-book-magig-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/weapon-fantasy-spell-book-magig-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+
+    case "viking-svgrepo-com":
+      return (
+        "viking-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/viking-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+
+//------------
+//------------
+//------------
+//------------
+//------------
+//------------
+//------------
+
     case "anchor":
       return (
         "anchor",

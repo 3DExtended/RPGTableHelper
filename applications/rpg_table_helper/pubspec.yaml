@@ -63,6 +63,8 @@ flutter:
     - assets/extern/
     - assets/extern/logos/
     - assets/
+    - assets/icons/
+    - assets/icons/inappcategoryicons/
 
 fonts:
   - family: Roboto
