@@ -55,6 +55,34 @@ void main() {
             "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
         scalarOverride: 0.8,
       ),
+
+      CustomItemCard(
+        title: "Small Healing Potion",
+        imageUrl: "assets/images/itemhealingpotion.png",
+        description:
+            "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
+        scalarOverride: 1,
+        categoryIconColor: Colors.red,
+      ),
+
+      CustomItemCard(
+        title: "Small Healing Potion",
+        imageUrl: "assets/images/itemhealingpotion.png",
+        description:
+            "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
+        scalarOverride: 1,
+        categoryIconName: "sword-svgrepo-com",
+      ),
+
+      CustomItemCard(
+        title: "Small Healing Potion",
+        imageUrl: "assets/images/itemhealingpotion.png",
+        description:
+            "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
+        scalarOverride: 1,
+        categoryIconColor: Colors.yellow,
+        categoryIconName: "bone",
+      ),
     ];
 
     for (var i = 0; i < itemCards.length; i++) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_recipe_card.dart';
+import 'package:rpg_table_helper/components/newdesign/quarter_circle_cutout.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 

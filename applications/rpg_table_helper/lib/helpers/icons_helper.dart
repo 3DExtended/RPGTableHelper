@@ -214,6 +214,7 @@ const allIconNames = [
   "vault-weapons-svgrepo-com",
   "weapon-fantasy-spell-book-magig-svgrepo-com",
   "viking-svgrepo-com",
+  "flask-laboratory-svgrepo-com",
 ];
 
 (String, Widget) getIconForIdentifier(
@@ -224,6 +225,16 @@ const allIconNames = [
         "backpack-svgrepo-com-2",
         SvgPicture.asset(
             "assets/icons/inappcategoryicons/backpack-svgrepo-com-2.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+    case "flask-laboratory-svgrepo-com":
+      return (
+        "flask-laboratory-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/flask-laboratory-svgrepo-com.svg",
             colorFilter:
                 color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
             width: size,
