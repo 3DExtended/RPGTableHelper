@@ -150,6 +150,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
           return Column(
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: CustomTextField(
@@ -166,6 +167,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     height: 50,
                     width: 40,
                     clipBehavior: Clip.none,
+                    alignment: Alignment.center,
                     child: CustomButtonNewdesign(
                       variant: CustomButtonNewdesignVariant.FlatButton,
                       isSubbutton: true,
