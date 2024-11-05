@@ -13,6 +13,7 @@ import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
@@ -94,8 +95,8 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                     children: [
                       ...[
                         ItemCategory(
-                          colorCode: "#ffff00ff",
-                          iconName: "spellbook-svgrepo-com",
+                          colorCode: null,
+                          iconName: null,
                           name: "Alles",
                           subCategories: [],
                           uuid: "",
@@ -119,6 +120,20 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                               });
                             },
                             label: e.name,
+                            icon: e.iconName == null
+                                ? null
+                                : getIconForIdentifier(
+                                        name: e.iconName!,
+                                        size: 20,
+                                        color: (selectedItemCategoryId ==
+                                                    e.uuid ||
+                                                (e.uuid == "" &&
+                                                    selectedItemCategoryId ==
+                                                        null))
+                                            ? (e.colorCode
+                                                ?.parseHexColorRepresentation())
+                                            : darkColor)
+                                    .$2,
                           ),
                         ),
                       ),

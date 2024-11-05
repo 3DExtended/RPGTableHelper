@@ -136,7 +136,7 @@ class RpgConfigurationModel {
           ),
           ItemCategory(
             colorCode: "#ffff00ff",
-            iconName: "spellbook-svgrepo-com",
+            iconName: "plant-left-svgrepo-com",
             uuid: "f9cc6513-36b4-4e4e-b3ba-dd9f40fca078",
             name: "Waffe",
             subCategories: [
@@ -172,7 +172,7 @@ class RpgConfigurationModel {
           ),
           ItemCategory(
             colorCode: "#ffff00ff",
-            iconName: "spellbook-svgrepo-com",
+            iconName: "bone",
             uuid: "c7690cb0-39b4-45d2-b7c5-75b6e8eeb88f",
             name: "Schatz",
             subCategories: [],
