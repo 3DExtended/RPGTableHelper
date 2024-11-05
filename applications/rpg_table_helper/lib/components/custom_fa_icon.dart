@@ -25,7 +25,6 @@ class CustomFaIcon extends StatelessWidget {
           ),
         ),
         child: Container(
-            clipBehavior: Clip.hardEdge,
             width: (size ?? 16) + (noPadding == true ? 0 : 8),
             height: (size ?? 16) + (noPadding == true ? 0 : 8),
             alignment: AlignmentDirectional.center,
