@@ -7,7 +7,7 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';

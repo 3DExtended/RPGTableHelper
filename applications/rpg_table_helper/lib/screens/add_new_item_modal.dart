@@ -8,7 +8,7 @@ import 'package:rpg_table_helper/components/custom_dropdown_menu_with_search.dar
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -140,8 +140,8 @@ class _AddNewItemModalContentState
                                             'Kategorie Filter', // TODO localize
                                         items: [
                                           ItemCategory(
-                                              colorCode: null,
-                                              iconName: null,
+                                              colorCode: "#ffff00ff",
+                                              iconName: "spellbook-svgrepo-com",
                                               uuid: "NULL",
                                               name: "Alle",
                                               subCategories: []),

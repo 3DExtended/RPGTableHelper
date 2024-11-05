@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -10,7 +11,8 @@ import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/color_extension.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
@@ -92,14 +94,15 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                     children: [
                       ...[
                         ItemCategory(
-                          colorCode: null,
-                          iconName: null,
+                          colorCode: "#ffff00ff",
+                          iconName: "spellbook-svgrepo-com",
                           name: "Alles",
                           subCategories: [],
                           uuid: "",
                           hideInInventoryFilters: false,
                         ),
-                        ..._allItemCategories.sortBy((e) => e.name),
+                        ...CustomIterableExtensions(_allItemCategories)
+                            .sortBy((e) => e.name),
                       ].map(
                         (e) => Padding(
                           padding: const EdgeInsets.only(right: 25),
@@ -215,6 +218,8 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
               ],
             );
           }
+          var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
+              categories: _allItemCategories);
 
           return ListView.builder(
             itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
@@ -235,6 +240,9 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       }
 
                       var itemToRender = itemsAsMapList[indexOfItemToRender];
+                      var categoryForItem =
+                          flattenedCategories.firstWhereOrNull(
+                              (e) => e.uuid == itemToRender.value.categoryId);
                       return [
                         CupertinoButton(
                           minSize: 0,
@@ -256,11 +264,15 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                             });
                           },
                           child: CustomItemCard(
-                              scalarOverride: scalar,
-                              imageUrl:
-                                  itemToRender.value.imageUrlWithoutBasePath,
-                              title: itemToRender.value.name,
-                              description: itemToRender.value.description),
+                            scalarOverride: scalar,
+                            imageUrl:
+                                itemToRender.value.imageUrlWithoutBasePath,
+                            title: itemToRender.value.name,
+                            description: itemToRender.value.description,
+                            categoryIconColor: categoryForItem?.colorCode
+                                ?.parseHexColorRepresentation(),
+                            categoryIconName: categoryForItem?.iconName,
+                          ),
                         ),
                         if (numberOfColumnsOnScreen != subindex + 1)
                           SizedBox(

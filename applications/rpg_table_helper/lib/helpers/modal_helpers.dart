@@ -17,6 +17,7 @@ import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
@@ -393,6 +394,14 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
               .map((grantedItem) {
             var itemFromId = widget.rpgConfig.allItems
                 .singleWhereOrNull((i) => i.uuid == grantedItem.value.itemUuid);
+            var allItemCategories = ItemCategory.flattenCategoriesRecursive(
+                categories: widget.rpgConfig.itemCategories);
+
+            var categoryForItem = itemFromId == null
+                ? null
+                : allItemCategories
+                    .firstWhereOrNull((c) => c.uuid == itemFromId.categoryId);
+
             if (itemFromId == null) return Container();
 
             var isLast =
@@ -434,6 +443,9 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                         title: itemFromId.name,
                         description: itemFromId.description,
                         imageUrl: itemFromId.imageUrlWithoutBasePath,
+                        categoryIconColor: categoryForItem?.colorCode
+                            ?.parseHexColorRepresentation(),
+                        categoryIconName: categoryForItem?.iconName,
                       ),
                     ),
                   ),

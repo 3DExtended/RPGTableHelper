@@ -26,8 +26,8 @@ class _ItemCategoryEdit {
 
   ItemCategory toItemCategory() {
     return ItemCategory(
-      colorCode: null,
-      iconName: null,
+      colorCode: "#ffff00ff",
+      iconName: "spellbook-svgrepo-com",
       uuid: uuid,
       name: nameController.text,
       subCategories: subCategories.isNotEmpty
@@ -247,8 +247,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                       categories[e.key].subCategories.add(
                           _ItemCategoryEdit.fromItemCategory(
                               ItemCategory(
-                                  colorCode: null,
-                                  iconName: null,
+                                  colorCode: "#ffff00ff",
+                                  iconName: "spellbook-svgrepo-com",
                                   uuid: const UuidV7().generate(),
                                   name: "Neu",
                                   subCategories: []),
@@ -285,8 +285,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
             setState(() {
               addNewItemCategory(_ItemCategoryEdit.fromItemCategory(
                   ItemCategory(
-                      colorCode: null,
-                      iconName: null,
+                      colorCode: "#ffff00ff",
+                      iconName: "spellbook-svgrepo-com",
                       uuid: const UuidV7().generate(),
                       name: "Neu",
                       subCategories: []),

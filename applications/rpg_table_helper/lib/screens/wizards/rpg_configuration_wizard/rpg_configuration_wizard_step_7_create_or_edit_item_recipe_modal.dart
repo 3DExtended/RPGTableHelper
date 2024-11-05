@@ -9,7 +9,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';

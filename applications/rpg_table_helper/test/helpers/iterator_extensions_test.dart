@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 
 void main() {
   group('IterableExtensions', () {

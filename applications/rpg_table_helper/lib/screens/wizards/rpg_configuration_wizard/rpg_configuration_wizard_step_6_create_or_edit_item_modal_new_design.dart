@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +14,9 @@ import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -287,9 +289,10 @@ class _CreateOrEditItemModalContentState
                   },
                   label: 'Kategorie', // TODO localize
                   items: [
-                    ...(ItemCategory.flattenCategoriesRecursive(
-                            categories: _allItemCategories,
-                            combineCategoryNames: true)
+                    ...(CustomIterableExtensions(
+                            ItemCategory.flattenCategoriesRecursive(
+                                categories: _allItemCategories,
+                                combineCategoryNames: true))
                         .sortBy((e) => e.name)),
                   ].map((category) {
                     return DropdownMenuItem<String?>(
@@ -418,7 +421,7 @@ class _CreateOrEditItemModalContentState
                             });
                           },
                           label: 'Fundort #${tuple.key + 1}', // TODO localize
-                          items: _allPlacesOfFindings
+                          items: CustomIterableExtensions(_allPlacesOfFindings)
                               .sortBy((p) => p.name)
                               .map((placeOfFinding) {
                             return DropdownMenuItem<String?>(
@@ -551,6 +554,14 @@ class _CreateOrEditItemModalContentState
   }
 
   Column getRightModalColumn(BuildContext context) {
+    var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
+        categories: _allItemCategories, combineCategoryNames: true);
+
+    var selectedCategory = selectedItemCategoryId == null
+        ? null
+        : flattenedCategories
+            .firstWhereOrNull((e) => e.uuid == selectedItemCategoryId);
+
     return Column(
       children: [
         // Item Card visualization
@@ -579,6 +590,9 @@ class _CreateOrEditItemModalContentState
                   ? null
                   : _urlsOfGeneratedImages[_selectedGeneratedImage!],
               isLoadingNewImage: isLoadingNewImage,
+              categoryIconColor:
+                  selectedCategory?.colorCode?.parseHexColorRepresentation(),
+              categoryIconName: selectedCategory?.iconName,
             ),
             SizedBox(
               height: 12,

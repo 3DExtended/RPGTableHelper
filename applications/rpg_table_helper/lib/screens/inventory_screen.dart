@@ -12,7 +12,7 @@ import 'package:rpg_table_helper/components/item_visualization.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
