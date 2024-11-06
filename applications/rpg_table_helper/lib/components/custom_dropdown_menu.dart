@@ -18,21 +18,6 @@ class CustomDropdownMenu extends StatelessWidget {
   final Null Function(String? newValue) setter;
   final List<DropdownMenuItem<String?>> items;
 
-/*
-
-enabledBorder: newDesign != true
-              ? null
-              : OutlineInputBorder(
-                  borderSide: BorderSide(width: 1, color: darkColor),
-                ),
-          border: OutlineInputBorder(
-            borderSide: newDesign != true
-                ? BorderSide()
-                : BorderSide(width: 1, color: darkColor),
-          ),
-
- */
-
   @override
   Widget build(BuildContext context) {
     return Theme(

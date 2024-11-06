@@ -174,6 +174,7 @@ class _AddNewItemModalContentState
                                 children: [
                                   Expanded(
                                     child: CustomDropdownMenuWithSearch(
+                                        newDesign: false,
                                         selectedValueTemp: selectedItemId,
                                         setter: (newValue) {
                                           setState(() {
