@@ -68,6 +68,10 @@ class _ShowGetDmConfigurationModalContentState
   CharacterStatValueType? selectedValueType =
       CharacterStatValueType.singleLineText;
 
+  // TODO add "advanced options" to edit those...
+  bool isOptionalForCompanionCharacters = false;
+  bool isOptionalForAlternateForms = false;
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
@@ -80,6 +84,14 @@ class _ShowGetDmConfigurationModalContentState
 
           selectedEditType = widget.predefinedConfiguration!.editType;
           selectedValueType = widget.predefinedConfiguration!.valueType;
+
+          isOptionalForAlternateForms =
+              widget.predefinedConfiguration!.isOptionalForAlternateForms ??
+                  false;
+
+          isOptionalForCompanionCharacters = widget
+                  .predefinedConfiguration!.isOptionalForCompanionCharacters ??
+              false;
 
           // what to do about additionaldetails
           if (selectedValueType == CharacterStatValueType.multiselect) {
@@ -121,6 +133,8 @@ class _ShowGetDmConfigurationModalContentState
             helperText: helperTextEditor.text,
             valueType: selectedValueType!,
             editType: selectedEditType!,
+            isOptionalForAlternateForms: isOptionalForAlternateForms,
+            isOptionalForCompanionCharacters: isOptionalForCompanionCharacters,
           );
 
           if (selectedValueType == CharacterStatValueType.multiselect) {

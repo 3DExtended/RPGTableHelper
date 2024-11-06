@@ -100,13 +100,15 @@ class _CharacterScreenPlayerContentState
                     var newAlternateCharacter =
                         RpgAlternateCharacterConfiguration(
                             uuid: UuidV7().generate(),
+                            imageDescription: null,
+                            imageUrlWithoutBasePath: null,
                             characterName: playerCharacterName,
                             characterStats: []);
 
                     var currentAlternateCharacters = ref
                             .read(rpgCharacterConfigurationProvider)
                             .requireValue
-                            .alternateCharacters ??
+                            .companionCharacters ??
                         [];
 
                     ref
@@ -114,7 +116,7 @@ class _CharacterScreenPlayerContentState
                         .updateConfiguration(ref
                             .read(rpgCharacterConfigurationProvider)
                             .requireValue
-                            .copyWith(alternateCharacters: [
+                            .copyWith(alternateForms: [
                           ...currentAlternateCharacters,
                           newAlternateCharacter
                         ]));
@@ -142,7 +144,7 @@ class _CharacterScreenPlayerContentState
                             ? "Player Name"
                             : characterConfig!.characterName),
                       ),
-                      ...(characterConfig!.alternateCharacters ?? []).map(
+                      ...(characterConfig!.companionCharacters ?? []).map(
                         (altChar) => DropdownMenuItem(
                           value: altChar.uuid,
                           child: Text(altChar.characterName.isEmpty
@@ -338,7 +340,7 @@ class _CharacterScreenPlayerContentState
       if (charConfigToUse.uuid == selectedCharacterId) {
         return charConfigToUse;
       } else {
-        return charConfigToUse.alternateCharacters
+        return charConfigToUse.companionCharacters
             ?.firstWhereOrNull((alt) => alt.uuid == selectedCharacterId);
       }
     }
@@ -430,7 +432,7 @@ class _CharacterScreenPlayerContentState
                       characterStats: mergedStats));
             } else {
               List<RpgAlternateCharacterConfiguration> alternateCharactersCopy =
-                  [...(newestCharacterConfig.alternateCharacters ?? [])];
+                  [...(newestCharacterConfig.companionCharacters ?? [])];
 
               var indexOfSelectedAltChar = alternateCharactersCopy
                   .indexWhere((e) => e.uuid == selectedCharacterId!);
@@ -443,12 +445,12 @@ class _CharacterScreenPlayerContentState
                         .copyWith(characterStats: mergedStats);
 
                 characterConfig = newestCharacterConfig.copyWith(
-                    alternateCharacters: alternateCharactersCopy);
+                    alternateForms: alternateCharactersCopy);
 
                 ref
                     .read(rpgCharacterConfigurationProvider.notifier)
                     .updateConfiguration(newestCharacterConfig.copyWith(
-                        alternateCharacters: alternateCharactersCopy));
+                        alternateForms: alternateCharactersCopy));
               }
             }
           });

@@ -11,9 +11,14 @@ abstract class RpgCharacterConfigurationBase {
   final String characterName;
   final List<RpgCharacterStatValue> characterStats;
 
+  final String? imageUrlWithoutBasePath;
+  final String? imageDescription;
+
   RpgCharacterConfigurationBase(
       {required this.uuid,
       required this.characterName,
+      required this.imageUrlWithoutBasePath,
+      required this.imageDescription,
       required this.characterStats});
 }
 
@@ -29,6 +34,8 @@ class RpgAlternateCharacterConfiguration extends RpgCharacterConfigurationBase {
     required super.uuid,
     required super.characterName,
     required super.characterStats,
+    required super.imageUrlWithoutBasePath,
+    required super.imageDescription,
   });
 
   Map<String, dynamic> toJson() =>
@@ -40,8 +47,11 @@ class RpgAlternateCharacterConfiguration extends RpgCharacterConfigurationBase {
 class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   final int? moneyInBaseType;
   final List<RpgCharacterOwnedItemPair> inventory;
-  // this can be used to create pets or other forms (like a druid might have)
-  final List<RpgAlternateCharacterConfiguration>? alternateCharacters;
+  // this can be used to create pets
+  final List<RpgAlternateCharacterConfiguration>? companionCharacters;
+
+  // this can be used to create pets
+  final List<RpgAlternateCharacterConfiguration>? alternateForms;
 
   factory RpgCharacterConfiguration.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterConfigurationFromJson(json);
@@ -49,10 +59,13 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   RpgCharacterConfiguration({
     required super.uuid,
     required super.characterName,
+    required this.alternateForms,
     required this.moneyInBaseType,
     required super.characterStats,
+    required super.imageDescription,
+    required super.imageUrlWithoutBasePath,
     required this.inventory,
-    required this.alternateCharacters,
+    required this.companionCharacters,
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterConfigurationToJson(this);
@@ -60,7 +73,10 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   static RpgCharacterConfiguration getBaseConfiguration(
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
-        alternateCharacters: [],
+        imageDescription: null,
+        imageUrlWithoutBasePath: null,
+        companionCharacters: [],
+        alternateForms: [],
         uuid: const UuidV7().generate(),
         characterName: "Gandalf",
         characterStats:

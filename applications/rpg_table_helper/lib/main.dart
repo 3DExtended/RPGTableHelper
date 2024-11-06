@@ -6,6 +6,7 @@ import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configur
 import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_page_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/login_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
@@ -81,6 +82,11 @@ class AppRoutingShell extends ConsumerWidget {
             case AuthorizedScreenWrapper.route:
               return MaterialWithModalsPageRoute(
                 builder: (_) => AuthorizedScreenWrapper(),
+                settings: settings,
+              );
+            case DmPageScreen.route:
+              return MaterialWithModalsPageRoute(
+                builder: (_) => DmPageScreen(),
                 settings: settings,
               );
             case LoginScreen.route:

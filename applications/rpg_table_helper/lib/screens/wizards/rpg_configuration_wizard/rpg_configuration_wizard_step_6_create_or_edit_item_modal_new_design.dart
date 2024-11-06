@@ -562,6 +562,11 @@ class _CreateOrEditItemModalContentState
         : flattenedCategories
             .firstWhereOrNull((e) => e.uuid == selectedItemCategoryId);
 
+    var itemCategoryForItem = selectedCategory != null
+        ? (ItemCategory.parentCategoryForCategoryIdRecursive(
+            categories: _allItemCategories, categoryId: selectedCategory.uuid))
+        : null;
+
     return Column(
       children: [
         // Item Card visualization
@@ -591,8 +596,8 @@ class _CreateOrEditItemModalContentState
                   : _urlsOfGeneratedImages[_selectedGeneratedImage!],
               isLoadingNewImage: isLoadingNewImage,
               categoryIconColor:
-                  selectedCategory?.colorCode?.parseHexColorRepresentation(),
-              categoryIconName: selectedCategory?.iconName,
+                  itemCategoryForItem?.colorCode?.parseHexColorRepresentation(),
+              categoryIconName: itemCategoryForItem?.iconName,
             ),
             SizedBox(
               height: 12,

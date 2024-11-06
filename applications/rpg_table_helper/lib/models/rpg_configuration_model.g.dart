@@ -528,6 +528,12 @@ abstract class _$CharacterStatDefinitionCWProxy {
 
   CharacterStatDefinition editType(CharacterStatEditType editType);
 
+  CharacterStatDefinition isOptionalForAlternateForms(
+      bool? isOptionalForAlternateForms);
+
+  CharacterStatDefinition isOptionalForCompanionCharacters(
+      bool? isOptionalForCompanionCharacters);
+
   CharacterStatDefinition jsonSerializedAdditionalData(
       String? jsonSerializedAdditionalData);
 
@@ -543,6 +549,8 @@ abstract class _$CharacterStatDefinitionCWProxy {
     String? helperText,
     CharacterStatValueType? valueType,
     CharacterStatEditType? editType,
+    bool? isOptionalForAlternateForms,
+    bool? isOptionalForCompanionCharacters,
     String? jsonSerializedAdditionalData,
   });
 }
@@ -573,6 +581,16 @@ class _$CharacterStatDefinitionCWProxyImpl
       this(editType: editType);
 
   @override
+  CharacterStatDefinition isOptionalForAlternateForms(
+          bool? isOptionalForAlternateForms) =>
+      this(isOptionalForAlternateForms: isOptionalForAlternateForms);
+
+  @override
+  CharacterStatDefinition isOptionalForCompanionCharacters(
+          bool? isOptionalForCompanionCharacters) =>
+      this(isOptionalForCompanionCharacters: isOptionalForCompanionCharacters);
+
+  @override
   CharacterStatDefinition jsonSerializedAdditionalData(
           String? jsonSerializedAdditionalData) =>
       this(jsonSerializedAdditionalData: jsonSerializedAdditionalData);
@@ -591,6 +609,8 @@ class _$CharacterStatDefinitionCWProxyImpl
     Object? helperText = const $CopyWithPlaceholder(),
     Object? valueType = const $CopyWithPlaceholder(),
     Object? editType = const $CopyWithPlaceholder(),
+    Object? isOptionalForAlternateForms = const $CopyWithPlaceholder(),
+    Object? isOptionalForCompanionCharacters = const $CopyWithPlaceholder(),
     Object? jsonSerializedAdditionalData = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatDefinition(
@@ -615,6 +635,16 @@ class _$CharacterStatDefinitionCWProxyImpl
           ? _value.editType
           // ignore: cast_nullable_to_non_nullable
           : editType as CharacterStatEditType,
+      isOptionalForAlternateForms:
+          isOptionalForAlternateForms == const $CopyWithPlaceholder()
+              ? _value.isOptionalForAlternateForms
+              // ignore: cast_nullable_to_non_nullable
+              : isOptionalForAlternateForms as bool?,
+      isOptionalForCompanionCharacters:
+          isOptionalForCompanionCharacters == const $CopyWithPlaceholder()
+              ? _value.isOptionalForCompanionCharacters
+              // ignore: cast_nullable_to_non_nullable
+              : isOptionalForCompanionCharacters as bool?,
       jsonSerializedAdditionalData:
           jsonSerializedAdditionalData == const $CopyWithPlaceholder()
               ? _value.jsonSerializedAdditionalData
@@ -1206,6 +1236,9 @@ CharacterStatDefinition _$CharacterStatDefinitionFromJson(
       valueType:
           $enumDecode(_$CharacterStatValueTypeEnumMap, json['valueType']),
       editType: $enumDecode(_$CharacterStatEditTypeEnumMap, json['editType']),
+      isOptionalForAlternateForms: json['isOptionalForAlternateForms'] as bool?,
+      isOptionalForCompanionCharacters:
+          json['isOptionalForCompanionCharacters'] as bool?,
       jsonSerializedAdditionalData:
           json['jsonSerializedAdditionalData'] as String?,
     );
@@ -1218,6 +1251,9 @@ Map<String, dynamic> _$CharacterStatDefinitionToJson(
       'helperText': instance.helperText,
       'valueType': _$CharacterStatValueTypeEnumMap[instance.valueType]!,
       'editType': _$CharacterStatEditTypeEnumMap[instance.editType]!,
+      'isOptionalForAlternateForms': instance.isOptionalForAlternateForms,
+      'isOptionalForCompanionCharacters':
+          instance.isOptionalForCompanionCharacters,
       'jsonSerializedAdditionalData': instance.jsonSerializedAdditionalData,
     };
 

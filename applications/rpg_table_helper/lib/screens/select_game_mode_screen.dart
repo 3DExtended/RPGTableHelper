@@ -348,7 +348,12 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
                   // navigate to main game screen (auth screen wrapper)
                   navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                      AuthorizedScreenWrapper.route, (r) => false);
+                      // TODO update me
+                      AuthorizedScreenWrapper.route,
+                      // kDebugMode
+                      //     ? DmPageScreen.route
+                      //     : AuthorizedScreenWrapper.route,
+                      (r) => false);
                 },
                 minSize: 0,
                 padding: EdgeInsets.all(0),

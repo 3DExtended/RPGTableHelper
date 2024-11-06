@@ -14,6 +14,11 @@ abstract class _$RpgAlternateCharacterConfigurationCWProxy {
   RpgAlternateCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
 
+  RpgAlternateCharacterConfiguration imageUrlWithoutBasePath(
+      String? imageUrlWithoutBasePath);
+
+  RpgAlternateCharacterConfiguration imageDescription(String? imageDescription);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgAlternateCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -24,6 +29,8 @@ abstract class _$RpgAlternateCharacterConfigurationCWProxy {
     String? uuid,
     String? characterName,
     List<RpgCharacterStatValue>? characterStats,
+    String? imageUrlWithoutBasePath,
+    String? imageDescription,
   });
 }
 
@@ -47,6 +54,16 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
       this(characterStats: characterStats);
 
   @override
+  RpgAlternateCharacterConfiguration imageUrlWithoutBasePath(
+          String? imageUrlWithoutBasePath) =>
+      this(imageUrlWithoutBasePath: imageUrlWithoutBasePath);
+
+  @override
+  RpgAlternateCharacterConfiguration imageDescription(
+          String? imageDescription) =>
+      this(imageDescription: imageDescription);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgAlternateCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -58,6 +75,8 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
     Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
+    Object? imageUrlWithoutBasePath = const $CopyWithPlaceholder(),
+    Object? imageDescription = const $CopyWithPlaceholder(),
   }) {
     return RpgAlternateCharacterConfiguration(
       uuid: uuid == const $CopyWithPlaceholder() || uuid == null
@@ -74,6 +93,15 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
           ? _value.characterStats
           // ignore: cast_nullable_to_non_nullable
           : characterStats as List<RpgCharacterStatValue>,
+      imageUrlWithoutBasePath:
+          imageUrlWithoutBasePath == const $CopyWithPlaceholder()
+              ? _value.imageUrlWithoutBasePath
+              // ignore: cast_nullable_to_non_nullable
+              : imageUrlWithoutBasePath as String?,
+      imageDescription: imageDescription == const $CopyWithPlaceholder()
+          ? _value.imageDescription
+          // ignore: cast_nullable_to_non_nullable
+          : imageDescription as String?,
     );
   }
 }
@@ -91,16 +119,24 @@ abstract class _$RpgCharacterConfigurationCWProxy {
 
   RpgCharacterConfiguration characterName(String characterName);
 
+  RpgCharacterConfiguration alternateForms(
+      List<RpgAlternateCharacterConfiguration>? alternateForms);
+
   RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType);
 
   RpgCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
 
+  RpgCharacterConfiguration imageDescription(String? imageDescription);
+
+  RpgCharacterConfiguration imageUrlWithoutBasePath(
+      String? imageUrlWithoutBasePath);
+
   RpgCharacterConfiguration inventory(
       List<RpgCharacterOwnedItemPair> inventory);
 
-  RpgCharacterConfiguration alternateCharacters(
-      List<RpgAlternateCharacterConfiguration>? alternateCharacters);
+  RpgCharacterConfiguration companionCharacters(
+      List<RpgAlternateCharacterConfiguration>? companionCharacters);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -111,10 +147,13 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration call({
     String? uuid,
     String? characterName,
+    List<RpgAlternateCharacterConfiguration>? alternateForms,
     int? moneyInBaseType,
     List<RpgCharacterStatValue>? characterStats,
+    String? imageDescription,
+    String? imageUrlWithoutBasePath,
     List<RpgCharacterOwnedItemPair>? inventory,
-    List<RpgAlternateCharacterConfiguration>? alternateCharacters,
+    List<RpgAlternateCharacterConfiguration>? companionCharacters,
   });
 }
 
@@ -133,6 +172,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(characterName: characterName);
 
   @override
+  RpgCharacterConfiguration alternateForms(
+          List<RpgAlternateCharacterConfiguration>? alternateForms) =>
+      this(alternateForms: alternateForms);
+
+  @override
   RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType) =>
       this(moneyInBaseType: moneyInBaseType);
 
@@ -142,14 +186,23 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(characterStats: characterStats);
 
   @override
+  RpgCharacterConfiguration imageDescription(String? imageDescription) =>
+      this(imageDescription: imageDescription);
+
+  @override
+  RpgCharacterConfiguration imageUrlWithoutBasePath(
+          String? imageUrlWithoutBasePath) =>
+      this(imageUrlWithoutBasePath: imageUrlWithoutBasePath);
+
+  @override
   RpgCharacterConfiguration inventory(
           List<RpgCharacterOwnedItemPair> inventory) =>
       this(inventory: inventory);
 
   @override
-  RpgCharacterConfiguration alternateCharacters(
-          List<RpgAlternateCharacterConfiguration>? alternateCharacters) =>
-      this(alternateCharacters: alternateCharacters);
+  RpgCharacterConfiguration companionCharacters(
+          List<RpgAlternateCharacterConfiguration>? companionCharacters) =>
+      this(companionCharacters: companionCharacters);
 
   @override
 
@@ -162,10 +215,13 @@ class _$RpgCharacterConfigurationCWProxyImpl
   RpgCharacterConfiguration call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
+    Object? alternateForms = const $CopyWithPlaceholder(),
     Object? moneyInBaseType = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
+    Object? imageDescription = const $CopyWithPlaceholder(),
+    Object? imageUrlWithoutBasePath = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
-    Object? alternateCharacters = const $CopyWithPlaceholder(),
+    Object? companionCharacters = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterConfiguration(
       uuid: uuid == const $CopyWithPlaceholder() || uuid == null
@@ -177,6 +233,10 @@ class _$RpgCharacterConfigurationCWProxyImpl
               ? _value.characterName
               // ignore: cast_nullable_to_non_nullable
               : characterName as String,
+      alternateForms: alternateForms == const $CopyWithPlaceholder()
+          ? _value.alternateForms
+          // ignore: cast_nullable_to_non_nullable
+          : alternateForms as List<RpgAlternateCharacterConfiguration>?,
       moneyInBaseType: moneyInBaseType == const $CopyWithPlaceholder()
           ? _value.moneyInBaseType
           // ignore: cast_nullable_to_non_nullable
@@ -186,14 +246,23 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.characterStats
           // ignore: cast_nullable_to_non_nullable
           : characterStats as List<RpgCharacterStatValue>,
+      imageDescription: imageDescription == const $CopyWithPlaceholder()
+          ? _value.imageDescription
+          // ignore: cast_nullable_to_non_nullable
+          : imageDescription as String?,
+      imageUrlWithoutBasePath:
+          imageUrlWithoutBasePath == const $CopyWithPlaceholder()
+              ? _value.imageUrlWithoutBasePath
+              // ignore: cast_nullable_to_non_nullable
+              : imageUrlWithoutBasePath as String?,
       inventory: inventory == const $CopyWithPlaceholder() || inventory == null
           ? _value.inventory
           // ignore: cast_nullable_to_non_nullable
           : inventory as List<RpgCharacterOwnedItemPair>,
-      alternateCharacters: alternateCharacters == const $CopyWithPlaceholder()
-          ? _value.alternateCharacters
+      companionCharacters: companionCharacters == const $CopyWithPlaceholder()
+          ? _value.companionCharacters
           // ignore: cast_nullable_to_non_nullable
-          : alternateCharacters as List<RpgAlternateCharacterConfiguration>?,
+          : companionCharacters as List<RpgAlternateCharacterConfiguration>?,
     );
   }
 }
@@ -344,6 +413,8 @@ RpgAlternateCharacterConfiguration _$RpgAlternateCharacterConfigurationFromJson(
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
+      imageUrlWithoutBasePath: json['imageUrlWithoutBasePath'] as String?,
+      imageDescription: json['imageDescription'] as String?,
     );
 
 Map<String, dynamic> _$RpgAlternateCharacterConfigurationToJson(
@@ -352,6 +423,8 @@ Map<String, dynamic> _$RpgAlternateCharacterConfigurationToJson(
       'uuid': instance.uuid,
       'characterName': instance.characterName,
       'characterStats': instance.characterStats,
+      'imageUrlWithoutBasePath': instance.imageUrlWithoutBasePath,
+      'imageDescription': instance.imageDescription,
     };
 
 RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
@@ -359,15 +432,21 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
     RpgCharacterConfiguration(
       uuid: json['uuid'] as String,
       characterName: json['characterName'] as String,
+      alternateForms: (json['alternateForms'] as List<dynamic>?)
+          ?.map((e) => RpgAlternateCharacterConfiguration.fromJson(
+              e as Map<String, dynamic>))
+          .toList(),
       moneyInBaseType: (json['moneyInBaseType'] as num?)?.toInt(),
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
+      imageDescription: json['imageDescription'] as String?,
+      imageUrlWithoutBasePath: json['imageUrlWithoutBasePath'] as String?,
       inventory: (json['inventory'] as List<dynamic>)
           .map((e) =>
               RpgCharacterOwnedItemPair.fromJson(e as Map<String, dynamic>))
           .toList(),
-      alternateCharacters: (json['alternateCharacters'] as List<dynamic>?)
+      companionCharacters: (json['companionCharacters'] as List<dynamic>?)
           ?.map((e) => RpgAlternateCharacterConfiguration.fromJson(
               e as Map<String, dynamic>))
           .toList(),
@@ -379,9 +458,12 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
       'uuid': instance.uuid,
       'characterName': instance.characterName,
       'characterStats': instance.characterStats,
+      'imageUrlWithoutBasePath': instance.imageUrlWithoutBasePath,
+      'imageDescription': instance.imageDescription,
       'moneyInBaseType': instance.moneyInBaseType,
       'inventory': instance.inventory,
-      'alternateCharacters': instance.alternateCharacters,
+      'companionCharacters': instance.companionCharacters,
+      'alternateForms': instance.alternateForms,
     };
 
 RpgCharacterStatValue _$RpgCharacterStatValueFromJson(

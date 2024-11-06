@@ -20,6 +20,8 @@ List<
   (
     "multiLineText, static",
     CharacterStatDefinition(
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.multiLineText,
       editType: CharacterStatEditType.static,
       name: "Background",
@@ -36,6 +38,8 @@ List<
   (
     "singleLineText, static",
     CharacterStatDefinition(
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.singleLineText,
       editType: CharacterStatEditType.static,
       name: "Charactername",
@@ -51,6 +55,8 @@ List<
   (
     "multiselect, static",
     CharacterStatDefinition(
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.multiselect,
       editType: CharacterStatEditType.static,
       name: "Saving Throws",
@@ -68,6 +74,8 @@ List<
   (
     "int, static",
     CharacterStatDefinition(
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.int,
       editType: CharacterStatEditType.static,
       name: "Alter",
@@ -83,6 +91,8 @@ List<
   (
     "intWithMaxValue, static",
     CharacterStatDefinition(
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.intWithMaxValue,
       editType: CharacterStatEditType.static,
       name: "HP",
@@ -98,6 +108,8 @@ List<
   (
     "intWithCalculatedValue, static",
     CharacterStatDefinition(
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.intWithCalculatedValue,
       editType: CharacterStatEditType.static,
       name: "Stärke",
