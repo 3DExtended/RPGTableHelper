@@ -169,9 +169,9 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
                     child: CustomButtonNewdesign(
                       isSubbutton: true,
-                      variant: CustomButtonNewdesignVariant.DarkButton,
+                      variant: CustomButtonNewdesignVariant.Default,
                       onPressed: () async {
-                        // TODO open icon and color selector
+                        // open icon and color selector
                         await showSelectIconWithColorModal(context,
                                 alreadySelectedIcoName: e.value.iconName,
                                 alreadySelectedIconColor: e.value.iconColor)
@@ -192,8 +192,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         padding: const EdgeInsets.all(4.5),
                         child: getIconForIdentifier(
                           name: e.value.iconName ?? "leaf",
-                          color: e.value.iconColor ??
-                              const Color.fromARGB(255, 54, 244, 82),
+                          color: darkColor,
                           size: 32,
                         ).$2,
                       ),

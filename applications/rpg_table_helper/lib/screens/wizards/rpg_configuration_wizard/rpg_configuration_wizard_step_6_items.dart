@@ -258,6 +258,14 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       var categoryForItem =
                           flattenedCategories.firstWhereOrNull(
                               (e) => e.uuid == itemToRender.value.categoryId);
+
+                      var parentCategoryOfItem = categoryForItem != null
+                          ? flattenedCategories.firstWhereOrNull((fc) =>
+                                  fc.subCategories.any((sub) =>
+                                      sub.uuid == categoryForItem.uuid)) ??
+                              categoryForItem
+                          : categoryForItem;
+
                       return [
                         CupertinoButton(
                           minSize: 0,
@@ -284,9 +292,9 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                                 itemToRender.value.imageUrlWithoutBasePath,
                             title: itemToRender.value.name,
                             description: itemToRender.value.description,
-                            categoryIconColor: categoryForItem?.colorCode
+                            categoryIconColor: parentCategoryOfItem?.colorCode
                                 ?.parseHexColorRepresentation(),
-                            categoryIconName: categoryForItem?.iconName,
+                            categoryIconName: parentCategoryOfItem?.iconName,
                           ),
                         ),
                         if (numberOfColumnsOnScreen != subindex + 1)

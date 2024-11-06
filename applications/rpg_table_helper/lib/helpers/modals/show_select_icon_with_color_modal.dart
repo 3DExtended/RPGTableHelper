@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
@@ -122,83 +123,129 @@ class _SelectIconWithColorModalContentState
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Text(
-                              "Select a color:",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineMedium!
-                                  .copyWith(
-                                    color: darkTextColor,
-                                    fontSize: 24,
-                                  ),
-                            ),
-                            // show colors:
-                            Wrap(
-                              spacing: 10,
-                              runSpacing: 10,
-                              children: allIconColors
-                                  .map((color) => CustomButtonNewdesign(
-                                        isSubbutton: false,
-                                        variant: selectedIconColor == color
-                                            ? CustomButtonNewdesignVariant
-                                                .DarkButton
-                                            : CustomButtonNewdesignVariant
-                                                .Default,
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedIconColor = color;
-                                          });
-                                        },
-                                        icon: Container(
-                                          width: 32,
-                                          height: 32,
-                                          color: color,
+                      child: Row(
+                        children: [
+                          // selection of color and icon
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Select a color:",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium!
+                                        .copyWith(
+                                          color: darkTextColor,
+                                          fontSize: 24,
                                         ),
-                                      ))
-                                  .toList(),
-                            ),
-
-                            Text(
-                              "Select an icon:",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineMedium!
-                                  .copyWith(
-                                    color: darkTextColor,
-                                    fontSize: 24,
                                   ),
-                            ),
+                                  // show colors:
+                                  Wrap(
+                                    spacing: 10,
+                                    runSpacing: 10,
+                                    children: allIconColors
+                                        .map((color) => CustomButtonNewdesign(
+                                              isSubbutton: false,
+                                              variant: selectedIconColor ==
+                                                      color
+                                                  ? CustomButtonNewdesignVariant
+                                                      .DarkButton
+                                                  : CustomButtonNewdesignVariant
+                                                      .FlatButton,
+                                              onPressed: () {
+                                                setState(() {
+                                                  selectedIconColor = color;
+                                                });
+                                              },
+                                              icon: Container(
+                                                width: 32,
+                                                height: 32,
+                                                color: color,
+                                              ),
+                                            ))
+                                        .toList(),
+                                  ),
 
-                            // show icons:
-                            Wrap(
-                              spacing: 10,
-                              runSpacing: 10,
-                              children: allIconNames
-                                  .map((name) => CustomButtonNewdesign(
-                                        isSubbutton: false,
-                                        variant: selectedIconName == name
-                                            ? CustomButtonNewdesignVariant
-                                                .DarkButton
-                                            : CustomButtonNewdesignVariant
-                                                .Default,
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedIconName = name;
-                                          });
-                                        },
-                                        icon: getIconForIdentifier(
-                                          name: name,
-                                          color: selectedIconColor ?? bgColor,
-                                          size: 32,
-                                        ).$2,
-                                      ))
-                                  .toList(),
+                                  Text(
+                                    "Select an icon:",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium!
+                                        .copyWith(
+                                          color: darkTextColor,
+                                          fontSize: 24,
+                                        ),
+                                  ),
+
+                                  // show icons:
+                                  Wrap(
+                                    spacing: 10,
+                                    runSpacing: 10,
+                                    children: allIconNames
+                                        .map((name) => CustomButtonNewdesign(
+                                              isSubbutton: false,
+                                              variant: selectedIconName == name
+                                                  ? CustomButtonNewdesignVariant
+                                                      .DarkButton
+                                                  : CustomButtonNewdesignVariant
+                                                      .Default,
+                                              onPressed: () {
+                                                setState(() {
+                                                  selectedIconName = name;
+                                                });
+                                              },
+                                              icon: getIconForIdentifier(
+                                                name: name,
+                                                color: selectedIconName == name
+                                                    ? bgColor
+                                                    : darkTextColor,
+                                                size: 32,
+                                              ).$2,
+                                            ))
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          // Vorschau
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Vorschau:",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(
+                                          color: darkTextColor,
+                                          fontSize: 24,
+                                        ),
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  CustomItemCard(
+                                    scalarOverride: 1,
+                                    title: "Item", // TODO localize
+                                    description:
+                                        "Some items description", // TODO localize
+
+                                    categoryIconColor: selectedIconColor,
+                                    categoryIconName: selectedIconName,
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
