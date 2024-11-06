@@ -243,8 +243,7 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
             ),
           ],
         ),
-        contentChildren: const [],
-        centerNavBarWidget: null);
+        contentChildren: const []);
   }
 
   Padding getRecipeVisualisation(

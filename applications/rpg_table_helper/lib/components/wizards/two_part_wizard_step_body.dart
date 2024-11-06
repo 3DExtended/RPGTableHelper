@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class TwoPartWizardStepBody extends StatelessWidget {
   const TwoPartWizardStepBody({
@@ -15,7 +18,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
     this.titleWidgetRight,
     this.contentWidget,
     this.footerWidget,
-    this.centerNavBarWidget,
     this.sideBarFlex = 1,
     this.contentFlex = 1,
   });
@@ -28,7 +30,6 @@ class TwoPartWizardStepBody extends StatelessWidget {
   final void Function()? onNextBtnPressed;
   final List<Widget> contentChildren;
   final Widget? footerWidget;
-  final Widget? centerNavBarWidget;
   final Widget? contentWidget;
   final Widget? titleWidgetRight;
 
@@ -76,14 +77,16 @@ class TwoPartWizardStepBody extends StatelessWidget {
                         child: Row(
                           children: [
                             CustomButtonNewdesign(
-                              label: "Zurück", // TODO localize
+                              icon: CustomFaIcon(
+                                  color: darkColor,
+                                  icon: FontAwesomeIcons.chevronLeft),
                               onPressed: onPreviousBtnPressed,
                             ),
-                            const Spacer(),
-                            if (centerNavBarWidget != null) centerNavBarWidget!,
-                            if (centerNavBarWidget != null) const Spacer(),
+                            Spacer(),
                             CustomButtonNewdesign(
-                              label: "Weiter", // TODO localize
+                              icon: CustomFaIcon(
+                                  color: darkColor,
+                                  icon: FontAwesomeIcons.chevronRight),
                               onPressed: onNextBtnPressed,
                             ),
                           ],
