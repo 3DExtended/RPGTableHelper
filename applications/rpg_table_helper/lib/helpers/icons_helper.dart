@@ -61,7 +61,6 @@ const allIconNames = [
   "flag",
   "flask",
   "frog",
-  "gavel",
   "gear",
   "gears",
   "gem",
@@ -170,7 +169,6 @@ const allIconNames = [
   "backpack-svgrepo-com-2",
   "armoury-body-svgrepo-com",
   "axe-svgrepo-com",
-  "backpack-luggage-svgrepo-com",
   "backpack-svgrepo-com",
   "bat-svgrepo-com",
   "black-cat-pet-svgrepo-com",
@@ -184,7 +182,6 @@ const allIconNames = [
   "crossbow-svgrepo-com",
   "culture-glass-ball-looking-svgrepo-com",
   "goblet-svgrepo-com",
-  "halloween-bones-stew-in-a-pot-outline-svgrepo-com",
   "halloween-potion-svgrepo-com",
   "helmet-svgrepo-com",
   "jewelry-store-svgrepo-com",
@@ -254,16 +251,6 @@ const allIconNames = [
       return (
         "axe-svgrepo-com",
         SvgPicture.asset("assets/icons/inappcategoryicons/axe-svgrepo-com.svg",
-            colorFilter:
-                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
-            width: size,
-            height: size)
-      );
-    case "backpack-luggage-svgrepo-com":
-      return (
-        "backpack-luggage-svgrepo-com",
-        SvgPicture.asset(
-            "assets/icons/inappcategoryicons/backpack-luggage-svgrepo-com.svg",
             colorFilter:
                 color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
             width: size,
@@ -393,16 +380,6 @@ const allIconNames = [
         "goblet-svgrepo-com",
         SvgPicture.asset(
             "assets/icons/inappcategoryicons/goblet-svgrepo-com.svg",
-            colorFilter:
-                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
-            width: size,
-            height: size)
-      );
-    case "halloween-bones-stew-in-a-pot-outline-svgrepo-com":
-      return (
-        "halloween-bones-stew-in-a-pot-outline-svgrepo-com",
-        SvgPicture.asset(
-            "assets/icons/inappcategoryicons/halloween-bones-stew-in-a-pot-outline-svgrepo-com.svg",
             colorFilter:
                 color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
             width: size,
@@ -1208,15 +1185,6 @@ const allIconNames = [
             size: size,
             color: color,
             icon: FontAwesomeIcons.frog)
-      ); // ?f=classic&s=solid
-    case "gavel":
-      return (
-        "gavel",
-        CustomFaIcon(
-            noPadding: true,
-            size: size,
-            color: color,
-            icon: FontAwesomeIcons.gavel)
       ); // ?f=classic&s=solid
     case "gear":
       return (

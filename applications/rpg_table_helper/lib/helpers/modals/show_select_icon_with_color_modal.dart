@@ -12,18 +12,25 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:shadow_widget/shadow_widget.dart';
 
 const List<Color> allIconColors = [
-  Color.fromARGB(255, 244, 231, 54),
-  Color.fromARGB(255, 54, 244, 238),
-  Color.fromARGB(255, 142, 130, 253),
-  Color.fromARGB(255, 76, 244, 54),
-  Color.fromARGB(255, 235, 109, 100),
-  Color(0xffff00ff)
+  // -----
+  Color.fromARGB(255, 249, 246, 61),
+  Color.fromARGB(255, 249, 196, 61),
+  accentColor,
+  Color.fromARGB(255, 249, 61, 77),
+  Color.fromARGB(255, 249, 61, 227),
+  Color.fromARGB(255, 177, 61, 249),
+  Color.fromARGB(255, 61, 64, 249),
+  Color.fromARGB(255, 61, 133, 249),
+  Color.fromARGB(255, 61, 230, 249),
+  Color.fromARGB(255, 61, 249, 189),
+  Color.fromARGB(255, 61, 249, 86),
 ];
 
 Future<(String iconName, Color iconColor)?> showSelectIconWithColorModal(
     BuildContext context,
     {GlobalKey<NavigatorState>? overrideNavigatorKey,
     String? alreadySelectedIcoName,
+    String? titleSuffix,
     Color? alreadySelectedIconColor}) async {
   // show error to user
   return await customShowCupertinoModalBottomSheet<
@@ -45,6 +52,7 @@ Future<(String iconName, Color iconColor)?> showSelectIconWithColorModal(
           modalPadding: modalPadding,
           alreadySelectedIcoName: alreadySelectedIcoName,
           alreadySelectedIconColor: alreadySelectedIconColor,
+          titleSuffix: titleSuffix,
         );
       });
 }
@@ -55,11 +63,14 @@ class SelectIconWithColorModalContent extends StatefulWidget {
     required this.modalPadding,
     this.alreadySelectedIcoName,
     this.alreadySelectedIconColor,
+    this.titleSuffix,
   });
 
   final double modalPadding;
   final Color? alreadySelectedIconColor;
   final String? alreadySelectedIcoName;
+
+  final String? titleSuffix;
 
   @override
   State<SelectIconWithColorModalContent> createState() =>
@@ -112,7 +123,8 @@ class _SelectIconWithColorModalContentState
                     menuOpen: null,
                     useTopSafePadding: false,
                     titleWidget: Text(
-                      "Icon auswählen", // TODO localize/ switch text between add and edit
+                      "Icon auswählen${widget.titleSuffix}" ??
+                          "", // TODO localize/ switch text between add and edit
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
@@ -152,7 +164,7 @@ class _SelectIconWithColorModalContentState
                                                   ? CustomButtonNewdesignVariant
                                                       .DarkButton
                                                   : CustomButtonNewdesignVariant
-                                                      .FlatButton,
+                                                      .Default,
                                               onPressed: () {
                                                 setState(() {
                                                   selectedIconColor = color;
@@ -165,6 +177,10 @@ class _SelectIconWithColorModalContentState
                                               ),
                                             ))
                                         .toList(),
+                                  ),
+
+                                  SizedBox(
+                                    height: 20,
                                   ),
 
                                   Text(
@@ -258,7 +274,7 @@ class _SelectIconWithColorModalContentState
                       children: [
                         const Spacer(),
                         CustomButtonNewdesign(
-                          label: "Speichern", // TODO localize
+                          label: "Auswählen", // TODO localize
                           onPressed: () {
                             navigatorKey.currentState!.pop(
                                 selectedIconName == null ||

@@ -176,7 +176,9 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         // open icon and color selector
                         await showSelectIconWithColorModal(context,
                                 alreadySelectedIcoName: e.value.iconName,
-                                alreadySelectedIconColor: e.value.iconColor)
+                                alreadySelectedIconColor: e.value.iconColor,
+                                titleSuffix:
+                                    " (für Kategorie ${e.value.nameController.text})")
                             .then((value) {
                           if (value == null) {
                             return;
