@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -190,6 +191,7 @@ class _ShowGetPlayerConfigurationModalContentState
               // characterValue.serializedValue = {"value": "asdf"}
 
               return CustomTextField(
+                newDesign: true,
                 labelText: widget.statConfiguration.name,
                 placeholderText: widget.statConfiguration.helperText,
                 textEditingController: textEditController,
@@ -204,6 +206,7 @@ class _ShowGetPlayerConfigurationModalContentState
               return Column(
                 children: [
                   CustomTextField(
+                    newDesign: true,
                     labelText: widget.statConfiguration.name,
                     placeholderText: widget.statConfiguration.helperText,
                     textEditingController: textEditController,
@@ -231,22 +234,22 @@ class _ShowGetPlayerConfigurationModalContentState
                             contentPadding: EdgeInsets.all(0),
                             splashRadius: 0,
                             dense: true,
-                            checkColor: const Color.fromARGB(255, 12, 163, 90),
-                            activeColor: const Color.fromARGB(126, 90, 90, 90),
+                            checkColor: const Color.fromARGB(255, 57, 245, 88),
+                            activeColor: darkColor,
                             visualDensity: VisualDensity(vertical: -2),
                             title: Text(
                               e.value.$1,
                               style: Theme.of(context)
                                   .textTheme
                                   .labelMedium!
-                                  .copyWith(color: Colors.white, fontSize: 16),
+                                  .copyWith(color: darkTextColor, fontSize: 16),
                             ),
                             subtitle: Text(
                               e.value.$2,
                               style: Theme.of(context)
                                   .textTheme
                                   .labelMedium!
-                                  .copyWith(color: Colors.white),
+                                  .copyWith(color: darkTextColor),
                             ),
                             value: e.value.$3,
                             onChanged: (val) {
@@ -277,6 +280,7 @@ class _ShowGetPlayerConfigurationModalContentState
                     children: [
                       Expanded(
                         child: CustomTextField(
+                          newDesign: true,
                           labelText: "Current Value",
                           placeholderText: "The current value.",
                           textEditingController: textEditController,
@@ -288,6 +292,7 @@ class _ShowGetPlayerConfigurationModalContentState
                       ),
                       Expanded(
                         child: CustomTextField(
+                          newDesign: true,
                           labelText: "Max Value",
                           placeholderText: "The maximum value you could get.",
                           textEditingController: textEditController2,
@@ -311,6 +316,7 @@ class _ShowGetPlayerConfigurationModalContentState
                     children: [
                       Expanded(
                         child: CustomTextField(
+                          newDesign: true,
                           labelText: "First Value",
                           placeholderText: "The first value.",
                           textEditingController: textEditController,
@@ -322,6 +328,7 @@ class _ShowGetPlayerConfigurationModalContentState
                       ),
                       Expanded(
                         child: CustomTextField(
+                          newDesign: true,
                           labelText: "Second Value",
                           placeholderText:
                               "The computed value based on the first value.",
@@ -363,7 +370,7 @@ class PlayerConfigModalNonDefaultTitleAndHelperText extends StatelessWidget {
         Text(
           statTitle,
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Colors.white,
+                color: darkTextColor,
                 fontSize: 16,
               ),
         ),
@@ -373,7 +380,7 @@ class PlayerConfigModalNonDefaultTitleAndHelperText extends StatelessWidget {
         Text(
           statDescription,
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Colors.white,
+                color: darkTextColor,
                 fontSize: 12,
               ),
         ),

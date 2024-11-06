@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -25,7 +26,7 @@ Future<CharacterStatDefinition?> showGetDmConfigurationModal({
       closeProgressThreshold: -50000,
       enableDrag: false,
       context: context,
-      backgroundColor: const Color.fromARGB(158, 49, 49, 49),
+      backgroundColor: const Color.fromARGB(192, 21, 21, 21),
       overrideNavigatorKey: overrideNavigatorKey,
       builder: (context) {
         return ShowGetDmConfigurationModalContent(
@@ -108,7 +109,7 @@ class _ShowGetDmConfigurationModalContentState
   @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<CharacterStatDefinition>(
-        title: "Eigenschaften bearbeiten",
+        title: "Eigenschaft bearbeiten",
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},
 
@@ -146,6 +147,7 @@ class _ShowGetDmConfigurationModalContentState
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextField(
+              newDesign: true,
               labelText: "Name der Eigenschaft",
               textEditingController: nameTextEditor,
               keyboardType: TextInputType.text,
@@ -154,6 +156,7 @@ class _ShowGetDmConfigurationModalContentState
               height: 10,
             ),
             CustomTextField(
+              newDesign: true,
               labelText: "Hilfstext für die Eigenschaft",
               textEditingController: helperTextEditor,
               keyboardType: TextInputType.text,
@@ -162,6 +165,7 @@ class _ShowGetDmConfigurationModalContentState
               height: 10,
             ),
             CustomDropdownMenu(
+                newDesign: true,
                 selectedValueTemp: selectedEditType?.name,
                 setter: (newValue) {
                   setState(() {
@@ -196,6 +200,7 @@ class _ShowGetDmConfigurationModalContentState
               height: 15,
             ),
             CustomDropdownMenu(
+                newDesign: true,
                 selectedValueTemp: selectedValueType?.name,
                 setter: (newValue) {
                   setState(() {
@@ -293,7 +298,7 @@ class _ShowGetDmConfigurationModalContentState
         Text(
           "Optionen für Mehrfach-Auswahl",
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: Colors.white,
+                color: darkTextColor,
                 fontSize: 20,
               ),
         ),
@@ -310,6 +315,7 @@ class _ShowGetDmConfigurationModalContentState
                   children: [
                     Expanded(
                       child: CustomTextField(
+                        newDesign: true,
                         labelText: "Name:",
                         textEditingController: tuple.value.$2,
                         keyboardType: TextInputType.text,
@@ -320,6 +326,7 @@ class _ShowGetDmConfigurationModalContentState
                     ),
                     Expanded(
                       child: CustomTextField(
+                        newDesign: true,
                         labelText: "Beschreibung:",
                         textEditingController: tuple.value.$3,
                         keyboardType: TextInputType.multiline,
@@ -329,14 +336,17 @@ class _ShowGetDmConfigurationModalContentState
                       height: 50,
                       width: 70,
                       clipBehavior: Clip.none,
-                      child: CustomButton(
+                      child: CustomButtonNewdesign(
+                        variant: CustomButtonNewdesignVariant.FlatButton,
                         onPressed: () {
                           setState(() {
                             multiselectOptions.removeAt(tuple.key);
                           });
                         },
-                        icon:
-                            const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                        icon: const CustomFaIcon(
+                          icon: FontAwesomeIcons.trashCan,
+                          color: darkColor,
+                        ),
                       ),
                     ),
                   ],
@@ -346,7 +356,7 @@ class _ShowGetDmConfigurationModalContentState
 
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-          child: CustomButton(
+          child: CustomButtonNewdesign(
             isSubbutton: true,
             onPressed: () {
               setState(() {
@@ -361,12 +371,12 @@ class _ShowGetDmConfigurationModalContentState
             icon: Theme(
                 data: ThemeData(
                   iconTheme: const IconThemeData(
-                    color: Colors.white,
+                    color: darkTextColor,
                     size: 16,
                   ),
                   textTheme: const TextTheme(
                     bodyMedium: TextStyle(
-                      color: Colors.white,
+                      color: darkTextColor,
                     ),
                   ),
                 ),
