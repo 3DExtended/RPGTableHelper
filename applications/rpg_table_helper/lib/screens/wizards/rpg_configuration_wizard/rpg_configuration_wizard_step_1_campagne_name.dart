@@ -84,6 +84,8 @@ Wie heißt deine Kampagne?'''; // TODO localize
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
+      sideBarFlex: 1,
+      contentFlex: 2,
       contentChildren: [
         CustomTextField(
             newDesign: true,

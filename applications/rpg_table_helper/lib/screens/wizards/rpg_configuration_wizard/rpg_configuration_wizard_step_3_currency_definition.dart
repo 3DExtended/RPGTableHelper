@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
@@ -114,6 +115,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
+      sideBarFlex: 1,
+      contentFlex: 2,
       footerWidget: Column(
         children: [
           const HorizontalLine(),
@@ -175,6 +178,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                     height: 50,
                     width: 40,
                     clipBehavior: Clip.none,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: CustomButtonNewdesign(
                       isSubbutton: true,
                       variant: CustomButtonNewdesignVariant.FlatButton,
@@ -187,7 +191,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                       icon: const CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
                         color: darkColor,
-                        size: 16,
+                        size: 22,
                       ),
                     ),
                   ),
@@ -325,12 +329,14 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
   }
 
   String buildTextForCurrencyComparison() {
+    var numberFormat = NumberFormat('#,###');
+
     var result = "";
     var currentMultiple = 1;
     for (var i = currencyControllerPairs.length - 1; i >= 0; i--) {
       if (i != currencyControllerPairs.length - 1) result += " = ";
 
-      result += "$currentMultiple ";
+      result += "${numberFormat.format(currentMultiple)} ";
       result += currencyControllerPairs[i].$1.text;
 
       var parseInt = int.tryParse(currencyControllerPairs[i].$2.text);
@@ -341,7 +347,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
 
     if (currencyControllerPairs.isNotEmpty) result += " = ";
 
-    result += "$currentMultiple ";
+    result += "${numberFormat.format(currentMultiple)} ";
     result += smallestCurrencyNameTextEditingController.text;
 
     return result;

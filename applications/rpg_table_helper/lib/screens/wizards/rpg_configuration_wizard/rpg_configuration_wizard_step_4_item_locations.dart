@@ -102,6 +102,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
+      sideBarFlex: 1,
+      contentFlex: 2,
       contentChildren: [
         const SizedBox(
           height: 20,
@@ -110,6 +112,7 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
           return Column(
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: CustomTextField(
@@ -127,6 +130,7 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                     height: 50,
                     width: 40,
                     clipBehavior: Clip.none,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: CustomButtonNewdesign(
                       variant: CustomButtonNewdesignVariant.FlatButton,
                       isSubbutton: true,
@@ -140,7 +144,7 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                       },
                       icon: const CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
-                        size: 16,
+                        size: 22,
                         color: darkColor,
                       ),
                     ),

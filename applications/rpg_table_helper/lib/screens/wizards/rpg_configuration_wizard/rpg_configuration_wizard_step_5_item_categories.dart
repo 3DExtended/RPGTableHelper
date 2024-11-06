@@ -145,6 +145,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepHelperText: stepHelperText,
+      sideBarFlex: 1,
+      contentFlex: 2,
       onNextBtnPressed: !isFormValid
           ? null
           : () {
@@ -213,7 +215,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     height: 50,
                     width: 40,
                     clipBehavior: Clip.none,
-                    alignment: Alignment.center,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: CustomButtonNewdesign(
                       variant: CustomButtonNewdesignVariant.FlatButton,
                       isSubbutton: true,
@@ -228,7 +230,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                       icon: const CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
                         color: darkColor,
-                        size: 16,
+                        size: 22,
                       ),
                     ),
                   ),
@@ -258,6 +260,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                             height: 50,
                             width: 40,
                             clipBehavior: Clip.none,
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: CustomButtonNewdesign(
                               variant: CustomButtonNewdesignVariant.FlatButton,
                               isSubbutton: true,
@@ -271,15 +274,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                       .removeAt(subCat.key);
                                 });
                               },
-                              icon: Container(
-                                  width: 24,
-                                  height: 24,
-                                  alignment: AlignmentDirectional.center,
-                                  child: const CustomFaIcon(
-                                    icon: FontAwesomeIcons.trashCan,
-                                    color: darkColor,
-                                    size: 16,
-                                  )),
+                              icon: const CustomFaIcon(
+                                icon: FontAwesomeIcons.trashCan,
+                                color: darkColor,
+                                size: 22,
+                              ),
                             ),
                           ),
                         ],
