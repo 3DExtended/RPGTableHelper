@@ -1,3 +1,4 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,12 +8,20 @@ import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.da
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/color_extension.dart';
+import 'package:rpg_table_helper/helpers/icons_helper.dart';
+import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:uuid/v7.dart';
 
+part 'rpg_configuration_wizard_step_5_item_categories.g.dart';
+
+@CopyWith()
 class _ItemCategoryEdit {
   final String uuid;
+  final String? iconName;
+  final Color? iconColor;
   final TextEditingController nameController;
   final List<_ItemCategoryEdit> subCategories;
   final bool hideInInventoryFilters;
@@ -20,14 +29,16 @@ class _ItemCategoryEdit {
   _ItemCategoryEdit({
     required this.uuid,
     required this.nameController,
+    required this.iconName,
+    required this.iconColor,
     required this.subCategories,
     this.hideInInventoryFilters = false,
   });
 
   ItemCategory toItemCategory() {
     return ItemCategory(
-      colorCode: "#ffff00ff",
-      iconName: "spellbook-svgrepo-com",
+      colorCode: iconColor?.toHex(),
+      iconName: iconName,
       uuid: uuid,
       name: nameController.text,
       subCategories: subCategories.isNotEmpty
@@ -45,6 +56,8 @@ class _ItemCategoryEdit {
     return _ItemCategoryEdit(
       nameController: editController,
       uuid: cat.uuid,
+      iconName: cat.iconName,
+      iconColor: cat.colorCode?.parseHexColorRepresentation(),
       hideInInventoryFilters: cat.hideInInventoryFilters,
       subCategories: cat.subCategories
           .map((e) => _ItemCategoryEdit.fromItemCategory(e, listener))
@@ -152,6 +165,40 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                    child: CustomButtonNewdesign(
+                      isSubbutton: true,
+                      variant: CustomButtonNewdesignVariant.DarkButton,
+                      onPressed: () async {
+                        // TODO open icon and color selector
+                        await showSelectIconWithColorModal(context,
+                                alreadySelectedIcoName: e.value.iconName,
+                                alreadySelectedIconColor: e.value.iconColor)
+                            .then((value) {
+                          if (value == null) {
+                            return;
+                          }
+
+                          setState(() {
+                            categories[e.key] = categories[e.key].copyWith(
+                              iconName: value.$1,
+                              iconColor: value.$2,
+                            );
+                          });
+                        });
+                      },
+                      icon: Padding(
+                        padding: const EdgeInsets.all(4.5),
+                        child: getIconForIdentifier(
+                          name: e.value.iconName ?? "leaf",
+                          color: e.value.iconColor ??
+                              const Color.fromARGB(255, 54, 244, 82),
+                          size: 32,
+                        ).$2,
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: CustomTextField(
                       newDesign: true,
@@ -193,6 +240,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     (subCat) => Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: CustomTextField(

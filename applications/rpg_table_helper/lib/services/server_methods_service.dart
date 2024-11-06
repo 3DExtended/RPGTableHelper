@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';

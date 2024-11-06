@@ -3,22 +3,19 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 import '../test_configuration.dart';
 
 void main() {
-  group('showPlayerHasBeenGrantedItemsThroughDmModal renderings', () {
+  group('showSelectIconWithColorModal renderings', () {
     GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
     testConfigurations(
       disableLocals: true,
       pathPrefix: "",
-      widgetName: 'showPlayerHasBeenGrantedItemsThroughDmModal',
+      widgetName: 'showSelectIconWithColorModal',
       useMaterialAppWrapper: true,
       testerInteractions: (tester, local) async {
         await tester.tap(find.byType(ElevatedButton));
@@ -52,21 +49,7 @@ void main() {
               body: Builder(builder: (context) {
                 return ElevatedButton(
                     onPressed: () async {
-                      await showPlayerHasBeenGrantedItemsThroughDmModal(
-                        grantedItems: GrantedItemsForPlayer(
-                            characterName: "Player",
-                            playerId: "6e574e88-630e-4728-a113-0f3f96a0f0ed",
-                            grantedItems:
-                                RpgConfigurationModel.getBaseConfiguration()
-                                    .allItems
-                                    .map(
-                                      (e) => RpgCharacterOwnedItemPair(
-                                        amount: 3,
-                                        itemUuid: e.uuid,
-                                      ),
-                                    )
-                                    .toList()),
-                        rpgConfig: RpgConfigurationModel.getBaseConfiguration(),
+                      await showSelectIconWithColorModal(
                         overrideNavigatorKey: navigatorKey,
                         context,
                       );
