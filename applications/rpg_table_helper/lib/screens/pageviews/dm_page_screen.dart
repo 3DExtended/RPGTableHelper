@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_campagne_management.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_character_overview.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_screen_fight_squence.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_grant_items.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
@@ -42,12 +43,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
     return [
       ("Kampagnen Management", DmScreenCampagneManagement()),
       ("Charakter Übersicht", DmScreenCharacterOverview()),
-      (
-        "3",
-        Container(
-          color: Colors.blue,
-        )
-      ),
+      ("Kampf Reihenfolge", DmScreenFightSquence()),
       (
         "Items verteilen",
         DmScreenGrantItems(),

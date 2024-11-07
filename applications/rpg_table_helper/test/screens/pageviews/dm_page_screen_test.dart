@@ -54,6 +54,20 @@ void main() {
               return ConnectionDetailsNotifier(
                 initState: AsyncValue.data(ConnectionDetails.defaultValue()
                     .copyWith(
+                        fightSequence: FightSequence(
+                            fightUuid: "f10526be-c69a-46be-8802-df9421e6187b",
+                            sequence: [
+                              (
+                                "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
+                                "Frodo",
+                                17
+                              ),
+                              (
+                                "0eff8827-14f1-46a1-8695-ef7dc5323137",
+                                "Gandalf",
+                                17
+                              ),
+                            ]),
                         isConnected: true,
                         isConnecting: true,
                         isDm: true,

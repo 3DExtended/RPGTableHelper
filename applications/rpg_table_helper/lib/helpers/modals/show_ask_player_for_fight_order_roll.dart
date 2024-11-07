@@ -99,6 +99,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                         child: Column(
                           children: [
                             CustomTextField(
+                              newDesign: true,
                               labelText: "Kampf Wurf",
                               textEditingController: textEditingController,
                               keyboardType: TextInputType.number,

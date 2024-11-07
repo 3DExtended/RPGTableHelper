@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal%20copy.dart';
+import 'package:rpg_table_helper/helpers/list_extensions.dart';
+import 'package:rpg_table_helper/helpers/modals/show_ask_player_for_fight_order_roll.dart';
 import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -479,7 +480,9 @@ class ServerMethodsService extends IServerMethodsService {
 
     // merge answers into connectiondetails
     var fightSequenceList = currentFightSequenceAskedFor.sequence;
-    fightSequenceList.addAll(decodedFightSequence.sequence);
+
+    fightSequenceList.addAllIntoSortedList(
+        decodedFightSequence.sequence, (a, b) => b.$3.compareTo(a.$3));
 
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         currentConnectionDetails.copyWith(
