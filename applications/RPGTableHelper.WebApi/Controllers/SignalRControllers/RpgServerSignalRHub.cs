@@ -321,6 +321,55 @@ public class RpgServerSignalRHub : Hub
             );
     }
 
+    public async Task AskPlayersForRolls(string campagneId, string fightSequenceSerialized)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        await Clients
+            .OthersInGroup(campagneId + "_All")
+            .SendAsync("playersAreAskedForRolls", fightSequenceSerialized, (CancellationToken)default);
+    }
+
+    public async Task SendFightSequenceRollsToDm(string playercharacterid, string fightSequenceSerialized)
+    {
+        var playerCharacter = await new PlayerCharacterQuery
+        {
+            ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (
+            playerCharacter.IsNone
+            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
+            || playerCharacter.Get().CampagneId == null
+        )
+        {
+            return;
+        }
+
+        var campagneOfCharacter = await new CampagneQuery { ModelId = playerCharacter.Get().CampagneId! }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagneOfCharacter.IsNone)
+        {
+            return;
+        }
+
+        await Clients
+            .OthersInGroup(campagneOfCharacter.Get().Id.Value + "_Dms")
+            .SendAsync("dmReceivedFightSequenceAnswer", fightSequenceSerialized, (CancellationToken)default);
+    }
+
     /// <summary>
     /// Dm Method for updating all rpg configs
     /// </summary>
