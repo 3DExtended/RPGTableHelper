@@ -38,7 +38,7 @@ class CustomCharacterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var fullImageUrl = imageUrl == null
-        ? null
+        ? "assets/images/charactercard_placeholder.png"
         : (imageUrl!.startsWith("assets")
                 ? imageUrl
                 : (apiBaseUrl +

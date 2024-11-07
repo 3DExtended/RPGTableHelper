@@ -152,6 +152,14 @@ class _CharacterScreenPlayerContentState
                               : altChar.characterName),
                         ),
                       ),
+                      ...(characterConfig!.alternateForms ?? []).map(
+                        (altChar) => DropdownMenuItem(
+                          value: altChar.uuid,
+                          child: Text(altChar.characterName.isEmpty
+                              ? "Player Name"
+                              : altChar.characterName),
+                        ),
+                      ),
                       DropdownMenuItem(
                         value: "new",
                         child: Text("Neu"),
@@ -340,8 +348,14 @@ class _CharacterScreenPlayerContentState
       if (charConfigToUse.uuid == selectedCharacterId) {
         return charConfigToUse;
       } else {
-        return charConfigToUse.companionCharacters
+        var asdf = charConfigToUse.companionCharacters
             ?.firstWhereOrNull((alt) => alt.uuid == selectedCharacterId);
+
+        if (asdf == null) {
+          return charConfigToUse.alternateForms
+              ?.firstWhereOrNull((alt) => alt.uuid == selectedCharacterId);
+        }
+        return asdf;
       }
     }
     return charConfigToUse;
@@ -431,26 +445,47 @@ class _CharacterScreenPlayerContentState
                   .updateConfiguration(newestCharacterConfig.copyWith(
                       characterStats: mergedStats));
             } else {
-              List<RpgAlternateCharacterConfiguration> alternateCharactersCopy =
+              List<RpgAlternateCharacterConfiguration> companionCharactersCopy =
                   [...(newestCharacterConfig.companionCharacters ?? [])];
 
-              var indexOfSelectedAltChar = alternateCharactersCopy
+              var indexOfSelectedCompChar = companionCharactersCopy
                   .indexWhere((e) => e.uuid == selectedCharacterId!);
 
-              if (indexOfSelectedAltChar == -1) {
-                throw NotImplementedException();
+              if (indexOfSelectedCompChar == -1) {
+                // check altforms
+                List<RpgAlternateCharacterConfiguration> altCharactersCopy = [
+                  ...(newestCharacterConfig.alternateForms ?? [])
+                ];
+                var indexOfSelectedAltForm = altCharactersCopy
+                    .indexWhere((e) => e.uuid == selectedCharacterId!);
+
+                if (indexOfSelectedAltForm == -1) {
+                  throw NotImplementedException();
+                } else {
+                  altCharactersCopy[indexOfSelectedAltForm] =
+                      altCharactersCopy[indexOfSelectedAltForm]
+                          .copyWith(characterStats: mergedStats);
+
+                  characterConfig = newestCharacterConfig.copyWith(
+                      alternateForms: altCharactersCopy);
+
+                  ref
+                      .read(rpgCharacterConfigurationProvider.notifier)
+                      .updateConfiguration(newestCharacterConfig.copyWith(
+                          alternateForms: altCharactersCopy));
+                }
               } else {
-                alternateCharactersCopy[indexOfSelectedAltChar] =
-                    alternateCharactersCopy[indexOfSelectedAltChar]
+                companionCharactersCopy[indexOfSelectedCompChar] =
+                    companionCharactersCopy[indexOfSelectedCompChar]
                         .copyWith(characterStats: mergedStats);
 
                 characterConfig = newestCharacterConfig.copyWith(
-                    alternateForms: alternateCharactersCopy);
+                    companionCharacters: companionCharactersCopy);
 
                 ref
                     .read(rpgCharacterConfigurationProvider.notifier)
                     .updateConfiguration(newestCharacterConfig.copyWith(
-                        alternateForms: alternateCharactersCopy));
+                        companionCharacters: companionCharactersCopy));
               }
             }
           });

@@ -6,6 +6,7 @@ import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_campagne_management.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_screen_character_overview.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
@@ -33,13 +34,8 @@ class _DmPageScreenState extends State<DmPageScreen> {
 
   List<(String title, Widget child)> getDmScreens(BuildContext context) {
     return [
-      ("Kampagne Management", DmScreenCampagneManagement()),
-      (
-        "2",
-        Container(
-          color: Colors.red,
-        )
-      ),
+      ("Kampagnen Management", DmScreenCampagneManagement()),
+      ("Charakter Übersicht", DmScreenCharacterOverview()),
       (
         "3",
         Container(
