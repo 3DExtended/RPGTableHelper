@@ -53,6 +53,8 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   // this can be used to create pets
   final List<RpgAlternateCharacterConfiguration>? alternateForms;
 
+  final int? activeAlternateFormIndex;
+
   factory RpgCharacterConfiguration.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterConfigurationFromJson(json);
 
@@ -61,6 +63,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
     required super.characterName,
     required this.alternateForms,
     required this.moneyInBaseType,
+    required this.activeAlternateFormIndex,
     required super.characterStats,
     required super.imageDescription,
     required super.imageUrlWithoutBasePath,
@@ -73,6 +76,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   static RpgCharacterConfiguration getBaseConfiguration(
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
+        activeAlternateFormIndex: null,
         imageDescription: null,
         imageUrlWithoutBasePath: null,
         companionCharacters: [],

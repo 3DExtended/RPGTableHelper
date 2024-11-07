@@ -124,6 +124,9 @@ abstract class _$RpgCharacterConfigurationCWProxy {
 
   RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType);
 
+  RpgCharacterConfiguration activeAlternateFormIndex(
+      int? activeAlternateFormIndex);
+
   RpgCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
 
@@ -149,6 +152,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
     String? characterName,
     List<RpgAlternateCharacterConfiguration>? alternateForms,
     int? moneyInBaseType,
+    int? activeAlternateFormIndex,
     List<RpgCharacterStatValue>? characterStats,
     String? imageDescription,
     String? imageUrlWithoutBasePath,
@@ -179,6 +183,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
   @override
   RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType) =>
       this(moneyInBaseType: moneyInBaseType);
+
+  @override
+  RpgCharacterConfiguration activeAlternateFormIndex(
+          int? activeAlternateFormIndex) =>
+      this(activeAlternateFormIndex: activeAlternateFormIndex);
 
   @override
   RpgCharacterConfiguration characterStats(
@@ -217,6 +226,7 @@ class _$RpgCharacterConfigurationCWProxyImpl
     Object? characterName = const $CopyWithPlaceholder(),
     Object? alternateForms = const $CopyWithPlaceholder(),
     Object? moneyInBaseType = const $CopyWithPlaceholder(),
+    Object? activeAlternateFormIndex = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? imageDescription = const $CopyWithPlaceholder(),
     Object? imageUrlWithoutBasePath = const $CopyWithPlaceholder(),
@@ -241,6 +251,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.moneyInBaseType
           // ignore: cast_nullable_to_non_nullable
           : moneyInBaseType as int?,
+      activeAlternateFormIndex:
+          activeAlternateFormIndex == const $CopyWithPlaceholder()
+              ? _value.activeAlternateFormIndex
+              // ignore: cast_nullable_to_non_nullable
+              : activeAlternateFormIndex as int?,
       characterStats: characterStats == const $CopyWithPlaceholder() ||
               characterStats == null
           ? _value.characterStats
@@ -437,6 +452,8 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
               e as Map<String, dynamic>))
           .toList(),
       moneyInBaseType: (json['moneyInBaseType'] as num?)?.toInt(),
+      activeAlternateFormIndex:
+          (json['activeAlternateFormIndex'] as num?)?.toInt(),
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -464,6 +481,7 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
       'inventory': instance.inventory,
       'companionCharacters': instance.companionCharacters,
       'alternateForms': instance.alternateForms,
+      'activeAlternateFormIndex': instance.activeAlternateFormIndex,
     };
 
 RpgCharacterStatValue _$RpgCharacterStatValueFromJson(
