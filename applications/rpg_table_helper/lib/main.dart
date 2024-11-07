@@ -15,6 +15,8 @@ import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart'
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 

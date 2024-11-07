@@ -5,6 +5,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_screen_campagne_management.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 
 class DmPageScreen extends StatefulWidget {
@@ -31,12 +32,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
 
   List<(String title, Widget child)> getDmScreens(BuildContext context) {
     return [
-      (
-        "1",
-        Container(
-          color: Colors.orange,
-        )
-      ),
+      ("Kampagne Management", DmScreenCampagneManagement()),
       (
         "2",
         Container(

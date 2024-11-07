@@ -41,6 +41,7 @@ dependencies:
   cached_network_image: ^3.4.1
   auto_size_text: ^3.0.0
   animated_text_kit: ^4.2.2
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -63,17 +64,25 @@ flutter:
     - assets/extern/
     - assets/extern/logos/
     - assets/
+    - assets/fonts/
+    - assets/fonts/Roboto,Ruwudu/Ruwudu/
     - assets/icons/
     - assets/icons/inappcategoryicons/
 
 fonts:
-  - family: Roboto
-    fonts:
-      - asset: assets/fonts/Roboto-2/Roboto-Regular.ttf
-      - asset: assets/fonts/Roboto-2/Roboto-Italic.ttf
-        style: italic
-      - asset: assets/fonts/Roboto-2/Roboto-Bold.ttf
-        style: bold
+  # - family: Roboto
+  #   fonts:
+  #     - asset: assets/fonts/Roboto-2/Roboto-Regular.ttf
+  #     - asset: assets/fonts/Roboto-2/Roboto-Italic.ttf
+  #       style: italic
+  #     - asset: assets/fonts/Roboto-2/Roboto-Bold.ttf
+  #       style: bold
+
+   - family: Ruwudu
+     fonts:
+       - asset: assets/fonts/Roboto,Ruwudu/Ruwudu/Ruwudu-Regular.ttf
+       - asset: assets/fonts/Roboto,Ruwudu/Ruwudu/Ruwudu-Bold.ttf
+         style: bold
 
 flutter_intl:
   enabled: true
