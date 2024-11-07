@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
 
 abstract class IRpgEntityService {
@@ -216,10 +220,14 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<List<PlayerCharacter>>?
       getPlayerCharacetersForPlayerOverride;
 
+  final HRResponse<List<PlayerCharacter>>?
+      getPlayerCharactersForCampagneOverride;
+
   final HRResponse<bool>? handleJoinRequestOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
+    this.getPlayerCharactersForCampagneOverride,
     this.saveCampagneAsNewCampagneOverride,
     this.getPlayerCharacetersForPlayerOverride,
     this.handleJoinRequestOverride,
@@ -305,7 +313,37 @@ class MockRpgEntityService extends IRpgEntityService {
   @override
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
       {required CampagneIdentifier campagneId}) {
-    // TODO: implement getPlayerCharactersForCampagne
-    throw UnimplementedError();
+    return Future.value(getPlayerCharactersForCampagneOverride ??
+        HRResponse.fromResult([
+          PlayerCharacter(
+            campagneId: campagneId,
+            characterName: "Frodo",
+            creationDate: DateTime(2024, 11, 7, 11, 11, 11),
+            lastModifiedAt: DateTime(2024, 11, 7, 11, 11, 11),
+            id: PlayerCharacterIdentifier(
+                $value: "52716f7e-9532-4ed1-a7b0-b4cc86a3f425"),
+            playerUserId:
+                UserIdentifier($value: "b6a03252-8dde-4fe7-8c65-7d1b90599ef8"),
+            rpgCharacterConfiguration: jsonEncode(
+                RpgCharacterConfiguration.getBaseConfiguration(
+                        RpgConfigurationModel.getBaseConfiguration())
+                    .copyWith(characterName: "Frodo")),
+          ),
+          PlayerCharacter(
+            campagneId: campagneId,
+            characterName: "Gandalf",
+            creationDate: DateTime(2024, 11, 7, 11, 11, 11),
+            lastModifiedAt: DateTime(2024, 11, 7, 11, 11, 11),
+            id: PlayerCharacterIdentifier(
+                $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d"),
+            playerUserId:
+                UserIdentifier($value: "9a709402-5620-479c-85b7-718ae01e0a83"),
+            rpgCharacterConfiguration: jsonEncode(
+              RpgCharacterConfiguration.getBaseConfiguration(
+                      RpgConfigurationModel.getBaseConfiguration())
+                  .copyWith(characterName: "Gandalf"),
+            ),
+          )
+        ]));
   }
 }

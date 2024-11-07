@@ -19,7 +19,6 @@ import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/add_new_item_modal.dart';
 import 'package:rpg_table_helper/screens/change_money_modal.dart';
-import 'package:rpg_table_helper/screens/dm_grant_items_screen_content.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   static String route = "inventory";
@@ -37,10 +36,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
-
-    if (connectionDetails != null && connectionDetails.isDm) {
-      return const DmGrantItemsScreenContent();
-    }
 
     return contentForPlayer(context);
   }

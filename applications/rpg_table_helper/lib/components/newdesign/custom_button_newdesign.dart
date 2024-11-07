@@ -38,21 +38,27 @@ class CustomButtonNewdesign extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       child: Container(
         decoration: BoxDecoration(
-          color: variantToUse == CustomButtonNewdesignVariant.FlatButton
-              ? Colors.transparent
-              : (variantToUse == CustomButtonNewdesignVariant.AccentButton
-                  ? accentColor
-                  : (variantToUse == CustomButtonNewdesignVariant.DarkButton
-                      ? darkColor
-                      : bgColor)),
+          color: onPressed == null
+              ? (variantToUse == CustomButtonNewdesignVariant.FlatButton
+                  ? Colors.transparent
+                  : middleBgColor)
+              : variantToUse == CustomButtonNewdesignVariant.FlatButton
+                  ? Colors.transparent
+                  : (variantToUse == CustomButtonNewdesignVariant.AccentButton
+                      ? accentColor
+                      : (variantToUse == CustomButtonNewdesignVariant.DarkButton
+                          ? darkColor
+                          : bgColor)),
           borderRadius: BorderRadius.all(Radius.circular(5)),
           border: variantToUse == CustomButtonNewdesignVariant.FlatButton
               ? null
               : Border.all(
-                  color:
-                      variantToUse == CustomButtonNewdesignVariant.AccentButton
+                  color: onPressed == null
+                      ? middleBgColor
+                      : (variantToUse ==
+                              CustomButtonNewdesignVariant.AccentButton
                           ? accentColor
-                          : darkColor,
+                          : darkColor),
                 ),
         ),
         child: Padding(
@@ -67,9 +73,8 @@ class CustomButtonNewdesign extends StatelessWidget {
                   child: Text(
                     label!,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color: onPressed != null
-                            ? (useLightTextColor ? Colors.white : darkTextColor)
-                            : const Color.fromARGB(255, 135, 135, 135),
+                        color:
+                            (useLightTextColor ? Colors.white : darkTextColor),
                         fontSize: 16),
                   ),
                 ),

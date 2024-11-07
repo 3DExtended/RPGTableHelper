@@ -7,12 +7,18 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_campagne_management.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_character_overview.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_screen_grant_items.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class DmPageScreen extends StatefulWidget {
   static const String route = "dmpagescreen";
-  const DmPageScreen({super.key});
+  final int? startScreenOverride;
+
+  const DmPageScreen({
+    super.key,
+    this.startScreenOverride,
+  });
 
   @override
   State<DmPageScreen> createState() => _DmPageScreenState();
@@ -43,12 +49,20 @@ class _DmPageScreenState extends State<DmPageScreen> {
         )
       ),
       (
-        "4",
-        Container(
-          color: Colors.green,
-        )
+        "Items verteilen",
+        DmScreenGrantItems(),
       ),
     ];
+  }
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      if (widget.startScreenOverride != null) {
+        _goToStepId(widget.startScreenOverride!);
+      }
+    });
+    super.initState();
   }
 
   @override
