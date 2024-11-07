@@ -15,6 +15,7 @@ class CustomItemCard extends StatelessWidget {
 
   final double? scalarOverride;
   final bool? isLoadingNewImage;
+  final bool? greyScale;
 
   final String? categoryIconName;
   final Color? categoryIconColor;
@@ -28,6 +29,7 @@ class CustomItemCard extends StatelessWidget {
     this.cardBgColorOverride,
     this.categoryIconName,
     this.categoryIconColor,
+    this.greyScale,
   });
 
   @override
@@ -100,6 +102,7 @@ class CustomItemCard extends StatelessWidget {
                           backgroundColor: backgroundColor,
                           imageUrl: fullImageUrl,
                           isLoadingNewImage: isLoadingNewImage,
+                          greyscale: greyScale,
                         ),
 
                         // description

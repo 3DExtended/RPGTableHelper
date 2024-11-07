@@ -217,6 +217,23 @@ abstract class Swagger extends ChopperService {
       _playerCharacterGetplayercharacterPlayercharacteridGet(
           {@Path('playercharacterid') required String? playercharacterid});
 
+  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///@param Value
+  Future<chopper.Response<List<PlayerCharacter>>>
+      playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
+    generatedMapping.putIfAbsent(
+        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+
+    return _playerCharacterGetplayercharactersincampagneGet($Value: $Value);
+  }
+
+  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///@param Value
+  @Get(path: '/PlayerCharacter/getplayercharactersincampagne')
+  Future<chopper.Response<List<PlayerCharacter>>>
+      _playerCharacterGetplayercharactersincampagneGet(
+          {@Query('Value') String? $Value});
+
   ///Returns the minimal app version supported by this api.
   Future<chopper.Response<String>> publicGetminimalversionGet() {
     return _publicGetminimalversionGet();

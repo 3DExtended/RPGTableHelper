@@ -159,6 +159,21 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<PlayerCharacter>>>
+      _playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
+    final Uri $url =
+        Uri.parse('/PlayerCharacter/getplayercharactersincampagne');
+    final Map<String, dynamic> $params = <String, dynamic>{'Value': $Value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<List<PlayerCharacter>, PlayerCharacter>($request);
+  }
+
+  @override
   Future<Response<String>> _publicGetminimalversionGet() {
     final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(

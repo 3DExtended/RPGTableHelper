@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/newdesign/card_border.dart';
+import 'package:themed/themed.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class BorderedImage extends StatelessWidget {
@@ -13,17 +14,24 @@ class BorderedImage extends StatelessWidget {
     required this.backgroundColor,
     required this.imageUrl,
     this.isLoadingNewImage,
+    this.withoutPadding,
+    this.greyscale,
   });
 
   final Color lightColor;
   final Color backgroundColor;
   final String? imageUrl;
   final bool? isLoadingNewImage;
+  final bool? withoutPadding;
+
+  final bool? greyscale;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+      padding: withoutPadding == true
+          ? EdgeInsets.all(0)
+          : const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
       child: CardBorder(
         borderRadius: 17,
         borderSize: 1,
@@ -41,26 +49,33 @@ class BorderedImage extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
-                  Image.asset(
-                    imageUrl != null && imageUrl!.startsWith("assets/")
-                        ? imageUrl!
-                        : "assets/images/itemcard_placeholder.png",
-                    fit: BoxFit.fitWidth,
+                  ChangeColors(
+                    saturation: greyscale == true ? -1 : 0,
+                    child: Image.asset(
+                      imageUrl != null && imageUrl!.startsWith("assets/")
+                          ? imageUrl!
+                          : "assets/images/itemcard_placeholder.png",
+                      fit: BoxFit.fitWidth,
+                    ),
                   ),
                   if (!Platform.environment.containsKey('FLUTTER_TEST') &&
-                      imageUrl != null)
+                      imageUrl != null &&
+                      !imageUrl!.startsWith("assets/"))
                     Center(
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) {
-                          return Image.memory(
-                            kTransparentImage,
-                            fit: BoxFit.fitWidth,
-                          );
-                        },
-                        imageUrl: imageUrl!,
-                        fit: BoxFit.fitWidth,
-                        fadeInDuration: const Duration(milliseconds: 500),
-                        fadeOutDuration: const Duration(milliseconds: 500),
+                      child: ChangeColors(
+                        saturation: greyscale == true ? -1 : 0,
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) {
+                            return Image.memory(
+                              kTransparentImage,
+                              fit: BoxFit.fitWidth,
+                            );
+                          },
+                          imageUrl: imageUrl!,
+                          fit: BoxFit.fitWidth,
+                          fadeInDuration: const Duration(milliseconds: 500),
+                          fadeOutDuration: const Duration(milliseconds: 500),
+                        ),
                       ),
                     ),
                   if (!Platform.environment.containsKey('FLUTTER_TEST') &&

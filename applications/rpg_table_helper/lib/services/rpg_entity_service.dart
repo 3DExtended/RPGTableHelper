@@ -20,6 +20,8 @@ abstract class IRpgEntityService {
   Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
       {required String campagneName, String? rpgConfig});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharacetersForPlayer();
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId});
 
   Future<HRResponse<CampagneJoinRequestIdentifier>>
       createNewCampagneJoinRequest(
@@ -188,6 +190,24 @@ class RpgEntityService extends IRpgEntityService {
 
     return createPlayerCharacterResult;
   }
+
+  @override
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          'a9ac7bc7-6556-48d0-a18c-c27399065977');
+    }
+
+    var playerCharactersForCampagne = await HRResponse.fromApiFuture(
+        api.playerCharacterGetplayercharactersincampagneGet(
+            $Value: campagneId.$value),
+        'Could not load player characters for campagne.',
+        '7bf67791-1a1b-46b0-9327-297d362eed56');
+
+    return playerCharactersForCampagne;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -279,6 +299,13 @@ class MockRpgEntityService extends IRpgEntityService {
       savePlayerCharacterAsNewCharacter(
           {required String characterName, String? characterConfigJson}) {
     // TODO: implement savePlayerCharacterAsNewCharacter
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId}) {
+    // TODO: implement getPlayerCharactersForCampagne
     throw UnimplementedError();
   }
 }

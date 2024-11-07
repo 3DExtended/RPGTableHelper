@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_screen_campagne_management.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
+import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class DmPageScreen extends StatefulWidget {
   static const String route = "dmpagescreen";
@@ -134,6 +135,8 @@ class _DmPageScreenState extends State<DmPageScreen> {
             ),
             menuOpen: () {
               // TODO maybe open the configuration of the rpg
+              Navigator.of(context)
+                  .pushNamed(allWizardConfigurations.entries.first.key);
             },
             backInsteadOfCloseIcon: true,
           ),

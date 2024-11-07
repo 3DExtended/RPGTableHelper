@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
@@ -144,6 +145,49 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             return Ok(playerCharacter.Get());
+        }
+
+        /// <summary>
+        /// Returns a list of player characters for a given campagne (if the calling user is the dm).
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Returns the list of playerCharacters.</returns>
+        /// <response code="200">A list of all playerCharacters for this user</response>
+        /// <response code="400">If there was an error retrieving the playerCharacters</response>
+        /// <response code="401">If you are not logged in or not the dm</response>
+        [ProducesResponseType(typeof(IReadOnlyList<PlayerCharacter>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("getplayercharactersincampagne")]
+        public async Task<ActionResult<IReadOnlyList<PlayerCharacter>>> GetPlayerCharactersForCampagneAsync(
+            [FromQuery] Campagne.CampagneIdentifier campagneIdentifier,
+            CancellationToken cancellationToken
+        )
+        {
+            var campagne = await new CampagneQuery { ModelId = campagneIdentifier }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (campagne.IsNone)
+            {
+                return BadRequest("Could not retrieve campagne.");
+            }
+
+            if (campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+            {
+                return Unauthorized();
+            }
+
+            var playerCharacters = await new PlayerCharactersForCampagneQuery { CampagneId = campagneIdentifier }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (playerCharacters.IsNone)
+            {
+                return BadRequest("Could not retrieve playerCharacters.");
+            }
+
+            return Ok(playerCharacters.Get());
         }
     }
 }
