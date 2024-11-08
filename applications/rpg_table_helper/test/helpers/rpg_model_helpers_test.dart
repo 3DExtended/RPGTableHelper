@@ -61,6 +61,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -70,6 +71,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -79,6 +81,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -256,6 +259,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -265,6 +269,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -274,6 +279,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -340,6 +346,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -349,6 +356,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -358,6 +366,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -438,6 +447,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -447,6 +457,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -456,6 +467,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -530,6 +542,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -539,6 +552,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -548,6 +562,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -616,6 +631,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -625,6 +641,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -634,6 +651,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -702,6 +720,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -711,6 +730,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -720,6 +740,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',
@@ -796,6 +817,7 @@ void main() {
                 tabName: "Test",
                 statsInTab: [
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat1',
@@ -805,6 +827,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat2',
@@ -814,6 +837,7 @@ void main() {
                     editType: CharacterStatEditType.static,
                   ),
                   CharacterStatDefinition(
+                    groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: null,
                     statUuid: 'stat3',

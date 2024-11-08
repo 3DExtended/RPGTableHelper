@@ -37,6 +37,7 @@ void main() {
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -58,6 +59,7 @@ void main() {
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -80,6 +82,7 @@ void main() {
         characterSingleNumberStats: [
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
@@ -94,6 +97,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
@@ -108,6 +112,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
@@ -123,6 +128,7 @@ void main() {
         ],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -145,6 +151,7 @@ void main() {
         characterSingleNumberStats: [
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
@@ -159,6 +166,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
@@ -173,6 +181,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
@@ -187,6 +196,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
@@ -201,6 +211,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
@@ -215,6 +226,7 @@ void main() {
           ),
           (
             CharacterStatDefinition(
+                groupId: null,
                 isOptionalForAlternateForms: false,
                 isOptionalForCompanionCharacters: false,
                 statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
@@ -230,6 +242,7 @@ void main() {
         ],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",

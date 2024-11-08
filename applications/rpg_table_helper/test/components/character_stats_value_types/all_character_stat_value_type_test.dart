@@ -20,6 +20,7 @@ List<
   (
     "multiLineText, static",
     CharacterStatDefinition(
+      groupId: null,
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.multiLineText,
@@ -38,6 +39,7 @@ List<
   (
     "singleLineText, static",
     CharacterStatDefinition(
+      groupId: null,
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.singleLineText,
@@ -55,6 +57,7 @@ List<
   (
     "multiselect, static",
     CharacterStatDefinition(
+      groupId: null,
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.multiselect,
@@ -74,6 +77,7 @@ List<
   (
     "int, static",
     CharacterStatDefinition(
+      groupId: null,
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.int,
@@ -91,6 +95,7 @@ List<
   (
     "intWithMaxValue, static",
     CharacterStatDefinition(
+      groupId: null,
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.intWithMaxValue,
@@ -108,6 +113,7 @@ List<
   (
     "intWithCalculatedValue, static",
     CharacterStatDefinition(
+      groupId: null,
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: null,
       valueType: CharacterStatValueType.intWithCalculatedValue,

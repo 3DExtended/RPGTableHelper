@@ -131,6 +131,7 @@ class _ShowGetDmConfigurationModalContentState
             statUuid: UuidV7().generate(),
             name: nameTextEditor.text,
             helperText: helperTextEditor.text,
+            groupId: null,
             valueType: selectedValueType!,
             editType: selectedEditType!,
             isOptionalForAlternateForms: isOptionalForAlternateForms,
@@ -310,10 +311,6 @@ class _ShowGetDmConfigurationModalContentState
           collapsedShape: Border.all(color: Colors.transparent, width: 0),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            /*
-              isOptionalForCompanionCharacters
-              isOptionalForAlternateForms
-               */
             Row(
               mainAxisSize: MainAxisSize.max,
               children: [
