@@ -24,7 +24,7 @@ import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_page_screen.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
@@ -348,8 +348,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   if (!mounted) return;
 
                   // navigate to main game screen (auth screen wrapper)
-                  navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                      DmPageScreen.route, (r) => false);
+                  navigatorKey.currentState!.pushNamed(DmPageScreen.route);
                 },
                 minSize: 0,
                 padding: EdgeInsets.all(0),

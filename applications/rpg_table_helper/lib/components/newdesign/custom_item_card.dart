@@ -380,8 +380,7 @@ class CustomItemCard extends StatelessWidget {
                                             children: [
                                               Expanded(
                                                 child: AutoSizeText(
-                                                  description ??
-                                                      "Empty description",
+                                                  description,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .headlineMedium!

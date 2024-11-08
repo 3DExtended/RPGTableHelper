@@ -5,11 +5,10 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_screen_campagne_management.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_screen_character_overview.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_screen_fight_squence.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_screen_grant_items.dart';
-import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_character_overview.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_fight_squence.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_grant_items.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class DmPageScreen extends StatefulWidget {
@@ -73,8 +72,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
           NavbarNewDesign(
             useTopSafePadding: true,
             closeFunction: () {
-              navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  SelectGameModeScreen.route, (r) => false);
+              navigatorKey.currentState!.pop();
             },
             titleWidget: Row(
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
@@ -8,7 +9,9 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 
@@ -178,70 +181,77 @@ class _DmScreenCampagneManagementState
             ? imageUrl
             : (apiBaseUrl +
                 (imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl)));
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          height: 260,
-          width: 260,
-          child: BorderedImage(
-            withoutPadding: true,
-            backgroundColor: bgColor,
-            lightColor: darkColor,
-            imageUrl: fullImageUrl,
-            isLoadingNewImage: false,
-            greyscale: !isOnline,
+    return CupertinoButton(
+      onPressed: () {
+        navigatorKey.currentState!.pushNamed(PlayerPageScreen.route);
+      },
+      minSize: 0,
+      padding: EdgeInsets.all(0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 260,
+            width: 260,
+            child: BorderedImage(
+              withoutPadding: true,
+              backgroundColor: bgColor,
+              lightColor: darkColor,
+              imageUrl: fullImageUrl,
+              isLoadingNewImage: false,
+              greyscale: !isOnline,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: darkColor,
-              ),
-              padding: EdgeInsets.all(1),
-              child: Container(
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 24,
+                height: 24,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isOnline ? Color(0xff3ED22B) : Color(0xffD22B2E),
+                  color: darkColor,
                 ),
                 padding: EdgeInsets.all(1),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isOnline ? Color(0xff3ED22B) : Color(0xffD22B2E),
+                  ),
+                  padding: EdgeInsets.all(1),
+                ),
               ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  playerCharacterName,
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color: darkTextColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                ),
-                Text(
-                  isOnline ? "Online" : "Offline",
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color: darkTextColor,
-                        fontSize: 12,
-                      ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    playerCharacterName,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: darkTextColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                  ),
+                  Text(
+                    isOnline ? "Online" : "Offline",
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: darkTextColor,
+                          fontSize: 12,
+                        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
