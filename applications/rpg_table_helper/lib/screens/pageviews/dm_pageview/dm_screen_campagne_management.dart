@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
@@ -134,6 +137,9 @@ class _DmScreenCampagneManagementState
 
         var isOnline = connectedPlayerDetails != null ?? false;
 
+        var parsedConfig = RpgCharacterConfiguration.fromJson(
+            jsonDecode(char.rpgCharacterConfiguration!));
+
         var imageOfPlayerCharacter =
             connectedPlayerDetails?.configuration.imageUrlWithoutBasePath ??
                 "assets/images/charactercard_placeholder.png";
@@ -146,21 +152,24 @@ class _DmScreenCampagneManagementState
           isOnline: isOnline,
           imageUrl: imageOfPlayerCharacter,
           playerCharacterName: playerCharacterName,
+          charConfig: connectedPlayerDetails?.configuration ?? parsedConfig,
         ));
       }
     } else {
       // if we havent loaded any chars from the server we simply show all online users using the connectionDetails
-      for (var connectedPlayer in connectionDetails?.connectedPlayers ?? []) {
+      for (var connectedPlayer in connectionDetails?.connectedPlayers ??
+          List<OpenPlayerConnection>.empty()) {
         var isOnline = true;
 
         var imageOfPlayerCharacter =
-            connectedPlayer?.configuration.imageUrlWithoutBasePath ??
+            connectedPlayer.configuration.imageUrlWithoutBasePath ??
                 "assets/images/charactercard_placeholder.png";
 
         var playerCharacterName =
-            connectedPlayer?.configuration.characterName ?? "Player Name";
+            connectedPlayer.configuration.characterName ?? "Player Name";
 
         result.add(getSingleConfiguredPlayerOnlineStatus(
+          charConfig: connectedPlayer.configuration,
           isOnline: isOnline,
           imageUrl: imageOfPlayerCharacter,
           playerCharacterName: playerCharacterName,
@@ -174,7 +183,8 @@ class _DmScreenCampagneManagementState
   Widget getSingleConfiguredPlayerOnlineStatus(
       {required bool isOnline,
       required String? imageUrl,
-      required String playerCharacterName}) {
+      required String playerCharacterName,
+      required RpgCharacterConfigurationBase charConfig}) {
     var fullImageUrl = imageUrl == null
         ? null
         : (imageUrl.startsWith("assets")
@@ -183,7 +193,14 @@ class _DmScreenCampagneManagementState
                 (imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl)));
     return CupertinoButton(
       onPressed: () {
-        navigatorKey.currentState!.pushNamed(PlayerPageScreen.route);
+        navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,
+            arguments: PlayerPageScreenRouteSettings(
+              disableEdit: true,
+              characterConfigurationOverride: charConfig,
+              showInventory: false,
+              showLore: false,
+              showRecipes: false,
+            ));
       },
       minSize: 0,
       padding: EdgeInsets.all(0),

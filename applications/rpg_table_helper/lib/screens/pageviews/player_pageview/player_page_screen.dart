@@ -5,10 +5,37 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
+
+class PlayerPageScreenRouteSettings {
+  final RpgCharacterConfigurationBase? characterConfigurationOverride;
+  final bool? disableEdit;
+  final bool showInventory;
+  final bool showRecipes;
+  final bool showLore;
+
+  PlayerPageScreenRouteSettings(
+      {required this.characterConfigurationOverride,
+      required this.showInventory,
+      required this.showRecipes,
+      required this.showLore,
+      required this.disableEdit});
+
+  static PlayerPageScreenRouteSettings defaultValue() {
+    return PlayerPageScreenRouteSettings(
+      disableEdit: false,
+      characterConfigurationOverride: null,
+      showInventory: true,
+      showLore: true,
+      showRecipes: true,
+    );
+  }
+}
 
 // TODO refactor this class as it is a direct copy of the dm_page_screen
 class PlayerPageScreen extends ConsumerStatefulWidget {
@@ -16,15 +43,12 @@ class PlayerPageScreen extends ConsumerStatefulWidget {
   final int? startScreenOverride;
 
   // used by the dm screen to view stats of (offline) players
-  final RpgCharacterConfiguration? characterConfigurationOverride;
-  final bool? disableEdit;
+  final PlayerPageScreenRouteSettings? routeSettings;
 
-  // TODO WILO i need to set those through page routes...
   const PlayerPageScreen({
     super.key,
     this.startScreenOverride,
-    this.disableEdit,
-    this.characterConfigurationOverride,
+    this.routeSettings,
   });
 
   @override
@@ -38,6 +62,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
   var _currentStep = 0;
 
+  bool showInventory = true;
+  bool showLore = true;
+  bool showRecipes = true;
+
   Future _goToStepId(int id) async {
     setState(() {
       _currentStep = id;
@@ -45,7 +73,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     pageViewController.jumpToPage(id);
   }
 
-  List<(String title, Widget child)> getDmScreens(BuildContext context) {
+  List<(String title, Widget child)> getDmScreens(
+      BuildContext context, RpgCharacterConfigurationBase? charToRender) {
     var rpgConfig = ref.read(rpgConfigurationProvider).valueOrNull;
 
     if (rpgConfig == null) return [];
@@ -56,26 +85,30 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         List<CharacterStatsTabDefinition>.empty())) {
       result.add((
         tabDef.tabName,
-        Container(
-          // TODO create me
-          color: Colors.red,
-          child: Text(tabDef.tabName),
-        )
+        PlayerScreenCharacterStatsForTab(
+            tabDef: tabDef, rpgConfig: rpgConfig, charToRender: charToRender)
       ));
     }
 
-    if (widget.characterConfigurationOverride == null) {
+    if (showInventory &&
+        charToRender != null &&
+        charToRender is RpgCharacterConfiguration) {
       result.add(("Inventar", Container())); // TODO add me
     }
-    if (widget.characterConfigurationOverride == null) {
+    if (showRecipes &&
+        charToRender != null &&
+        charToRender is RpgCharacterConfiguration) {
       result.add(("Herstellen", Container())); // TODO add me
     }
-    if (widget.characterConfigurationOverride == null) {
+    if (showLore) {
       result.add(("Weltgeschichte", Container())); // TODO add me
     }
 
     return result;
   }
+
+  RpgCharacterConfigurationBase? rpgCharacterToRender;
+  bool disableEdit = false;
 
   @override
   void initState() {
@@ -90,6 +123,23 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
           _goToStepId(rpgConfig.characterStatTabsDefinition!
               .indexWhere((tab) => tab.isDefaultTab == true));
         }
+
+        // check route settings
+        final currentRouteSettings = ModalRoute.of(context)!.settings;
+
+        var applicableRouteSettings = currentRouteSettings.arguments == null
+            ? (widget.routeSettings ??
+                PlayerPageScreenRouteSettings.defaultValue())
+            : currentRouteSettings.arguments as PlayerPageScreenRouteSettings;
+
+        rpgCharacterToRender =
+            applicableRouteSettings.characterConfigurationOverride;
+
+        showInventory = applicableRouteSettings.showInventory;
+        showLore = applicableRouteSettings.showLore;
+        showRecipes = applicableRouteSettings.showRecipes;
+
+        disableEdit = applicableRouteSettings.disableEdit ?? false;
       }
     });
     super.initState();
@@ -97,7 +147,16 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var dmScreensToSwipe = getDmScreens(context);
+    RpgCharacterConfigurationBase? charToRender;
+    if (rpgCharacterToRender != null) {
+      charToRender = rpgCharacterToRender;
+    } else {
+      ref.watch(rpgCharacterConfigurationProvider).whenData((data) {
+        charToRender = data;
+      });
+    }
+
+    var dmScreensToSwipe = getDmScreens(context, charToRender);
     var currentTitle = dmScreensToSwipe[_currentStep].$1;
 
     return Scaffold(
