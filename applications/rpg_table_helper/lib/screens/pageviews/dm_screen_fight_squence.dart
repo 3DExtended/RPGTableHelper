@@ -88,6 +88,8 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                         child: Column(children: [
                                           ...connectionDetails
                                               .fightSequence!.sequence
+                                              .asMap()
+                                              .entries
                                               .map((e) => Padding(
                                                     padding:
                                                         const EdgeInsets.only(
@@ -114,7 +116,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  e.$2,
+                                                                  e.value.$2,
                                                                   style: Theme
                                                                           .of(
                                                                               context)
@@ -129,8 +131,20 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                               FontWeight.bold),
                                                                 ),
                                                                 Spacer(),
+                                                                CustomFaIcon(
+                                                                  icon:
+                                                                      FontAwesomeIcons
+                                                                          .dice,
+                                                                  color:
+                                                                      darkColor,
+                                                                  size: 24,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 10,
+                                                                ),
                                                                 Text(
-                                                                  e.$3.toString(),
+                                                                  e.value.$3
+                                                                      .toString(),
                                                                   style: Theme
                                                                           .of(
                                                                               context)
@@ -158,7 +172,41 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                 icon: FontAwesomeIcons
                                                                     .chevronDown),
                                                             onPressed: () {
-                                                              // TODO move item down in list
+                                                              //  move item down in list
+                                                              var indexOfItem =
+                                                                  e.key;
+                                                              if (indexOfItem >=
+                                                                  connectionDetails
+                                                                          .fightSequence!
+                                                                          .sequence
+                                                                          .length -
+                                                                      1) {
+                                                                return;
+                                                              }
+
+                                                              var temp = connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem];
+                                                              connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem] = connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem +
+                                                                      1];
+                                                              connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem +
+                                                                      1] = temp;
+
+                                                              ref
+                                                                  .read(connectionDetailsProvider
+                                                                      .notifier)
+                                                                  .updateConfiguration(
+                                                                      connectionDetails);
                                                             }),
                                                         SizedBox(
                                                           width: 10,
@@ -170,7 +218,37 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                 icon: FontAwesomeIcons
                                                                     .chevronUp),
                                                             onPressed: () {
-                                                              // TODO move item down in list
+                                                              //  move item up in list
+                                                              var indexOfItem =
+                                                                  e.key;
+                                                              if (indexOfItem ==
+                                                                  0) {
+                                                                return;
+                                                              }
+
+                                                              var temp = connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem];
+                                                              connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem] = connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem -
+                                                                      1];
+                                                              connectionDetails
+                                                                      .fightSequence!
+                                                                      .sequence[
+                                                                  indexOfItem -
+                                                                      1] = temp;
+
+                                                              ref
+                                                                  .read(connectionDetailsProvider
+                                                                      .notifier)
+                                                                  .updateConfiguration(
+                                                                      connectionDetails);
                                                             }),
                                                         SizedBox(
                                                           width: 10,
@@ -183,7 +261,21 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                     FontAwesomeIcons
                                                                         .trash),
                                                             onPressed: () {
-                                                              // TODO delete entry from list
+                                                              //  delete entry from list
+                                                              var indexOfItem =
+                                                                  e.key;
+
+                                                              connectionDetails
+                                                                  .fightSequence!
+                                                                  .sequence
+                                                                  .removeAt(
+                                                                      indexOfItem);
+
+                                                              ref
+                                                                  .read(connectionDetailsProvider
+                                                                      .notifier)
+                                                                  .updateConfiguration(
+                                                                      connectionDetails);
                                                             }),
                                                       ],
                                                     ),
