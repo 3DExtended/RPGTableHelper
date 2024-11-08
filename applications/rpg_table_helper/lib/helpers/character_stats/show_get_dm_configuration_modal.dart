@@ -280,6 +280,7 @@ class _ShowGetDmConfigurationModalContentState
                   }
                 }).toList(),
                 label: "Art der Eigenschaft"),
+            ...getAdvancedConfigurationOptionWidgets(),
             ...getAdditionalDetailsWidgets(),
             SizedBox(
                 height: EdgeInsets.fromViewPadding(View.of(context).viewInsets,
@@ -287,6 +288,67 @@ class _ShowGetDmConfigurationModalContentState
                     .bottom),
           ],
         ));
+  }
+
+  List<Widget> getAdvancedConfigurationOptionWidgets() {
+    List<Widget> result = [
+      SizedBox(
+        height: 20,
+      ),
+    ];
+
+    result.add(
+      ThemeConfigurationForApp(
+        child: ExpansionTile(
+          enableFeedback: false,
+          title: Text('Erweiterte Optionen'),
+          textColor: darkTextColor,
+          iconColor: darkColor,
+          collapsedIconColor: darkColor,
+          collapsedTextColor: darkTextColor,
+          shape: Border.all(color: Colors.transparent, width: 0),
+          collapsedShape: Border.all(color: Colors.transparent, width: 0),
+          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            /*
+              isOptionalForCompanionCharacters
+              isOptionalForAlternateForms
+               */
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: SelectableTile(
+                      onValueChange: () {
+                        setState(() {
+                          isOptionalForCompanionCharacters =
+                              !isOptionalForCompanionCharacters;
+                        });
+                      },
+                      isSet: isOptionalForCompanionCharacters,
+                      label: "Optionale Eigenschaft für Begleiter"),
+                ),
+              ],
+            ),
+            Row(mainAxisSize: MainAxisSize.max, children: [
+              Expanded(
+                child: SelectableTile(
+                    onValueChange: () {
+                      setState(() {
+                        isOptionalForAlternateForms =
+                            !isOptionalForAlternateForms;
+                      });
+                    },
+                    isSet: isOptionalForAlternateForms,
+                    label: "Optionale Eigenschaft für andere Formen"),
+              )
+            ]),
+          ],
+        ),
+      ),
+    );
+
+    return result;
   }
 
   List<Widget> getAdditionalDetailsWidgets() {
@@ -408,5 +470,55 @@ class _ShowGetDmConfigurationModalContentState
     }
 
     return [];
+  }
+}
+
+class SelectableTile extends StatelessWidget {
+  const SelectableTile({
+    super.key,
+    required this.onValueChange,
+    required this.isSet,
+    required this.label,
+  });
+
+  final Null Function() onValueChange;
+  final bool isSet;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomButtonNewdesign(
+            isSubbutton: true,
+            onPressed: onValueChange,
+            icon: Container(
+              width: 20,
+              height: 20,
+              color: isSet ? darkColor : Colors.transparent,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(color: darkTextColor, fontSize: 16),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+        ],
+      ),
+    );
   }
 }
