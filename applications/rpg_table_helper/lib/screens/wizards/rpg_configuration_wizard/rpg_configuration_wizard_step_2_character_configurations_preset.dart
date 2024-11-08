@@ -126,6 +126,24 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                   SizedBox(
                     width: 10,
                   ),
+                  Container(
+                    height: 50,
+                    width: 40,
+                    clipBehavior: Clip.none,
+                    child: CustomButtonNewdesign(
+                      isSubbutton: true,
+                      variant: CustomButtonNewdesignVariant.FlatButton,
+                      onPressed: () {
+                        setState(() {
+                          tabsToEdit.removeAt(tab.key);
+                        });
+                      },
+                      icon: const CustomFaIcon(
+                          size: 16,
+                          color: darkColor,
+                          icon: FontAwesomeIcons.trashCan),
+                    ),
+                  ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -170,85 +188,111 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
               ),
 
               // stats beneath
-              ...(statsUnderTab[tab.value.$1] ?? []).asMap().entries.map(
-                    (e) => Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: darkColor,
-                                  ),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                padding: EdgeInsets.all(10),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: CustomMarkdownBody(
-                                        isNewDesign: true,
-                                        text:
-                                            "### ${e.value.name} (${e.value.valueType.toCustomString()})",
+              ReorderableListView(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
+                    }
+                    var item = statsUnderTab[tab.value.$1]!.removeAt(oldIndex);
+                    statsUnderTab[tab.value.$1]!.insert(newIndex, item);
+                  });
+                },
+                children: (statsUnderTab[tab.value.$1] ?? [])
+                    .asMap()
+                    .entries
+                    .map(
+                      (e) => Container(
+                        color: bgColor,
+                        key: ValueKey(e.value),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: darkColor,
                                       ),
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
-                                  ],
-                                ),
-                              )),
+                                    padding: EdgeInsets.all(10),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomMarkdownBody(
+                                            isNewDesign: true,
+                                            text:
+                                                "### ${e.value.name} (${e.value.valueType.toCustomString()})",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            // Edit Button
+                            Container(
+                              height: 50,
+                              width: 40,
+                              clipBehavior: Clip.none,
+                              child: CustomButtonNewdesign(
+                                variant:
+                                    CustomButtonNewdesignVariant.FlatButton,
+                                isSubbutton: true,
+                                onPressed: () async {
+                                  await showGetDmConfigurationModal(
+                                          context: context,
+                                          predefinedConfiguration: e.value)
+                                      .then((value) {
+                                    if (value == null) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      statsUnderTab[tab.value.$1]![e.key] =
+                                          (value);
+                                    });
+                                  });
+                                },
+                                icon: const CustomFaIcon(
+                                    size: 16,
+                                    color: darkColor,
+                                    icon: FontAwesomeIcons.penToSquare),
+                              ),
+                            ),
+                            Container(
+                              height: 50,
+                              width: 40,
+                              clipBehavior: Clip.none,
+                              child: CustomButtonNewdesign(
+                                isSubbutton: true,
+                                variant:
+                                    CustomButtonNewdesignVariant.FlatButton,
+                                onPressed: () {
+                                  setState(() {
+                                    statsUnderTab[tab.value.$1]!
+                                        .removeAt(e.key);
+                                  });
+                                },
+                                icon: const CustomFaIcon(
+                                    size: 16,
+                                    color: darkColor,
+                                    icon: FontAwesomeIcons.trashCan),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        // Edit Button
-                        Container(
-                          height: 50,
-                          width: 40,
-                          clipBehavior: Clip.none,
-                          child: CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.FlatButton,
-                            isSubbutton: true,
-                            onPressed: () async {
-                              await showGetDmConfigurationModal(
-                                      context: context,
-                                      predefinedConfiguration: e.value)
-                                  .then((value) {
-                                if (value == null) {
-                                  return;
-                                }
-                                setState(() {
-                                  statsUnderTab[tab.value.$1]![e.key] = (value);
-                                });
-                              });
-                            },
-                            icon: const CustomFaIcon(
-                                size: 16,
-                                color: darkColor,
-                                icon: FontAwesomeIcons.penToSquare),
-                          ),
-                        ),
-                        Container(
-                          height: 50,
-                          width: 40,
-                          clipBehavior: Clip.none,
-                          child: CustomButtonNewdesign(
-                            isSubbutton: true,
-                            variant: CustomButtonNewdesignVariant.FlatButton,
-                            onPressed: () {
-                              setState(() {
-                                statsUnderTab[tab.value.$1]!.removeAt(e.key);
-                              });
-                            },
-                            icon: const CustomFaIcon(
-                                size: 16,
-                                color: darkColor,
-                                icon: FontAwesomeIcons.trashCan),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    )
+                    .toList(),
+              ),
 
               // add new stat beneath
               Padding(
