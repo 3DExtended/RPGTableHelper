@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_markdown_body.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
@@ -9,6 +11,7 @@ Widget getPlayerVisualizationWidget({
   required BuildContext context,
   required CharacterStatDefinition statConfiguration,
   required RpgCharacterStatValue characterValue,
+  bool useNewDesign = false,
 }) {
   // TODO make me
   switch (statConfiguration.valueType) {
@@ -22,20 +25,16 @@ Widget getPlayerVisualizationWidget({
         children: [
           Text(
             statConfiguration.name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 20),
           ),
           SizedBox(
             height: 10,
           ),
-          Text(
-            parsedValue["value"].toString(),
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 16),
+          CustomMarkdownBody(
+            isNewDesign: useNewDesign,
+            text: parsedValue["value"].toString(),
           ),
           SizedBox(
             height: 10,
@@ -52,20 +51,18 @@ Widget getPlayerVisualizationWidget({
         children: [
           Text(
             parsedValue["value"].toString(),
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 20),
           ),
           SizedBox(
             height: 0,
           ),
           Text(
             statConfiguration.name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 16),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 16),
           ),
         ],
       );
@@ -78,20 +75,18 @@ Widget getPlayerVisualizationWidget({
         children: [
           Text(
             "${parsedValue["value"]} / ${parsedValue["maxValue"]}",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 20),
           ),
           SizedBox(
             height: 0,
           ),
           Text(
             statConfiguration.name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 16),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 16),
           ),
         ],
       );
@@ -105,20 +100,23 @@ Widget getPlayerVisualizationWidget({
         children: [
           Text(
             "${parsedValue["otherValue"]}",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 20),
           ),
           Text(
             statConfiguration.name,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: const Color.fromARGB(255, 255, 255, 255), fontSize: 16),
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 16),
           ),
           Text(
             "${parsedValue["value"]}",
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: const Color.fromARGB(255, 134, 134, 134), fontSize: 20),
+                color: useNewDesign == true
+                    ? const Color.fromARGB(255, 135, 127, 118)
+                    : const Color.fromARGB(255, 134, 134, 134),
+                fontSize: 20),
           ),
         ],
       );
@@ -159,10 +157,9 @@ Widget getPlayerVisualizationWidget({
         children: [
           Text(
             statConfiguration.name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: useNewDesign == true ? darkTextColor : Colors.white,
+                fontSize: 20),
           ),
           SizedBox(
             height: 10,
@@ -181,20 +178,21 @@ Widget getPlayerVisualizationWidget({
                 children: [
                   Text(
                     "- ${e.$2!.$2}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Colors.white, fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color:
+                            useNewDesign == true ? darkTextColor : Colors.white,
+                        fontSize: 16),
                   ),
                   if (e.$2!.$3.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 20),
                       child: Text(
                         e.$2!.$3,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.white, fontSize: 16),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: useNewDesign == true
+                                ? darkTextColor
+                                : Colors.white,
+                            fontSize: 16),
                       ),
                     ),
                 ],
