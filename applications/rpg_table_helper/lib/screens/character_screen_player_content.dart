@@ -100,8 +100,6 @@ class _CharacterScreenPlayerContentState
                     var newAlternateCharacter =
                         RpgAlternateCharacterConfiguration(
                             uuid: UuidV7().generate(),
-                            imageDescription: null,
-                            imageUrlWithoutBasePath: null,
                             characterName: playerCharacterName,
                             characterStats: []);
 

@@ -106,7 +106,8 @@ class _DmScreenCharacterOverviewState
       var characterName = characterToRender.characterName.trim().isEmpty
           ? "Player"
           : characterToRender.characterName;
-      var characterImage = characterToRender.imageUrlWithoutBasePath;
+      var characterImage =
+          characterToRender.getImageUrlWithoutBasePath(rpgConfig);
       (
         CharacterStatDefinition,
         RpgCharacterStatValue

@@ -402,6 +402,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                             (ref.read(connectionDetailsProvider).valueOrNull ??
                                     ConnectionDetails.defaultValue())
                                 .copyWith(
+                                    campagneId: character.campagneId?.$value,
                                     playerCharacterId: character.id!.$value!));
 
                     // start SignalR connection

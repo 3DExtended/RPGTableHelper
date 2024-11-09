@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -11,15 +14,52 @@ abstract class RpgCharacterConfigurationBase {
   final String characterName;
   final List<RpgCharacterStatValue> characterStats;
 
-  final String? imageUrlWithoutBasePath;
-  final String? imageDescription;
-
   RpgCharacterConfigurationBase(
       {required this.uuid,
       required this.characterName,
-      required this.imageUrlWithoutBasePath,
-      required this.imageDescription,
       required this.characterStats});
+
+  String getImageUrlWithoutBasePath(RpgConfigurationModel? rpgConfig) {
+    var result = "assets/images/charactercard_placeholder.png";
+
+    if (rpgConfig == null) return result;
+
+    // check if there are generated image stats in default tab
+    var imageStat = rpgConfig.characterStatTabsDefinition
+        ?.firstWhereOrNull((e) => e.isDefaultTab)
+        ?.statsInTab
+        .firstWhereOrNull(
+            (e) => e.valueType == CharacterStatValueType.singleImage);
+
+    if (imageStat != null) {
+      var statValueForCharacter = characterStats
+          .firstWhereOrNull((e) => e.statUuid == imageStat.statUuid);
+      if (statValueForCharacter != null) {
+        var imageUrl =
+            jsonDecode(statValueForCharacter.serializedValue)["imageUrl"];
+        if (imageUrl != null) return imageUrl;
+      }
+    }
+
+    // if not, search different tabs for images
+    var imageStatInOtherTab = rpgConfig.characterStatTabsDefinition
+        ?.map((e) => e.statsInTab)
+        .expand((i) => i)
+        .firstWhereOrNull(
+            (e) => e.valueType == CharacterStatValueType.singleImage);
+
+    if (imageStatInOtherTab != null) {
+      var statValueForCharacter = characterStats
+          .firstWhereOrNull((e) => e.statUuid == imageStatInOtherTab.statUuid);
+      if (statValueForCharacter != null) {
+        var imageUrl =
+            jsonDecode(statValueForCharacter.serializedValue)["imageUrl"];
+        if (imageUrl != null) return imageUrl;
+      }
+    }
+
+    return result;
+  }
 }
 
 @JsonSerializable()
@@ -34,8 +74,6 @@ class RpgAlternateCharacterConfiguration extends RpgCharacterConfigurationBase {
     required super.uuid,
     required super.characterName,
     required super.characterStats,
-    required super.imageUrlWithoutBasePath,
-    required super.imageDescription,
   });
 
   Map<String, dynamic> toJson() =>
@@ -65,8 +103,6 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
     required this.moneyInBaseType,
     required this.activeAlternateFormIndex,
     required super.characterStats,
-    required super.imageDescription,
-    required super.imageUrlWithoutBasePath,
     required this.inventory,
     required this.companionCharacters,
   });
@@ -77,8 +113,6 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
         activeAlternateFormIndex: null,
-        imageDescription: null,
-        imageUrlWithoutBasePath: null,
         companionCharacters: [],
         alternateForms: [],
         uuid: const UuidV7().generate(),

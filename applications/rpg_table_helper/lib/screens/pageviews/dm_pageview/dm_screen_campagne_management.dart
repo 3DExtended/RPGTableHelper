@@ -14,6 +14,7 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
@@ -88,7 +89,8 @@ class _DmScreenCampagneManagementState
               // Wrap with player images (black and white for offline) and label for each image
               if (!isLoadingFromServer)
                 Wrap(spacing: 20, runSpacing: 20, children: [
-                  ...getAllPlayersOfflineStatusWidgets(connectionDetails),
+                  ...getAllPlayersOfflineStatusWidgets(
+                      connectionDetails, rpgConfig),
                 ]),
               SizedBox(
                 height: 10,
@@ -124,7 +126,7 @@ class _DmScreenCampagneManagementState
   }
 
   List<Widget> getAllPlayersOfflineStatusWidgets(
-      ConnectionDetails? connectionDetails) {
+      ConnectionDetails? connectionDetails, RpgConfigurationModel? rpgConfig) {
     List<Widget> result = [];
 
     if (fromServerLoadedPlayers != null) {
@@ -140,9 +142,8 @@ class _DmScreenCampagneManagementState
         var parsedConfig = RpgCharacterConfiguration.fromJson(
             jsonDecode(char.rpgCharacterConfiguration!));
 
-        var imageOfPlayerCharacter =
-            connectedPlayerDetails?.configuration.imageUrlWithoutBasePath ??
-                "assets/images/charactercard_placeholder.png";
+        var imageOfPlayerCharacter = connectedPlayerDetails?.configuration
+            .getImageUrlWithoutBasePath(rpgConfig);
 
         var playerCharacterName = char.characterName ??
             connectedPlayerDetails?.configuration.characterName ??
@@ -162,8 +163,7 @@ class _DmScreenCampagneManagementState
         var isOnline = true;
 
         var imageOfPlayerCharacter =
-            connectedPlayer.configuration.imageUrlWithoutBasePath ??
-                "assets/images/charactercard_placeholder.png";
+            connectedPlayer.configuration.getImageUrlWithoutBasePath(rpgConfig);
 
         var playerCharacterName =
             connectedPlayer.configuration.characterName ?? "Player Name";
