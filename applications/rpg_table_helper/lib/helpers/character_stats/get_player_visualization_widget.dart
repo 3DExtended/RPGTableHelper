@@ -13,9 +13,10 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
     case CharacterStatValueType.intWithCalculatedValue:
-    case CharacterStatValueType.intWithMaxValue:
     case CharacterStatValueType.multiselect:
-      return 3;
+      return 1;
+    case CharacterStatValueType.intWithMaxValue:
+      return 2;
   }
 }
 
@@ -81,27 +82,35 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.intWithMaxValue:
       // characterValue.serializedValue = {"value": 1, "maxValue": 17}
       var parsedValue = jsonDecode(characterValue.serializedValue);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "${parsedValue["value"]} / ${parsedValue["maxValue"]}",
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 20),
-          ),
-          SizedBox(
-            height: 0,
-          ),
-          Text(
-            statConfiguration.name,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 16),
-          ),
-        ],
-      );
+
+      if (characterValue.variant == 1) {
+        return Container(
+          color: Colors.orange,
+        );
+      } else {
+        // variant is null or 0
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "${parsedValue["value"]} / ${parsedValue["maxValue"]}",
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: useNewDesign == true ? darkTextColor : Colors.white,
+                  fontSize: 20),
+            ),
+            SizedBox(
+              height: 0,
+            ),
+            Text(
+              statConfiguration.name,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: useNewDesign == true ? darkTextColor : Colors.white,
+                  fontSize: 16),
+            ),
+          ],
+        );
+      }
 
     case CharacterStatValueType.intWithCalculatedValue:
       // characterValue.serializedValue = {"value": 12, "otherValue": 2}
