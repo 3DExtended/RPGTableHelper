@@ -2,6 +2,8 @@
 #set -e
 start=`date +%s`
 
+dart run build_runner build
+
 flutter test --coverage
 
 python3 versionmanager.py
@@ -29,12 +31,12 @@ xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa --apiIssuer c97ca5fd
 
 sleep 6
 
-# open ios/Runner.xcworkspace 
+# open ios/Runner.xcworkspace
 
 flutter build appbundle --no-tree-shake-icons --no-shrink --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
 
 git add obfuscation/*
-git commit -m "chore: Checkin symbols for $version" 
+git commit -m "chore: Checkin symbols for $version"
 git push
 
 end=`date +%s`
