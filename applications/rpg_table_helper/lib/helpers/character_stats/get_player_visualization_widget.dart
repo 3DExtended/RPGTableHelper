@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
+import 'package:rpg_table_helper/components/newdesign/progress_indicator_for_character_screen.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
@@ -86,83 +85,18 @@ Widget getPlayerVisualizationWidget({
       var parsedValue = jsonDecode(characterValue.serializedValue);
 
       if (characterValue.variant == 1) {
-        return LayoutBuilder(builder: (context, constraints) {
+        return Builder(builder: (context) {
           var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
           var maxValue = int.tryParse(parsedValue["maxValue"].toString()) ?? 1;
-          var progressPercentage = value.toDouble() / maxValue.toDouble();
 
-          var padding = 20.0;
-          var width =
-              max(350, min(constraints.maxWidth, constraints.maxHeight)) -
-                  2.0 * padding;
-          var strokeWidth = width * .1;
-
-          var containerWidth = width - 2.5 * strokeWidth;
-          var fontSize = containerWidth * 0.2;
-
-          return Container(
-            child: ShadowWidget(
-              offset: Offset(-4, 4),
-              blurRadius: 5,
-              child: Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Background Circle
-                    Container(
-                      width: width, // Adjust the size as needed
-                      height: width,
-                      decoration: BoxDecoration(
-                        color: darkColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    // Circular Progress Indicator for HP
-                    SizedBox(
-                      width: containerWidth,
-                      height: containerWidth,
-                      child: CircularProgressIndicator(
-                        value: progressPercentage,
-                        strokeWidth: strokeWidth,
-                        color: accentColor,
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                    // HP Text (e.g., "9/14")
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '$value/$maxValue',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: Colors.white,
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        SizedBox(
-                          height: strokeWidth * 0.5,
-                        ),
-                        Text(
-                          'HP',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: Colors.white,
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          return ProgressIndicatorForCharacterScreen(
+            padding: 20.0,
+            progressPercentage: value == maxValue
+                ? 1.0
+                : value.toDouble() / maxValue.toDouble(),
+            value: value,
+            maxValue: maxValue,
+            title: statConfiguration.name,
           );
         });
       } else {
