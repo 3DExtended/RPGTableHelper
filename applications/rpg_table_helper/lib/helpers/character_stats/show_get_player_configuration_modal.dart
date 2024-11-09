@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,10 @@ class _ShowGetPlayerConfigurationModalContentState
       initialPage: widget.characterValue?.variant ?? 0,
     );
     setState(() {
-      currentlyVisableVariant = widget.characterValue?.variant ?? 0;
+      currentlyVisableVariant = min(
+          widget.characterValue?.variant ?? 0,
+          numberOfVariantsForValueTypes(widget.statConfiguration.valueType) -
+              1);
     });
 
     if (widget.statConfiguration.valueType ==
@@ -365,7 +369,7 @@ class _ShowGetPlayerConfigurationModalContentState
               height: 10,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
               child: PageViewDotIndicator(
                 currentItem: currentlyVisableVariant,
                 count: numberOfVariantsForValueTypes(
@@ -390,7 +394,7 @@ class _ShowGetPlayerConfigurationModalContentState
                           .copyWith(variant: index);
                       return Align(
                         key: ValueKey(statValue),
-                        alignment: Alignment.center,
+                        alignment: Alignment.topCenter,
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: darkTextColor),
