@@ -15,7 +15,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.intWithCalculatedValue:
     case CharacterStatValueType.intWithMaxValue:
     case CharacterStatValueType.multiselect:
-      return 1;
+      return 3;
   }
 }
 

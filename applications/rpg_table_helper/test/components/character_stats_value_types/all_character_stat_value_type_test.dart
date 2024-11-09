@@ -140,7 +140,23 @@ void main() {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   group('CharacterStatValueType renderings', () {
-    for (var testConfiguration in allConfigurationPairs) {
+    // expand allConfigurationPairs for all viable widget variants
+    var enrichedallConfigurationPairs = allConfigurationPairs
+        .map((el) {
+          var numberOfVariantsForConfig =
+              numberOfVariantsForValueTypes(el.$2.valueType);
+          return List.generate(
+              numberOfVariantsForConfig,
+              (index) => (
+                    "${el.$1}variant$index",
+                    el.$2,
+                    el.$3.copyWith(variant: index)
+                  ));
+        })
+        .expand((i) => i)
+        .toList();
+
+    for (var testConfiguration in enrichedallConfigurationPairs) {
       testConfigurations(
         disableLocals: true,
         pathPrefix: "../",

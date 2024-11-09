@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
@@ -62,11 +63,20 @@ class _ShowGetPlayerConfigurationModalContentState
   var textEditController = TextEditingController();
   var textEditController2 = TextEditingController();
 
-  // TODO let the user configure the display variant here.
-  int? variant = 0;
-
   List<(String label, String description, bool selected, String uuid)>
       multiselectOptions = [];
+
+  late PageController pageController;
+
+  int currentlyVisableVariant = 0;
+
+  Future _goToVariantId(int id) async {
+    if (id == currentlyVisableVariant) return;
+    setState(() {
+      currentlyVisableVariant = id;
+      pageController.jumpToPage(id);
+    });
+  }
 
   @override
   void initState() {
@@ -99,6 +109,13 @@ class _ShowGetPlayerConfigurationModalContentState
         },
       ).toList();
     }
+
+    pageController = PageController(
+      initialPage: widget.characterValue?.variant ?? 0,
+    );
+    setState(() {
+      currentlyVisableVariant = widget.characterValue?.variant ?? 0;
+    });
 
     if (widget.statConfiguration.valueType ==
             CharacterStatValueType.singleLineText ||
@@ -142,10 +159,10 @@ class _ShowGetPlayerConfigurationModalContentState
             "Eigenschaften konfigurieren${widget.characterName == null ? "" : " (für ${widget.characterName})"}",
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},
-
         // TODO onSave should be null if this modal is invalid
         onSave: () {
-          return Future.value(getCurrentStatValueOrDefault());
+          return Future.value(getCurrentStatValueOrDefault()
+              .copyWith(variant: currentlyVisableVariant));
         },
         child: Column(
           children: [
@@ -347,20 +364,53 @@ class _ShowGetPlayerConfigurationModalContentState
             SizedBox(
               height: 10,
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: darkTextColor),
-                    borderRadius: BorderRadius.circular(5)),
-                padding: EdgeInsets.all(10),
-                child: getPlayerVisualizationWidget(
-                  useNewDesign: true,
-                  context: context,
-                  statConfiguration: widget.statConfiguration,
-                  characterValue: getCurrentStatValueOrDefault(),
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: PageViewDotIndicator(
+                currentItem: currentlyVisableVariant,
+                count: numberOfVariantsForValueTypes(
+                    widget.statConfiguration.valueType),
+                unselectedColor: Colors.black26,
+                selectedColor: Colors.blue,
+                duration: const Duration(milliseconds: 200),
+                boxShape: BoxShape.circle,
+                unselectedSize: Size(6, 6),
+                size: Size(6, 6),
               ),
+            ),
+            SizedBox(
+              height: 400,
+              child: PageView(
+                  controller: pageController,
+                  children: List.generate(
+                    numberOfVariantsForValueTypes(
+                        widget.statConfiguration.valueType),
+                    (index) {
+                      var statValue = getCurrentStatValueOrDefault()
+                          .copyWith(variant: index);
+                      return Align(
+                        key: ValueKey(statValue),
+                        alignment: Alignment.center,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: darkTextColor),
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(10),
+                          child: getPlayerVisualizationWidget(
+                            useNewDesign: true,
+                            context: context,
+                            statConfiguration: widget.statConfiguration,
+                            characterValue: statValue,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  onPageChanged: (value) {
+                    setState(() {
+                      currentlyVisableVariant = value;
+                    });
+                  }),
             ),
           ],
         ));
@@ -373,7 +423,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultTextValue =
             textEditController.text.isEmpty ? "" : textEditController.text;
         return RpgCharacterStatValue(
-          variant: variant,
+          variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
           statUuid: widget.statConfiguration.statUuid,
         );
@@ -381,7 +431,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultIntValue =
             int.tryParse(textEditController.text) ?? 0;
         return RpgCharacterStatValue(
-          variant: variant,
+          variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultIntValue}),
           statUuid: widget.statConfiguration.statUuid,
         );
@@ -391,7 +441,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultMaxIntValue =
             int.tryParse(textEditController2.text) ?? 0;
         return RpgCharacterStatValue(
-          variant: variant,
+          variant: 0,
           serializedValue: jsonEncode({
             "value": currentOrDefaultIntValue,
             "maxValue": currentOrDefaultMaxIntValue,
@@ -405,7 +455,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultOtherIntValue =
             int.tryParse(textEditController2.text) ?? 0;
         return RpgCharacterStatValue(
-          variant: variant,
+          variant: 0,
           serializedValue: jsonEncode({
             "value": currentOrDefaultIntValue,
             "otherValue": currentOrDefaultOtherIntValue,
@@ -417,7 +467,7 @@ class _ShowGetPlayerConfigurationModalContentState
         List<String> selectedMultiselectOptionsOrDefault =
             multiselectOptions.where((e) => e.$3).map((e) => e.$4).toList();
         return RpgCharacterStatValue(
-          variant: variant,
+          variant: 0,
           serializedValue: jsonEncode({
             "values": selectedMultiselectOptionsOrDefault,
           }),
