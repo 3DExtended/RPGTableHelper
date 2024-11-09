@@ -142,8 +142,9 @@ class _DmScreenCampagneManagementState
         var parsedConfig = RpgCharacterConfiguration.fromJson(
             jsonDecode(char.rpgCharacterConfiguration!));
 
-        var imageOfPlayerCharacter = connectedPlayerDetails?.configuration
-            .getImageUrlWithoutBasePath(rpgConfig);
+        var imageOfPlayerCharacter =
+            (connectedPlayerDetails?.configuration ?? parsedConfig)
+                .getImageUrlWithoutBasePath(rpgConfig);
 
         var playerCharacterName = char.characterName ??
             connectedPlayerDetails?.configuration.characterName ??
