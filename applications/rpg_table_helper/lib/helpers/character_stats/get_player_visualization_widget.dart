@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
+import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
 import 'package:rpg_table_helper/components/newdesign/progress_indicator_for_character_screen.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -10,6 +11,7 @@ import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
+    case CharacterStatValueType.singleImage:
     case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
@@ -27,7 +29,6 @@ Widget getPlayerVisualizationWidget({
   required RpgCharacterStatValue characterValue,
   bool useNewDesign = false,
 }) {
-  // TODO make me
   switch (statConfiguration.valueType) {
     case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
@@ -54,6 +55,30 @@ Widget getPlayerVisualizationWidget({
             height: 10,
           ),
         ],
+      );
+
+    case CharacterStatValueType.singleImage:
+      //  {"imageUrl": "someUrl", "value": "some text"}
+      var parsedValue = jsonDecode(characterValue.serializedValue);
+      var imageUrl = parsedValue["imageUrl"];
+
+      var fullImageUrl = imageUrl == null
+          ? "assets/images/charactercard_placeholder.png"
+          : (imageUrl!.startsWith("assets")
+                  ? imageUrl
+                  : (apiBaseUrl +
+                      (imageUrl!.startsWith("/")
+                          ? imageUrl!.substring(1)
+                          : imageUrl!))) ??
+              "assets/images/charactercard_placeholder.png";
+
+      return BorderedImage(
+        backgroundColor: bgColor,
+        lightColor: darkColor,
+        greyscale: false,
+        isLoadingNewImage: false,
+        withoutPadding: true,
+        imageUrl: fullImageUrl,
       );
 
     case CharacterStatValueType.int:

@@ -134,6 +134,26 @@ List<
       serializedValue: '{"value": 17, "otherValue": 2}',
     )
   ),
+  (
+    "singleImage, static",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.singleImage,
+      editType: CharacterStatEditType.static,
+      name: "Aussehen",
+      statUuid: "1b3b65c3-b58f-4b00-8616-c229b103c311",
+      helperText: "Wie sieht dein Charakter aus?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      variant: null,
+      statUuid: "1b3b65c3-b58f-4b00-8616-c229b103c311",
+      serializedValue:
+          '{"imageUrl":"assets/images/drawffortest.png", "value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
+    )
+  ),
 ];
 
 void main() {

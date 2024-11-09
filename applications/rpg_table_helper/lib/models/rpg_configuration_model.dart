@@ -391,6 +391,16 @@ class RpgConfigurationModel {
               isOptional: false,
               statsInTab: [
                 CharacterStatDefinition(
+                  groupId: null,
+                  isOptionalForAlternateForms: false,
+                  isOptionalForCompanionCharacters: false,
+                  statUuid: "273f7ce3-59db-4c34-bc90-83c53f3ea553",
+                  name: "Aussehen",
+                  helperText: "Erstelle ein Bild von deinem Charakter.",
+                  valueType: CharacterStatValueType.singleImage,
+                  editType: CharacterStatEditType.static,
+                ),
+                CharacterStatDefinition(
                     groupId: null,
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
@@ -897,8 +907,9 @@ enum CharacterStatValueType {
   int, // => RpgCharacterStatValue.serializedValue == {"value": 17}
   intWithMaxValue, // => RpgCharacterStatValue.serializedValue == {"value": 12, "maxValue": 17}
   multiselect, // jsonSerializedAdditionalData is filled with [{"uuid": "3a7fd649-2d76-4a93-8513-d5a8e8249b40", "label": "", "description": ""}], => RpgCharacterStatValue.serializedValue == {"values": ["3a7fd649-2d76-4a93-8513-d5a8e8249b40", "3a7fd649-2d76-4a93-8513-d5a8e8249b42"]}
-
   intWithCalculatedValue, // => RpgCharacterStatValue.serializedValue == {"value": 12, "otherValue": 2}
+
+  singleImage, // => RpgCharacterStatValue.serializedValue == {"imageUrl": "someUrl", "value": "some text"}
 }
 
 @JsonSerializable()

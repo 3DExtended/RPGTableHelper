@@ -627,7 +627,6 @@ class _CreateOrEditItemModalContentState
                   onPressed: isLoadingNewImage == true
                       ? null
                       : () async {
-                          // TODO show loading spinner...
                           if (imageDescriptionController.text == "" ||
                               imageDescriptionController.text.length < 5) {
                             return;

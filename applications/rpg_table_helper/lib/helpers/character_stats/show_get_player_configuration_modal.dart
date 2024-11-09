@@ -2,17 +2,27 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
+import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/image_generation_service.dart';
 import 'package:signalr_netcore/errors.dart';
 
 Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
@@ -40,7 +50,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
       });
 }
 
-class ShowGetPlayerConfigurationModalContent extends StatefulWidget {
+class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
   const ShowGetPlayerConfigurationModalContent({
     super.key,
     required this.statConfiguration,
@@ -55,14 +65,18 @@ class ShowGetPlayerConfigurationModalContent extends StatefulWidget {
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
 
   @override
-  State<ShowGetPlayerConfigurationModalContent> createState() =>
+  ConsumerState<ShowGetPlayerConfigurationModalContent> createState() =>
       _ShowGetPlayerConfigurationModalContentState();
 }
 
 class _ShowGetPlayerConfigurationModalContentState
-    extends State<ShowGetPlayerConfigurationModalContent> {
+    extends ConsumerState<ShowGetPlayerConfigurationModalContent> {
   var textEditController = TextEditingController();
   var textEditController2 = TextEditingController();
+
+  List<String> urlsOfGeneratedImages = [];
+  int? selectedGeneratedImageIndex;
+  bool isLoadingNewImage = false;
 
   List<(String label, String description, bool selected, String uuid)>
       multiselectOptions = [];
@@ -125,6 +139,8 @@ class _ShowGetPlayerConfigurationModalContentState
             CharacterStatValueType.singleLineText ||
         widget.statConfiguration.valueType ==
             CharacterStatValueType.multiLineText ||
+        widget.statConfiguration.valueType ==
+            CharacterStatValueType.singleImage ||
         widget.statConfiguration.valueType == CharacterStatValueType.int ||
         widget.statConfiguration.valueType ==
             CharacterStatValueType.intWithMaxValue ||
@@ -150,6 +166,13 @@ class _ShowGetPlayerConfigurationModalContentState
           textEditController2 =
               TextEditingController(text: tempDecode["otherValue"].toString());
         }
+
+        // for CharacterStatValueType.singleImage
+        // {"imageUrl": "someUrl", "value": "some text"}
+        if (tempDecode.containsKey("imageUrl")) {
+          urlsOfGeneratedImages = [tempDecode["imageUrl"]];
+          selectedGeneratedImageIndex = 0;
+        }
       }
     }
 
@@ -172,6 +195,176 @@ class _ShowGetPlayerConfigurationModalContentState
           children: [
             Builder(builder: (context) {
               switch (widget.statConfiguration.valueType) {
+                case CharacterStatValueType.singleImage:
+                  // characterValue.serializedValue = {"imageUrl": "someUrl", "value": "some text"}
+
+                  return Column(
+                    children: [
+                      CustomTextField(
+                        newDesign: true,
+                        labelText: widget.statConfiguration.name,
+                        placeholderText: widget.statConfiguration.helperText,
+                        textEditingController: textEditController,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ConstrainedBox(
+                        constraints:
+                            BoxConstraints(maxHeight: 300, maxWidth: 300),
+                        child: Builder(builder: (context) {
+                          var imageUrl = urlsOfGeneratedImages.isEmpty
+                              ? null
+                              : urlsOfGeneratedImages[
+                                  selectedGeneratedImageIndex ?? 0];
+
+                          var fullImageUrl = imageUrl == null
+                              ? "assets/images/charactercard_placeholder.png"
+                              : (imageUrl.startsWith("assets")
+                                      ? imageUrl
+                                      : (apiBaseUrl +
+                                          (imageUrl.startsWith("/")
+                                              ? imageUrl.substring(1)
+                                              : imageUrl))) ??
+                                  "assets/images/charactercard_placeholder.png";
+
+                          return BorderedImage(
+                            lightColor: darkColor,
+                            backgroundColor: bgColor,
+                            imageUrl: fullImageUrl,
+                            greyscale: false,
+                            isLoadingNewImage: isLoadingNewImage,
+                            withoutPadding: true,
+                          );
+                        }),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Spacer(),
+                          Spacer(),
+                          CustomButtonNewdesign(
+                              variant: CustomButtonNewdesignVariant.FlatButton,
+                              icon: CustomFaIcon(
+                                icon: FontAwesomeIcons.chevronLeft,
+                                color:
+                                    isShowPreviousGeneratedImageButtonDisabled
+                                        ? middleBgColor
+                                        : darkColor,
+                              ),
+                              onPressed:
+                                  isShowPreviousGeneratedImageButtonDisabled
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            if (selectedGeneratedImageIndex !=
+                                                null) {
+                                              selectedGeneratedImageIndex = max(
+                                                  selectedGeneratedImageIndex! -
+                                                      1,
+                                                  0);
+                                            }
+                                          });
+                                        }),
+                          Spacer(),
+                          CupertinoButton(
+                            onPressed: isLoadingNewImage == true
+                                ? null
+                                : () async {
+                                    if (textEditController.text == "" ||
+                                        textEditController.text.length < 5) {
+                                      return;
+                                    }
+
+                                    var connectionDetails = ref
+                                        .read(connectionDetailsProvider)
+                                        .requireValue;
+                                    var campagneId =
+                                        connectionDetails.campagneId;
+                                    if (campagneId == null) return;
+
+                                    setState(() {
+                                      isLoadingNewImage = true;
+                                    });
+
+                                    var service = DependencyProvider.of(context)
+                                        .getService<IImageGenerationService>();
+
+                                    var generationResult =
+                                        await service.createNewImageAndGetUrl(
+                                      prompt: textEditController.text,
+                                      campagneId: CampagneIdentifier(
+                                          $value: campagneId),
+                                    );
+
+                                    if (!context.mounted) return;
+                                    await generationResult
+                                        .possiblyHandleError(context);
+                                    if (!context.mounted) return;
+
+                                    if (generationResult.isSuccessful &&
+                                        generationResult.result != null) {
+                                      setState(() {
+                                        urlsOfGeneratedImages
+                                            .add(generationResult.result!);
+                                        selectedGeneratedImageIndex =
+                                            urlsOfGeneratedImages.length - 1;
+                                      });
+                                    }
+                                    setState(() {
+                                      isLoadingNewImage = false;
+                                    });
+                                  },
+                            minSize: 0,
+                            padding: EdgeInsets.all(0),
+                            child: Text(
+                              "Neues Bild",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                    color: isLoadingNewImage
+                                        ? middleBgColor
+                                        : accentColor,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: isLoadingNewImage
+                                        ? middleBgColor
+                                        : accentColor,
+                                    fontSize: 16,
+                                  ),
+                            ),
+                          ),
+                          Spacer(),
+                          CustomButtonNewdesign(
+                              variant: CustomButtonNewdesignVariant.FlatButton,
+                              icon: CustomFaIcon(
+                                icon: FontAwesomeIcons.chevronRight,
+                                color: isShowNextGeneratedButtonDisabled
+                                    ? middleBgColor
+                                    : darkColor,
+                              ),
+                              onPressed: isShowNextGeneratedButtonDisabled
+                                  ? null
+                                  : () {
+                                      setState(() {
+                                        if (selectedGeneratedImageIndex !=
+                                            null) {
+                                          selectedGeneratedImageIndex = min(
+                                              selectedGeneratedImageIndex! + 1,
+                                              urlsOfGeneratedImages.length - 1);
+                                        }
+                                      });
+                                    }),
+                          Spacer(),
+                          Spacer(),
+                        ],
+                      ),
+                    ],
+                  );
+
                 case CharacterStatValueType.singleLineText:
                 case CharacterStatValueType.multiLineText:
                   // characterValue.serializedValue = {"value": "asdf"}
@@ -420,6 +613,16 @@ class _ShowGetPlayerConfigurationModalContentState
         ));
   }
 
+  bool get isShowPreviousGeneratedImageButtonDisabled {
+    return selectedGeneratedImageIndex == null ||
+        selectedGeneratedImageIndex == 0;
+  }
+
+  bool get isShowNextGeneratedButtonDisabled {
+    return selectedGeneratedImageIndex == null ||
+        selectedGeneratedImageIndex! >= urlsOfGeneratedImages.length - 1;
+  }
+
   RpgCharacterStatValue getCurrentStatValueOrDefault() {
     switch (widget.statConfiguration.valueType) {
       case CharacterStatValueType.multiLineText:
@@ -429,6 +632,20 @@ class _ShowGetPlayerConfigurationModalContentState
         return RpgCharacterStatValue(
           variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+      case CharacterStatValueType.singleImage:
+        var currentOrDefaultTextValue =
+            textEditController.text.isEmpty ? "" : textEditController.text;
+        return RpgCharacterStatValue(
+          variant: 0,
+          serializedValue: jsonEncode({
+            "value": currentOrDefaultTextValue,
+            "imageUrl": urlsOfGeneratedImages.isEmpty ||
+                    selectedGeneratedImageIndex == null
+                ? "assets/images/charactercard_placeholder.png"
+                : urlsOfGeneratedImages[selectedGeneratedImageIndex ?? 0]
+          }),
           statUuid: widget.statConfiguration.statUuid,
         );
       case CharacterStatValueType.int:

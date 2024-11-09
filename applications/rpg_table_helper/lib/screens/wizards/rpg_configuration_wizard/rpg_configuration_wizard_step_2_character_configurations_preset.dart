@@ -556,6 +556,8 @@ extension on CharacterStatValueType {
         return "Zahlen-Wert mit zusätzlicher Zahl";
       case CharacterStatValueType.multiLineText:
         return "Mehrzeiliger Text";
+      case CharacterStatValueType.singleImage:
+        return "Generiertes Bild";
       case CharacterStatValueType.singleLineText:
         return "Einzeiliger Text";
       case CharacterStatValueType.multiselect:

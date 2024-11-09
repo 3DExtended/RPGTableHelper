@@ -229,6 +229,11 @@ class _ShowGetDmConfigurationModalContentState
                 },
                 items: CharacterStatValueType.values.map((e) {
                   switch (e) {
+                    case CharacterStatValueType.singleImage:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text("Generiertes Bild"), // TODO localize
+                      );
                     case CharacterStatValueType.multiLineText:
                       return DropdownMenuItem<String?>(
                         value: e.name,

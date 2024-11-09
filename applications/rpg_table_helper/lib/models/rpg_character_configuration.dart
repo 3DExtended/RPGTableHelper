@@ -116,6 +116,13 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                           serializedValue:
                               '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
                         );
+                      case CharacterStatValueType.singleImage:
+                        return RpgCharacterStatValue(
+                          variant: null,
+                          statUuid: stat.statUuid,
+                          serializedValue:
+                              '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/charactercard_placeholder.png"}',
+                        );
                       case CharacterStatValueType.singleLineText:
                         return RpgCharacterStatValue(
                           variant: null,
