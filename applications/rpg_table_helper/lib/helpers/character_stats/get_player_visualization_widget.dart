@@ -7,6 +7,18 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
+int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
+  switch (valueType) {
+    case CharacterStatValueType.multiLineText:
+    case CharacterStatValueType.singleLineText:
+    case CharacterStatValueType.int:
+    case CharacterStatValueType.intWithCalculatedValue:
+    case CharacterStatValueType.intWithMaxValue:
+    case CharacterStatValueType.multiselect:
+      return 1;
+  }
+}
+
 Widget getPlayerVisualizationWidget({
   required BuildContext context,
   required CharacterStatDefinition statConfiguration,
