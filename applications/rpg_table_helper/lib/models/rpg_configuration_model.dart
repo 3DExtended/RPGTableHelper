@@ -707,7 +707,9 @@ Future<String?> askPlayerForCharacterName(
           ? null
           : RpgCharacterStatValue(
               statUuid: characterNameStat.statUuid,
-              serializedValue: '{"value": "$currentCharacterName"}'));
+              serializedValue: '{"value": "$currentCharacterName"}',
+              variant: null,
+            ));
 
   if (result == null) return null;
   var parsedValue = jsonDecode(result.serializedValue)["value"];

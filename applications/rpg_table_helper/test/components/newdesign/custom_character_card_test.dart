@@ -46,6 +46,7 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )
@@ -68,6 +69,7 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )
@@ -91,6 +93,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
               serializedValue: '{"value": 12}',
             )
@@ -106,6 +109,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
               serializedValue: '{"value": 7}',
             )
@@ -121,6 +125,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
               serializedValue: '{"value": 2}',
             )
@@ -137,6 +142,7 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )
@@ -160,6 +166,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
               serializedValue: '{"value": 12}',
             )
@@ -175,6 +182,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
               serializedValue: '{"value": 7}',
             )
@@ -190,6 +198,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
               serializedValue: '{"value": 2}',
             )
@@ -205,6 +214,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
               serializedValue: '{"value": 12}',
             )
@@ -220,6 +230,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
               serializedValue: '{"value": 7}',
             )
@@ -235,6 +246,7 @@ void main() {
                 valueType: CharacterStatValueType.int,
                 editType: CharacterStatEditType.oneTap),
             RpgCharacterStatValue(
+              variant: null,
               statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
               serializedValue: '{"value": 2}',
             )
@@ -251,6 +263,7 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )

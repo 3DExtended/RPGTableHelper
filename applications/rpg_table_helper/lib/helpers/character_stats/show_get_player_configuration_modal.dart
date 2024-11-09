@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
+import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:signalr_netcore/errors.dart';
 
 Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   required BuildContext context,
@@ -58,6 +61,9 @@ class _ShowGetPlayerConfigurationModalContentState
     extends State<ShowGetPlayerConfigurationModalContent> {
   var textEditController = TextEditingController();
   var textEditController2 = TextEditingController();
+
+  // TODO let the user configure the display variant here.
+  int? variant = 0;
 
   List<(String label, String description, bool selected, String uuid)>
       multiselectOptions = [];
@@ -138,217 +144,288 @@ class _ShowGetPlayerConfigurationModalContentState
         onCancel: () async {},
 
         // TODO onSave should be null if this modal is invalid
-        onSave: () async {
-          switch (widget.statConfiguration.valueType) {
-            case CharacterStatValueType.multiLineText:
-            case CharacterStatValueType.singleLineText:
-              return RpgCharacterStatValue(
-                serializedValue: jsonEncode({"value": textEditController.text}),
-                statUuid: widget.statConfiguration.statUuid,
-              );
-            case CharacterStatValueType.int:
-              return RpgCharacterStatValue(
-                serializedValue:
-                    jsonEncode({"value": int.parse(textEditController.text)}),
-                statUuid: widget.statConfiguration.statUuid,
-              );
-            case CharacterStatValueType.intWithMaxValue:
-              return RpgCharacterStatValue(
-                serializedValue: jsonEncode({
-                  "value": int.parse(textEditController.text),
-                  "maxValue": int.parse(textEditController2.text)
-                }),
-                statUuid: widget.statConfiguration.statUuid,
-              );
-
-            case CharacterStatValueType.intWithCalculatedValue:
-              return RpgCharacterStatValue(
-                serializedValue: jsonEncode({
-                  "value": int.parse(textEditController.text),
-                  "otherValue": int.parse(textEditController2.text)
-                }),
-                statUuid: widget.statConfiguration.statUuid,
-              );
-
-            case CharacterStatValueType.multiselect:
-              return RpgCharacterStatValue(
-                serializedValue: jsonEncode({
-                  "values": multiselectOptions
-                      .where((e) => e.$3)
-                      .map((e) => e.$4)
-                      .toList(),
-                }),
-                statUuid: widget.statConfiguration.statUuid,
-              );
-            default:
-          }
-          return null;
+        onSave: () {
+          return Future.value(getCurrentStatValueOrDefault());
         },
-        child: Builder(builder: (context) {
-          switch (widget.statConfiguration.valueType) {
-            case CharacterStatValueType.singleLineText:
-            case CharacterStatValueType.multiLineText:
-              // characterValue.serializedValue = {"value": "asdf"}
+        child: Column(
+          children: [
+            Builder(builder: (context) {
+              switch (widget.statConfiguration.valueType) {
+                case CharacterStatValueType.singleLineText:
+                case CharacterStatValueType.multiLineText:
+                  // characterValue.serializedValue = {"value": "asdf"}
 
-              return CustomTextField(
-                newDesign: true,
-                labelText: widget.statConfiguration.name,
-                placeholderText: widget.statConfiguration.helperText,
-                textEditingController: textEditController,
-                keyboardType: widget.statConfiguration.valueType ==
-                        CharacterStatValueType.multiLineText
-                    ? TextInputType.multiline
-                    : TextInputType.text,
-              );
-            case CharacterStatValueType.int:
-              // characterValue.serializedValue = {"value": 17}
-
-              return Column(
-                children: [
-                  CustomTextField(
+                  return CustomTextField(
                     newDesign: true,
                     labelText: widget.statConfiguration.name,
                     placeholderText: widget.statConfiguration.helperText,
                     textEditingController: textEditController,
-                    keyboardType: TextInputType.number,
-                  ),
-                ],
-              );
+                    keyboardType: widget.statConfiguration.valueType ==
+                            CharacterStatValueType.multiLineText
+                        ? TextInputType.multiline
+                        : TextInputType.text,
+                  );
+                case CharacterStatValueType.int:
+                  // characterValue.serializedValue = {"value": 17}
 
-            case CharacterStatValueType.multiselect:
-              // characterValue.serializedValue = {"values": ["DEX", "WIS"]}
-              var statTitle = widget.statConfiguration.name;
-              var statDescription = widget.statConfiguration.helperText;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PlayerConfigModalNonDefaultTitleAndHelperText(
-                      statTitle: statTitle, statDescription: statDescription),
-                  ...multiselectOptions
-                      .asMap()
-                      .entries
-                      .sortedBy((e) => e.value.$1)
-                      .map((e) => CheckboxListTile.adaptive(
-                            controlAffinity: ListTileControlAffinity.leading,
-                            contentPadding: EdgeInsets.all(0),
-                            splashRadius: 0,
-                            dense: true,
-                            checkColor: const Color.fromARGB(255, 57, 245, 88),
-                            activeColor: darkColor,
-                            visualDensity: VisualDensity(vertical: -2),
-                            title: Text(
-                              e.value.$1,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(color: darkTextColor, fontSize: 16),
-                            ),
-                            subtitle: Text(
-                              e.value.$2,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(color: darkTextColor),
-                            ),
-                            value: e.value.$3,
-                            onChanged: (val) {
-                              if (val == null) return;
-
-                              setState(() {
-                                var deepCopy = [...multiselectOptions];
-
-                                deepCopy[e.key] =
-                                    (e.value.$1, e.value.$2, val, e.value.$4);
-
-                                multiselectOptions = deepCopy;
-                              });
-                            },
-                          )),
-                ],
-              );
-
-            case CharacterStatValueType.intWithMaxValue:
-              var statTitle = widget.statConfiguration.name;
-              var statDescription = widget.statConfiguration.helperText;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PlayerConfigModalNonDefaultTitleAndHelperText(
-                      statTitle: statTitle, statDescription: statDescription),
-                  Row(
+                  return Column(
                     children: [
-                      Expanded(
-                        child: CustomTextField(
-                          newDesign: true,
-                          labelText: "Current Value",
-                          placeholderText: "The current value.",
-                          textEditingController: textEditController,
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomTextField(
-                          newDesign: true,
-                          labelText: "Max Value",
-                          placeholderText: "The maximum value you could get.",
-                          textEditingController: textEditController2,
-                          keyboardType: TextInputType.number,
-                        ),
+                      CustomTextField(
+                        newDesign: true,
+                        labelText: widget.statConfiguration.name,
+                        placeholderText: widget.statConfiguration.helperText,
+                        textEditingController: textEditController,
+                        keyboardType: TextInputType.number,
                       ),
                     ],
-                  ),
-                ],
-              );
+                  );
 
-            case CharacterStatValueType.intWithCalculatedValue:
-              var statTitle = widget.statConfiguration.name;
-              var statDescription = widget.statConfiguration.helperText;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PlayerConfigModalNonDefaultTitleAndHelperText(
-                      statTitle: statTitle, statDescription: statDescription),
-                  Row(
+                case CharacterStatValueType.multiselect:
+                  // characterValue.serializedValue = {"values": ["DEX", "WIS"]}
+                  var statTitle = widget.statConfiguration.name;
+                  var statDescription = widget.statConfiguration.helperText;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: CustomTextField(
-                          newDesign: true,
-                          labelText: "First Value",
-                          placeholderText: "The first value.",
-                          textEditingController: textEditController,
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: CustomTextField(
-                          newDesign: true,
-                          labelText: "Second Value",
-                          placeholderText:
-                              "The computed value based on the first value.",
-                          textEditingController: textEditController2,
-                          keyboardType: TextInputType.number,
-                        ),
+                      PlayerConfigModalNonDefaultTitleAndHelperText(
+                          statTitle: statTitle,
+                          statDescription: statDescription),
+                      ...multiselectOptions
+                          .asMap()
+                          .entries
+                          .sortedBy((e) => e.value.$1)
+                          .map((e) => CheckboxListTile.adaptive(
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                contentPadding: EdgeInsets.all(0),
+                                splashRadius: 0,
+                                dense: true,
+                                checkColor:
+                                    const Color.fromARGB(255, 57, 245, 88),
+                                activeColor: darkColor,
+                                visualDensity: VisualDensity(vertical: -2),
+                                title: Text(
+                                  e.value.$1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                          color: darkTextColor, fontSize: 16),
+                                ),
+                                subtitle: Text(
+                                  e.value.$2,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(color: darkTextColor),
+                                ),
+                                value: e.value.$3,
+                                onChanged: (val) {
+                                  if (val == null) return;
+
+                                  setState(() {
+                                    var deepCopy = [...multiselectOptions];
+
+                                    deepCopy[e.key] = (
+                                      e.value.$1,
+                                      e.value.$2,
+                                      val,
+                                      e.value.$4
+                                    );
+
+                                    multiselectOptions = deepCopy;
+                                  });
+                                },
+                              )),
+                    ],
+                  );
+
+                case CharacterStatValueType.intWithMaxValue:
+                  var statTitle = widget.statConfiguration.name;
+                  var statDescription = widget.statConfiguration.helperText;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PlayerConfigModalNonDefaultTitleAndHelperText(
+                          statTitle: statTitle,
+                          statDescription: statDescription),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              newDesign: true,
+                              labelText: "Current Value",
+                              placeholderText: "The current value.",
+                              textEditingController: textEditController,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CustomTextField(
+                              newDesign: true,
+                              labelText: "Max Value",
+                              placeholderText:
+                                  "The maximum value you could get.",
+                              textEditingController: textEditController2,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              );
+                  );
 
-            default:
-              return Container(
-                height: 50,
-                width: 50,
-                color: Colors.orange,
-              );
-          }
-        }));
+                case CharacterStatValueType.intWithCalculatedValue:
+                  var statTitle = widget.statConfiguration.name;
+                  var statDescription = widget.statConfiguration.helperText;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PlayerConfigModalNonDefaultTitleAndHelperText(
+                          statTitle: statTitle,
+                          statDescription: statDescription),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              newDesign: true,
+                              labelText: "First Value",
+                              placeholderText: "The first value.",
+                              textEditingController: textEditController,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: CustomTextField(
+                              newDesign: true,
+                              labelText: "Second Value",
+                              placeholderText:
+                                  "The computed value based on the first value.",
+                              textEditingController: textEditController2,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+
+                default:
+                  return Container(
+                    height: 50,
+                    width: 50,
+                    color: Colors.orange,
+                  );
+              }
+            }),
+            SizedBox(
+              height: 10,
+            ),
+            HorizontalLine(
+              useDarkColor: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Vorschau:",
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color: darkTextColor,
+                      fontSize: 24,
+                    ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: darkTextColor),
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.all(10),
+                child: getPlayerVisualizationWidget(
+                  useNewDesign: true,
+                  context: context,
+                  statConfiguration: widget.statConfiguration,
+                  characterValue: getCurrentStatValueOrDefault(),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  RpgCharacterStatValue getCurrentStatValueOrDefault() {
+    switch (widget.statConfiguration.valueType) {
+      case CharacterStatValueType.multiLineText:
+      case CharacterStatValueType.singleLineText:
+        var currentOrDefaultTextValue =
+            textEditController.text.isEmpty ? "" : textEditController.text;
+        return RpgCharacterStatValue(
+          variant: variant,
+          serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+      case CharacterStatValueType.int:
+        var currentOrDefaultIntValue =
+            int.tryParse(textEditController.text) ?? 0;
+        return RpgCharacterStatValue(
+          variant: variant,
+          serializedValue: jsonEncode({"value": currentOrDefaultIntValue}),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+      case CharacterStatValueType.intWithMaxValue:
+        var currentOrDefaultIntValue =
+            int.tryParse(textEditController.text) ?? 0;
+        var currentOrDefaultMaxIntValue =
+            int.tryParse(textEditController2.text) ?? 0;
+        return RpgCharacterStatValue(
+          variant: variant,
+          serializedValue: jsonEncode({
+            "value": currentOrDefaultIntValue,
+            "maxValue": currentOrDefaultMaxIntValue,
+          }),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+
+      case CharacterStatValueType.intWithCalculatedValue:
+        var currentOrDefaultIntValue =
+            int.tryParse(textEditController.text) ?? 0;
+        var currentOrDefaultOtherIntValue =
+            int.tryParse(textEditController2.text) ?? 0;
+        return RpgCharacterStatValue(
+          variant: variant,
+          serializedValue: jsonEncode({
+            "value": currentOrDefaultIntValue,
+            "otherValue": currentOrDefaultOtherIntValue,
+          }),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+
+      case CharacterStatValueType.multiselect:
+        List<String> selectedMultiselectOptionsOrDefault =
+            multiselectOptions.where((e) => e.$3).map((e) => e.$4).toList();
+        return RpgCharacterStatValue(
+          variant: variant,
+          serializedValue: jsonEncode({
+            "values": selectedMultiselectOptionsOrDefault,
+          }),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+      default:
+        throw NotImplementedException();
+    }
   }
 }
 

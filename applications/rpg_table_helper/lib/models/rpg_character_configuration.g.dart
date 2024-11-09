@@ -294,6 +294,8 @@ abstract class _$RpgCharacterStatValueCWProxy {
 
   RpgCharacterStatValue serializedValue(String serializedValue);
 
+  RpgCharacterStatValue variant(int? variant);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterStatValue(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -303,6 +305,7 @@ abstract class _$RpgCharacterStatValueCWProxy {
   RpgCharacterStatValue call({
     String? statUuid,
     String? serializedValue,
+    int? variant,
   });
 }
 
@@ -321,6 +324,9 @@ class _$RpgCharacterStatValueCWProxyImpl
       this(serializedValue: serializedValue);
 
   @override
+  RpgCharacterStatValue variant(int? variant) => this(variant: variant);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterStatValue(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -331,6 +337,7 @@ class _$RpgCharacterStatValueCWProxyImpl
   RpgCharacterStatValue call({
     Object? statUuid = const $CopyWithPlaceholder(),
     Object? serializedValue = const $CopyWithPlaceholder(),
+    Object? variant = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterStatValue(
       statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
@@ -342,6 +349,10 @@ class _$RpgCharacterStatValueCWProxyImpl
           ? _value.serializedValue
           // ignore: cast_nullable_to_non_nullable
           : serializedValue as String,
+      variant: variant == const $CopyWithPlaceholder()
+          ? _value.variant
+          // ignore: cast_nullable_to_non_nullable
+          : variant as int?,
     );
   }
 }
@@ -489,6 +500,7 @@ RpgCharacterStatValue _$RpgCharacterStatValueFromJson(
     RpgCharacterStatValue(
       statUuid: json['statUuid'] as String,
       serializedValue: json['serializedValue'] as String,
+      variant: (json['variant'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$RpgCharacterStatValueToJson(
@@ -496,6 +508,7 @@ Map<String, dynamic> _$RpgCharacterStatValueToJson(
     <String, dynamic>{
       'statUuid': instance.statUuid,
       'serializedValue': instance.serializedValue,
+      'variant': instance.variant,
     };
 
 RpgCharacterOwnedItemPair _$RpgCharacterOwnedItemPairFromJson(

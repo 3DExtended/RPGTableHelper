@@ -31,6 +31,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      variant: null,
       statUuid: "057ab833-ce74-4feb-9b0d-4f53a83b3c21",
       serializedValue:
           '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
@@ -50,6 +51,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      variant: null,
       statUuid: "1aa3ef8a-6b18-4131-8b43-810dcceba9a5",
       serializedValue: '{"value": "Peter"}',
     )
@@ -69,6 +71,7 @@ List<
           '[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]',
     ),
     RpgCharacterStatValue(
+      variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
           '{"values": ["4d07fc3c-daed-4a69-9f5b-76d0bea09059", "7df3a676-7138-4435-a109-15052405181d"]}',
@@ -88,6 +91,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17}',
     )
@@ -106,6 +110,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "maxValue": 23}',
     )
@@ -124,6 +129,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "otherValue": 2}',
     )

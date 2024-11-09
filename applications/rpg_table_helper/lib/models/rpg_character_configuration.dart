@@ -93,33 +93,39 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                     switch (stat.valueType) {
                       case CharacterStatValueType.int:
                         return RpgCharacterStatValue(
+                          variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17}',
                         );
                       case CharacterStatValueType.intWithMaxValue:
                         return RpgCharacterStatValue(
+                          variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17, "maxValue": 21}',
                         );
                       case CharacterStatValueType.intWithCalculatedValue:
                         return RpgCharacterStatValue(
+                          variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17, "otherValue": 2}',
                         );
                       case CharacterStatValueType.multiLineText:
                         return RpgCharacterStatValue(
+                          variant: null,
                           statUuid: stat.statUuid,
                           serializedValue:
                               '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
                         );
                       case CharacterStatValueType.singleLineText:
                         return RpgCharacterStatValue(
+                          variant: null,
                           statUuid: stat.statUuid,
                           serializedValue:
                               '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr."}',
                         );
                       case CharacterStatValueType.multiselect:
                         return RpgCharacterStatValue(
+                          variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"values": []}',
                         );
@@ -143,12 +149,15 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
 class RpgCharacterStatValue {
   final String statUuid;
   final String serializedValue;
+  final int? variant;
 
   factory RpgCharacterStatValue.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterStatValueFromJson(json);
 
   RpgCharacterStatValue(
-      {required this.statUuid, required this.serializedValue});
+      {required this.statUuid,
+      required this.serializedValue,
+      required this.variant});
 
   Map<String, dynamic> toJson() => _$RpgCharacterStatValueToJson(this);
 }
