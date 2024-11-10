@@ -472,54 +472,12 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     statUuid: "44ab4bcc-0f90-42e0-b9f5-9d4dffc9ffc3",
-                    name: "Charisma",
+                    name: "Skills",
                     helperText: "",
-                    valueType: CharacterStatValueType.intWithCalculatedValue,
-                    editType: CharacterStatEditType.static),
-                CharacterStatDefinition(
-                    groupId: null,
-                    isOptionalForAlternateForms: false,
-                    isOptionalForCompanionCharacters: false,
-                    statUuid: "c3ec0ea2-72bc-469d-9097-6d78140551e2",
-                    name: "Geschicklichkeit",
-                    helperText: "",
-                    valueType: CharacterStatValueType.intWithCalculatedValue,
-                    editType: CharacterStatEditType.static),
-                CharacterStatDefinition(
-                    groupId: null,
-                    isOptionalForAlternateForms: false,
-                    isOptionalForCompanionCharacters: false,
-                    statUuid: "88019d23-45fc-4fc1-bf70-48afc42091e9",
-                    name: "Intelligenz",
-                    helperText: "",
-                    valueType: CharacterStatValueType.intWithCalculatedValue,
-                    editType: CharacterStatEditType.static),
-                CharacterStatDefinition(
-                    groupId: null,
-                    isOptionalForAlternateForms: false,
-                    isOptionalForCompanionCharacters: false,
-                    statUuid: "d6ee70c2-bc0b-40d8-ad6b-b1d82351fbc2",
-                    name: "Konstitution",
-                    helperText: "",
-                    valueType: CharacterStatValueType.intWithCalculatedValue,
-                    editType: CharacterStatEditType.static),
-                CharacterStatDefinition(
-                    groupId: null,
-                    isOptionalForAlternateForms: false,
-                    isOptionalForCompanionCharacters: false,
-                    statUuid: "ee43d1c2-e6ef-4974-be0d-a0afa43df213",
-                    name: "Stärke",
-                    helperText: "",
-                    valueType: CharacterStatValueType.intWithCalculatedValue,
-                    editType: CharacterStatEditType.static),
-                CharacterStatDefinition(
-                    groupId: null,
-                    isOptionalForAlternateForms: false,
-                    isOptionalForCompanionCharacters: false,
-                    statUuid: "35badd72-fdfb-4077-b566-89c273f72ae9",
-                    name: "Weisheit",
-                    helperText: "",
-                    valueType: CharacterStatValueType.intWithCalculatedValue,
+                    jsonSerializedAdditionalData:
+                        '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
+                    valueType:
+                        CharacterStatValueType.listOfIntWithCalculatedValues,
                     editType: CharacterStatEditType.static),
               ]),
           CharacterStatsTabDefinition(
@@ -910,6 +868,10 @@ enum CharacterStatValueType {
   intWithCalculatedValue, // => RpgCharacterStatValue.serializedValue == {"value": 12, "otherValue": 2}
 
   singleImage, // => RpgCharacterStatValue.serializedValue == {"imageUrl": "someUrl", "value": "some text"}
+
+  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+  // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+  listOfIntWithCalculatedValues,
 }
 
 @JsonSerializable()

@@ -81,6 +81,14 @@ class _ShowGetPlayerConfigurationModalContentState
   List<(String label, String description, bool selected, String uuid)>
       multiselectOptions = [];
 
+  List<
+      ({
+        String label,
+        TextEditingController valueTextController,
+        TextEditingController otherValueTextController,
+        String uuid
+      })> listOfIntWithOtherValueOptions = [];
+
   late PageController pageController;
 
   int currentlyVisableVariant = 0;
@@ -120,6 +128,56 @@ class _ShowGetPlayerConfigurationModalContentState
             e["description"] as String,
             selectedValues.contains(e["uuid"] as String),
             e["uuid"] as String,
+          );
+        },
+      ).toList();
+    }
+
+    if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.listOfIntWithCalculatedValues) {
+      // jsonSerializedAdditionalData is filled with {"values":[{"label": "", "uuid": ""}]}
+      var labelDefinitions = ((jsonDecode(
+              widget.statConfiguration.jsonSerializedAdditionalData ??
+                  '{"values":[]')["values"]) as List<dynamic>)
+          .map((e) => (
+                label: e["label"] as String,
+                uuid: e["uuid"] as String,
+              ));
+
+      List<({String uuid, int value, int otherValue})>
+          filledListOfIntsWithOtherValues = [];
+      if (widget.characterValue?.serializedValue != null) {
+        // => characterValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+        Map<String, dynamic> tempDecode =
+            jsonDecode(widget.characterValue!.serializedValue);
+
+        filledListOfIntsWithOtherValues =
+            (tempDecode["values"] as List<dynamic>)
+                .map((e) => e as Map<String, dynamic>)
+                .map((e) => (
+                      uuid: e["uuid"] as String,
+                      value: e["value"] as int,
+                      otherValue: e["otherValue"] as int
+                    ))
+                .toList();
+      }
+      listOfIntWithOtherValueOptions = labelDefinitions.map(
+        (e) {
+          var matchingValue = filledListOfIntsWithOtherValues.firstWhereOrNull(
+            (element) => element.uuid == e.uuid,
+          );
+
+          return (
+            label: e.label,
+            valueTextController: TextEditingController(
+                text: matchingValue == null
+                    ? ""
+                    : matchingValue.value.toString()),
+            otherValueTextController: TextEditingController(
+                text: matchingValue == null
+                    ? ""
+                    : matchingValue.otherValue.toString()),
+            uuid: e.uuid,
           );
         },
       ).toList();
@@ -455,6 +513,79 @@ class _ShowGetPlayerConfigurationModalContentState
                     ],
                   );
 
+                case CharacterStatValueType.listOfIntWithCalculatedValues:
+                  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+                  // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+                  var statTitle = widget.statConfiguration.name;
+                  var statDescription = widget.statConfiguration.helperText;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PlayerConfigModalNonDefaultTitleAndHelperText(
+                          statTitle: statTitle,
+                          statDescription: statDescription),
+                      ...listOfIntWithOtherValueOptions
+                          .asMap()
+                          .entries
+                          .sortedBy((e) => e.value.label)
+                          .map((e) => Row(
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 5.0),
+                                      child: Text(
+                                        "${e.value.label}:",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .copyWith(
+                                              color: darkTextColor,
+                                              fontSize: 16,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      labelText: "Erster Wert",
+                                      textEditingController:
+                                          e.value.valueTextController,
+                                      placeholderText:
+                                          "Der erste Wert für ${e.value.label}",
+                                      keyboardType: TextInputType.number,
+                                      newDesign: true,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      labelText: "Zweiter Wert",
+                                      textEditingController:
+                                          e.value.otherValueTextController,
+                                      keyboardType: TextInputType.number,
+                                      placeholderText:
+                                          "Der zweite Wert für ${e.value.label}",
+                                      newDesign: true,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                ],
+                              )),
+                    ],
+                  );
+
                 case CharacterStatValueType.intWithMaxValue:
                   var statTitle = widget.statConfiguration.name;
                   var statDescription = widget.statConfiguration.helperText;
@@ -507,7 +638,7 @@ class _ShowGetPlayerConfigurationModalContentState
                           Expanded(
                             child: CustomTextField(
                               newDesign: true,
-                              labelText: "First Value",
+                              labelText: "Erster Wert",
                               placeholderText: "The first value.",
                               textEditingController: textEditController,
                               keyboardType: TextInputType.number,
@@ -691,6 +822,27 @@ class _ShowGetPlayerConfigurationModalContentState
           variant: 0,
           serializedValue: jsonEncode({
             "values": selectedMultiselectOptionsOrDefault,
+          }),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+
+      case CharacterStatValueType.listOfIntWithCalculatedValues:
+        // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+
+        List<Map<String, dynamic>>
+            filledValuesForlistOfIntWithCalculatedValues =
+            listOfIntWithOtherValueOptions
+                .map((e) => {
+                      "uuid": e.uuid,
+                      "value": int.tryParse(e.valueTextController.text) ?? 0,
+                      "otherValue":
+                          int.tryParse(e.otherValueTextController.text) ?? 0,
+                    })
+                .toList();
+        return RpgCharacterStatValue(
+          variant: 0,
+          serializedValue: jsonEncode({
+            "values": filledValuesForlistOfIntWithCalculatedValues,
           }),
           statUuid: widget.statConfiguration.statUuid,
         );

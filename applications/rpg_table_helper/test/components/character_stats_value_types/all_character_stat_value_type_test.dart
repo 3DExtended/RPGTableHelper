@@ -152,6 +152,27 @@ List<
       statUuid: "1b3b65c3-b58f-4b00-8616-c229b103c311",
       serializedValue:
           '{"imageUrl":"assets/images/drawffortest.png", "value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
+    ),
+  ),
+  (
+    "listOfIntWithCalculatedValues, static",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.listOfIntWithCalculatedValues,
+      editType: CharacterStatEditType.static,
+      name: "Skills",
+      statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
+      helperText: "What are you skill values?",
+      jsonSerializedAdditionalData:
+          '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
+    ),
+    RpgCharacterStatValue(
+      variant: null,
+      statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
+      serializedValue:
+          '{"values": [{"value":12, "otherValue": 2, "uuid": "76183b57-d6f3-4414-962c-837488ed0384"},{"value":33, "otherValue": 23, "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"},{"value":17, "otherValue": 23, "uuid": "0f6557a8-c3b6-4832-a673-a8903f87ff24"},{"value":17, "otherValue": 23, "uuid": "a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4"},{"value":17, "otherValue": 23, "uuid": "81ffc65e-156a-4042-8bd6-5ed4d400e4bc"},{"value":17, "otherValue": 23, "uuid": "167b94e6-d674-43a4-a25b-fca1309a12b0"}]}',
     )
   ),
 ];

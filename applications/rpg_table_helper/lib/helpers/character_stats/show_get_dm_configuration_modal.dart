@@ -64,6 +64,8 @@ class _ShowGetDmConfigurationModalContentState
         TextEditingController description
       )> multiselectOptions = [];
 
+  List<(String uuid, TextEditingController label)> groupOfLabeledValues = [];
+
   CharacterStatEditType? selectedEditType = CharacterStatEditType.static;
   CharacterStatValueType? selectedValueType =
       CharacterStatValueType.singleLineText;
@@ -111,6 +113,22 @@ class _ShowGetDmConfigurationModalContentState
                 TextEditingController(text: description)
               ));
             }
+          } else if (selectedValueType ==
+              CharacterStatValueType.listOfIntWithCalculatedValues) {
+            // Decode JSON string to a list of dynamic maps
+            List<dynamic> jsonList = (jsonDecode(
+                widget.predefinedConfiguration?.jsonSerializedAdditionalData ??
+                    '{"values": []}') as Map<String, dynamic>)["values"];
+
+            for (var item in jsonList) {
+              var label = (item as Map<String, dynamic>)["label"];
+              var uuid = (item)["uuid"];
+
+              groupOfLabeledValues.add((
+                uuid,
+                TextEditingController(text: label),
+              ));
+            }
           }
         });
       }
@@ -146,6 +164,19 @@ class _ShowGetDmConfigurationModalContentState
                       "description": e.$3.text
                     })
                 .toList());
+
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: serializedAdditionalData);
+          } else if (selectedValueType ==
+              CharacterStatValueType.listOfIntWithCalculatedValues) {
+            var serializedAdditionalData = jsonEncode({
+              "values": (groupOfLabeledValues
+                  .map((e) => {
+                        "uuid": e.$1,
+                        "label": e.$2.text,
+                      })
+                  .toList())
+            });
 
             tempResult = tempResult.copyWith(
                 jsonSerializedAdditionalData: serializedAdditionalData);
@@ -255,6 +286,12 @@ class _ShowGetDmConfigurationModalContentState
                         child: Text(
                             "Zahlen-Wert mit maximal Wert"), // TODO localize
                       );
+                    case CharacterStatValueType.listOfIntWithCalculatedValues:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(
+                            "Gruppe von Zahlen-Werten mit zusätzlicher Zahl"), // TODO localize
+                      );
                     case CharacterStatValueType.intWithCalculatedValue:
                       return DropdownMenuItem<String?>(
                         value: e.name,
@@ -357,6 +394,7 @@ class _ShowGetDmConfigurationModalContentState
     // TODO add all items which need additionalDetails here
     var typesWithAdditionalConfigurationRequired = [
       CharacterStatValueType.multiselect,
+      CharacterStatValueType.listOfIntWithCalculatedValues,
     ];
 
     if (selectedValueType == null) return [];
@@ -442,6 +480,100 @@ class _ShowGetDmConfigurationModalContentState
                   UuidV7().generate(),
                   TextEditingController(),
                   TextEditingController()
+                ));
+              });
+            },
+            label: "Neues Element",
+            icon: Theme(
+                data: ThemeData(
+                  iconTheme: const IconThemeData(
+                    color: darkTextColor,
+                    size: 16,
+                  ),
+                  textTheme: const TextTheme(
+                    bodyMedium: TextStyle(
+                      color: darkTextColor,
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: Container(
+                      width: 16,
+                      height: 16,
+                      alignment: AlignmentDirectional.center,
+                      child: const FaIcon(FontAwesomeIcons.plus)),
+                )),
+          ),
+        ),
+      ];
+    } else if (selectedValueType ==
+        CharacterStatValueType.listOfIntWithCalculatedValues) {
+      return [
+        SizedBox(
+          height: 20,
+        ),
+        HorizontalLine(),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          "Optionen für Gruppen von Werten",
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: darkTextColor,
+                fontSize: 20,
+              ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+
+        // we should have tuples of "option label" and "option description"
+        ...groupOfLabeledValues.asMap().entries.map(
+              (tuple) => Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        newDesign: true,
+                        labelText: "Name:",
+                        textEditingController: tuple.value.$2,
+                        keyboardType: TextInputType.text,
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      width: 70,
+                      clipBehavior: Clip.none,
+                      child: CustomButtonNewdesign(
+                        variant: CustomButtonNewdesignVariant.FlatButton,
+                        onPressed: () {
+                          setState(() {
+                            multiselectOptions.removeAt(tuple.key);
+                          });
+                        },
+                        icon: const CustomFaIcon(
+                          icon: FontAwesomeIcons.trashCan,
+                          color: darkColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+          child: CustomButtonNewdesign(
+            isSubbutton: true,
+            onPressed: () {
+              setState(() {
+                groupOfLabeledValues.add((
+                  UuidV7().generate(),
+                  TextEditingController(),
                 ));
               });
             },

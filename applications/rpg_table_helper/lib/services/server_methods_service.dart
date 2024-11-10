@@ -222,9 +222,11 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig,
       required String campagneId}) async {
+    var serializedConfig = jsonEncode(rpgConfig);
+
     await serverCommunicationService.executeServerFunction(
         "SendUpdatedRpgConfig",
-        args: [campagneId, jsonEncode(rpgConfig)]);
+        args: [campagneId, serializedConfig]);
   }
 
   @override

@@ -1278,6 +1278,8 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.multiselect: 'multiselect',
   CharacterStatValueType.intWithCalculatedValue: 'intWithCalculatedValue',
   CharacterStatValueType.singleImage: 'singleImage',
+  CharacterStatValueType.listOfIntWithCalculatedValues:
+      'listOfIntWithCalculatedValues',
 };
 
 const _$CharacterStatEditTypeEnumMap = {

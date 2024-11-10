@@ -48,81 +48,30 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      if (!mounted) return;
-
-      if (!DependencyProvider.of(context).isMocked) {
-        // TODO can i remove this code?
-        //var prefs = await SharedPreferences.getInstance();
-        //// synchronize local campagnes
-        //if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
-        //  var loadedJsonForRpgConfig =
-        //      prefs.getString(sharedPrefsKeyRpgConfigJson);
-        //  var parsedJson = RpgConfigurationModel.fromJson(
-        //      jsonDecode(loadedJsonForRpgConfig!));
-        //  if (!mounted) return;
-        //  await showSynchronizeLocallySavedRpgCampagne(context)
-        //      .then((value) async {
-        //    if (value != true) {
-        //      return;
-        //    }
-        //    // save to cloud
-        //    if (!mounted) return;
-        //    var service =
-        //        DependencyProvider.of(context).getService<IRpgEntityService>();
-        //    var createResult = await service.saveCampagneAsNewCampagne(
-        //        campagneName: parsedJson.rpgName,
-        //        rpgConfig: loadedJsonForRpgConfig);
-        //    if (!mounted) return;
-        //    await createResult.possiblyHandleError(context);
-        //  });
-        //}
-        //// synchronize local characters
-        //if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
-        //  var loadedJsonForRpgCharacterConfig =
-        //      prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
-        //  var parsedJson = RpgCharacterConfiguration.fromJson(
-        //      jsonDecode(loadedJsonForRpgCharacterConfig!));
-        //  if (!mounted) return;
-        //  await showSynchronizeLocallySavedRpgPlayerCharacter(context)
-        //      .then((value) async {
-        //    if (value != true) {
-        //      return;
-        //    }
-        //    // save to cloud
-        //    if (!mounted) return;
-        //    var service =
-        //        DependencyProvider.of(context).getService<IRpgEntityService>();
-        //    var createResult = await service.savePlayerCharacterAsNewCharacter(
-        //        characterName: parsedJson.characterName.isNotEmpty
-        //            ? parsedJson.characterName
-        //            : "SomePlayerCharacterName",
-        //        characterConfigJson: loadedJsonForRpgCharacterConfig);
-        //    if (!mounted) return;
-        //    await createResult.possiblyHandleError(context);
-        //  });
-        //}
-      }
-
-      // load campagnes and players
-      if (!mounted) return;
-
-      var service =
-          DependencyProvider.of(context).getService<IRpgEntityService>();
-      var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
-      var charactersResponse = await service.getPlayerCharacetersForPlayer();
-
-      if (!mounted) return;
-      await campagnesResponse.possiblyHandleError(context);
-      if (!mounted) return;
-      await charactersResponse.possiblyHandleError(context);
-
-      setState(() {
-        campagnes = campagnesResponse.result ?? [];
-        characters = charactersResponse.result ?? [];
-      });
+      await loadCampagnesAndPlayersFromServer();
     });
 
     super.initState();
+  }
+
+  Future loadCampagnesAndPlayersFromServer() async {
+    // load campagnes and players
+    if (!mounted) return;
+
+    var service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
+    var charactersResponse = await service.getPlayerCharacetersForPlayer();
+
+    if (!mounted) return;
+    await campagnesResponse.possiblyHandleError(context);
+    if (!mounted) return;
+    await charactersResponse.possiblyHandleError(context);
+
+    setState(() {
+      campagnes = campagnesResponse.result ?? [];
+      characters = charactersResponse.result ?? [];
+    });
   }
 
   @override
@@ -348,7 +297,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   if (!mounted) return;
 
                   // navigate to main game screen (auth screen wrapper)
-                  navigatorKey.currentState!.pushNamed(DmPageScreen.route);
+                  navigatorKey.currentState!
+                      .pushNamed(DmPageScreen.route)
+                      .then((asdf) async {
+                    await loadCampagnesAndPlayersFromServer();
+                  });
                 },
                 minSize: 0,
                 padding: EdgeInsets.all(0),
@@ -419,8 +372,12 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         playerCharacterId: character.id!.$value!);
 
                     // navigate to main game screen (auth screen wrapper)
-                    navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                        AuthorizedScreenWrapper.route, (r) => false);
+                    navigatorKey.currentState!
+                        .pushNamedAndRemoveUntil(
+                            AuthorizedScreenWrapper.route, (r) => false)
+                        .then((asdf) async {
+                      await loadCampagnesAndPlayersFromServer();
+                    });
                   } else {
                     // 1. show modal for entering a join code
                     await askForCampagneJoinCode(context)

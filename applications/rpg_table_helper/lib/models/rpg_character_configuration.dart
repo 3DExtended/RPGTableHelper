@@ -137,6 +137,12 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17, "maxValue": 21}',
                         );
+                      case CharacterStatValueType.listOfIntWithCalculatedValues:
+                        return RpgCharacterStatValue(
+                          variant: null,
+                          statUuid: stat.statUuid,
+                          serializedValue: '{"values": []}',
+                        );
                       case CharacterStatValueType.intWithCalculatedValue:
                         return RpgCharacterStatValue(
                           variant: null,

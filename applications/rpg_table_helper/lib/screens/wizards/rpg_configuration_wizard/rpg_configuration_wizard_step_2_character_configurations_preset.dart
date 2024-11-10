@@ -552,6 +552,8 @@ extension on CharacterStatValueType {
         return "Zahlen-Wert";
       case CharacterStatValueType.intWithMaxValue:
         return "Zahlen-Wert mit maximal Wert";
+      case CharacterStatValueType.listOfIntWithCalculatedValues:
+        return "Gruppe von Zahlen-Wert mit zusätzlichem Wert";
       case CharacterStatValueType.intWithCalculatedValue:
         return "Zahlen-Wert mit zusätzlicher Zahl";
       case CharacterStatValueType.multiLineText:
