@@ -1280,6 +1280,8 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.singleImage: 'singleImage',
   CharacterStatValueType.listOfIntWithCalculatedValues:
       'listOfIntWithCalculatedValues',
+  CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+      'characterNameWithLevelAndAdditionalDetails',
 };
 
 const _$CharacterStatEditTypeEnumMap = {

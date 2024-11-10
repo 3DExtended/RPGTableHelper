@@ -114,7 +114,10 @@ class _ShowGetDmConfigurationModalContentState
               ));
             }
           } else if (selectedValueType ==
-              CharacterStatValueType.listOfIntWithCalculatedValues) {
+                  CharacterStatValueType.listOfIntWithCalculatedValues ||
+              selectedValueType ==
+                  CharacterStatValueType
+                      .characterNameWithLevelAndAdditionalDetails) {
             // Decode JSON string to a list of dynamic maps
             List<dynamic> jsonList = (jsonDecode(
                 widget.predefinedConfiguration?.jsonSerializedAdditionalData ??
@@ -168,7 +171,10 @@ class _ShowGetDmConfigurationModalContentState
             tempResult = tempResult.copyWith(
                 jsonSerializedAdditionalData: serializedAdditionalData);
           } else if (selectedValueType ==
-              CharacterStatValueType.listOfIntWithCalculatedValues) {
+                  CharacterStatValueType.listOfIntWithCalculatedValues ||
+              selectedValueType ==
+                  CharacterStatValueType
+                      .characterNameWithLevelAndAdditionalDetails) {
             var serializedAdditionalData = jsonEncode({
               "values": (groupOfLabeledValues
                   .map((e) => {
@@ -298,6 +304,14 @@ class _ShowGetDmConfigurationModalContentState
                         child: Text(
                             "Zahlen-Wert mit zusätzlicher Zahl"), // TODO localize
                       );
+                    case CharacterStatValueType
+                          .characterNameWithLevelAndAdditionalDetails:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(
+                            "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)"), // TODO localize
+                      );
+
                     // case CharacterStatValueType.intCounter:
                     //   return DropdownMenuItem<String?>(
                     //     value: e.name,
@@ -395,6 +409,7 @@ class _ShowGetDmConfigurationModalContentState
     var typesWithAdditionalConfigurationRequired = [
       CharacterStatValueType.multiselect,
       CharacterStatValueType.listOfIntWithCalculatedValues,
+      CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
     ];
 
     if (selectedValueType == null) return [];
@@ -508,7 +523,9 @@ class _ShowGetDmConfigurationModalContentState
         ),
       ];
     } else if (selectedValueType ==
-        CharacterStatValueType.listOfIntWithCalculatedValues) {
+            CharacterStatValueType.listOfIntWithCalculatedValues ||
+        selectedValueType ==
+            CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
       return [
         SizedBox(
           height: 20,
@@ -518,7 +535,7 @@ class _ShowGetDmConfigurationModalContentState
           height: 10,
         ),
         Text(
-          "Optionen für Gruppen von Werten",
+          "Weitere Werte",
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: darkTextColor,
                 fontSize: 20,
@@ -527,8 +544,6 @@ class _ShowGetDmConfigurationModalContentState
         SizedBox(
           height: 20,
         ),
-
-        // we should have tuples of "option label" and "option description"
         ...groupOfLabeledValues.asMap().entries.map(
               (tuple) => Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -564,7 +579,6 @@ class _ShowGetDmConfigurationModalContentState
                 ),
               ),
             ),
-
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
           child: CustomButtonNewdesign(

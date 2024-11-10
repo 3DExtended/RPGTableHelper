@@ -272,6 +272,7 @@ class _CharacterScreenPlayerContentState
                             List<RpgCharacterStatValue>?
                                 selectedCharacterStats =
                                 getSelectedCharacterStats();
+                            var charToRender = getSelectedCharacterBase();
 
                             var matchingPlayerCharacterStat =
                                 selectedCharacterStats?.firstWhereOrNull(
@@ -301,6 +302,8 @@ class _CharacterScreenPlayerContentState
 
                             var child = getPlayerVisualizationWidget(
                                 context: context,
+                                characterName: charToRender?.characterName ??
+                                    "Charakter Name",
                                 statConfiguration: statInTab.value,
                                 characterValue: matchingPlayerCharacterStat);
 
@@ -406,7 +409,7 @@ class _CharacterScreenPlayerContentState
             context: context,
             statConfiguration: statToFill,
             characterValue: possiblyFilledStat,
-            characterName: characterName,
+            characterName: characterName ?? "Charakter Name",
           );
 
           if (modalResult != null) {

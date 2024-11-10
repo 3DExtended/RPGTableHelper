@@ -176,6 +176,28 @@ List<
           '{"values": [{"value":12, "otherValue": 2, "uuid": "76183b57-d6f3-4414-962c-837488ed0384"},{"value":33, "otherValue": 23, "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"},{"value":17, "otherValue": 23, "uuid": "0f6557a8-c3b6-4832-a673-a8903f87ff24"},{"value":17, "otherValue": 23, "uuid": "a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4"},{"value":17, "otherValue": 23, "uuid": "81ffc65e-156a-4042-8bd6-5ed4d400e4bc"},{"value":17, "otherValue": 23, "uuid": "167b94e6-d674-43a4-a25b-fca1309a12b0"}]}',
     )
   ),
+  (
+    "characterNameWithLevelAndAdditionalDetails, static",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType:
+          CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
+      editType: CharacterStatEditType.static,
+      name: "Charakter Vorstellung",
+      statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
+      helperText: "What are you skill values?",
+      jsonSerializedAdditionalData:
+          '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Volk"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Klasse"}]}',
+    ),
+    RpgCharacterStatValue(
+      variant: null,
+      statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
+      serializedValue:
+          '{"level": 5, "values": [{"value":"Zwerg", "uuid": "76183b57-d6f3-4414-962c-837488ed0384"}, {"value":"Magier", "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"}]}',
+    )
+  ),
 ];
 
 void main() {
@@ -292,6 +314,7 @@ void main() {
                           context: context,
                           statConfiguration: testConfiguration.$2,
                           characterValue: testConfiguration.$3,
+                          characterName: "Frodo",
                           overrideNavigatorKey: navigatorKey);
                     },
                     child: const Text("Click me"));
@@ -377,6 +400,7 @@ void main() {
                 context: context,
                 statConfiguration: testConfiguration.$2,
                 characterValue: testConfiguration.$3,
+                characterName: "Frodo",
                 useNewDesign: true,
               ),
             );

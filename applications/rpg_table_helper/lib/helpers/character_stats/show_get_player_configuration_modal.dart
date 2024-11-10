@@ -23,14 +23,13 @@ import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/image_generation_service.dart';
-import 'package:signalr_netcore/errors.dart';
 
 Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   required BuildContext context,
   required CharacterStatDefinition statConfiguration,
+  required String characterName,
   RpgCharacterStatValue? characterValue,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
-  String? characterName,
 }) async {
   return await customShowCupertinoModalBottomSheet<RpgCharacterStatValue>(
       isDismissible: true,
@@ -54,12 +53,12 @@ class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
   const ShowGetPlayerConfigurationModalContent({
     super.key,
     required this.statConfiguration,
+    required this.characterName,
     this.characterValue,
     this.overrideNavigatorKey,
-    this.characterName,
   });
 
-  final String? characterName;
+  final String characterName;
   final CharacterStatDefinition statConfiguration;
   final RpgCharacterStatValue? characterValue;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
@@ -88,6 +87,9 @@ class _ShowGetPlayerConfigurationModalContentState
         TextEditingController otherValueTextController,
         String uuid
       })> listOfIntWithOtherValueOptions = [];
+
+  List<({String label, TextEditingController valueTextController, String uuid})>
+      listOfSingleValueOptions = [];
 
   late PageController pageController;
 
@@ -177,6 +179,53 @@ class _ShowGetPlayerConfigurationModalContentState
                 text: matchingValue == null
                     ? ""
                     : matchingValue.otherValue.toString()),
+            uuid: e.uuid,
+          );
+        },
+      ).toList();
+    }
+
+    if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+      // jsonSerializedAdditionalData is filled with {"values":[{"label": "", "uuid": ""}]}
+      var labelDefinitions = ((jsonDecode(
+              widget.statConfiguration.jsonSerializedAdditionalData ??
+                  '{"values":[]')["values"]) as List<dynamic>)
+          .map((e) => (
+                label: e["label"] as String,
+                uuid: e["uuid"] as String,
+              ));
+
+      List<({String uuid, String value})> filledListOfValues = [];
+      if (widget.characterValue?.serializedValue != null) {
+        // => characterValue.serializedValue == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12}]}
+        Map<String, dynamic> tempDecode =
+            jsonDecode(widget.characterValue!.serializedValue);
+
+        filledListOfValues = (tempDecode["values"] as List<dynamic>)
+            .map((e) => e as Map<String, dynamic>)
+            .map((e) => (
+                  uuid: e["uuid"] as String,
+                  value: e["value"] as String,
+                ))
+            .toList();
+        filledListOfValues.add((
+          uuid: "",
+          value: (tempDecode["level"] as int?)?.toString() ?? "0"
+        ));
+      }
+      listOfSingleValueOptions = labelDefinitions.map(
+        (e) {
+          var matchingValue = filledListOfValues.firstWhereOrNull(
+            (element) => element.uuid == e.uuid,
+          );
+
+          return (
+            label: e.label,
+            valueTextController: TextEditingController(
+                text: matchingValue == null
+                    ? ""
+                    : matchingValue.value.toString()),
             uuid: e.uuid,
           );
         },
@@ -586,6 +635,66 @@ class _ShowGetPlayerConfigurationModalContentState
                     ],
                   );
 
+                case CharacterStatValueType
+                      .characterNameWithLevelAndAdditionalDetails:
+                  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12}]}
+                  // => statConfiguration.jsonSerializedAdditionalData! == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+                  var statTitle = widget.statConfiguration.name;
+                  var statDescription = widget.statConfiguration.helperText;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PlayerConfigModalNonDefaultTitleAndHelperText(
+                          statTitle: statTitle,
+                          statDescription: statDescription),
+                      ...listOfSingleValueOptions
+                          .asMap()
+                          .entries
+                          .sortedBy((e) => e.value.label)
+                          .map((e) => Row(
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 5.0),
+                                      child: Text(
+                                        "${e.value.label}:",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .copyWith(
+                                              color: darkTextColor,
+                                              fontSize: 16,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: CustomTextField(
+                                      labelText: e.value.label,
+                                      textEditingController:
+                                          e.value.valueTextController,
+                                      placeholderText:
+                                          "Der Wert von ${e.value.label}",
+                                      keyboardType: TextInputType.text,
+                                      newDesign: true,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                ],
+                              )),
+                    ],
+                  );
+
                 case CharacterStatValueType.intWithMaxValue:
                   var statTitle = widget.statConfiguration.name;
                   var statDescription = widget.statConfiguration.helperText;
@@ -725,11 +834,11 @@ class _ShowGetPlayerConfigurationModalContentState
                               borderRadius: BorderRadius.circular(5)),
                           padding: EdgeInsets.all(10),
                           child: getPlayerVisualizationWidget(
-                            useNewDesign: true,
-                            context: context,
-                            statConfiguration: widget.statConfiguration,
-                            characterValue: statValue,
-                          ),
+                              useNewDesign: true,
+                              context: context,
+                              statConfiguration: widget.statConfiguration,
+                              characterValue: statValue,
+                              characterName: widget.characterName),
                         ),
                       );
                     },
@@ -846,8 +955,35 @@ class _ShowGetPlayerConfigurationModalContentState
           }),
           statUuid: widget.statConfiguration.statUuid,
         );
-      default:
-        throw NotImplementedException();
+
+      case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+        // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+
+        List<Map<String, dynamic>> filledValuesForlistOfSingleValueOptions =
+            listOfSingleValueOptions
+                .where((t) => t.uuid.isNotEmpty)
+                .map((e) => {
+                      "uuid": e.uuid,
+                      "value": int.tryParse(e.valueTextController.text) ?? 0,
+                    })
+                .toList();
+
+        var foundLevel = listOfSingleValueOptions
+            .firstWhereOrNull((t) => t.uuid.isEmpty)
+            ?.valueTextController
+            .text;
+
+        return RpgCharacterStatValue(
+          variant: 0,
+          serializedValue: jsonEncode({
+            "level": (foundLevel != null
+                    ? int.tryParse(foundLevel)?.toString()
+                    : null) ??
+                0,
+            "values": filledValuesForlistOfSingleValueOptions,
+          }),
+          statUuid: widget.statConfiguration.statUuid,
+        );
     }
   }
 }

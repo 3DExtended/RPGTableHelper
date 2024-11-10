@@ -671,6 +671,7 @@ Future<String?> askPlayerForCharacterName(
   var result = await showGetPlayerConfigurationModal(
       context: context,
       statConfiguration: characterNameStat,
+      characterName: currentCharacterName ?? "Player Name",
       characterValue: currentCharacterName == null
           ? null
           : RpgCharacterStatValue(
@@ -872,6 +873,10 @@ enum CharacterStatValueType {
   // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
   // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
   listOfIntWithCalculatedValues,
+
+  // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "Volk"}]}
+  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": "Zwerg"}]}
+  characterNameWithLevelAndAdditionalDetails,
 }
 
 @JsonSerializable()

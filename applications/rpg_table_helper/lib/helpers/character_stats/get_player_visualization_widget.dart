@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
 import 'package:rpg_table_helper/components/newdesign/progress_indicator_for_character_screen.dart';
+import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -18,6 +19,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
+    case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return 1;
     case CharacterStatValueType.multiselect:
     case CharacterStatValueType.intWithCalculatedValue:
@@ -31,6 +33,7 @@ Widget getPlayerVisualizationWidget({
   required BuildContext context,
   required CharacterStatDefinition statConfiguration,
   required RpgCharacterStatValue characterValue,
+  required String characterName,
   bool useNewDesign = false,
 }) {
   switch (statConfiguration.valueType) {
@@ -109,6 +112,119 @@ Widget getPlayerVisualizationWidget({
           ),
         ],
       );
+    case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+      // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "Volk"}]}
+      // => characterValue.serializedValue == {"level": 2,"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": "Zwerg"}]}
+      var parsedCharacterValueMap =
+          jsonDecode(characterValue.serializedValue) as Map<String, dynamic>;
+      var parsedValue = (parsedCharacterValueMap["values"] as List<dynamic>)
+          .map((t) => t as Map<String, dynamic>)
+          .toList();
+
+      var statConfigLabels =
+          (jsonDecode(statConfiguration.jsonSerializedAdditionalData!)["values"]
+                  as List<dynamic>)
+              .map((t) => t as Map<String, dynamic>)
+              .toList();
+
+      var characterLevel = parsedCharacterValueMap["level"] as int? ?? 0;
+
+      var filledValues = statConfigLabels
+          .map(
+            (e) {
+              var parsedMatchingValue = parsedValue.singleWhereOrNull(
+                (element) => element["uuid"] == e["uuid"],
+              );
+
+              return (
+                label: e["label"] as String,
+                value: parsedMatchingValue?["value"].toString() ?? "",
+              );
+            },
+          )
+          .sortedBy((e) => e.label)
+          .toList();
+
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 150,
+            width: 150,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: darkColor),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  characterLevel.toString(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: textColor, fontSize: 32),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "LVL", // TODO localize?
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: textColor, fontSize: 32),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Container(
+            height: 150,
+            width: 200,
+            alignment: Alignment.centerLeft,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                StaticGrid(
+                    colGap: 10,
+                    rowGap: 4,
+                    expandedFlexValues: [1, 2],
+                    columnCrossAxisAlignment: CrossAxisAlignment.start,
+                    columnMainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      "Name:",
+                      characterName,
+                      ...filledValues
+                          .map((t) => ["${t.label}:", t.value])
+                          .expand((i) => i)
+                    ]
+                        .asMap()
+                        .entries
+                        .map((strKVP) => AutoSizeText(
+                              strKVP.value,
+                              textAlign: strKVP.key % 2 == 0
+                                  ? TextAlign.right
+                                  : TextAlign.left,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(
+                                      color: darkTextColor,
+                                      fontSize: strKVP.key % 2 == 0 ? 16 : 24),
+                              maxFontSize: strKVP.key % 2 == 0 ? 16 : 24,
+                              maxLines: 1,
+                              minFontSize: 10,
+                            ))
+                        .toList()),
+              ],
+            ),
+          ),
+        ],
+      );
+
     case CharacterStatValueType.listOfIntWithCalculatedValues:
       // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
       // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
