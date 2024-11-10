@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
@@ -16,12 +17,13 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
-    case CharacterStatValueType.intWithCalculatedValue:
     case CharacterStatValueType.multiselect:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
       return 1;
-    case CharacterStatValueType.intWithMaxValue:
+    case CharacterStatValueType.intWithCalculatedValue:
       return 2;
+    case CharacterStatValueType.intWithMaxValue:
+      return 3;
   }
 }
 
@@ -141,73 +143,8 @@ Widget getPlayerVisualizationWidget({
         runSpacing: 10,
         children: filledValues
             .map(
-              (t) => SizedBox(
-                width: 120,
-                child: Column(
-                  children: [
-                    ShadowWidget(
-                      offset: Offset(-4, 4),
-                      blurRadius: 5,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Pentagon Shape
-                          ClipPath(
-                            clipper: PentagonClipper(),
-                            child: Container(
-                              width: 100,
-                              height: 100,
-                              color: darkColor,
-                            ),
-                          ),
-                          // Text inside the pentagon
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                t.value.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                      fontSize: 24,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              Text(
-                                t.otherValue.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      t.label,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .copyWith(fontSize: 16, color: darkTextColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+              (t) => PentagonWithLabel(
+                  value: t.value, otherValue: t.otherValue, label: t.label),
             )
             .toList(),
       );
@@ -217,20 +154,21 @@ Widget getPlayerVisualizationWidget({
       var parsedValue = jsonDecode(characterValue.serializedValue);
 
       if (characterValue.variant == 1) {
-        return Builder(builder: (context) {
-          var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
-          var maxValue = int.tryParse(parsedValue["maxValue"].toString()) ?? 1;
-
-          return ProgressIndicatorForCharacterScreen(
-            padding: 20.0,
-            progressPercentage: value == maxValue
-                ? 1.0
-                : value.toDouble() / maxValue.toDouble(),
-            value: value,
-            maxValue: maxValue,
-            title: statConfiguration.name,
-          );
-        });
+        var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
+        var maxValue = int.tryParse(parsedValue["maxValue"].toString()) ?? 1;
+        return ProgressIndicatorForCharacterScreen(
+          padding: 20.0,
+          progressPercentage:
+              value == maxValue ? 1.0 : value.toDouble() / maxValue.toDouble(),
+          value: value,
+          maxValue: maxValue,
+          title: statConfiguration.name,
+        );
+      } else if (characterValue.variant == 2) {
+        var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
+        var maxValue = int.tryParse(parsedValue["maxValue"].toString()) ?? 1;
+        return PentagonWithLabel(
+            value: value, otherValue: maxValue, label: statConfiguration.name);
       } else {
         // variant is null or 0
         return Column(
@@ -259,32 +197,40 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.intWithCalculatedValue:
       // characterValue.serializedValue = {"value": 12, "otherValue": 2}
       var parsedValue = jsonDecode(characterValue.serializedValue);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "${parsedValue["otherValue"]}",
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 20),
-          ),
-          Text(
-            statConfiguration.name,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 16),
-          ),
-          Text(
-            "${parsedValue["value"]}",
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true
-                    ? const Color.fromARGB(255, 135, 127, 118)
-                    : const Color.fromARGB(255, 134, 134, 134),
-                fontSize: 20),
-          ),
-        ],
-      );
+
+      if (characterValue.variant == 1) {
+        var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
+        var maxValue = int.tryParse(parsedValue["otherValue"].toString()) ?? 1;
+        return PentagonWithLabel(
+            value: value, otherValue: maxValue, label: statConfiguration.name);
+      } else {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "${parsedValue["otherValue"]}",
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: useNewDesign == true ? darkTextColor : Colors.white,
+                  fontSize: 20),
+            ),
+            Text(
+              statConfiguration.name,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: useNewDesign == true ? darkTextColor : Colors.white,
+                  fontSize: 16),
+            ),
+            Text(
+              "${parsedValue["value"]}",
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: useNewDesign == true
+                      ? const Color.fromARGB(255, 135, 127, 118)
+                      : const Color.fromARGB(255, 134, 134, 134),
+                  fontSize: 20),
+            ),
+          ],
+        );
+      }
 
     case CharacterStatValueType.multiselect:
       // statConfiguration.jsonSerializedAdditionalData = [{"uuid":"c4c08d74-effb-4457-9c3a-d60b611f6986","label": "asdf", "description": "asdf"}]
@@ -373,6 +319,88 @@ Widget getPlayerVisualizationWidget({
         width: 50,
         color: Colors.red,
       );
+  }
+}
+
+class PentagonWithLabel extends StatelessWidget {
+  const PentagonWithLabel({
+    super.key,
+    required this.value,
+    required this.otherValue,
+    required this.label,
+  });
+
+  final int value;
+  final int otherValue;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 100,
+      child: Column(
+        children: [
+          ShadowWidget(
+            offset: Offset(-4, 4),
+            blurRadius: 5,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Pentagon Shape
+                ClipPath(
+                  clipper: PentagonClipper(),
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    color: darkColor,
+                  ),
+                ),
+                // Text inside the pentagon
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      value.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    Text(
+                      otherValue.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          AutoSizeText(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium!
+                .copyWith(fontSize: 14, color: darkTextColor),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            maxFontSize: 14,
+            minFontSize: 14,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
   }
 }
 
