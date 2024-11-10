@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
@@ -369,7 +370,7 @@ void main() {
             'CharacterStatValueType_PlayerStatsScreenWidget_${testConfiguration.$1}',
         useMaterialAppWrapper: true,
         screenFactory: (Locale locale) => Container(
-          color: Colors.black,
+          color: bgColor,
           child: Builder(builder: (context) {
             return Center(
               child: getPlayerVisualizationWidget(

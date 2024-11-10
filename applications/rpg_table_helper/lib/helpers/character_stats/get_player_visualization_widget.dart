@@ -17,9 +17,9 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
-    case CharacterStatValueType.multiselect:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
       return 1;
+    case CharacterStatValueType.multiselect:
     case CharacterStatValueType.intWithCalculatedValue:
       return 2;
     case CharacterStatValueType.intWithMaxValue:
@@ -241,13 +241,13 @@ Widget getPlayerVisualizationWidget({
               .map((e) => e as String)
               .toList();
 
-      List<dynamic> asdf = jsonDecode(statConfiguration
+      List<dynamic> statConfigValues = jsonDecode(statConfiguration
               .jsonSerializedAdditionalData
               ?.replaceAll("},]", "}]")
               .replaceAll('"}]"}]', '"}]') ??
           "[]");
 
-      var config = asdf
+      var config = statConfigValues
           .map(
             (e) => (
               e["uuid"] as String,
@@ -257,10 +257,12 @@ Widget getPlayerVisualizationWidget({
           )
           .toList();
 
-      var valueToConfigMapped = parsedValue
-          .map((pv) => (pv, config.firstWhereOrNull((es) => es.$1 == pv)))
-          .where((pv) => pv.$2 != null)
-          .sortedBy((pv) => pv.$2!.$2);
+      var isVariantShowingAllOptions = characterValue.variant == 1;
+
+      var valueToConfigMapped = config
+          .map((pv) => (parsedValue.firstWhereOrNull((es) => es == pv.$1), pv))
+          .where((pv) => isVariantShowingAllOptions || pv.$1 != null)
+          .sortedBy((pv) => pv.$2.$2);
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,8 +271,9 @@ Widget getPlayerVisualizationWidget({
           Text(
             statConfiguration.name,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 20),
+                  color: useNewDesign == true ? darkTextColor : Colors.white,
+                  fontSize: 24,
+                ),
           ),
           SizedBox(
             height: 10,
@@ -284,21 +287,38 @@ Widget getPlayerVisualizationWidget({
             ),
           ...valueToConfigMapped.map(
             (e) => Builder(builder: (context) {
+              var isSelected = e.$1 != null;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "- ${e.$2!.$2}",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color:
-                            useNewDesign == true ? darkTextColor : Colors.white,
-                        fontSize: 16),
+                  Row(
+                    children: [
+                      Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected ? darkColor : bgColor,
+                            border: Border.all(color: darkColor)),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        e.$2.$2,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: useNewDesign == true
+                                ? darkTextColor
+                                : Colors.white,
+                            fontSize: 16),
+                      ),
+                    ],
                   ),
-                  if (e.$2!.$3.isNotEmpty)
+                  if (e.$2.$3.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16.0, bottom: 20),
+                      padding: const EdgeInsets.only(left: 25.0, bottom: 20),
                       child: Text(
-                        e.$2!.$3,
+                        e.$2.$3,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: useNewDesign == true
                                 ? darkTextColor
