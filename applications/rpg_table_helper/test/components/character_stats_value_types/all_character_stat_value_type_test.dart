@@ -377,6 +377,7 @@ void main() {
                 context: context,
                 statConfiguration: testConfiguration.$2,
                 characterValue: testConfiguration.$3,
+                useNewDesign: true,
               ),
             );
           }),
