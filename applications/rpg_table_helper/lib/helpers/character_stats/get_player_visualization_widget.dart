@@ -123,19 +123,22 @@ Widget getPlayerVisualizationWidget({
               .map((t) => t as Map<String, dynamic>)
               .toList();
 
-      var filledValues = statConfigLabels.map(
-        (e) {
-          var parsedMatchingValue = parsedValue.singleWhereOrNull(
-            (element) => element["uuid"] == e["uuid"],
-          );
+      var filledValues = statConfigLabels
+          .map(
+            (e) {
+              var parsedMatchingValue = parsedValue.singleWhereOrNull(
+                (element) => element["uuid"] == e["uuid"],
+              );
 
-          return (
-            label: e["label"] as String,
-            value: parsedMatchingValue?["value"] as int? ?? 0,
-            otherValue: parsedMatchingValue?["otherValue"] as int? ?? 0
-          );
-        },
-      ).toList();
+              return (
+                label: e["label"] as String,
+                value: parsedMatchingValue?["value"] as int? ?? 0,
+                otherValue: parsedMatchingValue?["otherValue"] as int? ?? 0
+              );
+            },
+          )
+          .sortedBy((e) => e.label)
+          .toList();
 
       return Wrap(
         alignment: WrapAlignment.center,
@@ -157,7 +160,7 @@ Widget getPlayerVisualizationWidget({
         var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
         var maxValue = int.tryParse(parsedValue["maxValue"].toString()) ?? 1;
         return ProgressIndicatorForCharacterScreen(
-          padding: 20.0,
+          padding: 60.0,
           progressPercentage:
               value == maxValue ? 1.0 : value.toDouble() / maxValue.toDouble(),
           value: value,
