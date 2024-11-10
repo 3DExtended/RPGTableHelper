@@ -194,11 +194,14 @@ class _ShowGetPlayerConfigurationModalContentState
           .map((e) => (
                 label: e["label"] as String,
                 uuid: e["uuid"] as String,
-              ));
+              ))
+          .toList();
+
+      labelDefinitions.add((label: "Level", uuid: ""));
 
       List<({String uuid, String value})> filledListOfValues = [];
       if (widget.characterValue?.serializedValue != null) {
-        // => characterValue.serializedValue == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12}]}
+        // => characterValue.serializedValue == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": "12"}]}
         Map<String, dynamic> tempDecode =
             jsonDecode(widget.characterValue!.serializedValue);
 
@@ -206,7 +209,7 @@ class _ShowGetPlayerConfigurationModalContentState
             .map((e) => e as Map<String, dynamic>)
             .map((e) => (
                   uuid: e["uuid"] as String,
-                  value: e["value"] as String,
+                  value: e["value"].toString(),
                 ))
             .toList();
         filledListOfValues.add((
@@ -964,7 +967,7 @@ class _ShowGetPlayerConfigurationModalContentState
                 .where((t) => t.uuid.isNotEmpty)
                 .map((e) => {
                       "uuid": e.uuid,
-                      "value": int.tryParse(e.valueTextController.text) ?? 0,
+                      "value": e.valueTextController.text,
                     })
                 .toList();
 
@@ -976,10 +979,8 @@ class _ShowGetPlayerConfigurationModalContentState
         return RpgCharacterStatValue(
           variant: 0,
           serializedValue: jsonEncode({
-            "level": (foundLevel != null
-                    ? int.tryParse(foundLevel)?.toString()
-                    : null) ??
-                0,
+            "level":
+                (foundLevel != null ? int.tryParse(foundLevel) : null) ?? 0,
             "values": filledValuesForlistOfSingleValueOptions,
           }),
           statUuid: widget.statConfiguration.statUuid,

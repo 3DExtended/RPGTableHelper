@@ -127,7 +127,9 @@ Widget getPlayerVisualizationWidget({
               .map((t) => t as Map<String, dynamic>)
               .toList();
 
-      var characterLevel = parsedCharacterValueMap["level"] as int? ?? 0;
+      var characterLevel = parsedCharacterValueMap["level"] is String
+          ? int.parse(parsedCharacterValueMap["level"])
+          : parsedCharacterValueMap["level"];
 
       var filledValues = statConfigLabels
           .map(
@@ -149,32 +151,37 @@ Widget getPlayerVisualizationWidget({
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 150,
-            width: 150,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: darkColor),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  characterLevel.toString(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium!
-                      .copyWith(color: textColor, fontSize: 32),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "LVL", // TODO localize?
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium!
-                      .copyWith(color: textColor, fontSize: 32),
-                ),
-              ],
+          ShadowWidget(
+            offset: Offset(-4, 4),
+            blurRadius: 5,
+            child: Container(
+              height: 150,
+              width: 150,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: darkColor),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    characterLevel.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(color: textColor, fontSize: 32),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "LVL", // TODO localize?
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(color: textColor, fontSize: 32),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(
