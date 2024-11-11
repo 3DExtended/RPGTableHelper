@@ -10,6 +10,7 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
 
 class PlayerPageScreenRouteSettings {
@@ -93,7 +94,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     if (showInventory &&
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
-      result.add(("Inventar", Container())); // TODO add me
+      result.add((
+        "Inventar",
+        PlayerScreenCharacterInventory(
+          rpgConfig: rpgConfig,
+          charToRender: charToRender,
+        )
+      ));
     }
     if (showRecipes &&
         charToRender != null &&

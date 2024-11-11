@@ -40,10 +40,11 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
             el.valueType == CharacterStatValueType.singleLineText,
       );
 
-      return Container(
-        padding: EdgeInsets.all(padding),
-        color: bgColor,
-        child: SingleChildScrollView(
+      return SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(padding),
+          clipBehavior: Clip.none,
+          color: bgColor,
           child: isOnlyTextPage
               ? Wrap(
                   alignment: WrapAlignment.start,

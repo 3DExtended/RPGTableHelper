@@ -84,250 +84,77 @@ Außerdem kannst du hier auch hinterlegen, welche Wirkungen ein Trank hat.
 Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Beschreibung zu stellen, damit deine Spieler die wichtigsten Infos auf den ersten Blick sehen können!'''; // TODO localize
 
     return TwoPartWizardStepBody(
-        contentChildren: [],
-        isLandscapeMode: MediaQuery.of(context).size.width >
-            MediaQuery.of(context).size.height,
-        stepHelperText: stepHelperText,
-        sideBarFlex: 1,
-        contentFlex: 3,
-        onNextBtnPressed: !isFormValid
-            ? null
-            : () {
-                saveChanges();
-                widget.onNextBtnPressed();
-              },
-        onPreviousBtnPressed: () {
-          // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-          widget.onPreviousBtnPressed();
+      contentChildren: [],
+      isLandscapeMode: MediaQuery.of(context).size.width >
+          MediaQuery.of(context).size.height,
+      stepHelperText: stepHelperText,
+      sideBarFlex: 1,
+      contentFlex: 3,
+      onNextBtnPressed: !isFormValid
+          ? null
+          : () {
+              saveChanges();
+              widget.onNextBtnPressed();
+            },
+      onPreviousBtnPressed: () {
+        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
+        widget.onPreviousBtnPressed();
+      },
+      contentWidget: ItemCardRenderingWithFiltering(
+        hideAmount: true,
+        allItemCategories: _allItemCategories,
+        selectedItemCategoryId: selectedItemCategoryId,
+        onSelectNewFilterCategory: (ItemCategory e) {
+          setState(() {
+            selectedItemCategoryId = e.uuid == "" ? null : e.uuid;
+          });
         },
-        contentWidget: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          ...[
-                            ItemCategory(
-                              colorCode: null,
-                              iconName: null,
-                              name: "Alles",
-                              subCategories: [],
-                              uuid: "",
-                              hideInInventoryFilters: false,
-                            ),
-                            ...CustomIterableExtensions(_allItemCategories)
-                                .sortBy((e) => e.name),
-                          ].map(
-                            (e) => Padding(
-                              padding: const EdgeInsets.only(right: 25),
-                              child: CustomButtonNewdesign(
-                                variant: (selectedItemCategoryId == e.uuid ||
-                                        (e.uuid == "" &&
-                                            selectedItemCategoryId == null))
-                                    ? CustomButtonNewdesignVariant.DarkButton
-                                    : CustomButtonNewdesignVariant.Default,
-                                onPressed: () {
-                                  setState(() {
-                                    selectedItemCategoryId =
-                                        e.uuid == "" ? null : e.uuid;
-                                  });
-                                },
-                                label: e.name,
-                                icon: e.iconName == null
-                                    ? null
-                                    : getIconForIdentifier(
-                                            name: e.iconName!,
-                                            size: 20,
-                                            color: (selectedItemCategoryId ==
-                                                        e.uuid ||
-                                                    (e.uuid == "" &&
-                                                        selectedItemCategoryId ==
-                                                            null))
-                                                ? (e.colorCode
-                                                    ?.parseHexColorRepresentation())
-                                                : darkColor)
-                                        .$2,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  CustomButtonNewdesign(
-                    variant: CustomButtonNewdesignVariant.AccentButton,
-                    onPressed: () async {
-                      // open create modal with new item
-                      await showCreateOrEditItemModalNewDesign(
-                          context,
-                          RpgItem(
-                            imageDescription: null,
-                            imageUrlWithoutBasePath: null,
-                            baseCurrencyPrice: 0,
-                            categoryId: "",
-                            description: "",
-                            name: "",
-                            placeOfFindings: [],
-                            patchSize: null,
-                            uuid: const UuidV7().generate(),
-                          )).then((returnValue) {
-                        if (returnValue == null) {
-                          return;
-                        }
+        renderCreateButton: true,
+        onAddNewItemPressed: () async {
+          // open create modal with new item
+          await showCreateOrEditItemModalNewDesign(
+              context,
+              RpgItem(
+                imageDescription: null,
+                imageUrlWithoutBasePath: null,
+                baseCurrencyPrice: 0,
+                categoryId: "",
+                description: "",
+                name: "",
+                placeOfFindings: [],
+                patchSize: null,
+                uuid: const UuidV7().generate(),
+              )).then((returnValue) {
+            if (returnValue == null) {
+              return;
+            }
 
-                        setState(() {
-                          _items.add(returnValue);
-                          saveChanges();
-                        });
-                      });
-                    },
-                    label: "+ Hinzufügen",
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 0,
-            ),
-            Expanded(child: LayoutBuilder(builder: (context, constraints) {
-              var layoutWidth = constraints.maxWidth;
-              const scalar = 1.0;
+            setState(() {
+              _items.add(returnValue);
+              saveChanges();
+            });
+          });
+        },
+        items: _items.map((i) => (item: i, amount: 0)).toList(),
+        onItemCardPressed:
+            (MapEntry<int, ({int amount, RpgItem item})> itemToRender) async {
+          // open edit modal with clicked item
+          await showCreateOrEditItemModalNewDesign(
+                  context, itemToRender.value.item)
+              .then((returnValue) {
+            if (returnValue == null) {
+              return;
+            }
 
-              const cardHeight = 423 * scalar;
-              const cardWidth = 289 * scalar;
-
-              const targetedCardHeight = cardHeight;
-              const targetedCardWidth = cardWidth;
-              const itemCardPadding = 9.0;
-
-              var numberOfColumnsOnScreen = 1;
-              var calculatedWidth = itemCardPadding + targetedCardWidth;
-
-              while (calculatedWidth < layoutWidth) {
-                calculatedWidth += itemCardPadding + targetedCardWidth;
-                numberOfColumnsOnScreen++;
-              }
-
-              numberOfColumnsOnScreen--;
-
-              var itemsAsMapList = _items.asMap().entries.where((it) {
-                var itemCategoryForItem =
-                    ItemCategory.parentCategoryForCategoryIdRecursive(
-                        categories: _allItemCategories,
-                        categoryId: it.value.categoryId);
-
-                return selectedItemCategoryId == null ||
-                    it.value.categoryId == selectedItemCategoryId ||
-                    (itemCategoryForItem != null &&
-                        itemCategoryForItem.uuid == selectedItemCategoryId);
-              }).toList();
-
-              if (itemsAsMapList.isEmpty) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Text(
-                      "Keine Items unter dieser Kategorie",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(fontSize: 24, color: darkTextColor),
-                    ),
-                  ],
-                );
-              }
-              var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
-                  categories: _allItemCategories);
-
-              return ListView.builder(
-                itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
-                            numberOfColumnsOnScreen ==
-                        itemsAsMapList.length)
-                    ? (itemsAsMapList.length ~/ numberOfColumnsOnScreen)
-                    : (itemsAsMapList.length ~/ numberOfColumnsOnScreen) + 1,
-                itemExtent: targetedCardHeight + itemCardPadding,
-                itemBuilder: (context, index) {
-                  return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...List.generate(numberOfColumnsOnScreen, (subindex) {
-                          var indexOfItemToRender =
-                              index * numberOfColumnsOnScreen + subindex;
-                          if (indexOfItemToRender >= itemsAsMapList.length) {
-                            return List<Widget>.empty();
-                          }
-
-                          var itemToRender =
-                              itemsAsMapList[indexOfItemToRender];
-                          var categoryForItem =
-                              flattenedCategories.firstWhereOrNull((e) =>
-                                  e.uuid == itemToRender.value.categoryId);
-
-                          var parentCategoryOfItem = categoryForItem != null
-                              ? flattenedCategories.firstWhereOrNull((fc) =>
-                                      fc.subCategories.any((sub) =>
-                                          sub.uuid == categoryForItem.uuid)) ??
-                                  categoryForItem
-                              : categoryForItem;
-
-                          return [
-                            CupertinoButton(
-                              minSize: 0,
-                              padding: EdgeInsets.all(0),
-                              onPressed: () async {
-                                // open edit modal with clicked item
-                                await showCreateOrEditItemModalNewDesign(
-                                        context, itemToRender.value)
-                                    .then((returnValue) {
-                                  if (returnValue == null) {
-                                    return;
-                                  }
-
-                                  setState(() {
-                                    _items.removeAt(itemToRender.key);
-                                    _items.insert(
-                                        itemToRender.key, returnValue);
-                                    saveChanges();
-                                  });
-                                });
-                              },
-                              child: CustomItemCard(
-                                scalarOverride: scalar,
-                                imageUrl:
-                                    itemToRender.value.imageUrlWithoutBasePath,
-                                title: itemToRender.value.name,
-                                description: itemToRender.value.description,
-                                categoryIconColor: parentCategoryOfItem
-                                    ?.colorCode
-                                    ?.parseHexColorRepresentation(),
-                                categoryIconName:
-                                    parentCategoryOfItem?.iconName,
-                              ),
-                            ),
-                            if (numberOfColumnsOnScreen != subindex + 1)
-                              SizedBox(
-                                width: itemCardPadding,
-                              ),
-                          ];
-                        }).expand((i) => i),
-                      ]);
-                },
-              );
-            }))
-          ],
-        ));
+            setState(() {
+              _items.removeAt(itemToRender.key);
+              _items.insert(itemToRender.key, returnValue);
+              saveChanges();
+            });
+          });
+        },
+      ),
+    );
   }
 
   // TODO see what we need from this...
@@ -595,6 +422,243 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
     }
 
     return result;
+  }
+}
+
+class ItemCardRenderingWithFiltering extends StatelessWidget {
+  const ItemCardRenderingWithFiltering({
+    super.key,
+    required List<ItemCategory> allItemCategories,
+    required this.selectedItemCategoryId,
+    required this.onSelectNewFilterCategory,
+    required this.renderCreateButton,
+    this.onAddNewItemPressed,
+    required List<({RpgItem item, int amount})> items,
+    this.onItemCardPressed,
+    required this.hideAmount,
+  })  : _allItemCategories = allItemCategories,
+        _items = items;
+  final bool hideAmount;
+  final List<ItemCategory> _allItemCategories;
+  final String? selectedItemCategoryId;
+  final Function(ItemCategory e) onSelectNewFilterCategory;
+  final bool renderCreateButton;
+  final Future Function()? onAddNewItemPressed;
+  final List<({RpgItem item, int amount})> _items;
+  final Future Function(
+          MapEntry<int, ({int amount, RpgItem item})> itemToRender)?
+      onItemCardPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ...[
+                        ItemCategory(
+                          colorCode: null,
+                          iconName: null,
+                          name: "Alles",
+                          subCategories: [],
+                          uuid: "",
+                          hideInInventoryFilters: false,
+                        ),
+                        ...CustomIterableExtensions(_allItemCategories)
+                            .sortBy((e) => e.name),
+                      ].map(
+                        (e) => Padding(
+                          padding: const EdgeInsets.only(right: 25),
+                          child: CustomButtonNewdesign(
+                            variant: (selectedItemCategoryId == e.uuid ||
+                                    (e.uuid == "" &&
+                                        selectedItemCategoryId == null))
+                                ? CustomButtonNewdesignVariant.DarkButton
+                                : CustomButtonNewdesignVariant.Default,
+                            onPressed: () {
+                              onSelectNewFilterCategory(e);
+                            },
+                            label: e.name,
+                            icon: e.iconName == null
+                                ? null
+                                : getIconForIdentifier(
+                                        name: e.iconName!,
+                                        size: 20,
+                                        color: (selectedItemCategoryId ==
+                                                    e.uuid ||
+                                                (e.uuid == "" &&
+                                                    selectedItemCategoryId ==
+                                                        null))
+                                            ? (e.colorCode
+                                                ?.parseHexColorRepresentation())
+                                            : darkColor)
+                                    .$2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (renderCreateButton && onAddNewItemPressed != null)
+                SizedBox(
+                  width: 50,
+                ),
+              if (renderCreateButton && onAddNewItemPressed != null)
+                CustomButtonNewdesign(
+                  variant: CustomButtonNewdesignVariant.AccentButton,
+                  onPressed: onAddNewItemPressed,
+                  label: "+ Hinzufügen",
+                )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 0,
+        ),
+        Expanded(child: LayoutBuilder(builder: (context, constraints) {
+          var layoutWidth = constraints.maxWidth;
+          const scalar = 1.0;
+
+          const cardWidth = 289 * scalar;
+
+          const targetedCardWidth = cardWidth;
+          const itemCardPadding = 9.0;
+
+          var numberOfColumnsOnScreen = 1;
+          var calculatedWidth = itemCardPadding + targetedCardWidth;
+
+          while (calculatedWidth < layoutWidth) {
+            calculatedWidth += itemCardPadding + targetedCardWidth;
+            numberOfColumnsOnScreen++;
+          }
+
+          numberOfColumnsOnScreen--;
+
+          var itemsAsMapList = _items.asMap().entries.where((it) {
+            var itemCategoryForItem =
+                ItemCategory.parentCategoryForCategoryIdRecursive(
+                    categories: _allItemCategories,
+                    categoryId: it.value.item.categoryId);
+
+            return selectedItemCategoryId == null ||
+                it.value.item.categoryId == selectedItemCategoryId ||
+                (itemCategoryForItem != null &&
+                    itemCategoryForItem.uuid == selectedItemCategoryId);
+          }).toList();
+
+          if (itemsAsMapList.isEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  "Keine Items unter dieser Kategorie",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontSize: 24, color: darkTextColor),
+                ),
+              ],
+            );
+          }
+          var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
+              categories: _allItemCategories);
+
+          return ListView.builder(
+            itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
+                        numberOfColumnsOnScreen ==
+                    itemsAsMapList.length)
+                ? (itemsAsMapList.length ~/ numberOfColumnsOnScreen)
+                : (itemsAsMapList.length ~/ numberOfColumnsOnScreen) + 1,
+            itemBuilder: (context, index) {
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ...List.generate(numberOfColumnsOnScreen, (subindex) {
+                      var indexOfItemToRender =
+                          index * numberOfColumnsOnScreen + subindex;
+                      if (indexOfItemToRender >= itemsAsMapList.length) {
+                        return List<Widget>.empty();
+                      }
+
+                      var itemToRender = itemsAsMapList[indexOfItemToRender];
+                      var categoryForItem =
+                          flattenedCategories.firstWhereOrNull((e) =>
+                              e.uuid == itemToRender.value.item.categoryId);
+
+                      var parentCategoryOfItem = categoryForItem != null
+                          ? flattenedCategories.firstWhereOrNull((fc) =>
+                                  fc.subCategories.any((sub) =>
+                                      sub.uuid == categoryForItem.uuid)) ??
+                              categoryForItem
+                          : categoryForItem;
+
+                      return [
+                        Column(
+                          children: [
+                            CupertinoButton(
+                              minSize: 0,
+                              padding: EdgeInsets.all(0),
+                              onPressed: () async {
+                                if (onItemCardPressed != null) {
+                                  await onItemCardPressed!(itemToRender);
+                                }
+                              },
+                              child: CustomItemCard(
+                                scalarOverride: scalar,
+                                imageUrl: itemToRender
+                                    .value.item.imageUrlWithoutBasePath,
+                                title: itemToRender.value.item.name,
+                                description:
+                                    itemToRender.value.item.description,
+                                categoryIconColor: parentCategoryOfItem
+                                    ?.colorCode
+                                    ?.parseHexColorRepresentation(),
+                                categoryIconName:
+                                    parentCategoryOfItem?.iconName,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "Anzahl: ${itemToRender.value.amount}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(
+                                    color: darkTextColor,
+                                    fontSize: 16,
+                                  ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                        if (numberOfColumnsOnScreen != subindex + 1)
+                          SizedBox(
+                            width: itemCardPadding,
+                          ),
+                      ];
+                    }).expand((i) => i),
+                  ]);
+            },
+          );
+        }))
+      ],
+    );
   }
 }
 
