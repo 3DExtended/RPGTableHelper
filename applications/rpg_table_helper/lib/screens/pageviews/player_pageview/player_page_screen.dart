@@ -32,8 +32,8 @@ class PlayerPageScreenRouteSettings {
       disableEdit: false,
       characterConfigurationOverride: null,
       showInventory: true,
-      showLore: true,
       showRecipes: true,
+      showLore: false,
     );
   }
 }

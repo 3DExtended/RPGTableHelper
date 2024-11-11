@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -142,15 +144,18 @@ class RpgCharacterConfigurationNotifier
 
     // check if itemId is in inventory
     if (isItemInInventory == null) {
-      tempInventoryState
-          .add(RpgCharacterOwnedItemPair(itemUuid: itemId, amount: amount));
+      if (amount > 0) {
+        tempInventoryState
+            .add(RpgCharacterOwnedItemPair(itemUuid: itemId, amount: amount));
+      }
     } else {
       var indexOfItemInInventory =
           tempInventoryState.indexWhere((e) => e.itemUuid == itemId);
       tempInventoryState[indexOfItemInInventory] =
           tempInventoryState[indexOfItemInInventory].copyWith(
-              amount:
-                  tempInventoryState[indexOfItemInInventory].amount + amount);
+              amount: max(
+                  tempInventoryState[indexOfItemInInventory].amount + amount,
+                  0));
     }
 
     return tempInventoryState;

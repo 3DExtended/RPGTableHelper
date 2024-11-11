@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/modals/show_item_card_details.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -71,7 +73,20 @@ class _PlayerScreenCharacterInventoryState
         },
         renderCreateButton: true,
         selectedItemCategoryId: selectedItemCategoryId,
-        onItemCardPressed: null,
+        onItemCardPressed:
+            (MapEntry<int, ({int amount, RpgItem item})> details) async {
+          await showItemCardDetails(
+            context,
+            item: details.value.item,
+            currentlyOwned: details.value.amount,
+            rpgConfig: widget.rpgConfig,
+          ).then((valueToAdjustAmountBy) {
+            if (valueToAdjustAmountBy == null) return;
+
+            ref.read(rpgCharacterConfigurationProvider.notifier).grantItem(
+                itemId: details.value.item.uuid, amount: valueToAdjustAmountBy);
+          });
+        },
       ),
     );
   }
