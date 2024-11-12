@@ -57,8 +57,12 @@ abstract class IServerCommunicationService {
 }
 
 class ServerCommunicationService extends IServerCommunicationService {
-  bool connectionIsOpen = false;
   late HubConnection? hubConnection;
+  bool get connectionIsOpen =>
+      hubConnection != null &&
+      (hubConnection!.state == HubConnectionState.Connected);
+
+  bool stopSending = false;
 
   ServerCommunicationService({
     required super.widgetRef,
@@ -115,7 +119,6 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     hubConnection!.onreconnecting(({error}) {
       log("onreconnecting called");
-      connectionIsOpen = false;
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
                     isConnected: false,
@@ -126,7 +129,6 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     hubConnection!.onreconnected(({connectionId}) async {
       log("onreconnected called");
-      connectionIsOpen = true;
 
       // users cannot be assigned to signalR groups (see here: https://github.com/dotnet/aspnetcore/issues/26133)
       // hence, everytime a user is reconnected, we must ensure we add them to the appropiate groups
@@ -151,12 +153,14 @@ class ServerCommunicationService extends IServerCommunicationService {
 
   @override
   Future startConnection() async {
+    stopSending = false;
+
     await tryOpenConnection();
   }
 
   @override
   Future stopConnection() async {
-    await hubConnection?.stop();
+    stopSending = true;
   }
 
   void _handleAClientProvidedFunction(List<Object?>? parameters) {
@@ -250,13 +254,16 @@ class ServerCommunicationService extends IServerCommunicationService {
       await tryOpenConnection();
     }
 
+    if (stopSending == true) {
+      return;
+    }
+
     await hubConnection!.invoke(functionName, args: args);
   }
 
   Future tryOpenConnection() async {
     try {
       await hubConnection!.start();
-      connectionIsOpen = true;
 
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(

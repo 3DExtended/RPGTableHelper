@@ -338,6 +338,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 minSize: 0,
                 padding: EdgeInsets.all(0),
                 onPressed: () async {
+                  var serverCommunicationService =
+                      DependencyProvider.of(context)
+                          .getService<IServerCommunicationService>();
+                  serverCommunicationService.stopConnection();
+
                   if (character.campagneId != null &&
                       character.campagneId!.$value != null) {
                     if (character.rpgCharacterConfiguration != null &&
@@ -359,9 +364,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                     playerCharacterId: character.id!.$value!));
 
                     // start SignalR connection
-                    var serverCommunicationService =
-                        DependencyProvider.of(context)
-                            .getService<IServerCommunicationService>();
+
                     await serverCommunicationService.startConnection();
                     if (!mounted) return;
 
@@ -412,9 +415,22 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Expanded(
-                              child: CustomMarkdownBody(
-                                  text:
-                                      "# ${character.characterName!}\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}"),
+                              child: Builder(builder: (context) {
+                                var characterNameToDisplay =
+                                    character.characterName!;
+                                if (character.rpgCharacterConfiguration !=
+                                    null) {
+                                  var parsedConfig =
+                                      RpgCharacterConfiguration.fromJson(
+                                          jsonDecode(character
+                                              .rpgCharacterConfiguration!));
+                                  characterNameToDisplay =
+                                      parsedConfig.characterName;
+                                }
+                                return CustomMarkdownBody(
+                                    text:
+                                        "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}");
+                              }),
                             ),
                           ],
                         ),

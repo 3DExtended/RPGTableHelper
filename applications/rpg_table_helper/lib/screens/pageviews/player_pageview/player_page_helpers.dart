@@ -54,13 +54,13 @@ class PlayerPageHelpers {
     }
 
     Future.delayed(Duration.zero, () async {
+      var tabsToValidate = rpgConfig.characterStatTabsDefinition
+          ?.where((tab) => filterTabId == null || tab.uuid == filterTabId);
+
       // find all stat uuids:
-      var listOfStats = rpgConfig.characterStatTabsDefinition
-              ?.where((tab) => filterTabId == null || tab.uuid == filterTabId)
-              .map((t) => t.statsInTab)
-              .expand((i) => i)
-              .toList() ??
-          [];
+      var listOfStats =
+          tabsToValidate?.map((t) => t.statsInTab).expand((i) => i).toList() ??
+              [];
 
       var selectedCharacterStats = selectedCharacter.characterStats;
 
@@ -76,12 +76,15 @@ class PlayerPageHelpers {
           selectedCharacter.characterName.trim().isEmpty) {
         List<RpgCharacterStatValue> updatedCharacterStats = [];
 
-        var updatedCharacterName = await askPlayerForCharacterName(
-            context: context,
-            currentCharacterName: selectedCharacter.characterName);
+        String? updatedCharacterName = selectedCharacter.characterName;
+        if (updatedCharacterName.trim().isEmpty ||
+            (filterTabId != null &&
+                tabsToValidate?.firstOrNull?.isDefaultTab == true)) {
+          updatedCharacterName = await askPlayerForCharacterName(
+              context: context,
+              currentCharacterName: selectedCharacter.characterName);
 
-        if (updatedCharacterName == null) {
-          return;
+          if (updatedCharacterName == null) return;
         }
 
         for (var statToFill in anyStatNotFilledYet) {

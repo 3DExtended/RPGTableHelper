@@ -258,11 +258,24 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                 Spacer(),
               ],
             ),
-            menuOpen: () {
-              // TODO maybe open the configuration of the rpg
-              // Navigator.of(context)
-              //     .pushNamed(allWizardConfigurations.entries.first.key);
-            },
+            menuOpen: (rpgConfig?.characterStatTabsDefinition ??
+                                List<CharacterStatsTabDefinition>.empty())
+                            .length <=
+                        _currentStep ||
+                    rpgConfig == null ||
+                    charToRender == null
+                ? null
+                : () {
+                    Future.delayed(Duration.zero, () async {
+                      PlayerPageHelpers.handlePossiblyMissingCharacterStats(
+                          ref: ref,
+                          context: context,
+                          filterTabId: rpgConfig
+                              .characterStatTabsDefinition![_currentStep].uuid,
+                          rpgConfig: rpgConfig,
+                          selectedCharacter: charToRender!);
+                    });
+                  },
             backInsteadOfCloseIcon: true,
           ),
           Expanded(
