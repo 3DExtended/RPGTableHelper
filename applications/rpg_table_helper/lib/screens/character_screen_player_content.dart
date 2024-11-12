@@ -15,6 +15,7 @@ import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.da
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:signalr_netcore/errors.dart';
 import 'package:uuid/v7.dart';
@@ -93,7 +94,8 @@ class _CharacterScreenPlayerContentState
                   if (newValue == "new") {
                     // create a new alternate character
                     var playerCharacterName =
-                        await askPlayerForCharacterName(context: context);
+                        await PlayerPageHelpers.askPlayerForCharacterName(
+                            context: context);
 
                     if (playerCharacterName == null) return;
 
@@ -363,11 +365,11 @@ class _CharacterScreenPlayerContentState
   }
 
   void handlePossiblyMissingCharacterStats(
-      String? tabFilter, bool? ignorePossiblyMissingCharacterStatsHandled) {
+      String? filterTabId, bool? ignorePossiblyMissingCharacterStatsHandled) {
     if (!rpgCharacterConfigurationLoaded ||
         !rpgConfigurationLoaded ||
         (ignorePossiblyMissingCharacterStatsHandled != true &&
-            (possiblyMissingCharacterStatsHandled && tabFilter == null)) ||
+            (possiblyMissingCharacterStatsHandled && filterTabId == null)) ||
         DependencyProvider.of(context).isMocked) {
       return;
     }
@@ -379,7 +381,7 @@ class _CharacterScreenPlayerContentState
     Future.delayed(Duration.zero, () async {
       // find all stat uuids:
       var listOfStats = rpgConfig!.characterStatTabsDefinition
-              ?.where((tab) => tabFilter == null || tab.uuid == tabFilter)
+              ?.where((tab) => filterTabId == null || tab.uuid == filterTabId)
               .map((t) => t.statsInTab)
               .expand((i) => i)
               .toList() ??
@@ -389,7 +391,7 @@ class _CharacterScreenPlayerContentState
 
       var anyStatNotFilledYet = listOfStats
           .where((st) =>
-              tabFilter != null ||
+              filterTabId != null ||
               !(selectedCharacterStats ?? [])
                   .map((charstat) => charstat.statUuid)
                   .contains(st.statUuid))

@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 
 part 'rpg_configuration_model.g.dart';
 
@@ -653,37 +649,6 @@ class RpgConfigurationModel {
               ]),
         ],
       );
-}
-
-Future<String?> askPlayerForCharacterName(
-    {required BuildContext context, String? currentCharacterName}) async {
-  var characterNameStat = CharacterStatDefinition(
-    groupId: null,
-    isOptionalForAlternateForms: false,
-    isOptionalForCompanionCharacters: false,
-    statUuid: "00000000-0000-0000-0000-000000000000",
-    name: "Name",
-    helperText: "Wie heißt dein Charakter?",
-    valueType: CharacterStatValueType.singleLineText,
-    editType: CharacterStatEditType.static,
-  );
-
-  var result = await showGetPlayerConfigurationModal(
-      context: context,
-      statConfiguration: characterNameStat,
-      characterName: currentCharacterName ?? "Player Name",
-      characterValue: currentCharacterName == null
-          ? null
-          : RpgCharacterStatValue(
-              statUuid: characterNameStat.statUuid,
-              serializedValue: '{"value": "$currentCharacterName"}',
-              variant: null,
-            ));
-
-  if (result == null) return null;
-  var parsedValue = jsonDecode(result.serializedValue)["value"];
-
-  return parsedValue;
 }
 
 @JsonSerializable()
