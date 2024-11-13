@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -156,6 +157,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
   @override
   Widget build(BuildContext context) {
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
     var tempLoadedRpgCharacter =
         ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
 
@@ -166,19 +168,22 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       charToRender = tempLoadedRpgCharacter;
     }
 
-    if (rpgConfig != null &&
+    if (connectionDetails != null &&
+        rpgConfig != null &&
         charToRender != null &&
         (_alreadyCheckedForMissingStats == false)) {
       _alreadyCheckedForMissingStats = true;
 
-      Future.delayed(Duration.zero, () async {
-        PlayerPageHelpers.handlePossiblyMissingCharacterStats(
-          context: context,
-          ref: ref,
-          rpgConfig: rpgConfig,
-          selectedCharacter: charToRender!,
-        );
-      });
+      if (connectionDetails.isPlayer) {
+        Future.delayed(Duration.zero, () async {
+          PlayerPageHelpers.handlePossiblyMissingCharacterStats(
+            context: context,
+            ref: ref,
+            rpgConfig: rpgConfig,
+            selectedCharacter: charToRender!,
+          );
+        });
+      }
     }
 
     var playerScreensToSwipe = rpgConfig == null || charToRender == null
