@@ -198,6 +198,27 @@ List<
           '{"level": 5, "values": [{"value":"Zwerg", "uuid": "76183b57-d6f3-4414-962c-837488ed0384"}, {"value":"Magier", "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"}]}',
     )
   ),
+  (
+    "listOfIntsWithIcons, static",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.listOfIntsWithIcons,
+      editType: CharacterStatEditType.static,
+      name: "Charakter Vorstellung",
+      statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
+      helperText: "What are you skill values?",
+      jsonSerializedAdditionalData:
+          '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Volk", "iconName": "backpack-svgrepo-com-2"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Klasse", "iconName": "book-open"}, {"uuid":"bcc4995c-2976-4015-b6b8-7a211c69c59a", "label": "Test", "iconName": "shield"},{"uuid":"0499a51e-fab7-4641-9d2b-07a79f55e918", "label": "Test", "iconName": "shield"},{"uuid":"d1c2006a-2d43-4b19-9b75-38577c3c6b58", "label": "Test", "iconName": "shield"},{"uuid":"2eca2a8d-2fa3-4a6a-8145-3db5cb24b0b1", "label": "Test", "iconName": "shield"},{"uuid":"fc671291-fab4-4253-a4c8-c5a66f89f84c", "label": "Test", "iconName": "shield"},{"uuid":"2f744d23-8ff6-4d75-8426-a1ca3e682e7b", "label": "Test", "iconName": "shield"},{"uuid":"a1f6fa06-0b68-4067-8671-ec5c85966828", "label": "Test", "iconName": "shield"}]}',
+    ),
+    RpgCharacterStatValue(
+      variant: null,
+      statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
+      serializedValue:
+          '{"values": [{"value":5, "uuid": "76183b57-d6f3-4414-962c-837488ed0384"}, {"value":17, "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"}]}',
+    )
+  ),
 ];
 
 void main() {

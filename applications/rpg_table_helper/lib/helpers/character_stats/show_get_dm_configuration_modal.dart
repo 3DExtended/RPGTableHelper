@@ -9,7 +9,9 @@ import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:signalr_netcore/errors.dart';
@@ -64,7 +66,8 @@ class _ShowGetDmConfigurationModalContentState
         TextEditingController description
       )> multiselectOptions = [];
 
-  List<(String uuid, TextEditingController label)> groupOfLabeledValues = [];
+  List<({String uuid, TextEditingController label, String? iconName})>
+      groupOfLabeledValues = [];
 
   CharacterStatEditType? selectedEditType = CharacterStatEditType.static;
   CharacterStatValueType? selectedValueType =
@@ -114,6 +117,8 @@ class _ShowGetDmConfigurationModalContentState
               ));
             }
           } else if (selectedValueType ==
+                  CharacterStatValueType.listOfIntsWithIcons ||
+              selectedValueType ==
                   CharacterStatValueType.listOfIntWithCalculatedValues ||
               selectedValueType ==
                   CharacterStatValueType
@@ -124,12 +129,21 @@ class _ShowGetDmConfigurationModalContentState
                     '{"values": []}') as Map<String, dynamic>)["values"];
 
             for (var item in jsonList) {
-              var label = (item as Map<String, dynamic>)["label"];
-              var uuid = (item)["uuid"];
+              var itemAsMap = item as Map<String, dynamic>;
+              var label = itemAsMap.containsKey("label")
+                  ? itemAsMap["label"] as String
+                  : "";
+              var iconName = itemAsMap.containsKey("iconName")
+                  ? itemAsMap["iconName"] as String
+                  : null;
+              var uuid = itemAsMap.containsKey("uuid")
+                  ? itemAsMap["uuid"] as String
+                  : UuidV7().generate();
 
               groupOfLabeledValues.add((
-                uuid,
-                TextEditingController(text: label),
+                uuid: uuid,
+                label: TextEditingController(text: label),
+                iconName: iconName,
               ));
             }
           }
@@ -178,8 +192,22 @@ class _ShowGetDmConfigurationModalContentState
             var serializedAdditionalData = jsonEncode({
               "values": (groupOfLabeledValues
                   .map((e) => {
-                        "uuid": e.$1,
-                        "label": e.$2.text,
+                        "uuid": e.uuid,
+                        "label": e.label.text,
+                      })
+                  .toList())
+            });
+
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: serializedAdditionalData);
+          } else if (selectedValueType ==
+              CharacterStatValueType.listOfIntsWithIcons) {
+            var serializedAdditionalData = jsonEncode({
+              "values": (groupOfLabeledValues
+                  .map((e) => {
+                        "uuid": e.uuid,
+                        "label": e.label.text,
+                        "iconName": e.iconName ?? "shield",
                       })
                   .toList())
             });
@@ -286,6 +314,13 @@ class _ShowGetDmConfigurationModalContentState
                         value: e.name,
                         child: Text("Zahlen-Wert"), // TODO localize
                       );
+
+                    case CharacterStatValueType.listOfIntsWithIcons:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(
+                            "Liste von Zahlen-Werten mit Icons"), // TODO localize
+                      );
                     case CharacterStatValueType.intWithMaxValue:
                       return DropdownMenuItem<String?>(
                         value: e.name,
@@ -312,28 +347,11 @@ class _ShowGetDmConfigurationModalContentState
                             "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)"), // TODO localize
                       );
 
-                    // case CharacterStatValueType.intCounter:
-                    //   return DropdownMenuItem<String?>(
-                    //     value: e.name,
-                    //     child: Text("Zähler/Counter"), // TODO localize
-                    //   );
-                    // case CharacterStatValueType.bool:
-                    //   return DropdownMenuItem<String?>(
-                    //     value: e.name,
-                    //     child: Text("Ja/Nein"), // TODO localize
-                    //   );
-                    // case CharacterStatValueType.double:
-                    //   return DropdownMenuItem<String?>(
-                    //     value: e.name,
-                    //     child: Text("Komma-Zahl"), // TODO localize
-                    //   );
                     case CharacterStatValueType.multiselect:
                       return DropdownMenuItem<String?>(
                         value: e.name,
                         child: Text("Mehrfach-Auswahl"), // TODO localize
                       );
-                    default:
-                      throw NotImplementedException();
                   }
                 }).toList(),
                 label: "Art der Eigenschaft"),
@@ -410,6 +428,7 @@ class _ShowGetDmConfigurationModalContentState
       CharacterStatValueType.multiselect,
       CharacterStatValueType.listOfIntWithCalculatedValues,
       CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
+      CharacterStatValueType.listOfIntsWithIcons,
     ];
 
     if (selectedValueType == null) return [];
@@ -525,7 +544,8 @@ class _ShowGetDmConfigurationModalContentState
     } else if (selectedValueType ==
             CharacterStatValueType.listOfIntWithCalculatedValues ||
         selectedValueType ==
-            CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+            CharacterStatValueType.characterNameWithLevelAndAdditionalDetails ||
+        selectedValueType == CharacterStatValueType.listOfIntsWithIcons) {
       return [
         SizedBox(
           height: 20,
@@ -550,11 +570,52 @@ class _ShowGetDmConfigurationModalContentState
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (selectedValueType ==
+                        CharacterStatValueType.listOfIntsWithIcons)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                        child: CustomButtonNewdesign(
+                          isSubbutton: true,
+                          variant: CustomButtonNewdesignVariant.Default,
+                          onPressed: () async {
+                            // open icon and color selector
+                            await showSelectIconWithColorModal(
+                              context,
+                              alreadySelectedIcoName:
+                                  tuple.value.iconName ?? "shield",
+                              alreadySelectedIconColor: darkColor,
+                              disableColorSelect: true,
+                              titleSuffix:
+                                  "für Zahlen-Wert \"${tuple.value.label.text}\"",
+                            ).then((value) {
+                              if (value == null) {
+                                return;
+                              }
+
+                              setState(() {
+                                groupOfLabeledValues[tuple.key] = (
+                                  uuid: groupOfLabeledValues[tuple.key].uuid,
+                                  label: groupOfLabeledValues[tuple.key].label,
+                                  iconName: value.$1,
+                                );
+                              });
+                            });
+                          },
+                          icon: Padding(
+                            padding: const EdgeInsets.all(4.5),
+                            child: getIconForIdentifier(
+                              name: tuple.value.iconName ?? "shield",
+                              color: darkColor,
+                              size: 32,
+                            ).$2,
+                          ),
+                        ),
+                      ),
                     Expanded(
                       child: CustomTextField(
                         newDesign: true,
                         labelText: "Name:",
-                        textEditingController: tuple.value.$2,
+                        textEditingController: tuple.value.label,
                         keyboardType: TextInputType.text,
                       ),
                     ),
@@ -586,8 +647,12 @@ class _ShowGetDmConfigurationModalContentState
             onPressed: () {
               setState(() {
                 groupOfLabeledValues.add((
-                  UuidV7().generate(),
-                  TextEditingController(),
+                  uuid: UuidV7().generate(),
+                  label: TextEditingController(),
+                  iconName: selectedValueType ==
+                          CharacterStatValueType.listOfIntsWithIcons
+                      ? "shield"
+                      : null,
                 ));
               });
             },

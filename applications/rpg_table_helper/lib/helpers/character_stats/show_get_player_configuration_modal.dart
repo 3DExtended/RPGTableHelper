@@ -186,7 +186,9 @@ class _ShowGetPlayerConfigurationModalContentState
     }
 
     if (widget.statConfiguration.valueType ==
-        CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+            CharacterStatValueType.characterNameWithLevelAndAdditionalDetails ||
+        widget.statConfiguration.valueType ==
+            CharacterStatValueType.listOfIntsWithIcons) {
       // jsonSerializedAdditionalData is filled with {"values":[{"label": "", "uuid": ""}]}
       var labelDefinitions = ((jsonDecode(
               widget.statConfiguration.jsonSerializedAdditionalData ??
@@ -197,7 +199,10 @@ class _ShowGetPlayerConfigurationModalContentState
               ))
           .toList();
 
-      labelDefinitions.add((label: "Level", uuid: ""));
+      if (widget.statConfiguration.valueType ==
+          CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+        labelDefinitions.add((label: "Level", uuid: ""));
+      }
 
       List<({String uuid, String value})> filledListOfValues = [];
       if (widget.characterValue?.serializedValue != null) {
@@ -212,10 +217,14 @@ class _ShowGetPlayerConfigurationModalContentState
                   value: e["value"].toString(),
                 ))
             .toList();
-        filledListOfValues.add((
-          uuid: "",
-          value: (tempDecode["level"] as int?)?.toString() ?? "0"
-        ));
+
+        if (widget.statConfiguration.valueType ==
+            CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+          filledListOfValues.add((
+            uuid: "",
+            value: (tempDecode["level"] as int?)?.toString() ?? "0"
+          ));
+        }
       }
       listOfSingleValueOptions = labelDefinitions.map(
         (e) {
@@ -640,6 +649,7 @@ class _ShowGetPlayerConfigurationModalContentState
 
                 case CharacterStatValueType
                       .characterNameWithLevelAndAdditionalDetails:
+                case CharacterStatValueType.listOfIntsWithIcons:
                   // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12}]}
                   // => statConfiguration.jsonSerializedAdditionalData! == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
                   var statTitle = widget.statConfiguration.name;
@@ -686,7 +696,12 @@ class _ShowGetPlayerConfigurationModalContentState
                                           e.value.valueTextController,
                                       placeholderText:
                                           "Der Wert von ${e.value.label}",
-                                      keyboardType: TextInputType.text,
+                                      keyboardType:
+                                          widget.statConfiguration.valueType ==
+                                                  CharacterStatValueType
+                                                      .listOfIntsWithIcons
+                                              ? TextInputType.number
+                                              : TextInputType.text,
                                       newDesign: true,
                                     ),
                                   ),
@@ -934,6 +949,26 @@ class _ShowGetPlayerConfigurationModalContentState
           variant: 0,
           serializedValue: jsonEncode({
             "values": selectedMultiselectOptionsOrDefault,
+          }),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+
+      case CharacterStatValueType.listOfIntsWithIcons:
+        // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12,}]}
+
+        List<Map<String, dynamic>> filledValuesForlistOfSingleValueOptions =
+            listOfSingleValueOptions
+                .where((t) => t.uuid.isNotEmpty)
+                .map((e) => {
+                      "uuid": e.uuid,
+                      "value": int.tryParse(e.valueTextController.text) ?? 0,
+                    })
+                .toList();
+
+        return RpgCharacterStatValue(
+          variant: 0,
+          serializedValue: jsonEncode({
+            "values": filledValuesForlistOfSingleValueOptions,
           }),
           statUuid: widget.statConfiguration.statUuid,
         );

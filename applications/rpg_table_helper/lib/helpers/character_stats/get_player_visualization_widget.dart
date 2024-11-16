@@ -8,6 +8,7 @@ import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
 import 'package:rpg_table_helper/components/newdesign/progress_indicator_for_character_screen.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:shadow_widget/shadow_widget.dart';
@@ -23,6 +24,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
       return 1;
     case CharacterStatValueType.multiselect:
     case CharacterStatValueType.intWithCalculatedValue:
+    case CharacterStatValueType.listOfIntsWithIcons:
       return 2;
     case CharacterStatValueType.intWithMaxValue:
       return 3;
@@ -271,6 +273,98 @@ Widget getPlayerVisualizationWidget({
             .map(
               (t) => PentagonWithLabel(
                   value: t.value, otherValue: t.otherValue, label: t.label),
+            )
+            .toList(),
+      );
+
+    case CharacterStatValueType.listOfIntsWithIcons:
+      // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+      // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+      var parsedValue = ((jsonDecode(characterValue.serializedValue)
+              as Map<String, dynamic>)["values"] as List<dynamic>)
+          .map((t) => t as Map<String, dynamic>)
+          .toList();
+
+      var statConfigLabels =
+          (jsonDecode(statConfiguration.jsonSerializedAdditionalData!)["values"]
+                  as List<dynamic>)
+              .map((t) => t as Map<String, dynamic>)
+              .toList();
+
+      var filledValues = statConfigLabels
+          .map(
+            (e) {
+              var parsedMatchingValue = parsedValue.singleWhereOrNull(
+                (element) => element["uuid"] == e["uuid"],
+              );
+
+              return (
+                label: e["label"] as String,
+                iconName: e["iconName"] as String,
+                value: parsedMatchingValue?["value"] as int? ?? 0,
+              );
+            },
+          )
+          .sortedBy((e) => e.label)
+          .toList();
+
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        runSpacing: 10,
+        children: filledValues
+            .map(
+              (t) => SizedBox(
+                width: characterValue.variant == 0 ? 100 : 80,
+                child: Column(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        getIconForIdentifier(
+                                name: t.iconName, color: darkColor, size: 32)
+                            .$2,
+                        SizedBox(
+                          height: 5,
+                        ),
+                        if (characterValue.variant == 0)
+                          Text(
+                            "${t.label}: ${t.value}",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      fontSize: 18,
+                                      color: darkTextColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        if (characterValue.variant == 1)
+                          Text(
+                            "${t.value}",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      fontSize: 18,
+                                      color: darkTextColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        if (characterValue.variant == 1)
+                          SizedBox(
+                            height: 1,
+                          ),
+                        if (characterValue.variant == 1)
+                          Text(
+                            t.label,
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      fontSize: 12,
+                                      color: darkTextColor,
+                                    ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             )
             .toList(),
       );

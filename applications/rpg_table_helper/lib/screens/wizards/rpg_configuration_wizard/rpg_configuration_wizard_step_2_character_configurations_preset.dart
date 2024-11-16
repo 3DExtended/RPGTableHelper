@@ -550,6 +550,8 @@ extension on CharacterStatValueType {
     switch (this) {
       case CharacterStatValueType.int:
         return "Zahlen-Wert";
+      case CharacterStatValueType.listOfIntsWithIcons:
+        return "Liste von Zahlen-Werten mit Icons";
       case CharacterStatValueType.intWithMaxValue:
         return "Zahlen-Wert mit maximal Wert";
       case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
@@ -566,8 +568,6 @@ extension on CharacterStatValueType {
         return "Einzeiliger Text";
       case CharacterStatValueType.multiselect:
         return "Mehrfach-Auswahl";
-
-      default:
     }
   }
 }
