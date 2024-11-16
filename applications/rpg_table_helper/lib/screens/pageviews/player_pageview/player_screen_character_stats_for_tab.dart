@@ -29,90 +29,26 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
       if (constraints.maxWidth > 333 * 3.0) {
         numberOfColumns++;
       }
+      if (constraints.maxWidth > 333 * 4.0) {
+        numberOfColumns++;
+      }
 
       var padding = 20.0;
       var columnWidth =
           (constraints.maxWidth - padding * (numberOfColumns + 1)) /
               numberOfColumns.toDouble();
 
-      var isOnlyTextPage = tabDef.statsInTab.every(
-        (el) =>
-            el.valueType == CharacterStatValueType.multiLineText ||
-            el.valueType == CharacterStatValueType.singleLineText,
-      );
-
       return SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(padding),
-          clipBehavior: Clip.none,
-          color: bgColor,
-          child: isOnlyTextPage
-              ? DynamicHeightColumnLayout(
-                  spacing: padding,
-                  runSpacing: padding,
-                  numberOfColumns: numberOfColumns,
-                  children:
-                      getStatWidgetForTab(context, columnWidth: columnWidth),
-                )
-              : true
-                  ? DynamicHeightColumnLayout(
-                      numberOfColumns: numberOfColumns,
-                      spacing: 20,
-                      runSpacing: 20,
-                      children: getStatWidgetForTab(context,
-                          columnWidth: columnWidth),
-                    )
-                  : Builder(builder: (context) {
-                      var children = getStatWidgetForTab(context,
-                          columnWidth: columnWidth);
-
-                      List<List<Widget>> columnChildren =
-                          List.generate(numberOfColumns, (index) => []);
-                      var runSpacing = 20.0;
-
-                      var columnCounter = 0;
-                      for (var child in children) {
-                        if (columnChildren[columnCounter % numberOfColumns]
-                            .isNotEmpty) {
-                          columnChildren[columnCounter % numberOfColumns]
-                              .add(SizedBox(
-                            height: runSpacing,
-                          ));
-                        }
-                        columnChildren[columnCounter % numberOfColumns]
-                            .add(child);
-                        columnCounter++;
-                      }
-
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: columnChildren
-                            .asMap()
-                            .entries
-                            .map((children) => [
-                                  SizedBox(
-                                    width: columnWidth,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: children.value,
-                                    ),
-                                  ),
-                                  if (children.key < columnChildren.length - 1)
-                                    SizedBox(
-                                      width: padding,
-                                    ),
-                                ])
-                            .expand((i) => i)
-                            .toList(),
-                      );
-                    }),
-        ),
+            padding: EdgeInsets.all(padding),
+            clipBehavior: Clip.none,
+            color: bgColor,
+            child: DynamicHeightColumnLayout(
+              spacing: padding,
+              runSpacing: padding,
+              numberOfColumns: numberOfColumns,
+              children: getStatWidgetForTab(context, columnWidth: columnWidth),
+            )),
       );
     });
   }

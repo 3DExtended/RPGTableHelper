@@ -17,11 +17,11 @@ class DynamicHeightColumnLayout extends StatefulWidget {
   });
 
   @override
-  _DynamicHeightColumnLayoutState createState() =>
-      _DynamicHeightColumnLayoutState();
+  DynamicHeightColumnLayoutState createState() =>
+      DynamicHeightColumnLayoutState();
 }
 
-class _DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
+class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
   Map<int, int>? childMapping;
 
   late List<GlobalKey> childrenKeys;
@@ -38,6 +38,14 @@ class _DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
   }
 
   @override
+  void didUpdateWidget(covariant DynamicHeightColumnLayout oldWidget) {
+    Future.delayed(Duration.zero, () {
+      assignChildrenToCorrectColumn();
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Columns data structure: A list of child lists for each column.
     List<List<Widget>> columns =
@@ -49,7 +57,7 @@ class _DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
 
       var targetColumnIndex = i % widget.numberOfColumns;
       if (childMapping != null) {
-        targetColumnIndex = childMapping![i]!;
+        targetColumnIndex = childMapping![i]! % widget.numberOfColumns;
       }
 
       // Add the child to the target column.
