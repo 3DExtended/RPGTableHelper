@@ -335,19 +335,21 @@ class _ItemCardRenderingWithFilteringState
                                     parentCategoryOfItem?.iconName,
                               ),
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Anzahl: ${itemToRender.value.amount}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(
-                                    color: darkTextColor,
-                                    fontSize: 16,
-                                  ),
-                            ),
+                            if (widget.hideAmount != true)
+                              SizedBox(
+                                height: 5,
+                              ),
+                            if (widget.hideAmount != true)
+                              Text(
+                                "Anzahl: ${itemToRender.value.amount}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                      color: darkTextColor,
+                                      fontSize: 16,
+                                    ),
+                              ),
                             SizedBox(
                               height: 10,
                             ),
