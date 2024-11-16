@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/dynamic_height_column_layout.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
-import 'package:rpg_table_helper/helpers/list_extensions.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
@@ -65,18 +64,9 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
             false)
         .toList();
 
-    // TODO use me to make group widgets...
-    var statValueTypeConsecutiveCounts =
-        statsOfCharacterInTab.consecutiveTypeCounts((a) => a.valueType);
-
-    CharacterStatValueType? lastStatTypeUsed;
     for (var statToRender in statsOfCharacterInTab) {
       var matchingPlayerCharacterStat = charToRender?.characterStats
           .firstWhere((stat) => statToRender.statUuid == stat.statUuid);
-
-      // TODO use me somehow
-      var areStatTypesSimilar =
-          areTwoValueTypesSimilar(statToRender.valueType, lastStatTypeUsed);
 
       result.add(SizedBox(
           width: columnWidth,
