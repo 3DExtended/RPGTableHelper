@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modals/show_item_card_details.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_items.dart';
 
 class PlayerScreenCharacterInventory extends ConsumerStatefulWidget {
   const PlayerScreenCharacterInventory({
@@ -60,6 +60,7 @@ class _PlayerScreenCharacterInventoryState
       clipBehavior: Clip.none,
       color: bgColor,
       child: ItemCardRenderingWithFiltering(
+        showSearchFieldOnStart: false,
         allItemCategories: _allItemCategories,
         hideAmount: false,
         items: currentItems,

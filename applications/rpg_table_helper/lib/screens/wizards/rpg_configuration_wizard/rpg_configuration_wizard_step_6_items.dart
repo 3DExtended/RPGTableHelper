@@ -1,20 +1,14 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
+import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/helpers/color_extension.dart';
-import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
-import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
@@ -101,6 +95,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         widget.onPreviousBtnPressed();
       },
       contentWidget: ItemCardRenderingWithFiltering(
+        showSearchFieldOnStart: false,
         hideAmount: true,
         allItemCategories: _allItemCategories,
         selectedItemCategoryId: selectedItemCategoryId,
@@ -422,243 +417,6 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
     }
 
     return result;
-  }
-}
-
-class ItemCardRenderingWithFiltering extends StatelessWidget {
-  const ItemCardRenderingWithFiltering({
-    super.key,
-    required List<ItemCategory> allItemCategories,
-    required this.selectedItemCategoryId,
-    required this.onSelectNewFilterCategory,
-    required this.renderCreateButton,
-    this.onAddNewItemPressed,
-    required List<({RpgItem item, int amount})> items,
-    this.onItemCardPressed,
-    required this.hideAmount,
-  })  : _allItemCategories = allItemCategories,
-        _items = items;
-  final bool hideAmount;
-  final List<ItemCategory> _allItemCategories;
-  final String? selectedItemCategoryId;
-  final Function(ItemCategory e) onSelectNewFilterCategory;
-  final bool renderCreateButton;
-  final Future Function()? onAddNewItemPressed;
-  final List<({RpgItem item, int amount})> _items;
-  final Future Function(
-          MapEntry<int, ({int amount, RpgItem item})> itemToRender)?
-      onItemCardPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      ...[
-                        ItemCategory(
-                          colorCode: null,
-                          iconName: null,
-                          name: "Alles",
-                          subCategories: [],
-                          uuid: "",
-                          hideInInventoryFilters: false,
-                        ),
-                        ...CustomIterableExtensions(_allItemCategories)
-                            .sortBy((e) => e.name),
-                      ].map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.only(right: 25),
-                          child: CustomButtonNewdesign(
-                            variant: (selectedItemCategoryId == e.uuid ||
-                                    (e.uuid == "" &&
-                                        selectedItemCategoryId == null))
-                                ? CustomButtonNewdesignVariant.DarkButton
-                                : CustomButtonNewdesignVariant.Default,
-                            onPressed: () {
-                              onSelectNewFilterCategory(e);
-                            },
-                            label: e.name,
-                            icon: e.iconName == null
-                                ? null
-                                : getIconForIdentifier(
-                                        name: e.iconName!,
-                                        size: 20,
-                                        color: (selectedItemCategoryId ==
-                                                    e.uuid ||
-                                                (e.uuid == "" &&
-                                                    selectedItemCategoryId ==
-                                                        null))
-                                            ? (e.colorCode
-                                                ?.parseHexColorRepresentation())
-                                            : darkColor)
-                                    .$2,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (renderCreateButton && onAddNewItemPressed != null)
-                SizedBox(
-                  width: 50,
-                ),
-              if (renderCreateButton && onAddNewItemPressed != null)
-                CustomButtonNewdesign(
-                  variant: CustomButtonNewdesignVariant.AccentButton,
-                  onPressed: onAddNewItemPressed,
-                  label: "+ Hinzufügen",
-                )
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 0,
-        ),
-        Expanded(child: LayoutBuilder(builder: (context, constraints) {
-          var layoutWidth = constraints.maxWidth;
-          const scalar = 1.0;
-
-          const cardWidth = 289 * scalar;
-
-          const targetedCardWidth = cardWidth;
-          const itemCardPadding = 9.0;
-
-          var numberOfColumnsOnScreen = 1;
-          var calculatedWidth = itemCardPadding + targetedCardWidth;
-
-          while (calculatedWidth < layoutWidth) {
-            calculatedWidth += itemCardPadding + targetedCardWidth;
-            numberOfColumnsOnScreen++;
-          }
-
-          numberOfColumnsOnScreen--;
-
-          var itemsAsMapList = _items.asMap().entries.where((it) {
-            var itemCategoryForItem =
-                ItemCategory.parentCategoryForCategoryIdRecursive(
-                    categories: _allItemCategories,
-                    categoryId: it.value.item.categoryId);
-
-            return selectedItemCategoryId == null ||
-                it.value.item.categoryId == selectedItemCategoryId ||
-                (itemCategoryForItem != null &&
-                    itemCategoryForItem.uuid == selectedItemCategoryId);
-          }).toList();
-
-          if (itemsAsMapList.isEmpty) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 50,
-                ),
-                Text(
-                  "Keine Items unter dieser Kategorie",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontSize: 24, color: darkTextColor),
-                ),
-              ],
-            );
-          }
-          var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
-              categories: _allItemCategories);
-
-          return ListView.builder(
-            itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
-                        numberOfColumnsOnScreen ==
-                    itemsAsMapList.length)
-                ? (itemsAsMapList.length ~/ numberOfColumnsOnScreen)
-                : (itemsAsMapList.length ~/ numberOfColumnsOnScreen) + 1,
-            itemBuilder: (context, index) {
-              return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...List.generate(numberOfColumnsOnScreen, (subindex) {
-                      var indexOfItemToRender =
-                          index * numberOfColumnsOnScreen + subindex;
-                      if (indexOfItemToRender >= itemsAsMapList.length) {
-                        return List<Widget>.empty();
-                      }
-
-                      var itemToRender = itemsAsMapList[indexOfItemToRender];
-                      var categoryForItem =
-                          flattenedCategories.firstWhereOrNull((e) =>
-                              e.uuid == itemToRender.value.item.categoryId);
-
-                      var parentCategoryOfItem = categoryForItem != null
-                          ? flattenedCategories.firstWhereOrNull((fc) =>
-                                  fc.subCategories.any((sub) =>
-                                      sub.uuid == categoryForItem.uuid)) ??
-                              categoryForItem
-                          : categoryForItem;
-
-                      return [
-                        Column(
-                          children: [
-                            CupertinoButton(
-                              minSize: 0,
-                              padding: EdgeInsets.all(0),
-                              onPressed: () async {
-                                if (onItemCardPressed != null) {
-                                  await onItemCardPressed!(itemToRender);
-                                }
-                              },
-                              child: CustomItemCard(
-                                scalarOverride: scalar,
-                                imageUrl: itemToRender
-                                    .value.item.imageUrlWithoutBasePath,
-                                title: itemToRender.value.item.name,
-                                description:
-                                    itemToRender.value.item.description,
-                                categoryIconColor: parentCategoryOfItem
-                                    ?.colorCode
-                                    ?.parseHexColorRepresentation(),
-                                categoryIconName:
-                                    parentCategoryOfItem?.iconName,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Anzahl: ${itemToRender.value.amount}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(
-                                    color: darkTextColor,
-                                    fontSize: 16,
-                                  ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        ),
-                        if (numberOfColumnsOnScreen != subindex + 1)
-                          SizedBox(
-                            width: itemCardPadding,
-                          ),
-                      ];
-                    }).expand((i) => i),
-                  ]);
-            },
-          );
-        }))
-      ],
-    );
   }
 }
 

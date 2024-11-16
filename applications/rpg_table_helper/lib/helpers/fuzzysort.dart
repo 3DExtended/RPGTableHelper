@@ -14,14 +14,14 @@ class Fuzzysort {
   Set<int> seenIndexes = {};
   int changeslen = 0;
 
-  Prepared getPrepared(String target) {
+  Prepared getPrepared(String targetIdentifier, String target) {
     if (target.length > 999) {
-      return prepare(target); // don't cache huge targets
+      return prepare(target, targetIdentifier); // don't cache huge targets
     }
     var targetPrepared = preparedCache[target];
     if (targetPrepared != null) return targetPrepared;
 
-    targetPrepared = prepare(target);
+    targetPrepared = prepare(target, targetIdentifier);
     preparedCache[target] = targetPrepared;
     return targetPrepared;
   }
@@ -69,7 +69,10 @@ class Fuzzysort {
     for (var i = 0; i < targetsLen; ++i) {
       var target = targets[i];
       if (!preparedCache.containsKey(target.target)) {
-        target = getPrepared(target.target);
+        target = getPrepared(
+          target.identifier,
+          target.target,
+        );
       }
 
       if ((searchBitflags & target.bitFlags) != searchBitflags) continue;
@@ -107,6 +110,7 @@ class Fuzzysort {
     int targetLen = targetLowerCodes.length;
     int searchI = 0;
     int targetI = 0;
+    matchesSimple = [];
 
     // Walk through target, find sequential matches
     while (true) {
@@ -190,8 +194,11 @@ class Fuzzysort {
         targetLen,
         prepared);
 
-    Result result =
-        Result(target: prepared.target, score: score, indexes: matchesSimple);
+    Result result = Result(
+        target: prepared.target,
+        targetIdentifier: prepared.identifier,
+        score: score,
+        indexes: matchesSimple);
 
     return result;
   }
@@ -279,7 +286,10 @@ class Fuzzysort {
     // Reset nextBeginningIndexes and return result
     target.nextBeginningIndexes = prepareNextBeginningIndexes(target.target);
     result = Result(
-        target: target.target, score: score, indexes: seenIndexes.toList());
+        targetIdentifier: target.identifier,
+        target: target.target,
+        score: score,
+        indexes: seenIndexes.toList());
     return result;
   }
 
@@ -367,9 +377,9 @@ class Fuzzysort {
   }
 
   // Prepare string for matching
-  Prepared prepare(String target) {
+  Prepared prepare(String target, String targetIdentifier) {
     if (preparedCache.containsKey(target)) return preparedCache[target]!;
-    Prepared prepared = Prepared(target);
+    Prepared prepared = Prepared(target: target, identifier: targetIdentifier);
 
     preparedCache[target] = prepared;
 
@@ -443,6 +453,7 @@ class Fuzzysort {
 }
 
 class Prepared {
+  String identifier;
   String target; // Original target string
   late String targetLower; // Lowercase version of the target string
   List<int>?
@@ -453,7 +464,7 @@ class Prepared {
   late int bitFlags;
 
   // Constructor to initialize the prepared target
-  Prepared(this.target) {
+  Prepared({required this.target, required this.identifier}) {
     // Convert target to lowercase
     targetLower = target.toLowerCase();
 
@@ -499,17 +510,22 @@ class PreparedSearch {
 }
 
 class Result {
+  String targetIdentifier; // The target string that matched
   String target; // The target string that matched
   double score; // The calculated score of the match
   List<int>
       indexes; // The list of indexes where matches occurred in the target string
 
   // Constructor
-  Result({required this.target, required this.score, required this.indexes});
+  Result(
+      {required this.targetIdentifier,
+      required this.target,
+      required this.score,
+      required this.indexes});
 
   @override
   String toString() {
-    return 'Result(target: $target, score: $score, indexes: $indexes)';
+    return 'Result(targetIdentifier: $targetIdentifier, target: $target, score: $score, indexes: $indexes)';
   }
 }
 

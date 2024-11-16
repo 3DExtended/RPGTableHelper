@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -14,6 +18,7 @@ import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
+import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 class PlayerPageScreenRouteSettings {
   final RpgCharacterConfigurationBase? characterConfigurationOverride;
@@ -109,6 +114,28 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     }
     if (showLore) {
       result.add(("Weltgeschichte", Container())); // TODO add me
+    }
+
+    if (kDebugMode && !DependencyProvider.of(context).isMocked) {
+      result.add(
+        (
+          "TESTSTESTESTEST",
+          Builder(
+            builder: (context) {
+              return ItemCardRenderingWithFiltering(
+                  showSearchFieldOnStart: true,
+                  allItemCategories: rpgConfig.itemCategories,
+                  selectedItemCategoryId: null,
+                  renderCreateButton: false,
+                  hideAmount: true,
+                  onSelectNewFilterCategory: (e) {},
+                  items: rpgConfig.allItems
+                      .map((i) => (item: i, amount: 0))
+                      .toList());
+            },
+          ),
+        ),
+      ); // TODO add me
     }
 
     return result;
