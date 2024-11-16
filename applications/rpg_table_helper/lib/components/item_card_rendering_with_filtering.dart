@@ -57,6 +57,7 @@ class _ItemCardRenderingWithFilteringState
   bool showSearchField = false;
 
   List<MapEntry<int, ({int amount, RpgItem item})>> itemsToRender = [];
+  Fuzzysort fuzzysort = Fuzzysort();
 
   @override
   void dispose() {
@@ -67,7 +68,6 @@ class _ItemCardRenderingWithFilteringState
 
   @override
   void initState() {
-    // add all items to fuzzysort targets
     searchtextEditingController.addListener(onTextEditControllerChange);
     Future.delayed(Duration.zero, () {
       setState(() {
@@ -75,6 +75,7 @@ class _ItemCardRenderingWithFilteringState
       });
     });
 
+    // add all items to fuzzysort targets
     for (var item in widget._items) {
       if (preparedTargets.containsKey(item.item.uuid)) continue;
 
@@ -97,7 +98,6 @@ class _ItemCardRenderingWithFilteringState
   void onTextEditControllerChange() {
     var query = searchtextEditingController.text;
 
-    var fuzzysort = Fuzzysort();
     var searchTargets = preparedTargets.values
         .map((t) => [t.labelSearchTarget, t.descriptionSearchTarget])
         .expand((i) => i)
@@ -128,15 +128,20 @@ class _ItemCardRenderingWithFilteringState
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (showSearchField)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
-            child: CustomTextField(
-                labelText: "Suche",
-                textEditingController: searchtextEditingController,
-                newDesign: true,
-                keyboardType: TextInputType.text),
-          ),
+        AnimatedSize(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: showSearchField
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
+                  child: CustomTextField(
+                      labelText: "Suche",
+                      textEditingController: searchtextEditingController,
+                      newDesign: true,
+                      keyboardType: TextInputType.text),
+                )
+              : SizedBox.shrink(),
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
           child: Row(
