@@ -22,10 +22,10 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       // we need to define the width of each widget for the upcoming columnized view
       var numberOfColumns = 1;
-      if (constraints.maxWidth > 350 * 2.0) {
+      if (constraints.maxWidth > 333 * 2.0) {
         numberOfColumns++;
       }
-      if (constraints.maxWidth > 350 * 3.0) {
+      if (constraints.maxWidth > 333 * 3.0) {
         numberOfColumns++;
       }
 
@@ -131,14 +131,14 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
       var areStatTypesSimilar =
           areTwoValueTypesSimilar(statToRender.valueType, lastStatTypeUsed);
 
-      var child = getPlayerVisualizationWidget(
-          context: context,
-          characterName: charToRender?.characterName ?? "Charakter Name",
-          statConfiguration: statToRender,
-          useNewDesign: true,
-          characterValue: matchingPlayerCharacterStat!);
-
-      result.add(SizedBox(width: columnWidth, child: child));
+      result.add(SizedBox(
+          width: columnWidth,
+          child: getPlayerVisualizationWidget(
+              context: context,
+              characterName: charToRender?.characterName ?? "Charakter Name",
+              statConfiguration: statToRender,
+              useNewDesign: true,
+              characterValue: matchingPlayerCharacterStat!)));
     }
 
     return result;

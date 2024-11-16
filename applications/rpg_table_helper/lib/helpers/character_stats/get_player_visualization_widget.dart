@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
@@ -149,90 +150,105 @@ Widget getPlayerVisualizationWidget({
           .sortedBy((e) => e.label)
           .toList();
 
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
-            child: Container(
-              height: 150,
-              width: 150,
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: darkColor),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    characterLevel.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(color: textColor, fontSize: 32),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "LVL", // TODO localize?
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(color: textColor, fontSize: 32),
-                  ),
-                ],
+      return LayoutBuilder(builder: (context, constraints) {
+        var maxWidth = min(140.0 + 10 + 200, constraints.maxWidth);
+
+        var firstExpandedFlex = (140 / maxWidth) * 100;
+        var secondExpandedFlex = (200 / maxWidth) * 100;
+
+        return SizedBox(
+          width: maxWidth,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: firstExpandedFlex.round(),
+                child: ShadowWidget(
+                  offset: Offset(-4, 4),
+                  blurRadius: 5,
+                  child: LayoutBuilder(builder: (context, constrin) {
+                    return Container(
+                      width: constrin.maxWidth,
+                      height: constrin.maxWidth,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: darkColor),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            characterLevel.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(color: textColor, fontSize: 28),
+                          ),
+                          Text(
+                            "LVL", // TODO localize?
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(color: textColor, fontSize: 28),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
               ),
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          Container(
-            height: 150,
-            width: 200,
-            alignment: Alignment.centerLeft,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                StaticGrid(
-                    colGap: 10,
-                    rowGap: 4,
-                    expandedFlexValues: [1, 2],
-                    columnCrossAxisAlignment: CrossAxisAlignment.start,
-                    columnMainAxisAlignment: MainAxisAlignment.center,
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                flex: secondExpandedFlex.round(),
+                child: Container(
+                  height: 150,
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      "Name:",
-                      characterName,
-                      ...filledValues
-                          .map((t) => ["${t.label}:", t.value])
-                          .expand((i) => i)
-                    ]
-                        .asMap()
-                        .entries
-                        .map((strKVP) => AutoSizeText(
-                              strKVP.value,
-                              textAlign: strKVP.key % 2 == 0
-                                  ? TextAlign.right
-                                  : TextAlign.left,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .copyWith(
-                                      color: darkTextColor,
-                                      fontSize: strKVP.key % 2 == 0 ? 16 : 24),
-                              maxFontSize: strKVP.key % 2 == 0 ? 16 : 24,
-                              maxLines: 1,
-                              minFontSize: 10,
-                            ))
-                        .toList()),
-              ],
-            ),
+                      StaticGrid(
+                          colGap: 10,
+                          rowGap: 4,
+                          expandedFlexValues: [1, 2],
+                          columnCrossAxisAlignment: CrossAxisAlignment.start,
+                          columnMainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            "Name:",
+                            characterName,
+                            ...filledValues
+                                .map((t) => ["${t.label}:", t.value])
+                                .expand((i) => i)
+                          ]
+                              .asMap()
+                              .entries
+                              .map((strKVP) => AutoSizeText(
+                                    strKVP.value,
+                                    textAlign: strKVP.key % 2 == 0
+                                        ? TextAlign.right
+                                        : TextAlign.left,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .copyWith(
+                                            color: darkTextColor,
+                                            fontSize:
+                                                strKVP.key % 2 == 0 ? 16 : 24),
+                                    maxFontSize: strKVP.key % 2 == 0 ? 16 : 24,
+                                    maxLines: 1,
+                                    minFontSize: 10,
+                                  ))
+                              .toList()),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      );
+        );
+      });
 
     case CharacterStatValueType.listOfIntWithCalculatedValues:
       // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}

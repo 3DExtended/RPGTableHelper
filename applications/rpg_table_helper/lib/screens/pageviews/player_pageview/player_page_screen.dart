@@ -189,7 +189,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     var playerScreensToSwipe = rpgConfig == null || charToRender == null
         ? List<(String, Widget)>.empty()
         : getPlayerScreens(context, charToRender, rpgConfig);
-    var currentTitle = playerScreensToSwipe[_currentStep].$1;
+    var currentTitle = playerScreensToSwipe.isEmpty
+        ? ""
+        : playerScreensToSwipe[_currentStep].$1;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -240,8 +242,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   ),
                 ),
                 ...List.generate(
-                  // TODO what is the correct number of steps
-                  playerScreensToSwipe.length - (_currentStep + 1),
+                  playerScreensToSwipe.isEmpty
+                      ? 0
+                      : playerScreensToSwipe.length - (_currentStep + 1),
                   (index) => CupertinoButton(
                     minSize: 0,
                     padding: EdgeInsets.all(0),
