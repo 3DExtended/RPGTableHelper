@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/dynamic_height_column_layout.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
@@ -46,61 +47,71 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
           clipBehavior: Clip.none,
           color: bgColor,
           child: isOnlyTextPage
-              ? Wrap(
-                  alignment: WrapAlignment.start,
-                  crossAxisAlignment: WrapCrossAlignment.start,
+              ? DynamicHeightColumnLayout(
                   spacing: padding,
                   runSpacing: padding,
+                  numberOfColumns: numberOfColumns,
                   children:
                       getStatWidgetForTab(context, columnWidth: columnWidth),
                 )
-              : Builder(builder: (context) {
-                  var children =
-                      getStatWidgetForTab(context, columnWidth: columnWidth);
+              : true
+                  ? DynamicHeightColumnLayout(
+                      numberOfColumns: numberOfColumns,
+                      spacing: 20,
+                      runSpacing: 20,
+                      children: getStatWidgetForTab(context,
+                          columnWidth: columnWidth),
+                    )
+                  : Builder(builder: (context) {
+                      var children = getStatWidgetForTab(context,
+                          columnWidth: columnWidth);
 
-                  List<List<Widget>> columnChildren =
-                      List.generate(numberOfColumns, (index) => []);
-                  var runSpacing = 20.0;
+                      List<List<Widget>> columnChildren =
+                          List.generate(numberOfColumns, (index) => []);
+                      var runSpacing = 20.0;
 
-                  var columnCounter = 0;
-                  for (var child in children) {
-                    if (columnChildren[columnCounter % numberOfColumns]
-                        .isNotEmpty) {
-                      columnChildren[columnCounter % numberOfColumns]
-                          .add(SizedBox(
-                        height: runSpacing,
-                      ));
-                    }
-                    columnChildren[columnCounter % numberOfColumns].add(child);
-                    columnCounter++;
-                  }
+                      var columnCounter = 0;
+                      for (var child in children) {
+                        if (columnChildren[columnCounter % numberOfColumns]
+                            .isNotEmpty) {
+                          columnChildren[columnCounter % numberOfColumns]
+                              .add(SizedBox(
+                            height: runSpacing,
+                          ));
+                        }
+                        columnChildren[columnCounter % numberOfColumns]
+                            .add(child);
+                        columnCounter++;
+                      }
 
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: columnChildren
-                        .asMap()
-                        .entries
-                        .map((children) => [
-                              SizedBox(
-                                width: columnWidth,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: children.value,
-                                ),
-                              ),
-                              if (children.key < columnChildren.length - 1)
-                                SizedBox(
-                                  width: padding,
-                                ),
-                            ])
-                        .expand((i) => i)
-                        .toList(),
-                  );
-                }),
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: columnChildren
+                            .asMap()
+                            .entries
+                            .map((children) => [
+                                  SizedBox(
+                                    width: columnWidth,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: children.value,
+                                    ),
+                                  ),
+                                  if (children.key < columnChildren.length - 1)
+                                    SizedBox(
+                                      width: padding,
+                                    ),
+                                ])
+                            .expand((i) => i)
+                            .toList(),
+                      );
+                    }),
         ),
       );
     });

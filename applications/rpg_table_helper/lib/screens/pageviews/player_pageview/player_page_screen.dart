@@ -266,7 +266,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                 Spacer(),
               ],
             ),
-            menuOpen: (rpgConfig?.characterStatTabsDefinition ??
+            menuOpen: connectionDetails == null ||
+                    connectionDetails.isDm ||
+                    (rpgConfig?.characterStatTabsDefinition ??
                                 List<CharacterStatsTabDefinition>.empty())
                             .length <=
                         _currentStep ||
