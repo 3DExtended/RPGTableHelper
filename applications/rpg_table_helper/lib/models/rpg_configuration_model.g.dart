@@ -1282,6 +1282,7 @@ const _$CharacterStatValueTypeEnumMap = {
       'listOfIntWithCalculatedValues',
   CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       'characterNameWithLevelAndAdditionalDetails',
+  CharacterStatValueType.listOfIntsWithIcons: 'listOfIntsWithIcons',
 };
 
 const _$CharacterStatEditTypeEnumMap = {
