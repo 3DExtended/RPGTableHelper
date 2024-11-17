@@ -39,21 +39,27 @@ class _PlayerScreenCharacterInventoryState
       });
     });
 
-    List<({int amount, RpgItem item})> currentItems = widget.charToRender !=
-                null &&
-            widget.charToRender is RpgCharacterConfiguration &&
-            (widget.charToRender as RpgCharacterConfiguration)
-                .inventory
-                .isNotEmpty
-        ? (widget.charToRender as RpgCharacterConfiguration)
-            .inventory
-            .map((inventoryPair) => (
-                  item: _items
-                      .firstWhere((it) => it.uuid == inventoryPair.itemUuid),
-                  amount: inventoryPair.amount
-                ))
-            .toList()
-        : List<({int amount, RpgItem item})>.empty();
+    var isCharToRenderEqualToRpgCharacterConfig = widget.charToRender != null &&
+        ref.read(rpgCharacterConfigurationProvider).hasValue &&
+        ref.read(rpgCharacterConfigurationProvider).requireValue.uuid ==
+            widget.charToRender!.uuid;
+
+    var incentoryToUse = isCharToRenderEqualToRpgCharacterConfig
+        ? ref.watch(rpgCharacterConfigurationProvider).requireValue.inventory
+        : (widget.charToRender is RpgCharacterConfiguration &&
+                (widget.charToRender as RpgCharacterConfiguration)
+                    .inventory
+                    .isNotEmpty
+            ? (widget.charToRender as RpgCharacterConfiguration).inventory
+            : List<RpgCharacterOwnedItemPair>.empty());
+
+    List<({int amount, RpgItem item})> currentItems = incentoryToUse
+        .map((inventoryPair) => (
+              item:
+                  _items.firstWhere((it) => it.uuid == inventoryPair.itemUuid),
+              amount: inventoryPair.amount
+            ))
+        .toList();
 
     return Container(
       padding: EdgeInsets.all(0),
@@ -82,10 +88,13 @@ class _PlayerScreenCharacterInventoryState
             currentlyOwned: details.value.amount,
             rpgConfig: widget.rpgConfig,
           ).then((valueToAdjustAmountBy) {
-            if (valueToAdjustAmountBy == null) return;
+            if (valueToAdjustAmountBy == null || valueToAdjustAmountBy == 0) {
+              return;
+            }
 
             ref.read(rpgCharacterConfigurationProvider.notifier).grantItem(
                 itemId: details.value.item.uuid, amount: valueToAdjustAmountBy);
+            setState(() {});
           });
         },
       ),

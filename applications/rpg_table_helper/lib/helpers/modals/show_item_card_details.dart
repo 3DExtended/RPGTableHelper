@@ -3,6 +3,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
@@ -64,7 +65,13 @@ class ItemCardDetailsModalContent extends StatefulWidget {
 
 class _ItemCardDetailsModalContentState
     extends State<ItemCardDetailsModalContent> {
-  int amountToAdjustInventoryAmountBy = 0;
+  int currentlyOwned = 0;
+
+  @override
+  void initState() {
+    currentlyOwned = widget.currentlyOwned ?? 0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +209,18 @@ class _ItemCardDetailsModalContentState
                     const SizedBox(
                       height: 20,
                     ),
+                    CustomIntEditField(
+                      onValueChange: (newValue) {
+                        setState(() {
+                          currentlyOwned = newValue;
+                        });
+                      },
+                      label: "Anzahl",
+                      startValue: currentlyOwned,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
                       child: Row(
@@ -217,8 +236,8 @@ class _ItemCardDetailsModalContentState
                           CustomButtonNewdesign(
                             label: "Speichern", // TODO localize
                             onPressed: () {
-                              navigatorKey.currentState!
-                                  .pop(amountToAdjustInventoryAmountBy);
+                              navigatorKey.currentState!.pop(currentlyOwned -
+                                  (widget.currentlyOwned ?? 0));
                             },
                           ),
                           const Spacer(),

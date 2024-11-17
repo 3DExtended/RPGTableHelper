@@ -95,6 +95,12 @@ class _ItemCardRenderingWithFilteringState
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(covariant ItemCardRenderingWithFiltering oldWidget) {
+    onTextEditControllerChange();
+    super.didUpdateWidget(oldWidget);
+  }
+
   void onTextEditControllerChange() {
     var query = searchtextEditingController.text;
 
