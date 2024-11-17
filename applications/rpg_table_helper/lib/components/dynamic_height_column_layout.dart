@@ -56,7 +56,7 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
       var child = widget.children[i];
 
       var targetColumnIndex = i % widget.numberOfColumns;
-      if (childMapping != null) {
+      if (childMapping != null && childMapping!.containsKey(i)) {
         targetColumnIndex = childMapping![i]! % widget.numberOfColumns;
       }
 
