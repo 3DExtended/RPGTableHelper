@@ -392,7 +392,7 @@ class ServerMethodsService extends IServerMethodsService {
     // update inventory
     widgetRef
         .read(rpgCharacterConfigurationProvider.notifier)
-        .grantItems(myNewItems);
+        .grantItems(myNewItems.grantedItems);
 
     var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
 

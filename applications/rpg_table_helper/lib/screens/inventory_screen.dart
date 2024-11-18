@@ -20,6 +20,7 @@ import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/add_new_item_modal.dart';
 import 'package:rpg_table_helper/screens/change_money_modal.dart';
 
+// TODO remove this class
 class InventoryScreen extends ConsumerStatefulWidget {
   static String route = "inventory";
 
@@ -243,9 +244,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                       (value) {
                         if (value == null) return;
 
-                        ref
-                            .read(rpgCharacterConfigurationProvider.notifier)
-                            .grantItem(itemId: value.$1, amount: value.$2);
+                        // ref
+                        //     .read(rpgCharacterConfigurationProvider.notifier)
+                        //     .grantItem(itemId: value.$1, amount: value.$2);
                       },
                     );
                   },

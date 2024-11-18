@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
@@ -26,8 +27,10 @@ class ItemCardRenderingWithFiltering extends StatefulWidget {
     required List<({RpgItem item, int amount})> items,
     this.onItemCardPressed,
     required this.hideAmount,
+    required this.onEditItemAmount,
   })  : _allItemCategories = allItemCategories,
         _items = items;
+  final void Function(String itemId, int newAmountValue)? onEditItemAmount;
   final bool hideAmount;
   final bool showSearchFieldOnStart;
   final List<ItemCategory> _allItemCategories;
@@ -346,11 +349,13 @@ class _ItemCardRenderingWithFilteringState
                                     parentCategoryOfItem?.iconName,
                               ),
                             ),
-                            if (widget.hideAmount != true)
+                            if (widget.hideAmount != true &&
+                                widget.onEditItemAmount == null)
                               SizedBox(
                                 height: 5,
                               ),
-                            if (widget.hideAmount != true)
+                            if (widget.hideAmount != true &&
+                                widget.onEditItemAmount == null)
                               Text(
                                 "Anzahl: ${itemToRender.value.amount}",
                                 style: Theme.of(context)
@@ -360,6 +365,21 @@ class _ItemCardRenderingWithFilteringState
                                       color: darkTextColor,
                                       fontSize: 16,
                                     ),
+                              ),
+                            if (widget.onEditItemAmount != null)
+                              SizedBox(
+                                height: 5,
+                              ),
+                            if (widget.onEditItemAmount != null)
+                              CustomIntEditField(
+                                key: ValueKey(
+                                    "ItemEditField${itemToRender.value.item.uuid}"),
+                                onValueChange: (newValue) {
+                                  widget.onEditItemAmount!(
+                                      itemToRender.value.item.uuid, newValue);
+                                },
+                                label: "Hinzufügen",
+                                startValue: itemToRender.value.amount,
                               ),
                             SizedBox(
                               height: 10,

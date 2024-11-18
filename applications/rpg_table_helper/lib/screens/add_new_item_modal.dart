@@ -1,29 +1,27 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
-import 'package:rpg_table_helper/components/custom_dropdown_menu_with_search.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
+import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:shadow_widget/shadow_widget.dart';
 
-Future<(String itemId, int amount)?> showAddNewItemModal(BuildContext context,
+Future<List<(String itemId, int amount)>?> showAddNewItemModal(
+    BuildContext context,
     {String? itemCategoryFilter,
     GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   // show error to user
-  return await customShowCupertinoModalBottomSheet<(String itemId, int amount)>(
+  return await customShowCupertinoModalBottomSheet<
+      List<(String itemId, int amount)>>(
     isDismissible: true,
     expand: true,
     closeProgressThreshold: -50000,
     enableDrag: false,
-    backgroundColor: const Color.fromARGB(158, 49, 49, 49),
+    backgroundColor: const Color.fromARGB(192, 21, 21, 21),
     context: context,
     // barrierColor: const Color.fromARGB(20, 201, 201, 201),
     builder: (context) =>
@@ -49,10 +47,9 @@ class _AddNewItemModalContentState
   TextEditingController amountController = TextEditingController();
 
   String? selectedItemCategoryId;
-  String? selectedItemId;
   bool hasDataLoaded = false;
   List<ItemCategory> _allItemCategories = [];
-  List<RpgItem> _allItems = [];
+  List<({RpgItem item, int amount})> _allItems = [];
 
   @override
   void initState() {
@@ -72,7 +69,15 @@ class _AddNewItemModalContentState
         setState(() {
           hasDataLoaded = true;
           _allItemCategories = data.itemCategories;
-          _allItems = data.allItems;
+          _allItems = data.allItems.map((i) => (amount: 0, item: i)).toList();
+        });
+      } else {
+        setState(() {
+          _allItems.addAll(data.allItems
+              .map((i) => (amount: 0, item: i))
+              .where((t) =>
+                  !_allItems.map((ai) => ai.item.uuid).contains(t.item.uuid))
+              .toList());
         });
       }
     });
@@ -82,197 +87,93 @@ class _AddNewItemModalContentState
       modalPadding = 20.0;
     }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: modalPadding,
-          vertical: modalPadding), // TODO maybe percentage of total width?
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 800.0,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                StyledBox(
-                  borderThickness: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(21.0),
-                    child: !hasDataLoaded
-                        ? Container()
-                        : Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Item hinzufügen", // TODO localize/ switch text between add and edit
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                              color: Colors.white,
-                                              fontSize: 32),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomDropdownMenu(
-                                        selectedValueTemp:
-                                            selectedItemCategoryId,
-                                        setter: (newValue) {
-                                          setState(() {
-                                            selectedItemCategoryId = newValue;
-                                            selectedItemId = null;
-                                          });
-                                        },
-                                        label:
-                                            'Kategorie Filter', // TODO localize
-                                        items: [
-                                          ItemCategory(
-                                              colorCode: "#ffff00ff",
-                                              iconName: "spellbook-svgrepo-com",
-                                              uuid: "NULL",
-                                              name: "Alle",
-                                              subCategories: []),
-                                          ...(ItemCategory
-                                                  .flattenCategoriesRecursive(
-                                                      categories:
-                                                          _allItemCategories,
-                                                      combineCategoryNames:
-                                                          true)
-                                              .sortBy((e) => e.name)),
-                                        ].map((category) {
-                                          return DropdownMenuItem<String?>(
-                                            value: category.uuid == "NULL"
-                                                ? null
-                                                : category.uuid,
-                                            child: Text(category.name),
-                                          );
-                                        }).toList()),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const HorizontalLine(),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomDropdownMenuWithSearch(
-                                        newDesign: false,
-                                        selectedValueTemp: selectedItemId,
-                                        setter: (newValue) {
-                                          setState(() {
-                                            selectedItemId = newValue;
-                                          });
-                                        },
-                                        label: 'Item Auswahl', // TODO localize
-                                        items: _allItems
-                                            .where((it) {
-                                              if (selectedItemCategoryId ==
-                                                  null) {
-                                                return true;
-                                              }
-
-                                              if (it.categoryId ==
-                                                  selectedItemCategoryId) {
-                                                return true;
-                                              }
-
-                                              // check if selectedItemCategoryId is a parent category. if so, we must return true for the case the current item (it) is in any of its subCategory
-                                              var index = _allItemCategories
-                                                  .indexWhere((ic) =>
-                                                      ic.uuid ==
-                                                      selectedItemCategoryId);
-                                              if (index != -1) {
-                                                var category =
-                                                    _allItemCategories[index];
-                                                return category.subCategories
-                                                    .any((sc) =>
-                                                        sc.uuid ==
-                                                        it.categoryId);
-                                              }
-
-                                              return false;
-                                            })
-                                            .sortBy((i) => i.name)
-                                            .map((item) {
-                                              return DropdownMenuEntry<String?>(
-                                                value: item.uuid,
-                                                label: item.name,
-                                              );
-                                            })
-                                            .toList()),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  SizedBox(
-                                    width: 70,
-                                    child: CustomTextField(
-                                      keyboardType: TextInputType.number,
-                                      labelText: "Anzahl", // TODO localize
-                                      textEditingController: amountController,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                                child: Row(
-                                  children: [
-                                    CustomButton(
-                                      label: "Abbrechen", // TODO localize
-                                      onPressed: () {
-                                        navigatorKey.currentState!.pop(null);
-                                      },
-                                    ),
-                                    const Spacer(),
-                                    CustomButton(
-                                      label: "Speichern", // TODO localize
-                                      onPressed: () {
-                                        try {
-                                          navigatorKey.currentState!.pop((
-                                            selectedItemId,
-                                            int.parse(amountController.text)
-                                          ));
-                                        } catch (e) {
-                                          log(e.toString());
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.transparent,
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(modalPadding, 20, modalPadding, 20),
+        child: Center(
+          child: ShadowWidget(
+            offset: Offset(-4, 4),
+            blurRadius: 5,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1200),
+              child: Container(
+                color: bgColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    NavbarNewDesign(
+                      backInsteadOfCloseIcon: false,
+                      closeFunction: () {
+                        navigatorKey.currentState!.pop(null);
+                      },
+                      menuOpen: null,
+                      useTopSafePadding: false,
+                      titleWidget: Text(
+                        "Items hinzufügen", // TODO localize/ switch text between add and edit
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: textColor, fontSize: 24),
+                      ),
+                    ),
+                    Expanded(
+                        child: ItemCardRenderingWithFiltering(
+                      showSearchFieldOnStart: true,
+                      onEditItemAmount: (String itemId, int newAmountValue) {
+                        setState(() {
+                          var indexOfItemTuple = _allItems
+                              .indexWhere((t) => t.item.uuid == itemId);
+                          var item = _allItems
+                              .firstWhere((t) => t.item.uuid == itemId);
+                          _allItems[indexOfItemTuple] =
+                              (amount: newAmountValue, item: item.item);
+                        });
+                      },
+                      allItemCategories: _allItemCategories,
+                      selectedItemCategoryId: selectedItemCategoryId,
+                      renderCreateButton: false,
+                      hideAmount: false,
+                      onSelectNewFilterCategory: (e) {
+                        setState(() {
+                          selectedItemCategoryId = e.uuid == "" ? null : e.uuid;
+                        });
+                      },
+                      items: _allItems,
+                    )),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CustomButtonNewdesign(
+                            label: "Abbrechen", // TODO localize
+                            onPressed: () {
+                              navigatorKey.currentState!.pop(null);
+                            },
                           ),
-                  ),
+                          const Spacer(),
+                          CustomButtonNewdesign(
+                            label: "Speichern", // TODO localize
+                            variant: CustomButtonNewdesignVariant.AccentButton,
+                            onPressed: () {
+                              navigatorKey.currentState!.pop(_allItems
+                                  .map((t) => (t.item.uuid, t.amount))
+                                  .toList());
+                            },
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                    height: EdgeInsets.fromViewPadding(
-                            View.of(context).viewInsets,
-                            View.of(context).devicePixelRatio)
-                        .bottom),
-              ],
+              ),
             ),
           ),
         ),

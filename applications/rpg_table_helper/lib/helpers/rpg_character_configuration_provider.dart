@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
@@ -161,10 +160,10 @@ class RpgCharacterConfigurationNotifier
     return tempInventoryState;
   }
 
-  void grantItems(GrantedItemsForPlayer myNewItems) {
+  void grantItems(List<RpgCharacterOwnedItemPair> grantedItems) {
     var tempNewInventory = [...state.requireValue.inventory];
 
-    for (var itemGrant in myNewItems.grantedItems) {
+    for (var itemGrant in grantedItems) {
       tempNewInventory = _grantItemsInternal(
           currentInventory: tempNewInventory,
           itemId: itemGrant.itemUuid,

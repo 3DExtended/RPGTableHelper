@@ -95,6 +95,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         widget.onPreviousBtnPressed();
       },
       contentWidget: ItemCardRenderingWithFiltering(
+        onEditItemAmount: null,
         showSearchFieldOnStart: false,
         hideAmount: true,
         allItemCategories: _allItemCategories,

@@ -88,7 +88,7 @@ class _ItemCardDetailsModalContentState
         : categoryForItem;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.only(

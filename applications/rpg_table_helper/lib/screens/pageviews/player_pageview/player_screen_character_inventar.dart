@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.da
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/add_new_item_modal.dart';
 
 class PlayerScreenCharacterInventory extends ConsumerStatefulWidget {
   const PlayerScreenCharacterInventory({
@@ -70,8 +71,22 @@ class _PlayerScreenCharacterInventoryState
         allItemCategories: _allItemCategories,
         hideAmount: false,
         items: currentItems,
+        onEditItemAmount: null,
         onAddNewItemPressed: () async {
-          // TODO open modal to ask user which items they want to add.
+          await showAddNewItemModal(
+            itemCategoryFilter: selectedItemCategoryId,
+            context,
+          ).then(
+            (value) {
+              if (value == null) return;
+
+              ref.read(rpgCharacterConfigurationProvider.notifier).grantItems(
+                  value
+                      .map((i) => RpgCharacterOwnedItemPair(
+                          itemUuid: i.$1, amount: i.$2))
+                      .toList());
+            },
+          );
         },
         onSelectNewFilterCategory: (ItemCategory e) {
           setState(() {

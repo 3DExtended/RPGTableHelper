@@ -119,15 +119,18 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     if (kDebugMode && !DependencyProvider.of(context).isMocked) {
       result.add(
         (
-          "TESTSTESTESTEST",
+          "TESTTESTTESTTEST",
           Builder(
             builder: (context) {
               return ItemCardRenderingWithFiltering(
                   showSearchFieldOnStart: true,
+                  onEditItemAmount: (String itemId, int newAmountValue) {
+                    print(newAmountValue);
+                  },
                   allItemCategories: rpgConfig.itemCategories,
                   selectedItemCategoryId: null,
                   renderCreateButton: false,
-                  hideAmount: true,
+                  hideAmount: false,
                   onSelectNewFilterCategory: (e) {},
                   items: rpgConfig.allItems
                       .map((i) => (item: i, amount: 0))
