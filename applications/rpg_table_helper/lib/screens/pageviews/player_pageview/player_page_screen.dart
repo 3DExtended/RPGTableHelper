@@ -18,6 +18,7 @@ import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_recepies.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 class PlayerPageScreenRouteSettings {
@@ -110,8 +111,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     if (showRecipes &&
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
-      result.add(("Herstellen", Container())); // TODO add me
+      result.add(("Herstellen", PlayerScreenRecepies())); // TODO add me
     }
+
     if (showLore) {
       result.add(("Weltgeschichte", Container())); // TODO add me
     }
