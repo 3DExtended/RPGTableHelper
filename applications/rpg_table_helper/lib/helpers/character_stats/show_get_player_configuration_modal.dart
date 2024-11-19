@@ -847,9 +847,9 @@ class _ShowGetPlayerConfigurationModalContentState
                         key: ValueKey(statValue),
                         alignment: Alignment.topCenter,
                         child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: darkTextColor),
-                              borderRadius: BorderRadius.circular(5)),
+                          // decoration: BoxDecoration(
+                          //     border: Border.all(color: darkTextColor),
+                          //     borderRadius: BorderRadius.circular(5)),
                           padding: EdgeInsets.all(10),
                           child: getPlayerVisualizationWidget(
                               useNewDesign: true,
