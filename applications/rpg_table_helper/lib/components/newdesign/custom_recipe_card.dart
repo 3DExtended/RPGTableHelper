@@ -93,37 +93,41 @@ class CustomRecipeCard extends StatelessWidget {
                                     borderRadius: 2,
                                     color: lightColor,
                                     borderSize: 2,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 4),
-                                            child: AutoSizeText(
-                                              softWrap: true,
-                                              textAlign: TextAlign.center,
-                                              title ?? "Empty title",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineMedium!
-                                                  .copyWith(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: darkColor),
-                                              minFontSize: 10,
-                                              maxFontSize: 24,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                    child: SizedBox(
+                                      height: 32,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 4),
+                                              child: AutoSizeText(
+                                                softWrap: true,
+                                                textAlign: TextAlign.center,
+                                                title ?? "Empty title",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineMedium!
+                                                    .copyWith(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: darkColor),
+                                                minFontSize: 10,
+                                                maxFontSize: 24,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -163,7 +167,7 @@ class CustomRecipeCard extends StatelessWidget {
                                               horizontal: 8),
                                           child: Row(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [

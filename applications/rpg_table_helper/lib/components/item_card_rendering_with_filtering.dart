@@ -22,7 +22,7 @@ class ItemCardRenderingWithFiltering extends StatefulWidget {
     required this.selectedItemCategoryId,
     required this.onSelectNewFilterCategory,
     required this.renderCreateButton,
-    required this.showSearchFieldOnStart,
+    required this.isSearchFieldShowingOnStart,
     this.onAddNewItemPressed,
     required List<({RpgItem item, int amount})> items,
     this.onItemCardPressed,
@@ -32,7 +32,7 @@ class ItemCardRenderingWithFiltering extends StatefulWidget {
         _items = items;
   final void Function(String itemId, int newAmountValue)? onEditItemAmount;
   final bool hideAmount;
-  final bool showSearchFieldOnStart;
+  final bool isSearchFieldShowingOnStart;
   final List<ItemCategory> _allItemCategories;
   final String? selectedItemCategoryId;
   final Function(ItemCategory e) onSelectNewFilterCategory;
@@ -52,12 +52,16 @@ class _ItemCardRenderingWithFilteringState
     extends State<ItemCardRenderingWithFiltering> {
   TextEditingController searchtextEditingController = TextEditingController();
 
-  Map<String, ({Prepared labelSearchTarget, Prepared descriptionSearchTarget})>
-      preparedTargets = {};
+  Map<
+      String,
+      ({
+        FuzzySearchPreparedTarget labelSearchTarget,
+        FuzzySearchPreparedTarget descriptionSearchTarget
+      })> preparedTargets = {};
 
-  List<Result> searchItemFilters = [];
+  List<FuzzySearchResult> searchItemFilters = [];
 
-  bool showSearchField = false;
+  bool isSearchFieldShowing = false;
 
   List<MapEntry<int, ({int amount, RpgItem item})>> itemsToRender = [];
   Fuzzysort fuzzysort = Fuzzysort();
@@ -74,7 +78,7 @@ class _ItemCardRenderingWithFilteringState
     searchtextEditingController.addListener(onTextEditControllerChange);
     Future.delayed(Duration.zero, () {
       setState(() {
-        showSearchField = widget.showSearchFieldOnStart;
+        isSearchFieldShowing = widget.isSearchFieldShowingOnStart;
       });
     });
 
@@ -83,11 +87,11 @@ class _ItemCardRenderingWithFilteringState
       if (preparedTargets.containsKey(item.item.uuid)) continue;
 
       preparedTargets[item.item.uuid] = (
-        labelSearchTarget: Prepared(
+        labelSearchTarget: FuzzySearchPreparedTarget(
           target: item.item.name,
           identifier: "label${item.item.uuid}",
         ),
-        descriptionSearchTarget: Prepared(
+        descriptionSearchTarget: FuzzySearchPreparedTarget(
           target: item.item.description,
           identifier: "description${item.item.uuid}",
         ),
@@ -140,7 +144,7 @@ class _ItemCardRenderingWithFilteringState
         AnimatedSize(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          child: showSearchField
+          child: isSearchFieldShowing
               ? Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
                   child: CustomTextField(
@@ -209,18 +213,18 @@ class _ItemCardRenderingWithFilteringState
                 width: 20,
               ),
               CustomButtonNewdesign(
-                  variant: showSearchField
+                  variant: isSearchFieldShowing
                       ? CustomButtonNewdesignVariant.DarkButton
                       : CustomButtonNewdesignVariant.Default,
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.magnifyingGlass,
-                    color: showSearchField ? textColor : darkColor,
+                    color: isSearchFieldShowing ? textColor : darkColor,
                     size: 21,
                     noPadding: true,
                   ),
                   onPressed: () {
                     setState(() {
-                      showSearchField = !showSearchField;
+                      isSearchFieldShowing = !isSearchFieldShowing;
                       searchtextEditingController.text = "";
                       onTextEditControllerChange();
                     });

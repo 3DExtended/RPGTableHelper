@@ -96,7 +96,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
       },
       contentWidget: ItemCardRenderingWithFiltering(
         onEditItemAmount: null,
-        showSearchFieldOnStart: false,
+        isSearchFieldShowingOnStart: false,
         hideAmount: true,
         allItemCategories: _allItemCategories,
         selectedItemCategoryId: selectedItemCategoryId,

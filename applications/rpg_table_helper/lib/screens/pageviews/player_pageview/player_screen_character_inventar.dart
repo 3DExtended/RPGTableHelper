@@ -67,7 +67,7 @@ class _PlayerScreenCharacterInventoryState
       clipBehavior: Clip.none,
       color: bgColor,
       child: ItemCardRenderingWithFiltering(
-        showSearchFieldOnStart: false,
+        isSearchFieldShowingOnStart: false,
         allItemCategories: _allItemCategories,
         hideAmount: false,
         items: currentItems,

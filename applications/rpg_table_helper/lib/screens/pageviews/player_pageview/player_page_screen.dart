@@ -125,7 +125,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
           Builder(
             builder: (context) {
               return ItemCardRenderingWithFiltering(
-                  showSearchFieldOnStart: true,
+                  isSearchFieldShowingOnStart: true,
                   onEditItemAmount: (String itemId, int newAmountValue) {
                     print(newAmountValue);
                   },

@@ -3,7 +3,7 @@ import 'dart:math';
 /// Copyright notice: Copied and translated from here: https://github.com/farzher/fuzzysort/blob/master/fuzzysort.js
 
 class Fuzzysort {
-  Map<String, Prepared> preparedCache = {};
+  Map<String, FuzzySearchPreparedTarget> preparedCache = {};
   Map<String, PreparedSearch> preparedSearchCache = {};
 
   List<int> matchesSimple = [];
@@ -14,7 +14,8 @@ class Fuzzysort {
   Set<int> seenIndexes = {};
   int changeslen = 0;
 
-  Prepared getPrepared(String targetIdentifier, String target) {
+  FuzzySearchPreparedTarget getPrepared(
+      String targetIdentifier, String target) {
     if (target.length > 999) {
       return prepare(target, targetIdentifier); // don't cache huge targets
     }
@@ -39,10 +40,10 @@ class Fuzzysort {
   }
 
   // Placeholder queue class for maintaining the results
-  final List<Result> q = [];
+  final List<FuzzySearchResult> q = [];
 
-  List<Result> go(
-      String search, List<Prepared> targets, Map<String, dynamic>? options) {
+  List<FuzzySearchResult> go(String search,
+      List<FuzzySearchPreparedTarget> targets, Map<String, dynamic>? options) {
     var preparedSearch = getPreparedSearch(search);
     var searchBitflags = preparedSearch.bitflags;
 
@@ -52,7 +53,7 @@ class Fuzzysort {
     var resultsLen = 0;
     var targetsLen = targets.length;
 
-    void pushResult(Result result) {
+    void pushResult(FuzzySearchResult result) {
       if (resultsLen < limit) {
         q.add(result);
         ++resultsLen;
@@ -85,7 +86,7 @@ class Fuzzysort {
 
     if (resultsLen == 0) return [];
 
-    List<Result> results = [];
+    List<FuzzySearchResult> results = [];
     for (var i = resultsLen - 1; i >= 0; --i) {
       q.sort((a, b) => a.score.compareTo(b.score));
       results.add(q.removeAt(0));
@@ -95,8 +96,11 @@ class Fuzzysort {
   }
 
   // Main algorithm
-  Result? algorithm(PreparedSearch preparedSearch, Prepared prepared,
-      bool allowSpaces, bool allowPartialMatch) {
+  FuzzySearchResult? algorithm(
+      PreparedSearch preparedSearch,
+      FuzzySearchPreparedTarget prepared,
+      bool allowSpaces,
+      bool allowPartialMatch) {
     if (!allowSpaces && preparedSearch.containsSpace) {
       return algorithmSpaces(preparedSearch, prepared, allowPartialMatch);
     }
@@ -194,7 +198,7 @@ class Fuzzysort {
         targetLen,
         prepared);
 
-    Result result = Result(
+    FuzzySearchResult result = FuzzySearchResult(
         target: prepared.target,
         targetIdentifier: prepared.identifier,
         score: score,
@@ -204,11 +208,11 @@ class Fuzzysort {
   }
 
   // Function to handle spaces
-  Result? algorithmSpaces(
-      PreparedSearch preparedSearch, Prepared target, bool allowPartialMatch) {
+  FuzzySearchResult? algorithmSpaces(PreparedSearch preparedSearch,
+      FuzzySearchPreparedTarget target, bool allowPartialMatch) {
     seenIndexes.clear();
     double score = 0;
-    Result? result;
+    FuzzySearchResult? result;
 
     int firstSeenIndexLastSearch = 0;
     List<PreparedSearch> searches = preparedSearch.spaceSearches;
@@ -285,7 +289,7 @@ class Fuzzysort {
 
     // Reset nextBeginningIndexes and return result
     target.nextBeginningIndexes = prepareNextBeginningIndexes(target.target);
-    result = Result(
+    result = FuzzySearchResult(
         targetIdentifier: target.identifier,
         target: target.target,
         score: score,
@@ -302,7 +306,7 @@ class Fuzzysort {
     bool isSubstringBeginning,
     int searchLen,
     int targetLen,
-    Prepared prepared,
+    FuzzySearchPreparedTarget prepared,
   ) {
     double score = 0;
     int extraMatchGroupCount = 0;
@@ -377,9 +381,10 @@ class Fuzzysort {
   }
 
   // Prepare string for matching
-  Prepared prepare(String target, String targetIdentifier) {
+  FuzzySearchPreparedTarget prepare(String target, String targetIdentifier) {
     if (preparedCache.containsKey(target)) return preparedCache[target]!;
-    Prepared prepared = Prepared(target: target, identifier: targetIdentifier);
+    FuzzySearchPreparedTarget prepared =
+        FuzzySearchPreparedTarget(target: target, identifier: targetIdentifier);
 
     preparedCache[target] = prepared;
 
@@ -452,7 +457,7 @@ class Fuzzysort {
   }
 }
 
-class Prepared {
+class FuzzySearchPreparedTarget {
   String identifier;
   String target; // Original target string
   late String targetLower; // Lowercase version of the target string
@@ -464,7 +469,7 @@ class Prepared {
   late int bitFlags;
 
   // Constructor to initialize the prepared target
-  Prepared({required this.target, required this.identifier}) {
+  FuzzySearchPreparedTarget({required this.target, required this.identifier}) {
     // Convert target to lowercase
     targetLower = target.toLowerCase();
 
@@ -509,7 +514,7 @@ class PreparedSearch {
   }
 }
 
-class Result {
+class FuzzySearchResult {
   String targetIdentifier; // The target string that matched
   String target; // The target string that matched
   double score; // The calculated score of the match
@@ -517,7 +522,7 @@ class Result {
       indexes; // The list of indexes where matches occurred in the target string
 
   // Constructor
-  Result(
+  FuzzySearchResult(
       {required this.targetIdentifier,
       required this.target,
       required this.score,

@@ -121,7 +121,7 @@ class _AddNewItemModalContentState
                     ),
                     Expanded(
                         child: ItemCardRenderingWithFiltering(
-                      showSearchFieldOnStart: true,
+                      isSearchFieldShowingOnStart: true,
                       onEditItemAmount: (String itemId, int newAmountValue) {
                         setState(() {
                           var indexOfItemTuple = _allItems
