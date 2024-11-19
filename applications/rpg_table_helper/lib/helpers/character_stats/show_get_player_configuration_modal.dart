@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
@@ -77,8 +78,14 @@ class _ShowGetPlayerConfigurationModalContentState
   int? selectedGeneratedImageIndex;
   bool isLoadingNewImage = false;
 
-  List<(String label, String description, bool selected, String uuid)>
-      multiselectOptions = [];
+  List<
+      (
+        String label,
+        String description,
+        bool selected,
+        String uuid,
+        int numberOfSelections
+      )> multiselectOptions = [];
 
   List<
       ({
@@ -107,12 +114,33 @@ class _ShowGetPlayerConfigurationModalContentState
   void initState() {
     if (widget.statConfiguration.valueType ==
         CharacterStatValueType.multiselect) {
-      // jsonSerializedAdditionalData is filled with [{label: "", description: ""}]
-      List<dynamic> asdf = jsonDecode(widget
-              .statConfiguration.jsonSerializedAdditionalData
-              ?.replaceAll("},]", "}]")
-              .replaceAll('"}]"}]', '"}]') ??
-          "[]");
+      // jsonSerializedAdditionalData = {"options:":[{"uuid": "3a7fd649-2d76-4a93-8513-d5a8e8249b40", "label": "", "description": ""}], "multiselectIsAllowedToBeSelectedMultipleTimes":false}
+
+      var multiselectIsAllowedToBeSelectedMultipleTimes = false;
+      List<dynamic> statConfigValues = [];
+
+      // TODO remove migration
+      if (widget.statConfiguration.jsonSerializedAdditionalData?.isNotEmpty ==
+              true &&
+          widget.statConfiguration.jsonSerializedAdditionalData!
+              .startsWith("[")) {
+        statConfigValues = jsonDecode(widget
+                .statConfiguration.jsonSerializedAdditionalData
+                ?.replaceAll("},]", "}]")
+                .replaceAll('"}]"}]', '"}]') ??
+            "[]");
+      } else {
+        Map<String, dynamic> json = jsonDecode(widget
+                .statConfiguration.jsonSerializedAdditionalData ??
+            '{"options:":[], "multiselectIsAllowedToBeSelectedMultipleTimes":false}');
+
+        multiselectIsAllowedToBeSelectedMultipleTimes =
+            json.containsKey("multiselectIsAllowedToBeSelectedMultipleTimes")
+                ? json["multiselectIsAllowedToBeSelectedMultipleTimes"] as bool
+                : false;
+
+        statConfigValues = json["options"] as List<dynamic>;
+      }
 
       List<String> selectedValues = [];
       if (widget.characterValue?.serializedValue != null) {
@@ -123,13 +151,14 @@ class _ShowGetPlayerConfigurationModalContentState
             .toList();
       }
 
-      multiselectOptions = asdf.map(
+      multiselectOptions = statConfigValues.map(
         (e) {
           return (
             e["label"] as String,
             e["description"] as String,
             selectedValues.contains(e["uuid"] as String),
             e["uuid"] as String,
+            selectedValues.where((s) => s == (e["uuid"] as String)).length,
           );
         },
       ).toList();
@@ -518,6 +547,20 @@ class _ShowGetPlayerConfigurationModalContentState
                   var statTitle = widget.statConfiguration.name;
                   var statDescription = widget.statConfiguration.helperText;
 
+                  var multiselectIsAllowedToBeSelectedMultipleTimes = widget
+                                  .statConfiguration
+                                  .jsonSerializedAdditionalData ==
+                              null ||
+                          widget.statConfiguration.jsonSerializedAdditionalData
+                                  ?.startsWith("[") ==
+                              true
+                      ? false
+                      : ((jsonDecode(widget.statConfiguration
+                                      .jsonSerializedAdditionalData!)
+                                  as Map<String, dynamic>)[
+                              "multiselectIsAllowedToBeSelectedMultipleTimes"] ??
+                          false);
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -528,49 +571,119 @@ class _ShowGetPlayerConfigurationModalContentState
                           .asMap()
                           .entries
                           .sortedBy((e) => e.value.$1)
-                          .map((e) => CheckboxListTile.adaptive(
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                contentPadding: EdgeInsets.all(0),
-                                splashRadius: 0,
-                                dense: true,
-                                checkColor:
-                                    const Color.fromARGB(255, 57, 245, 88),
-                                activeColor: darkColor,
-                                visualDensity: VisualDensity(vertical: -2),
-                                title: Text(
-                                  e.value.$1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .copyWith(
-                                          color: darkTextColor, fontSize: 16),
-                                ),
-                                subtitle: Text(
-                                  e.value.$2,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .copyWith(color: darkTextColor),
-                                ),
-                                value: e.value.$3,
-                                onChanged: (val) {
-                                  if (val == null) return;
+                          .map(
+                            (e) =>
+                                multiselectIsAllowedToBeSelectedMultipleTimes ==
+                                        false
+                                    ? CheckboxListTile.adaptive(
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        contentPadding: EdgeInsets.all(0),
+                                        splashRadius: 0,
+                                        dense: true,
+                                        checkColor: const Color.fromARGB(
+                                            255, 57, 245, 88),
+                                        activeColor: darkColor,
+                                        visualDensity:
+                                            VisualDensity(vertical: -2),
+                                        title: Text(
+                                          e.value.$1,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                  color: darkTextColor,
+                                                  fontSize: 16),
+                                        ),
+                                        subtitle: Text(
+                                          e.value.$2,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(color: darkTextColor),
+                                        ),
+                                        value: e.value.$3,
+                                        onChanged: (val) {
+                                          if (val == null) return;
 
-                                  setState(() {
-                                    var deepCopy = [...multiselectOptions];
+                                          setState(() {
+                                            var deepCopy = [
+                                              ...multiselectOptions
+                                            ];
 
-                                    deepCopy[e.key] = (
-                                      e.value.$1,
-                                      e.value.$2,
-                                      val,
-                                      e.value.$4
-                                    );
+                                            deepCopy[e.key] = (
+                                              e.value.$1,
+                                              e.value.$2,
+                                              val,
+                                              e.value.$4,
+                                              e.value.$5
+                                            );
 
-                                    multiselectOptions = deepCopy;
-                                  });
-                                },
-                              )),
+                                            multiselectOptions = deepCopy;
+                                          });
+                                        },
+                                      )
+                                    : Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          CustomIntEditField(
+                                            onValueChange: (newValue) {
+                                              setState(() {
+                                                var deepCopy = [
+                                                  ...multiselectOptions
+                                                ];
+
+                                                deepCopy[e.key] = (
+                                                  e.value.$1,
+                                                  e.value.$2,
+                                                  newValue > 0,
+                                                  e.value.$4,
+                                                  newValue,
+                                                );
+
+                                                multiselectOptions = deepCopy;
+                                              });
+                                            },
+                                            label: "Anzahl",
+                                            startValue: e.value.$5,
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  e.value.$1,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .copyWith(
+                                                          color: darkTextColor,
+                                                          fontSize: 16),
+                                                ),
+                                                Text(
+                                                  e.value.$2,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .copyWith(
+                                                          color: darkTextColor),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                          ),
                     ],
                   );
 
@@ -943,8 +1056,11 @@ class _ShowGetPlayerConfigurationModalContentState
         );
 
       case CharacterStatValueType.multiselect:
-        List<String> selectedMultiselectOptionsOrDefault =
-            multiselectOptions.where((e) => e.$3).map((e) => e.$4).toList();
+        List<String> selectedMultiselectOptionsOrDefault = multiselectOptions
+            .where((e) => e.$5 > 0)
+            .map((e) => List.filled(e.$5, e.$4))
+            .expand((i) => i)
+            .toList();
         return RpgCharacterStatValue(
           variant: 0,
           serializedValue: jsonEncode({

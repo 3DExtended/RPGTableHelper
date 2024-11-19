@@ -58,7 +58,7 @@ List<
     )
   ),
   (
-    "multiselect, static",
+    "multiselect, static", // multiselectIsAllowedToBeSelectedMultipleTimes = false
     CharacterStatDefinition(
       groupId: null,
       isOptionalForAlternateForms: false,
@@ -69,7 +69,7 @@ List<
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       helperText: "Where is your character proficient?",
       jsonSerializedAdditionalData:
-          '[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]',
+          '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]}',
     ),
     RpgCharacterStatValue(
       variant: null,
@@ -217,6 +217,48 @@ List<
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
           '{"values": [{"value":5, "uuid": "76183b57-d6f3-4414-962c-837488ed0384"}, {"value":17, "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"}]}',
+    )
+  ),
+  (
+    "multiselect, static, multiselectIsAllowedToBeSelectedMultipleTimes", // multiselectIsAllowedToBeSelectedMultipleTimes = true
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.multiselect,
+      editType: CharacterStatEditType.static,
+      name: "Saving Throws",
+      statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
+      helperText: "Where is your character proficient?",
+      jsonSerializedAdditionalData:
+          '{"multiselectIsAllowedToBeSelectedMultipleTimes":true,"options":[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]}',
+    ),
+    RpgCharacterStatValue(
+      variant: null,
+      statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
+      serializedValue:
+          '{"values": ["4d07fc3c-daed-4a69-9f5b-76d0bea09059","4d07fc3c-daed-4a69-9f5b-76d0bea09059","4d07fc3c-daed-4a69-9f5b-76d0bea09059", "7df3a676-7138-4435-a109-15052405181d"]}',
+    )
+  ),
+  (
+    "multiselect, static, migrationcheck", // multiselectIsAllowedToBeSelectedMultipleTimes = false
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.multiselect,
+      editType: CharacterStatEditType.static,
+      name: "Saving Throws",
+      statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
+      helperText: "Where is your character proficient?",
+      jsonSerializedAdditionalData:
+          '[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]',
+    ),
+    RpgCharacterStatValue(
+      variant: null,
+      statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
+      serializedValue:
+          '{"values": ["4d07fc3c-daed-4a69-9f5b-76d0bea09059", "7df3a676-7138-4435-a109-15052405181d"]}',
     )
   ),
 ];

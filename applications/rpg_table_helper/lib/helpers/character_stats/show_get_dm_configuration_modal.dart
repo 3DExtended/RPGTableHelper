@@ -76,6 +76,7 @@ class _ShowGetDmConfigurationModalContentState
   // TODO add "advanced options" to edit those...
   bool isOptionalForCompanionCharacters = false;
   bool isOptionalForAlternateForms = false;
+  bool multiselectIsAllowedToBeSelectedMultipleTimes = false;
 
   @override
   void initState() {
@@ -101,9 +102,30 @@ class _ShowGetDmConfigurationModalContentState
           // what to do about additionaldetails
           if (selectedValueType == CharacterStatValueType.multiselect) {
             // Decode JSON string to a list of dynamic maps
-            List<dynamic> jsonList = jsonDecode(
-                widget.predefinedConfiguration?.jsonSerializedAdditionalData ??
-                    "[]");
+            // TODO remove migration
+            List<dynamic> jsonList = [];
+            if (widget.predefinedConfiguration?.jsonSerializedAdditionalData
+                        ?.isNotEmpty ==
+                    true &&
+                widget.predefinedConfiguration!.jsonSerializedAdditionalData!
+                    .startsWith("[")) {
+              jsonList = jsonDecode(widget
+                      .predefinedConfiguration?.jsonSerializedAdditionalData ??
+                  "[]");
+              multiselectIsAllowedToBeSelectedMultipleTimes = false;
+            } else {
+              Map<String, dynamic> json = jsonDecode(widget
+                      .predefinedConfiguration?.jsonSerializedAdditionalData ??
+                  '{"options:":[], "multiselectIsAllowedToBeSelectedMultipleTimes":false}');
+
+              multiselectIsAllowedToBeSelectedMultipleTimes = json.containsKey(
+                      "multiselectIsAllowedToBeSelectedMultipleTimes")
+                  ? json["multiselectIsAllowedToBeSelectedMultipleTimes"]
+                      as bool
+                  : false;
+
+              jsonList = json["options"] as List<dynamic>;
+            }
 
             for (var item in jsonList) {
               var label = (item as Map<String, dynamic>)["label"];
@@ -174,13 +196,17 @@ class _ShowGetDmConfigurationModalContentState
           );
 
           if (selectedValueType == CharacterStatValueType.multiselect) {
-            var serializedAdditionalData = jsonEncode(multiselectOptions
-                .map((e) => {
-                      "uuid": e.$1,
-                      "label": e.$2.text,
-                      "description": e.$3.text
-                    })
-                .toList());
+            var serializedAdditionalData = jsonEncode({
+              "options": multiselectOptions
+                  .map((e) => {
+                        "uuid": e.$1,
+                        "label": e.$2.text,
+                        "description": e.$3.text
+                      })
+                  .toList(),
+              "multiselectIsAllowedToBeSelectedMultipleTimes":
+                  multiselectIsAllowedToBeSelectedMultipleTimes,
+            });
 
             tempResult = tempResult.copyWith(
                 jsonSerializedAdditionalData: serializedAdditionalData);
@@ -385,6 +411,23 @@ class _ShowGetDmConfigurationModalContentState
           collapsedShape: Border.all(color: Colors.transparent, width: 0),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            if (selectedValueType == CharacterStatValueType.multiselect)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: SelectableTile(
+                        onValueChange: () {
+                          setState(() {
+                            multiselectIsAllowedToBeSelectedMultipleTimes =
+                                !multiselectIsAllowedToBeSelectedMultipleTimes;
+                          });
+                        },
+                        isSet: multiselectIsAllowedToBeSelectedMultipleTimes,
+                        label: "Optionen können mehrmals ausgewählt werden"),
+                  ),
+                ],
+              ),
             Row(
               mainAxisSize: MainAxisSize.max,
               children: [

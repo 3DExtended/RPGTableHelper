@@ -469,7 +469,7 @@ Widget getPlayerVisualizationWidget({
       }
 
     case CharacterStatValueType.multiselect:
-      // statConfiguration.jsonSerializedAdditionalData = [{"uuid":"c4c08d74-effb-4457-9c3a-d60b611f6986","label": "asdf", "description": "asdf"}]
+      // statConfiguration.jsonSerializedAdditionalData = {"options:":[{"uuid": "3a7fd649-2d76-4a93-8513-d5a8e8249b40", "label": "", "description": ""}], "multiselectIsAllowedToBeSelectedMultipleTimes":false}
       // characterValue.serializedValue = {"values": ["c4c08d74-effb-4457-9c3a-d60b611f6986"]}
       List<String> parsedValue =
           (jsonDecode(characterValue.serializedValue)["values"]
@@ -477,11 +477,29 @@ Widget getPlayerVisualizationWidget({
               .map((e) => e as String)
               .toList();
 
-      List<dynamic> statConfigValues = jsonDecode(statConfiguration
-              .jsonSerializedAdditionalData
-              ?.replaceAll("},]", "}]")
-              .replaceAll('"}]"}]', '"}]') ??
-          "[]");
+      var multiselectIsAllowedToBeSelectedMultipleTimes = false;
+      List<dynamic> statConfigValues = [];
+
+      // TODO remove migration
+      if (statConfiguration.jsonSerializedAdditionalData?.isNotEmpty == true &&
+          statConfiguration.jsonSerializedAdditionalData!.startsWith("[")) {
+        statConfigValues = jsonDecode(statConfiguration
+                .jsonSerializedAdditionalData
+                ?.replaceAll("},]", "}]")
+                .replaceAll('"}]"}]', '"}]') ??
+            "[]");
+      } else {
+        Map<String, dynamic> json = jsonDecode(statConfiguration
+                .jsonSerializedAdditionalData ??
+            '{"options:":[], "multiselectIsAllowedToBeSelectedMultipleTimes":false}');
+
+        multiselectIsAllowedToBeSelectedMultipleTimes =
+            json.containsKey("multiselectIsAllowedToBeSelectedMultipleTimes")
+                ? json["multiselectIsAllowedToBeSelectedMultipleTimes"] as bool
+                : false;
+
+        statConfigValues = json["options"] as List<dynamic>;
+      }
 
       var config = statConfigValues
           .map(
@@ -496,8 +514,8 @@ Widget getPlayerVisualizationWidget({
       var isVariantShowingAllOptions = characterValue.variant == 1;
 
       var valueToConfigMapped = config
-          .map((pv) => (parsedValue.firstWhereOrNull((es) => es == pv.$1), pv))
-          .where((pv) => isVariantShowingAllOptions || pv.$1 != null)
+          .map((pv) => (parsedValue.where((es) => es == pv.$1).length, pv))
+          .where((pv) => isVariantShowingAllOptions || pv.$1 != 0)
           .sortedBy((pv) => pv.$2.$2);
 
       return Column(
@@ -523,7 +541,7 @@ Widget getPlayerVisualizationWidget({
             ),
           ...valueToConfigMapped.map(
             (e) => Builder(builder: (context) {
-              var isSelected = e.$1 != null;
+              var isSelected = e.$1 != 0;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -537,6 +555,18 @@ Widget getPlayerVisualizationWidget({
                             color: isSelected ? darkColor : bgColor,
                             border: Border.all(color: darkColor)),
                       ),
+                      if (multiselectIsAllowedToBeSelectedMultipleTimes)
+                        ...List.filled(
+                          max(0, e.$1 - 1),
+                          Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: darkColor,
+                                border: Border.all(color: darkColor)),
+                          ),
+                        ),
                       SizedBox(
                         width: 10,
                       ),
