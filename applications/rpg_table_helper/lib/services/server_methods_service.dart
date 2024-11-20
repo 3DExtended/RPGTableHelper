@@ -10,6 +10,7 @@ import 'package:rpg_table_helper/helpers/modals/show_ask_player_for_fight_order_
 import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -347,6 +348,9 @@ class ServerMethodsService extends IServerMethodsService {
     Future.delayed(Duration.zero, () async {
       List<(String?, String, int)> rollAnswers = [];
       var navKey = navigationService.getCurrentNavigationKey();
+      if (navKey.currentContext == null) {
+        navKey = navigatorKey;
+      }
 
       for (var characterAsked in charactersInQuestion) {
         // for every character ask show modal which asks for a roll
@@ -397,6 +401,9 @@ class ServerMethodsService extends IServerMethodsService {
     var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
 
     var navKey = navigationService.getCurrentNavigationKey();
+    if (navKey.currentContext == null) {
+      navKey = navigatorKey;
+    }
 
     // show modal
     showPlayerHasBeenGrantedItemsThroughDmModal(
