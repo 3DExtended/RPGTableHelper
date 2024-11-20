@@ -17,6 +17,7 @@ import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.da
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -77,6 +78,9 @@ class _ShowGetPlayerConfigurationModalContentState
   List<String> urlsOfGeneratedImages = [];
   int? selectedGeneratedImageIndex;
   bool isLoadingNewImage = false;
+
+  // TODO make this configurable
+  bool hideStatFromCharacterScreens = false;
 
   List<
       (
@@ -281,6 +285,11 @@ class _ShowGetPlayerConfigurationModalContentState
           widget.characterValue?.variant ?? 0,
           numberOfVariantsForValueTypes(widget.statConfiguration.valueType) -
               1);
+    });
+
+    setState(() {
+      hideStatFromCharacterScreens =
+          widget.characterValue?.hideFromCharacterScreen ?? false;
     });
 
     if (widget.statConfiguration.valueType ==
@@ -919,6 +928,19 @@ class _ShowGetPlayerConfigurationModalContentState
             SizedBox(
               height: 10,
             ),
+
+            // additional settings
+            getAdditionalSettingsTile(),
+
+            SizedBox(
+              height: 10,
+            ),
+            HorizontalLine(
+              useDarkColor: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
             Align(
               alignment: Alignment.topLeft,
               child: Text(
@@ -984,6 +1006,40 @@ class _ShowGetPlayerConfigurationModalContentState
         ));
   }
 
+  ThemeConfigurationForApp getAdditionalSettingsTile() {
+    return ThemeConfigurationForApp(
+      child: ExpansionTile(
+        enableFeedback: false,
+        title: Text('Erweiterte Optionen'),
+        textColor: darkTextColor,
+        iconColor: darkColor,
+        collapsedIconColor: darkColor,
+        collapsedTextColor: darkTextColor,
+        shape: Border.all(color: Colors.transparent, width: 0),
+        collapsedShape: Border.all(color: Colors.transparent, width: 0),
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: SelectableTile(
+                    onValueChange: () {
+                      setState(() {
+                        hideStatFromCharacterScreens =
+                            !hideStatFromCharacterScreens;
+                      });
+                    },
+                    isSet: hideStatFromCharacterScreens,
+                    label: "Verstecke Option für meinen Charakter"),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   bool get isShowPreviousGeneratedImageButtonDisabled {
     return selectedGeneratedImageIndex == null ||
         selectedGeneratedImageIndex == 0;
@@ -1001,6 +1057,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultTextValue =
             textEditController.text.isEmpty ? "" : textEditController.text;
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
           statUuid: widget.statConfiguration.statUuid,
@@ -1009,6 +1066,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultTextValue =
             textEditController.text.isEmpty ? "" : textEditController.text;
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "value": currentOrDefaultTextValue,
@@ -1023,6 +1081,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultIntValue =
             int.tryParse(textEditController.text) ?? 0;
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultIntValue}),
           statUuid: widget.statConfiguration.statUuid,
@@ -1033,6 +1092,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultMaxIntValue =
             int.tryParse(textEditController2.text) ?? 0;
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "value": currentOrDefaultIntValue,
@@ -1047,6 +1107,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultOtherIntValue =
             int.tryParse(textEditController2.text) ?? 0;
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "value": currentOrDefaultIntValue,
@@ -1062,6 +1123,7 @@ class _ShowGetPlayerConfigurationModalContentState
             .expand((i) => i)
             .toList();
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "values": selectedMultiselectOptionsOrDefault,
@@ -1082,6 +1144,7 @@ class _ShowGetPlayerConfigurationModalContentState
                 .toList();
 
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "values": filledValuesForlistOfSingleValueOptions,
@@ -1103,6 +1166,7 @@ class _ShowGetPlayerConfigurationModalContentState
                     })
                 .toList();
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "values": filledValuesForlistOfIntWithCalculatedValues,
@@ -1128,6 +1192,7 @@ class _ShowGetPlayerConfigurationModalContentState
             .text;
 
         return RpgCharacterStatValue(
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
             "level":

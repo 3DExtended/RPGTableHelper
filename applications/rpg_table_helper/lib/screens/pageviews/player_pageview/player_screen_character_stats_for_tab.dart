@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/dynamic_height_column_layout.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -66,7 +67,11 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
 
     for (var statToRender in statsOfCharacterInTab) {
       var matchingPlayerCharacterStat = charToRender?.characterStats
-          .firstWhere((stat) => statToRender.statUuid == stat.statUuid);
+          .firstWhereOrNull((stat) =>
+              statToRender.statUuid == stat.statUuid &&
+              stat.hideFromCharacterScreen != true);
+
+      if (matchingPlayerCharacterStat == null) continue;
 
       result.add(SizedBox(
           width: columnWidth,
@@ -75,7 +80,7 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
               characterName: charToRender?.characterName ?? "Charakter Name",
               statConfiguration: statToRender,
               useNewDesign: true,
-              characterValue: matchingPlayerCharacterStat!)));
+              characterValue: matchingPlayerCharacterStat)));
     }
 
     return result;

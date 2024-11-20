@@ -32,6 +32,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "057ab833-ce74-4feb-9b0d-4f53a83b3c21",
       serializedValue:
@@ -52,6 +53,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "1aa3ef8a-6b18-4131-8b43-810dcceba9a5",
       serializedValue: '{"value": "Peter"}',
@@ -72,6 +74,7 @@ List<
           '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]}',
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
@@ -92,6 +95,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17}',
@@ -111,6 +115,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "maxValue": 23}',
@@ -130,6 +135,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "otherValue": 2}',
@@ -149,6 +155,7 @@ List<
       jsonSerializedAdditionalData: null,
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "1b3b65c3-b58f-4b00-8616-c229b103c311",
       serializedValue:
@@ -170,6 +177,7 @@ List<
           '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
@@ -192,6 +200,7 @@ List<
           '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Volk"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Klasse"}]}',
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
@@ -213,6 +222,7 @@ List<
           '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Volk", "iconName": "backpack-svgrepo-com-2"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Klasse", "iconName": "book-open"}, {"uuid":"bcc4995c-2976-4015-b6b8-7a211c69c59a", "label": "Test", "iconName": "shield"},{"uuid":"0499a51e-fab7-4641-9d2b-07a79f55e918", "label": "Test", "iconName": "shield"},{"uuid":"d1c2006a-2d43-4b19-9b75-38577c3c6b58", "label": "Test", "iconName": "shield"},{"uuid":"2eca2a8d-2fa3-4a6a-8145-3db5cb24b0b1", "label": "Test", "iconName": "shield"},{"uuid":"fc671291-fab4-4253-a4c8-c5a66f89f84c", "label": "Test", "iconName": "shield"},{"uuid":"2f744d23-8ff6-4d75-8426-a1ca3e682e7b", "label": "Test", "iconName": "shield"},{"uuid":"a1f6fa06-0b68-4067-8671-ec5c85966828", "label": "Test", "iconName": "shield"}]}',
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
@@ -234,6 +244,7 @@ List<
           '{"multiselectIsAllowedToBeSelectedMultipleTimes":true,"options":[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]}',
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
@@ -255,6 +266,7 @@ List<
           '[{"uuid":"4d07fc3c-daed-4a69-9f5b-76d0bea09059","label": "DEX", "description": "Dexterity"}, {"uuid":"7df3a676-7138-4435-a109-15052405181d","label": "WIS", "description": "Wisdom"}, {"uuid":"10290fd4-3842-49a4-83cb-87939129c44a","label": "INT", "description": "Intelligence"}]',
     ),
     RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
       variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
