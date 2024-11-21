@@ -239,7 +239,7 @@ abstract class _$RpgCharacterStatValueCWProxy {
 
   RpgCharacterStatValue serializedValue(String serializedValue);
 
-  RpgCharacterStatValue hideFromCharacterScreen(bool hideFromCharacterScreen);
+  RpgCharacterStatValue hideFromCharacterScreen(bool? hideFromCharacterScreen);
 
   RpgCharacterStatValue variant(int? variant);
 
@@ -272,7 +272,8 @@ class _$RpgCharacterStatValueCWProxyImpl
       this(serializedValue: serializedValue);
 
   @override
-  RpgCharacterStatValue hideFromCharacterScreen(bool hideFromCharacterScreen) =>
+  RpgCharacterStatValue hideFromCharacterScreen(
+          bool? hideFromCharacterScreen) =>
       this(hideFromCharacterScreen: hideFromCharacterScreen);
 
   @override
@@ -303,11 +304,10 @@ class _$RpgCharacterStatValueCWProxyImpl
           // ignore: cast_nullable_to_non_nullable
           : serializedValue as String,
       hideFromCharacterScreen:
-          hideFromCharacterScreen == const $CopyWithPlaceholder() ||
-                  hideFromCharacterScreen == null
+          hideFromCharacterScreen == const $CopyWithPlaceholder()
               ? _value.hideFromCharacterScreen
               // ignore: cast_nullable_to_non_nullable
-              : hideFromCharacterScreen as bool,
+              : hideFromCharacterScreen as bool?,
       variant: variant == const $CopyWithPlaceholder()
           ? _value.variant
           // ignore: cast_nullable_to_non_nullable
@@ -451,9 +451,7 @@ RpgCharacterStatValue _$RpgCharacterStatValueFromJson(
     RpgCharacterStatValue(
       statUuid: json['statUuid'] as String,
       serializedValue: json['serializedValue'] as String,
-      hideFromCharacterScreen: json.containsKey('hideFromCharacterScreen')
-          ? json['hideFromCharacterScreen'] as bool
-          : false,
+      hideFromCharacterScreen: json['hideFromCharacterScreen'] as bool?,
       variant: (json['variant'] as num?)?.toInt(),
     );
 

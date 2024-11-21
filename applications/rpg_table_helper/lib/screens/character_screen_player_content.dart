@@ -307,6 +307,7 @@ class _CharacterScreenPlayerContentState
                                 characterName: charToRender?.characterName ??
                                     "Charakter Name",
                                 statConfiguration: statInTab.value,
+                                onNewStatValue: (newSerializedValue) {},
                                 characterValue: matchingPlayerCharacterStat);
 
                             if (statInTab.value.valueType ==

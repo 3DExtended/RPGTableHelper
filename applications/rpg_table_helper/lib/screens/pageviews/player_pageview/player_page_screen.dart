@@ -90,7 +90,12 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       result.add((
         tabDef.tabName,
         PlayerScreenCharacterStatsForTab(
-            tabDef: tabDef, rpgConfig: rpgConfig, charToRender: charToRender)
+            onStatValueChanged: (updatedStat) {
+              // TODO make me
+            },
+            tabDef: tabDef,
+            rpgConfig: rpgConfig,
+            charToRender: charToRender)
       ));
     }
 

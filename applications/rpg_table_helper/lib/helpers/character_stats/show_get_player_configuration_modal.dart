@@ -987,6 +987,7 @@ class _ShowGetPlayerConfigurationModalContentState
                           //     borderRadius: BorderRadius.circular(5)),
                           padding: EdgeInsets.all(10),
                           child: getPlayerVisualizationWidget(
+                              onNewStatValue: (newSerializedValue) {},
                               useNewDesign: true,
                               context: context,
                               statConfiguration: widget.statConfiguration,

@@ -8,14 +8,12 @@ import 'package:shadow_widget/shadow_widget.dart';
 class ProgressIndicatorForCharacterScreen extends StatelessWidget {
   const ProgressIndicatorForCharacterScreen({
     super.key,
-    required this.padding,
     required this.progressPercentage,
     required this.value,
     required this.maxValue,
     required this.title,
   });
 
-  final double padding;
   final double progressPercentage;
   final int value;
   final int maxValue;
@@ -25,7 +23,7 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       var width = max(350, min(constraints.maxWidth, constraints.maxHeight)) -
-          2.0 * padding;
+          2.0 * 60.0;
       var strokeWidth = width * .1;
 
       var containerWidth = width - 2.5 * strokeWidth;

@@ -42,12 +42,12 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
 
   @override
   Widget build(BuildContext context) {
-    const iconSize = 22.0;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomButtonNewdesign(
+          isSubbutton: true,
           variant: CustomButtonNewdesignVariant.DarkButton,
           onPressed: () {
             setState(() {
@@ -59,7 +59,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           },
           icon: CustomFaIcon(
             icon: FontAwesomeIcons.minus,
-            size: iconSize,
+            size: iconSizeInlineButtons,
             color: textColor,
           ),
         ),
@@ -76,6 +76,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           ),
         ),
         CustomButtonNewdesign(
+          isSubbutton: true,
           variant: CustomButtonNewdesignVariant.DarkButton,
           onPressed: () {
             setState(() {
@@ -87,7 +88,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           },
           icon: CustomFaIcon(
             icon: FontAwesomeIcons.plus,
-            size: iconSize,
+            size: iconSizeInlineButtons,
             color: textColor,
           ),
         ),

@@ -273,6 +273,26 @@ List<
           '{"values": ["4d07fc3c-daed-4a69-9f5b-76d0bea09059", "7df3a676-7138-4435-a109-15052405181d"]}',
     )
   ),
+  (
+    "intWithMaxValue, fastEdit",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.intWithMaxValue,
+      editType: CharacterStatEditType.oneTap,
+      name: "HP",
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      helperText: "How many health points do you have?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
+      variant: null,
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      serializedValue: '{"value": 17, "maxValue": 23}',
+    )
+  ),
 ];
 
 void main() {
@@ -473,6 +493,7 @@ void main() {
             return Center(
               child: getPlayerVisualizationWidget(
                 context: context,
+                onNewStatValue: (newSerializedValue) {},
                 statConfiguration: testConfiguration.$2,
                 characterValue: testConfiguration.$3,
                 characterName: "Frodo",

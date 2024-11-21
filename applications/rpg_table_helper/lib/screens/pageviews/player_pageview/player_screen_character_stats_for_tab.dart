@@ -12,8 +12,10 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
     required this.tabDef,
     required this.rpgConfig,
     required this.charToRender,
+    required this.onStatValueChanged,
   });
 
+  final void Function(RpgCharacterStatValue) onStatValueChanged;
   final CharacterStatsTabDefinition tabDef;
   final RpgConfigurationModel rpgConfig;
   final RpgCharacterConfigurationBase? charToRender;
@@ -47,13 +49,14 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
               spacing: padding,
               runSpacing: padding,
               numberOfColumns: numberOfColumns,
-              children: getStatWidgetForTab(context, columnWidth: columnWidth),
+              children: getStatWidgetsForCurrentTab(context,
+                  columnWidth: columnWidth),
             )),
       );
     });
   }
 
-  List<Widget> getStatWidgetForTab(BuildContext context,
+  List<Widget> getStatWidgetsForCurrentTab(BuildContext context,
       {required double columnWidth}) {
     List<Widget> result = [];
 
@@ -76,6 +79,9 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
       result.add(SizedBox(
           width: columnWidth,
           child: getPlayerVisualizationWidget(
+              onNewStatValue: (newSerializedValue) {
+                // TODO make me
+              },
               context: context,
               characterName: charToRender?.characterName ?? "Charakter Name",
               statConfiguration: statToRender,
