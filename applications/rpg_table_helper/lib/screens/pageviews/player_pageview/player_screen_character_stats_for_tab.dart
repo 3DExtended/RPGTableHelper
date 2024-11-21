@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/dynamic_height_column_layout.dart';
@@ -33,6 +35,15 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
       }
       if (constraints.maxWidth > 333 * 4.0) {
         numberOfColumns++;
+      }
+
+      // reduce number of columns if there arent as many stats to render
+      var onlyTextTab = tabDef.statsInTab.every((s) =>
+          s.valueType == CharacterStatValueType.singleLineText ||
+          s.valueType == CharacterStatValueType.multiLineText);
+
+      if (onlyTextTab) {
+        numberOfColumns = min(tabDef.statsInTab.length, numberOfColumns);
       }
 
       var padding = 20.0;
