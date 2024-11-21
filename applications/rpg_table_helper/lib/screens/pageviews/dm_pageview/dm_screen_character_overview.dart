@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_character_card.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -113,8 +115,7 @@ class _DmScreenCharacterOverviewState
         RpgCharacterStatValue
       )? characterStatWithMaxValueForBarVisuals;
 
-      List<(CharacterStatDefinition, RpgCharacterStatValue)>
-          characterSingleNumberStats = [];
+      List<({String label, int value})> characterSingleNumberStats = [];
 
       if (defaultStatTab != null &&
           rpgConfig.characterStatTabsDefinition != null) {
@@ -141,7 +142,64 @@ class _DmScreenCharacterOverviewState
           var statValue = characterToRender.characterStats
               .firstWhereOrNull((cs) => cs.statUuid == statToConsider.statUuid);
           if (statValue != null) {
-            characterSingleNumberStats.add((statToConsider, statValue));
+            // => RpgCharacterStatValue.serializedValue == {"value": 17}
+            characterSingleNumberStats.add((
+              label: statToConsider.name,
+              value: int.parse((jsonDecode(statValue.serializedValue)
+                          as Map<String, dynamic>)["value"]
+                      ?.toString() ??
+                  "0")
+            ));
+          }
+        }
+
+        if (characterSingleNumberStats.isEmpty) {
+          // look for ints with icons and transform (and show) them instead
+          var intListStatsToConsider = statsToConsiderForCharacter
+              .where((e) =>
+                  e.valueType == CharacterStatValueType.listOfIntsWithIcons)
+              .take(1) // print maximum 8 stats
+              .toList();
+
+          for (var statConfiguration in intListStatsToConsider) {
+            // search stat in char
+            var statValue = characterToRender.characterStats.firstWhereOrNull(
+                (cs) => cs.statUuid == statConfiguration.statUuid);
+            if (statValue != null) {
+              // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+              // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+              var parsedValue = ((jsonDecode(statValue.serializedValue)
+                      as Map<String, dynamic>)["values"] as List<dynamic>)
+                  .map((t) => t as Map<String, dynamic>)
+                  .toList();
+
+              var statConfigLabels =
+                  (jsonDecode(statConfiguration.jsonSerializedAdditionalData!)[
+                          "values"] as List<dynamic>)
+                      .map((t) => t as Map<String, dynamic>)
+                      .toList();
+
+              var filledValues = statConfigLabels
+                  .map(
+                    (e) {
+                      var parsedMatchingValue = parsedValue.singleWhereOrNull(
+                        (element) => element["uuid"] == e["uuid"],
+                      );
+
+                      return (
+                        label: e["label"] as String,
+                        iconName: e["iconName"] as String,
+                        value: parsedMatchingValue?["value"] as int? ?? 0,
+                      );
+                    },
+                  )
+                  .sortedBy((e) => e.label)
+                  .toList();
+
+              characterSingleNumberStats.addAll(filledValues
+                  .take(6)
+                  .map((e) => (label: e.label, value: e.value)));
+            }
           }
         }
       }

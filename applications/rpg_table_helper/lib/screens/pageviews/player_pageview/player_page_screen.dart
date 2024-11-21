@@ -17,6 +17,7 @@ import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_h
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_recepies.dart';
+import 'package:signalr_netcore/errors.dart';
 
 class PlayerPageScreenRouteSettings {
   final RpgCharacterConfigurationBase? characterConfigurationOverride;
@@ -91,7 +92,75 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         tabDef.tabName,
         PlayerScreenCharacterStatsForTab(
             onStatValueChanged: (updatedStat) {
-              // TODO make me
+              if (charToRender == null) return;
+              var newestCharacterConfig =
+                  ref.read(rpgCharacterConfigurationProvider).valueOrNull;
+              if (newestCharacterConfig == null) return;
+
+              var mergedStats = charToRender!.characterStats;
+
+              mergedStats
+                  .removeWhere((st) => st.statUuid == updatedStat.statUuid);
+              mergedStats.add(updatedStat);
+
+              var isUpdatingMainCharacter =
+                  newestCharacterConfig.uuid == charToRender!.uuid;
+
+              if (isUpdatingMainCharacter) {
+                charToRender =
+                    newestCharacterConfig.copyWith(characterStats: mergedStats);
+
+                ref
+                    .read(rpgCharacterConfigurationProvider.notifier)
+                    .updateConfiguration(newestCharacterConfig.copyWith(
+                        characterStats: mergedStats));
+              } else {
+                List<RpgAlternateCharacterConfiguration>
+                    companionCharactersCopy = [
+                  ...(newestCharacterConfig.companionCharacters ?? [])
+                ];
+
+                var indexOfSelectedCompChar = companionCharactersCopy
+                    .indexWhere((e) => e.uuid == charToRender!.uuid);
+
+                if (indexOfSelectedCompChar == -1) {
+                  // check altforms
+                  List<RpgAlternateCharacterConfiguration> altCharactersCopy = [
+                    ...(newestCharacterConfig.alternateForms ?? [])
+                  ];
+                  var indexOfSelectedAltForm = altCharactersCopy
+                      .indexWhere((e) => e.uuid == charToRender!.uuid);
+
+                  if (indexOfSelectedAltForm == -1) {
+                    throw NotImplementedException();
+                  } else {
+                    altCharactersCopy[indexOfSelectedAltForm] =
+                        altCharactersCopy[indexOfSelectedAltForm]
+                            .copyWith(characterStats: mergedStats);
+
+                    charToRender = newestCharacterConfig.copyWith(
+                        alternateForms: altCharactersCopy);
+
+                    ref
+                        .read(rpgCharacterConfigurationProvider.notifier)
+                        .updateConfiguration(newestCharacterConfig.copyWith(
+                            alternateForms: altCharactersCopy));
+                  }
+                } else {
+                  companionCharactersCopy[indexOfSelectedCompChar] =
+                      companionCharactersCopy[indexOfSelectedCompChar]
+                          .copyWith(characterStats: mergedStats);
+
+                  charToRender = newestCharacterConfig.copyWith(
+                      companionCharacters: companionCharactersCopy);
+
+                  ref
+                      .read(rpgCharacterConfigurationProvider.notifier)
+                      .updateConfiguration(newestCharacterConfig.copyWith(
+                          companionCharacters: companionCharactersCopy));
+                }
+              }
+              setState(() {});
             },
             tabDef: tabDef,
             rpgConfig: rpgConfig,

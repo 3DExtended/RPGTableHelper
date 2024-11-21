@@ -291,6 +291,12 @@ Widget renderIntWithMaxValueStat(
   var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
   var maxValue = int.tryParse(parsedValue["maxValue"].toString()) ?? 1;
 
+  onValueChanged(int newValue) {
+    parsedValue["value"] = newValue;
+    var serializedValue = jsonEncode(parsedValue);
+    onNewStatValue(serializedValue);
+  }
+
   switch (characterValue.variant) {
     case 1:
       return Stack(
@@ -311,9 +317,11 @@ Widget renderIntWithMaxValueStat(
                 CustomButtonNewdesign(
                   isSubbutton: true,
                   variant: CustomButtonNewdesignVariant.DarkButton,
-                  onPressed: () {
-                    // TODO make me
-                  },
+                  onPressed: value <= 0
+                      ? null
+                      : () {
+                          onValueChanged(max(0, value - 1));
+                        },
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.minus,
                     size: iconSizeInlineButtons,
@@ -326,9 +334,11 @@ Widget renderIntWithMaxValueStat(
                 CustomButtonNewdesign(
                   isSubbutton: true,
                   variant: CustomButtonNewdesignVariant.DarkButton,
-                  onPressed: () {
-                    // TODO make me
-                  },
+                  onPressed: maxValue == value
+                      ? null
+                      : () {
+                          onValueChanged(min(value + 1, maxValue));
+                        },
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.plus,
                     size: iconSizeInlineButtons,

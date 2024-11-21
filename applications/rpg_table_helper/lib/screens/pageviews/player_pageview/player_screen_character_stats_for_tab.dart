@@ -80,7 +80,9 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
           width: columnWidth,
           child: getPlayerVisualizationWidget(
               onNewStatValue: (newSerializedValue) {
-                // TODO make me
+                var updatedStatValue = matchingPlayerCharacterStat.copyWith(
+                    serializedValue: newSerializedValue);
+                onStatValueChanged(updatedStatValue);
               },
               context: context,
               characterName: charToRender?.characterName ?? "Charakter Name",
