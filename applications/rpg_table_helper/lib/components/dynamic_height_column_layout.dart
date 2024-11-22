@@ -63,7 +63,7 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
       // Add the child to the target column.
       columns[targetColumnIndex].add(Container(
         padding: EdgeInsets.only(bottom: widget.runSpacing),
-        key: childrenKeys[i],
+        key: childrenKeys.length > i ? childrenKeys[i] : null,
         child: child,
       ));
     }
@@ -102,7 +102,8 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
 
     List<double> columnHeights = List.filled(widget.numberOfColumns, 0.0);
     for (var i = 0; i < widget.children.length; i++) {
-      var childHeight = heightsOfChildren[i].value;
+      var childHeight =
+          heightsOfChildren.length > i ? heightsOfChildren[i].value : 0.0;
       int targetColumnIndex = columnHeights.indexOf(
         columnHeights.reduce((a, b) => a < b ? a : b),
       );

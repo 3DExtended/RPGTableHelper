@@ -351,26 +351,122 @@ Widget renderIntWithMaxValueStat(
         ],
       );
     case 2:
-      return PentagonWithLabel(
-          value: value, otherValue: maxValue, label: statConfiguration.name);
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            Padding(
+              padding: const EdgeInsets.only(top: 40.0),
+              child: CustomButtonNewdesign(
+                isSubbutton: true,
+                variant: CustomButtonNewdesignVariant.DarkButton,
+                onPressed: value <= 0
+                    ? null
+                    : () {
+                        onValueChanged(max(0, value - 1));
+                      },
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.minus,
+                  size: iconSizeInlineButtons,
+                  color: textColor,
+                ),
+              ),
+            ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            SizedBox(
+              width: 20,
+            ),
+          PentagonWithLabel(
+              value: value,
+              otherValue: maxValue,
+              label: statConfiguration.name),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            SizedBox(
+              width: 20,
+            ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            Padding(
+              padding: const EdgeInsets.only(top: 40.0),
+              child: CustomButtonNewdesign(
+                isSubbutton: true,
+                variant: CustomButtonNewdesignVariant.DarkButton,
+                onPressed: maxValue == value
+                    ? null
+                    : () {
+                        onValueChanged(min(value + 1, maxValue));
+                      },
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.plus,
+                  size: iconSizeInlineButtons,
+                  color: textColor,
+                ),
+              ),
+            ),
+        ],
+      );
     default:
       // variant is null or 0
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      return Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "$value / $maxValue",
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 20),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            CustomButtonNewdesign(
+              isSubbutton: true,
+              variant: CustomButtonNewdesignVariant.FlatButton,
+              onPressed: value <= 0
+                  ? null
+                  : () {
+                      onValueChanged(max(0, value - 1));
+                    },
+              icon: CustomFaIcon(
+                icon: FontAwesomeIcons.minus,
+                size: iconSizeInlineButtons,
+                color: darkColor,
+              ),
+            ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            SizedBox(
+              width: 20,
+            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "$value / $maxValue",
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: useNewDesign == true ? darkTextColor : Colors.white,
+                    fontSize: 20),
+              ),
+              Text(
+                statConfiguration.name,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: useNewDesign == true ? darkTextColor : Colors.white,
+                    fontSize: 16),
+              ),
+            ],
           ),
-          Text(
-            statConfiguration.name,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: useNewDesign == true ? darkTextColor : Colors.white,
-                fontSize: 16),
-          ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            SizedBox(
+              width: 20,
+            ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            CustomButtonNewdesign(
+              isSubbutton: true,
+              variant: CustomButtonNewdesignVariant.FlatButton,
+              onPressed: maxValue == value
+                  ? null
+                  : () {
+                      onValueChanged(min(value + 1, maxValue));
+                    },
+              icon: CustomFaIcon(
+                icon: FontAwesomeIcons.plus,
+                size: iconSizeInlineButtons,
+                color: darkColor,
+              ),
+            ),
         ],
       );
   }
