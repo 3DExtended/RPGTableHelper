@@ -12,6 +12,7 @@ import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/fuzzysort.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
+import 'package:rpg_table_helper/helpers/modals/show_recipe_card_details.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -27,22 +28,22 @@ class PlayerScreenRecepies extends ConsumerStatefulWidget {
       _PlayerScreenRecepiesState();
 }
 
-class _CraftingRecipeIngredientPairWithRpgItemDetails {
+class CraftingRecipeIngredientPairWithRpgItemDetails {
   final RpgItem item;
   final int amountOfUsedItem;
 
-  _CraftingRecipeIngredientPairWithRpgItemDetails(
+  CraftingRecipeIngredientPairWithRpgItemDetails(
       {required this.item, required this.amountOfUsedItem});
 }
 
-class _CraftingRecipeWithRpgItemDetails {
+class CraftingRecipeWithRpgItemDetails {
   final String recipeUuid;
   final CraftingRecipe originalRecipe;
-  final List<_CraftingRecipeIngredientPairWithRpgItemDetails> ingredients;
-  final _CraftingRecipeIngredientPairWithRpgItemDetails createdItem;
+  final List<CraftingRecipeIngredientPairWithRpgItemDetails> ingredients;
+  final CraftingRecipeIngredientPairWithRpgItemDetails createdItem;
   final List<RpgItem> requiredItems;
 
-  _CraftingRecipeWithRpgItemDetails(
+  CraftingRecipeWithRpgItemDetails(
       {required this.recipeUuid,
       required this.ingredients,
       required this.originalRecipe,
@@ -61,7 +62,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
       {};
   List<FuzzySearchResult> searchItemFilters = [];
 
-  List<_CraftingRecipeWithRpgItemDetails> _allRecipes = [];
+  List<CraftingRecipeWithRpgItemDetails> _allRecipes = [];
 
   @override
   void initState() {
@@ -327,11 +328,37 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                                   minSize: 0,
                                   padding: EdgeInsets.all(0),
                                   onPressed: () async {
-                                    // TODO make me
-                                    // if (widget.onItemCardPressed != null) {
-                                    //   await widget
-                                    //       .onItemCardPressed!(recipeToRender);
-                                    // }
+                                    await showRecipeCardDetails(context,
+                                            recipe: recipeToRender.recipe,
+                                            rpgConfig: rpgConfig,
+                                            currentInventory:
+                                                rpgCharacterConfig)
+                                        .then((valueToAdjustAmountBy) {
+                                      if (valueToAdjustAmountBy == null) {
+                                        return;
+                                      }
+
+                                      ref
+                                          .read(
+                                              rpgCharacterConfigurationProvider
+                                                  .notifier)
+                                          .grantItems([
+                                        ...valueToAdjustAmountBy.addedItems.map(
+                                          (ai) => RpgCharacterOwnedItemPair(
+                                            itemUuid: ai.itemUuid,
+                                            amount: ai.amountOfUsedItem,
+                                          ),
+                                        ),
+                                        ...valueToAdjustAmountBy.removedItems
+                                            .map(
+                                          (ai) => RpgCharacterOwnedItemPair(
+                                            itemUuid: ai.itemUuid,
+                                            amount: -1 * ai.amountOfUsedItem,
+                                          ),
+                                        ),
+                                      ]);
+                                      setState(() {});
+                                    });
                                   },
                                   child: CustomRecipeCard(
                                     imageUrl: recipeToRender.recipe.createdItem
@@ -467,12 +494,12 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
     return rpgConfig.allItems.singleWhere((it) => it.uuid == id);
   }
 
-  _CraftingRecipeWithRpgItemDetails enrichCraftingRecipe(
+  CraftingRecipeWithRpgItemDetails enrichCraftingRecipe(
       CraftingRecipe r, RpgConfigurationModel rpgConfig) {
-    return _CraftingRecipeWithRpgItemDetails(
+    return CraftingRecipeWithRpgItemDetails(
       originalRecipe: r,
       recipeUuid: r.recipeUuid,
-      createdItem: _CraftingRecipeIngredientPairWithRpgItemDetails(
+      createdItem: CraftingRecipeIngredientPairWithRpgItemDetails(
         item: getItemForId(rpgConfig, r.createdItem.itemUuid),
         amountOfUsedItem: r.createdItem.amountOfUsedItem,
       ),
@@ -480,7 +507,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
           r.requiredItemIds.map((req) => getItemForId(rpgConfig, req)).toList(),
       ingredients: r.ingredients
           .map(
-            (ing) => _CraftingRecipeIngredientPairWithRpgItemDetails(
+            (ing) => CraftingRecipeIngredientPairWithRpgItemDetails(
               item: getItemForId(rpgConfig, ing.itemUuid),
               amountOfUsedItem: ing.amountOfUsedItem,
             ),

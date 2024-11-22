@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,11 +12,15 @@ class CustomIntEditField extends StatefulWidget {
   final void Function(int newValue) onValueChange;
   final String label;
   final int startValue;
+  final int minValue;
+  final int maxValue;
   const CustomIntEditField({
     super.key,
     required this.onValueChange,
     required this.label,
     required this.startValue,
+    this.minValue = -999,
+    this.maxValue = 999,
   });
 
   @override
@@ -51,7 +57,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           variant: CustomButtonNewdesignVariant.DarkButton,
           onPressed: () {
             setState(() {
-              currentValue--;
+              currentValue = max(widget.minValue, currentValue - 1);
               textEditingController.text = currentValue.toString();
             });
 
@@ -80,7 +86,8 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           variant: CustomButtonNewdesignVariant.DarkButton,
           onPressed: () {
             setState(() {
-              currentValue++;
+              currentValue = min(widget.maxValue, currentValue + 1);
+
               textEditingController.text = currentValue.toString();
             });
 
@@ -100,8 +107,10 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
     var tempValue = int.tryParse(textEditingController.text);
     if (tempValue == null) return;
 
+    tempValue = min(widget.maxValue, max(widget.minValue, tempValue));
+
     setState(() {
-      currentValue = tempValue;
+      currentValue = tempValue!;
       widget.onValueChange(currentValue);
     });
   }

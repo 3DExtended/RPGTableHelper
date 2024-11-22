@@ -12,6 +12,8 @@ void main() {
       widgetName: 'CustomIntEditField',
       useMaterialAppWrapper: true,
       screenFactory: (Locale locale) => CustomIntEditField(
+        minValue: -10,
+        maxValue: 10,
         label: "Some Number Field",
         onValueChange: (newValue) {},
         startValue: 17,

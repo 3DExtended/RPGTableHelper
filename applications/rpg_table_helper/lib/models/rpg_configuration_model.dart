@@ -32,6 +32,10 @@ class RpgConfigurationModel {
 
   Map<String, dynamic> toJson() => _$RpgConfigurationModelToJson(this);
 
+  RpgItem getItemForId(String id) {
+    return allItems.singleWhere((it) => it.uuid == id);
+  }
+
   static RpgConfigurationModel getBaseConfiguration() => RpgConfigurationModel(
         rpgName: "Maries Kampagne",
         currencyDefinition: CurrencyDefinition(

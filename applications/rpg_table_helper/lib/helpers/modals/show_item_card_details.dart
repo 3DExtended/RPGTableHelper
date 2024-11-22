@@ -21,7 +21,6 @@ Future<int?> showItemCardDetails(BuildContext context,
     required RpgConfigurationModel rpgConfig,
     required int? currentlyOwned, // null if not relevant.
     GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
-  // show error to user
   return await customShowCupertinoModalBottomSheet<int>(
       isDismissible: true,
       expand: true,
@@ -210,6 +209,8 @@ class _ItemCardDetailsModalContentState
                       height: 20,
                     ),
                     CustomIntEditField(
+                      minValue: -999,
+                      maxValue: 999,
                       onValueChange: (newValue) {
                         setState(() {
                           currentlyOwned = newValue;

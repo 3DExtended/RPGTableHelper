@@ -640,6 +640,8 @@ class _ShowGetPlayerConfigurationModalContentState
                                             MainAxisAlignment.start,
                                         children: [
                                           CustomIntEditField(
+                                            minValue: 0,
+                                            maxValue: 10,
                                             onValueChange: (newValue) {
                                               setState(() {
                                                 var deepCopy = [

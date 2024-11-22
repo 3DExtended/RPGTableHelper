@@ -382,6 +382,8 @@ class _ItemCardRenderingWithFilteringState
                                   widget.onEditItemAmount!(
                                       itemToRender.value.item.uuid, newValue);
                                 },
+                                minValue: 0,
+                                maxValue: 999,
                                 label: "Hinzufügen",
                                 startValue: itemToRender.value.amount,
                               ),
