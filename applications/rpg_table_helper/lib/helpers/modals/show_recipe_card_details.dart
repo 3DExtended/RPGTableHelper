@@ -153,7 +153,7 @@ class _RecipeCardDetailsModalContentState
                               ],
                             )),
                             SizedBox(
-                              width: 10,
+                              width: 20,
                             ),
                             Expanded(
                               flex: 2,
@@ -204,13 +204,13 @@ class _RecipeCardDetailsModalContentState
                                       areRecipeRequirementsMet()
                                           ? CustomFaIcon(
                                               icon: FontAwesomeIcons.check,
-                                              color: darkColor,
-                                              size: 16,
+                                              color: darkGreen,
+                                              size: 18,
                                             )
                                           : CustomFaIcon(
                                               icon: FontAwesomeIcons.xmark,
-                                              color: darkColor,
-                                              size: 16,
+                                              color: darkRed,
+                                              size: 18,
                                             ),
                                       Text(
                                         widget.recipe.requiredItems
@@ -247,14 +247,14 @@ class _RecipeCardDetailsModalContentState
                                                     ? CustomFaIcon(
                                                         icon: FontAwesomeIcons
                                                             .check,
-                                                        color: darkColor,
-                                                        size: 16,
+                                                        color: darkGreen,
+                                                        size: 18,
                                                       )
                                                     : CustomFaIcon(
                                                         icon: FontAwesomeIcons
                                                             .xmark,
-                                                        color: darkColor,
-                                                        size: 16,
+                                                        color: darkRed,
+                                                        size: 18,
                                                       ),
                                                 Expanded(
                                                   child: Text(
@@ -325,6 +325,7 @@ class _RecipeCardDetailsModalContentState
                           ),
                           const Spacer(),
                           CustomButtonNewdesign(
+                            variant: CustomButtonNewdesignVariant.AccentButton,
                             label: "Herstellen", // TODO localize
                             onPressed: isCraftButtonDisabled()
                                 ? null

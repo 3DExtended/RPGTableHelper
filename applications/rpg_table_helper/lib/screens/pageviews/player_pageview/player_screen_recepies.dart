@@ -186,6 +186,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                   child: Row(
                     children: [
                       CategoryFilterButton(
+                          withoutLeadingPadding: true,
                           isSelected: showOnlyCraftableItems,
                           categoryForFilter: ItemCategory(
                             colorCode: null,
@@ -523,8 +524,10 @@ class CategoryFilterButton extends StatelessWidget {
     required this.isSelected,
     required this.categoryForFilter,
     required this.onpressedHandler,
+    this.withoutLeadingPadding,
   });
 
+  final bool? withoutLeadingPadding;
   final bool isSelected;
   final ItemCategory categoryForFilter;
   final Null Function() onpressedHandler;
@@ -532,7 +535,8 @@ class CategoryFilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 12, left: 12),
+      padding: EdgeInsets.only(
+          right: 12, left: withoutLeadingPadding == true ? 0 : 12),
       child: CustomButtonNewdesign(
         variant: isSelected
             ? CustomButtonNewdesignVariant.DarkButton
