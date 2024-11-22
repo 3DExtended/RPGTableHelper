@@ -47,6 +47,7 @@ void main() {
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
             hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
             variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
@@ -71,6 +72,7 @@ void main() {
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
             hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
             variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
@@ -109,6 +111,7 @@ void main() {
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
             hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
             variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
@@ -159,6 +162,7 @@ void main() {
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
             hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
             variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',

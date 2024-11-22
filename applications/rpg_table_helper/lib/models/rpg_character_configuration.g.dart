@@ -243,6 +243,8 @@ abstract class _$RpgCharacterStatValueCWProxy {
 
   RpgCharacterStatValue variant(int? variant);
 
+  RpgCharacterStatValue hideLabelOfStat(bool? hideLabelOfStat);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterStatValue(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -254,6 +256,7 @@ abstract class _$RpgCharacterStatValueCWProxy {
     String? serializedValue,
     bool? hideFromCharacterScreen,
     int? variant,
+    bool? hideLabelOfStat,
   });
 }
 
@@ -280,6 +283,10 @@ class _$RpgCharacterStatValueCWProxyImpl
   RpgCharacterStatValue variant(int? variant) => this(variant: variant);
 
   @override
+  RpgCharacterStatValue hideLabelOfStat(bool? hideLabelOfStat) =>
+      this(hideLabelOfStat: hideLabelOfStat);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterStatValue(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -292,6 +299,7 @@ class _$RpgCharacterStatValueCWProxyImpl
     Object? serializedValue = const $CopyWithPlaceholder(),
     Object? hideFromCharacterScreen = const $CopyWithPlaceholder(),
     Object? variant = const $CopyWithPlaceholder(),
+    Object? hideLabelOfStat = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterStatValue(
       statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
@@ -312,6 +320,10 @@ class _$RpgCharacterStatValueCWProxyImpl
           ? _value.variant
           // ignore: cast_nullable_to_non_nullable
           : variant as int?,
+      hideLabelOfStat: hideLabelOfStat == const $CopyWithPlaceholder()
+          ? _value.hideLabelOfStat
+          // ignore: cast_nullable_to_non_nullable
+          : hideLabelOfStat as bool?,
     );
   }
 }
@@ -453,6 +465,7 @@ RpgCharacterStatValue _$RpgCharacterStatValueFromJson(
       serializedValue: json['serializedValue'] as String,
       hideFromCharacterScreen: json['hideFromCharacterScreen'] as bool?,
       variant: (json['variant'] as num?)?.toInt(),
+      hideLabelOfStat: json['hideLabelOfStat'] as bool?,
     );
 
 Map<String, dynamic> _$RpgCharacterStatValueToJson(
@@ -461,6 +474,7 @@ Map<String, dynamic> _$RpgCharacterStatValueToJson(
       'statUuid': instance.statUuid,
       'serializedValue': instance.serializedValue,
       'hideFromCharacterScreen': instance.hideFromCharacterScreen,
+      'hideLabelOfStat': instance.hideLabelOfStat,
       'variant': instance.variant,
     };
 

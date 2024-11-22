@@ -79,8 +79,8 @@ class _ShowGetPlayerConfigurationModalContentState
   int? selectedGeneratedImageIndex;
   bool isLoadingNewImage = false;
 
-  // TODO make this configurable
   bool hideStatFromCharacterScreens = false;
+  bool hideLabelOfStat = false;
 
   List<
       (
@@ -290,6 +290,7 @@ class _ShowGetPlayerConfigurationModalContentState
     setState(() {
       hideStatFromCharacterScreens =
           widget.characterValue?.hideFromCharacterScreen ?? false;
+      hideLabelOfStat = widget.characterValue?.hideLabelOfStat ?? false;
     });
 
     if (widget.statConfiguration.valueType ==
@@ -1036,6 +1037,21 @@ class _ShowGetPlayerConfigurationModalContentState
               ),
             ],
           ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: SelectableTile(
+                    onValueChange: () {
+                      setState(() {
+                        hideLabelOfStat = !hideLabelOfStat;
+                      });
+                    },
+                    isSet: hideLabelOfStat,
+                    label: "Verstecke Überschrift"),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -1058,6 +1074,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultTextValue =
             textEditController.text.isEmpty ? "" : textEditController.text;
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
@@ -1067,6 +1084,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultTextValue =
             textEditController.text.isEmpty ? "" : textEditController.text;
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
@@ -1082,6 +1100,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultIntValue =
             int.tryParse(textEditController.text) ?? 0;
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultIntValue}),
@@ -1093,6 +1112,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultMaxIntValue =
             int.tryParse(textEditController2.text) ?? 0;
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
@@ -1108,6 +1128,7 @@ class _ShowGetPlayerConfigurationModalContentState
         var currentOrDefaultOtherIntValue =
             int.tryParse(textEditController2.text) ?? 0;
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
@@ -1124,6 +1145,7 @@ class _ShowGetPlayerConfigurationModalContentState
             .expand((i) => i)
             .toList();
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
@@ -1145,6 +1167,7 @@ class _ShowGetPlayerConfigurationModalContentState
                 .toList();
 
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
@@ -1167,6 +1190,7 @@ class _ShowGetPlayerConfigurationModalContentState
                     })
                 .toList();
         return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({
@@ -1194,6 +1218,7 @@ class _ShowGetPlayerConfigurationModalContentState
 
         return RpgCharacterStatValue(
           hideFromCharacterScreen: hideStatFromCharacterScreens,
+          hideLabelOfStat: hideLabelOfStat,
           variant: 0,
           serializedValue: jsonEncode({
             "level":

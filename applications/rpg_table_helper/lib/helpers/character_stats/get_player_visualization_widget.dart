@@ -733,15 +733,17 @@ Column renderTextStat(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     children: [
-      Text(
-        statConfiguration.name,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: useNewDesign == true ? darkTextColor : Colors.white,
-            fontSize: 20),
-      ),
-      SizedBox(
-        height: 10,
-      ),
+      if (characterValue.hideLabelOfStat != true)
+        Text(
+          statConfiguration.name,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: useNewDesign == true ? darkTextColor : Colors.white,
+              fontSize: 20),
+        ),
+      if (characterValue.hideLabelOfStat != true)
+        SizedBox(
+          height: 10,
+        ),
       CustomMarkdownBody(
         isNewDesign: useNewDesign,
         text: jsonDecode(characterValue.serializedValue)["value"].toString(),

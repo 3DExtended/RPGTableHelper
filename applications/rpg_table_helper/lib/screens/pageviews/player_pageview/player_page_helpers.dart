@@ -31,6 +31,7 @@ class PlayerPageHelpers {
         characterValue: currentCharacterName == null
             ? null
             : RpgCharacterStatValue(
+                hideLabelOfStat: false,
                 hideFromCharacterScreen: false,
                 statUuid: characterNameStat.statUuid,
                 serializedValue: '{"value": "$currentCharacterName"}',

@@ -33,6 +33,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "057ab833-ce74-4feb-9b0d-4f53a83b3c21",
       serializedValue:
@@ -54,6 +55,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "1aa3ef8a-6b18-4131-8b43-810dcceba9a5",
       serializedValue: '{"value": "Peter"}',
@@ -75,6 +77,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
@@ -96,6 +99,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17}',
@@ -116,6 +120,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "maxValue": 23}',
@@ -136,6 +141,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "otherValue": 2}',
@@ -156,6 +162,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "1b3b65c3-b58f-4b00-8616-c229b103c311",
       serializedValue:
@@ -178,6 +185,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
@@ -201,6 +209,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
@@ -223,6 +232,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
@@ -245,6 +255,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
@@ -267,6 +278,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "2cd0b55d-d1b4-4817-9a21-1b4a46de0962",
       serializedValue:
@@ -288,6 +300,7 @@ List<
     ),
     RpgCharacterStatValue(
       hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
       variant: null,
       statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
       serializedValue: '{"value": 17, "maxValue": 23}',

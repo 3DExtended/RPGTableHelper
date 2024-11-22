@@ -128,6 +128,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.int:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17}',
@@ -135,6 +136,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.intWithMaxValue:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17, "maxValue": 21}',
@@ -142,6 +144,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.listOfIntWithCalculatedValues:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"values": []}',
@@ -149,6 +152,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.intWithCalculatedValue:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"value": 17, "otherValue": 2}',
@@ -156,6 +160,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.multiLineText:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue:
@@ -164,6 +169,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.singleImage:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue:
@@ -172,6 +178,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.singleLineText:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue:
@@ -180,6 +187,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       case CharacterStatValueType.multiselect:
                         return RpgCharacterStatValue(
                           hideFromCharacterScreen: false,
+                          hideLabelOfStat: false,
                           variant: null,
                           statUuid: stat.statUuid,
                           serializedValue: '{"values": []}',
@@ -205,6 +213,7 @@ class RpgCharacterStatValue {
   final String statUuid;
   final String serializedValue;
   final bool? hideFromCharacterScreen;
+  final bool? hideLabelOfStat;
   final int? variant;
 
   factory RpgCharacterStatValue.fromJson(Map<String, dynamic> json) =>
@@ -215,6 +224,7 @@ class RpgCharacterStatValue {
     required this.serializedValue,
     required this.hideFromCharacterScreen,
     required this.variant,
+    required this.hideLabelOfStat,
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterStatValueToJson(this);
