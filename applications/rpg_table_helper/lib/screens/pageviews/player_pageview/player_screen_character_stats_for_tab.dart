@@ -90,6 +90,10 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
       result.add(SizedBox(
           width: columnWidth,
           child: getPlayerVisualizationWidget(
+              characterToRenderStatFor: charToRender != null &&
+                      charToRender is RpgCharacterConfiguration
+                  ? charToRender as RpgCharacterConfiguration
+                  : null,
               onNewStatValue: (newSerializedValue) {
                 var updatedStatValue = matchingPlayerCharacterStat.copyWith(
                     serializedValue: newSerializedValue);

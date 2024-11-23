@@ -24,6 +24,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
+    case CharacterStatValueType.companionSelector:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return 1;
@@ -43,6 +44,7 @@ Widget getPlayerVisualizationWidget({
   required String characterName,
   required void Function(String newSerializedValue) onNewStatValue,
   bool useNewDesign = false,
+  required RpgCharacterConfiguration? characterToRenderStatFor,
 }) {
   switch (statConfiguration.valueType) {
     case CharacterStatValueType.multiLineText:
@@ -91,7 +93,7 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.multiselect:
       return renderMultiselectStat(onNewStatValue, characterValue, context,
           useNewDesign, statConfiguration, characterName);
-
+    case CharacterStatValueType.companionSelector: // TODO make me
     default:
       return Container(
         height: 50,

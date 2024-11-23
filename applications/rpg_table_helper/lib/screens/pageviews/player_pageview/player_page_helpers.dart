@@ -27,6 +27,7 @@ class PlayerPageHelpers {
     var result = await showGetPlayerConfigurationModal(
         context: context,
         statConfiguration: characterNameStat,
+        characterToRenderStatFor: null,
         characterName: currentCharacterName ?? "Player Name",
         characterValue: currentCharacterName == null
             ? null
@@ -95,6 +96,10 @@ class PlayerPageHelpers {
               .firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
 
           var modalResult = await showGetPlayerConfigurationModal(
+            characterToRenderStatFor:
+                selectedCharacter is RpgCharacterConfiguration
+                    ? selectedCharacter
+                    : null,
             context: context,
             statConfiguration: statToFill,
             characterValue: possiblyFilledStat,

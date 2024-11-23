@@ -325,6 +325,7 @@ class _ShowGetDmConfigurationModalContentState
                         value: e.name,
                         child: Text("Generiertes Bild"), // TODO localize
                       );
+
                     case CharacterStatValueType.multiLineText:
                       return DropdownMenuItem<String?>(
                         value: e.name,
@@ -377,6 +378,11 @@ class _ShowGetDmConfigurationModalContentState
                       return DropdownMenuItem<String?>(
                         value: e.name,
                         child: Text("Mehrfach-Auswahl"), // TODO localize
+                      );
+                    case CharacterStatValueType.companionSelector:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text("Begleiter Übersicht"), // TODO localize
                       );
                   }
                 }).toList(),

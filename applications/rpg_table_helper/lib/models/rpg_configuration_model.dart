@@ -854,6 +854,9 @@ enum CharacterStatValueType {
   // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP", "iconName": "asdf"}]}
   // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12,}]}
   listOfIntsWithIcons,
+
+  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheCompanionCharacter"}]}
+  companionSelector,
 }
 
 @JsonSerializable()

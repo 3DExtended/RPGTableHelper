@@ -304,6 +304,12 @@ class _CharacterScreenPlayerContentState
 
                             var child = getPlayerVisualizationWidget(
                                 context: context,
+                                characterToRenderStatFor:
+                                    charToRender != null &&
+                                            charToRender
+                                                is RpgCharacterConfiguration
+                                        ? charToRender
+                                        : null,
                                 characterName: charToRender?.characterName ??
                                     "Charakter Name",
                                 statConfiguration: statInTab.value,
@@ -402,13 +408,18 @@ class _CharacterScreenPlayerContentState
         // TODO show modal asking the user if they want to configure their character now or later
 
         List<RpgCharacterStatValue> updatedCharacterStats = [];
-        var characterName = getSelectedCharacterBase()?.characterName;
+        var selectedCharacterBase = getSelectedCharacterBase();
+        var characterName = selectedCharacterBase?.characterName;
         for (var statToFill in anyStatNotFilledYet) {
           // check if the user already configured some stats
           var possiblyFilledStat = selectedCharacterStats
               ?.firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
 
           var modalResult = await showGetPlayerConfigurationModal(
+            characterToRenderStatFor: selectedCharacterBase != null &&
+                    selectedCharacterBase is RpgCharacterConfiguration
+                ? selectedCharacterBase
+                : null,
             context: context,
             statConfiguration: statToFill,
             characterValue: possiblyFilledStat,

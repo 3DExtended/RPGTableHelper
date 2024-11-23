@@ -113,90 +113,17 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
           RpgConfigurationModel? rpgConfig) =>
       RpgCharacterConfiguration(
         activeAlternateFormIndex: null,
-        companionCharacters: [],
+        companionCharacters: [
+          RpgAlternateCharacterConfiguration(
+            uuid: "f6af1852-e928-4a4f-8d07-93ce87b879e8",
+            characterName: "Lucky",
+            characterStats: getDefaultStats(rpgConfig, true),
+          ),
+        ],
         alternateForms: [],
         uuid: const UuidV7().generate(),
         characterName: "Gandalf",
-        characterStats:
-            rpgConfig == null || rpgConfig.characterStatTabsDefinition == null
-                ? []
-                : rpgConfig.characterStatTabsDefinition!
-                    .firstWhere((t) => t.isDefaultTab == true)
-                    .statsInTab
-                    .map((stat) {
-                    switch (stat.valueType) {
-                      case CharacterStatValueType.int:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue: '{"value": 17}',
-                        );
-                      case CharacterStatValueType.intWithMaxValue:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue: '{"value": 17, "maxValue": 21}',
-                        );
-                      case CharacterStatValueType.listOfIntWithCalculatedValues:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue: '{"values": []}',
-                        );
-                      case CharacterStatValueType.intWithCalculatedValue:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue: '{"value": 17, "otherValue": 2}',
-                        );
-                      case CharacterStatValueType.multiLineText:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue:
-                              '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
-                        );
-                      case CharacterStatValueType.singleImage:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue:
-                              '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/charactercard_placeholder.png"}',
-                        );
-                      case CharacterStatValueType.singleLineText:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue:
-                              '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr."}',
-                        );
-                      case CharacterStatValueType.multiselect:
-                        return RpgCharacterStatValue(
-                          hideFromCharacterScreen: false,
-                          hideLabelOfStat: false,
-                          variant: null,
-                          statUuid: stat.statUuid,
-                          serializedValue: '{"values": []}',
-                        );
-
-                      default:
-                        throw NotImplementedException();
-                    }
-                  }).toList(),
+        characterStats: getDefaultStats(rpgConfig, false),
         inventory: [
           RpgCharacterOwnedItemPair(
               itemUuid: "a7537746-260d-4aed-b182-26768a9c2d51", amount: 2),
@@ -205,6 +132,92 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
         ],
         moneyInBaseType: 23456,
       );
+
+  static List<RpgCharacterStatValue> getDefaultStats(
+      RpgConfigurationModel? rpgConfig, bool filterForCompanionStats) {
+    return rpgConfig == null || rpgConfig.characterStatTabsDefinition == null
+        ? []
+        : rpgConfig.characterStatTabsDefinition!
+            .firstWhere((t) => t.isDefaultTab == true)
+            .statsInTab
+            .where((s) =>
+                filterForCompanionStats == false ||
+                s.isOptionalForAlternateForms != true)
+            .map((stat) {
+            switch (stat.valueType) {
+              case CharacterStatValueType.int:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"value": 17}',
+                );
+              case CharacterStatValueType.intWithMaxValue:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"value": 17, "maxValue": 21}',
+                );
+              case CharacterStatValueType.listOfIntWithCalculatedValues:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"values": []}',
+                );
+              case CharacterStatValueType.intWithCalculatedValue:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"value": 17, "otherValue": 2}',
+                );
+              case CharacterStatValueType.multiLineText:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue:
+                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum.\\nStet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}',
+                );
+              case CharacterStatValueType.singleImage:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue:
+                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/charactercard_placeholder.png"}',
+                );
+              case CharacterStatValueType.singleLineText:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue:
+                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr."}',
+                );
+              case CharacterStatValueType.multiselect:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"values": []}',
+                );
+
+              default:
+                throw NotImplementedException();
+            }
+          }).toList();
+  }
 }
 
 @JsonSerializable()

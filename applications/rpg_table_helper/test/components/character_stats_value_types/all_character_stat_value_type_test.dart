@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -306,6 +309,28 @@ List<
       serializedValue: '{"value": 17, "maxValue": 23}',
     )
   ),
+  (
+    "companionSelector, static",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.companionSelector,
+      editType: CharacterStatEditType.static,
+      name: "HP",
+      statUuid: "e60fa814-80ff-4e1a-bb66-10b8a3235c7a",
+      helperText: "How many health points do you have?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
+      variant: null,
+      statUuid: "e60fa814-80ff-4e1a-bb66-10b8a3235c7a",
+      serializedValue:
+          '{"values": [{"uuid":"${RpgCharacterConfiguration.getBaseConfiguration(null).companionCharacters!.first.uuid}"}]}',
+    )
+  ),
 ];
 
 void main() {
@@ -343,35 +368,57 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              fontFamily: 'Roboto',
-              useMaterial3: true,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
+        screenFactory: (Locale locale) => ProviderScope(
+          overrides: [
+            rpgCharacterConfigurationProvider.overrideWith((ref) {
+              return RpgCharacterConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgCharacterConfiguration.getBaseConfiguration(null),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+            rpgConfigurationProvider.overrideWith((ref) {
+              return RpgConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgConfigurationModel.getBaseConfiguration(),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+          ],
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Roboto',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-            ),
-            home: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () async {
-                      await showGetDmConfigurationModal(
-                          context: context,
-                          predefinedConfiguration: testConfiguration.$2,
-                          overrideNavigatorKey: navigatorKey);
-                    },
-                    child: const Text("Click me"));
-              }),
-            )),
+              home: Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: Builder(builder: (context) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        await showGetDmConfigurationModal(
+                            context: context,
+                            predefinedConfiguration: testConfiguration.$2,
+                            overrideNavigatorKey: navigatorKey);
+                      },
+                      child: const Text("Click me"));
+                }),
+              )),
+        ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
             'default',
@@ -397,37 +444,63 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              fontFamily: 'Roboto',
-              useMaterial3: true,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
+        screenFactory: (Locale locale) => ProviderScope(
+          overrides: [
+            rpgCharacterConfigurationProvider.overrideWith((ref) {
+              return RpgCharacterConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgCharacterConfiguration.getBaseConfiguration(null),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+            rpgConfigurationProvider.overrideWith((ref) {
+              return RpgConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgConfigurationModel.getBaseConfiguration(),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+          ],
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Roboto',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-            ),
-            home: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () async {
-                      await showGetPlayerConfigurationModal(
-                          context: context,
-                          statConfiguration: testConfiguration.$2,
-                          characterValue: testConfiguration.$3,
-                          characterName: "Frodo",
-                          overrideNavigatorKey: navigatorKey);
-                    },
-                    child: const Text("Click me"));
-              }),
-            )),
+              home: Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: Builder(builder: (context) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        await showGetPlayerConfigurationModal(
+                            characterToRenderStatFor:
+                                RpgCharacterConfiguration.getBaseConfiguration(
+                                    RpgConfigurationModel
+                                        .getBaseConfiguration()),
+                            context: context,
+                            statConfiguration: testConfiguration.$2,
+                            characterValue: testConfiguration.$3,
+                            characterName: "Frodo",
+                            overrideNavigatorKey: navigatorKey);
+                      },
+                      child: const Text("Click me"));
+                }),
+              )),
+        ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
             'default',
@@ -453,37 +526,63 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              fontFamily: 'Roboto',
-              useMaterial3: true,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
+        screenFactory: (Locale locale) => ProviderScope(
+          overrides: [
+            rpgCharacterConfigurationProvider.overrideWith((ref) {
+              return RpgCharacterConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgCharacterConfiguration.getBaseConfiguration(null),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+            rpgConfigurationProvider.overrideWith((ref) {
+              return RpgConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgConfigurationModel.getBaseConfiguration(),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+          ],
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Roboto',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-            ),
-            home: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () async {
-                      await showGetPlayerConfigurationModal(
-                          context: context,
-                          statConfiguration: testConfiguration.$2,
-                          characterValue: null,
-                          characterName: "Frodo",
-                          overrideNavigatorKey: navigatorKey);
-                    },
-                    child: const Text("Click me"));
-              }),
-            )),
+              home: Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: Builder(builder: (context) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        await showGetPlayerConfigurationModal(
+                            characterToRenderStatFor:
+                                RpgCharacterConfiguration.getBaseConfiguration(
+                                    RpgConfigurationModel
+                                        .getBaseConfiguration()),
+                            context: context,
+                            statConfiguration: testConfiguration.$2,
+                            characterValue: null,
+                            characterName: "Frodo",
+                            overrideNavigatorKey: navigatorKey);
+                      },
+                      child: const Text("Click me"));
+                }),
+              )),
+        ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
             'default',
@@ -505,6 +604,9 @@ void main() {
           child: Builder(builder: (context) {
             return Center(
               child: getPlayerVisualizationWidget(
+                characterToRenderStatFor:
+                    RpgCharacterConfiguration.getBaseConfiguration(
+                        RpgConfigurationModel.getBaseConfiguration()),
                 context: context,
                 onNewStatValue: (newSerializedValue) {},
                 statConfiguration: testConfiguration.$2,

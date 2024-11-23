@@ -568,6 +568,8 @@ extension on CharacterStatValueType {
         return "Einzeiliger Text";
       case CharacterStatValueType.multiselect:
         return "Mehrfach-Auswahl";
+      case CharacterStatValueType.companionSelector:
+        return "Begleiter Übersicht";
     }
   }
 }

@@ -20,16 +20,19 @@ import 'package:rpg_table_helper/helpers/character_stats/get_player_visualizatio
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/image_generation_service.dart';
+import 'package:uuid/v7.dart';
 
 Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   required BuildContext context,
   required CharacterStatDefinition statConfiguration,
   required String characterName,
+  required RpgCharacterConfiguration? characterToRenderStatFor,
   RpgCharacterStatValue? characterValue,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
 }) async {
@@ -47,6 +50,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
           characterValue: characterValue,
           overrideNavigatorKey: overrideNavigatorKey,
           characterName: characterName,
+          characterToRenderStatFor: characterToRenderStatFor,
         );
       });
 }
@@ -56,11 +60,13 @@ class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
     super.key,
     required this.statConfiguration,
     required this.characterName,
+    required this.characterToRenderStatFor,
     this.characterValue,
     this.overrideNavigatorKey,
   });
 
   final String characterName;
+  final RpgCharacterConfiguration? characterToRenderStatFor;
   final CharacterStatDefinition statConfiguration;
   final RpgCharacterStatValue? characterValue;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
@@ -76,6 +82,7 @@ class _ShowGetPlayerConfigurationModalContentState
   var textEditController2 = TextEditingController();
 
   List<String> urlsOfGeneratedImages = [];
+  List<String> selectedCompanions = [];
   int? selectedGeneratedImageIndex;
   bool isLoadingNewImage = false;
 
@@ -219,6 +226,25 @@ class _ShowGetPlayerConfigurationModalContentState
     }
 
     if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.companionSelector) {
+      List<String> previouslySelectedCompanions = [];
+      if (widget.characterValue?.serializedValue != null) {
+        // => characterValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+        Map<String, dynamic> tempDecode =
+            jsonDecode(widget.characterValue!.serializedValue);
+
+        previouslySelectedCompanions = (tempDecode["values"] as List<dynamic>)
+            .map((e) => e as Map<String, dynamic>)
+            .map(
+              (e) => e["uuid"] as String,
+            )
+            .toList();
+      }
+
+      selectedCompanions = previouslySelectedCompanions;
+    }
+
+    if (widget.statConfiguration.valueType ==
             CharacterStatValueType.characterNameWithLevelAndAdditionalDetails ||
         widget.statConfiguration.valueType ==
             CharacterStatValueType.listOfIntsWithIcons) {
@@ -354,565 +380,34 @@ class _ShowGetPlayerConfigurationModalContentState
             Builder(builder: (context) {
               switch (widget.statConfiguration.valueType) {
                 case CharacterStatValueType.singleImage:
-                  // characterValue.serializedValue = {"imageUrl": "someUrl", "value": "some text"}
-
-                  return Column(
-                    children: [
-                      CustomTextField(
-                        newDesign: true,
-                        labelText: widget.statConfiguration.name,
-                        placeholderText: widget.statConfiguration.helperText,
-                        textEditingController: textEditController,
-                        keyboardType: TextInputType.multiline,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ConstrainedBox(
-                        constraints:
-                            BoxConstraints(maxHeight: 300, maxWidth: 300),
-                        child: Builder(builder: (context) {
-                          var imageUrl = urlsOfGeneratedImages.isEmpty
-                              ? null
-                              : urlsOfGeneratedImages[
-                                  selectedGeneratedImageIndex ?? 0];
-
-                          var fullImageUrl = imageUrl == null
-                              ? "assets/images/charactercard_placeholder.png"
-                              : (imageUrl.startsWith("assets")
-                                      ? imageUrl
-                                      : (apiBaseUrl +
-                                          (imageUrl.startsWith("/")
-                                              ? imageUrl.substring(1)
-                                              : imageUrl))) ??
-                                  "assets/images/charactercard_placeholder.png";
-
-                          return BorderedImage(
-                            lightColor: darkColor,
-                            backgroundColor: bgColor,
-                            imageUrl: fullImageUrl,
-                            greyscale: false,
-                            isLoadingNewImage: isLoadingNewImage,
-                            withoutPadding: true,
-                          );
-                        }),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Spacer(),
-                          Spacer(),
-                          CustomButtonNewdesign(
-                              variant: CustomButtonNewdesignVariant.FlatButton,
-                              icon: CustomFaIcon(
-                                icon: FontAwesomeIcons.chevronLeft,
-                                color:
-                                    isShowPreviousGeneratedImageButtonDisabled
-                                        ? middleBgColor
-                                        : darkColor,
-                              ),
-                              onPressed:
-                                  isShowPreviousGeneratedImageButtonDisabled
-                                      ? null
-                                      : () {
-                                          setState(() {
-                                            if (selectedGeneratedImageIndex !=
-                                                null) {
-                                              selectedGeneratedImageIndex = max(
-                                                  selectedGeneratedImageIndex! -
-                                                      1,
-                                                  0);
-                                            }
-                                          });
-                                        }),
-                          Spacer(),
-                          CupertinoButton(
-                            onPressed: isLoadingNewImage == true
-                                ? null
-                                : () async {
-                                    if (textEditController.text == "" ||
-                                        textEditController.text.length < 5) {
-                                      return;
-                                    }
-
-                                    var connectionDetails = ref
-                                        .read(connectionDetailsProvider)
-                                        .requireValue;
-                                    var campagneId =
-                                        connectionDetails.campagneId;
-                                    if (campagneId == null) return;
-
-                                    setState(() {
-                                      isLoadingNewImage = true;
-                                    });
-
-                                    var service = DependencyProvider.of(context)
-                                        .getService<IImageGenerationService>();
-
-                                    var generationResult =
-                                        await service.createNewImageAndGetUrl(
-                                      prompt: textEditController.text,
-                                      campagneId: CampagneIdentifier(
-                                          $value: campagneId),
-                                    );
-
-                                    if (!context.mounted) return;
-                                    await generationResult
-                                        .possiblyHandleError(context);
-                                    if (!context.mounted) return;
-
-                                    if (generationResult.isSuccessful &&
-                                        generationResult.result != null) {
-                                      setState(() {
-                                        urlsOfGeneratedImages
-                                            .add(generationResult.result!);
-                                        selectedGeneratedImageIndex =
-                                            urlsOfGeneratedImages.length - 1;
-                                      });
-                                    }
-                                    setState(() {
-                                      isLoadingNewImage = false;
-                                    });
-                                  },
-                            minSize: 0,
-                            padding: EdgeInsets.all(0),
-                            child: Text(
-                              "Neues Bild",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                    color: isLoadingNewImage
-                                        ? middleBgColor
-                                        : accentColor,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: isLoadingNewImage
-                                        ? middleBgColor
-                                        : accentColor,
-                                    fontSize: 16,
-                                  ),
-                            ),
-                          ),
-                          Spacer(),
-                          CustomButtonNewdesign(
-                              variant: CustomButtonNewdesignVariant.FlatButton,
-                              icon: CustomFaIcon(
-                                icon: FontAwesomeIcons.chevronRight,
-                                color: isShowNextGeneratedButtonDisabled
-                                    ? middleBgColor
-                                    : darkColor,
-                              ),
-                              onPressed: isShowNextGeneratedButtonDisabled
-                                  ? null
-                                  : () {
-                                      setState(() {
-                                        if (selectedGeneratedImageIndex !=
-                                            null) {
-                                          selectedGeneratedImageIndex = min(
-                                              selectedGeneratedImageIndex! + 1,
-                                              urlsOfGeneratedImages.length - 1);
-                                        }
-                                      });
-                                    }),
-                          Spacer(),
-                          Spacer(),
-                        ],
-                      ),
-                    ],
-                  );
+                  return getConfigurationWidgetsForSingleImage(context);
 
                 case CharacterStatValueType.singleLineText:
                 case CharacterStatValueType.multiLineText:
-                  // characterValue.serializedValue = {"value": "asdf"}
+                  return getConfigurationWidgetsForTextBlock();
 
-                  return CustomTextField(
-                    newDesign: true,
-                    labelText: widget.statConfiguration.name,
-                    placeholderText: widget.statConfiguration.helperText,
-                    textEditingController: textEditController,
-                    keyboardType: widget.statConfiguration.valueType ==
-                            CharacterStatValueType.multiLineText
-                        ? TextInputType.multiline
-                        : TextInputType.text,
-                  );
                 case CharacterStatValueType.int:
-                  // characterValue.serializedValue = {"value": 17}
-
-                  return Column(
-                    children: [
-                      CustomTextField(
-                        newDesign: true,
-                        labelText: widget.statConfiguration.name,
-                        placeholderText: widget.statConfiguration.helperText,
-                        textEditingController: textEditController,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ],
-                  );
+                  return getConfigurationWidgetsForInt();
 
                 case CharacterStatValueType.multiselect:
-                  // characterValue.serializedValue = {"values": ["DEX", "WIS"]}
-                  var statTitle = widget.statConfiguration.name;
-                  var statDescription = widget.statConfiguration.helperText;
-
-                  var multiselectIsAllowedToBeSelectedMultipleTimes = widget
-                                  .statConfiguration
-                                  .jsonSerializedAdditionalData ==
-                              null ||
-                          widget.statConfiguration.jsonSerializedAdditionalData
-                                  ?.startsWith("[") ==
-                              true
-                      ? false
-                      : ((jsonDecode(widget.statConfiguration
-                                      .jsonSerializedAdditionalData!)
-                                  as Map<String, dynamic>)[
-                              "multiselectIsAllowedToBeSelectedMultipleTimes"] ??
-                          false);
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlayerConfigModalNonDefaultTitleAndHelperText(
-                          statTitle: statTitle,
-                          statDescription: statDescription),
-                      ...multiselectOptions
-                          .asMap()
-                          .entries
-                          .sortedBy((e) => e.value.$1)
-                          .map(
-                            (e) =>
-                                multiselectIsAllowedToBeSelectedMultipleTimes ==
-                                        false
-                                    ? CheckboxListTile.adaptive(
-                                        controlAffinity:
-                                            ListTileControlAffinity.leading,
-                                        contentPadding: EdgeInsets.all(0),
-                                        splashRadius: 0,
-                                        dense: true,
-                                        checkColor: const Color.fromARGB(
-                                            255, 57, 245, 88),
-                                        activeColor: darkColor,
-                                        visualDensity:
-                                            VisualDensity(vertical: -2),
-                                        title: Text(
-                                          e.value.$1,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .copyWith(
-                                                  color: darkTextColor,
-                                                  fontSize: 16),
-                                        ),
-                                        subtitle: Text(
-                                          e.value.$2,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .copyWith(color: darkTextColor),
-                                        ),
-                                        value: e.value.$3,
-                                        onChanged: (val) {
-                                          if (val == null) return;
-
-                                          setState(() {
-                                            var deepCopy = [
-                                              ...multiselectOptions
-                                            ];
-
-                                            deepCopy[e.key] = (
-                                              e.value.$1,
-                                              e.value.$2,
-                                              val,
-                                              e.value.$4,
-                                              e.value.$5
-                                            );
-
-                                            multiselectOptions = deepCopy;
-                                          });
-                                        },
-                                      )
-                                    : Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          CustomIntEditField(
-                                            minValue: 0,
-                                            maxValue: 10,
-                                            onValueChange: (newValue) {
-                                              setState(() {
-                                                var deepCopy = [
-                                                  ...multiselectOptions
-                                                ];
-
-                                                deepCopy[e.key] = (
-                                                  e.value.$1,
-                                                  e.value.$2,
-                                                  newValue > 0,
-                                                  e.value.$4,
-                                                  newValue,
-                                                );
-
-                                                multiselectOptions = deepCopy;
-                                              });
-                                            },
-                                            label: "Anzahl",
-                                            startValue: e.value.$5,
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  e.value.$1,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .copyWith(
-                                                          color: darkTextColor,
-                                                          fontSize: 16),
-                                                ),
-                                                Text(
-                                                  e.value.$2,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .copyWith(
-                                                          color: darkTextColor),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                          ),
-                    ],
-                  );
+                  return getConfigurationWidgetsForMultiSelect();
 
                 case CharacterStatValueType.listOfIntWithCalculatedValues:
-                  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
-                  // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
-                  var statTitle = widget.statConfiguration.name;
-                  var statDescription = widget.statConfiguration.helperText;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlayerConfigModalNonDefaultTitleAndHelperText(
-                          statTitle: statTitle,
-                          statDescription: statDescription),
-                      ...listOfIntWithOtherValueOptions
-                          .asMap()
-                          .entries
-                          .sortedBy((e) => e.value.label)
-                          .map((e) => Row(
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 5.0),
-                                      child: Text(
-                                        "${e.value.label}:",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium!
-                                            .copyWith(
-                                              color: darkTextColor,
-                                              fontSize: 16,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      labelText: "Erster Wert",
-                                      textEditingController:
-                                          e.value.valueTextController,
-                                      placeholderText:
-                                          "Der erste Wert für ${e.value.label}",
-                                      keyboardType: TextInputType.number,
-                                      newDesign: true,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      labelText: "Zweiter Wert",
-                                      textEditingController:
-                                          e.value.otherValueTextController,
-                                      keyboardType: TextInputType.number,
-                                      placeholderText:
-                                          "Der zweite Wert für ${e.value.label}",
-                                      newDesign: true,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                ],
-                              )),
-                    ],
-                  );
+                  return getConfigurationWidgetsForListOfIntsWithCalculatedValues();
 
                 case CharacterStatValueType
                       .characterNameWithLevelAndAdditionalDetails:
                 case CharacterStatValueType.listOfIntsWithIcons:
-                  // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12}]}
-                  // => statConfiguration.jsonSerializedAdditionalData! == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
-                  var statTitle = widget.statConfiguration.name;
-                  var statDescription = widget.statConfiguration.helperText;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlayerConfigModalNonDefaultTitleAndHelperText(
-                          statTitle: statTitle,
-                          statDescription: statDescription),
-                      ...listOfSingleValueOptions
-                          .asMap()
-                          .entries
-                          .sortedBy((e) => e.value.label)
-                          .map((e) => Row(
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 5.0),
-                                      child: Text(
-                                        "${e.value.label}:",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium!
-                                            .copyWith(
-                                              color: darkTextColor,
-                                              fontSize: 16,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: CustomTextField(
-                                      labelText: e.value.label,
-                                      textEditingController:
-                                          e.value.valueTextController,
-                                      placeholderText:
-                                          "Der Wert von ${e.value.label}",
-                                      keyboardType:
-                                          widget.statConfiguration.valueType ==
-                                                  CharacterStatValueType
-                                                      .listOfIntsWithIcons
-                                              ? TextInputType.number
-                                              : TextInputType.text,
-                                      newDesign: true,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                ],
-                              )),
-                    ],
-                  );
+                  return getConfigurationWidgetsForBunchOfTextValues();
 
                 case CharacterStatValueType.intWithMaxValue:
-                  var statTitle = widget.statConfiguration.name;
-                  var statDescription = widget.statConfiguration.helperText;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlayerConfigModalNonDefaultTitleAndHelperText(
-                          statTitle: statTitle,
-                          statDescription: statDescription),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              newDesign: true,
-                              labelText: "Current Value",
-                              placeholderText: "The current value.",
-                              textEditingController: textEditController,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: CustomTextField(
-                              newDesign: true,
-                              labelText: "Max Value",
-                              placeholderText:
-                                  "The maximum value you could get.",
-                              textEditingController: textEditController2,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
+                  return getConfigurationWidgetsForIntWithMaxValue();
 
                 case CharacterStatValueType.intWithCalculatedValue:
-                  var statTitle = widget.statConfiguration.name;
-                  var statDescription = widget.statConfiguration.helperText;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PlayerConfigModalNonDefaultTitleAndHelperText(
-                          statTitle: statTitle,
-                          statDescription: statDescription),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              newDesign: true,
-                              labelText: "Erster Wert",
-                              placeholderText: "The first value.",
-                              textEditingController: textEditController,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: CustomTextField(
-                              newDesign: true,
-                              labelText: "Second Value",
-                              placeholderText:
-                                  "The computed value based on the first value.",
-                              textEditingController: textEditController2,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
+                  return getConfigurationWidgetsForIntWithCalculatedValue();
+
+                case CharacterStatValueType.companionSelector:
+                  return getConfigurationWidgetsForCompanionsSelector();
 
                 default:
                   return Container(
@@ -990,6 +485,8 @@ class _ShowGetPlayerConfigurationModalContentState
                           //     borderRadius: BorderRadius.circular(5)),
                           padding: EdgeInsets.all(10),
                           child: getPlayerVisualizationWidget(
+                              characterToRenderStatFor:
+                                  widget.characterToRenderStatFor,
                               onNewStatValue: (newSerializedValue) {},
                               useNewDesign: true,
                               context: context,
@@ -1008,6 +505,188 @@ class _ShowGetPlayerConfigurationModalContentState
             ),
           ],
         ));
+  }
+
+  Column getConfigurationWidgetsForInt() {
+    // characterValue.serializedValue = {"value": 17}
+
+    return Column(
+      children: [
+        CustomTextField(
+          newDesign: true,
+          labelText: widget.statConfiguration.name,
+          placeholderText: widget.statConfiguration.helperText,
+          textEditingController: textEditController,
+          keyboardType: TextInputType.number,
+        ),
+      ],
+    );
+  }
+
+  CustomTextField getConfigurationWidgetsForTextBlock() {
+    // characterValue.serializedValue = {"value": "asdf"}
+
+    return CustomTextField(
+      newDesign: true,
+      labelText: widget.statConfiguration.name,
+      placeholderText: widget.statConfiguration.helperText,
+      textEditingController: textEditController,
+      keyboardType: widget.statConfiguration.valueType ==
+              CharacterStatValueType.multiLineText
+          ? TextInputType.multiline
+          : TextInputType.text,
+    );
+  }
+
+  Column getConfigurationWidgetsForSingleImage(BuildContext context) {
+    // characterValue.serializedValue = {"imageUrl": "someUrl", "value": "some text"}
+    return Column(
+      children: [
+        CustomTextField(
+          newDesign: true,
+          labelText: widget.statConfiguration.name,
+          placeholderText: widget.statConfiguration.helperText,
+          textEditingController: textEditController,
+          keyboardType: TextInputType.multiline,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 300, maxWidth: 300),
+          child: Builder(builder: (context) {
+            var imageUrl = urlsOfGeneratedImages.isEmpty
+                ? null
+                : urlsOfGeneratedImages[selectedGeneratedImageIndex ?? 0];
+
+            var fullImageUrl = imageUrl == null
+                ? "assets/images/charactercard_placeholder.png"
+                : (imageUrl.startsWith("assets")
+                        ? imageUrl
+                        : (apiBaseUrl +
+                            (imageUrl.startsWith("/")
+                                ? imageUrl.substring(1)
+                                : imageUrl))) ??
+                    "assets/images/charactercard_placeholder.png";
+
+            return BorderedImage(
+              lightColor: darkColor,
+              backgroundColor: bgColor,
+              imageUrl: fullImageUrl,
+              greyscale: false,
+              isLoadingNewImage: isLoadingNewImage,
+              withoutPadding: true,
+            );
+          }),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Spacer(),
+            Spacer(),
+            CustomButtonNewdesign(
+                variant: CustomButtonNewdesignVariant.FlatButton,
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.chevronLeft,
+                  color: isShowPreviousGeneratedImageButtonDisabled
+                      ? middleBgColor
+                      : darkColor,
+                ),
+                onPressed: isShowPreviousGeneratedImageButtonDisabled
+                    ? null
+                    : () {
+                        setState(() {
+                          if (selectedGeneratedImageIndex != null) {
+                            selectedGeneratedImageIndex =
+                                max(selectedGeneratedImageIndex! - 1, 0);
+                          }
+                        });
+                      }),
+            Spacer(),
+            CupertinoButton(
+              onPressed: isLoadingNewImage == true
+                  ? null
+                  : () async {
+                      if (textEditController.text == "" ||
+                          textEditController.text.length < 5) {
+                        return;
+                      }
+
+                      var connectionDetails =
+                          ref.read(connectionDetailsProvider).requireValue;
+                      var campagneId = connectionDetails.campagneId;
+                      if (campagneId == null) return;
+
+                      setState(() {
+                        isLoadingNewImage = true;
+                      });
+
+                      var service = DependencyProvider.of(context)
+                          .getService<IImageGenerationService>();
+
+                      var generationResult =
+                          await service.createNewImageAndGetUrl(
+                        prompt: textEditController.text,
+                        campagneId: CampagneIdentifier($value: campagneId),
+                      );
+
+                      if (!context.mounted) return;
+                      await generationResult.possiblyHandleError(context);
+                      if (!context.mounted) return;
+
+                      if (generationResult.isSuccessful &&
+                          generationResult.result != null) {
+                        setState(() {
+                          urlsOfGeneratedImages.add(generationResult.result!);
+                          selectedGeneratedImageIndex =
+                              urlsOfGeneratedImages.length - 1;
+                        });
+                      }
+                      setState(() {
+                        isLoadingNewImage = false;
+                      });
+                    },
+              minSize: 0,
+              padding: EdgeInsets.all(0),
+              child: Text(
+                "Neues Bild",
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: isLoadingNewImage ? middleBgColor : accentColor,
+                      decoration: TextDecoration.underline,
+                      decorationColor:
+                          isLoadingNewImage ? middleBgColor : accentColor,
+                      fontSize: 16,
+                    ),
+              ),
+            ),
+            Spacer(),
+            CustomButtonNewdesign(
+                variant: CustomButtonNewdesignVariant.FlatButton,
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.chevronRight,
+                  color: isShowNextGeneratedButtonDisabled
+                      ? middleBgColor
+                      : darkColor,
+                ),
+                onPressed: isShowNextGeneratedButtonDisabled
+                    ? null
+                    : () {
+                        setState(() {
+                          if (selectedGeneratedImageIndex != null) {
+                            selectedGeneratedImageIndex = min(
+                                selectedGeneratedImageIndex! + 1,
+                                urlsOfGeneratedImages.length - 1);
+                          }
+                        });
+                      }),
+            Spacer(),
+            Spacer(),
+          ],
+        ),
+      ],
+    );
   }
 
   ThemeConfigurationForApp getAdditionalSettingsTile() {
@@ -1080,6 +759,16 @@ class _ShowGetPlayerConfigurationModalContentState
           hideFromCharacterScreen: hideStatFromCharacterScreens,
           variant: 0,
           serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
+          statUuid: widget.statConfiguration.statUuid,
+        );
+      case CharacterStatValueType.companionSelector:
+        return RpgCharacterStatValue(
+          hideLabelOfStat: hideLabelOfStat,
+          hideFromCharacterScreen: hideStatFromCharacterScreens,
+          variant: 0,
+          serializedValue: jsonEncode({
+            "values": selectedCompanions.map((st) => {"uuid": st}).toList()
+          }),
           statUuid: widget.statConfiguration.statUuid,
         );
       case CharacterStatValueType.singleImage:
@@ -1230,6 +919,412 @@ class _ShowGetPlayerConfigurationModalContentState
           statUuid: widget.statConfiguration.statUuid,
         );
     }
+  }
+
+  Widget getConfigurationWidgetsForMultiSelect() {
+    // characterValue.serializedValue = {"values": ["DEX", "WIS"]}
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+
+    var multiselectIsAllowedToBeSelectedMultipleTimes = widget
+                    .statConfiguration.jsonSerializedAdditionalData ==
+                null ||
+            widget.statConfiguration.jsonSerializedAdditionalData
+                    ?.startsWith("[") ==
+                true
+        ? false
+        : ((jsonDecode(widget.statConfiguration.jsonSerializedAdditionalData!)
+                    as Map<String, dynamic>)[
+                "multiselectIsAllowedToBeSelectedMultipleTimes"] ??
+            false);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: statTitle, statDescription: statDescription),
+        ...multiselectOptions.asMap().entries.sortedBy((e) => e.value.$1).map(
+              (e) => multiselectIsAllowedToBeSelectedMultipleTimes == false
+                  ? CheckboxListTile.adaptive(
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: EdgeInsets.all(0),
+                      splashRadius: 0,
+                      dense: true,
+                      checkColor: const Color.fromARGB(255, 57, 245, 88),
+                      activeColor: darkColor,
+                      visualDensity: VisualDensity(vertical: -2),
+                      title: Text(
+                        e.value.$1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(color: darkTextColor, fontSize: 16),
+                      ),
+                      subtitle: Text(
+                        e.value.$2,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(color: darkTextColor),
+                      ),
+                      value: e.value.$3,
+                      onChanged: (val) {
+                        if (val == null) return;
+
+                        setState(() {
+                          var deepCopy = [...multiselectOptions];
+
+                          deepCopy[e.key] = (
+                            e.value.$1,
+                            e.value.$2,
+                            val,
+                            e.value.$4,
+                            e.value.$5
+                          );
+
+                          multiselectOptions = deepCopy;
+                        });
+                      },
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CustomIntEditField(
+                          minValue: 0,
+                          maxValue: 10,
+                          onValueChange: (newValue) {
+                            setState(() {
+                              var deepCopy = [...multiselectOptions];
+
+                              deepCopy[e.key] = (
+                                e.value.$1,
+                                e.value.$2,
+                                newValue > 0,
+                                e.value.$4,
+                                newValue,
+                              );
+
+                              multiselectOptions = deepCopy;
+                            });
+                          },
+                          label: "Anzahl",
+                          startValue: e.value.$5,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                e.value.$1,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                        color: darkTextColor, fontSize: 16),
+                              ),
+                              Text(
+                                e.value.$2,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(color: darkTextColor),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+            ),
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForListOfIntsWithCalculatedValues() {
+    // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+    // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: statTitle, statDescription: statDescription),
+        ...listOfIntWithOtherValueOptions
+            .asMap()
+            .entries
+            .sortedBy((e) => e.value.label)
+            .map((e) => Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          "${e.value.label}:",
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    color: darkTextColor,
+                                    fontSize: 16,
+                                  ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: CustomTextField(
+                        labelText: "Erster Wert",
+                        textEditingController: e.value.valueTextController,
+                        placeholderText: "Der erste Wert für ${e.value.label}",
+                        keyboardType: TextInputType.number,
+                        newDesign: true,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: CustomTextField(
+                        labelText: "Zweiter Wert",
+                        textEditingController: e.value.otherValueTextController,
+                        keyboardType: TextInputType.number,
+                        placeholderText: "Der zweite Wert für ${e.value.label}",
+                        newDesign: true,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                )),
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForBunchOfTextValues() {
+    // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12}]}
+    // => statConfiguration.jsonSerializedAdditionalData! == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: statTitle, statDescription: statDescription),
+        ...listOfSingleValueOptions
+            .asMap()
+            .entries
+            .sortedBy((e) => e.value.label)
+            .map((e) => Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          "${e.value.label}:",
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    color: darkTextColor,
+                                    fontSize: 16,
+                                  ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: CustomTextField(
+                        labelText: e.value.label,
+                        textEditingController: e.value.valueTextController,
+                        placeholderText: "Der Wert von ${e.value.label}",
+                        keyboardType: widget.statConfiguration.valueType ==
+                                CharacterStatValueType.listOfIntsWithIcons
+                            ? TextInputType.number
+                            : TextInputType.text,
+                        newDesign: true,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                )),
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForIntWithMaxValue() {
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: statTitle, statDescription: statDescription),
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextField(
+                newDesign: true,
+                labelText: "Current Value",
+                placeholderText: "The current value.",
+                textEditingController: textEditController,
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: CustomTextField(
+                newDesign: true,
+                labelText: "Max Value",
+                placeholderText: "The maximum value you could get.",
+                textEditingController: textEditController2,
+                keyboardType: TextInputType.number,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForIntWithCalculatedValue() {
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: statTitle, statDescription: statDescription),
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextField(
+                newDesign: true,
+                labelText: "Erster Wert",
+                placeholderText: "The first value.",
+                textEditingController: textEditController,
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: CustomTextField(
+                newDesign: true,
+                labelText: "Second Value",
+                placeholderText: "The computed value based on the first value.",
+                textEditingController: textEditController2,
+                keyboardType: TextInputType.number,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForCompanionsSelector() {
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+
+    var selectableCompanions = ref
+            .watch(rpgCharacterConfigurationProvider)
+            .requireValue
+            .companionCharacters ??
+        [];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: statTitle, statDescription: statDescription),
+        ...selectableCompanions
+            .asMap()
+            .entries
+            .sortedBy((e) => e.value.characterName)
+            .map(
+              (e) => CheckboxListTile.adaptive(
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: EdgeInsets.all(0),
+                splashRadius: 0,
+                dense: true,
+                checkColor: const Color.fromARGB(255, 57, 245, 88),
+                activeColor: darkColor,
+                visualDensity: VisualDensity(vertical: -2),
+                title: Text(
+                  e.value.characterName,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: darkTextColor, fontSize: 16),
+                ),
+                value: selectedCompanions.contains(e.value.uuid),
+                onChanged: (newValue) {
+                  if (newValue == null) return;
+                  setState(() {
+                    var deepCopy = [...selectedCompanions];
+
+                    if (newValue == true) {
+                      // add to selected companions
+                      deepCopy.add(e.value.uuid);
+                    } else {
+                      deepCopy.remove(e.value.uuid);
+                    }
+
+                    selectedCompanions = deepCopy;
+                  });
+                },
+              ),
+            ),
+        SizedBox(
+          height: 20,
+        ),
+
+        // Add new companion to list!
+        CustomButtonNewdesign(
+          onPressed: () {
+            // TODO open modal, ask player for new companion name and add to rpgCharacterConfig
+
+            var newestCharacter =
+                ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+            ref
+                .read(rpgCharacterConfigurationProvider.notifier)
+                .updateConfiguration(
+                    newestCharacter.copyWith(companionCharacters: [
+                  ...(newestCharacter.companionCharacters ?? []),
+                  RpgAlternateCharacterConfiguration(
+                    characterName:
+                        "Pet #${(newestCharacter.companionCharacters ?? []).length + 1}",
+                    uuid: UuidV7().generate(),
+                    characterStats: [],
+                  )
+                ]));
+          },
+          label: "Neuen Begleiter", // TODO localize
+          variant: CustomButtonNewdesignVariant.AccentButton,
+        )
+      ],
+    );
   }
 }
 

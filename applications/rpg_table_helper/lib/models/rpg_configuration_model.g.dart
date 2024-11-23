@@ -1283,6 +1283,7 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       'characterNameWithLevelAndAdditionalDetails',
   CharacterStatValueType.listOfIntsWithIcons: 'listOfIntsWithIcons',
+  CharacterStatValueType.companionSelector: 'companionSelector',
 };
 
 const _$CharacterStatEditTypeEnumMap = {
