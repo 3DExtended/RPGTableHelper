@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/newdesign/card_border.dart';
 import 'package:themed/themed.dart';
@@ -72,6 +73,11 @@ class BorderedImage extends StatelessWidget {
                             );
                           },
                           imageUrl: imageUrl!,
+                          cacheManager: CacheManager(Config(
+                            "rpgborderedimage",
+                            stalePeriod: const Duration(
+                                days: 30), // images dont change, urls to
+                          )),
                           fit: BoxFit.fitWidth,
                           fadeInDuration: const Duration(milliseconds: 500),
                           fadeOutDuration: const Duration(milliseconds: 500),
