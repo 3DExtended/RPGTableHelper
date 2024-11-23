@@ -37,6 +37,8 @@ class _DmScreenCharacterOverviewState
             child: connectionDetails == null || rpgConfig == null
                 ? CustomLoadingSpinner()
                 : Wrap(
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
                     runSpacing: 20,
                     spacing: 20,
                     children: getPlayerCharacterCards(

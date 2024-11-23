@@ -111,6 +111,7 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
       columnHeights[targetColumnIndex] += childHeight;
     }
 
+    if (!mounted) return;
     setState(() {
       childMapping = tempMapping;
     });

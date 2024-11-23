@@ -60,6 +60,16 @@ class PlayerPageHelpers {
       var tabsToValidate = rpgConfig.characterStatTabsDefinition
           ?.where((tab) => filterTabId == null || tab.uuid == filterTabId);
 
+      var tempLoadedCharacterConfig =
+          ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+      var selectedCharacterId = selectedCharacter.uuid;
+      var isUpdatingMainCharacter =
+          selectedCharacterId == tempLoadedCharacterConfig.uuid;
+      var isUpdatingCompanionCharacter =
+          (tempLoadedCharacterConfig.companionCharacters ?? [])
+              .any((e) => e.uuid == selectedCharacterId);
+
       // find all stat uuids:
       var listOfStats =
           tabsToValidate?.map((t) => t.statsInTab).expand((i) => i).toList() ??
@@ -69,10 +79,15 @@ class PlayerPageHelpers {
 
       var anyStatNotFilledYet = listOfStats
           .where((st) =>
-              filterTabId != null ||
-              !(selectedCharacterStats
-                  .map((charstat) => charstat.statUuid)
-                  .contains(st.statUuid)))
+              (!isUpdatingCompanionCharacter ||
+                  st.valueType !=
+                      CharacterStatValueType
+                          .companionSelector // we are not allowing the companionSelector stat on companions
+              ) &&
+              (filterTabId != null ||
+                  !(selectedCharacterStats
+                      .map((charstat) => charstat.statUuid)
+                      .contains(st.statUuid))))
           .toList();
 
       if (anyStatNotFilledYet.isNotEmpty ||
@@ -127,11 +142,6 @@ class PlayerPageHelpers {
           mergedStats.removeWhere((st) => updatedCharacterStats
               .any((upst) => upst.statUuid == st.statUuid));
           mergedStats.addAll(updatedCharacterStats);
-
-          var selectedCharacterId = selectedCharacter.uuid;
-
-          var isUpdatingMainCharacter =
-              selectedCharacterId == newestCharacterConfig.uuid;
 
           if (isUpdatingMainCharacter) {
             ref
