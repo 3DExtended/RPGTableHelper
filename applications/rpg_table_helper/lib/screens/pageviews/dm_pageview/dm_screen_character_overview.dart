@@ -122,10 +122,10 @@ class _DmScreenCharacterOverviewState
         var statsToConsiderForCharacter = defaultStatTab.statsInTab
             .where((e) =>
                 isAlternateForm == false ||
-                e.isOptionalForAlternateForms == false)
+                e.isOptionalForAlternateForms != true)
             .where((e) =>
                 isCompanion == false ||
-                e.isOptionalForCompanionCharacters == false)
+                e.isOptionalForCompanionCharacters != true)
             .toList();
 
         characterStatWithMaxValueForBarVisuals =

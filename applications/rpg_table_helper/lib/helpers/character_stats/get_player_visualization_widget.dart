@@ -14,8 +14,10 @@ import 'package:rpg_table_helper/components/newdesign/progress_indicator_for_cha
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
+import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:shadow_widget/shadow_widget.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
@@ -59,6 +61,9 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.int:
       return renderIntStat(onNewStatValue, characterValue, context,
           useNewDesign, statConfiguration);
+    case CharacterStatValueType.companionSelector:
+      return renderCompanionSelector(onNewStatValue, characterValue, context,
+          characterToRenderStatFor, useNewDesign, statConfiguration);
 
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return renderCharacterNameWithLevelAndAdditionalDetailsStat(
@@ -101,6 +106,64 @@ Widget getPlayerVisualizationWidget({
         color: Colors.red,
       );
   }
+}
+
+Widget renderCompanionSelector(
+    void Function(String newSerializedValue) onNewStatValue,
+    RpgCharacterStatValue characterValue,
+    BuildContext context,
+    RpgCharacterConfiguration? characterToRenderStatFor,
+    bool useNewDesign,
+    CharacterStatDefinition statConfiguration) {
+  List<String> selectedCompanionIds =
+      (jsonDecode(characterValue.serializedValue)["values"] as List<dynamic>)
+          .map((e) => (e as Map<String, dynamic>)["uuid"] as String)
+          .toList();
+
+  List<
+      ({
+        String characterName,
+        String uuid,
+        String? imageUrl,
+        RpgAlternateCharacterConfiguration companionConfig
+      })> companionDetailsToRender = [];
+  for (var selectedCompanionId in selectedCompanionIds) {
+    var companionOfCharacter =
+        (characterToRenderStatFor?.companionCharacters ?? [])
+            .firstWhereOrNull((c) => c.uuid == selectedCompanionId);
+    if (companionOfCharacter == null) continue;
+
+    // TODO search for image (still missing access to rpgconfig here...)
+
+    companionDetailsToRender.add((
+      characterName: companionOfCharacter.characterName,
+      uuid: companionOfCharacter.uuid,
+      imageUrl: null,
+      companionConfig: companionOfCharacter
+    ));
+  }
+
+  return Column(
+    children: [
+      ...companionDetailsToRender.map((t) => Padding(
+            padding: EdgeInsets.all(5),
+            child: CustomButtonNewdesign(
+                label: t.characterName,
+                onPressed: () {
+                  // open companion page
+                  navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,
+                      arguments: PlayerPageScreenRouteSettings(
+                        disableEdit: false,
+                        showMoney: false,
+                        characterConfigurationOverride: t.companionConfig,
+                        showInventory: false,
+                        showLore: false,
+                        showRecipes: false,
+                      ));
+                }),
+          )),
+    ],
+  );
 }
 
 Widget renderMultiselectStat(

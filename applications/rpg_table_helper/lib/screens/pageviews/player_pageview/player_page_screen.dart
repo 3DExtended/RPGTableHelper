@@ -236,6 +236,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
       rpgCharacterToRender =
           applicableRouteSettings.characterConfigurationOverride;
+      _alreadyCheckedForMissingStats = false;
 
       showInventory = applicableRouteSettings.showInventory;
       showLore = applicableRouteSettings.showLore;
