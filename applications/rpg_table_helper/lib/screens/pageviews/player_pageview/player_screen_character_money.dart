@@ -66,7 +66,7 @@ class _PlayerScreenCharacterMoneyState
             children: [
               CustomFaIcon(
                 icon: FontAwesomeIcons.sackDollar,
-                size: 42,
+                size: 48,
                 color: darkColor,
               ),
               SizedBox(
@@ -137,7 +137,7 @@ class _PlayerScreenCharacterMoneyState
                 },
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Wrap(
                 runAlignment: WrapAlignment.center,
@@ -148,22 +148,46 @@ class _PlayerScreenCharacterMoneyState
                     .map((cv) => Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
-                          child: CustomIntEditField(
-                            minValue: 0,
-                            maxValue: 9999,
-                            onValueChange: (newValue) {
-                              // TODO make me
-                              setState(() {
-                                _currencyValues[cv.key] = (
-                                  label: _currencyValues[cv.key].label,
-                                  multiplier:
-                                      _currencyValues[cv.key].multiplier,
-                                  currentValue: newValue,
-                                );
-                              });
-                            },
-                            label: cv.value.label,
-                            startValue: cv.value.currentValue,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CustomFaIcon(
+                                icon: FontAwesomeIcons.sackDollar,
+                                size: 40,
+                                // TODO those colors should be configurable by the dm
+                                color: cv.value.label == "Platin"
+                                    ? const Color.fromARGB(255, 108, 171,
+                                        143) // const Color.fromARGB(255, 103, 138, 138)
+                                    : cv.value.label == "Gold"
+                                        ? const Color.fromARGB(
+                                            255, 237, 202, 47)
+                                        : cv.value.label == "Silber"
+                                            ? const Color.fromARGB(
+                                                255, 184, 189, 190)
+                                            : const Color.fromARGB(
+                                                255, 212, 126, 22),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              CustomIntEditField(
+                                minValue: 0,
+                                maxValue: 9999,
+                                onValueChange: (newValue) {
+                                  // TODO make me
+                                  setState(() {
+                                    _currencyValues[cv.key] = (
+                                      label: _currencyValues[cv.key].label,
+                                      multiplier:
+                                          _currencyValues[cv.key].multiplier,
+                                      currentValue: newValue,
+                                    );
+                                  });
+                                },
+                                label: cv.value.label,
+                                startValue: cv.value.currentValue,
+                              ),
+                            ],
                           ),
                         ))
                     .toList(),
