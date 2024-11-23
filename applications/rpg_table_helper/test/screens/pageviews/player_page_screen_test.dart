@@ -22,9 +22,10 @@ void main() {
     (2, "playerfeaturesscreen"),
     (3, "playerattacksscreen"),
     (4, "playerspellsscreen"),
-    (5, "playerinventoryscreen"),
-    (6, "playerrecipesscreen"),
-    (7, "playerlorescreen"),
+    (5, "playermoneyscreen"),
+    (6, "playerinventoryscreen"),
+    (7, "playerrecipesscreen"),
+    (8, "playerlorescreen"),
   ];
 
   group('playerpagescreens renderings', () {
@@ -159,6 +160,7 @@ void main() {
                         characterConfigurationOverride: null,
                         showInventory: true,
                         showRecipes: true,
+                        showMoney: true,
                         showLore: true,
                         disableEdit: false),
                   );

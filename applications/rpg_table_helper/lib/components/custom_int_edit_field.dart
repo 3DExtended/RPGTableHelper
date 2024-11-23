@@ -12,15 +12,15 @@ class CustomIntEditField extends StatefulWidget {
   final void Function(int newValue) onValueChange;
   final String label;
   final int startValue;
-  final int minValue;
-  final int maxValue;
+  final int? minValue;
+  final int? maxValue;
   const CustomIntEditField({
     super.key,
     required this.onValueChange,
     required this.label,
     required this.startValue,
-    this.minValue = -999,
-    this.maxValue = 999,
+    this.minValue,
+    this.maxValue,
   });
 
   @override
@@ -40,6 +40,19 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
   }
 
   @override
+  void didUpdateWidget(covariant CustomIntEditField oldWidget) {
+    Future.delayed(Duration.zero, () {
+      if (currentValue != widget.startValue) {
+        setState(() {
+          currentValue = widget.startValue;
+          textEditingController.text = currentValue.toString();
+        });
+      }
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
     textEditingController.removeListener(onTextEditControllerValueChange);
 
@@ -55,14 +68,18 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
         CustomButtonNewdesign(
           isSubbutton: true,
           variant: CustomButtonNewdesignVariant.DarkButton,
-          onPressed: () {
-            setState(() {
-              currentValue = max(widget.minValue, currentValue - 1);
-              textEditingController.text = currentValue.toString();
-            });
+          onPressed: widget.minValue != null && currentValue <= widget.minValue!
+              ? null
+              : () {
+                  setState(() {
+                    currentValue = widget.minValue == null
+                        ? currentValue - 1
+                        : max(widget.minValue!, currentValue - 1);
+                    textEditingController.text = currentValue.toString();
+                  });
 
-            widget.onValueChange(currentValue);
-          },
+                  widget.onValueChange(currentValue);
+                },
           icon: CustomFaIcon(
             icon: FontAwesomeIcons.minus,
             size: iconSizeInlineButtons,
@@ -84,15 +101,19 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
         CustomButtonNewdesign(
           isSubbutton: true,
           variant: CustomButtonNewdesignVariant.DarkButton,
-          onPressed: () {
-            setState(() {
-              currentValue = min(widget.maxValue, currentValue + 1);
+          onPressed: widget.maxValue != null && currentValue >= widget.maxValue!
+              ? null
+              : () {
+                  setState(() {
+                    currentValue = widget.maxValue == null
+                        ? currentValue + 1
+                        : min(widget.maxValue!, currentValue + 1);
 
-              textEditingController.text = currentValue.toString();
-            });
+                    textEditingController.text = currentValue.toString();
+                  });
 
-            widget.onValueChange(currentValue);
-          },
+                  widget.onValueChange(currentValue);
+                },
           icon: CustomFaIcon(
             icon: FontAwesomeIcons.plus,
             size: iconSizeInlineButtons,
@@ -107,7 +128,12 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
     var tempValue = int.tryParse(textEditingController.text);
     if (tempValue == null) return;
 
-    tempValue = min(widget.maxValue, max(widget.minValue, tempValue));
+    if (widget.minValue != null) {
+      tempValue = max(widget.minValue!, tempValue);
+    }
+    if (widget.maxValue != null) {
+      tempValue = min(widget.maxValue!, tempValue);
+    }
 
     setState(() {
       currentValue = tempValue!;

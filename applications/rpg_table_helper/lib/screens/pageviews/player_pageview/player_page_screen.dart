@@ -15,6 +15,7 @@ import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_money.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_recepies.dart';
 import 'package:signalr_netcore/errors.dart';
@@ -24,11 +25,13 @@ class PlayerPageScreenRouteSettings {
   final bool? disableEdit;
   final bool showInventory;
   final bool showRecipes;
+  final bool showMoney;
   final bool showLore;
 
   PlayerPageScreenRouteSettings(
       {required this.characterConfigurationOverride,
       required this.showInventory,
+      required this.showMoney,
       required this.showRecipes,
       required this.showLore,
       required this.disableEdit});
@@ -38,6 +41,7 @@ class PlayerPageScreenRouteSettings {
       disableEdit: false,
       characterConfigurationOverride: null,
       showInventory: true,
+      showMoney: true,
       showRecipes: true,
       showLore: false,
     );
@@ -70,6 +74,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
   var _currentStep = 0;
 
   bool showInventory = true;
+  bool showMoney = true;
   bool showLore = true;
   bool showRecipes = true;
 
@@ -168,6 +173,17 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       ));
     }
 
+    if (showMoney &&
+        charToRender != null &&
+        charToRender is RpgCharacterConfiguration) {
+      result.add((
+        "Währung",
+        PlayerScreenCharacterMoney(
+          rpgConfig: rpgConfig,
+          charToRender: charToRender as RpgCharacterConfiguration,
+        )
+      ));
+    }
     if (showInventory &&
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
@@ -224,6 +240,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       showInventory = applicableRouteSettings.showInventory;
       showLore = applicableRouteSettings.showLore;
       showRecipes = applicableRouteSettings.showRecipes;
+      showMoney = applicableRouteSettings.showMoney;
 
       disableEdit = applicableRouteSettings.disableEdit ?? false;
     });

@@ -197,6 +197,7 @@ class _DmScreenCampagneManagementState
         navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,
             arguments: PlayerPageScreenRouteSettings(
               disableEdit: true,
+              showMoney: true,
               characterConfigurationOverride: charConfig,
               showInventory: false,
               showLore: false,
