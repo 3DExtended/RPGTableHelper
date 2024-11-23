@@ -133,13 +133,6 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                         children: [
                           const Spacer(),
                           CustomButtonNewdesign(
-                            label: "Abbrechen", // TODO localize
-                            onPressed: () {
-                              navigatorKey.currentState!.pop(null);
-                            },
-                          ),
-                          const Spacer(),
-                          CustomButtonNewdesign(
                             label: "Absenden", // TODO localize
                             onPressed: () {
                               // TODO add validation
