@@ -1,4 +1,5 @@
 using Prodot.Patterns.Cqrs;
+
 using RPGTableHelper.DataLayer.Contracts.Queries.Images;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.Images;
@@ -7,7 +8,7 @@ public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
 {
     public IQueryHandler<ImageLoadQuery, Stream> Successor { get; set; } = default!;
 
-    public Task<Option<Stream>> RunQueryAsync(ImageLoadQuery query, CancellationToken cancellationToken)
+    public async Task<Option<Stream>> RunQueryAsync(ImageLoadQuery query, CancellationToken cancellationToken)
     {
         if (!query.MetaData.LocallyStored)
         {
@@ -23,10 +24,27 @@ public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
             _ => throw new NotImplementedException(),
         };
 
+        var retryCounter = 0;
+
+        while (retryCounter < 5)
+        {
+            retryCounter++;
+            try
+            {
 #pragma warning disable S2930 // "IDisposables" should be disposed
-        FileStream stream = File.Open(filepath, FileMode.Open);
+                FileStream stream = File.Open(filepath, FileMode.Open);
 #pragma warning restore S2930 // "IDisposables" should be disposed
 
-        return Task.FromResult(Option.From((Stream)stream));
+                return Option.From((Stream)stream);
+            }
+            catch
+            {
+                // can be ignored since the app will try again later
+            }
+
+            await Task.Delay(100);
+        }
+
+        return Option<Stream>.None;
     }
 }
