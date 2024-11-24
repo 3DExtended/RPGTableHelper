@@ -2,7 +2,7 @@ name: rpg_table_helper
 description: "A tablet app helping with your favorite RPG table top games!"
 publish_to: 'none'
 
-version: 0.5.0+136
+version: 0.5.0+137
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
