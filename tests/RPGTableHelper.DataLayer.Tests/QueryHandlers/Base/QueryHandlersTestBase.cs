@@ -27,12 +27,15 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
         protected QueryHandlersTestBase()
         {
             _runIdentifier = Guid.NewGuid().ToString();
+            SystemClock = Substitute.For<ISystemClock>();
+            SystemClock.Now.Returns(SystemClockNow);
 
             ServiceProvider = new ServiceCollection()
                 .AddDbContextFactory<RpgDbContext>(o =>
                     o.UseSqlite($"DataSource=file:memdb{_runIdentifier}?mode=memory&cache=shared")
                 )
                 .AddAutoMapper(typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile))
+                .AddSingleton<ISystemClock>(SystemClock)
                 .BuildServiceProvider();
 
             // initialize test database
@@ -40,10 +43,6 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
             Context = ContextFactory.CreateDbContext();
             Context.Database.OpenConnection();
             Context.Database.EnsureCreated();
-
-            SystemClock = Substitute.For<ISystemClock>();
-
-            SystemClock.Now.Returns(SystemClockNow);
 
             Mapper = ServiceProvider.GetRequiredService<IMapper>();
         }
