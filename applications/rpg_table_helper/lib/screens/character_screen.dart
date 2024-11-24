@@ -1,19 +1,13 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/character_screen_player_content.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
@@ -85,184 +79,9 @@ class _CharacterScreenState extends ConsumerState<CharacterScreen> {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
 
-    return connectionDetails?.isDm == true
-        ? Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "CharacterScreen for DMs",
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomMarkdownBody(
-                    text:
-                        "Deine Session ID (für deine Player): __${connectionDetails!.sessionConnectionNumberForPlayers ?? ""}__"),
-                const SizedBox(
-                  height: 20,
-                ),
-                if ((connectionDetails.openPlayerRequests?.length ?? 0) != 0)
-                  CustomMarkdownBody(
-                      text:
-                          "Offene Spieler Anfragen (${connectionDetails.openPlayerRequests?.length ?? 0}):"),
-                const SizedBox(
-                  height: 20,
-                ),
-                if ((connectionDetails.openPlayerRequests?.length ?? 0) != 0)
-                  OpenPlayerJoinRequests(connectionDetails: connectionDetails),
-                if ((connectionDetails.openPlayerRequests?.length ?? 0) != 0)
-                  const SizedBox(
-                    height: 20,
-                  ),
-                const HorizontalLine(),
-                const SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      runSpacing: 10,
-                      spacing: 10,
-                      children: [
-                        ...(connectionDetails.connectedPlayers ?? []).map(
-                          (player) => Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color.fromARGB(156, 255, 255, 255),
-                              ),
-                              color: whiteBgTint,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            padding: EdgeInsets.all(10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    player.configuration.characterName.trim(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                        ),
-                                  ),
-                                  Text(
-                                    "Anzahl Items: ${player.configuration.inventory.map((it) => it.amount).sum}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                  ),
-                                  if (rpgConfig != null)
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 20, 0, 20),
-                                      child: HorizontalLine(),
-                                    ),
-                                  if (rpgConfig != null)
-                                    // render all number stats of the default screen of all players
-                                    Builder(builder: (context) {
-                                      var defaultTab = rpgConfig
-                                          .characterStatTabsDefinition
-                                          ?.firstWhereOrNull(
-                                              (tab) => tab.isDefaultTab);
-                                      if (defaultTab == null)
-                                        return Container();
-
-                                      var numberStatsInDefaultTab = defaultTab
-                                          .statsInTab
-                                          .where((stat) =>
-                                              stat.valueType ==
-                                                  CharacterStatValueType.int ||
-                                              stat.valueType ==
-                                                  CharacterStatValueType
-                                                      .intWithCalculatedValue ||
-                                              stat.valueType ==
-                                                  CharacterStatValueType
-                                                      .intWithMaxValue)
-                                          .toList();
-
-                                      var statsWithPlayerStats =
-                                          numberStatsInDefaultTab
-                                              .map((stat) {
-                                                var playerStat = player
-                                                    .configuration
-                                                    .characterStats
-                                                    .firstWhereOrNull(
-                                                        (charStat) =>
-                                                            charStat.statUuid ==
-                                                            stat.statUuid);
-
-                                                return (stat, playerStat);
-                                              })
-                                              .where(
-                                                  (tuple) => tuple.$2 != null)
-                                              .toList();
-                                      CharacterStatValueType? lastType;
-                                      return Wrap(
-                                        alignment: WrapAlignment.center,
-                                        spacing: 50,
-                                        runSpacing: 10,
-                                        children: statsWithPlayerStats
-                                            .map((stuple) {
-                                              var breakItems = false;
-
-                                              if (lastType != null &&
-                                                  !areTwoValueTypesSimilar(
-                                                      stuple.$1.valueType,
-                                                      lastType)) {
-                                                breakItems = true;
-                                              }
-
-                                              lastType = stuple.$1.valueType;
-
-                                              return [
-                                                if (breakItems)
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                          child: Container())
-                                                    ],
-                                                  ),
-                                                getPlayerVisualizationWidget(
-                                                    context: context,
-                                                    statConfiguration:
-                                                        stuple.$1,
-                                                    characterValue: stuple.$2!)
-                                              ];
-                                            })
-                                            .expand((i) => i)
-                                            .toList(),
-                                      );
-                                    })
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )
-        : CharacterScreenPlayerContent(
-            key: characterPlayerContentKey,
-          );
+    return CharacterScreenPlayerContent(
+      key: characterPlayerContentKey,
+    );
   }
 }
 

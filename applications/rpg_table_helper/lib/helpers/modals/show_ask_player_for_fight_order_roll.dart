@@ -71,75 +71,84 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
           child: ShadowWidget(
             offset: Offset(-4, 4),
             blurRadius: 5,
-            child: Container(
-              color: bgColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  NavbarNewDesign(
-                    backInsteadOfCloseIcon: false,
-                    closeFunction: () {
-                      navigatorKey.currentState!.pop(null);
-                    },
-                    menuOpen: null,
-                    useTopSafePadding: false,
-                    titleWidget: Text(
-                      "Kampf Reihenfolge Wurf (${widget.characterName})", // TODO localize/ switch text between add and edit
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: textColor, fontSize: 24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 550, maxHeight: 300),
+              child: Container(
+                color: bgColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    NavbarNewDesign(
+                      backInsteadOfCloseIcon: false,
+                      closeFunction: () {
+                        navigatorKey.currentState!.pop(null);
+                      },
+                      menuOpen: null,
+                      useTopSafePadding: false,
+                      titleWidget: Text(
+                        "Kampf Reihenfolge Wurf (${widget.characterName})", // TODO localize/ switch text between add and edit
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: textColor, fontSize: 24),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            CustomTextField(
-                              newDesign: true,
-                              labelText: "Kampf Wurf",
-                              textEditingController: textEditingController,
-                              keyboardType: TextInputType.number,
-                            )
-                          ],
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Text(
+                                "Ein Kampf startet: Würfel deinen Platz in der Reihenfolge!",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: darkTextColor,
+                                      fontSize: 16,
+                                    ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              CustomTextField(
+                                newDesign: true,
+                                labelText: "Kampf Wurf",
+                                textEditingController: textEditingController,
+                                keyboardType: TextInputType.number,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                    child: Row(
-                      children: [
-                        const Spacer(),
-                        CustomButtonNewdesign(
-                          label: "Abbrechen", // TODO localize
-                          onPressed: () {
-                            navigatorKey.currentState!.pop(null);
-                          },
-                        ),
-                        const Spacer(),
-                        CustomButtonNewdesign(
-                          label: "Absenden", // TODO localize
-                          onPressed: () {
-                            // TODO add validation
-                            var numberParsed =
-                                int.tryParse(textEditingController.text);
-                            if (numberParsed == null) return;
-
-                            navigatorKey.currentState!.pop(numberParsed);
-                          },
-                        ),
-                        const Spacer(),
-                      ],
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          CustomButtonNewdesign(
+                            label: "Absenden", // TODO localize
+                            onPressed: () {
+                              // TODO add validation
+                              var numberParsed =
+                                  int.tryParse(textEditingController.text);
+                              if (numberParsed == null) return;
+
+                              navigatorKey.currentState!.pop(numberParsed);
+                            },
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

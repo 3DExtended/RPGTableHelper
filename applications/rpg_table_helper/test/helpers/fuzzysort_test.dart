@@ -10,7 +10,8 @@ void main() {
     });
 
     test('prepare prepares a target string correctly', () {
-      var prepared = fuzzySort.prepare('TestString');
+      var prepared = fuzzySort.prepare(
+          'TestString', "eeed0eec-6391-45c2-907f-70371a8268c1");
       expect(prepared.target, 'TestString');
       expect(prepared.targetLower, 'teststring');
       expect(prepared.targetLowerCodes, isNotNull);
@@ -132,7 +133,8 @@ void main() {
     });
 
     test('algorithm performs fuzzy search correctly', () {
-      var prepared = fuzzySort.prepare('TestString');
+      var prepared = fuzzySort.prepare(
+          'TestString', "e9009c82-c518-4b0f-b045-a999111b7f1b");
       var preparedSearch = fuzzySort.prepareSearch('test');
 
       var result = fuzzySort.algorithm(preparedSearch, prepared, false, true);
@@ -144,7 +146,8 @@ void main() {
     });
 
     test('algorithmSpaces handles multiple searches correctly', () {
-      var prepared = fuzzySort.prepare('TestString');
+      var prepared = fuzzySort.prepare(
+          'TestString', "b99adda1-f51d-41ac-b45d-f8b59cfa246a");
       var preparedSearch1 = fuzzySort.prepareSearch('test');
       var preparedSearch2 = fuzzySort.prepareSearch('string');
 
@@ -159,7 +162,9 @@ void main() {
     });
 
     test('Basic case with no spaces', () {
-      var prepared = Prepared('TestString');
+      var prepared = FuzzySearchPreparedTarget(
+          target: 'TestString',
+          identifier: "d6c05ca1-3275-4256-b55c-1682420dbc15");
       var preparedSearch = PreparedSearch('test');
       preparedSearch.spaceSearches.add(preparedSearch);
 
@@ -170,7 +175,9 @@ void main() {
     });
 
     test('Case with multiple searches', () {
-      var prepared = Prepared('AnotherTestString');
+      var prepared = FuzzySearchPreparedTarget(
+          target: 'AnotherTestString',
+          identifier: "76dca456-5122-4bbc-98fc-efbf0ea52296");
       var search1 = PreparedSearch('test');
       var search2 = PreparedSearch('string');
       var search3 = PreparedSearch('another');
@@ -184,7 +191,9 @@ void main() {
     });
 
     test('Case with no matches and partial matches allowed', () {
-      var prepared = Prepared('NoMatchHere');
+      var prepared = FuzzySearchPreparedTarget(
+          target: 'NoMatchHere',
+          identifier: "92d34799-3e7d-4123-adb2-50cb6042f1dd");
       var search = PreparedSearch('test');
       search.spaceSearches.add(search);
 
@@ -194,7 +203,9 @@ void main() {
     });
 
     test('Case with spaces in search term', () {
-      var prepared = Prepared('Test String with Spaces');
+      var prepared = FuzzySearchPreparedTarget(
+          target: 'Test String with Spaces',
+          identifier: "4d450021-879f-446f-8f25-8d3e67dc47aa");
       var search = PreparedSearch('test string');
       search.spaceSearches.add(search);
 
@@ -205,7 +216,9 @@ void main() {
     });
 
     test('Case with multiple spaces in search term and various target', () {
-      var prepared = Prepared('Complex Target String');
+      var prepared = FuzzySearchPreparedTarget(
+          target: 'Complex Target String',
+          identifier: "89af97da-d189-4c4a-9ab3-a00fd3b1c2bb");
       var search1 = PreparedSearch('complex');
       var search2 = PreparedSearch('target');
       search1.spaceSearches.add(search2);
@@ -218,7 +231,8 @@ void main() {
     });
 
     test('Case with empty search and target', () {
-      var prepared = Prepared('');
+      var prepared = FuzzySearchPreparedTarget(
+          target: '', identifier: "17040914-1d76-46fe-8959-92a1c45f1ac6");
       var search = PreparedSearch('');
       search.spaceSearches.add(search);
 
@@ -228,7 +242,8 @@ void main() {
     });
 
     test('Case with empty target but non-empty search', () {
-      var prepared = Prepared('');
+      var prepared = FuzzySearchPreparedTarget(
+          target: '', identifier: "d6f99415-40f7-4dd7-bb5d-53486bad2b54");
       var search = PreparedSearch('test');
       search.spaceSearches.add(search);
 
@@ -239,9 +254,15 @@ void main() {
 
     test('should return correct results when search is matched', () {
       final targets = [
-        Prepared('test1'),
-        Prepared('test2'),
-        Prepared('test3'),
+        FuzzySearchPreparedTarget(
+            target: 'test1',
+            identifier: "e67959c4-fa19-4052-a7bd-5e059ea13f59"),
+        FuzzySearchPreparedTarget(
+            target: 'test2',
+            identifier: "2ea69ae2-7643-45b9-a69f-93541da9aef4"),
+        FuzzySearchPreparedTarget(
+            target: 'test3',
+            identifier: "e6bece2f-94f4-4df9-bb70-161e786a7e84"),
       ];
 
       final options = {'threshold': 0.0, 'limit': 2};
@@ -253,8 +274,12 @@ void main() {
 
     test('should return if words in the middle are present', () {
       final targets = [
-        Prepared('hello asdf world'),
-        Prepared('Hello asdf World'),
+        FuzzySearchPreparedTarget(
+            target: 'hello asdf world',
+            identifier: "a7bd0ca3-fc6c-4163-bae2-e5f5e7457744"),
+        FuzzySearchPreparedTarget(
+            target: 'Hello asdf World',
+            identifier: "65c8eb80-1bf2-4cd8-b33b-544072ed6d8b"),
       ];
 
       final options = {'threshold': 0.0, 'limit': 2};
@@ -266,9 +291,15 @@ void main() {
 
     test('should respect limit parameter', () {
       final targets = [
-        Prepared('test1'),
-        Prepared('test2'),
-        Prepared('test3'),
+        FuzzySearchPreparedTarget(
+            target: 'test1',
+            identifier: "b15f74bf-8963-4bb7-8e23-248939b6d6fe"),
+        FuzzySearchPreparedTarget(
+            target: 'test2',
+            identifier: "9b55a8f5-dda8-4b02-9c0e-f44d07367b47"),
+        FuzzySearchPreparedTarget(
+            target: 'test3',
+            identifier: "4aea35fd-70c9-4e10-8dcf-8d191d992921"),
       ];
 
       final options = {'threshold': 0.0, 'limit': 1};
@@ -279,8 +310,12 @@ void main() {
 
     test('should return empty list when no results meet threshold', () {
       final targets = [
-        Prepared('test1'),
-        Prepared('test2'),
+        FuzzySearchPreparedTarget(
+            target: 'test1',
+            identifier: "670697ee-f7ab-4f63-b8e6-017dfd5f4719"),
+        FuzzySearchPreparedTarget(
+            target: 'test2',
+            identifier: "0941fb86-bbe8-4dbe-9a13-78a8c469ddaf"),
       ];
 
       final options = {'threshold': 10.0};
@@ -291,8 +326,12 @@ void main() {
 
     test('should handle empty search input', () {
       final targets = [
-        Prepared('test1'),
-        Prepared('test2'),
+        FuzzySearchPreparedTarget(
+            target: 'test1',
+            identifier: "87cd2214-e8f0-4386-945b-277a47a1123a"),
+        FuzzySearchPreparedTarget(
+            target: 'test2',
+            identifier: "e4241999-3a36-4b1b-80c9-28f562792863"),
       ];
 
       final options = {'threshold': 0.0, 'limit': 2};
@@ -303,14 +342,40 @@ void main() {
 
     test('should handle no options provided', () {
       final targets = [
-        Prepared('test1'),
-        Prepared('test2'),
-        Prepared('test3'),
+        FuzzySearchPreparedTarget(
+            target: 'test1',
+            identifier: "d9c28cb8-583a-4e8f-837d-f53467501fad"),
+        FuzzySearchPreparedTarget(
+            target: 'test2',
+            identifier: "6a0704f0-2688-4355-8dfd-c95e87882292"),
+        FuzzySearchPreparedTarget(
+            target: 'test3',
+            identifier: "c23259d2-89a0-4a57-8766-e0da268e696c"),
       ];
 
       final results = fuzzySort.go('test', targets, null);
 
       expect(results.length, equals(3)); // should return all results
+    });
+
+    test(
+        'should return partial results for multiple target search with no options provided',
+        () {
+      final targets = [
+        FuzzySearchPreparedTarget(
+            target: 'test1',
+            identifier: "b5bdf19d-5550-4eb6-9385-462028072aa3"),
+        FuzzySearchPreparedTarget(
+            target: 'test2',
+            identifier: "f4d27e2a-81a5-48c9-b5c3-12bceadead23"),
+        FuzzySearchPreparedTarget(
+            target: 'asdf3',
+            identifier: "6a7141d5-54af-4587-bb26-20f86e1e1641"),
+      ];
+
+      final results = fuzzySort.go('test', targets, null);
+
+      expect(results.length, equals(2)); // should return all results
     });
   });
 }

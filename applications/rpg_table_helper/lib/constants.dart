@@ -7,7 +7,11 @@ const bgColor = Color(0xffFDF0E3);
 const textColor = Color(0xffffffff);
 const accentColor = Color(0xffF96F3D);
 
+const darkGreen = Color.fromARGB(255, 34, 157, 59);
+const darkRed = Color.fromARGB(255, 209, 26, 26);
+
 const darkTextColor = darkColor;
+const iconSizeInlineButtons = 16.0;
 
 // -----------
 

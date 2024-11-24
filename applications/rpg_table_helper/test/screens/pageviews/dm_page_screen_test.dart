@@ -9,7 +9,7 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_page_screen.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';

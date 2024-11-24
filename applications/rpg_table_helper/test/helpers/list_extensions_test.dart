@@ -1,7 +1,180 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+
+class _CharacterStat {
+  CharacterStatValueType type;
+  _CharacterStat(this.type);
+}
+
+class _MyObject {
+  final CharacterStatValueType type;
+  _MyObject(this.type);
+}
 
 void main() {
+  group('consecutiveTypeCounts', () {
+    test('returns empty list for an empty input list', () {
+      List<_MyObject> list = [];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, []);
+    });
+
+    test('returns [1] for a list with one item', () {
+      List<_MyObject> list = [_MyObject(CharacterStatValueType.int)];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, [(CharacterStatValueType.int, 1)]);
+    });
+
+    test('returns correct counts for a list with all identical items', () {
+      List<_MyObject> list = [
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.int)
+      ];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, [(CharacterStatValueType.int, 3)]);
+    });
+
+    test(
+        'returns correct counts for a list with no consecutive identical items',
+        () {
+      List<_MyObject> list = [
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.singleLineText),
+        _MyObject(CharacterStatValueType.multiLineText)
+      ];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, [
+        (CharacterStatValueType.int, 1),
+        (CharacterStatValueType.singleLineText, 1),
+        (CharacterStatValueType.multiLineText, 1)
+      ]);
+    });
+
+    test(
+        'returns correct counts for a list with mixed consecutive and non-consecutive items',
+        () {
+      List<_MyObject> list = [
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.singleLineText),
+        _MyObject(CharacterStatValueType.multiLineText),
+        _MyObject(CharacterStatValueType.multiLineText),
+      ];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, [
+        (CharacterStatValueType.int, 2),
+        (CharacterStatValueType.singleLineText, 1),
+        (CharacterStatValueType.multiLineText, 2)
+      ]);
+    });
+
+    test('handles alternating types correctly', () {
+      List<_MyObject> list = [
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.multiLineText),
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.multiLineText),
+      ];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, [
+        (CharacterStatValueType.int, 1),
+        (CharacterStatValueType.multiLineText, 1),
+        (CharacterStatValueType.int, 1),
+        (CharacterStatValueType.multiLineText, 1)
+      ]);
+    });
+
+    test('handles multiple groups of consecutive items', () {
+      List<_MyObject> list = [
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.singleLineText),
+        _MyObject(CharacterStatValueType.singleLineText),
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.int),
+        _MyObject(CharacterStatValueType.int),
+      ];
+      var result = list.consecutiveTypeCounts((a) => a.type);
+      expect(result, [
+        (CharacterStatValueType.int, 2),
+        (CharacterStatValueType.singleLineText, 2),
+        (CharacterStatValueType.int, 3)
+      ]);
+    });
+  });
+
+  group('consecutiveCounts extension method', () {
+    test('Basic case with consecutive identical items', () {
+      final list = [
+        _CharacterStat(CharacterStatValueType.multiselect),
+        _CharacterStat(CharacterStatValueType.multiselect),
+        _CharacterStat(CharacterStatValueType.multiselect),
+        _CharacterStat(CharacterStatValueType.int),
+      ];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, [2, 1, 0, 0]);
+    });
+
+    test('Single element list', () {
+      final list = [_CharacterStat(CharacterStatValueType.int)];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, [0]);
+    });
+
+    test('Empty list', () {
+      final list = <_CharacterStat>[];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, []);
+    });
+
+    test('List with no consecutive identical items', () {
+      final list = [
+        _CharacterStat(CharacterStatValueType.multiLineText),
+        _CharacterStat(CharacterStatValueType.singleLineText),
+        _CharacterStat(CharacterStatValueType.int),
+        _CharacterStat(CharacterStatValueType.intWithMaxValue),
+      ];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, [0, 0, 0, 0]);
+    });
+
+    test('List with all identical items', () {
+      final list = [
+        _CharacterStat(CharacterStatValueType.int),
+        _CharacterStat(CharacterStatValueType.int),
+        _CharacterStat(CharacterStatValueType.int),
+        _CharacterStat(CharacterStatValueType.int),
+      ];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, [3, 2, 1, 0]);
+    });
+
+    test('List with alternating items', () {
+      final list = [
+        _CharacterStat(CharacterStatValueType.int),
+        _CharacterStat(CharacterStatValueType.multiselect),
+        _CharacterStat(CharacterStatValueType.int),
+        _CharacterStat(CharacterStatValueType.multiselect),
+      ];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, [0, 0, 0, 0]);
+    });
+
+    test(
+        'Real-world case with CharacterStatValueType.intWithCalculatedValue only',
+        () {
+      final list = [
+        _CharacterStat(CharacterStatValueType.intWithCalculatedValue),
+        _CharacterStat(CharacterStatValueType.intWithCalculatedValue),
+        _CharacterStat(CharacterStatValueType.intWithCalculatedValue),
+      ];
+      final result = list.consecutiveCounts((a, b) => a.type == b.type);
+      expect(result, [2, 1, 0]);
+    });
+  });
+
   group('addAllIntoSortedList', () {
     test('adds elements to an empty list', () {
       final list = <int>[];

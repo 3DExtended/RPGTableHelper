@@ -522,6 +522,8 @@ abstract class _$CharacterStatDefinitionCWProxy {
 
   CharacterStatDefinition name(String name);
 
+  CharacterStatDefinition groupId(int? groupId);
+
   CharacterStatDefinition helperText(String helperText);
 
   CharacterStatDefinition valueType(CharacterStatValueType valueType);
@@ -546,6 +548,7 @@ abstract class _$CharacterStatDefinitionCWProxy {
   CharacterStatDefinition call({
     String? statUuid,
     String? name,
+    int? groupId,
     String? helperText,
     CharacterStatValueType? valueType,
     CharacterStatEditType? editType,
@@ -567,6 +570,9 @@ class _$CharacterStatDefinitionCWProxyImpl
 
   @override
   CharacterStatDefinition name(String name) => this(name: name);
+
+  @override
+  CharacterStatDefinition groupId(int? groupId) => this(groupId: groupId);
 
   @override
   CharacterStatDefinition helperText(String helperText) =>
@@ -606,6 +612,7 @@ class _$CharacterStatDefinitionCWProxyImpl
   CharacterStatDefinition call({
     Object? statUuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
+    Object? groupId = const $CopyWithPlaceholder(),
     Object? helperText = const $CopyWithPlaceholder(),
     Object? valueType = const $CopyWithPlaceholder(),
     Object? editType = const $CopyWithPlaceholder(),
@@ -622,6 +629,10 @@ class _$CharacterStatDefinitionCWProxyImpl
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
+      groupId: groupId == const $CopyWithPlaceholder()
+          ? _value.groupId
+          // ignore: cast_nullable_to_non_nullable
+          : groupId as int?,
       helperText:
           helperText == const $CopyWithPlaceholder() || helperText == null
               ? _value.helperText
@@ -1232,6 +1243,7 @@ CharacterStatDefinition _$CharacterStatDefinitionFromJson(
     CharacterStatDefinition(
       statUuid: json['statUuid'] as String,
       name: json['name'] as String,
+      groupId: (json['groupId'] as num?)?.toInt(),
       helperText: json['helperText'] as String,
       valueType:
           $enumDecode(_$CharacterStatValueTypeEnumMap, json['valueType']),
@@ -1249,6 +1261,7 @@ Map<String, dynamic> _$CharacterStatDefinitionToJson(
       'name': instance.name,
       'statUuid': instance.statUuid,
       'helperText': instance.helperText,
+      'groupId': instance.groupId,
       'valueType': _$CharacterStatValueTypeEnumMap[instance.valueType]!,
       'editType': _$CharacterStatEditTypeEnumMap[instance.editType]!,
       'isOptionalForAlternateForms': instance.isOptionalForAlternateForms,
@@ -1264,6 +1277,13 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.intWithMaxValue: 'intWithMaxValue',
   CharacterStatValueType.multiselect: 'multiselect',
   CharacterStatValueType.intWithCalculatedValue: 'intWithCalculatedValue',
+  CharacterStatValueType.singleImage: 'singleImage',
+  CharacterStatValueType.listOfIntWithCalculatedValues:
+      'listOfIntWithCalculatedValues',
+  CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+      'characterNameWithLevelAndAdditionalDetails',
+  CharacterStatValueType.listOfIntsWithIcons: 'listOfIntsWithIcons',
+  CharacterStatValueType.companionSelector: 'companionSelector',
 };
 
 const _$CharacterStatEditTypeEnumMap = {

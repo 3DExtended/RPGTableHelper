@@ -1,25 +1,61 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.Base;
 using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.EfCore;
 
 public class RpgDbContext : DbContext
 {
-    public RpgDbContext(DbContextOptions<RpgDbContext> options)
-        : base(options) { }
+    private readonly ISystemClock _systemClock;
+
+    public RpgDbContext(ISystemClock systemClock, DbContextOptions<RpgDbContext> options)
+        : base(options)
+    {
+        _systemClock = systemClock;
+        SavingChanges += OnSavingChanges;
+    }
+
+    private void OnSavingChanges(object? sender, SavingChangesEventArgs e)
+    {
+        var now = _systemClock.Now;
+
+        foreach (var entry in ChangeTracker.Entries<EntityBase<Guid>>())
+        {
+            if (entry.State is EntityState.Added)
+            {
+                entry.Entity.CreationDate = now;
+            }
+
+            if (entry.State is EntityState.Added or EntityState.Modified)
+            {
+                entry.Entity.LastModifiedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<EntityBase<int>>())
+        {
+            if (entry.State is EntityState.Added)
+            {
+                entry.Entity.CreationDate = now;
+            }
+
+            if (entry.State is EntityState.Added or EntityState.Modified)
+            {
+                entry.Entity.LastModifiedAt = now;
+            }
+        }
+    }
 
     public DbSet<CampagneEntity> Campagnes { get; set; } = default!;
     public DbSet<PlayerCharacterEntity> PlayerCharacters { get; set; } = default!;
-
     public DbSet<UserEntity> Users { get; set; } = default!;
     public DbSet<UserCredentialEntity> UserCredentials { get; set; } = default!;
     public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
     public DbSet<ImageMetaDataEntity> imageMetaDatas { get; set; } = default!;
-
     public DbSet<CampagneJoinRequestEntity> CampagneJoinRequests { get; set; } = default!;
-
     public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

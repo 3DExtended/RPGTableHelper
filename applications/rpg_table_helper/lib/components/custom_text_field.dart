@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -20,55 +23,71 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: TextField(
-        scrollPadding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16),
-        minLines: keyboardType == TextInputType.multiline
-            ? 5
-            : (password == true ? 1 : null),
-        maxLines: keyboardType == TextInputType.multiline
-            ? 5
-            : (password == true ? 1 : null),
-        keyboardType: keyboardType,
-        textCapitalization: TextCapitalization.sentences,
-        obscureText: password ?? false,
-        enableSuggestions: true,
-        scribbleEnabled: true,
-        decoration: InputDecoration(
-          helperText: placeholderText,
-          labelText: labelText,
-          alignLabelWithHint: true,
-          enabledBorder: newDesign != true
-              ? null
-              : OutlineInputBorder(
-                  borderSide: BorderSide(width: 1, color: darkColor),
-                ),
-          border: OutlineInputBorder(
-            borderSide: newDesign != true
-                ? BorderSide()
-                : BorderSide(width: 1, color: darkColor),
+    return LayoutBuilder(builder: (context, contraints) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: TextField(
+          scrollPadding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom + 16),
+          minLines: keyboardType == TextInputType.multiline
+              ? 5
+              : (password == true ? 1 : null),
+          maxLines: keyboardType == TextInputType.multiline
+              ? 5
+              : (password == true ? 1 : null),
+          keyboardType: keyboardType,
+          textCapitalization: TextCapitalization.sentences,
+          obscureText: password ?? false,
+          enableSuggestions: true,
+          scribbleEnabled: true,
+          decoration: InputDecoration(
+            suffixIcon: contraints.maxWidth > 350 &&
+                    keyboardType != TextInputType.multiline
+                ? CustomButtonNewdesign(
+                    isSubbutton: true,
+                    variant: CustomButtonNewdesignVariant.FlatButton,
+                    icon: CustomFaIcon(
+                        color: darkColor,
+                        size: 16,
+                        icon: FontAwesomeIcons.xmark),
+                    onPressed: () {
+                      textEditingController.clear();
+                    },
+                  )
+                : null,
+            helperText: placeholderText,
+            labelText: labelText,
+            alignLabelWithHint: true,
+            enabledBorder: newDesign != true
+                ? null
+                : OutlineInputBorder(
+                    borderSide: BorderSide(width: 1, color: darkColor),
+                  ),
+            border: OutlineInputBorder(
+              borderSide: newDesign != true
+                  ? BorderSide()
+                  : BorderSide(width: 1, color: darkColor),
+            ),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .labelLarge!
+                .copyWith(color: newDesign == true ? darkTextColor : textColor),
+            labelStyle: Theme.of(context)
+                .textTheme
+                .labelLarge!
+                .copyWith(color: newDesign == true ? darkTextColor : textColor),
+            helperStyle: Theme.of(context)
+                .textTheme
+                .labelSmall!
+                .copyWith(color: newDesign == true ? darkTextColor : textColor),
           ),
-          hintStyle: Theme.of(context)
+          style: Theme.of(context)
               .textTheme
               .labelLarge!
               .copyWith(color: newDesign == true ? darkTextColor : textColor),
-          labelStyle: Theme.of(context)
-              .textTheme
-              .labelLarge!
-              .copyWith(color: newDesign == true ? darkTextColor : textColor),
-          helperStyle: Theme.of(context)
-              .textTheme
-              .labelSmall!
-              .copyWith(color: newDesign == true ? darkTextColor : textColor),
+          controller: textEditingController,
         ),
-        style: Theme.of(context)
-            .textTheme
-            .labelLarge!
-            .copyWith(color: newDesign == true ? darkTextColor : textColor),
-        controller: textEditingController,
-      ),
-    );
+      );
+    });
   }
 }

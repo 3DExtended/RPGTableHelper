@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_character_card.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -37,6 +37,7 @@ void main() {
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -45,6 +46,9 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )
@@ -58,6 +62,7 @@ void main() {
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -66,6 +71,9 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )
@@ -79,50 +87,21 @@ void main() {
         isLoadingNewImage: false,
         characterSingleNumberStats: [
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
-                name: "AC",
-                helperText: "Rüstungsklasse",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
-              serializedValue: '{"value": 12}',
-            )
+            label: "AC",
+            value: 12,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
-                name: "SP",
-                helperText: "Geschwindigkeit",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
-              serializedValue: '{"value": 7}',
-            )
+            label: "SP",
+            value: 7,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
-                name: "Temp HP",
-                helperText: "Temporäre HP",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
-              serializedValue: '{"value": 2}',
-            )
-          )
+            label: "Temp HP",
+            value: 2,
+          ),
         ],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -131,6 +110,9 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )
@@ -144,92 +126,33 @@ void main() {
         isLoadingNewImage: false,
         characterSingleNumberStats: [
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
-                name: "AC",
-                helperText: "Rüstungsklasse",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
-              serializedValue: '{"value": 12}',
-            )
+            label: "AC",
+            value: 12,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
-                name: "SP",
-                helperText: "Geschwindigkeit",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
-              serializedValue: '{"value": 7}',
-            )
+            label: "SP",
+            value: 7,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
-                name: "Temp HP",
-                helperText: "Temporäre HP",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
-              serializedValue: '{"value": 2}',
-            )
+            label: "Temp HP",
+            value: 2,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
-                name: "AC",
-                helperText: "Rüstungsklasse",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "4282d516-f806-464f-8888-a1a21dca18f6",
-              serializedValue: '{"value": 12}',
-            )
+            label: "AC",
+            value: 12,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
-                name: "SP",
-                helperText: "Geschwindigkeit",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "1d65ffd7-5053-42bd-be81-e97cfd521ec0",
-              serializedValue: '{"value": 7}',
-            )
+            label: "SP",
+            value: 7,
           ),
           (
-            CharacterStatDefinition(
-                isOptionalForAlternateForms: false,
-                isOptionalForCompanionCharacters: false,
-                statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
-                name: "Temp HP",
-                helperText: "Temporäre HP",
-                valueType: CharacterStatValueType.int,
-                editType: CharacterStatEditType.oneTap),
-            RpgCharacterStatValue(
-              statUuid: "874ca279-fdd9-4a03-81b5-4e157d5d4f4d",
-              serializedValue: '{"value": 2}',
-            )
-          ),
+            label: "Temp HP",
+            value: 2,
+          )
         ],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
+              groupId: null,
               isOptionalForAlternateForms: false,
               isOptionalForCompanionCharacters: false,
               statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
@@ -238,6 +161,9 @@ void main() {
               valueType: CharacterStatValueType.intWithMaxValue,
               editType: CharacterStatEditType.oneTap),
           RpgCharacterStatValue(
+            hideFromCharacterScreen: false,
+            hideLabelOfStat: false,
+            variant: null,
             statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
             serializedValue: '{"value": 12, "maxValue": 17}',
           )

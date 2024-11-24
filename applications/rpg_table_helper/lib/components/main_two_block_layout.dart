@@ -7,7 +7,6 @@ import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/screens/choose_player_or_dm_modal.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class MainTwoBlockLayout extends ConsumerWidget {
@@ -94,7 +93,6 @@ class MainTwoBlockLayout extends ConsumerWidget {
                   } else {
                     // open "connect modal"
                     if (isConnectedToServer) {
-                      await showChoosePlayerOrDmModal(context);
                     } else {
                       // This is a fallback such that the dm can work offline on their configurations
                       Navigator.of(context)

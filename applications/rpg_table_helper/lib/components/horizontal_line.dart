@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/constants.dart';
 
 class HorizontalLine extends StatelessWidget {
-  const HorizontalLine({
-    super.key,
-  });
+  final bool? useDarkColor;
+
+  const HorizontalLine({super.key, this.useDarkColor});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class HorizontalLine extends StatelessWidget {
         Expanded(
           child: Container(
             height: 1,
-            color: middleBgColor,
+            color: useDarkColor == true ? darkColor : middleBgColor,
           ),
         ),
       ],

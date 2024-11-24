@@ -31,7 +31,8 @@ Future<(String iconName, Color iconColor)?> showSelectIconWithColorModal(
     {GlobalKey<NavigatorState>? overrideNavigatorKey,
     String? alreadySelectedIcoName,
     String? titleSuffix,
-    Color? alreadySelectedIconColor}) async {
+    Color? alreadySelectedIconColor,
+    bool? disableColorSelect}) async {
   // show error to user
   return await customShowCupertinoModalBottomSheet<
           (String iconName, Color iconColor)>(
@@ -53,6 +54,7 @@ Future<(String iconName, Color iconColor)?> showSelectIconWithColorModal(
           alreadySelectedIcoName: alreadySelectedIcoName,
           alreadySelectedIconColor: alreadySelectedIconColor,
           titleSuffix: titleSuffix,
+          disableColorSelect: disableColorSelect,
         );
       });
 }
@@ -64,10 +66,12 @@ class SelectIconWithColorModalContent extends StatefulWidget {
     this.alreadySelectedIcoName,
     this.alreadySelectedIconColor,
     this.titleSuffix,
+    this.disableColorSelect,
   });
 
   final double modalPadding;
   final Color? alreadySelectedIconColor;
+  final bool? disableColorSelect;
   final String? alreadySelectedIcoName;
 
   final String? titleSuffix;
@@ -142,46 +146,48 @@ class _SelectIconWithColorModalContentState
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
-                                  Text(
-                                    "Select a color:",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium!
-                                        .copyWith(
-                                          color: darkTextColor,
-                                          fontSize: 24,
-                                        ),
-                                  ),
+                                  if (widget.disableColorSelect != true)
+                                    Text(
+                                      "Select a color:",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium!
+                                          .copyWith(
+                                            color: darkTextColor,
+                                            fontSize: 24,
+                                          ),
+                                    ),
                                   // show colors:
-                                  Wrap(
-                                    spacing: 10,
-                                    runSpacing: 10,
-                                    children: allIconColors
-                                        .map((color) => CustomButtonNewdesign(
-                                              isSubbutton: false,
-                                              variant: selectedIconColor ==
-                                                      color
-                                                  ? CustomButtonNewdesignVariant
-                                                      .DarkButton
-                                                  : CustomButtonNewdesignVariant
-                                                      .Default,
-                                              onPressed: () {
-                                                setState(() {
-                                                  selectedIconColor = color;
-                                                });
-                                              },
-                                              icon: Container(
-                                                width: 32,
-                                                height: 32,
-                                                color: color,
-                                              ),
-                                            ))
-                                        .toList(),
-                                  ),
-
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                  if (widget.disableColorSelect != true)
+                                    Wrap(
+                                      spacing: 10,
+                                      runSpacing: 10,
+                                      children: allIconColors
+                                          .map((color) => CustomButtonNewdesign(
+                                                isSubbutton: false,
+                                                variant: selectedIconColor ==
+                                                        color
+                                                    ? CustomButtonNewdesignVariant
+                                                        .DarkButton
+                                                    : CustomButtonNewdesignVariant
+                                                        .Default,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    selectedIconColor = color;
+                                                  });
+                                                },
+                                                icon: Container(
+                                                  width: 32,
+                                                  height: 32,
+                                                  color: color,
+                                                ),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  if (widget.disableColorSelect != true)
+                                    SizedBox(
+                                      height: 20,
+                                    ),
 
                                   Text(
                                     "Select an icon:",

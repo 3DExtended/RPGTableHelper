@@ -29,7 +29,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
         modalPadding = 20.0;
       }
       return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.transparent,
         body: Padding(
           padding: EdgeInsets.only(
