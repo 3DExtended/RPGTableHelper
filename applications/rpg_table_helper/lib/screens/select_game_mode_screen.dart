@@ -5,13 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
+import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
-import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -94,180 +94,153 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     if (kDebugMode || !kDebugMode) isLandscape = true;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            "assets/images/bg.png",
-            fit: BoxFit.fill,
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: const Color.fromARGB(79, 0, 0, 0),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                isLandscape ? outerPadding : outerPadding * 2,
-                outerPadding * 2,
-                outerPadding * 2,
-                !isLandscape ? outerPadding : outerPadding * 2,
-              ),
-              child: StyledBox(
-                overrideInnerDecoration: BoxDecoration(
-                  image: const DecorationImage(
-                    image: AssetImage(
-                      "assets/images/bg.png",
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Container(
-                  color: const Color.fromARGB(34, 67, 67, 67),
-                  child: campagnes == null
-                      ? CustomLoadingSpinner()
-                      : LayoutBuilder(builder: (context, constraints) {
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Select Game Mode", // TODO localize
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium!
-                                    .copyWith(
-                                      color: Colors.white,
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              HorizontalLine(),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Expanded(
-                                child: RowColumnFlipper(
-                                  isLandscapeMode: isLandscape,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    showLoadingSpinner &&
-                                            !DependencyProvider.of(context)
-                                                .isMocked
-                                        ? CustomLoadingSpinner()
-                                        : ConditionalWidgetWrapper(
-                                            condition: isLandscape,
-                                            wrapper: (context, child) =>
-                                                Expanded(child: child),
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                left:
-                                                    !isLandscape ? 20.0 : 20.0,
-                                                right:
-                                                    !isLandscape ? 20.0 : 0.0,
-                                              ),
-                                              child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    AddableColumnHeader(
-                                                        title:
-                                                            "Choose a campagne", // TODO localize
-                                                        subtitle:
-                                                            "Start as DM", // TODO localize
-                                                        subsubtitle:
-                                                            "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
-                                                        onPressedHandler:
-                                                            () {}),
-                                                    Expanded(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        child: Column(
-                                                          children: [
-                                                            ...getOpenCampagnes(),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ]),
-                                            )),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                    isLandscape
-                                        ? Container(
-                                            width: 1,
-                                            height: constraints.maxHeight - 120,
-                                            color: const Color.fromARGB(
-                                                78, 255, 255, 255),
-                                          )
-                                        : HorizontalLine(),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                    showLoadingSpinner &&
-                                            !DependencyProvider.of(context)
-                                                .isMocked
-                                        ? CustomLoadingSpinner()
-                                        : ConditionalWidgetWrapper(
-                                            condition: isLandscape,
-                                            wrapper: (context, child) =>
-                                                Expanded(child: child),
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                left: !isLandscape ? 20.0 : 0.0,
-                                                right:
-                                                    !isLandscape ? 20.0 : 0.0,
-                                              ),
-                                              child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    AddableColumnHeader(
-                                                        title:
-                                                            "Choose a character (Join as Player)", // TODO localize
-                                                        subtitle:
-                                                            "Join as Player", // TODO localize
-                                                        subsubtitle:
-                                                            "You own ${characters?.length ?? 0} character.", // TODO localize
-                                                        onPressedHandler:
-                                                            () {}),
-                                                    Expanded(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        child: Column(
-                                                          children: [
-                                                            ...getCharacters(),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ]),
-                                            ),
-                                          ),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          );
-                        }),
-                ),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        color: bgColor,
+        child: Column(
+          children: [
+            NavbarNewDesign(
+              backInsteadOfCloseIcon: false,
+              closeFunction: null,
+              menuOpen: null,
+              useTopSafePadding: true,
+              titleWidget: Text(
+                "Select Game Mode", // TODO localize
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: textColor, fontSize: 24),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: campagnes == null ||
+                      (showLoadingSpinner == true &&
+                          !DependencyProvider.of(context).isMocked)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(child: CustomLoadingSpinner()),
+                          ],
+                        ),
+                      ],
+                    )
+                  : LayoutBuilder(builder: (context, constraints) {
+                      return Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: RowColumnFlipper(
+                                isLandscapeMode: isLandscape,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ConditionalWidgetWrapper(
+                                      condition: isLandscape,
+                                      wrapper: (context, child) =>
+                                          Expanded(child: child),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          left: !isLandscape ? 20.0 : 20.0,
+                                          right: !isLandscape ? 20.0 : 0.0,
+                                        ),
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              AddableColumnHeader(
+                                                  title:
+                                                      "Choose a campagne", // TODO localize
+                                                  subtitle:
+                                                      "Start as DM", // TODO localize
+                                                  subsubtitle:
+                                                      "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
+                                                  onPressedHandler: () {
+                                                    // TODO add new campagne
+                                                  }),
+                                              Expanded(
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    children: [
+                                                      ...getOpenCampagnes(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ]),
+                                      )),
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  isLandscape
+                                      ? Container(
+                                          width: 1,
+                                          height: constraints.maxHeight - 40,
+                                          color: darkColor,
+                                        )
+                                      : HorizontalLine(),
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  ConditionalWidgetWrapper(
+                                    condition: isLandscape,
+                                    wrapper: (context, child) =>
+                                        Expanded(child: child),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        left: !isLandscape ? 20.0 : 0.0,
+                                        right: !isLandscape ? 20.0 : 0.0,
+                                      ),
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AddableColumnHeader(
+                                                title:
+                                                    "Choose a character (Join as Player)", // TODO localize
+                                                subtitle:
+                                                    "Join as Player", // TODO localize
+                                                subsubtitle:
+                                                    "You own ${characters?.length ?? 0} character.", // TODO localize
+                                                onPressedHandler: () {
+                                                  // TODO add new character
+                                                }),
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    ...getCharacters(),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ]),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -328,7 +301,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 },
                 minSize: 0,
                 padding: EdgeInsets.all(0),
-                child: StyledBox(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: darkColor),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -339,6 +315,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                           children: [
                             Expanded(
                               child: CustomMarkdownBody(
+                                  isNewDesign: true,
                                   text:
                                       "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Join Code:__ ${campagne.joinCode}\n\n__Config Length (Debug):__ ${(campagne.rpgConfiguration?.length ?? 0).toString()}"),
                             ),
@@ -434,7 +411,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                     });
                   }
                 },
-                child: StyledBox(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: darkColor),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -457,6 +437,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                       parsedConfig.characterName;
                                 }
                                 return CustomMarkdownBody(
+                                    isNewDesign: true,
                                     text:
                                         "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}");
                               }),
@@ -505,7 +486,7 @@ class AddableColumnHeader extends StatelessWidget {
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: Colors.white,
+                      color: darkTextColor,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -515,14 +496,14 @@ class AddableColumnHeader extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: Colors.white),
+                    .copyWith(color: darkTextColor),
               ),
               Text(
                 subsubtitle,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: Colors.white),
+                    .copyWith(color: darkTextColor),
               ),
             ],
           ),
@@ -531,9 +512,13 @@ class AddableColumnHeader extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: CustomButton(
+            child: CustomButtonNewdesign(
               onPressed: onPressedHandler,
-              icon: CustomFaIcon(size: 12, icon: FontAwesomeIcons.plus),
+              icon: CustomFaIcon(
+                size: 16,
+                icon: FontAwesomeIcons.plus,
+                color: darkColor,
+              ),
             ),
           ),
         )

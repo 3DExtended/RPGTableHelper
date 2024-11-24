@@ -15,7 +15,7 @@ class NavbarNewDesign extends StatelessWidget {
 
   final bool useTopSafePadding;
   final bool backInsteadOfCloseIcon;
-  final Null Function() closeFunction;
+  final Null Function()? closeFunction;
   final Widget titleWidget;
   final Null Function()? menuOpen;
 
@@ -33,13 +33,16 @@ class NavbarNewDesign extends StatelessWidget {
           color: darkColor,
           child: Row(
             children: [
-              CustomButtonNewdesign(
-                variant: CustomButtonNewdesignVariant.FlatButton,
-                onPressed: closeFunction,
-                icon: CustomFaIcon(
-                  icon: backInsteadOfCloseIcon
-                      ? FontAwesomeIcons.chevronLeft
-                      : FontAwesomeIcons.xmark,
+              Opacity(
+                opacity: closeFunction == null ? 0 : 1,
+                child: CustomButtonNewdesign(
+                  variant: CustomButtonNewdesignVariant.FlatButton,
+                  onPressed: closeFunction,
+                  icon: CustomFaIcon(
+                    icon: backInsteadOfCloseIcon
+                        ? FontAwesomeIcons.chevronLeft
+                        : FontAwesomeIcons.xmark,
+                  ),
                 ),
               ),
               Expanded(child: titleWidget),
