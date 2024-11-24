@@ -134,7 +134,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                     )
                   : LayoutBuilder(builder: (context, constraints) {
                       return Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.only(top: 20.0),
                         child: Column(
                           children: [
                             Expanded(
@@ -472,6 +472,7 @@ class AddableColumnHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: 1,
@@ -510,15 +511,12 @@ class AddableColumnHeader extends StatelessWidget {
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: CustomButtonNewdesign(
-              onPressed: onPressedHandler,
-              icon: CustomFaIcon(
-                size: 16,
-                icon: FontAwesomeIcons.plus,
-                color: darkColor,
-              ),
+          child: CustomButtonNewdesign(
+            onPressed: onPressedHandler,
+            icon: CustomFaIcon(
+              size: 16,
+              icon: FontAwesomeIcons.plus,
+              color: darkColor,
             ),
           ),
         )
