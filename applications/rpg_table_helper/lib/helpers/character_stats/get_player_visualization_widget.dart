@@ -143,26 +143,41 @@ Widget renderCompanionSelector(
       companionConfig: companionOfCharacter
     ));
   }
+  companionDetailsToRender =
+      companionDetailsToRender.sortedBy((k) => k.characterName);
 
   return Column(
     children: [
-      ...companionDetailsToRender.map((t) => Padding(
-            padding: EdgeInsets.all(5),
-            child: CustomButtonNewdesign(
-                label: t.characterName,
-                onPressed: () {
-                  // open companion page
-                  navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,
-                      arguments: PlayerPageScreenRouteSettings(
-                        disableEdit: false,
-                        showMoney: false,
-                        characterConfigurationOverride: t.companionConfig,
-                        showInventory: false,
-                        showLore: false,
-                        showRecipes: false,
-                      ));
-                }),
-          )),
+      getIconForIdentifier(
+        name: "paw",
+        color: darkColor,
+        size: 50,
+      ).$2,
+      SizedBox(
+        height: 10,
+      ),
+      Wrap(
+        children: [
+          ...companionDetailsToRender.map((t) => Padding(
+                padding: EdgeInsets.all(5),
+                child: CustomButtonNewdesign(
+                    label: t.characterName,
+                    onPressed: () {
+                      // open companion page
+                      navigatorKey.currentState!.pushNamed(
+                          PlayerPageScreen.route,
+                          arguments: PlayerPageScreenRouteSettings(
+                            disableEdit: false,
+                            showMoney: false,
+                            characterConfigurationOverride: t.companionConfig,
+                            showInventory: false,
+                            showLore: false,
+                            showRecipes: false,
+                          ));
+                    }),
+              )),
+        ],
+      )
     ],
   );
 }
