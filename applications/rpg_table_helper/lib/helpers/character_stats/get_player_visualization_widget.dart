@@ -134,6 +134,7 @@ Widget renderCompanionSelector(
     if (companionOfCharacter == null) continue;
 
     // TODO search for image (still missing access to rpgconfig here...)
+    // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(charactersToRender, rpgConfig)
 
     companionDetailsToRender.add((
       characterName: companionOfCharacter.characterName,
