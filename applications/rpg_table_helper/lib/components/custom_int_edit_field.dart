@@ -43,6 +43,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
   void didUpdateWidget(covariant CustomIntEditField oldWidget) {
     Future.delayed(Duration.zero, () {
       if (currentValue != widget.startValue) {
+        if (!mounted) return;
         setState(() {
           currentValue = widget.startValue;
           textEditingController.text = currentValue.toString();
