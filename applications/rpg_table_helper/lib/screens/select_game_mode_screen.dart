@@ -296,6 +296,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   navigatorKey.currentState!
                       .pushNamed(DmPageScreen.route)
                       .then((asdf) async {
+                    // when returning to this screen we want to stop all connections as the user is "disconnected"
+                    //(in the sense that the DM can't send notifications to this player)
+                    await serverCommunicationService.stopConnection();
+
                     await loadCampagnesAndPlayersFromServer();
                   });
                 },
@@ -348,6 +352,29 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
                   if (character.campagneId != null &&
                       character.campagneId!.$value != null) {
+                    // set initial rpg config
+                    // rpgConfigurationProvider
+                    var rpgService = DependencyProvider.of(context)
+                        .getService<IRpgEntityService>();
+
+                    var campagneLoadResult = await rpgService.getCampagneById(
+                        campagneId: character.campagneId!);
+                    if (!mounted) return;
+                    await campagneLoadResult.possiblyHandleError(context);
+                    if (!mounted) return;
+
+                    if (!campagneLoadResult.isSuccessful) {
+                      return;
+                    }
+
+                    Map<String, dynamic> map = jsonDecode(
+                        campagneLoadResult.result!.rpgConfiguration!);
+
+                    var receivedConfig = RpgConfigurationModel.fromJson(map);
+                    ref
+                        .read(rpgConfigurationProvider.notifier)
+                        .updateConfiguration(receivedConfig);
+
                     if (character.rpgCharacterConfiguration != null &&
                         character.rpgCharacterConfiguration!.isNotEmpty) {
                       var parsedJson = RpgCharacterConfiguration.fromJson(
@@ -367,7 +394,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                     playerCharacterId: character.id!.$value!));
 
                     // start SignalR connection
-
                     await serverCommunicationService.startConnection();
                     if (!mounted) return;
 
@@ -381,6 +407,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                     navigatorKey.currentState!
                         .pushNamed(PlayerPageScreen.route)
                         .then((asdf) async {
+                      // when returning to this screen we want to stop all connections as the user is "disconnected"
+                      //(in the sense that the DM can't send notifications to this player)
+                      await serverCommunicationService.stopConnection();
+
                       await loadCampagnesAndPlayersFromServer();
                     });
                   } else {

@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/lifecycle_event_handler.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
@@ -15,6 +18,7 @@ import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +40,6 @@ class MyApp extends StatefulWidget {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
 class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
@@ -146,13 +149,59 @@ class AppRoutingShell extends ConsumerWidget {
   }
 }
 
-class ThemeConfigurationForApp extends StatelessWidget {
+class ThemeConfigurationForApp extends ConsumerStatefulWidget {
   const ThemeConfigurationForApp({
     super.key,
     required this.child,
   });
 
   final Widget child;
+
+  @override
+  ConsumerState<ThemeConfigurationForApp> createState() =>
+      _ThemeConfigurationForAppState();
+}
+
+class _ThemeConfigurationForAppState
+    extends ConsumerState<ThemeConfigurationForApp> {
+  LifecycleEventHandler? observer;
+
+  // This widget is the root of your application.
+  @override
+  void initState() {
+    super.initState();
+    observer = getObserver();
+    WidgetsBinding.instance.addObserver(observer!);
+  }
+
+  LifecycleEventHandler getObserver() {
+    return LifecycleEventHandler(resumeCallBack: () async {
+      var serverMethods =
+          DependencyProvider.getIt!.get<IServerMethodsService>();
+      var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+
+      // should return early in the case the use is not in the session.
+      if (connectionDetails == null || connectionDetails.isInSession == false) {
+        return;
+      }
+
+      // readd to groups if the connection had to be reastablished
+      await serverMethods.readdToSignalRGroups();
+
+      ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+          ref.read(connectionDetailsProvider).value?.copyWith(
+                    isConnected: true,
+                    isConnecting: false,
+                  ) ??
+              ConnectionDetails.defaultValue());
+    });
+  }
+
+  @override
+  void dispose() {
+    if (observer != null) WidgetsBinding.instance.removeObserver(observer!);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +276,7 @@ class ThemeConfigurationForApp extends StatelessWidget {
           size: 16,
         ),
       ),
-      child: child,
+      child: widget.child,
     );
   }
 }

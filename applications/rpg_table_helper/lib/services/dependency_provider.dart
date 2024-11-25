@@ -136,12 +136,12 @@ class DependencyProvider extends InheritedWidget {
   void _registerService<T extends Object>(T Function() realServiceFactoryFunc,
       T Function() mockServiceFactoryFunc) {
     if (mockOverrides != null && mockOverrides!.keys.any((t) => T == t)) {
-      getIt!.registerLazySingleton<T>(() => mockOverrides![T]!());
+      getIt!.registerSingleton<T>(mockOverrides![T]!());
     } else {
       if (isMocked) {
-        getIt!.registerLazySingleton<T>(mockServiceFactoryFunc);
+        getIt!.registerSingleton<T>(mockServiceFactoryFunc());
       } else {
-        getIt!.registerLazySingleton<T>(realServiceFactoryFunc);
+        getIt!.registerSingleton<T>(realServiceFactoryFunc());
       }
     }
   }

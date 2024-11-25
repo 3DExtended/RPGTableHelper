@@ -24,6 +24,8 @@ abstract class IRpgEntityService {
   Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
       {required String campagneName, String? rpgConfig});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharacetersForPlayer();
+  Future<HRResponse<Campagne>> getCampagneById(
+      {required CampagneIdentifier campagneId});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
       {required CampagneIdentifier campagneId});
 
@@ -212,6 +214,23 @@ class RpgEntityService extends IRpgEntityService {
 
     return playerCharactersForCampagne;
   }
+
+  @override
+  Future<HRResponse<Campagne>> getCampagneById(
+      {required CampagneIdentifier campagneId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          'a2cebb9d-02e5-4731-8b60-0a7747daffeb');
+    }
+
+    var loadedCampagne = await HRResponse.fromApiFuture(
+        api.campagneGetcampagneCampagneidGet(campagneid: campagneId.$value),
+        'Could not load campagne by id.',
+        '2e44ba90-8d1b-4644-b8d6-3a66719109a4');
+
+    return loadedCampagne;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -345,5 +364,12 @@ class MockRpgEntityService extends IRpgEntityService {
             ),
           )
         ]));
+  }
+
+  @override
+  Future<HRResponse<Campagne>> getCampagneById(
+      {required CampagneIdentifier campagneId}) {
+    // TODO: implement getCampagneById
+    throw UnimplementedError();
   }
 }
