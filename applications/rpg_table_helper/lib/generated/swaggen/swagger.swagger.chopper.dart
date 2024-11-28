@@ -117,6 +117,21 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<String>> _imageStreamimageuploadPost({String? campagneId}) {
+    final Uri $url = Uri.parse('/Image/streamimageupload');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'campagneId': campagneId
+    };
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {

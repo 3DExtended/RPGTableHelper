@@ -165,6 +165,22 @@ abstract class Swagger extends ChopperService {
     @Body() required String? body,
   });
 
+  ///Streams an image upload directly to the server.
+  ///@param campagneId
+  Future<chopper.Response<String>> imageStreamimageuploadPost(
+      {String? campagneId}) {
+    return _imageStreamimageuploadPost(campagneId: campagneId);
+  }
+
+  ///Streams an image upload directly to the server.
+  ///@param campagneId
+  @Post(
+    path: '/Image/streamimageupload',
+    optionalBody: true,
+  )
+  Future<chopper.Response<String>> _imageStreamimageuploadPost(
+      {@Query('campagneId') String? campagneId});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(

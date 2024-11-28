@@ -68,7 +68,9 @@ class ServerCommunicationService extends IServerCommunicationService {
   ServerCommunicationService({
     required super.widgetRef,
     required super.apiConnectorService,
-  }) : super(isMock: false);
+  }) : super(isMock: false) {
+    print("New ServerCommunicationService created");
+  }
 
   void buildHubConnection() {
     // NOTE: Headers are not working in this current signal r version...
@@ -275,7 +277,8 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   Future tryOpenConnection() async {
-    if (hubConnection?.state == HubConnectionState.Disconnected) {
+    if (hubConnection?.state == HubConnectionState.Disconnected ||
+        hubConnection?.state == HubConnectionState.Disconnecting) {
       // restart connection here!
       completeFunctionRegistration();
     }

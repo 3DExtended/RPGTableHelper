@@ -581,6 +581,67 @@
         }
       }
     },
+    "/Image/streamimageupload": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Streams an image upload directly to the server.",
+        "description": "This endpoint accepts raw binary data and streams it into the server.",
+        "parameters": [{
+          "name": "campagneId",
+          "in": "query",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The image was uploaded successfully.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid image or file size exceeded the limit.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error while processing the file."
+          }
+        }
+      }
+    },
     "/PlayerCharacter/createcharacter": {
       "post": {
         "tags": [
