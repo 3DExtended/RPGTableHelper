@@ -2,13 +2,42 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.RpgEntities;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;
 
 public static class RpgDbContextHelpers
 {
+    public static async Task<Campagne> CreateCampagneInDb(
+        IDbContextFactory<RpgDbContext> contextFactory,
+        IMapper mapper,
+        User dmOfCampagne,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var campagne = new Campagne
+        {
+            CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            CampagneName = "asdf",
+            DmUserId = dmOfCampagne.Id,
+            JoinCode = "123-321",
+            RpgConfiguration = string.Empty,
+        };
+
+        using (var context = contextFactory.CreateDbContext())
+        {
+            var campagneEntity = mapper.Map<CampagneEntity>(campagne);
+            await context.Campagnes.AddAsync(campagneEntity, cancellationToken);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<Campagne>(campagneEntity);
+        }
+    }
+
     public static async Task<User> CreateUserInDb(
         IDbContextFactory<RpgDbContext> contextFactory,
         IMapper mapper,
@@ -55,13 +84,8 @@ public static class RpgDbContextHelpers
 
         using (var context = contextFactory.CreateDbContext())
         {
-            var registerEntity = mapper.Map<OpenSignInProviderRegisterRequestEntity>(
-                openSignInProviderRegisterRequest
-            );
-            await context.OpenSignInProviderRegisterRequests.AddAsync(
-                registerEntity,
-                cancellationToken
-            );
+            var registerEntity = mapper.Map<OpenSignInProviderRegisterRequestEntity>(openSignInProviderRegisterRequest);
+            await context.OpenSignInProviderRegisterRequests.AddAsync(registerEntity, cancellationToken);
 
             await context.SaveChangesAsync();
             return mapper.Map<OpenSignInProviderRegisterRequest>(registerEntity);

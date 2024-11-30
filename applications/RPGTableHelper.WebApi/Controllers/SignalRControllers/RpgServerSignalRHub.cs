@@ -1,10 +1,7 @@
 using System.Security.Cryptography;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-
 using Prodot.Patterns.Cqrs;
-
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
@@ -348,8 +345,12 @@ public class RpgServerSignalRHub : Hub
         string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
         string fileName =
             $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
+
         string currentDirectory = Directory.GetCurrentDirectory();
-        string filePath = Path.Combine(currentDirectory, fileName);
+        string fileBackupFolders = "configbackups";
+        Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
+
+        string filePath = Path.Combine(currentDirectory, fileBackupFolders, fileName);
         try
         {
             // Write the long string to the file
@@ -406,8 +407,12 @@ public class RpgServerSignalRHub : Hub
 
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
         string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";
+
         string currentDirectory = Directory.GetCurrentDirectory();
-        string filePath = Path.Combine(currentDirectory, fileName);
+        string fileBackupFolders = "configbackups";
+        Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
+
+        string filePath = Path.Combine(currentDirectory, fileBackupFolders, fileName);
         try
         {
             // Write the long string to the file

@@ -52,11 +52,14 @@ class BorderedImage extends StatelessWidget {
                 children: <Widget>[
                   ChangeColors(
                     saturation: greyscale == true ? -1 : 0,
-                    child: Image.asset(
-                      imageUrl != null && imageUrl!.startsWith("assets/")
-                          ? imageUrl!
-                          : "assets/images/itemcard_placeholder.png",
-                      fit: BoxFit.fitWidth,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Image.asset(
+                        imageUrl != null && imageUrl!.startsWith("assets/")
+                            ? imageUrl!
+                            : "assets/images/itemcard_placeholder.png",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   if (!Platform.environment.containsKey('FLUTTER_TEST') &&
@@ -65,22 +68,25 @@ class BorderedImage extends StatelessWidget {
                     Center(
                       child: ChangeColors(
                         saturation: greyscale == true ? -1 : 0,
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) {
-                            return Image.memory(
-                              kTransparentImage,
-                              fit: BoxFit.fitWidth,
-                            );
-                          },
-                          imageUrl: imageUrl!,
-                          cacheManager: CacheManager(Config(
-                            "rpgborderedimage",
-                            stalePeriod: const Duration(
-                                days: 30), // images dont change, urls to
-                          )),
-                          fit: BoxFit.fitWidth,
-                          fadeInDuration: const Duration(milliseconds: 500),
-                          fadeOutDuration: const Duration(milliseconds: 500),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: CachedNetworkImage(
+                            placeholder: (context, url) {
+                              return Image.memory(
+                                kTransparentImage,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                            imageUrl: imageUrl!,
+                            cacheManager: CacheManager(Config(
+                              "rpgborderedimage",
+                              stalePeriod: const Duration(
+                                  days: 30), // images dont change, urls to
+                            )),
+                            fit: BoxFit.cover,
+                            fadeInDuration: const Duration(milliseconds: 500),
+                            fadeOutDuration: const Duration(milliseconds: 500),
+                          ),
                         ),
                       ),
                     ),

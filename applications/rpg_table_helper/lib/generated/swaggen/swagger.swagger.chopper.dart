@@ -117,15 +117,26 @@ final class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<String>> _imageStreamimageuploadPost({String? campagneId}) {
+  Future<Response<String>> _imageStreamimageuploadPost({
+    String? campagneId,
+    List<int>? image,
+  }) {
     final Uri $url = Uri.parse('/Image/streamimageupload');
     final Map<String, dynamic> $params = <String, dynamic>{
       'campagneId': campagneId
     };
+    final List<PartValue> $parts = <PartValue>[
+      PartValueFile<List<int>?>(
+        'image',
+        image,
+      )
+    ];
     final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
+      parts: $parts,
+      multipart: true,
       parameters: $params,
     );
     return client.send<String, String>($request);

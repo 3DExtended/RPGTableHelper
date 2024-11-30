@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
+import 'package:rpg_table_helper/services/internals/internal_image_upload_service.dart';
 
 abstract class IRpgEntityService {
   final bool isMock;
@@ -28,6 +30,11 @@ abstract class IRpgEntityService {
       {required CampagneIdentifier campagneId});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
       {required CampagneIdentifier campagneId});
+
+  Future<HRResponse<String>> uploadImageToCampagneStorage({
+    required CampagneIdentifier campagneId,
+    required MultipartFile image,
+  });
 
   Future<HRResponse<CampagneJoinRequestIdentifier>>
       createNewCampagneJoinRequest(
@@ -231,6 +238,29 @@ class RpgEntityService extends IRpgEntityService {
 
     return loadedCampagne;
   }
+
+  @override
+  Future<HRResponse<String>> uploadImageToCampagneStorage({
+    required CampagneIdentifier campagneId,
+    required MultipartFile image,
+  }) async {
+    var chopperClient =
+        await apiConnectorService.getChopperClient(requiresJwt: true);
+    if (chopperClient == null) {
+      return HRResponse.error('Could not load chopper client.',
+          '648167cd-9318-47df-b81b-a6cd87791860');
+    }
+
+    var internalImageUploadService =
+        InternalImageUploadService.create(chopperClient);
+
+    var result = await HRResponse.fromApiFuture(
+        internalImageUploadService.uploadImage(campagneId.$value!, image),
+        'Could not upload image.',
+        '286c7e84-0875-4c2c-9b56-a42af6cdcaf9');
+
+    return result;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -370,6 +400,15 @@ class MockRpgEntityService extends IRpgEntityService {
   Future<HRResponse<Campagne>> getCampagneById(
       {required CampagneIdentifier campagneId}) {
     // TODO: implement getCampagneById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<String>> uploadImageToCampagneStorage({
+    required CampagneIdentifier campagneId,
+    required MultipartFile image,
+  }) {
+    // TODO: implement uploadImageToCampagneStorage
     throw UnimplementedError();
   }
 }

@@ -263,21 +263,23 @@ class ServerCommunicationService extends IServerCommunicationService {
   @override
   Future executeServerFunction(String functionName,
       {List<Object>? args}) async {
+    if (!connectionIsOpen) {
+      await tryOpenConnection();
+    }
+
     if (hubConnection == null) {
       print("DID NOT SEND TO SERVER: $functionName");
 
       // dont send something if not connected
       return;
     }
-    if (!connectionIsOpen) {
-      await tryOpenConnection();
-    }
 
     await hubConnection!.invoke(functionName, args: args);
   }
 
   Future tryOpenConnection() async {
-    if (hubConnection?.state == HubConnectionState.Disconnected ||
+    if (hubConnection == null ||
+        hubConnection?.state == HubConnectionState.Disconnected ||
         hubConnection?.state == HubConnectionState.Disconnecting) {
       // restart connection here!
       completeFunctionRegistration();

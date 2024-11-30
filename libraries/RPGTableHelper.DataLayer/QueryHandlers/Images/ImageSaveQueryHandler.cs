@@ -14,7 +14,8 @@ public class ImageSaveQueryHandler : IQueryHandler<ImageSaveQuery, Unit>
             throw new NotImplementedException();
         }
 
-        var filepath = "./userimages/" + query.MetaData.Id.Value.ToString().ToLower();
+        var pathPart = "./userimages/";
+        var filepath = pathPart + query.MetaData.Id.Value.ToString().ToLower();
 
         filepath += query.MetaData.ImageType switch
         {
@@ -22,6 +23,8 @@ public class ImageSaveQueryHandler : IQueryHandler<ImageSaveQuery, Unit>
             Contracts.Models.Images.ImageType.PNG => ".png",
             _ => throw new NotImplementedException(),
         };
+
+        Directory.CreateDirectory(pathPart);
 
         using (var fileStream = File.Create(filepath))
         {

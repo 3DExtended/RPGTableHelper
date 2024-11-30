@@ -5,6 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
@@ -22,6 +26,7 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/image_generation_service.dart';
+import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:shadow_widget/shadow_widget.dart';
 
 import '../../../helpers/modal_helpers.dart';
@@ -600,7 +605,7 @@ class _CreateOrEditItemModalContentState
               categoryIconName: itemCategoryForItem?.iconName,
             ),
             SizedBox(
-              height: 12,
+              height: 20,
             ),
             Row(
               children: [
@@ -623,64 +628,165 @@ class _CreateOrEditItemModalContentState
                             });
                           }),
                 Spacer(),
-                CupertinoButton(
-                  onPressed: isLoadingNewImage == true
-                      ? null
-                      : () async {
-                          if (imageDescriptionController.text == "" ||
-                              imageDescriptionController.text.length < 5) {
-                            return;
-                          }
+                Column(
+                  children: [
+                    CupertinoButton(
+                      onPressed: isLoadingNewImage == true
+                          ? null
+                          : () async {
+                              if (imageDescriptionController.text == "" ||
+                                  imageDescriptionController.text.length < 5) {
+                                return;
+                              }
 
+                              var connectionDetails = ref
+                                  .read(connectionDetailsProvider)
+                                  .requireValue;
+                              var campagneId = connectionDetails.campagneId;
+                              if (campagneId == null) return;
+
+                              setState(() {
+                                isLoadingNewImage = true;
+                              });
+
+                              // TODO generate image!
+                              var service = DependencyProvider.of(context)
+                                  .getService<IImageGenerationService>();
+
+                              var generationResult =
+                                  await service.createNewImageAndGetUrl(
+                                prompt: imageDescriptionController.text,
+                                campagneId:
+                                    CampagneIdentifier($value: campagneId),
+                              );
+
+                              if (!context.mounted) return;
+                              await generationResult
+                                  .possiblyHandleError(context);
+                              if (!context.mounted) return;
+
+                              if (generationResult.isSuccessful &&
+                                  generationResult.result != null) {
+                                setState(() {
+                                  _urlsOfGeneratedImages
+                                      .add(generationResult.result!);
+                                  _selectedGeneratedImage =
+                                      _urlsOfGeneratedImages.length - 1;
+                                });
+                              }
+                              setState(() {
+                                isLoadingNewImage = false;
+                              });
+                            },
+                      minSize: 0,
+                      padding: EdgeInsets.all(0),
+                      child: Text(
+                        "Neues Bild",
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: isLoadingNewImage
+                                  ? middleBgColor
+                                  : accentColor,
+                              decoration: TextDecoration.underline,
+                              decorationColor: isLoadingNewImage
+                                  ? middleBgColor
+                                  : accentColor,
+                              fontSize: 16,
+                            ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.all(0),
+                        child: Text(
+                          "Bild auswählen",
+                          style:
+                              Theme.of(context).textTheme.titleLarge!.copyWith(
+                                    color: accentColor,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: accentColor,
+                                    fontSize: 16,
+                                  ),
+                        ),
+                        onPressed: () async {
                           var connectionDetails =
                               ref.read(connectionDetailsProvider).requireValue;
                           var campagneId = connectionDetails.campagneId;
                           if (campagneId == null) return;
 
-                          setState(() {
-                            isLoadingNewImage = true;
-                          });
-
-                          // TODO generate image!
-                          var service = DependencyProvider.of(context)
-                              .getService<IImageGenerationService>();
-
-                          var generationResult =
-                              await service.createNewImageAndGetUrl(
-                            prompt: imageDescriptionController.text,
-                            campagneId: CampagneIdentifier($value: campagneId),
-                          );
-
-                          if (!context.mounted) return;
-                          await generationResult.possiblyHandleError(context);
-                          if (!context.mounted) return;
-
-                          if (generationResult.isSuccessful &&
-                              generationResult.result != null) {
+                          final ImagePicker picker = ImagePicker();
+                          try {
+                            var pickedFile = await picker.pickImage(
+                              source: ImageSource.gallery,
+                              maxWidth: 1024,
+                              maxHeight: 1024,
+                              requestFullMetadata: false,
+                            );
                             setState(() {
-                              _urlsOfGeneratedImages
-                                  .add(generationResult.result!);
-                              _selectedGeneratedImage =
-                                  _urlsOfGeneratedImages.length - 1;
+                              isLoadingNewImage = true;
+                            });
+                            final mimeType = lookupMimeType(pickedFile!.path);
+
+                            if (mimeType == null ||
+                                !(mimeType.startsWith('image/'))) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          "Invalid image file selected.")));
+                              setState(() {
+                                isLoadingNewImage = false;
+                              });
+                              return;
+                            }
+
+                            final fileName = pickedFile.path.split('/').last;
+
+                            final multipartFile = await MultipartFile.fromPath(
+                              'image',
+                              pickedFile.path,
+                              contentType: MediaType.parse(mimeType),
+                              filename: fileName,
+                            );
+                            if (!context.mounted) return;
+                            var service = DependencyProvider.of(context)
+                                .getService<IRpgEntityService>();
+                            var response =
+                                await service.uploadImageToCampagneStorage(
+                                    campagneId:
+                                        CampagneIdentifier($value: campagneId),
+                                    image: multipartFile);
+
+                            if (!context.mounted) return;
+                            await response.possiblyHandleError(context);
+                            if (!context.mounted) return;
+
+                            if (response.isSuccessful &&
+                                response.result != null) {
+                              setState(() {
+                                _urlsOfGeneratedImages.add(response.result!);
+                                _selectedGeneratedImage =
+                                    _urlsOfGeneratedImages.length - 1;
+                              });
+                            }
+                            setState(() {
+                              isLoadingNewImage = false;
+                            });
+                          } catch (e) {
+                            print("------------------------");
+                            print("------------------------");
+                            print("Image picker exception: ");
+                            print(e);
+                            print("------------------------");
+                            print("------------------------");
+                            setState(() {
+                              isLoadingNewImage = false;
                             });
                           }
-                          setState(() {
-                            isLoadingNewImage = false;
-                          });
-                        },
-                  minSize: 0,
-                  padding: EdgeInsets.all(0),
-                  child: Text(
-                    "Neues Bild",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color:
-                              isLoadingNewImage ? middleBgColor : accentColor,
-                          decoration: TextDecoration.underline,
-                          decorationColor:
-                              isLoadingNewImage ? middleBgColor : accentColor,
-                          fontSize: 16,
-                        ),
-                  ),
+                        }),
+                  ],
                 ),
                 Spacer(),
                 CustomButtonNewdesign(
@@ -705,6 +811,9 @@ class _CreateOrEditItemModalContentState
               ],
             ),
           ],
+        ),
+        SizedBox(
+          height: 40,
         ),
         Center(
           child: Padding(

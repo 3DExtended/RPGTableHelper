@@ -1502,6 +1502,54 @@ extension $UserIdentifierExtension on UserIdentifier {
   }
 }
 
+@JsonSerializable(explicitToJson: true)
+class ImageStreamimageuploadPost$RequestBody {
+  const ImageStreamimageuploadPost$RequestBody({
+    this.image,
+  });
+
+  factory ImageStreamimageuploadPost$RequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$ImageStreamimageuploadPost$RequestBodyFromJson(json);
+
+  static const toJsonFactory = _$ImageStreamimageuploadPost$RequestBodyToJson;
+  Map<String, dynamic> toJson() =>
+      _$ImageStreamimageuploadPost$RequestBodyToJson(this);
+
+  @JsonKey(name: 'image')
+  final String? image;
+  static const fromJsonFactory =
+      _$ImageStreamimageuploadPost$RequestBodyFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is ImageStreamimageuploadPost$RequestBody &&
+            (identical(other.image, image) ||
+                const DeepCollectionEquality().equals(other.image, image)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(image) ^ runtimeType.hashCode;
+}
+
+extension $ImageStreamimageuploadPost$RequestBodyExtension
+    on ImageStreamimageuploadPost$RequestBody {
+  ImageStreamimageuploadPost$RequestBody copyWith({String? image}) {
+    return ImageStreamimageuploadPost$RequestBody(image: image ?? this.image);
+  }
+
+  ImageStreamimageuploadPost$RequestBody copyWithWrapped(
+      {Wrapped<String?>? image}) {
+    return ImageStreamimageuploadPost$RequestBody(
+        image: (image != null ? image.value : this.image));
+  }
+}
+
 String? handleJoinRequestTypeNullableToJson(
     enums.HandleJoinRequestType? handleJoinRequestType) {
   return handleJoinRequestType?.value;

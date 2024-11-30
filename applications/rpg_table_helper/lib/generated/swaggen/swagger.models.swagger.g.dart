@@ -368,3 +368,16 @@ Map<String, dynamic> _$UserIdentifierToJson(UserIdentifier instance) =>
     <String, dynamic>{
       'value': instance.$value,
     };
+
+ImageStreamimageuploadPost$RequestBody
+    _$ImageStreamimageuploadPost$RequestBodyFromJson(
+            Map<String, dynamic> json) =>
+        ImageStreamimageuploadPost$RequestBody(
+          image: json['image'] as String?,
+        );
+
+Map<String, dynamic> _$ImageStreamimageuploadPost$RequestBodyToJson(
+        ImageStreamimageuploadPost$RequestBody instance) =>
+    <String, dynamic>{
+      'image': instance.image,
+    };
