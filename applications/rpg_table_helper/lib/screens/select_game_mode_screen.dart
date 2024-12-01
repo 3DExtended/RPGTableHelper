@@ -308,6 +308,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: darkColor),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -443,6 +444,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
                     border: Border.all(color: darkColor),
                   ),
                   child: Padding(

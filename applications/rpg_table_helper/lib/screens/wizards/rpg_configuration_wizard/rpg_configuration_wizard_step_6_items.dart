@@ -154,7 +154,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
       MapEntry<int, RpgItem> item, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: StyledBox(
+      child: Container(
         child: SizedBox(
           height: 250,
           child: Padding(

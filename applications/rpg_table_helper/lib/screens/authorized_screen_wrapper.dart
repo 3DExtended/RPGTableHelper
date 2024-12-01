@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/main_two_block_layout.dart';
-import 'package:rpg_table_helper/components/navbar_block.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/screens/character_screen.dart';
 import 'package:rpg_table_helper/screens/crafting_screen.dart';
 import 'package:rpg_table_helper/screens/inventory_screen.dart';
@@ -186,9 +182,14 @@ class _AuthorizedScreenWrapperState
           return MaterialPageRoute(
             settings: routeSettings,
             builder: (context) {
-              var selectedId = TabItem.values.indexOf(tabItem);
-
               var routeChild = routeBuilders[routeSettings.name!]!(context);
+              return Container(
+                color: const Color.fromARGB(35, 29, 22, 22),
+                child: routeChild,
+              );
+
+              /*var selectedId = TabItem.values.indexOf(tabItem);
+
               if (_doesRouteImplementOwnTabHandler(routeSettings.name!)) {
                 return routeChild;
               } else {
@@ -253,8 +254,7 @@ class _AuthorizedScreenWrapperState
                     content: Container(
                       color: const Color.fromARGB(35, 29, 22, 22),
                       child: routeChild,
-                    ));
-              }
+                    )); */
             },
           );
         },
