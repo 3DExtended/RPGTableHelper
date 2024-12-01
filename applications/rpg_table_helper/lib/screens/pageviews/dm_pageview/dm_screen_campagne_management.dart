@@ -4,10 +4,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -117,12 +120,178 @@ class _DmScreenCampagneManagementState
                       fontWeight: FontWeight.bold),
                 ),
 
-              // TODO WILO join requests
+              SizedBox(
+                height: 20,
+              ),
+
+              if ((connectionDetails?.openPlayerRequests ?? []).isEmpty)
+                Text(
+                  "Keine Items unter dieser Kategorie",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontSize: 16, color: darkTextColor),
+                ),
+
+              if ((connectionDetails?.openPlayerRequests ?? []).isNotEmpty)
+                Wrap(
+                  alignment: WrapAlignment.start,
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    ...(connectionDetails?.openPlayerRequests ?? [])
+                        .asMap()
+                        .entries
+                        .map(
+                          (request) => SizedBox(
+                            width: 350,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: middleBgColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "User: ${request.value.username}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                fontSize: 20,
+                                                color: darkColor,
+                                              ),
+                                        ),
+                                        Text(
+                                          "Charakter: ${request.value.playerName}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                fontSize: 16,
+                                                color: darkColor,
+                                              ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: CupertinoButton(
+                                        minSize: 0,
+                                        padding: EdgeInsets.zero,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: lightGreen,
+                                            borderRadius:
+                                                BorderRadius.circular(3.0),
+                                            border: Border.all(
+                                              color: darkColor,
+                                            ),
+                                          ),
+                                          child: CustomFaIcon(
+                                            icon: FontAwesomeIcons.check,
+                                            color: darkColor,
+                                            size: 24,
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          var com = DependencyProvider.of(
+                                                  context)
+                                              .getService<IRpgEntityService>();
+
+                                          var response =
+                                              await com.handleJoinRequest(
+                                                  campagneJoinRequestId: request
+                                                      .value
+                                                      .campagneJoinRequestId,
+                                                  typeOfHandle:
+                                                      HandleJoinRequestType
+                                                          .accept);
+
+                                          await response
+                                              .possiblyHandleError(context);
+
+                                          // remove this particular request from open requests
+                                          deleteJoinRequestAt(
+                                              request.value, ref);
+                                        }),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: CupertinoButton(
+                                        minSize: 0,
+                                        padding: EdgeInsets.zero,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: lightRed,
+                                            borderRadius:
+                                                BorderRadius.circular(3.0),
+                                            border: Border.all(
+                                              color: darkColor,
+                                            ),
+                                          ),
+                                          child: CustomFaIcon(
+                                            icon: FontAwesomeIcons.xmark,
+                                            color: textColor,
+                                            size: 24,
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          var com = DependencyProvider.of(
+                                                  context)
+                                              .getService<IRpgEntityService>();
+
+                                          var response =
+                                              await com.handleJoinRequest(
+                                                  campagneJoinRequestId: request
+                                                      .value
+                                                      .campagneJoinRequestId,
+                                                  typeOfHandle:
+                                                      HandleJoinRequestType
+                                                          .deny);
+                                          await response
+                                              .possiblyHandleError(context);
+                                          // remove this particular request from open requests
+                                          deleteJoinRequestAt(
+                                              request.value, ref);
+                                        }),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                  ],
+                )
             ],
           ),
         ),
       ),
     );
+  }
+
+  void deleteJoinRequestAt(PlayerJoinRequests request, WidgetRef ref) {
+    var newestConnectionDetails =
+        ref.read(connectionDetailsProvider).requireValue;
+    var newestPlayerRequests = newestConnectionDetails.openPlayerRequests ?? [];
+
+    var newRequests = [...newestPlayerRequests];
+    newRequests.removeWhere(
+        (e) => e.campagneJoinRequestId == request.campagneJoinRequestId);
+
+    ref
+        .read(connectionDetailsProvider.notifier)
+        .updateConfiguration(newestConnectionDetails.copyWith(
+          openPlayerRequests: newRequests,
+        ));
   }
 
   List<Widget> getAllPlayersOfflineStatusWidgets(
@@ -239,7 +408,7 @@ class _DmScreenCampagneManagementState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isOnline ? Color(0xff3ED22B) : Color(0xffD22B2E),
+                    color: isOnline ? lightGreen : lightRed,
                   ),
                   padding: EdgeInsets.all(1),
                 ),

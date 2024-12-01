@@ -101,6 +101,28 @@ void main() {
                         ],
                       ),
                     ],
+                        openPlayerRequests: [
+                      PlayerJoinRequests(
+                          playerName: "Thamior",
+                          username: "Tobias",
+                          campagneJoinRequestId: "asdf2",
+                          playerCharacterId: "asdf"),
+                      PlayerJoinRequests(
+                          playerName: "Kardan",
+                          username: "Peter",
+                          campagneJoinRequestId: "asdf2",
+                          playerCharacterId: "asdf"),
+                      PlayerJoinRequests(
+                          playerName: "Faugar",
+                          username: "Lukas",
+                          campagneJoinRequestId: "asdf2",
+                          playerCharacterId: "asdf"),
+                      PlayerJoinRequests(
+                          playerName: "Shava",
+                          username: "Rachel",
+                          campagneJoinRequestId: "asdf2",
+                          playerCharacterId: "asdf"),
+                    ],
                         connectedPlayers: [
                       OpenPlayerConnection(
                         userId: UserIdentifier(
