@@ -87,116 +87,178 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         width: MediaQuery.of(context).size.width,
         child: SafeArea(
           child: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 300,
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 300),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Text(
-                          "Login", // TODO localize
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: darkColor,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        // LOGIN
-                        // Username Textfield
-                        CustomTextField(
-                          newDesign: true,
-                          labelText: "Username", // TODO Localize
-                          textEditingController: usernameTextEditingController,
-                          keyboardType: TextInputType.name,
-                        ),
-
-                        // password Textfield
-                        CustomTextField(
-                          newDesign: true,
-                          labelText: "Password", // TODO Localize
-                          textEditingController: passwordTextEditingController,
-                          password: true,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-
-                        // login button
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: CustomButtonNewdesign(
-                              icon: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15.0),
-                                child: Text(
-                                  "Login",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .copyWith(
-                                          color: Colors.white, fontSize: 18),
-                                ),
-                              ),
-                              variant:
-                                  CustomButtonNewdesignVariant.AccentButton,
-                              onPressed: isLoginButtonDisabled
-                                  ? null
-                                  : () async {
-                                      // TODO perform login
-                                      var service = DependencyProvider.of(
-                                              context)
-                                          .getService<IAuthenticationService>();
-
-                                      var signinResponse = await service
-                                          .loginWithUsernameAndPassword(
-                                              username:
-                                                  usernameTextEditingController
-                                                      .text,
-                                              password:
-                                                  passwordTextEditingController
-                                                      .text);
-                                      if (!mounted) return;
-
-                                      await signinResponse
-                                          .possiblyHandleError(context);
-
-                                      if (signinResponse.result == true) {
-                                        // proceed to campagne or character selection
-                                        navigatorKey.currentState!
-                                            .pushNamedAndRemoveUntil(
-                                                SelectGameModeScreen.route,
-                                                (r) => false);
-                                      } else {
-                                        // TODO mark password and username fields as invalid
-                                      }
-                                    },
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 400),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Text(
+                        "Login", // TODO localize
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: darkColor,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
                             ),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      // LOGIN
+                      // Username Textfield
+                      CustomTextField(
+                        newDesign: true,
+                        labelText: "Username", // TODO Localize
+                        textEditingController: usernameTextEditingController,
+                        keyboardType: TextInputType.name,
+                      ),
+
+                      // password Textfield
+                      CustomTextField(
+                        newDesign: true,
+                        labelText: "Password", // TODO Localize
+                        textEditingController: passwordTextEditingController,
+                        password: true,
+                        keyboardType: TextInputType.visiblePassword,
+                      ),
+
+                      // login button
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: CustomButtonNewdesign(
+                            icon: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Text(
+                                "Login",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .copyWith(
+                                        color: Colors.white, fontSize: 18),
+                              ),
+                            ),
+                            variant: CustomButtonNewdesignVariant.AccentButton,
+                            onPressed: isLoginButtonDisabled
+                                ? null
+                                : () async {
+                                    // TODO perform login
+                                    var service = DependencyProvider.of(context)
+                                        .getService<IAuthenticationService>();
+
+                                    var signinResponse = await service
+                                        .loginWithUsernameAndPassword(
+                                            username:
+                                                usernameTextEditingController
+                                                    .text,
+                                            password:
+                                                passwordTextEditingController
+                                                    .text);
+                                    if (!mounted) return;
+
+                                    await signinResponse
+                                        .possiblyHandleError(context);
+
+                                    if (signinResponse.result == true) {
+                                      // proceed to campagne or character selection
+                                      navigatorKey.currentState!
+                                          .pushNamedAndRemoveUntil(
+                                              SelectGameModeScreen.route,
+                                              (r) => false);
+                                    } else {
+                                      // TODO mark password and username fields as invalid
+                                    }
+                                  },
                           ),
                         ),
+                      ),
 
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: [
-                            // apple sign in button
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 300),
+                      Wrap(
+                        spacing: 20,
+                        runSpacing: 20,
+                        children: [
+                          // apple sign in button
+                          SizedBox(
+                            width: 300,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: darkColor,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  7,
+                                ),
+                              ),
+                              child: CustomSignInWithAppleButton(
+                                style: CustomSignInWithAppleButtonStyle.white,
+                                text: "Mit Apple anmelden",
+                                height: 55,
+                                onPressed: () async {
+                                  AuthorizationCredentialAppleID? credential;
+                                  try {
+                                    credential = await SignInWithApple
+                                        .getAppleIDCredential(
+                                      // nonce: DateTime.now().toUtc().microsecondsSinceEpoch.toString(),
+                                      scopes: [
+                                        AppleIDAuthorizationScopes.email,
+                                        AppleIDAuthorizationScopes.fullName,
+                                      ],
+                                    );
+                                  } catch (e) {
+                                    return;
+                                  }
+                                  var service = DependencyProvider.of(context)
+                                      .getService<IAuthenticationService>();
+
+                                  var signInResult =
+                                      await service.signInWithApple(
+                                          identityToken:
+                                              credential.identityToken!,
+                                          authorizationCode:
+                                              credential.authorizationCode);
+
+                                  if (!context.mounted) return;
+
+                                  await signInResult
+                                      .possiblyHandleError(context);
+
+                                  if (signInResult.isSuccessful &&
+                                      signInResult.result!.resultType ==
+                                          SignInResultType
+                                              .loginSucessfullButConfigurationMissing) {
+                                    // navigate to complete sign in using sign in provider screen
+                                    navigatorKey.currentState!
+                                        .pushNamedAndRemoveUntil(
+                                            CompleteSsoScreen.route,
+                                            (r) => false,
+                                            arguments: signInResult
+                                                .result!.additionalDetails!
+                                                .replaceAll('redirect', ''));
+                                  } else if (signInResult.isSuccessful &&
+                                      signInResult.result!.resultType ==
+                                          SignInResultType.loginSucessfull) {
+                                    navigatorKey.currentState!
+                                        .pushNamedAndRemoveUntil(
+                                            SelectGameModeScreen.route,
+                                            (r) => false);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+
+                          // GOOGLE SIGN IN BUTTON
+                          SizedBox(
+                            width: 300,
+                            child: Center(
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -206,40 +268,60 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     7,
                                   ),
                                 ),
-                                child: CustomSignInWithAppleButton(
-                                  style: CustomSignInWithAppleButtonStyle.white,
-                                  text: "Mit Apple anmelden",
-                                  height: 55,
+                                child: SignInButton(
+                                  Buttons.Google,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(7))),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(40, 7, 40, 7),
+                                  text: "Sign in with Google",
                                   onPressed: () async {
-                                    AuthorizationCredentialAppleID? credential;
-                                    try {
-                                      credential = await SignInWithApple
-                                          .getAppleIDCredential(
-                                        // nonce: DateTime.now().toUtc().microsecondsSinceEpoch.toString(),
-                                        scopes: [
-                                          AppleIDAuthorizationScopes.email,
-                                          AppleIDAuthorizationScopes.fullName,
-                                        ],
-                                      );
-                                    } catch (e) {
-                                      return;
-                                    }
+                                    // Default definition
+                                    GoogleSignIn googleSignIn = GoogleSignIn(
+                                      clientId:
+                                          '301126660357-ro64929c9et8ome57r0vmk53vrn4754b.apps.googleusercontent.com', // TODO update me
+                                      scopes: [
+                                        'email',
+                                      ],
+                                    );
+
+                                    final GoogleSignInAccount? googleAccount =
+                                        await googleSignIn.signIn();
+
+                                    if (googleAccount == null) return;
+
+                                    // If you want further information about Google accounts, such as authentication, use this.
+                                    final GoogleSignInAuthentication
+                                        googleAuthentication =
+                                        await googleAccount.authentication;
+
                                     var service = DependencyProvider.of(context)
                                         .getService<IAuthenticationService>();
 
                                     var signInResult =
-                                        await service.signInWithApple(
+                                        await service.signInWithGoogle(
                                             identityToken:
-                                                credential.identityToken!,
+                                                googleAuthentication.idToken!,
                                             authorizationCode:
-                                                credential.authorizationCode);
+                                                googleAuthentication
+                                                    .serverAuthCode!);
 
-                                    if (!context.mounted) return;
+                                    if (!mounted) return;
 
                                     await signInResult
                                         .possiblyHandleError(context);
 
+                                    // TODO navigate
                                     if (signInResult.isSuccessful &&
+                                        signInResult.result!.resultType ==
+                                            SignInResultType.loginSucessfull) {
+                                      // proceed to campagne or character selection
+                                      navigatorKey.currentState!
+                                          .pushNamedAndRemoveUntil(
+                                              SelectGameModeScreen.route,
+                                              (r) => false);
+                                    } else if (signInResult.isSuccessful &&
                                         signInResult.result!.resultType ==
                                             SignInResultType
                                                 .loginSucessfullButConfigurationMissing) {
@@ -251,133 +333,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                               arguments: signInResult
                                                   .result!.additionalDetails!
                                                   .replaceAll('redirect', ''));
-                                    } else if (signInResult.isSuccessful &&
-                                        signInResult.result!.resultType ==
-                                            SignInResultType.loginSucessfull) {
-                                      navigatorKey.currentState!
-                                          .pushNamedAndRemoveUntil(
-                                              SelectGameModeScreen.route,
-                                              (r) => false);
                                     }
                                   },
                                 ),
                               ),
                             ),
+                          ),
+                        ],
+                      ),
 
-                            // GOOGLE SIGN IN BUTTON
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 300),
-                              child: Center(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: darkColor,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      7,
-                                    ),
-                                  ),
-                                  child: SignInButton(
-                                    Buttons.Google,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(7))),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(40, 7, 40, 7),
-                                    text: "Sign in with Google",
-                                    onPressed: () async {
-                                      // Default definition
-                                      GoogleSignIn googleSignIn = GoogleSignIn(
-                                        clientId:
-                                            '301126660357-ro64929c9et8ome57r0vmk53vrn4754b.apps.googleusercontent.com', // TODO update me
-                                        scopes: [
-                                          'email',
-                                        ],
-                                      );
+                      SizedBox(
+                        height: 30,
+                      ),
+                      HorizontalLine(
+                        useDarkColor: true,
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
 
-                                      final GoogleSignInAccount? googleAccount =
-                                          await googleSignIn.signIn();
-
-                                      if (googleAccount == null) return;
-
-                                      // If you want further information about Google accounts, such as authentication, use this.
-                                      final GoogleSignInAuthentication
-                                          googleAuthentication =
-                                          await googleAccount.authentication;
-
-                                      var service = DependencyProvider.of(
-                                              context)
-                                          .getService<IAuthenticationService>();
-
-                                      var signInResult =
-                                          await service.signInWithGoogle(
-                                              identityToken:
-                                                  googleAuthentication.idToken!,
-                                              authorizationCode:
-                                                  googleAuthentication
-                                                      .serverAuthCode!);
-
-                                      if (!mounted) return;
-
-                                      await signInResult
-                                          .possiblyHandleError(context);
-
-                                      // TODO navigate
-                                      if (signInResult.isSuccessful &&
-                                          signInResult.result!.resultType ==
-                                              SignInResultType
-                                                  .loginSucessfull) {
-                                        // proceed to campagne or character selection
-                                        navigatorKey.currentState!
-                                            .pushNamedAndRemoveUntil(
-                                                SelectGameModeScreen.route,
-                                                (r) => false);
-                                      } else if (signInResult.isSuccessful &&
-                                          signInResult.result!.resultType ==
-                                              SignInResultType
-                                                  .loginSucessfullButConfigurationMissing) {
-                                        // navigate to complete sign in using sign in provider screen
-                                        navigatorKey.currentState!
-                                            .pushNamedAndRemoveUntil(
-                                                CompleteSsoScreen.route,
-                                                (r) => false,
-                                                arguments: signInResult
-                                                    .result!.additionalDetails!
-                                                    .replaceAll(
-                                                        'redirect', ''));
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(
-                          height: 30,
-                        ),
-                        HorizontalLine(
-                          useDarkColor: true,
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-
-                        CustomButtonNewdesign(
-                          label: "Neuen Account anlegen", // TODO localize
-                          variant: CustomButtonNewdesignVariant.DarkButton,
-                          onPressed: () {
-                            // navigate to register screen
-                            navigatorKey.currentState!
-                                .pushNamed(RegisterScreen.route);
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
+                      CustomButtonNewdesign(
+                        label: "Neuen Account anlegen", // TODO localize
+                        variant: CustomButtonNewdesignVariant.DarkButton,
+                        onPressed: () {
+                          // navigate to register screen
+                          navigatorKey.currentState!
+                              .pushNamed(RegisterScreen.route);
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
                   ),
                 ),
               ),
