@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_recipe_card.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_recipe_card.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
@@ -169,7 +169,6 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                   child: CustomTextField(
                       labelText: "Suche",
                       textEditingController: searchtextEditingController,
-                      newDesign: true,
                       keyboardType: TextInputType.text),
                 )
               : SizedBox.shrink(),
@@ -235,10 +234,10 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
               SizedBox(
                 width: 20,
               ),
-              CustomButtonNewdesign(
+              CustomButton(
                   variant: isSearchFieldShowing
-                      ? CustomButtonNewdesignVariant.DarkButton
-                      : CustomButtonNewdesignVariant.Default,
+                      ? CustomButtonVariant.DarkButton
+                      : CustomButtonVariant.Default,
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.magnifyingGlass,
                     color: isSearchFieldShowing ? textColor : darkColor,
@@ -537,10 +536,10 @@ class CategoryFilterButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
           right: 12, left: withoutLeadingPadding == true ? 0 : 12),
-      child: CustomButtonNewdesign(
+      child: CustomButton(
         variant: isSelected
-            ? CustomButtonNewdesignVariant.DarkButton
-            : CustomButtonNewdesignVariant.Default,
+            ? CustomButtonVariant.DarkButton
+            : CustomButtonVariant.Default,
         onPressed: onpressedHandler,
         label: categoryForFilter.name,
         icon: categoryForFilter.iconName == null

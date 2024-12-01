@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:rpg_table_helper/components/card_border.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/components/newdesign/card_border.dart';
 import 'package:themed/themed.dart';
 import 'package:transparent_image/transparent_image.dart';
 

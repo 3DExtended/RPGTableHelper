@@ -5,13 +5,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/bordered_image.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/pentagon_with_label.dart';
-import 'package:rpg_table_helper/components/newdesign/progress_indicator_for_character_screen.dart';
+import 'package:rpg_table_helper/components/pentagon_with_label.dart';
+import 'package:rpg_table_helper/components/progress_indicator_for_character_screen.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
@@ -45,59 +45,52 @@ Widget getPlayerVisualizationWidget({
   required RpgCharacterStatValue characterValue,
   required String characterName,
   required void Function(String newSerializedValue) onNewStatValue,
-  bool useNewDesign = false,
   required RpgCharacterConfiguration? characterToRenderStatFor,
 }) {
   switch (statConfiguration.valueType) {
     case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
-      return renderTextStat(onNewStatValue, statConfiguration, context,
-          useNewDesign, characterValue);
+      return renderTextStat(
+          onNewStatValue, statConfiguration, context, characterValue);
 
     case CharacterStatValueType.singleImage:
-      return renderImageStat(onNewStatValue, statConfiguration, context,
-          useNewDesign, characterValue);
+      return renderImageStat(
+          onNewStatValue, statConfiguration, context, characterValue);
 
     case CharacterStatValueType.int:
-      return renderIntStat(onNewStatValue, characterValue, context,
-          useNewDesign, statConfiguration);
+      return renderIntStat(
+          onNewStatValue, characterValue, context, statConfiguration);
     case CharacterStatValueType.companionSelector:
       return renderCompanionSelector(onNewStatValue, characterValue, context,
-          characterToRenderStatFor, useNewDesign, statConfiguration);
+          characterToRenderStatFor, statConfiguration);
 
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return renderCharacterNameWithLevelAndAdditionalDetailsStat(
           onNewStatValue,
           characterValue,
           context,
-          useNewDesign,
           statConfiguration,
           characterName);
 
     case CharacterStatValueType.listOfIntWithCalculatedValues:
-      return renderListOfIntWithCalculatedValuesStat(
-          onNewStatValue,
-          characterValue,
-          context,
-          useNewDesign,
-          statConfiguration,
-          characterName);
+      return renderListOfIntWithCalculatedValuesStat(onNewStatValue,
+          characterValue, context, statConfiguration, characterName);
 
     case CharacterStatValueType.listOfIntsWithIcons:
       return renderListOfIntsWithIconsStat(onNewStatValue, characterValue,
-          context, useNewDesign, statConfiguration, characterName);
+          context, statConfiguration, characterName);
 
     case CharacterStatValueType.intWithMaxValue:
       return renderIntWithMaxValueStat(onNewStatValue, characterValue, context,
-          useNewDesign, statConfiguration, characterName);
+          statConfiguration, characterName);
 
     case CharacterStatValueType.intWithCalculatedValue:
       return renderIntWithCalculatedValueStat(onNewStatValue, characterValue,
-          context, useNewDesign, statConfiguration, characterName);
+          context, statConfiguration, characterName);
 
     case CharacterStatValueType.multiselect:
       return renderMultiselectStat(onNewStatValue, characterValue, context,
-          useNewDesign, statConfiguration, characterName);
+          statConfiguration, characterName);
     case CharacterStatValueType.companionSelector: // TODO make me
     default:
       return Container(
@@ -113,7 +106,6 @@ Widget renderCompanionSelector(
     RpgCharacterStatValue characterValue,
     BuildContext context,
     RpgCharacterConfiguration? characterToRenderStatFor,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration) {
   List<String> selectedCompanionIds =
       (jsonDecode(characterValue.serializedValue)["values"] as List<dynamic>)
@@ -160,7 +152,7 @@ Widget renderCompanionSelector(
         children: [
           ...companionDetailsToRender.map((t) => Padding(
                 padding: EdgeInsets.all(5),
-                child: CustomButtonNewdesign(
+                child: CustomButton(
                     label: t.characterName,
                     onPressed: () {
                       // open companion page
@@ -186,7 +178,6 @@ Widget renderMultiselectStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
     BuildContext context,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration,
     String characterName) {
   // statConfiguration.jsonSerializedAdditionalData = {"options:":[{"uuid": "3a7fd649-2d76-4a93-8513-d5a8e8249b40", "label": "", "description": ""}], "multiselectIsAllowedToBeSelectedMultipleTimes":false}
@@ -243,7 +234,7 @@ Widget renderMultiselectStat(
       Text(
         statConfiguration.name,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: useNewDesign == true ? darkTextColor : Colors.white,
+              color: darkTextColor,
               fontSize: 24,
             ),
       ),
@@ -289,10 +280,10 @@ Widget renderMultiselectStat(
                   ),
                   Text(
                     e.$2.$2,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color:
-                            useNewDesign == true ? darkTextColor : Colors.white,
-                        fontSize: 16),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: darkTextColor, fontSize: 16),
                   ),
                 ],
               ),
@@ -301,10 +292,10 @@ Widget renderMultiselectStat(
                   padding: const EdgeInsets.only(left: 25.0, bottom: 20),
                   child: Text(
                     e.$2.$3,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color:
-                            useNewDesign == true ? darkTextColor : Colors.white,
-                        fontSize: 16),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: darkTextColor, fontSize: 16),
                   ),
                 ),
             ],
@@ -319,7 +310,6 @@ Widget renderIntWithCalculatedValueStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
     BuildContext context,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration,
     String characterName) {
   // characterValue.serializedValue = {"value": 12, "otherValue": 2}
@@ -337,23 +327,22 @@ Widget renderIntWithCalculatedValueStat(
       children: [
         Text(
           "${parsedValue["otherValue"]}",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: useNewDesign == true ? darkTextColor : Colors.white,
-              fontSize: 20),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: darkTextColor, fontSize: 20),
         ),
         Text(
           statConfiguration.name,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: useNewDesign == true ? darkTextColor : Colors.white,
-              fontSize: 16),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: darkTextColor, fontSize: 16),
         ),
         Text(
           "${parsedValue["value"]}",
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: useNewDesign == true
-                  ? const Color.fromARGB(255, 135, 127, 118)
-                  : const Color.fromARGB(255, 134, 134, 134),
-              fontSize: 20),
+              color: const Color.fromARGB(255, 135, 127, 118), fontSize: 20),
         ),
       ],
     );
@@ -364,7 +353,6 @@ Widget renderIntWithMaxValueStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
     BuildContext context,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration,
     String characterName) {
   // characterValue.serializedValue = {"value": 1, "maxValue": 17}
@@ -395,9 +383,9 @@ Widget renderIntWithMaxValueStat(
             Row(
               children: [
                 Spacer(),
-                CustomButtonNewdesign(
+                CustomButton(
                   isSubbutton: true,
-                  variant: CustomButtonNewdesignVariant.DarkButton,
+                  variant: CustomButtonVariant.DarkButton,
                   onPressed: value <= 0
                       ? null
                       : () {
@@ -412,9 +400,9 @@ Widget renderIntWithMaxValueStat(
                 Spacer(
                   flex: 6,
                 ),
-                CustomButtonNewdesign(
+                CustomButton(
                   isSubbutton: true,
-                  variant: CustomButtonNewdesignVariant.DarkButton,
+                  variant: CustomButtonVariant.DarkButton,
                   onPressed: maxValue == value
                       ? null
                       : () {
@@ -439,9 +427,9 @@ Widget renderIntWithMaxValueStat(
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
             Padding(
               padding: const EdgeInsets.only(top: 40.0),
-              child: CustomButtonNewdesign(
+              child: CustomButton(
                 isSubbutton: true,
-                variant: CustomButtonNewdesignVariant.DarkButton,
+                variant: CustomButtonVariant.DarkButton,
                 onPressed: value <= 0
                     ? null
                     : () {
@@ -469,9 +457,9 @@ Widget renderIntWithMaxValueStat(
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
             Padding(
               padding: const EdgeInsets.only(top: 40.0),
-              child: CustomButtonNewdesign(
+              child: CustomButton(
                 isSubbutton: true,
-                variant: CustomButtonNewdesignVariant.DarkButton,
+                variant: CustomButtonVariant.DarkButton,
                 onPressed: maxValue == value
                     ? null
                     : () {
@@ -493,9 +481,9 @@ Widget renderIntWithMaxValueStat(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
-            CustomButtonNewdesign(
+            CustomButton(
               isSubbutton: true,
-              variant: CustomButtonNewdesignVariant.FlatButton,
+              variant: CustomButtonVariant.FlatButton,
               onPressed: value <= 0
                   ? null
                   : () {
@@ -517,15 +505,17 @@ Widget renderIntWithMaxValueStat(
             children: [
               Text(
                 "$value / $maxValue",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: useNewDesign == true ? darkTextColor : Colors.white,
-                    fontSize: 20),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: darkTextColor, fontSize: 20),
               ),
               Text(
                 statConfiguration.name,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: useNewDesign == true ? darkTextColor : Colors.white,
-                    fontSize: 16),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: darkTextColor, fontSize: 16),
               ),
             ],
           ),
@@ -534,9 +524,9 @@ Widget renderIntWithMaxValueStat(
               width: 20,
             ),
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
-            CustomButtonNewdesign(
+            CustomButton(
               isSubbutton: true,
-              variant: CustomButtonNewdesignVariant.FlatButton,
+              variant: CustomButtonVariant.FlatButton,
               onPressed: maxValue == value
                   ? null
                   : () {
@@ -557,7 +547,6 @@ Widget renderListOfIntsWithIconsStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
     BuildContext context,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration,
     String characterName) {
   // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
@@ -653,7 +642,6 @@ Widget renderListOfIntWithCalculatedValuesStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
     BuildContext context,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration,
     String characterName) {
   // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
@@ -703,7 +691,6 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
   void Function(String newSerializedValue) onNewStatValue,
   RpgCharacterStatValue characterValue,
   BuildContext context,
-  bool useNewDesign,
   CharacterStatDefinition statConfiguration,
   String characterName,
 ) {
@@ -844,7 +831,6 @@ Column renderIntStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
     BuildContext context,
-    bool useNewDesign,
     CharacterStatDefinition statConfiguration) {
   // characterValue.serializedValue = {"value": 1}
   return Column(
@@ -853,15 +839,17 @@ Column renderIntStat(
     children: [
       Text(
         jsonDecode(characterValue.serializedValue)["value"].toString(),
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: useNewDesign == true ? darkTextColor : Colors.white,
-            fontSize: 20),
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(color: darkTextColor, fontSize: 20),
       ),
       Text(
         statConfiguration.name,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: useNewDesign == true ? darkTextColor : Colors.white,
-            fontSize: 16),
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(color: darkTextColor, fontSize: 16),
       ),
     ],
   );
@@ -871,7 +859,6 @@ Widget renderImageStat(
     void Function(String newSerializedValue) onNewStatValue,
     CharacterStatDefinition statConfiguration,
     BuildContext context,
-    bool useNewDesign,
     RpgCharacterStatValue characterValue) {
   //  {"imageUrl": "someUrl", "value": "some text"}
   var parsedValue = jsonDecode(characterValue.serializedValue);
@@ -901,7 +888,6 @@ Column renderTextStat(
     void Function(String newSerializedValue) onNewStatValue,
     CharacterStatDefinition statConfiguration,
     BuildContext context,
-    bool useNewDesign,
     RpgCharacterStatValue characterValue) {
   // characterValue.serializedValue = {"value": "asdf"}
   return Column(
@@ -911,16 +897,16 @@ Column renderTextStat(
       if (characterValue.hideLabelOfStat != true)
         Text(
           statConfiguration.name,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: useNewDesign == true ? darkTextColor : Colors.white,
-              fontSize: 20),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: darkTextColor, fontSize: 20),
         ),
       if (characterValue.hideLabelOfStat != true)
         SizedBox(
           height: 10,
         ),
       CustomMarkdownBody(
-        isNewDesign: useNewDesign,
         text: jsonDecode(characterValue.serializedValue)["value"].toString(),
       ),
       SizedBox(

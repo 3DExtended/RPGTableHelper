@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -116,7 +116,6 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      newDesign: true,
                       keyboardType: TextInputType.text,
                       placeholderText: rpgConfig == null
                           ? null
@@ -131,8 +130,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                     width: 40,
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: CustomButtonNewdesign(
-                      variant: CustomButtonNewdesignVariant.FlatButton,
+                    child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
                       isSubbutton: true,
                       onPressed: () {
                         // remove this pair from list
@@ -161,8 +160,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
             ],
           );
         }),
-        CustomButtonNewdesign(
-          variant: CustomButtonNewdesignVariant.Default,
+        CustomButton(
+          variant: CustomButtonVariant.Default,
           isSubbutton: true,
           onPressed: () {
             setState(() {

@@ -3,11 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -138,7 +138,6 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      newDesign: true,
                       labelText: "Tab Title",
                       textEditingController: tab.value.$2,
                       keyboardType: TextInputType.text,
@@ -151,9 +150,9 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                     height: 50,
                     width: 40,
                     clipBehavior: Clip.none,
-                    child: CustomButtonNewdesign(
+                    child: CustomButton(
                       isSubbutton: true,
-                      variant: CustomButtonNewdesignVariant.FlatButton,
+                      variant: CustomButtonVariant.FlatButton,
                       onPressed: () {
                         setState(() {
                           tabsToEdit.removeAt(tab.key);
@@ -178,7 +177,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                       SizedBox(
                         height: 5,
                       ),
-                      CustomButtonNewdesign(
+                      CustomButton(
                         isSubbutton: true,
                         onPressed: () {
                           setState(() {
@@ -304,7 +303,6 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                             children: [
                                               Expanded(
                                                 child: CustomMarkdownBody(
-                                                  isNewDesign: true,
                                                   text:
                                                       "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString()})",
                                                 ),
@@ -321,9 +319,8 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                     height: 50,
                                     width: 40,
                                     clipBehavior: Clip.none,
-                                    child: CustomButtonNewdesign(
-                                      variant: CustomButtonNewdesignVariant
-                                          .FlatButton,
+                                    child: CustomButton(
+                                      variant: CustomButtonVariant.FlatButton,
                                       isSubbutton: true,
                                       onPressed: () async {
                                         await showGetDmConfigurationModal(
@@ -353,10 +350,9 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                     height: 50,
                                     width: 40,
                                     clipBehavior: Clip.none,
-                                    child: CustomButtonNewdesign(
+                                    child: CustomButton(
                                       isSubbutton: true,
-                                      variant: CustomButtonNewdesignVariant
-                                          .FlatButton,
+                                      variant: CustomButtonVariant.FlatButton,
                                       onPressed: () {
                                         setState(() {
                                           statsUnderTab[tab.value.$1]!
@@ -381,7 +377,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                 padding: const EdgeInsets.fromLTRB(34, 20, 0, 20),
                 child: Row(
                   children: [
-                    CustomButtonNewdesign(
+                    CustomButton(
                       isSubbutton: true,
                       onPressed: () async {
                         setState(() {
@@ -416,7 +412,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                     SizedBox(
                       width: 20,
                     ),
-                    CustomButtonNewdesign(
+                    CustomButton(
                       isSubbutton: true,
                       onPressed: () async {
                         // open new modal for dm config
@@ -466,8 +462,8 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
         }),
 
         // add new tab button
-        CustomButtonNewdesign(
-          variant: CustomButtonNewdesignVariant.Default,
+        CustomButton(
+          variant: CustomButtonVariant.Default,
           onPressed: () {
             addNewTab();
           },

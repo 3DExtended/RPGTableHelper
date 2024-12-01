@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -95,7 +95,6 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
 
                     // Username Textfield
                     CustomTextField(
-                      newDesign: true,
                       labelText: "Username", // TODO Localize
                       textEditingController: usernameTextEditingController,
                       keyboardType: TextInputType.name,
@@ -107,8 +106,8 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
 
                     // complete button
                     Center(
-                      child: CustomButtonNewdesign(
-                        variant: CustomButtonNewdesignVariant.AccentButton,
+                      child: CustomButton(
+                        variant: CustomButtonVariant.AccentButton,
                         label: "Complete registration", // TODO localize
 
                         onPressed: isLoginButtonDisabled

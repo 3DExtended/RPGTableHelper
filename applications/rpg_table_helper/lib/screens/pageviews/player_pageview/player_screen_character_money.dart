@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -215,7 +215,7 @@ class _PlayerScreenCharacterMoneyState
               SizedBox(
                 height: 40,
               ),
-              CustomButtonNewdesign(
+              CustomButton(
                 onPressed: getCurrentlyTypedBasePrice() == 0 ||
                         getNewCalculatedBasePrice(
                                 widget.rpgConfig, charToRender) <
@@ -245,7 +245,7 @@ class _PlayerScreenCharacterMoneyState
                           }
                         });
                       },
-                variant: CustomButtonNewdesignVariant.AccentButton,
+                variant: CustomButtonVariant.AccentButton,
                 label: _selectedMoneyChangeMode == MoneyChangeMode.addMoney
                     ? "Geld hinzufügen" // TODO localize
                     : "Geld abziehen", // TODO localize

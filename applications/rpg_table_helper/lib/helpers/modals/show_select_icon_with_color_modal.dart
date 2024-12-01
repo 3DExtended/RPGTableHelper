@@ -2,10 +2,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
@@ -117,7 +117,7 @@ class _SelectIconWithColorModalContentState
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  NavbarNewDesign(
+                  Navbar(
                     backInsteadOfCloseIcon: false,
                     closeFunction: () {
                       navigatorKey.currentState!.pop(null);
@@ -161,14 +161,14 @@ class _SelectIconWithColorModalContentState
                                       spacing: 10,
                                       runSpacing: 10,
                                       children: allIconColors
-                                          .map((color) => CustomButtonNewdesign(
+                                          .map((color) => CustomButton(
                                                 isSubbutton: false,
-                                                variant: selectedIconColor ==
-                                                        color
-                                                    ? CustomButtonNewdesignVariant
-                                                        .DarkButton
-                                                    : CustomButtonNewdesignVariant
-                                                        .Default,
+                                                variant:
+                                                    selectedIconColor == color
+                                                        ? CustomButtonVariant
+                                                            .DarkButton
+                                                        : CustomButtonVariant
+                                                            .Default,
                                                 onPressed: () {
                                                   setState(() {
                                                     selectedIconColor = color;
@@ -203,13 +203,12 @@ class _SelectIconWithColorModalContentState
                                     spacing: 10,
                                     runSpacing: 10,
                                     children: allIconNames
-                                        .map((name) => CustomButtonNewdesign(
+                                        .map((name) => CustomButton(
                                               isSubbutton: false,
                                               variant: selectedIconName == name
-                                                  ? CustomButtonNewdesignVariant
+                                                  ? CustomButtonVariant
                                                       .DarkButton
-                                                  : CustomButtonNewdesignVariant
-                                                      .Default,
+                                                  : CustomButtonVariant.Default,
                                               onPressed: () {
                                                 setState(() {
                                                   selectedIconName = name;
@@ -277,7 +276,7 @@ class _SelectIconWithColorModalContentState
                     child: Row(
                       children: [
                         const Spacer(),
-                        CustomButtonNewdesign(
+                        CustomButton(
                           label: "Auswählen", // TODO localize
                           onPressed: () {
                             navigatorKey.currentState!.pop(

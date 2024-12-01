@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
@@ -293,7 +293,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       backgroundColor: bgColor,
       body: Column(
         children: [
-          NavbarNewDesign(
+          Navbar(
             useTopSafePadding: true,
             closeFunction: () {
               navigatorKey.currentState!.pop();

@@ -2,11 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
+import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
@@ -150,7 +150,6 @@ class _ItemCardRenderingWithFilteringState
                   child: CustomTextField(
                       labelText: "Suche",
                       textEditingController: searchtextEditingController,
-                      newDesign: true,
                       keyboardType: TextInputType.text),
                 )
               : SizedBox.shrink(),
@@ -178,12 +177,12 @@ class _ItemCardRenderingWithFilteringState
                       ].map(
                         (e) => Padding(
                           padding: const EdgeInsets.only(right: 25),
-                          child: CustomButtonNewdesign(
+                          child: CustomButton(
                             variant: (widget.selectedItemCategoryId == e.uuid ||
                                     (e.uuid == "" &&
                                         widget.selectedItemCategoryId == null))
-                                ? CustomButtonNewdesignVariant.DarkButton
-                                : CustomButtonNewdesignVariant.Default,
+                                ? CustomButtonVariant.DarkButton
+                                : CustomButtonVariant.Default,
                             onPressed: () {
                               widget.onSelectNewFilterCategory(e);
                             },
@@ -212,10 +211,10 @@ class _ItemCardRenderingWithFilteringState
               SizedBox(
                 width: 20,
               ),
-              CustomButtonNewdesign(
+              CustomButton(
                   variant: isSearchFieldShowing
-                      ? CustomButtonNewdesignVariant.DarkButton
-                      : CustomButtonNewdesignVariant.Default,
+                      ? CustomButtonVariant.DarkButton
+                      : CustomButtonVariant.Default,
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.magnifyingGlass,
                     color: isSearchFieldShowing ? textColor : darkColor,
@@ -236,8 +235,8 @@ class _ItemCardRenderingWithFilteringState
                 ),
               if (widget.renderCreateButton &&
                   widget.onAddNewItemPressed != null)
-                CustomButtonNewdesign(
-                  variant: CustomButtonNewdesignVariant.AccentButton,
+                CustomButton(
+                  variant: CustomButtonVariant.AccentButton,
                   onPressed: widget.onAddNewItemPressed,
                   label: "+ Hinzufügen",
                 )

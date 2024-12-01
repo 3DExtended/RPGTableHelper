@@ -88,7 +88,6 @@ Wie heißt deine Kampagne?'''; // TODO localize
       contentFlex: 2,
       contentChildren: [
         CustomTextField(
-            newDesign: true,
             labelText: "Campagne Name:",
             keyboardType: TextInputType.text,
             textEditingController: textEditingController),

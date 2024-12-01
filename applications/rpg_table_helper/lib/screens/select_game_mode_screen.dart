@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
@@ -101,7 +101,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         color: bgColor,
         child: Column(
           children: [
-            NavbarNewDesign(
+            Navbar(
               backInsteadOfCloseIcon: false,
               closeFunction: null,
               menuOpen: null,
@@ -320,7 +320,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                           children: [
                             Expanded(
                               child: CustomMarkdownBody(
-                                  isNewDesign: true,
                                   text:
                                       "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Join Code:__ ${campagne.joinCode}\n\n__Config Length (Debug):__ ${(campagne.rpgConfiguration?.length ?? 0).toString()}"),
                             ),
@@ -469,7 +468,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                       parsedConfig.characterName;
                                 }
                                 return CustomMarkdownBody(
-                                    isNewDesign: true,
                                     text:
                                         "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}");
                               }),
@@ -543,7 +541,7 @@ class AddableColumnHeader extends StatelessWidget {
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: CustomButtonNewdesign(
+          child: CustomButton(
             onPressed: onPressedHandler,
             icon: CustomFaIcon(
               size: 16,

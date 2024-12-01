@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/signinbuttons/button_list.dart';
 import 'package:rpg_table_helper/components/signinbuttons/button_view.dart';
 import 'package:rpg_table_helper/components/signinbuttons/custom_sign_in_with_apple.dart';
@@ -114,7 +114,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       // LOGIN
                       // Username Textfield
                       CustomTextField(
-                        newDesign: true,
                         labelText: "Username", // TODO Localize
                         textEditingController: usernameTextEditingController,
                         keyboardType: TextInputType.name,
@@ -122,7 +121,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                       // password Textfield
                       CustomTextField(
-                        newDesign: true,
                         labelText: "Password", // TODO Localize
                         textEditingController: passwordTextEditingController,
                         password: true,
@@ -133,7 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.all(20),
-                          child: CustomButtonNewdesign(
+                          child: CustomButton(
                             icon: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15.0),
@@ -146,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         color: Colors.white, fontSize: 18),
                               ),
                             ),
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                            variant: CustomButtonVariant.AccentButton,
                             onPressed: isLoginButtonDisabled
                                 ? null
                                 : () async {
@@ -352,9 +350,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         height: 30,
                       ),
 
-                      CustomButtonNewdesign(
+                      CustomButton(
                         label: "Neuen Account anlegen", // TODO localize
-                        variant: CustomButtonNewdesignVariant.DarkButton,
+                        variant: CustomButtonVariant.DarkButton,
                         onPressed: () {
                           // navigate to register screen
                           navigatorKey.currentState!

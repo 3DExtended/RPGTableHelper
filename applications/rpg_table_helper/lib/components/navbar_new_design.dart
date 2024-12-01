@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 
-class NavbarNewDesign extends StatelessWidget {
-  const NavbarNewDesign(
+class Navbar extends StatelessWidget {
+  const Navbar(
       {super.key,
       required this.useTopSafePadding,
       required this.closeFunction,
@@ -35,8 +35,8 @@ class NavbarNewDesign extends StatelessWidget {
             children: [
               Opacity(
                 opacity: closeFunction == null ? 0 : 1,
-                child: CustomButtonNewdesign(
-                  variant: CustomButtonNewdesignVariant.FlatButton,
+                child: CustomButton(
+                  variant: CustomButtonVariant.FlatButton,
                   onPressed: closeFunction,
                   icon: CustomFaIcon(
                     icon: backInsteadOfCloseIcon
@@ -48,8 +48,8 @@ class NavbarNewDesign extends StatelessWidget {
               Expanded(child: titleWidget),
               Opacity(
                 opacity: menuOpen == null ? 0 : 1,
-                child: CustomButtonNewdesign(
-                  variant: CustomButtonNewdesignVariant.FlatButton,
+                child: CustomButton(
+                  variant: CustomButtonVariant.FlatButton,
                   onPressed: menuOpen,
                   icon: CustomFaIcon(icon: FontAwesomeIcons.bars),
                 ),

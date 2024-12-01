@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
@@ -165,7 +165,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                         SizedBox(
                                                           width: 10,
                                                         ),
-                                                        CustomButtonNewdesign(
+                                                        CustomButton(
                                                             icon: CustomFaIcon(
                                                                 color:
                                                                     darkColor,
@@ -211,7 +211,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                         SizedBox(
                                                           width: 10,
                                                         ),
-                                                        CustomButtonNewdesign(
+                                                        CustomButton(
                                                             icon: CustomFaIcon(
                                                                 color:
                                                                     darkColor,
@@ -253,7 +253,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                         SizedBox(
                                                           width: 10,
                                                         ),
-                                                        CustomButtonNewdesign(
+                                                        CustomButton(
                                                             icon: CustomFaIcon(
                                                                 color:
                                                                     darkColor,
@@ -356,7 +356,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                   MainAxisSize
                                                                       .min,
                                                               children: [
-                                                                CustomButtonNewdesign(
+                                                                CustomButton(
                                                                   isSubbutton:
                                                                       true,
                                                                   onPressed:
@@ -428,8 +428,8 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                   child: Column(
                     children: [
                       Center(
-                        child: CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                        child: CustomButton(
+                            variant: CustomButtonVariant.AccentButton,
                             label: "Weitere Teilnehmer",
                             onPressed: connectionDetails == null ||
                                     connectionDetails.fightSequence == null
@@ -450,8 +450,8 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                   child: Column(
                     children: [
                       Center(
-                        child: CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                        child: CustomButton(
+                            variant: CustomButtonVariant.AccentButton,
                             label: "Kampfreihenfolge würfeln",
                             onPressed: connectionDetails == null
                                 ? null

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -136,7 +136,6 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 keyboardType: TextInputType.text,
                 labelText: "Name der kleinsten Währung:", // TODO localize
                 textEditingController:
@@ -166,7 +165,6 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      newDesign: true,
                       keyboardType: TextInputType.text,
 
                       labelText:
@@ -179,9 +177,9 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                     width: 40,
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: CustomButtonNewdesign(
+                    child: CustomButton(
                       isSubbutton: true,
-                      variant: CustomButtonNewdesignVariant.FlatButton,
+                      variant: CustomButtonVariant.FlatButton,
                       onPressed: () {
                         // remove this pair from list
                         setState(() {
@@ -207,10 +205,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   ),
                   Expanded(
                     child: CustomTextField(
-                      newDesign: true,
-
                       keyboardType: TextInputType.number,
-
                       labelText:
                           "Gleichwertige Anzahl an vorheriger Währung:", // TODO localize
                       textEditingController: e.value.$2,
@@ -232,8 +227,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
             ],
           );
         }),
-        CustomButtonNewdesign(
-          variant: CustomButtonNewdesignVariant.Default,
+        CustomButton(
+          variant: CustomButtonVariant.Default,
           isSubbutton: true,
           onPressed: () {
             setState(() {

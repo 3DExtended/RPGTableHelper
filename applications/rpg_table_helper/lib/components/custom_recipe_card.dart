@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/newdesign/border_corner_stone_round.dart';
-import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
-import 'package:rpg_table_helper/components/newdesign/card_border.dart';
-import 'package:rpg_table_helper/components/newdesign/quarter_circle_cutout.dart';
+import 'package:rpg_table_helper/components/border_corner_stone_round.dart';
+import 'package:rpg_table_helper/components/bordered_image.dart';
+import 'package:rpg_table_helper/components/card_border.dart';
+import 'package:rpg_table_helper/components/quarter_circle_cutout.dart';
 import 'package:rpg_table_helper/constants.dart';
 
 class CustomRecipeCardItemPair {

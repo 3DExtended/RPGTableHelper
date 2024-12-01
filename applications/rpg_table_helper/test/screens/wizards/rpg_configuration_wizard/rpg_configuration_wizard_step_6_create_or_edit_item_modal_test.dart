@@ -19,7 +19,7 @@ void main() {
     testConfigurations(
       disableLocals: true,
       pathPrefix: "../../",
-      widgetName: 'showCreateOrEditItemModalNewDesign',
+      widgetName: 'showCreateOrEditItemModal',
       useMaterialAppWrapper: true,
       testerInteractions: (tester, local) async {
         await tester.tap(find.byType(ElevatedButton));
@@ -72,7 +72,7 @@ void main() {
               body: Builder(builder: (context) {
                 return ElevatedButton(
                     onPressed: () async {
-                      await showCreateOrEditItemModalNewDesign(
+                      await showCreateOrEditItemModal(
                         overrideNavigatorKey: navigatorKey,
                         context,
                         RpgItem(

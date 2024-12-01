@@ -5,11 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
@@ -76,7 +76,7 @@ class _AskForCampagneJoinCodeModalContentState
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    NavbarNewDesign(
+                    Navbar(
                       backInsteadOfCloseIcon: false,
                       closeFunction: () {
                         navigatorKey.currentState!.pop(null);
@@ -98,7 +98,6 @@ class _AskForCampagneJoinCodeModalContentState
                         children: [
                           Expanded(
                             child: CustomMarkdownBody(
-                              isNewDesign: true,
                               text:
                                   "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.", // TODO localize/ switch text between add and edit
                             ),
@@ -115,7 +114,6 @@ class _AskForCampagneJoinCodeModalContentState
                         children: [
                           Expanded(
                             child: CustomTextField(
-                              newDesign: true,
                               keyboardType: TextInputType.text,
                               labelText: "Join Code:", // TODO localize
                               textEditingController: joinCodeTextEditor,
@@ -131,16 +129,16 @@ class _AskForCampagneJoinCodeModalContentState
                       padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 20),
                       child: Row(
                         children: [
-                          CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.DarkButton,
+                          CustomButton(
+                            variant: CustomButtonVariant.DarkButton,
                             label: "Abbrechen", // TODO localize
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
-                          CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                          CustomButton(
+                            variant: CustomButtonVariant.AccentButton,
 
                             label: "Speichern", // TODO localize
                             onPressed: () {

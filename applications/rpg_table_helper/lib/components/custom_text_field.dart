@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -10,12 +10,10 @@ class CustomTextField extends StatelessWidget {
       required this.labelText,
       required this.textEditingController,
       required this.keyboardType,
-      this.newDesign,
       this.password,
       this.placeholderText});
 
   final TextInputType keyboardType;
-  final bool? newDesign;
   final String labelText;
   final TextEditingController textEditingController;
   final String? placeholderText;
@@ -43,9 +41,9 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
             suffixIcon: contraints.maxWidth > 350 &&
                     keyboardType != TextInputType.multiline
-                ? CustomButtonNewdesign(
+                ? CustomButton(
                     isSubbutton: true,
-                    variant: CustomButtonNewdesignVariant.FlatButton,
+                    variant: CustomButtonVariant.FlatButton,
                     icon: CustomFaIcon(
                         color: darkColor,
                         size: 16,
@@ -58,33 +56,29 @@ class CustomTextField extends StatelessWidget {
             helperText: placeholderText,
             labelText: labelText,
             alignLabelWithHint: true,
-            enabledBorder: newDesign != true
-                ? null
-                : OutlineInputBorder(
-                    borderSide: BorderSide(width: 1, color: darkColor),
-                  ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: darkColor),
+            ),
             border: OutlineInputBorder(
-              borderSide: newDesign != true
-                  ? BorderSide()
-                  : BorderSide(width: 1, color: darkColor),
+              borderSide: BorderSide(width: 1, color: darkColor),
             ),
             hintStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
-                .copyWith(color: newDesign == true ? darkTextColor : textColor),
+                .copyWith(color: darkTextColor),
             labelStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
-                .copyWith(color: newDesign == true ? darkTextColor : textColor),
+                .copyWith(color: darkTextColor),
             helperStyle: Theme.of(context)
                 .textTheme
                 .labelSmall!
-                .copyWith(color: newDesign == true ? darkTextColor : textColor),
+                .copyWith(color: darkTextColor),
           ),
           style: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: newDesign == true ? darkTextColor : textColor),
+              .copyWith(color: darkTextColor),
           controller: textEditingController,
         ),
       );

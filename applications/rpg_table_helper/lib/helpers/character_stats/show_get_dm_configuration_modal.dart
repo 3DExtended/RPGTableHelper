@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
@@ -253,7 +253,6 @@ class _ShowGetDmConfigurationModalContentState
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextField(
-              newDesign: true,
               labelText: "Name der Eigenschaft",
               textEditingController: nameTextEditor,
               keyboardType: TextInputType.text,
@@ -262,7 +261,6 @@ class _ShowGetDmConfigurationModalContentState
               height: 10,
             ),
             CustomTextField(
-              newDesign: true,
               labelText: "Hilfstext für die Eigenschaft",
               textEditingController: helperTextEditor,
               keyboardType: TextInputType.text,
@@ -271,7 +269,6 @@ class _ShowGetDmConfigurationModalContentState
               height: 10,
             ),
             CustomDropdownMenu(
-                newDesign: true,
                 selectedValueTemp: selectedEditType?.name,
                 setter: (newValue) {
                   setState(() {
@@ -306,7 +303,6 @@ class _ShowGetDmConfigurationModalContentState
               height: 15,
             ),
             CustomDropdownMenu(
-                newDesign: true,
                 selectedValueTemp: selectedValueType?.name,
                 setter: (newValue) {
                   setState(() {
@@ -514,7 +510,6 @@ class _ShowGetDmConfigurationModalContentState
                   children: [
                     Expanded(
                       child: CustomTextField(
-                        newDesign: true,
                         labelText: "Name:",
                         textEditingController: tuple.value.$2,
                         keyboardType: TextInputType.text,
@@ -525,7 +520,6 @@ class _ShowGetDmConfigurationModalContentState
                     ),
                     Expanded(
                       child: CustomTextField(
-                        newDesign: true,
                         labelText: "Beschreibung:",
                         textEditingController: tuple.value.$3,
                         keyboardType: TextInputType.multiline,
@@ -535,8 +529,8 @@ class _ShowGetDmConfigurationModalContentState
                       height: 50,
                       width: 70,
                       clipBehavior: Clip.none,
-                      child: CustomButtonNewdesign(
-                        variant: CustomButtonNewdesignVariant.FlatButton,
+                      child: CustomButton(
+                        variant: CustomButtonVariant.FlatButton,
                         onPressed: () {
                           setState(() {
                             multiselectOptions.removeAt(tuple.key);
@@ -555,7 +549,7 @@ class _ShowGetDmConfigurationModalContentState
 
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-          child: CustomButtonNewdesign(
+          child: CustomButton(
             isSubbutton: true,
             onPressed: () {
               setState(() {
@@ -623,9 +617,9 @@ class _ShowGetDmConfigurationModalContentState
                         CharacterStatValueType.listOfIntsWithIcons)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                        child: CustomButtonNewdesign(
+                        child: CustomButton(
                           isSubbutton: true,
-                          variant: CustomButtonNewdesignVariant.Default,
+                          variant: CustomButtonVariant.Default,
                           onPressed: () async {
                             // open icon and color selector
                             await showSelectIconWithColorModal(
@@ -662,7 +656,6 @@ class _ShowGetDmConfigurationModalContentState
                       ),
                     Expanded(
                       child: CustomTextField(
-                        newDesign: true,
                         labelText: "Name:",
                         textEditingController: tuple.value.label,
                         keyboardType: TextInputType.text,
@@ -672,8 +665,8 @@ class _ShowGetDmConfigurationModalContentState
                       height: 50,
                       width: 70,
                       clipBehavior: Clip.none,
-                      child: CustomButtonNewdesign(
-                        variant: CustomButtonNewdesignVariant.FlatButton,
+                      child: CustomButton(
+                        variant: CustomButtonVariant.FlatButton,
                         onPressed: () {
                           setState(() {
                             multiselectOptions.removeAt(tuple.key);
@@ -691,7 +684,7 @@ class _ShowGetDmConfigurationModalContentState
             ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-          child: CustomButtonNewdesign(
+          child: CustomButton(
             isSubbutton: true,
             onPressed: () {
               setState(() {
@@ -757,7 +750,7 @@ class SelectableTile extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CustomButtonNewdesign(
+          CustomButton(
             isSubbutton: true,
             onPressed: onValueChange,
             icon: Container(

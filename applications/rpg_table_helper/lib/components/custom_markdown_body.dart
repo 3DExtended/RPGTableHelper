@@ -6,10 +6,8 @@ class CustomMarkdownBody extends StatelessWidget {
   const CustomMarkdownBody({
     super.key,
     required this.text,
-    this.isNewDesign,
   });
 
-  final bool? isNewDesign;
   final String text;
 
   @override
@@ -17,36 +15,21 @@ class CustomMarkdownBody extends StatelessWidget {
     return Theme(
       data: ThemeData(
         textTheme: Theme.of(context).textTheme.copyWith(
-              headlineLarge: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              headlineMedium: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              headlineSmall: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              titleLarge: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              titleMedium: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              titleSmall: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              bodySmall: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              bodyMedium: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              bodyLarge: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              labelSmall: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              labelMedium: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              labelLarge: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              displaySmall: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              displayMedium: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
-              displayLarge: TextStyle(
-                  color: isNewDesign == true ? darkTextColor : textColor),
+              headlineLarge: TextStyle(color: darkTextColor),
+              headlineMedium: TextStyle(color: darkTextColor),
+              headlineSmall: TextStyle(color: darkTextColor),
+              titleLarge: TextStyle(color: darkTextColor),
+              titleMedium: TextStyle(color: darkTextColor),
+              titleSmall: TextStyle(color: darkTextColor),
+              bodySmall: TextStyle(color: darkTextColor),
+              bodyMedium: TextStyle(color: darkTextColor),
+              bodyLarge: TextStyle(color: darkTextColor),
+              labelSmall: TextStyle(color: darkTextColor),
+              labelMedium: TextStyle(color: darkTextColor),
+              labelLarge: TextStyle(color: darkTextColor),
+              displaySmall: TextStyle(color: darkTextColor),
+              displayMedium: TextStyle(color: darkTextColor),
+              displayLarge: TextStyle(color: darkTextColor),
             ),
       ),
       child: MarkdownBody(

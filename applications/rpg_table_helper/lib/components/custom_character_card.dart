@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
-import 'package:rpg_table_helper/components/newdesign/card_border.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
+import 'package:rpg_table_helper/components/bordered_image.dart';
+import 'package:rpg_table_helper/components/card_border.dart';
+import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';

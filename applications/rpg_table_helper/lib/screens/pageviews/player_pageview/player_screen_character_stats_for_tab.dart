@@ -102,7 +102,6 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
               context: context,
               characterName: charToRender?.characterName ?? "Charakter Name",
               statConfiguration: statToRender,
-              useNewDesign: true,
               characterValue: matchingPlayerCharacterStat)));
     }
 

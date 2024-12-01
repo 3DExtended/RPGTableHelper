@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 
 class ModalContentWrapper<T> extends StatelessWidget {
@@ -41,7 +41,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  NavbarNewDesign(
+                  Navbar(
                     backInsteadOfCloseIcon: false,
                     closeFunction: () {
                       navigatorKey.currentState!.pop(null);
@@ -69,7 +69,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
                     child: Row(
                       children: [
-                        CustomButtonNewdesign(
+                        CustomButton(
                           label: "Abbrechen", // TODO localize
                           onPressed: () async {
                             await onCancel();
@@ -77,7 +77,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                           },
                         ),
                         const Spacer(),
-                        CustomButtonNewdesign(
+                        CustomButton(
                           label: "Speichern", // TODO localize
                           onPressed: onSave == null
                               ? null

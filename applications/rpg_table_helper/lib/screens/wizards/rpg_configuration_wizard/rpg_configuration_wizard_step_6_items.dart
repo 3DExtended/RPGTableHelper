@@ -103,7 +103,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         renderCreateButton: true,
         onAddNewItemPressed: () async {
           // open create modal with new item
-          await showCreateOrEditItemModalNewDesign(
+          await showCreateOrEditItemModal(
               context,
               RpgItem(
                 imageDescription: null,
@@ -130,8 +130,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
         onItemCardPressed:
             (MapEntry<int, ({int amount, RpgItem item})> itemToRender) async {
           // open edit modal with clicked item
-          await showCreateOrEditItemModalNewDesign(
-                  context, itemToRender.value.item)
+          await showCreateOrEditItemModal(context, itemToRender.value.item)
               .then((returnValue) {
             if (returnValue == null) {
               return;
@@ -182,7 +181,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       child: CustomButton(
                         onPressed: () async {
                           // open edit modal with clicked item
-                          await showCreateOrEditItemModalNewDesign(
+                          await showCreateOrEditItemModal(
                               context,
                               item.value.copyWith(
                                 uuid: const UuidV7().generate(),
@@ -210,7 +209,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       child: CustomButton(
                         onPressed: () async {
                           // open edit modal with clicked item
-                          await showCreateOrEditItemModalNewDesign(
+                          await showCreateOrEditItemModal(
                                   context, item.value)
                               .then((returnValue) {
                             if (returnValue == null) {

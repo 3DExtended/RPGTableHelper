@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
@@ -69,7 +69,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                NavbarNewDesign(
+                Navbar(
                   backInsteadOfCloseIcon: false,
                   closeFunction: () {
                     navigatorKey.currentState!.pop(null);
@@ -107,7 +107,6 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                             children: [
                                               Expanded(
                                                 child: CustomTextField(
-                                                    newDesign: true,
                                                     labelText: "Gegnername",
                                                     textEditingController:
                                                         en.value.$1,
@@ -119,7 +118,6 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                               ),
                                               Expanded(
                                                 child: CustomTextField(
-                                                    newDesign: true,
                                                     labelText:
                                                         "Reihenfolgenwurf",
                                                     textEditingController:
@@ -135,9 +133,9 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                         height: 50,
                                         width: 70,
                                         clipBehavior: Clip.none,
-                                        child: CustomButtonNewdesign(
-                                          variant: CustomButtonNewdesignVariant
-                                              .FlatButton,
+                                        child: CustomButton(
+                                          variant:
+                                              CustomButtonVariant.FlatButton,
                                           onPressed: () {
                                             setState(() {
                                               enemiesToAdd.removeAt(en.key);
@@ -158,7 +156,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                             height: 10,
                           ),
                           Center(
-                            child: CustomButtonNewdesign(
+                            child: CustomButton(
                               label: "Weiterer Gegner", // TODO localize
                               onPressed: () {
                                 var connectionDetails = ref
@@ -190,14 +188,14 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                             child: Row(
                               children: [
                                 const Spacer(),
-                                CustomButtonNewdesign(
+                                CustomButton(
                                   label: "Abbrechen", // TODO localize
                                   onPressed: () {
                                     navigatorKey.currentState!.pop(null);
                                   },
                                 ),
                                 const Spacer(),
-                                CustomButtonNewdesign(
+                                CustomButton(
                                   label: "Hinzufügen", // TODO localize
                                   onPressed: () {
                                     // add enemies to connectiondetails

@@ -8,11 +8,9 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
     required this.setter,
     required this.items,
     required this.label,
-    required this.newDesign,
     this.noBorder,
   });
   final String label;
-  final bool newDesign;
   final String? selectedValueTemp;
   final Null Function(String? newValue) setter;
   final List<DropdownMenuEntry<String?>> items;
@@ -23,40 +21,42 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              fillColor: newDesign == true ? darkColor : null,
+              fillColor: darkColor,
               enabledBorder: noBorder == true
                   ? InputBorder.none
                   : OutlineInputBorder(
                       borderSide: BorderSide(
-                      color: newDesign == true ? darkColor : Color(0xff938f99),
+                      color: darkColor,
                     )),
             ),
       ),
       child: DropdownMenu<String?>(
         trailingIcon: Icon(
           Icons.arrow_drop_down,
-          color: newDesign ? darkColor : textColor,
+          color: darkColor,
         ),
         selectedTrailingIcon: Icon(
           Icons.arrow_drop_up,
-          color: newDesign ? darkColor : textColor,
+          color: darkColor,
         ),
         textStyle: Theme.of(context)
             .textTheme
             .bodyLarge!
-            .copyWith(color: newDesign ? darkTextColor : textColor),
+            .copyWith(color: darkTextColor),
         expandedInsets: EdgeInsets.zero,
         label: Text(
           label,
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
-              .copyWith(color: newDesign ? darkTextColor : textColor),
+              .copyWith(color: darkTextColor),
         ),
         dropdownMenuEntries: items,
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  color: newDesign == true ? darkTextColor : textColor),
+              labelStyle: Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(color: darkTextColor),
               filled: true,
               iconColor: darkTextColor,
               fillColor: const Color.fromARGB(0, 0, 0, 0),
@@ -64,7 +64,7 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
                   ? InputBorder.none
                   : OutlineInputBorder(
                       borderSide: BorderSide(
-                      color: newDesign == true ? darkColor : Color(0xff938f99),
+                      color: darkColor,
                     )),
             ),
         initialSelection: selectedValueTemp,

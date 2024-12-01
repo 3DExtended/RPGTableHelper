@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -101,7 +101,7 @@ class _AddNewItemModalContentState
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    NavbarNewDesign(
+                    Navbar(
                       backInsteadOfCloseIcon: false,
                       closeFunction: () {
                         navigatorKey.currentState!.pop(null);
@@ -149,16 +149,16 @@ class _AddNewItemModalContentState
                       child: Row(
                         children: [
                           const Spacer(),
-                          CustomButtonNewdesign(
+                          CustomButton(
                             label: "Abbrechen", // TODO localize
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
-                          CustomButtonNewdesign(
+                          CustomButton(
                             label: "Speichern", // TODO localize
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                            variant: CustomButtonVariant.AccentButton,
                             onPressed: () {
                               navigatorKey.currentState!.pop(_allItems
                                   .map((t) => (t.item.uuid, t.amount))

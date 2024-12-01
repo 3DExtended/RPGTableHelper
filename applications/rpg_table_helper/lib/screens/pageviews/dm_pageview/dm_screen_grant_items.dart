@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
@@ -108,7 +108,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: CustomMarkdownBody(
-                          isNewDesign: true,
                           text: "Noch keine Items verteilt...",
                         ),
                       ),
@@ -118,7 +117,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: CustomMarkdownBody(
-                            isNewDesign: true,
                             text: getLastGrantedItemsMarkdownText(
                                 rpgConfig, connectionDetails)),
                       ),
@@ -153,7 +151,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                         children: [
                           Expanded(
                             child: CustomDropdownMenu(
-                                newDesign: true,
                                 selectedValueTemp: selectedPlaceOfFindingId,
                                 setter: (newValue) {
                                   setState(() {
@@ -175,7 +172,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                       const Padding(
                         padding: EdgeInsets.only(top: 20),
                         child: CustomMarkdownBody(
-                          isNewDesign: true,
                           text: "## Spieler Würfe",
                         ),
                       ),
@@ -195,7 +191,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                   SizedBox(
                                     width: 80,
                                     child: CustomTextField(
-                                      newDesign: true,
                                       labelText: "Wurf",
                                       textEditingController: playerRollPair.$3,
                                       keyboardType: TextInputType.number,
@@ -205,7 +200,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                     width: 10,
                                   ),
                                   CustomMarkdownBody(
-                                      isNewDesign: true,
                                       text:
                                           "Spieler __${playerRollPair.$2.isNotEmpty ? playerRollPair.$2.trim() : "Player Name"}__"),
                                 ],
@@ -216,8 +210,8 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.all(20),
-                          child: CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                          child: CustomButton(
+                            variant: CustomButtonVariant.AccentButton,
                             onPressed: isSendItemsButtonDisabled
                                 ? null
                                 : () {
@@ -313,7 +307,6 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
   ) {
     List<Widget> result = [
       CustomMarkdownBody(
-        isNewDesign: true,
         text: "## Auffindbare Items in Fundort: ",
       )
     ];
@@ -322,12 +315,10 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
 
     if (selectedPlaceOfFindingId == null) {
       result.add(CustomMarkdownBody(
-        isNewDesign: true,
         text: "Es wurde noch kein Fundort ausgewählt.",
       ));
     } else {
       result.add(CustomMarkdownBody(
-        isNewDesign: true,
         text: "Diese Items gibt es am/im Fundort:",
       ));
 

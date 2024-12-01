@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
@@ -69,7 +69,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
       backgroundColor: bgColor,
       body: Column(
         children: [
-          NavbarNewDesign(
+          Navbar(
             useTopSafePadding: true,
             closeFunction: () {
               navigatorKey.currentState!.pop();

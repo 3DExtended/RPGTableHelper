@@ -3,11 +3,11 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
+import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
@@ -104,7 +104,7 @@ class _ItemCardDetailsModalContentState
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    NavbarNewDesign(
+                    Navbar(
                       backInsteadOfCloseIcon: false,
                       closeFunction: () {
                         navigatorKey.currentState!.pop(null);
@@ -225,14 +225,14 @@ class _ItemCardDetailsModalContentState
                       child: Row(
                         children: [
                           const Spacer(),
-                          CustomButtonNewdesign(
+                          CustomButton(
                             label: "Abbrechen", // TODO localize
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
-                          CustomButtonNewdesign(
+                          CustomButton(
                             label: "Speichern", // TODO localize
                             onPressed: () {
                               navigatorKey.currentState!.pop(currentlyOwned -

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -115,7 +115,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     // REGISTER
                     // Username Textfield
                     CustomTextField(
-                      newDesign: true,
                       labelText: "Username", // TODO Localize
                       textEditingController: usernameTextEditingController,
                       keyboardType: TextInputType.name,
@@ -123,7 +122,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                     // email Textfield
                     CustomTextField(
-                      newDesign: true,
                       labelText: "Email", // TODO Localize
                       textEditingController: emailTextEditingController,
                       keyboardType: TextInputType.emailAddress,
@@ -131,7 +129,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                     // password
                     CustomTextField(
-                      newDesign: true,
                       labelText: "Password", // TODO Localize
                       textEditingController: passwordTextEditingController,
                       password: true,
@@ -144,15 +141,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomButtonNewdesign(
-                          variant: CustomButtonNewdesignVariant.DarkButton,
+                        CustomButton(
+                          variant: CustomButtonVariant.DarkButton,
                           onPressed: () {
                             navigatorKey.currentState!.pop();
                           },
                           label: "Abbrechen",
                         ),
-                        CustomButtonNewdesign(
-                          variant: CustomButtonNewdesignVariant.AccentButton,
+                        CustomButton(
+                          variant: CustomButtonVariant.AccentButton,
                           onPressed: isRegisterButtonDisabled
                               ? null
                               : () async {

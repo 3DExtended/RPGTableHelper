@@ -9,14 +9,14 @@ import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
@@ -31,7 +31,7 @@ import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 
 import '../../../helpers/modal_helpers.dart';
 
-Future<RpgItem?> showCreateOrEditItemModalNewDesign(
+Future<RpgItem?> showCreateOrEditItemModal(
     BuildContext context, RpgItem itemToEdit,
     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   // show error to user
@@ -196,7 +196,7 @@ class _CreateOrEditItemModalContentState
                 color: bgColor,
                 child: Column(
                   children: [
-                    NavbarNewDesign(
+                    Navbar(
                       backInsteadOfCloseIcon: false,
                       closeFunction: () {
                         navigatorKey.currentState!.pop(null);
@@ -266,7 +266,6 @@ class _CreateOrEditItemModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 keyboardType: TextInputType.text,
                 labelText: "Name des Items:", // TODO localize
                 textEditingController: nameController,
@@ -281,7 +280,6 @@ class _CreateOrEditItemModalContentState
           children: [
             Expanded(
               child: CustomDropdownMenu(
-                  newDesign: true,
                   selectedValueTemp: selectedItemCategoryId == ""
                       ? null
                       : selectedItemCategoryId,
@@ -336,7 +334,6 @@ class _CreateOrEditItemModalContentState
                     0,
                   ),
                   child: CustomTextField(
-                    newDesign: true,
                     keyboardType: TextInputType.number,
                     labelText: "${e.value.name}:", // TODO localize
                     textEditingController: currencyControllers[e.key],
@@ -353,7 +350,6 @@ class _CreateOrEditItemModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 keyboardType: TextInputType.text,
                 labelText: "Fundgröße: (optional)", // TODO localize
                 textEditingController: patchSizeTextController,
@@ -368,7 +364,6 @@ class _CreateOrEditItemModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 keyboardType: TextInputType.multiline,
                 labelText: "Beschreibung:", // TODO localize
                 textEditingController: descriptionController,
@@ -383,7 +378,6 @@ class _CreateOrEditItemModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 keyboardType: TextInputType.multiline,
                 labelText: "Bild-Beschreibung:", // TODO localize
                 textEditingController: imageDescriptionController,
@@ -415,7 +409,6 @@ class _CreateOrEditItemModalContentState
                   children: [
                     Expanded(
                       child: CustomDropdownMenu(
-                          newDesign: true,
                           selectedValueTemp: tuple.value.$1,
                           setter: (newValue) {
                             setState(() {
@@ -441,7 +434,6 @@ class _CreateOrEditItemModalContentState
                     SizedBox(
                       width: 75,
                       child: CustomTextField(
-                        newDesign: true,
                         keyboardType: TextInputType.number,
                         labelText: "DC:", // TODO localize
                         textEditingController: tuple.value.$2,
@@ -451,8 +443,8 @@ class _CreateOrEditItemModalContentState
                       height: 50,
                       width: 70,
                       clipBehavior: Clip.none,
-                      child: CustomButtonNewdesign(
-                        variant: CustomButtonNewdesignVariant.FlatButton,
+                      child: CustomButton(
+                        variant: CustomButtonVariant.FlatButton,
                         onPressed: () {
                           // remove this pair from list
                           setState(() {
@@ -475,8 +467,8 @@ class _CreateOrEditItemModalContentState
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              CustomButtonNewdesign(
-                variant: CustomButtonNewdesignVariant.Default,
+              CustomButton(
+                variant: CustomButtonVariant.Default,
                 isSubbutton: true,
                 onPressed: () {
                   setState(() {
@@ -607,8 +599,8 @@ class _CreateOrEditItemModalContentState
             ),
             Row(
               children: [
-                CustomButtonNewdesign(
-                    variant: CustomButtonNewdesignVariant.FlatButton,
+                CustomButton(
+                    variant: CustomButtonVariant.FlatButton,
                     icon: CustomFaIcon(
                       icon: FontAwesomeIcons.chevronLeft,
                       color: isShowPreviousGeneratedImageButtonDisabled
@@ -787,8 +779,8 @@ class _CreateOrEditItemModalContentState
                   ],
                 ),
                 Spacer(),
-                CustomButtonNewdesign(
-                    variant: CustomButtonNewdesignVariant.FlatButton,
+                CustomButton(
+                    variant: CustomButtonVariant.FlatButton,
                     icon: CustomFaIcon(
                       icon: FontAwesomeIcons.chevronRight,
                       color: isShowNextGeneratedButtonDisabled
@@ -816,8 +808,8 @@ class _CreateOrEditItemModalContentState
         Center(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 20),
-            child: CustomButtonNewdesign(
-              variant: CustomButtonNewdesignVariant.AccentButton,
+            child: CustomButton(
+              variant: CustomButtonVariant.AccentButton,
 
               label: "Speichern", // TODO localize
               onPressed: () {

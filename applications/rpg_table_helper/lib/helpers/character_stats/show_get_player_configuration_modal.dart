@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:rpg_table_helper/components/bordered_image.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
-import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
@@ -488,7 +488,6 @@ class _ShowGetPlayerConfigurationModalContentState
                               characterToRenderStatFor:
                                   widget.characterToRenderStatFor,
                               onNewStatValue: (newSerializedValue) {},
-                              useNewDesign: true,
                               context: context,
                               statConfiguration: widget.statConfiguration,
                               characterValue: statValue,
@@ -513,7 +512,6 @@ class _ShowGetPlayerConfigurationModalContentState
     return Column(
       children: [
         CustomTextField(
-          newDesign: true,
           labelText: widget.statConfiguration.name,
           placeholderText: widget.statConfiguration.helperText,
           textEditingController: textEditController,
@@ -527,7 +525,6 @@ class _ShowGetPlayerConfigurationModalContentState
     // characterValue.serializedValue = {"value": "asdf"}
 
     return CustomTextField(
-      newDesign: true,
       labelText: widget.statConfiguration.name,
       placeholderText: widget.statConfiguration.helperText,
       textEditingController: textEditController,
@@ -543,7 +540,6 @@ class _ShowGetPlayerConfigurationModalContentState
     return Column(
       children: [
         CustomTextField(
-          newDesign: true,
           labelText: widget.statConfiguration.name,
           placeholderText: widget.statConfiguration.helperText,
           textEditingController: textEditController,
@@ -586,8 +582,8 @@ class _ShowGetPlayerConfigurationModalContentState
           children: [
             Spacer(),
             Spacer(),
-            CustomButtonNewdesign(
-                variant: CustomButtonNewdesignVariant.FlatButton,
+            CustomButton(
+                variant: CustomButtonVariant.FlatButton,
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.chevronLeft,
                   color: isShowPreviousGeneratedImageButtonDisabled
@@ -662,8 +658,8 @@ class _ShowGetPlayerConfigurationModalContentState
               ),
             ),
             Spacer(),
-            CustomButtonNewdesign(
-                variant: CustomButtonNewdesignVariant.FlatButton,
+            CustomButton(
+                variant: CustomButtonVariant.FlatButton,
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.chevronRight,
                   color: isShowNextGeneratedButtonDisabled
@@ -1087,7 +1083,6 @@ class _ShowGetPlayerConfigurationModalContentState
                         textEditingController: e.value.valueTextController,
                         placeholderText: "Der erste Wert für ${e.value.label}",
                         keyboardType: TextInputType.number,
-                        newDesign: true,
                       ),
                     ),
                     SizedBox(
@@ -1099,7 +1094,6 @@ class _ShowGetPlayerConfigurationModalContentState
                         textEditingController: e.value.otherValueTextController,
                         keyboardType: TextInputType.number,
                         placeholderText: "Der zweite Wert für ${e.value.label}",
-                        newDesign: true,
                       ),
                     ),
                     SizedBox(
@@ -1156,7 +1150,6 @@ class _ShowGetPlayerConfigurationModalContentState
                                 CharacterStatValueType.listOfIntsWithIcons
                             ? TextInputType.number
                             : TextInputType.text,
-                        newDesign: true,
                       ),
                     ),
                     SizedBox(
@@ -1180,7 +1173,6 @@ class _ShowGetPlayerConfigurationModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 labelText: "Current Value",
                 placeholderText: "The current value.",
                 textEditingController: textEditController,
@@ -1192,7 +1184,6 @@ class _ShowGetPlayerConfigurationModalContentState
             ),
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 labelText: "Max Value",
                 placeholderText: "The maximum value you could get.",
                 textEditingController: textEditController2,
@@ -1217,7 +1208,6 @@ class _ShowGetPlayerConfigurationModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 labelText: "Erster Wert",
                 placeholderText: "The first value.",
                 textEditingController: textEditController,
@@ -1229,7 +1219,6 @@ class _ShowGetPlayerConfigurationModalContentState
             ),
             Expanded(
               child: CustomTextField(
-                newDesign: true,
                 labelText: "Second Value",
                 placeholderText: "The computed value based on the first value.",
                 textEditingController: textEditController2,
@@ -1300,7 +1289,7 @@ class _ShowGetPlayerConfigurationModalContentState
         ),
 
         // Add new companion to list!
-        CustomButtonNewdesign(
+        CustomButton(
           onPressed: () {
             // TODO open modal, ask player for new companion name and add to rpgCharacterConfig
 
@@ -1321,7 +1310,7 @@ class _ShowGetPlayerConfigurationModalContentState
                 ]));
           },
           label: "Neuen Begleiter", // TODO localize
-          variant: CustomButtonNewdesignVariant.AccentButton,
+          variant: CustomButtonVariant.AccentButton,
         )
       ],
     );

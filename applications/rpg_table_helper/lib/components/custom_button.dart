@@ -2,20 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/constants.dart';
 
-enum CustomButtonNewdesignVariant {
+enum CustomButtonVariant {
   Default,
   AccentButton,
   DarkButton,
   FlatButton,
 }
 
-class CustomButtonNewdesign extends StatelessWidget {
+class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
   final String? label;
   final Widget? icon;
   final bool? isSubbutton;
-  final CustomButtonNewdesignVariant? variant;
-  const CustomButtonNewdesign({
+  final CustomButtonVariant? variant;
+  const CustomButton({
     super.key,
     required this.onPressed,
     this.label,
@@ -26,11 +26,10 @@ class CustomButtonNewdesign extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var variantToUse = variant ?? CustomButtonNewdesignVariant.Default;
+    var variantToUse = variant ?? CustomButtonVariant.Default;
 
-    var useLightTextColor =
-        variantToUse == CustomButtonNewdesignVariant.AccentButton ||
-            variantToUse == CustomButtonNewdesignVariant.DarkButton;
+    var useLightTextColor = variantToUse == CustomButtonVariant.AccentButton ||
+        variantToUse == CustomButtonVariant.DarkButton;
 
     return CupertinoButton(
       onPressed: onPressed,
@@ -39,24 +38,23 @@ class CustomButtonNewdesign extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: onPressed == null
-              ? (variantToUse == CustomButtonNewdesignVariant.FlatButton
+              ? (variantToUse == CustomButtonVariant.FlatButton
                   ? Colors.transparent
                   : middleBgColor)
-              : variantToUse == CustomButtonNewdesignVariant.FlatButton
+              : variantToUse == CustomButtonVariant.FlatButton
                   ? Colors.transparent
-                  : (variantToUse == CustomButtonNewdesignVariant.AccentButton
+                  : (variantToUse == CustomButtonVariant.AccentButton
                       ? accentColor
-                      : (variantToUse == CustomButtonNewdesignVariant.DarkButton
+                      : (variantToUse == CustomButtonVariant.DarkButton
                           ? darkColor
                           : bgColor)),
           borderRadius: BorderRadius.all(Radius.circular(5)),
-          border: variantToUse == CustomButtonNewdesignVariant.FlatButton
+          border: variantToUse == CustomButtonVariant.FlatButton
               ? null
               : Border.all(
                   color: onPressed == null
                       ? middleBgColor
-                      : (variantToUse ==
-                              CustomButtonNewdesignVariant.AccentButton
+                      : (variantToUse == CustomButtonVariant.AccentButton
                           ? accentColor
                           : darkColor),
                 ),

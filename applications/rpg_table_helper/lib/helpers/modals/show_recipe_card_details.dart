@@ -4,12 +4,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
+import 'package:rpg_table_helper/components/custom_recipe_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_recipe_card.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
@@ -104,7 +104,7 @@ class _RecipeCardDetailsModalContentState
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    NavbarNewDesign(
+                    Navbar(
                       backInsteadOfCloseIcon: false,
                       closeFunction: () {
                         navigatorKey.currentState!.pop(null);
@@ -315,15 +315,15 @@ class _RecipeCardDetailsModalContentState
                       child: Row(
                         children: [
                           const Spacer(),
-                          CustomButtonNewdesign(
+                          CustomButton(
                             label: "Abbrechen", // TODO localize
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
-                          CustomButtonNewdesign(
-                            variant: CustomButtonNewdesignVariant.AccentButton,
+                          CustomButton(
+                            variant: CustomButtonVariant.AccentButton,
                             label: "Herstellen", // TODO localize
                             onPressed: isCraftButtonDisabled()
                                 ? null

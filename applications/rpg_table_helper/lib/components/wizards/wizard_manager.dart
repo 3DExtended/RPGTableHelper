@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
 
@@ -78,7 +78,7 @@ class _WizardManagerState extends State<WizardManager> {
     return Column(
       children: [
         Builder(builder: (context) {
-          return NavbarNewDesign(
+          return Navbar(
             backInsteadOfCloseIcon: true,
             useTopSafePadding: true,
             closeFunction: () {

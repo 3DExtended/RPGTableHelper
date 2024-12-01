@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_character_card.dart';
+import 'package:rpg_table_helper/components/custom_character_card.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 

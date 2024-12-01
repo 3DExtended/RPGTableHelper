@@ -2,9 +2,9 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -169,9 +169,9 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                    child: CustomButtonNewdesign(
+                    child: CustomButton(
                       isSubbutton: true,
-                      variant: CustomButtonNewdesignVariant.Default,
+                      variant: CustomButtonVariant.Default,
                       onPressed: () async {
                         // open icon and color selector
                         await showSelectIconWithColorModal(context,
@@ -204,7 +204,6 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                   ),
                   Expanded(
                     child: CustomTextField(
-                      newDesign: true,
                       keyboardType: TextInputType.text,
                       labelText: "Name der Kategorie:", // TODO localize
                       textEditingController: e.value.nameController,
@@ -218,8 +217,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     width: 40,
                     clipBehavior: Clip.none,
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: CustomButtonNewdesign(
-                      variant: CustomButtonNewdesignVariant.FlatButton,
+                    child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
                       isSubbutton: true,
                       onPressed: () {
                         // remove this pair from list
@@ -247,7 +246,6 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         children: [
                           Expanded(
                             child: CustomTextField(
-                              newDesign: true,
                               keyboardType: TextInputType.text,
                               labelText:
                                   "Name der Sub-Kategorie:", // TODO localize
@@ -263,8 +261,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                             width: 40,
                             clipBehavior: Clip.none,
                             padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: CustomButtonNewdesign(
-                              variant: CustomButtonNewdesignVariant.FlatButton,
+                            child: CustomButton(
+                              variant: CustomButtonVariant.FlatButton,
                               isSubbutton: true,
                               onPressed: () {
                                 // remove this pair from list
@@ -290,7 +288,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: CustomButtonNewdesign(
+                child: CustomButton(
                   isSubbutton: true,
                   onPressed: () {
                     setState(() {
@@ -329,8 +327,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
             ],
           );
         }),
-        CustomButtonNewdesign(
-          variant: CustomButtonNewdesignVariant.Default,
+        CustomButton(
+          variant: CustomButtonVariant.Default,
           onPressed: () {
             setState(() {
               addNewItemCategory(_ItemCategoryEdit.fromItemCategory(

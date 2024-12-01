@@ -612,7 +612,6 @@ void main() {
                 statConfiguration: testConfiguration.$2,
                 characterValue: testConfiguration.$3,
                 characterName: "Frodo",
-                useNewDesign: true,
               ),
             );
           }),

@@ -2,10 +2,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -76,7 +76,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    NavbarNewDesign(
+                    Navbar(
                       backInsteadOfCloseIcon: false,
                       closeFunction: () {
                         navigatorKey.currentState!.pop(null);
@@ -112,7 +112,6 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                                 height: 10,
                               ),
                               CustomTextField(
-                                newDesign: true,
                                 labelText: "Kampf Wurf",
                                 textEditingController: textEditingController,
                                 keyboardType: TextInputType.number,
@@ -130,7 +129,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                       child: Row(
                         children: [
                           const Spacer(),
-                          CustomButtonNewdesign(
+                          CustomButton(
                             label: "Absenden", // TODO localize
                             onPressed: () {
                               // TODO add validation

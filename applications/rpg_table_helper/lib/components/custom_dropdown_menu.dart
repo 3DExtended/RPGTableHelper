@@ -8,11 +8,9 @@ class CustomDropdownMenu extends StatelessWidget {
     required this.setter,
     required this.items,
     required this.label,
-    this.newDesign,
     this.noBorder,
   });
   final String label;
-  final bool? newDesign;
   final bool? noBorder;
   final String? selectedValueTemp;
   final Null Function(String? newValue) setter;
@@ -23,22 +21,21 @@ class CustomDropdownMenu extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              fillColor: newDesign == true ? darkColor : null,
+              fillColor: darkColor,
               enabledBorder: noBorder == true
                   ? InputBorder.none
                   : OutlineInputBorder(
                       borderSide: BorderSide(
-                      color: newDesign == true ? darkColor : Color(0xff938f99),
+                      color: darkColor,
                     )),
             ),
       ),
       child: DropdownButtonFormField<String?>(
-        iconEnabledColor: newDesign != true ? null : darkColor,
-        iconDisabledColor:
-            newDesign != true ? null : const Color.fromARGB(255, 140, 133, 125),
+        iconEnabledColor: darkColor,
+        iconDisabledColor: const Color.fromARGB(255, 140, 133, 125),
         borderRadius: BorderRadius.circular(10),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: newDesign == true ? darkTextColor : textColor,
+              color: darkTextColor,
               fontSize: noBorder == true ? 24 : null,
               height: noBorder == true ? 1 : null,
             ),
@@ -46,7 +43,7 @@ class CustomDropdownMenu extends StatelessWidget {
           labelStyle: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: newDesign == true ? darkTextColor : textColor),
+              .copyWith(color: darkTextColor),
           filled: true,
           fillColor: const Color.fromARGB(0, 0, 0, 0),
           labelText: label,
@@ -54,10 +51,10 @@ class CustomDropdownMenu extends StatelessWidget {
               ? InputBorder.none
               : OutlineInputBorder(
                   borderSide: BorderSide(
-                  color: newDesign == true ? darkColor : Color(0xff938f99),
+                  color: darkColor,
                 )),
         ),
-        dropdownColor: newDesign == true ? bgColor : null,
+        dropdownColor: bgColor,
         value: selectedValueTemp,
         isDense: true,
         onChanged: setter,

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_recipe_card.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
+import 'package:rpg_table_helper/components/custom_recipe_card.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -93,8 +93,8 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
               child: Row(
                 children: [
                   Spacer(),
-                  CustomButtonNewdesign(
-                    variant: CustomButtonNewdesignVariant.AccentButton,
+                  CustomButton(
+                    variant: CustomButtonVariant.AccentButton,
                     onPressed: () async {
                       // add new recipes
                       await showCreateOrEditCraftingRecipeModal(

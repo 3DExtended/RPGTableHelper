@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
 import 'package:rpg_table_helper/constants.dart';
 
@@ -58,7 +58,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
                               child: Column(
                                 children: [
                                   CustomMarkdownBody(
-                                      isNewDesign: true, text: stepHelperText),
+                                    text: stepHelperText,
+                                  ),
                                   SizedBox(
                                       height: EdgeInsets.fromViewPadding(
                                               View.of(context).viewInsets,
@@ -76,14 +77,14 @@ class TwoPartWizardStepBody extends StatelessWidget {
                             const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
                         child: Row(
                           children: [
-                            CustomButtonNewdesign(
+                            CustomButton(
                               icon: CustomFaIcon(
                                   color: darkColor,
                                   icon: FontAwesomeIcons.chevronLeft),
                               onPressed: onPreviousBtnPressed,
                             ),
                             Spacer(),
-                            CustomButtonNewdesign(
+                            CustomButton(
                               icon: CustomFaIcon(
                                   color: darkColor,
                                   icon: FontAwesomeIcons.chevronRight),

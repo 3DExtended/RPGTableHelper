@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu_with_search.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
-import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -118,7 +118,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                   color: bgColor,
                   child: Column(
                     children: [
-                      NavbarNewDesign(
+                      Navbar(
                         backInsteadOfCloseIcon: false,
                         closeFunction: () {
                           navigatorKey.currentState!.pop(null);
@@ -147,7 +147,6 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     Expanded(
                                       // TODO make into new design
                                       child: CustomDropdownMenuWithSearch(
-                                          newDesign: true,
                                           selectedValueTemp:
                                               selectedCreatingItem.$1,
                                           setter: (newValue) {
@@ -175,7 +174,6 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     SizedBox(
                                       width: 70,
                                       child: CustomTextField(
-                                        newDesign: true,
                                         keyboardType: TextInputType.number,
                                         labelText: "Anzahl", // TODO localize
                                         textEditingController:
@@ -215,7 +213,6 @@ class _CreateOrEditCraftingRecipeModalContentState
                                                   // TODO make into new design
 
                                                   CustomDropdownMenuWithSearch(
-                                                      newDesign: true,
                                                       selectedValueTemp:
                                                           tuple.value == ""
                                                               ? null
@@ -248,10 +245,9 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               height: 50,
                                               width: 60,
                                               clipBehavior: Clip.none,
-                                              child: CustomButtonNewdesign(
-                                                variant:
-                                                    CustomButtonNewdesignVariant
-                                                        .FlatButton,
+                                              child: CustomButton(
+                                                variant: CustomButtonVariant
+                                                    .FlatButton,
                                                 onPressed: () {
                                                   // remove this pair from list
                                                   setState(() {
@@ -277,7 +273,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      CustomButtonNewdesign(
+                                      CustomButton(
                                         isSubbutton: true,
                                         onPressed: () {
                                           setState(() {
@@ -340,7 +336,6 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               child:
                                                   // TODO update with new design
                                                   CustomDropdownMenuWithSearch(
-                                                      newDesign: true,
                                                       selectedValueTemp:
                                                           tuple.value.$1 == ""
                                                               ? null
@@ -376,7 +371,6 @@ class _CreateOrEditCraftingRecipeModalContentState
                                             SizedBox(
                                               width: 70,
                                               child: CustomTextField(
-                                                newDesign: true,
                                                 keyboardType:
                                                     TextInputType.number,
                                                 labelText:
@@ -392,10 +386,9 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               height: 50,
                                               width: 60,
                                               clipBehavior: Clip.none,
-                                              child: CustomButtonNewdesign(
-                                                variant:
-                                                    CustomButtonNewdesignVariant
-                                                        .FlatButton,
+                                              child: CustomButton(
+                                                variant: CustomButtonVariant
+                                                    .FlatButton,
                                                 onPressed: () {
                                                   // remove this pair from list
                                                   setState(() {
@@ -421,9 +414,8 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      CustomButtonNewdesign(
-                                        variant: CustomButtonNewdesignVariant
-                                            .Default,
+                                      CustomButton(
+                                        variant: CustomButtonVariant.Default,
                                         isSubbutton: true,
                                         onPressed: () {
                                           setState(() {
@@ -468,14 +460,14 @@ class _CreateOrEditCraftingRecipeModalContentState
                         padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
                         child: Row(
                           children: [
-                            CustomButtonNewdesign(
+                            CustomButton(
                               label: "Abbrechen", // TODO localize
                               onPressed: () {
                                 navigatorKey.currentState!.pop(null);
                               },
                             ),
                             const Spacer(),
-                            CustomButtonNewdesign(
+                            CustomButton(
                               label: "Speichern", // TODO localize
                               onPressed: () {
                                 try {
