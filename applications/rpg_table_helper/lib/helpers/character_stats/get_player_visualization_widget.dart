@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/newdesign/bordered_image.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/pentagon_with_label.dart';
@@ -18,7 +19,6 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
@@ -755,9 +755,7 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
         children: [
           Expanded(
             flex: firstExpandedFlex.round(),
-            child: ShadowWidget(
-              offset: Offset(-4, 4),
-              blurRadius: 5,
+            child: CustomShadowWidget(
               child: LayoutBuilder(builder: (context, constrin) {
                 return Container(
                   width: constrin.maxWidth,

@@ -2,13 +2,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 Future<int?> showAskPlayerForFightOrderRoll(BuildContext context,
     {required String characterName,
@@ -68,9 +68,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
             left: widget.modalPadding,
             right: widget.modalPadding),
         child: Center(
-          child: ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
+          child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 550, maxHeight: 300),
               child: Container(

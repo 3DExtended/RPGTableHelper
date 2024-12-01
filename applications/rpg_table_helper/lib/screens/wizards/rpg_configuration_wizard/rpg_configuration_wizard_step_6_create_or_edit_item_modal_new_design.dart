@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
@@ -27,7 +28,6 @@ import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/image_generation_service.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 import '../../../helpers/modal_helpers.dart';
 
@@ -191,9 +191,7 @@ class _CreateOrEditItemModalContentState
           padding: EdgeInsets.only(
               bottom: 20, top: 20, left: modalPadding, right: modalPadding),
           child: Center(
-            child: ShadowWidget(
-              offset: Offset(-4, 4),
-              blurRadius: 5,
+            child: CustomShadowWidget(
               child: Container(
                 color: bgColor,
                 child: Column(

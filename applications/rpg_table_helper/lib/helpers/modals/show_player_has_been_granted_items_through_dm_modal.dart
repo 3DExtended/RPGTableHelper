@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
@@ -86,9 +87,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
             left: widget.modalPadding,
             right: widget.modalPadding),
         child: Center(
-          child: ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
+          child: CustomShadowWidget(
             child: Container(
               color: bgColor,
               child: Column(

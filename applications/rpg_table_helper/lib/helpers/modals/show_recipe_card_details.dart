@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_recipe_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
@@ -16,7 +17,6 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_recepies.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 Future<
         ({
@@ -96,9 +96,7 @@ class _RecipeCardDetailsModalContentState
             left: widget.modalPadding,
             right: widget.modalPadding),
         child: Center(
-          child: ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
+          child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 1000, maxHeight: 700),
               child: Container(

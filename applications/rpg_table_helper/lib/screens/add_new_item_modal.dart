@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
@@ -8,7 +9,6 @@ import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 Future<List<(String itemId, int amount)>?> showAddNewItemModal(
     BuildContext context,
@@ -93,9 +93,7 @@ class _AddNewItemModalContentState
       body: Padding(
         padding: EdgeInsets.fromLTRB(modalPadding, 20, modalPadding, 20),
         child: Center(
-          child: ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
+          child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 1200),
               child: Container(

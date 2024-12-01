@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
@@ -11,7 +12,6 @@ import 'package:rpg_table_helper/helpers/list_extensions.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 Future showAddFurtherEnemiesToFightSequence(
     {required BuildContext context,
@@ -63,190 +63,185 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
             left: widget.modalPadding,
             right: widget.modalPadding),
         child: Center(
-          child: ShadowWidget(
-              offset: Offset(-4, 4),
-              blurRadius: 5,
+          child: CustomShadowWidget(
               child: Container(
-                color: bgColor,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    NavbarNewDesign(
-                      backInsteadOfCloseIcon: false,
-                      closeFunction: () {
-                        navigatorKey.currentState!.pop(null);
-                      },
-                      menuOpen: null,
-                      useTopSafePadding: false,
-                      titleWidget: Text(
-                        "Neue Gegner hinzufügen", // TODO localize/ switch text between add and edit
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              ...enemiesToAdd.asMap().entries.map(
-                                    (en) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 10),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: middleBgColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5)),
-                                              padding: EdgeInsets.all(10),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: CustomTextField(
-                                                        newDesign: true,
-                                                        labelText: "Gegnername",
-                                                        textEditingController:
-                                                            en.value.$1,
-                                                        keyboardType:
-                                                            TextInputType.text),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Expanded(
-                                                    child: CustomTextField(
-                                                        newDesign: true,
-                                                        labelText:
-                                                            "Reihenfolgenwurf",
-                                                        textEditingController:
-                                                            en.value.$2,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number),
-                                                  ),
-                                                ],
+            color: bgColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                NavbarNewDesign(
+                  backInsteadOfCloseIcon: false,
+                  closeFunction: () {
+                    navigatorKey.currentState!.pop(null);
+                  },
+                  menuOpen: null,
+                  useTopSafePadding: false,
+                  titleWidget: Text(
+                    "Neue Gegner hinzufügen", // TODO localize/ switch text between add and edit
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(color: textColor, fontSize: 24),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...enemiesToAdd.asMap().entries.map(
+                                (en) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: middleBgColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomTextField(
+                                                    newDesign: true,
+                                                    labelText: "Gegnername",
+                                                    textEditingController:
+                                                        en.value.$1,
+                                                    keyboardType:
+                                                        TextInputType.text),
                                               ),
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            width: 70,
-                                            clipBehavior: Clip.none,
-                                            child: CustomButtonNewdesign(
-                                              variant:
-                                                  CustomButtonNewdesignVariant
-                                                      .FlatButton,
-                                              onPressed: () {
-                                                setState(() {
-                                                  enemiesToAdd.removeAt(en.key);
-                                                });
-                                              },
-                                              icon: const CustomFaIcon(
-                                                icon: FontAwesomeIcons.trashCan,
-                                                size: 24,
-                                                color: darkColor,
+                                              SizedBox(
+                                                width: 20,
                                               ),
-                                            ),
+                                              Expanded(
+                                                child: CustomTextField(
+                                                    newDesign: true,
+                                                    labelText:
+                                                        "Reihenfolgenwurf",
+                                                    textEditingController:
+                                                        en.value.$2,
+                                                    keyboardType:
+                                                        TextInputType.number),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                      Container(
+                                        height: 50,
+                                        width: 70,
+                                        clipBehavior: Clip.none,
+                                        child: CustomButtonNewdesign(
+                                          variant: CustomButtonNewdesignVariant
+                                              .FlatButton,
+                                          onPressed: () {
+                                            setState(() {
+                                              enemiesToAdd.removeAt(en.key);
+                                            });
+                                          },
+                                          icon: const CustomFaIcon(
+                                            icon: FontAwesomeIcons.trashCan,
+                                            size: 24,
+                                            color: darkColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                              const SizedBox(
-                                height: 10,
+                                ),
                               ),
-                              Center(
-                                child: CustomButtonNewdesign(
-                                  label: "Weiterer Gegner", // TODO localize
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: CustomButtonNewdesign(
+                              label: "Weiterer Gegner", // TODO localize
+                              onPressed: () {
+                                var connectionDetails = ref
+                                    .read(connectionDetailsProvider)
+                                    .requireValue;
+                                var numberOfEnemies = connectionDetails
+                                        .fightSequence?.sequence
+                                        .where((ele) => ele.$1 == null)
+                                        .length ??
+                                    0;
+
+                                setState(() {
+                                  enemiesToAdd.add((
+                                    TextEditingController(
+                                        text:
+                                            "Gegner #${numberOfEnemies + 1 + enemiesToAdd.length}"),
+                                    TextEditingController()
+                                  ));
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                            child: Row(
+                              children: [
+                                const Spacer(),
+                                CustomButtonNewdesign(
+                                  label: "Abbrechen", // TODO localize
                                   onPressed: () {
+                                    navigatorKey.currentState!.pop(null);
+                                  },
+                                ),
+                                const Spacer(),
+                                CustomButtonNewdesign(
+                                  label: "Hinzufügen", // TODO localize
+                                  onPressed: () {
+                                    // add enemies to connectiondetails
                                     var connectionDetails = ref
                                         .read(connectionDetailsProvider)
                                         .requireValue;
-                                    var numberOfEnemies = connectionDetails
-                                            .fightSequence?.sequence
-                                            .where((ele) => ele.$1 == null)
-                                            .length ??
-                                        0;
 
-                                    setState(() {
-                                      enemiesToAdd.add((
-                                        TextEditingController(
-                                            text:
-                                                "Gegner #${numberOfEnemies + 1 + enemiesToAdd.length}"),
-                                        TextEditingController()
-                                      ));
-                                    });
+                                    var modifiedSequence = connectionDetails
+                                        .fightSequence!.sequence;
+
+                                    modifiedSequence.addAllIntoSortedList(
+                                        enemiesToAdd.map((tu) => (
+                                              null,
+                                              tu.$1.text,
+                                              int.parse(tu.$2.text)
+                                            )),
+                                        (a, b) => b.$3.compareTo(a.$3));
+
+                                    ref
+                                        .read(
+                                            connectionDetailsProvider.notifier)
+                                        .updateConfiguration(
+                                            connectionDetails.copyWith(
+                                                fightSequence: connectionDetails
+                                                    .fightSequence!
+                                                    .copyWith(
+                                                        sequence:
+                                                            modifiedSequence)));
+
+                                    navigatorKey.currentState!.pop(null);
                                   },
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                                child: Row(
-                                  children: [
-                                    const Spacer(),
-                                    CustomButtonNewdesign(
-                                      label: "Abbrechen", // TODO localize
-                                      onPressed: () {
-                                        navigatorKey.currentState!.pop(null);
-                                      },
-                                    ),
-                                    const Spacer(),
-                                    CustomButtonNewdesign(
-                                      label: "Hinzufügen", // TODO localize
-                                      onPressed: () {
-                                        // add enemies to connectiondetails
-                                        var connectionDetails = ref
-                                            .read(connectionDetailsProvider)
-                                            .requireValue;
-
-                                        var modifiedSequence = connectionDetails
-                                            .fightSequence!.sequence;
-
-                                        modifiedSequence.addAllIntoSortedList(
-                                            enemiesToAdd.map((tu) => (
-                                                  null,
-                                                  tu.$1.text,
-                                                  int.parse(tu.$2.text)
-                                                )),
-                                            (a, b) => b.$3.compareTo(a.$3));
-
-                                        ref
-                                            .read(connectionDetailsProvider
-                                                .notifier)
-                                            .updateConfiguration(
-                                                connectionDetails.copyWith(
-                                                    fightSequence: connectionDetails
-                                                        .fightSequence!
-                                                        .copyWith(
-                                                            sequence:
-                                                                modifiedSequence)));
-
-                                        navigatorKey.currentState!.pop(null);
-                                      },
-                                    ),
-                                    const Spacer(),
-                                  ],
-                                ),
-                              ),
-                            ],
+                                const Spacer(),
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              )),
+              ],
+            ),
+          )),
         ),
       ),
     );

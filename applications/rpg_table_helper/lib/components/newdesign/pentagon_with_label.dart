@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/constants.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 class PentagonWithLabel extends StatelessWidget {
   const PentagonWithLabel({
@@ -21,9 +21,7 @@ class PentagonWithLabel extends StatelessWidget {
       width: 100,
       child: Column(
         children: [
-          ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
+          CustomShadowWidget(
             child: Stack(
               alignment: Alignment.center,
               children: [

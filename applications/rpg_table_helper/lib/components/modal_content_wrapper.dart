@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
 import 'package:rpg_table_helper/constants.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 class ModalContentWrapper<T> extends StatelessWidget {
   const ModalContentWrapper({
@@ -35,67 +35,64 @@ class ModalContentWrapper<T> extends StatelessWidget {
           padding: EdgeInsets.only(
               bottom: 20, top: 20, left: modalPadding, right: modalPadding),
           child: Center(
-            child: ShadowWidget(
-              offset: Offset(-4, 4),
-              blurRadius: 5,
-              child: Container(
-                color: bgColor,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    NavbarNewDesign(
-                      backInsteadOfCloseIcon: false,
-                      closeFunction: () {
-                        navigatorKey.currentState!.pop(null);
-                      },
-                      menuOpen: null,
-                      useTopSafePadding: false,
-                      titleWidget: Text(
-                        title, // TODO localize/ switch text between add and edit
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
-                      ),
+            child: CustomShadowWidget(
+                child: Container(
+              color: bgColor,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  NavbarNewDesign(
+                    backInsteadOfCloseIcon: false,
+                    closeFunction: () {
+                      navigatorKey.currentState!.pop(null);
+                    },
+                    menuOpen: null,
+                    useTopSafePadding: false,
+                    titleWidget: Text(
+                      title, // TODO localize/ switch text between add and edit
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: textColor, fontSize: 24),
                     ),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SingleChildScrollView(child: child),
-                    )),
-                    const SizedBox(
-                      height: 0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                      child: Row(
-                        children: [
-                          CustomButtonNewdesign(
-                            label: "Abbrechen", // TODO localize
-                            onPressed: () async {
-                              await onCancel();
-                              navigatorKey.currentState!.pop(null);
-                            },
-                          ),
-                          const Spacer(),
-                          CustomButtonNewdesign(
-                            label: "Speichern", // TODO localize
-                            onPressed: onSave == null
-                                ? null
-                                : () async {
-                                    var result = await onSave!();
+                  ),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SingleChildScrollView(child: child),
+                  )),
+                  const SizedBox(
+                    height: 0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                    child: Row(
+                      children: [
+                        CustomButtonNewdesign(
+                          label: "Abbrechen", // TODO localize
+                          onPressed: () async {
+                            await onCancel();
+                            navigatorKey.currentState!.pop(null);
+                          },
+                        ),
+                        const Spacer(),
+                        CustomButtonNewdesign(
+                          label: "Speichern", // TODO localize
+                          onPressed: onSave == null
+                              ? null
+                              : () async {
+                                  var result = await onSave!();
 
-                                    navigatorKey.currentState!.pop(result);
-                                  },
-                          ),
-                        ],
-                      ),
+                                  navigatorKey.currentState!.pop(result);
+                                },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
+            )),
           ),
         ),
       );

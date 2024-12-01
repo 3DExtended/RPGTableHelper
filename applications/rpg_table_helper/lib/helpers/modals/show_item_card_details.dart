@@ -4,6 +4,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_button_newdesign.dart';
 import 'package:rpg_table_helper/components/newdesign/custom_item_card.dart';
 import 'package:rpg_table_helper/components/newdesign/navbar_new_design.dart';
@@ -13,7 +14,6 @@ import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:shadow_widget/shadow_widget.dart';
 
 /// returns number to adjust the rpg character inventory
 Future<int?> showItemCardDetails(BuildContext context,
@@ -96,9 +96,7 @@ class _ItemCardDetailsModalContentState
             left: widget.modalPadding,
             right: widget.modalPadding),
         child: Center(
-          child: ShadowWidget(
-            offset: Offset(-4, 4),
-            blurRadius: 5,
+          child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 1000, maxHeight: 700),
               child: Container(
