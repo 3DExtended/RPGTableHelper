@@ -191,7 +191,16 @@ class _CreateOrEditCraftingRecipeModalContentState
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const Text("Voraussetzungen:"),
+                                Text(
+                                  "Voraussetzungen:",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                        color: darkColor,
+                                        fontSize: 16,
+                                      ),
+                                ),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -308,7 +317,16 @@ class _CreateOrEditCraftingRecipeModalContentState
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const Text("Zutaten:"),
+                                Text(
+                                  "Zutaten:",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                        color: darkColor,
+                                        fontSize: 16,
+                                      ),
+                                ),
                                 const SizedBox(
                                   height: 10,
                                 ),
