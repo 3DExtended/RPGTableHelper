@@ -12,12 +12,14 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
     required this.value,
     required this.maxValue,
     required this.title,
+    required this.color,
   });
 
   final double progressPercentage;
   final int value;
   final int maxValue;
   final String title;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
                 child: CircularProgressIndicator(
                   value: progressPercentage,
                   strokeWidth: strokeWidth,
-                  color: accentColor,
+                  color: color,
                   backgroundColor: Colors.transparent,
                 ),
               ),

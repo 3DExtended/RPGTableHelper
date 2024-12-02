@@ -331,6 +331,48 @@ List<
           '{"values": [{"uuid":"${RpgCharacterConfiguration.getBaseConfiguration(null).companionCharacters!.first.uuid}"}]}',
     )
   ),
+  (
+    "intWithMaxValue, fastEdit, 40percent",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.intWithMaxValue,
+      editType: CharacterStatEditType.oneTap,
+      name: "HP",
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      helperText: "How many health points do you have?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
+      variant: null,
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      serializedValue: '{"value": 4, "maxValue": 10}',
+    )
+  ),
+  (
+    "intWithMaxValue, fastEdit, 10percent",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.intWithMaxValue,
+      editType: CharacterStatEditType.oneTap,
+      name: "HP",
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      helperText: "How many health points do you have?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
+      variant: null,
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      serializedValue: '{"value": 1, "maxValue": 10}',
+    )
+  ),
 ];
 
 void main() {

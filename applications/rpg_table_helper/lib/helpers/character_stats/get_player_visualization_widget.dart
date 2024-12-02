@@ -35,7 +35,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.listOfIntsWithIcons:
       return 2;
     case CharacterStatValueType.intWithMaxValue:
-      return 3;
+      return 4;
   }
 }
 
@@ -368,16 +368,25 @@ Widget renderIntWithMaxValueStat(
 
   switch (characterValue.variant) {
     case 1:
+    case 3:
+      var fillPercentage =
+          value == maxValue ? 1.0 : value.toDouble() / maxValue.toDouble();
+
+      var percentageBasedColor = fillPercentage > 0.5
+          ? lightGreen
+          : (fillPercentage > 0.15 ? lightYellow : lightRed);
+
       return Stack(
         alignment: Alignment.bottomCenter,
         children: [
           ProgressIndicatorForCharacterScreen(
-            progressPercentage: value == maxValue
-                ? 1.0
-                : value.toDouble() / maxValue.toDouble(),
+            progressPercentage: fillPercentage,
             value: value,
             maxValue: maxValue,
             title: statConfiguration.name,
+            color: characterValue.variant == 1
+                ? accentColor
+                : percentageBasedColor,
           ),
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
             Row(
