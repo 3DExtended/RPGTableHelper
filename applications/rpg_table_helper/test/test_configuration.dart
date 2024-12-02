@@ -33,13 +33,13 @@ const testDevices = [
     textScale: 1.0,
     safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
   ),
-  // Device(
-  //   name: 'iphone 16',
-  //   size: Size(852, 393),
-  //   devicePixelRatio: 3,
-  //   textScale: 1.0,
-  //   safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  // ),
+  Device(
+    name: 'iphone 16',
+    size: Size(852, 393),
+    devicePixelRatio: 3,
+    textScale: 1.0,
+    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  ),
 ];
 
 void testConfigurations({

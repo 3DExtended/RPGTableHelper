@@ -28,33 +28,43 @@ class Navbar extends StatelessWidget {
             height: MediaQuery.of(context).padding.top,
             color: darkColor,
           ),
-        Container(
-          height: 50,
-          color: darkColor,
-          child: Row(
-            children: [
-              Opacity(
-                opacity: closeFunction == null ? 0 : 1,
-                child: CustomButton(
-                  variant: CustomButtonVariant.FlatButton,
-                  onPressed: closeFunction,
-                  icon: CustomFaIcon(
-                    icon: backInsteadOfCloseIcon
-                        ? FontAwesomeIcons.chevronLeft
-                        : FontAwesomeIcons.xmark,
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 50),
+          child: Container(
+            color: darkColor,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Opacity(
+                    opacity: closeFunction == null ? 0 : 1,
+                    child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
+                      onPressed: closeFunction,
+                      icon: CustomFaIcon(
+                        icon: backInsteadOfCloseIcon
+                            ? FontAwesomeIcons.chevronLeft
+                            : FontAwesomeIcons.xmark,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(child: titleWidget),
-              Opacity(
-                opacity: menuOpen == null ? 0 : 1,
-                child: CustomButton(
-                  variant: CustomButtonVariant.FlatButton,
-                  onPressed: menuOpen,
-                  icon: CustomFaIcon(icon: FontAwesomeIcons.bars),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.only(top: 9.0),
+                  child: titleWidget,
+                )),
+                Opacity(
+                  opacity: menuOpen == null ? 0 : 1,
+                  child: CustomButton(
+                    variant: CustomButtonVariant.FlatButton,
+                    onPressed: menuOpen,
+                    icon: CustomFaIcon(icon: FontAwesomeIcons.bars),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

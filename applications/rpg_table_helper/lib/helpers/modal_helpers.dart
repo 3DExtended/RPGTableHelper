@@ -72,87 +72,89 @@ class _AskForCampagneJoinCodeModalContentState
               ),
               child: Container(
                 color: bgColor,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Navbar(
-                      backInsteadOfCloseIcon: false,
-                      closeFunction: () {
-                        navigatorKey.currentState!.pop(null);
-                      },
-                      menuOpen: null,
-                      useTopSafePadding: false,
-                      titleWidget: Text(
-                        "Charakter zur Kampagne hinzufügen", // TODO localize/ switch text between add and edit
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Navbar(
+                        backInsteadOfCloseIcon: false,
+                        closeFunction: () {
+                          navigatorKey.currentState!.pop(null);
+                        },
+                        menuOpen: null,
+                        useTopSafePadding: false,
+                        titleWidget: Text(
+                          "Charakter zur Kampagne hinzufügen", // TODO localize/ switch text between add and edit
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(color: textColor, fontSize: 24),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomMarkdownBody(
-                              text:
-                                  "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.", // TODO localize/ switch text between add and edit
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CustomMarkdownBody(
+                                text:
+                                    "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.", // TODO localize/ switch text between add and edit
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              keyboardType: TextInputType.text,
-                              labelText: "Join Code:", // TODO localize
-                              textEditingController: joinCodeTextEditor,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                keyboardType: TextInputType.text,
+                                labelText: "Join Code:", // TODO localize
+                                textEditingController: joinCodeTextEditor,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 20),
-                      child: Row(
-                        children: [
-                          CustomButton(
-                            variant: CustomButtonVariant.DarkButton,
-                            label: "Abbrechen", // TODO localize
-                            onPressed: () {
-                              navigatorKey.currentState!.pop(null);
-                            },
-                          ),
-                          const Spacer(),
-                          CustomButton(
-                            variant: CustomButtonVariant.AccentButton,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 20),
+                        child: Row(
+                          children: [
+                            CustomButton(
+                              variant: CustomButtonVariant.DarkButton,
+                              label: "Abbrechen", // TODO localize
+                              onPressed: () {
+                                navigatorKey.currentState!.pop(null);
+                              },
+                            ),
+                            const Spacer(),
+                            CustomButton(
+                              variant: CustomButtonVariant.AccentButton,
 
-                            label: "Speichern", // TODO localize
-                            onPressed: () {
-                              // TODO activate only when join code matches format
-                              if (joinCodeValid(joinCodeTextEditor.text)) {
-                                navigatorKey.currentState!
-                                    .pop(joinCodeTextEditor.text);
-                              } else {}
-                            },
-                          ),
-                        ],
+                              label: "Speichern", // TODO localize
+                              onPressed: () {
+                                // TODO activate only when join code matches format
+                                if (joinCodeValid(joinCodeTextEditor.text)) {
+                                  navigatorKey.currentState!
+                                      .pop(joinCodeTextEditor.text);
+                                } else {}
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

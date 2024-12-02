@@ -189,11 +189,13 @@ void main() {
             'default',
             DependencyProvider.getMockedDependecyProvider(
               child: Center(
-                  child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  itemcard,
-                ],
+                  child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    itemcard,
+                  ],
+                ),
               )),
             ),
           ),
