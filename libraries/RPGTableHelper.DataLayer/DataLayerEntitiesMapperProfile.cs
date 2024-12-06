@@ -1,19 +1,59 @@
+using System.Reflection.Emit;
 using AutoMapper;
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.Images;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
+using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
 
 namespace RPGTableHelper.DataLayer
 {
+    public class CustomTypeConverter
+        : IValueConverter<ICollection<PermittedUsersToNotesBlock>?, IList<User.UserIdentifier>>
+    {
+        public IList<User.UserIdentifier> Convert(
+            ICollection<PermittedUsersToNotesBlock>? source,
+            ResolutionContext context
+        )
+        {
+            if (source == null)
+            {
+                return new List<User.UserIdentifier>();
+            }
+
+            return source.Select(pu => User.UserIdentifier.From(pu.PermittedUserId)).ToList();
+        }
+    }
+
     public class DataLayerEntitiesMapperProfile : Profile
     {
         public DataLayerEntitiesMapperProfile()
         {
+            CreateMapBetweenIdentifiers<NoteDocument.NoteDocumentIdentifier, Guid>();
+            CreateMap<NoteDocument, NoteDocumentEntity>()
+                .ForMember(x => x.NoteBlocks, opt => opt.MapFrom(src => src.NoteBlocks))
+                .ReverseMap()
+                .ForMember(x => x.NoteBlocks, opt => opt.MapFrom(src => src.NoteBlocks));
+
+            CreateMap<NoteDocumentEntity, NoteDocumentEntity>().ReverseMap();
+
+            CreateMap<NoteBlockModelBase, NoteBlockEntityBase>()
+                .IncludeAllDerived()
+                .ForMember(x => x.PermittedUsers, opt => opt.Ignore());
+
+            CreateMap<NoteBlockEntityBase, NoteBlockModelBase>()
+                .IncludeAllDerived()
+                .ForMember(x => x.PermittedUsers, opt => opt.ConvertUsing(new CustomTypeConverter()));
+
+            CreateMapBetweenIdentifiers<NoteBlockModelBase.NoteBlockModelBaseIdentifier, Guid>();
+            CreateMap<TextBlock, TextBlockEntity>().ReverseMap();
+            CreateMap<ImageBlock, ImageBlockEntity>().ReverseMap();
+
             CreateModelMaps<User, User.UserIdentifier, Guid, UserEntity>();
             CreateModelMaps<ImageMetaData, ImageMetaData.ImageMetaDataIdentifier, Guid, ImageMetaDataEntity>();
 
@@ -25,10 +65,7 @@ namespace RPGTableHelper.DataLayer
                 CampagneJoinRequestEntity
             >();
 
-            CreateMap<CampagneEntity, CampagneEntity>();
-
             CreateModelMaps<PlayerCharacter, PlayerCharacter.PlayerCharacterIdentifier, Guid, PlayerCharacterEntity>();
-            CreateMap<PlayerCharacterEntity, PlayerCharacterEntity>();
 
             CreateMap<Guid?, Option<Campagne.CampagneIdentifier>>()
                 .ConvertUsing(
@@ -107,6 +144,7 @@ namespace RPGTableHelper.DataLayer
             CreateMapBetweenIdentifiers<TIdentifier, TIdentifierValue>();
 
             CreateMap<TModel, TEntity>().ReverseMap();
+            CreateMap<TEntity, TEntity>().ReverseMap();
         }
 
         private void CreateMapBetweenIdentifiers<TIdentifier, TIdentifierValue>()

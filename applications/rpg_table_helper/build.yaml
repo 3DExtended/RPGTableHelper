@@ -31,9 +31,10 @@ targets:
           header: "// Generated code"
       swagger_dart_code_generator:
         options:
+          use_inheritance: true
           input_folder: "swagger/"
           output_folder: "lib/generated/swaggen/"
           with_base_url: true
           enums_case_sensitive: false
           separate_models: true
-          
+

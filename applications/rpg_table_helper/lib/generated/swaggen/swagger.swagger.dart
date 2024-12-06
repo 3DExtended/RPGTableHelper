@@ -186,6 +186,22 @@ abstract class Swagger extends ChopperService {
     @PartFile() List<int>? image,
   });
 
+  ///Returns a single document.
+  ///@param notedocumentid The id of the desired campagne
+  Future<chopper.Response<NoteDocumentDto>> notesGetdocumentNotedocumentidGet(
+      {required String? notedocumentid}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+
+    return _notesGetdocumentNotedocumentidGet(notedocumentid: notedocumentid);
+  }
+
+  ///Returns a single document.
+  ///@param notedocumentid The id of the desired campagne
+  @Get(path: '/Notes/getdocument/{notedocumentid}')
+  Future<chopper.Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet(
+      {@Path('notedocumentid') required String? notedocumentid});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(

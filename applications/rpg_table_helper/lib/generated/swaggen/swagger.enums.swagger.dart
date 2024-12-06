@@ -14,3 +14,19 @@ enum HandleJoinRequestType {
 
   const HandleJoinRequestType(this.value);
 }
+
+enum NotesBlockVisibility {
+  @JsonValue(null)
+  swaggerGeneratedUnknown(null),
+
+  @JsonValue('HiddenForAllExceptAuthor')
+  hiddenforallexceptauthor('HiddenForAllExceptAuthor'),
+  @JsonValue('VisibleForSomeUsers')
+  visibleforsomeusers('VisibleForSomeUsers'),
+  @JsonValue('VisibleForCampagne')
+  visibleforcampagne('VisibleForCampagne');
+
+  final String? value;
+
+  const NotesBlockVisibility(this.value);
+}

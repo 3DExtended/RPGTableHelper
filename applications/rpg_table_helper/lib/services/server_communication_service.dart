@@ -274,6 +274,14 @@ class ServerCommunicationService extends IServerCommunicationService {
       return;
     }
 
+    var retryCounter = 0;
+    final maxRetries = 5;
+    while (retryCounter < maxRetries &&
+        hubConnection?.state == HubConnectionState.Connecting) {
+      retryCounter++;
+      await Future.delayed(Duration(seconds: retryCounter + 1));
+    }
+
     await hubConnection!.invoke(functionName, args: args);
   }
 

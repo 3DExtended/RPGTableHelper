@@ -19,6 +19,12 @@ Map<String, dynamic> _$AppleLoginDetailsToJson(AppleLoginDetails instance) =>
     };
 
 Campagne _$CampagneFromJson(Map<String, dynamic> json) => Campagne(
+      rpgConfiguration: json['rpgConfiguration'] as String?,
+      campagneName: json['campagneName'] as String?,
+      joinCode: json['joinCode'] as String?,
+      dmUserId: json['dmUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(json['dmUserId'] as Map<String, dynamic>),
       id: json['id'] == null
           ? null
           : CampagneIdentifier.fromJson(json['id'] as Map<String, dynamic>),
@@ -28,22 +34,16 @@ Campagne _$CampagneFromJson(Map<String, dynamic> json) => Campagne(
       lastModifiedAt: json['lastModifiedAt'] == null
           ? null
           : DateTime.parse(json['lastModifiedAt'] as String),
-      rpgConfiguration: json['rpgConfiguration'] as String?,
-      campagneName: json['campagneName'] as String?,
-      joinCode: json['joinCode'] as String?,
-      dmUserId: json['dmUserId'] == null
-          ? null
-          : UserIdentifier.fromJson(json['dmUserId'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CampagneToJson(Campagne instance) => <String, dynamic>{
-      'id': instance.id?.toJson(),
-      'creationDate': instance.creationDate?.toIso8601String(),
-      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
       'rpgConfiguration': instance.rpgConfiguration,
       'campagneName': instance.campagneName,
       'joinCode': instance.joinCode,
       'dmUserId': instance.dmUserId?.toJson(),
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
     };
 
 CampagneCreateDto _$CampagneCreateDtoFromJson(Map<String, dynamic> json) =>
@@ -68,18 +68,30 @@ Map<String, dynamic> _$CampagneIdentifierToJson(CampagneIdentifier instance) =>
       'value': instance.$value,
     };
 
+CampagneIdentifierGuidNodeModelBase
+    _$CampagneIdentifierGuidNodeModelBaseFromJson(Map<String, dynamic> json) =>
+        CampagneIdentifierGuidNodeModelBase(
+          id: json['id'] == null
+              ? null
+              : CampagneIdentifier.fromJson(json['id'] as Map<String, dynamic>),
+          creationDate: json['creationDate'] == null
+              ? null
+              : DateTime.parse(json['creationDate'] as String),
+          lastModifiedAt: json['lastModifiedAt'] == null
+              ? null
+              : DateTime.parse(json['lastModifiedAt'] as String),
+        );
+
+Map<String, dynamic> _$CampagneIdentifierGuidNodeModelBaseToJson(
+        CampagneIdentifierGuidNodeModelBase instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+    };
+
 CampagneJoinRequest _$CampagneJoinRequestFromJson(Map<String, dynamic> json) =>
     CampagneJoinRequest(
-      id: json['id'] == null
-          ? null
-          : CampagneJoinRequestIdentifier.fromJson(
-              json['id'] as Map<String, dynamic>),
-      creationDate: json['creationDate'] == null
-          ? null
-          : DateTime.parse(json['creationDate'] as String),
-      lastModifiedAt: json['lastModifiedAt'] == null
-          ? null
-          : DateTime.parse(json['lastModifiedAt'] as String),
       userId: json['userId'] == null
           ? null
           : UserIdentifier.fromJson(json['userId'] as Map<String, dynamic>),
@@ -91,17 +103,27 @@ CampagneJoinRequest _$CampagneJoinRequestFromJson(Map<String, dynamic> json) =>
           ? null
           : CampagneIdentifier.fromJson(
               json['campagneId'] as Map<String, dynamic>),
+      id: json['id'] == null
+          ? null
+          : CampagneJoinRequestIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
     );
 
 Map<String, dynamic> _$CampagneJoinRequestToJson(
         CampagneJoinRequest instance) =>
     <String, dynamic>{
-      'id': instance.id?.toJson(),
-      'creationDate': instance.creationDate?.toIso8601String(),
-      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
       'userId': instance.userId?.toJson(),
       'playerId': instance.playerId?.toJson(),
       'campagneId': instance.campagneId?.toJson(),
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
     };
 
 CampagneJoinRequestCreateDto _$CampagneJoinRequestCreateDtoFromJson(
@@ -128,6 +150,30 @@ Map<String, dynamic> _$CampagneJoinRequestIdentifierToJson(
         CampagneJoinRequestIdentifier instance) =>
     <String, dynamic>{
       'value': instance.$value,
+    };
+
+CampagneJoinRequestIdentifierGuidNodeModelBase
+    _$CampagneJoinRequestIdentifierGuidNodeModelBaseFromJson(
+            Map<String, dynamic> json) =>
+        CampagneJoinRequestIdentifierGuidNodeModelBase(
+          id: json['id'] == null
+              ? null
+              : CampagneJoinRequestIdentifier.fromJson(
+                  json['id'] as Map<String, dynamic>),
+          creationDate: json['creationDate'] == null
+              ? null
+              : DateTime.parse(json['creationDate'] as String),
+          lastModifiedAt: json['lastModifiedAt'] == null
+              ? null
+              : DateTime.parse(json['lastModifiedAt'] as String),
+        );
+
+Map<String, dynamic> _$CampagneJoinRequestIdentifierGuidNodeModelBaseToJson(
+        CampagneJoinRequestIdentifierGuidNodeModelBase instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
     };
 
 EncryptedMessageWrapperDto _$EncryptedMessageWrapperDtoFromJson(
@@ -180,6 +226,85 @@ Map<String, dynamic> _$HandleJoinRequestDtoToJson(
       'type': handleJoinRequestTypeToJson(instance.type),
     };
 
+HttpValidationProblemDetails _$HttpValidationProblemDetailsFromJson(
+        Map<String, dynamic> json) =>
+    HttpValidationProblemDetails(
+      errors: json['errors'] as Map<String, dynamic>?,
+      type: json['type'] as String?,
+      title: json['title'] as String?,
+      status: (json['status'] as num?)?.toInt(),
+      detail: json['detail'] as String?,
+      instance: json['instance'] as String?,
+    );
+
+Map<String, dynamic> _$HttpValidationProblemDetailsToJson(
+        HttpValidationProblemDetails instance) =>
+    <String, dynamic>{
+      'errors': instance.errors,
+      'type': instance.type,
+      'title': instance.title,
+      'status': instance.status,
+      'detail': instance.detail,
+      'instance': instance.instance,
+    };
+
+ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
+      imageMetaDataId: json['imageMetaDataId'] == null
+          ? null
+          : ImageMetaDataIdentifier.fromJson(
+              json['imageMetaDataId'] as Map<String, dynamic>),
+      publicImageUrl: json['publicImageUrl'] as String?,
+      id: json['id'] == null
+          ? null
+          : NoteBlockModelBaseIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+      noteDocumentId: json['noteDocumentId'] == null
+          ? null
+          : NoteDocumentIdentifier.fromJson(
+              json['noteDocumentId'] as Map<String, dynamic>),
+      creatingUserId: json['creatingUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(
+              json['creatingUserId'] as Map<String, dynamic>),
+      visibility: notesBlockVisibilityNullableFromJson(json['visibility']),
+      permittedUsers: (json['permittedUsers'] as List<dynamic>?)
+              ?.map((e) => UserIdentifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+
+Map<String, dynamic> _$ImageBlockToJson(ImageBlock instance) =>
+    <String, dynamic>{
+      'imageMetaDataId': instance.imageMetaDataId?.toJson(),
+      'publicImageUrl': instance.publicImageUrl,
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'noteDocumentId': instance.noteDocumentId?.toJson(),
+      'creatingUserId': instance.creatingUserId?.toJson(),
+      'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
+      'permittedUsers':
+          instance.permittedUsers?.map((e) => e.toJson()).toList(),
+    };
+
+ImageMetaDataIdentifier _$ImageMetaDataIdentifierFromJson(
+        Map<String, dynamic> json) =>
+    ImageMetaDataIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$ImageMetaDataIdentifierToJson(
+        ImageMetaDataIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
+    };
+
 JoinRequestForCampagneDto _$JoinRequestForCampagneDtoFromJson(
         Map<String, dynamic> json) =>
     JoinRequestForCampagneDto(
@@ -214,11 +339,24 @@ Map<String, dynamic> _$LoginWithUsernameAndPasswordDtoToJson(
           instance.userSecretByEncryptionChallenge,
     };
 
-PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
-    PlayerCharacter(
+NoteBlockModelBase _$NoteBlockModelBaseFromJson(Map<String, dynamic> json) =>
+    NoteBlockModelBase(
+      noteDocumentId: json['noteDocumentId'] == null
+          ? null
+          : NoteDocumentIdentifier.fromJson(
+              json['noteDocumentId'] as Map<String, dynamic>),
+      creatingUserId: json['creatingUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(
+              json['creatingUserId'] as Map<String, dynamic>),
+      visibility: notesBlockVisibilityNullableFromJson(json['visibility']),
+      permittedUsers: (json['permittedUsers'] as List<dynamic>?)
+              ?.map((e) => UserIdentifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       id: json['id'] == null
           ? null
-          : PlayerCharacterIdentifier.fromJson(
+          : NoteBlockModelBaseIdentifier.fromJson(
               json['id'] as Map<String, dynamic>),
       creationDate: json['creationDate'] == null
           ? null
@@ -226,6 +364,114 @@ PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
       lastModifiedAt: json['lastModifiedAt'] == null
           ? null
           : DateTime.parse(json['lastModifiedAt'] as String),
+    );
+
+Map<String, dynamic> _$NoteBlockModelBaseToJson(NoteBlockModelBase instance) =>
+    <String, dynamic>{
+      'noteDocumentId': instance.noteDocumentId?.toJson(),
+      'creatingUserId': instance.creatingUserId?.toJson(),
+      'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
+      'permittedUsers':
+          instance.permittedUsers?.map((e) => e.toJson()).toList(),
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+    };
+
+NoteBlockModelBaseIdentifier _$NoteBlockModelBaseIdentifierFromJson(
+        Map<String, dynamic> json) =>
+    NoteBlockModelBaseIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$NoteBlockModelBaseIdentifierToJson(
+        NoteBlockModelBaseIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
+    };
+
+NoteBlockModelBaseIdentifierGuidNodeModelBase
+    _$NoteBlockModelBaseIdentifierGuidNodeModelBaseFromJson(
+            Map<String, dynamic> json) =>
+        NoteBlockModelBaseIdentifierGuidNodeModelBase(
+          id: json['id'] == null
+              ? null
+              : NoteBlockModelBaseIdentifier.fromJson(
+                  json['id'] as Map<String, dynamic>),
+          creationDate: json['creationDate'] == null
+              ? null
+              : DateTime.parse(json['creationDate'] as String),
+          lastModifiedAt: json['lastModifiedAt'] == null
+              ? null
+              : DateTime.parse(json['lastModifiedAt'] as String),
+        );
+
+Map<String, dynamic> _$NoteBlockModelBaseIdentifierGuidNodeModelBaseToJson(
+        NoteBlockModelBaseIdentifierGuidNodeModelBase instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+    };
+
+NoteDocumentDto _$NoteDocumentDtoFromJson(Map<String, dynamic> json) =>
+    NoteDocumentDto(
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+      id: json['id'] == null
+          ? null
+          : NoteDocumentIdentifier.fromJson(json['id'] as Map<String, dynamic>),
+      groupName: json['groupName'] as String?,
+      creatingUserId: json['creatingUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(
+              json['creatingUserId'] as Map<String, dynamic>),
+      title: json['title'] as String?,
+      createdForCampagneId: json['createdForCampagneId'] == null
+          ? null
+          : CampagneIdentifier.fromJson(
+              json['createdForCampagneId'] as Map<String, dynamic>),
+      imageBlocks: (json['imageBlocks'] as List<dynamic>?)
+              ?.map((e) => ImageBlock.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      textBlocks: (json['textBlocks'] as List<dynamic>?)
+              ?.map((e) => TextBlock.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+
+Map<String, dynamic> _$NoteDocumentDtoToJson(NoteDocumentDto instance) =>
+    <String, dynamic>{
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'id': instance.id?.toJson(),
+      'groupName': instance.groupName,
+      'creatingUserId': instance.creatingUserId?.toJson(),
+      'title': instance.title,
+      'createdForCampagneId': instance.createdForCampagneId?.toJson(),
+      'imageBlocks': instance.imageBlocks?.map((e) => e.toJson()).toList(),
+      'textBlocks': instance.textBlocks?.map((e) => e.toJson()).toList(),
+    };
+
+NoteDocumentIdentifier _$NoteDocumentIdentifierFromJson(
+        Map<String, dynamic> json) =>
+    NoteDocumentIdentifier(
+      $value: json['value'] as String?,
+    );
+
+Map<String, dynamic> _$NoteDocumentIdentifierToJson(
+        NoteDocumentIdentifier instance) =>
+    <String, dynamic>{
+      'value': instance.$value,
+    };
+
+PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
+    PlayerCharacter(
       rpgCharacterConfiguration: json['rpgCharacterConfiguration'] as String?,
       characterName: json['characterName'] as String?,
       playerUserId: json['playerUserId'] == null
@@ -236,17 +482,27 @@ PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
           ? null
           : CampagneIdentifier.fromJson(
               json['campagneId'] as Map<String, dynamic>),
+      id: json['id'] == null
+          ? null
+          : PlayerCharacterIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
     );
 
 Map<String, dynamic> _$PlayerCharacterToJson(PlayerCharacter instance) =>
     <String, dynamic>{
-      'id': instance.id?.toJson(),
-      'creationDate': instance.creationDate?.toIso8601String(),
-      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
       'rpgCharacterConfiguration': instance.rpgCharacterConfiguration,
       'characterName': instance.characterName,
       'playerUserId': instance.playerUserId?.toJson(),
       'campagneId': instance.campagneId?.toJson(),
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
     };
 
 PlayerCharacterCreateDto _$PlayerCharacterCreateDtoFromJson(
@@ -275,6 +531,30 @@ Map<String, dynamic> _$PlayerCharacterIdentifierToJson(
         PlayerCharacterIdentifier instance) =>
     <String, dynamic>{
       'value': instance.$value,
+    };
+
+PlayerCharacterIdentifierGuidNodeModelBase
+    _$PlayerCharacterIdentifierGuidNodeModelBaseFromJson(
+            Map<String, dynamic> json) =>
+        PlayerCharacterIdentifierGuidNodeModelBase(
+          id: json['id'] == null
+              ? null
+              : PlayerCharacterIdentifier.fromJson(
+                  json['id'] as Map<String, dynamic>),
+          creationDate: json['creationDate'] == null
+              ? null
+              : DateTime.parse(json['creationDate'] as String),
+          lastModifiedAt: json['lastModifiedAt'] == null
+              ? null
+              : DateTime.parse(json['lastModifiedAt'] as String),
+        );
+
+Map<String, dynamic> _$PlayerCharacterIdentifierGuidNodeModelBaseToJson(
+        PlayerCharacterIdentifierGuidNodeModelBase instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
     };
 
 ProblemDetails _$ProblemDetailsFromJson(Map<String, dynamic> json) =>
@@ -357,6 +637,45 @@ Map<String, dynamic> _$ResetPasswordRequestDtoToJson(
     <String, dynamic>{
       'email': instance.email,
       'username': instance.username,
+    };
+
+TextBlock _$TextBlockFromJson(Map<String, dynamic> json) => TextBlock(
+      markdownText: json['markdownText'] as String?,
+      id: json['id'] == null
+          ? null
+          : NoteBlockModelBaseIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+      noteDocumentId: json['noteDocumentId'] == null
+          ? null
+          : NoteDocumentIdentifier.fromJson(
+              json['noteDocumentId'] as Map<String, dynamic>),
+      creatingUserId: json['creatingUserId'] == null
+          ? null
+          : UserIdentifier.fromJson(
+              json['creatingUserId'] as Map<String, dynamic>),
+      visibility: notesBlockVisibilityNullableFromJson(json['visibility']),
+      permittedUsers: (json['permittedUsers'] as List<dynamic>?)
+              ?.map((e) => UserIdentifier.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+
+Map<String, dynamic> _$TextBlockToJson(TextBlock instance) => <String, dynamic>{
+      'markdownText': instance.markdownText,
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'noteDocumentId': instance.noteDocumentId?.toJson(),
+      'creatingUserId': instance.creatingUserId?.toJson(),
+      'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
+      'permittedUsers':
+          instance.permittedUsers?.map((e) => e.toJson()).toList(),
     };
 
 UserIdentifier _$UserIdentifierFromJson(Map<String, dynamic> json) =>

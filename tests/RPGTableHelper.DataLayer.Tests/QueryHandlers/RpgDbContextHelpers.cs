@@ -2,9 +2,11 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Models.Images;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;
@@ -35,6 +37,35 @@ public static class RpgDbContextHelpers
             await context.SaveChangesAsync();
 
             return mapper.Map<Campagne>(campagneEntity);
+        }
+    }
+
+    public static async Task<ImageMetaData> CreateIamgeMetaDataInDb(
+        IDbContextFactory<RpgDbContext> contextFactory,
+        IMapper mapper,
+        User userOfImage,
+        Campagne campagneForImage,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var imageMetaData = new ImageMetaData
+        {
+            CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            ApiKey = "12345678909765431",
+            CreatedForCampagneId = campagneForImage.Id,
+            CreatorId = userOfImage.Id,
+            ImageType = ImageType.PNG,
+            LocallyStored = true,
+        };
+
+        using (var context = contextFactory.CreateDbContext())
+        {
+            var imageMetaDataEntity = mapper.Map<ImageMetaDataEntity>(imageMetaData);
+            await context.imageMetaDatas.AddAsync(imageMetaDataEntity, cancellationToken);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<ImageMetaData>(imageMetaDataEntity);
         }
     }
 
