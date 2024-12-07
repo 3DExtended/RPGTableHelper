@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,9 @@ const darkRed = Color.fromARGB(255, 209, 26, 26);
 
 const darkTextColor = darkColor;
 const iconSizeInlineButtons = 16.0;
+
+bool get isInTestEnvironment =>
+    Platform.environment.containsKey('FLUTTER_TEST');
 
 // -----------
 

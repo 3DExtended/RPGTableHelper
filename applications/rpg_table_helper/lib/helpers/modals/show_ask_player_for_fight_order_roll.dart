@@ -52,8 +52,6 @@ class PlayerHasBeenAskedToRollForFightOrderModalContent extends StatefulWidget {
 
 class _PlayerHasBeenAskedToRollForFightOrderModalContentState
     extends State<PlayerHasBeenAskedToRollForFightOrderModalContent> {
-  int alreadySeenItems = 0;
-
   var textEditingController = TextEditingController(text: "");
 
   @override

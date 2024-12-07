@@ -24,6 +24,25 @@ class CustomButton extends StatelessWidget {
     this.isSubbutton,
   });
 
+  Color _getBackgroundColor(CustomButtonVariant variant, bool isEnabled) {
+    if (!isEnabled) {
+      return variant == CustomButtonVariant.FlatButton
+          ? Colors.transparent
+          : middleBgColor;
+    }
+
+    switch (variant) {
+      case CustomButtonVariant.FlatButton:
+        return Colors.transparent;
+      case CustomButtonVariant.AccentButton:
+        return accentColor;
+      case CustomButtonVariant.DarkButton:
+        return darkColor;
+      default:
+        return bgColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var variantToUse = variant ?? CustomButtonVariant.Default;
@@ -37,17 +56,7 @@ class CustomButton extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       child: Container(
         decoration: BoxDecoration(
-          color: onPressed == null
-              ? (variantToUse == CustomButtonVariant.FlatButton
-                  ? Colors.transparent
-                  : middleBgColor)
-              : variantToUse == CustomButtonVariant.FlatButton
-                  ? Colors.transparent
-                  : (variantToUse == CustomButtonVariant.AccentButton
-                      ? accentColor
-                      : (variantToUse == CustomButtonVariant.DarkButton
-                          ? darkColor
-                          : bgColor)),
+          color: _getBackgroundColor(variantToUse, onPressed != null),
           borderRadius: BorderRadius.all(Radius.circular(5)),
           border: variantToUse == CustomButtonVariant.FlatButton
               ? null

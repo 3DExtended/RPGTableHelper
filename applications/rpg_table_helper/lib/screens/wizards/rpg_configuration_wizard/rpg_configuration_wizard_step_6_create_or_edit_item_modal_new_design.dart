@@ -70,7 +70,7 @@ class _CreateOrEditItemModalContentState
 
   bool hasDataLoaded = false;
   bool isSaveButtonDisabled = true;
-  bool isLoadingNewImage = false;
+  bool isLoading = false;
 
   List<String> _urlsOfGeneratedImages = [];
   int? _selectedGeneratedImage;
@@ -589,7 +589,7 @@ class _CreateOrEditItemModalContentState
               imageUrl: _urlsOfGeneratedImages.isEmpty
                   ? null
                   : _urlsOfGeneratedImages[_selectedGeneratedImage!],
-              isLoadingNewImage: isLoadingNewImage,
+              isLoading: isLoading,
               categoryIconColor:
                   itemCategoryForItem?.colorCode?.parseHexColorRepresentation(),
               categoryIconName: itemCategoryForItem?.iconName,
@@ -621,7 +621,7 @@ class _CreateOrEditItemModalContentState
                 Column(
                   children: [
                     CupertinoButton(
-                      onPressed: isLoadingNewImage == true
+                      onPressed: isLoading == true
                           ? null
                           : () async {
                               if (imageDescriptionController.text == "" ||
@@ -636,7 +636,7 @@ class _CreateOrEditItemModalContentState
                               if (campagneId == null) return;
 
                               setState(() {
-                                isLoadingNewImage = true;
+                                isLoading = true;
                               });
 
                               // TODO generate image!
@@ -665,7 +665,7 @@ class _CreateOrEditItemModalContentState
                                 });
                               }
                               setState(() {
-                                isLoadingNewImage = false;
+                                isLoading = false;
                               });
                             },
                       minSize: 0,
@@ -673,13 +673,10 @@ class _CreateOrEditItemModalContentState
                       child: Text(
                         "Neues Bild",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              color: isLoadingNewImage
-                                  ? middleBgColor
-                                  : accentColor,
+                              color: isLoading ? middleBgColor : accentColor,
                               decoration: TextDecoration.underline,
-                              decorationColor: isLoadingNewImage
-                                  ? middleBgColor
-                                  : accentColor,
+                              decorationColor:
+                                  isLoading ? middleBgColor : accentColor,
                               fontSize: 16,
                             ),
                       ),
@@ -715,7 +712,7 @@ class _CreateOrEditItemModalContentState
                               requestFullMetadata: false,
                             );
                             setState(() {
-                              isLoadingNewImage = true;
+                              isLoading = true;
                             });
                             final mimeType = lookupMimeType(pickedFile!.path);
 
@@ -727,7 +724,7 @@ class _CreateOrEditItemModalContentState
                                       content: Text(
                                           "Invalid image file selected.")));
                               setState(() {
-                                isLoadingNewImage = false;
+                                isLoading = false;
                               });
                               return;
                             }
@@ -762,7 +759,7 @@ class _CreateOrEditItemModalContentState
                               });
                             }
                             setState(() {
-                              isLoadingNewImage = false;
+                              isLoading = false;
                             });
                           } catch (e) {
                             print("------------------------");
@@ -772,7 +769,7 @@ class _CreateOrEditItemModalContentState
                             print("------------------------");
                             print("------------------------");
                             setState(() {
-                              isLoadingNewImage = false;
+                              isLoading = false;
                             });
                           }
                         }),

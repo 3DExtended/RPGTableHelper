@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rpg_table_helper/components/card_border.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:themed/themed.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -14,23 +13,23 @@ class BorderedImage extends StatelessWidget {
     required this.lightColor,
     required this.backgroundColor,
     required this.imageUrl,
-    this.isLoadingNewImage,
-    this.withoutPadding,
-    this.greyscale,
+    this.isLoading,
+    this.noPadding,
+    this.isGreyscale,
   });
 
   final Color lightColor;
   final Color backgroundColor;
   final String? imageUrl;
-  final bool? isLoadingNewImage;
-  final bool? withoutPadding;
+  final bool? isLoading;
+  final bool? noPadding;
 
-  final bool? greyscale;
+  final bool? isGreyscale;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: withoutPadding == true
+      padding: noPadding == true
           ? EdgeInsets.all(0)
           : const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
       child: CardBorder(
@@ -51,7 +50,7 @@ class BorderedImage extends StatelessWidget {
                 alignment: Alignment.center,
                 children: <Widget>[
                   ChangeColors(
-                    saturation: greyscale == true ? -1 : 0,
+                    saturation: isGreyscale == true ? -1 : 0,
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: Image.asset(
@@ -62,12 +61,12 @@ class BorderedImage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (!Platform.environment.containsKey('FLUTTER_TEST') &&
+                  if (!isInTestEnvironment &&
                       imageUrl != null &&
                       !imageUrl!.startsWith("assets/"))
                     Center(
                       child: ChangeColors(
-                        saturation: greyscale == true ? -1 : 0,
+                        saturation: isGreyscale == true ? -1 : 0,
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: CachedNetworkImage(
@@ -90,16 +89,14 @@ class BorderedImage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (!Platform.environment.containsKey('FLUTTER_TEST') &&
-                      isLoadingNewImage == true)
+                  if (!isInTestEnvironment && isLoading == true)
                     Positioned.fill(
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
                         color: const Color.fromARGB(174, 40, 40, 40),
                       ),
                     ),
-                  if (!Platform.environment.containsKey('FLUTTER_TEST') &&
-                      isLoadingNewImage == true)
+                  if (!isInTestEnvironment && isLoading == true)
                     const Center(child: CustomLoadingSpinner()),
                 ],
               ),

@@ -385,12 +385,12 @@ class _DmScreenCampagneManagementState
             height: 260,
             width: 260,
             child: BorderedImage(
-              withoutPadding: true,
+              noPadding: true,
               backgroundColor: bgColor,
               lightColor: darkColor,
               imageUrl: fullImageUrl,
-              isLoadingNewImage: false,
-              greyscale: !isOnline,
+              isLoading: false,
+              isGreyscale: !isOnline,
             ),
           ),
           SizedBox(

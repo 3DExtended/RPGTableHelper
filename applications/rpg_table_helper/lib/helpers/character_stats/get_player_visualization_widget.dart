@@ -886,9 +886,9 @@ Widget renderImageStat(
   return BorderedImage(
     backgroundColor: bgColor,
     lightColor: darkColor,
-    greyscale: false,
-    isLoadingNewImage: false,
-    withoutPadding: true,
+    isGreyscale: false,
+    isLoading: false,
+    noPadding: true,
     imageUrl: fullImageUrl,
   );
 }

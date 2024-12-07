@@ -120,7 +120,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> StreamUploadImage(
-            [FromQuery] string campagneId,
+            [FromQuery] [Required] string campagneId,
             IFormFile image,
             CancellationToken cancellationToken
         )

@@ -142,7 +142,7 @@ class CustomRecipeCard extends StatelessWidget {
                                 lightColor: lightColor,
                                 backgroundColor: backgroundColor,
                                 imageUrl: fullImageUrl,
-                                isLoadingNewImage: false,
+                                isLoading: false,
                               ),
                             ),
 

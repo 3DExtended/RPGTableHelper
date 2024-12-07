@@ -56,7 +56,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
   @override
   void dispose() {
     textEditingController.removeListener(onTextEditControllerValueChange);
-
+    textEditingController.dispose();
     super.dispose();
   }
 

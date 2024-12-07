@@ -84,7 +84,7 @@ class _ShowGetPlayerConfigurationModalContentState
   List<String> urlsOfGeneratedImages = [];
   List<String> selectedCompanions = [];
   int? selectedGeneratedImageIndex;
-  bool isLoadingNewImage = false;
+  bool isLoading = false;
 
   bool hideStatFromCharacterScreens = false;
   bool hideLabelOfStat = false;
@@ -571,9 +571,9 @@ class _ShowGetPlayerConfigurationModalContentState
               lightColor: darkColor,
               backgroundColor: bgColor,
               imageUrl: fullImageUrl,
-              greyscale: false,
-              isLoadingNewImage: isLoadingNewImage,
-              withoutPadding: true,
+              isGreyscale: false,
+              isLoading: isLoading,
+              noPadding: true,
             );
           }),
         ),
@@ -604,7 +604,7 @@ class _ShowGetPlayerConfigurationModalContentState
                       }),
             Spacer(),
             CupertinoButton(
-              onPressed: isLoadingNewImage == true
+              onPressed: isLoading == true
                   ? null
                   : () async {
                       if (textEditController.text == "" ||
@@ -618,7 +618,7 @@ class _ShowGetPlayerConfigurationModalContentState
                       if (campagneId == null) return;
 
                       setState(() {
-                        isLoadingNewImage = true;
+                        isLoading = true;
                       });
 
                       var service = DependencyProvider.of(context)
@@ -643,7 +643,7 @@ class _ShowGetPlayerConfigurationModalContentState
                         });
                       }
                       setState(() {
-                        isLoadingNewImage = false;
+                        isLoading = false;
                       });
                     },
               minSize: 0,
@@ -651,10 +651,9 @@ class _ShowGetPlayerConfigurationModalContentState
               child: Text(
                 "Neues Bild",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: isLoadingNewImage ? middleBgColor : accentColor,
+                      color: isLoading ? middleBgColor : accentColor,
                       decoration: TextDecoration.underline,
-                      decorationColor:
-                          isLoadingNewImage ? middleBgColor : accentColor,
+                      decorationColor: isLoading ? middleBgColor : accentColor,
                       fontSize: 16,
                     ),
               ),

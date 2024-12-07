@@ -20,15 +20,15 @@ class CustomCharacterCard extends StatelessWidget {
 
   final List<({String label, int value})> characterSingleNumberStats;
 
-  final bool? greyScale;
-  final bool? isLoadingNewImage;
+  final bool? isGreyscale;
+  final bool? isLoading;
 
   const CustomCharacterCard({
     super.key,
     required this.characterName,
     this.imageUrl,
-    this.greyScale,
-    this.isLoadingNewImage,
+    this.isGreyscale,
+    this.isLoading,
     this.characterStatWithMaxValueForBarVisuals,
     required this.characterSingleNumberStats,
   });
@@ -85,12 +85,12 @@ class CustomCharacterCard extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 10),
                           child: BorderedImage(
-                            withoutPadding: true,
+                            noPadding: true,
                             lightColor: lightColor,
                             backgroundColor: backgroundColor,
                             imageUrl: fullImageUrl,
-                            isLoadingNewImage: isLoadingNewImage,
-                            greyscale: greyScale,
+                            isLoading: isLoading,
+                            isGreyscale: isGreyscale,
                           ),
                         ),
 

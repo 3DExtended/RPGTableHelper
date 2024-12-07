@@ -13,17 +13,17 @@ void main() {
       // display placeholder image
       CustomCharacterCard(
         characterName: "Frodo",
-        greyScale: false,
+        isGreyscale: false,
         imageUrl: null,
-        isLoadingNewImage: false,
+        isLoading: false,
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: null,
       ),
 
       CustomCharacterCard(
         characterName: "Frodo",
-        greyScale: false,
-        isLoadingNewImage: false,
+        isGreyscale: false,
+        isLoading: false,
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: null,
         imageUrl: "assets/images/itemhealingpotion.png",
@@ -31,9 +31,9 @@ void main() {
 
       CustomCharacterCard(
         characterName: "Frodo",
-        greyScale: true,
+        isGreyscale: true,
         imageUrl: null,
-        isLoadingNewImage: false,
+        isLoading: false,
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
@@ -57,8 +57,8 @@ void main() {
 
       CustomCharacterCard(
         characterName: "Frodo",
-        greyScale: true,
-        isLoadingNewImage: false,
+        isGreyscale: true,
+        isLoading: false,
         characterSingleNumberStats: [],
         characterStatWithMaxValueForBarVisuals: (
           CharacterStatDefinition(
@@ -83,8 +83,8 @@ void main() {
 
       CustomCharacterCard(
         characterName: "Frodo",
-        greyScale: true,
-        isLoadingNewImage: false,
+        isGreyscale: true,
+        isLoading: false,
         characterSingleNumberStats: [
           (
             label: "AC",
@@ -122,8 +122,8 @@ void main() {
 
       CustomCharacterCard(
         characterName: "Frodo",
-        greyScale: true,
-        isLoadingNewImage: false,
+        isGreyscale: true,
+        isLoading: false,
         characterSingleNumberStats: [
           (
             label: "AC",

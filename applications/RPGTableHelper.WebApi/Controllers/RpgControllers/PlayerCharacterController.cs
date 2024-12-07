@@ -161,7 +161,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("getplayercharactersincampagne")]
         public async Task<ActionResult<IReadOnlyList<PlayerCharacter>>> GetPlayerCharactersForCampagneAsync(
-            [FromQuery] Campagne.CampagneIdentifier campagneIdentifier,
+            [FromQuery] [Required] Campagne.CampagneIdentifier campagneIdentifier,
             CancellationToken cancellationToken
         )
         {

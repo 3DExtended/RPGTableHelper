@@ -55,13 +55,13 @@ void main() {
             "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
         scalarOverride: 0.8,
       ),
-      // test greyscale
+      // test isGreyscale
       CustomItemCard(
         title: "Small Healing Potion",
         imageUrl: "assets/images/itemhealingpotion.png",
         description:
             "Ein mystischer Trank der bei Verzehr 1D4+1 HP wiederherstellt.",
-        greyScale: true,
+        isGreyscale: true,
       ),
 
       CustomItemCard(

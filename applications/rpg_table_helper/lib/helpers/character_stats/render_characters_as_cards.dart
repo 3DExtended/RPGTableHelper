@@ -127,8 +127,8 @@ class RenderCharactersAsCards {
           characterName: characterName,
           characterSingleNumberStats: characterSingleNumberStats,
           imageUrl: characterImage,
-          greyScale: false,
-          isLoadingNewImage: false,
+          isGreyscale: false,
+          isLoading: false,
           characterStatWithMaxValueForBarVisuals:
               characterStatWithMaxValueForBarVisuals,
         ),

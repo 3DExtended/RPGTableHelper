@@ -16,18 +16,23 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
   final List<DropdownMenuEntry<String?>> items;
   final bool? noBorder;
 
+  InputBorder _getBorder() {
+    if (noBorder == true) {
+      return InputBorder.none;
+    }
+
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: darkColor),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
               fillColor: darkColor,
-              enabledBorder: noBorder == true
-                  ? InputBorder.none
-                  : OutlineInputBorder(
-                      borderSide: BorderSide(
-                      color: darkColor,
-                    )),
+              enabledBorder: _getBorder(),
             ),
       ),
       child: DropdownMenu<String?>(
@@ -60,12 +65,7 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
               filled: true,
               iconColor: darkTextColor,
               fillColor: const Color.fromARGB(0, 0, 0, 0),
-              border: noBorder == true
-                  ? InputBorder.none
-                  : OutlineInputBorder(
-                      borderSide: BorderSide(
-                      color: darkColor,
-                    )),
+              border: _getBorder(),
             ),
         initialSelection: selectedValueTemp,
         enableFilter: true,
@@ -81,8 +81,8 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
           if (searchText.isEmpty) {
             return null;
           }
-          final int index = entries.indexWhere(
-              (entry) => entry.label.toLowerCase().contains(searchText));
+          final int index = entries.indexWhere((entry) =>
+              entry.label.toLowerCase().contains(searchText.toLowerCase()));
           return index != -1 ? index : null;
         },
       ),
