@@ -182,6 +182,70 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<NoteBlockModelBaseIdentifier>>
+      _notesCreatetextblockNotedocumentidPost({
+    required String? notedocumentid,
+    required TextBlock? body,
+  }) {
+    final Uri $url = Uri.parse('/Notes/createtextblock/${notedocumentid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<NoteBlockModelBaseIdentifier,
+        NoteBlockModelBaseIdentifier>($request);
+  }
+
+  @override
+  Future<Response<NoteBlockModelBaseIdentifier>>
+      _notesCreateimageblockNotedocumentidPost({
+    required String? notedocumentid,
+    required ImageBlock? body,
+  }) {
+    final Uri $url = Uri.parse('/Notes/createimageblock/${notedocumentid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<NoteBlockModelBaseIdentifier,
+        NoteBlockModelBaseIdentifier>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesUpdatetextblockPut(
+      {required TextBlock? body}) {
+    final Uri $url = Uri.parse('/Notes/updatetextblock');
+    final $body = body;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesUpdateimageblockPut(
+      {required ImageBlock? body}) {
+    final Uri $url = Uri.parse('/Notes/updateimageblock');
+    final $body = body;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {

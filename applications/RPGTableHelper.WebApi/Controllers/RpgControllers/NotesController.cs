@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,6 +11,7 @@ using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.NoteDocuments;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.NoteEntities;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 
@@ -89,7 +91,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     return BadRequest("Could not retrieve info.");
                 }
 
-                if (isUserInCampagneResult.Get() == false)
+                if (!isUserInCampagneResult.Get())
                 {
                     return Unauthorized();
                 }
@@ -183,7 +185,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("createdocument")]
         public async Task<ActionResult<NoteDocument.NoteDocumentIdentifier>> CreateNoteDocumentAsync(
-            [FromBody] NoteDocumentDto notedocument,
+            [FromBody] [Required] NoteDocumentDto notedocument,
             CancellationToken cancellationToken
         )
         {
@@ -225,6 +227,226 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             return Ok(noteDocumentCreationResult.Get());
+        }
+
+        /// <summary>
+        /// Creates a single text block for a given document.
+        /// </summary>
+        /// <remarks>You must be the owner of the document</remarks>
+        /// <param name="textBlockToCreate">The new textblock</param>
+        /// <param name="notedocumentid">The document id where this block will be assigned</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The id of the new document</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(typeof(NoteBlockModelBase.NoteBlockModelBaseIdentifier), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("createtextblock/{notedocumentid}")]
+        public async Task<
+            ActionResult<NoteBlockModelBase.NoteBlockModelBaseIdentifier>
+        > CreateTextBlockForDocumentAsync(
+            [FromBody] [Required] TextBlock textBlockToCreate,
+            [FromRoute] string notedocumentid,
+            CancellationToken cancellationToken
+        )
+        {
+            if (notedocumentid == null)
+            {
+                return BadRequest("No valid notedocumentid passed");
+            }
+
+            if (!Guid.TryParse(notedocumentid, out var notedocumentidparsed))
+            {
+                return BadRequest("No valid notedocumentid passed");
+            }
+
+            var noteDocument = await new NoteDocumentQuery
+            {
+                ModelId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (noteDocument.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            if (_userContext.User.UserIdentifier != noteDocument.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            textBlockToCreate.NoteDocumentId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed);
+            textBlockToCreate.CreatingUserId = _userContext.User.UserIdentifier;
+
+            var textBlockCreationResult = await new NoteBlockCreateQuery { ModelToCreate = textBlockToCreate }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (textBlockCreationResult.IsNone)
+            {
+                return BadRequest("Could not create textblock");
+            }
+
+            return Ok(textBlockCreationResult.Get());
+        }
+
+        /// <summary>
+        /// Creates a single image block for a given document.
+        /// </summary>
+        /// <remarks>You must be the owner of the document</remarks>
+        /// <param name="imageBlockToCreate">The new imageblock</param>
+        /// <param name="notedocumentid">The document id where this block will be assigned</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The id of the new document</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(typeof(NoteBlockModelBase.NoteBlockModelBaseIdentifier), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("createimageblock/{notedocumentid}")]
+        public async Task<
+            ActionResult<NoteBlockModelBase.NoteBlockModelBaseIdentifier>
+        > CreateImageBlockForDocumentAsync(
+            [FromBody] [Required] ImageBlock imageBlockToCreate,
+            [FromRoute] string notedocumentid,
+            CancellationToken cancellationToken
+        )
+        {
+            if (notedocumentid == null)
+            {
+                return BadRequest("No valid notedocumentid passed");
+            }
+
+            if (!Guid.TryParse(notedocumentid, out var notedocumentidparsed))
+            {
+                return BadRequest("No valid notedocumentid passed");
+            }
+
+            var noteDocument = await new NoteDocumentQuery
+            {
+                ModelId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (noteDocument.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            if (_userContext.User.UserIdentifier != noteDocument.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            imageBlockToCreate.NoteDocumentId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed);
+            imageBlockToCreate.CreatingUserId = _userContext.User.UserIdentifier;
+
+            var imageBlockCreationResult = await new NoteBlockCreateQuery { ModelToCreate = imageBlockToCreate }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (imageBlockCreationResult.IsNone)
+            {
+                return BadRequest("Could not create imageblock");
+            }
+
+            return Ok(imageBlockCreationResult.Get());
+        }
+
+        /// <summary>
+        /// Updates a single text block for a given document.
+        /// </summary>
+        /// <remarks>You must be the owner of the document</remarks>
+        /// <param name="textBlockToUpdate">The new textblock</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The id of the new document</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("updatetextblock")]
+        public async Task<IActionResult> UpdateTextBlockForDocumentAsync(
+            [FromBody] [Required] TextBlock textBlockToUpdate,
+            CancellationToken cancellationToken
+        )
+        {
+            var blockLoaded = await new NoteBlockQuery { ModelId = textBlockToUpdate.Id }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (blockLoaded.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            if (_userContext.User.UserIdentifier != blockLoaded.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            textBlockToUpdate.CreatingUserId = _userContext.User.UserIdentifier;
+
+            var textBlockUpdateResult = await new NoteBlockUpdateQuery { UpdatedModel = textBlockToUpdate }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (textBlockUpdateResult.IsNone)
+            {
+                return BadRequest("Could not update textblock");
+            }
+
+            return Ok(textBlockUpdateResult.Get());
+        }
+
+        /// <summary>
+        /// Updates a single image block for a given document.
+        /// </summary>
+        /// <remarks>You must be the owner of the document</remarks>
+        /// <param name="imageBlockToUpdate">The new imageblock</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The id of the new document</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("updateimageblock")]
+        public async Task<IActionResult> UpdateImageBlockForDocumentAsync(
+            [FromBody] [Required] ImageBlock imageBlockToUpdate,
+            CancellationToken cancellationToken
+        )
+        {
+            var blockLoaded = await new NoteBlockQuery { ModelId = imageBlockToUpdate.Id }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (blockLoaded.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            if (_userContext.User.UserIdentifier != blockLoaded.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            imageBlockToUpdate.CreatingUserId = _userContext.User.UserIdentifier;
+
+            var imageBlockUpdateResult = await new NoteBlockUpdateQuery { UpdatedModel = imageBlockToUpdate }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (imageBlockUpdateResult.IsNone)
+            {
+                return BadRequest("Could not update imageblock");
+            }
+
+            return Ok(imageBlockUpdateResult.Get());
         }
     }
 }

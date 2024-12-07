@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -48,7 +49,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         public async Task<
             ActionResult<CampagneJoinRequest.CampagneJoinRequestIdentifier>
         > CreateNewCampagneJoinRequestAsync(
-            [FromBody] CampagneJoinRequestCreateDto createDto,
+            [FromBody] [Required] CampagneJoinRequestCreateDto createDto,
             CancellationToken cancellationToken
         )
         {
@@ -131,7 +132,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("handlejoinrequest")]
         public async Task<IActionResult> HandleCampagneJoinRequest(
-            [FromBody] HandleJoinRequestDto handleJoinRequestDto,
+            [FromBody] [Required] HandleJoinRequestDto handleJoinRequestDto,
             CancellationToken cancellationToken
         )
         {

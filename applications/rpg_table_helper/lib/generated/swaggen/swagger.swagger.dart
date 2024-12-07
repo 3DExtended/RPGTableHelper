@@ -238,6 +238,85 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<NoteDocumentIdentifier>> _notesCreatedocumentPost(
       {@Body() required NoteDocumentDto? body});
 
+  ///Creates a single text block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      notesCreatetextblockNotedocumentidPost({
+    required String? notedocumentid,
+    required TextBlock? body,
+  }) {
+    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
+        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+
+    return _notesCreatetextblockNotedocumentidPost(
+        notedocumentid: notedocumentid, body: body);
+  }
+
+  ///Creates a single text block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  @Post(
+    path: '/Notes/createtextblock/{notedocumentid}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      _notesCreatetextblockNotedocumentidPost({
+    @Path('notedocumentid') required String? notedocumentid,
+    @Body() required TextBlock? body,
+  });
+
+  ///Creates a single image block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      notesCreateimageblockNotedocumentidPost({
+    required String? notedocumentid,
+    required ImageBlock? body,
+  }) {
+    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
+        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+
+    return _notesCreateimageblockNotedocumentidPost(
+        notedocumentid: notedocumentid, body: body);
+  }
+
+  ///Creates a single image block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  @Post(
+    path: '/Notes/createimageblock/{notedocumentid}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      _notesCreateimageblockNotedocumentidPost({
+    @Path('notedocumentid') required String? notedocumentid,
+    @Body() required ImageBlock? body,
+  });
+
+  ///Updates a single text block for a given document.
+  Future<chopper.Response> notesUpdatetextblockPut({required TextBlock? body}) {
+    return _notesUpdatetextblockPut(body: body);
+  }
+
+  ///Updates a single text block for a given document.
+  @Put(
+    path: '/Notes/updatetextblock',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _notesUpdatetextblockPut(
+      {@Body() required TextBlock? body});
+
+  ///Updates a single image block for a given document.
+  Future<chopper.Response> notesUpdateimageblockPut(
+      {required ImageBlock? body}) {
+    return _notesUpdateimageblockPut(body: body);
+  }
+
+  ///Updates a single image block for a given document.
+  @Put(
+    path: '/Notes/updateimageblock',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _notesUpdateimageblockPut(
+      {@Body() required ImageBlock? body});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(

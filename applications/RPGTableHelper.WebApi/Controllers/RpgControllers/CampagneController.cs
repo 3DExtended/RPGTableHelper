@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prodot.Patterns.Cqrs;
@@ -37,7 +38,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("createcampagne")]
         public async Task<ActionResult<Campagne.CampagneIdentifier>> CreateNewCampagneAsync(
-            [FromBody] CampagneCreateDto createDto,
+            [FromBody] [Required] CampagneCreateDto createDto,
             CancellationToken cancellationToken
         )
         {

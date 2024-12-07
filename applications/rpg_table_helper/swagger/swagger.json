@@ -34,7 +34,8 @@
                 "$ref": "#/components/schemas/CampagneCreateDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -342,7 +343,8 @@
                 "$ref": "#/components/schemas/CampagneJoinRequestCreateDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -455,7 +457,8 @@
                 "$ref": "#/components/schemas/HandleJoinRequestDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -663,7 +666,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1013,7 +1017,8 @@
                 "$ref": "#/components/schemas/NoteDocumentDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1035,6 +1040,450 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/createtextblock/{notedocumentid}": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Creates a single text block for a given document.",
+        "description": "You must be the owner of the document",
+        "parameters": [{
+          "name": "notedocumentid",
+          "in": "path",
+          "description": "The document id where this block will be assigned",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "description": "The new textblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/createimageblock/{notedocumentid}": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Creates a single image block for a given document.",
+        "description": "You must be the owner of the document",
+        "parameters": [{
+          "name": "notedocumentid",
+          "in": "path",
+          "description": "The document id where this block will be assigned",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "description": "The new imageblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/updatetextblock": {
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Updates a single text block for a given document.",
+        "description": "You must be the owner of the document",
+        "requestBody": {
+          "description": "The new textblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document"
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/updateimageblock": {
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Updates a single image block for a given document.",
+        "description": "You must be the owner of the document",
+        "requestBody": {
+          "description": "The new imageblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document"
           },
           "400": {
             "description": "If there was an error retrieving the document",
@@ -1126,7 +1575,8 @@
                 "$ref": "#/components/schemas/PlayerCharacterCreateDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1618,7 +2068,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1712,7 +2163,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1843,7 +2295,8 @@
                 "$ref": "#/components/schemas/RegisterWithApiKeyDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -2178,7 +2631,8 @@
                 "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -2253,7 +2707,8 @@
                 "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -2326,7 +2781,8 @@
                 "$ref": "#/components/schemas/AppleLoginDetails"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -2379,7 +2835,8 @@
                 "$ref": "#/components/schemas/GoogleLoginDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -2434,7 +2891,8 @@
                 "$ref": "#/components/schemas/ResetPasswordRequestDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -2509,7 +2967,8 @@
                 "$ref": "#/components/schemas/ResetPasswordDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
         [HttpPost("generateimage/{campagneid}")]
         public async Task<ActionResult<string>> GetOpenAIImageForQuery(
-            [FromBody] string prompt,
+            [FromBody] [Required] string prompt,
             [FromRoute] string campagneid,
             CancellationToken cancellationToken
         )
