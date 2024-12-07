@@ -155,6 +155,18 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<NoteDocumentDto>> _notesDeletedocumentNotedocumentidDelete(
+      {required String? notedocumentid}) {
+    final Uri $url = Uri.parse('/Notes/deletedocument/${notedocumentid}');
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<NoteDocumentDto, NoteDocumentDto>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {

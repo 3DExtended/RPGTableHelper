@@ -202,6 +202,25 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet(
       {@Path('notedocumentid') required String? notedocumentid});
 
+  ///Deletes a single document.
+  ///@param notedocumentid The id of the desired campagne
+  Future<chopper.Response<NoteDocumentDto>>
+      notesDeletedocumentNotedocumentidDelete(
+          {required String? notedocumentid}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+
+    return _notesDeletedocumentNotedocumentidDelete(
+        notedocumentid: notedocumentid);
+  }
+
+  ///Deletes a single document.
+  ///@param notedocumentid The id of the desired campagne
+  @Delete(path: '/Notes/deletedocument/{notedocumentid}')
+  Future<chopper.Response<NoteDocumentDto>>
+      _notesDeletedocumentNotedocumentidDelete(
+          {@Path('notedocumentid') required String? notedocumentid});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(
