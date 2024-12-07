@@ -36,7 +36,7 @@ sleep 6
 flutter build appbundle --no-tree-shake-icons --no-shrink --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
 
 git add obfuscation/*
-git commit -m "chore: Checkin symbols for $version"
+git commit -m "chore: Checkin symbols for ${version}"
 git push
 
 end=`date +%s`

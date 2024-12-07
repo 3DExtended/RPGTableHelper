@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -103,7 +106,7 @@ class _WizardManagerState extends State<WizardManager> {
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: Transform.rotate(
                         alignment: Alignment.center,
-                        angle: 0.785398163, // 45 deg
+                        angle: math.pi / 4, // 45 deg
                         child: CustomFaIcon(
                             icon: index == _currentStep
                                 ? FontAwesomeIcons.solidSquare
@@ -147,7 +150,7 @@ class _WizardManagerState extends State<WizardManager> {
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: Transform.rotate(
                         alignment: Alignment.center,
-                        angle: 0.785398163, // 45 deg
+                        angle: pi / 4, // 45 deg
                         child: CustomFaIcon(
                             icon: FontAwesomeIcons.square,
                             color: middleBgColor),

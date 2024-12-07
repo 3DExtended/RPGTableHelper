@@ -29,7 +29,6 @@ class BorderCornerStoneRound extends StatelessWidget {
               shape: BoxShape.circle,
               color: backgroundColor,
             ),
-            padding: EdgeInsets.all(0),
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

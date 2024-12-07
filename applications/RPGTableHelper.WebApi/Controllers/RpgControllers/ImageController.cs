@@ -41,17 +41,22 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             CancellationToken cancellationToken
         )
         {
+            if (!Guid.TryParse(campagneid, out var campagneGuid))
+            {
+                return BadRequest("Invalid campagne ID format.");
+            }
+
             var isUserInCampagne = await new CampagneIsUserInCampagneQuery
             {
                 UserIdToCheck = _userContext.User.UserIdentifier,
-                CampagneId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneid)),
+                CampagneId = Campagne.CampagneIdentifier.From(campagneGuid),
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
             if (isUserInCampagne.IsNone || !isUserInCampagne.Get())
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             var imageGenerationResult = await new AiGenerateImageQuery { ImagePrompt = prompt }
@@ -60,8 +65,10 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
             if (imageGenerationResult.IsNone)
             {
-                return BadRequest();
+                return BadRequest("Image generation failed. Please try again.");
             }
+
+            await using var imageGenerationResultContent = imageGenerationResult.Get();
 
             var apikey = ApiKeyGenerator.GenerateKey(32);
             var newMetadata = new ImageMetaData
@@ -87,7 +94,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             var saveLocallyResult = await new ImageSaveQuery
             {
                 MetaData = newMetadata,
-                Stream = imageGenerationResult.Get(),
+                Stream = imageGenerationResultContent,
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -96,8 +103,6 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             {
                 return BadRequest();
             }
-
-            await imageGenerationResult.Get().DisposeAsync().ConfigureAwait(false);
 
             var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}";
             return Ok(urlForImage);
@@ -195,7 +200,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             newMetadata.Id = metadata.Get();
 
             // Do some processing with body…
-            var saveResult = await new ImageSaveQuery { Stream = image.OpenReadStream(), MetaData = newMetadata }
+            await using var imageStream = image.OpenReadStream();
+
+            var saveResult = await new ImageSaveQuery { Stream = imageStream, MetaData = newMetadata }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -260,9 +267,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.Message);
+                // asdf
             }
 
             return false;

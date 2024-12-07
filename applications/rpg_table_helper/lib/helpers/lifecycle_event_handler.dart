@@ -1,8 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// A widget binding observer that handles application lifecycle state changes.
+///
+/// This class provides callbacks for two main lifecycle events:
+/// * When the app resumes from background ([resumeCallBack])
+/// * When the app is suspended ([suspendingCallBack])
 class LifecycleEventHandler extends WidgetsBindingObserver {
+  /// Called when the application resumes from background
   final AsyncCallback? resumeCallBack;
+
+  /// Called when the application is suspended (inactive, hidden, paused, or detached)
   final AsyncCallback? suspendingCallBack;
 
   LifecycleEventHandler({

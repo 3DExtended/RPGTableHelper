@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using AutoMapper;
-using RPGTableHelper.DataLayer;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
+using RPGTableHelper.WebApi.Services;
 using Xunit;
 
 namespace RPGTableHelper.Api.Tests

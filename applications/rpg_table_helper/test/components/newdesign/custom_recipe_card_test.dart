@@ -44,7 +44,7 @@ void main() {
             circleDegrees: 45,
             circleColor: bgColor,
             circleInnerDiameter: 40.0,
-            cicleInnerColor: darkColor),
+            circleInnerColor: darkColor),
       ),
 
       CustomRecipeCard(

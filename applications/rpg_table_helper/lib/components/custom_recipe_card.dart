@@ -38,7 +38,7 @@ class CustomRecipeCard extends StatelessWidget {
             ? imageUrl
             : (apiBaseUrl +
                 (imageUrl!.startsWith("/")
-                    ? imageUrl!.substring(1)
+                    ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                     : imageUrl!)));
     var backgroundColor = cardBgColorOverride ?? darkColor;
     var lightColor = bgColor;
@@ -315,7 +315,7 @@ class RecipeCardBorders extends StatelessWidget {
               circleDegrees: 180,
               circleColor: lightColor,
               circleInnerDiameter: 5.0,
-              cicleInnerColor: lightColor),
+              circleInnerColor: lightColor),
         ),
         Positioned(
           top: -25,
@@ -327,7 +327,7 @@ class RecipeCardBorders extends StatelessWidget {
             circleDegrees: 180,
             circleColor: backgroundColor,
             circleInnerDiameter: 5.0,
-            cicleInnerColor: backgroundColor,
+            circleInnerColor: backgroundColor,
           ),
         ),
 
@@ -349,7 +349,7 @@ class RecipeCardBorders extends StatelessWidget {
               circleDegrees: 270,
               circleColor: lightColor,
               circleInnerDiameter: 5.0,
-              cicleInnerColor: lightColor),
+              circleInnerColor: lightColor),
         ),
         Positioned(
           top: -25,
@@ -361,7 +361,7 @@ class RecipeCardBorders extends StatelessWidget {
             circleDegrees: 270,
             circleColor: backgroundColor,
             circleInnerDiameter: 5.0,
-            cicleInnerColor: backgroundColor,
+            circleInnerColor: backgroundColor,
           ),
         ),
 
@@ -383,7 +383,7 @@ class RecipeCardBorders extends StatelessWidget {
               circleDegrees: 0,
               circleColor: lightColor,
               circleInnerDiameter: 5.0,
-              cicleInnerColor: lightColor),
+              circleInnerColor: lightColor),
         ),
         Positioned(
           bottom: -25,
@@ -395,7 +395,7 @@ class RecipeCardBorders extends StatelessWidget {
             circleDegrees: 0,
             circleColor: backgroundColor,
             circleInnerDiameter: 5.0,
-            cicleInnerColor: backgroundColor,
+            circleInnerColor: backgroundColor,
           ),
         ),
 
@@ -417,7 +417,7 @@ class RecipeCardBorders extends StatelessWidget {
               circleDegrees: 90,
               circleColor: lightColor,
               circleInnerDiameter: 5.0,
-              cicleInnerColor: lightColor),
+              circleInnerColor: lightColor),
         ),
         Positioned(
           bottom: -25,
@@ -429,7 +429,7 @@ class RecipeCardBorders extends StatelessWidget {
             circleDegrees: 90,
             circleColor: backgroundColor,
             circleInnerDiameter: 5.0,
-            cicleInnerColor: backgroundColor,
+            circleInnerColor: backgroundColor,
           ),
         ),
 

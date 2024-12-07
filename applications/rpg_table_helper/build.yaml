@@ -37,4 +37,3 @@ targets:
           with_base_url: true
           enums_case_sensitive: false
           separate_models: true
-

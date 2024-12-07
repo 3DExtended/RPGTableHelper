@@ -40,7 +40,7 @@ class CustomItemCard extends StatelessWidget {
             ? imageUrl
             : (apiBaseUrl +
                 (imageUrl!.startsWith("/")
-                    ? imageUrl!.substring(1)
+                    ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                     : imageUrl!)));
 
     var backgroundColor = cardBgColorOverride ?? darkColor;

@@ -12,24 +12,26 @@ class CustomMarkdownBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var darkTextStyle = TextStyle(color: darkTextColor);
+
     return Theme(
       data: ThemeData(
         textTheme: Theme.of(context).textTheme.copyWith(
-              headlineLarge: TextStyle(color: darkTextColor),
-              headlineMedium: TextStyle(color: darkTextColor),
-              headlineSmall: TextStyle(color: darkTextColor),
-              titleLarge: TextStyle(color: darkTextColor),
-              titleMedium: TextStyle(color: darkTextColor),
-              titleSmall: TextStyle(color: darkTextColor),
-              bodySmall: TextStyle(color: darkTextColor),
-              bodyMedium: TextStyle(color: darkTextColor),
-              bodyLarge: TextStyle(color: darkTextColor),
-              labelSmall: TextStyle(color: darkTextColor),
-              labelMedium: TextStyle(color: darkTextColor),
-              labelLarge: TextStyle(color: darkTextColor),
-              displaySmall: TextStyle(color: darkTextColor),
-              displayMedium: TextStyle(color: darkTextColor),
-              displayLarge: TextStyle(color: darkTextColor),
+              headlineLarge: darkTextStyle,
+              headlineMedium: darkTextStyle,
+              headlineSmall: darkTextStyle,
+              titleLarge: darkTextStyle,
+              titleMedium: darkTextStyle,
+              titleSmall: darkTextStyle,
+              bodySmall: darkTextStyle,
+              bodyMedium: darkTextStyle,
+              bodyLarge: darkTextStyle,
+              labelSmall: darkTextStyle,
+              labelMedium: darkTextStyle,
+              labelLarge: darkTextStyle,
+              displaySmall: darkTextStyle,
+              displayMedium: darkTextStyle,
+              displayLarge: darkTextStyle,
             ),
       ),
       child: MarkdownBody(

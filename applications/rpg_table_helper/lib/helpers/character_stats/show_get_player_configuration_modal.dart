@@ -111,12 +111,12 @@ class _ShowGetPlayerConfigurationModalContentState
 
   late PageController pageController;
 
-  int currentlyVisableVariant = 0;
+  int currentlyVisibleVariant = 0;
 
   Future _goToVariantId(int id) async {
-    if (id == currentlyVisableVariant) return;
+    if (id == currentlyVisibleVariant) return;
     setState(() {
-      currentlyVisableVariant = id;
+      currentlyVisibleVariant = id;
       pageController.jumpToPage(id);
     });
   }
@@ -307,7 +307,7 @@ class _ShowGetPlayerConfigurationModalContentState
       initialPage: widget.characterValue?.variant ?? 0,
     );
     setState(() {
-      currentlyVisableVariant = min(
+      currentlyVisibleVariant = min(
           widget.characterValue?.variant ?? 0,
           numberOfVariantsForValueTypes(widget.statConfiguration.valueType) -
               1);
@@ -373,7 +373,7 @@ class _ShowGetPlayerConfigurationModalContentState
         // TODO onSave should be null if this modal is invalid
         onSave: () {
           return Future.value(getCurrentStatValueOrDefault()
-              .copyWith(variant: currentlyVisableVariant));
+              .copyWith(variant: currentlyVisibleVariant));
         },
         child: Column(
           children: [
@@ -455,7 +455,7 @@ class _ShowGetPlayerConfigurationModalContentState
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
               child: PageViewDotIndicator(
-                currentItem: currentlyVisableVariant,
+                currentItem: currentlyVisibleVariant,
                 count: numberOfVariantsForValueTypes(
                     widget.statConfiguration.valueType),
                 unselectedColor: Colors.black26,
@@ -498,7 +498,7 @@ class _ShowGetPlayerConfigurationModalContentState
                   ),
                   onPageChanged: (value) {
                     setState(() {
-                      currentlyVisableVariant = value;
+                      currentlyVisibleVariant = value;
                     });
                   }),
             ),
@@ -561,7 +561,9 @@ class _ShowGetPlayerConfigurationModalContentState
                         ? imageUrl
                         : (apiBaseUrl +
                             (imageUrl.startsWith("/")
-                                ? imageUrl.substring(1)
+                                ? (imageUrl.length > 1
+                                    ? imageUrl.substring(1)
+                                    : '')
                                 : imageUrl))) ??
                     "assets/images/charactercard_placeholder.png";
 
@@ -748,173 +750,204 @@ class _ShowGetPlayerConfigurationModalContentState
     switch (widget.statConfiguration.valueType) {
       case CharacterStatValueType.multiLineText:
       case CharacterStatValueType.singleLineText:
-        var currentOrDefaultTextValue =
-            textEditController.text.isEmpty ? "" : textEditController.text;
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
-          statUuid: widget.statConfiguration.statUuid,
-        );
+        return getCurrentStatValueOrDefaultForTextType();
       case CharacterStatValueType.companionSelector:
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "values": selectedCompanions.map((st) => {"uuid": st}).toList()
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
+        return getCurrentStatValueOrDefaultForCompanionSelectorType();
       case CharacterStatValueType.singleImage:
-        var currentOrDefaultTextValue =
-            textEditController.text.isEmpty ? "" : textEditController.text;
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "value": currentOrDefaultTextValue,
-            "imageUrl": urlsOfGeneratedImages.isEmpty ||
-                    selectedGeneratedImageIndex == null
+        return getCurrentStatValueOrDefaultForSingleImageType();
+      case CharacterStatValueType.int:
+        return getCurrentStatValueOrDefaultForIntType();
+      case CharacterStatValueType.intWithMaxValue:
+        return getCurrentStatValueOrDefaultForIntWithMaxValueType();
+      case CharacterStatValueType.intWithCalculatedValue:
+        return getCurrentStatValueOrDefaultForIntWithCalculatedValueType();
+      case CharacterStatValueType.multiselect:
+        return getCurrentStatValueOrDefaultForMultiselectType();
+      case CharacterStatValueType.listOfIntsWithIcons:
+        return getCurrentStatValueOrDefaultForListOfIntsWithIconsType();
+      case CharacterStatValueType.listOfIntWithCalculatedValues:
+        return getCurrentStatValueOrDefaultForListOfIntsWithCalculatedValueType();
+      case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+        return getCurrentStatValueOrDefaultForCharacterNameWithLevelType();
+    }
+  }
+
+  RpgCharacterStatValue
+      getCurrentStatValueOrDefaultForCharacterNameWithLevelType() {
+    List<Map<String, dynamic>> filledValuesForlistOfSingleValueOptions =
+        listOfSingleValueOptions
+            .where((t) => t.uuid.isNotEmpty)
+            .map((e) => {
+                  "uuid": e.uuid,
+                  "value": e.valueTextController.text,
+                })
+            .toList();
+    // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+
+    var foundLevel = listOfSingleValueOptions
+        .firstWhereOrNull((t) => t.uuid.isEmpty)
+        ?.valueTextController
+        .text;
+
+    return RpgCharacterStatValue(
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      hideLabelOfStat: hideLabelOfStat,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "level": (foundLevel != null ? int.tryParse(foundLevel) : null) ?? 0,
+        "values": filledValuesForlistOfSingleValueOptions,
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue
+      getCurrentStatValueOrDefaultForListOfIntsWithCalculatedValueType() {
+    List<Map<String, dynamic>> filledValuesForlistOfIntWithCalculatedValues =
+        listOfIntWithOtherValueOptions
+            .map((e) => {
+                  "uuid": e.uuid,
+                  "value": int.tryParse(e.valueTextController.text) ?? 0,
+                  "otherValue":
+                      int.tryParse(e.otherValueTextController.text) ?? 0,
+                })
+            .toList();
+    // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "values": filledValuesForlistOfIntWithCalculatedValues,
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue
+      getCurrentStatValueOrDefaultForListOfIntsWithIconsType() {
+    List<Map<String, dynamic>> filledValuesForlistOfSingleValueOptions =
+        listOfSingleValueOptions
+            .where((t) => t.uuid.isNotEmpty)
+            .map((e) => {
+                  "uuid": e.uuid,
+                  "value": int.tryParse(e.valueTextController.text) ?? 0,
+                })
+            .toList();
+    // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12,}]}
+
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "values": filledValuesForlistOfSingleValueOptions,
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue getCurrentStatValueOrDefaultForMultiselectType() {
+    List<String> selectedMultiselectOptionsOrDefault = multiselectOptions
+        .where((e) => e.$5 > 0)
+        .map((e) => List.filled(e.$5, e.$4))
+        .expand((i) => i)
+        .toList();
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "values": selectedMultiselectOptionsOrDefault,
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue
+      getCurrentStatValueOrDefaultForIntWithCalculatedValueType() {
+    var currentOrDefaultIntValue = int.tryParse(textEditController.text) ?? 0;
+    var currentOrDefaultOtherIntValue =
+        int.tryParse(textEditController2.text) ?? 0;
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "value": currentOrDefaultIntValue,
+        "otherValue": currentOrDefaultOtherIntValue,
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue getCurrentStatValueOrDefaultForIntWithMaxValueType() {
+    var currentOrDefaultIntValue = int.tryParse(textEditController.text) ?? 0;
+    var currentOrDefaultMaxIntValue =
+        int.tryParse(textEditController2.text) ?? 0;
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "value": currentOrDefaultIntValue,
+        "maxValue": currentOrDefaultMaxIntValue,
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue getCurrentStatValueOrDefaultForIntType() {
+    var currentOrDefaultIntValue = int.tryParse(textEditController.text) ?? 0;
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({"value": currentOrDefaultIntValue}),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
+
+  RpgCharacterStatValue getCurrentStatValueOrDefaultForSingleImageType() {
+    var currentOrDefaultTextValue =
+        textEditController.text.isEmpty ? "" : textEditController.text;
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "value": currentOrDefaultTextValue,
+        "imageUrl":
+            urlsOfGeneratedImages.isEmpty || selectedGeneratedImageIndex == null
                 ? "assets/images/charactercard_placeholder.png"
                 : urlsOfGeneratedImages[selectedGeneratedImageIndex ?? 0]
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
-      case CharacterStatValueType.int:
-        var currentOrDefaultIntValue =
-            int.tryParse(textEditController.text) ?? 0;
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({"value": currentOrDefaultIntValue}),
-          statUuid: widget.statConfiguration.statUuid,
-        );
-      case CharacterStatValueType.intWithMaxValue:
-        var currentOrDefaultIntValue =
-            int.tryParse(textEditController.text) ?? 0;
-        var currentOrDefaultMaxIntValue =
-            int.tryParse(textEditController2.text) ?? 0;
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "value": currentOrDefaultIntValue,
-            "maxValue": currentOrDefaultMaxIntValue,
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
 
-      case CharacterStatValueType.intWithCalculatedValue:
-        var currentOrDefaultIntValue =
-            int.tryParse(textEditController.text) ?? 0;
-        var currentOrDefaultOtherIntValue =
-            int.tryParse(textEditController2.text) ?? 0;
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "value": currentOrDefaultIntValue,
-            "otherValue": currentOrDefaultOtherIntValue,
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
+  RpgCharacterStatValue getCurrentStatValueOrDefaultForCompanionSelectorType() {
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({
+        "values": selectedCompanions.map((st) => {"uuid": st}).toList()
+      }),
+      statUuid: widget.statConfiguration.statUuid,
+    );
+  }
 
-      case CharacterStatValueType.multiselect:
-        List<String> selectedMultiselectOptionsOrDefault = multiselectOptions
-            .where((e) => e.$5 > 0)
-            .map((e) => List.filled(e.$5, e.$4))
-            .expand((i) => i)
-            .toList();
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "values": selectedMultiselectOptionsOrDefault,
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
-
-      case CharacterStatValueType.listOfIntsWithIcons:
-        // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12,}]}
-
-        List<Map<String, dynamic>> filledValuesForlistOfSingleValueOptions =
-            listOfSingleValueOptions
-                .where((t) => t.uuid.isNotEmpty)
-                .map((e) => {
-                      "uuid": e.uuid,
-                      "value": int.tryParse(e.valueTextController.text) ?? 0,
-                    })
-                .toList();
-
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "values": filledValuesForlistOfSingleValueOptions,
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
-
-      case CharacterStatValueType.listOfIntWithCalculatedValues:
-        // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
-
-        List<Map<String, dynamic>>
-            filledValuesForlistOfIntWithCalculatedValues =
-            listOfIntWithOtherValueOptions
-                .map((e) => {
-                      "uuid": e.uuid,
-                      "value": int.tryParse(e.valueTextController.text) ?? 0,
-                      "otherValue":
-                          int.tryParse(e.otherValueTextController.text) ?? 0,
-                    })
-                .toList();
-        return RpgCharacterStatValue(
-          hideLabelOfStat: hideLabelOfStat,
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "values": filledValuesForlistOfIntWithCalculatedValues,
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
-
-      case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
-        // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
-
-        List<Map<String, dynamic>> filledValuesForlistOfSingleValueOptions =
-            listOfSingleValueOptions
-                .where((t) => t.uuid.isNotEmpty)
-                .map((e) => {
-                      "uuid": e.uuid,
-                      "value": e.valueTextController.text,
-                    })
-                .toList();
-
-        var foundLevel = listOfSingleValueOptions
-            .firstWhereOrNull((t) => t.uuid.isEmpty)
-            ?.valueTextController
-            .text;
-
-        return RpgCharacterStatValue(
-          hideFromCharacterScreen: hideStatFromCharacterScreens,
-          hideLabelOfStat: hideLabelOfStat,
-          variant: 0,
-          serializedValue: jsonEncode({
-            "level":
-                (foundLevel != null ? int.tryParse(foundLevel) : null) ?? 0,
-            "values": filledValuesForlistOfSingleValueOptions,
-          }),
-          statUuid: widget.statConfiguration.statUuid,
-        );
-    }
+  RpgCharacterStatValue getCurrentStatValueOrDefaultForTextType() {
+    var currentOrDefaultTextValue =
+        textEditController.text.isEmpty ? "" : textEditController.text;
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: jsonEncode({"value": currentOrDefaultTextValue}),
+      statUuid: widget.statConfiguration.statUuid,
+    );
   }
 
   Widget getConfigurationWidgetsForMultiSelect() {

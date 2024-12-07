@@ -15,9 +15,9 @@ class Navbar extends StatelessWidget {
 
   final bool useTopSafePadding;
   final bool backInsteadOfCloseIcon;
-  final Null Function()? closeFunction;
+  final VoidCallback? closeFunction;
   final Widget titleWidget;
-  final Null Function()? menuOpen;
+  final VoidCallback? menuOpen;
 
   @override
   Widget build(BuildContext context) {

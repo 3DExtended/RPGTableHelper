@@ -32,22 +32,6 @@ namespace RPGTableHelper.WebApi.Controllers
             return Task.FromResult<ActionResult<string>>(Ok(MinimalAppVersionSupported));
         }
 
-        // TODO remove me
-        [HttpPost("createimage")]
-        public async Task<IActionResult> CreateImage([FromQuery] string prompt, CancellationToken cancellationToken)
-        {
-            var imageGenerationResult = await new AiGenerateImageQuery { ImagePrompt = prompt }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (imageGenerationResult.IsNone)
-            {
-                return BadRequest();
-            }
-
-            return File(imageGenerationResult.Get(), "image/png");
-        }
-
         [HttpGet("getimage/{uuid}/{apikey}")]
         public async Task<IActionResult> GetImageFromUuidAndApiKey(
             [FromRoute] string uuid,
@@ -55,21 +39,26 @@ namespace RPGTableHelper.WebApi.Controllers
             CancellationToken cancellationToken
         )
         {
+            if (!Guid.TryParse(uuid, out var parsedUuid))
+            {
+                return BadRequest("Could not parse uuid");
+            }
+
             var imageMetaData = await new ImageMetaDataQuery
             {
-                ModelId = ImageMetaData.ImageMetaDataIdentifier.From(Guid.Parse(uuid)),
+                ModelId = ImageMetaData.ImageMetaDataIdentifier.From(parsedUuid),
             }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
             if (imageMetaData.IsNone)
             {
-                return BadRequest();
+                return BadRequest("Could not load imageMetaData");
             }
 
             if (imageMetaData.Get().ApiKey != apikey)
             {
-                return BadRequest();
+                return BadRequest("Invalid API key provided.");
             }
 
             var streamForImage = await new ImageLoadQuery { MetaData = imageMetaData.Get() }
@@ -78,7 +67,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
             if (streamForImage.IsNone)
             {
-                return BadRequest();
+                return BadRequest("Could not load image");
             }
 
             return File(streamForImage.Get(), "image/" + imageMetaData.Get().ImageType.ToString().ToLower());

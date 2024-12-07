@@ -41,7 +41,7 @@ class CustomCharacterCard extends StatelessWidget {
                 ? imageUrl
                 : (apiBaseUrl +
                     (imageUrl!.startsWith("/")
-                        ? imageUrl!.substring(1)
+                        ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                         : imageUrl!))) ??
             "assets/images/charactercard_placeholder.png";
 

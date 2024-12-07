@@ -63,7 +63,6 @@ class _PlayerScreenCharacterInventoryState
         .toList();
 
     return Container(
-      padding: EdgeInsets.all(0),
       clipBehavior: Clip.none,
       color: bgColor,
       child: ItemCardRenderingWithFiltering(

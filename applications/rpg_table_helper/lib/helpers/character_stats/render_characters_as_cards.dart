@@ -19,14 +19,14 @@ class RenderCharactersAsCards {
     List<Widget> result = [];
 
     // build player character card for every entry in charactersToRender
-    for (var tupel in charactersToRender) {
+    for (var tuple in charactersToRender) {
       var defaultStatTab = rpgConfig.characterStatTabsDefinition
           ?.firstWhere((e) => e.isDefaultTab);
-      var characterName = tupel.characterToRender.characterName.trim().isEmpty
+      var characterName = tuple.characterToRender.characterName.trim().isEmpty
           ? "Player"
-          : tupel.characterToRender.characterName;
+          : tuple.characterToRender.characterName;
       var characterImage =
-          tupel.characterToRender.getImageUrlWithoutBasePath(rpgConfig);
+          tuple.characterToRender.getImageUrlWithoutBasePath(rpgConfig);
       (
         CharacterStatDefinition,
         RpgCharacterStatValue
@@ -38,16 +38,16 @@ class RenderCharactersAsCards {
           rpgConfig.characterStatTabsDefinition != null) {
         var statsToConsiderForCharacter = defaultStatTab.statsInTab
             .where((e) =>
-                tupel.isAlternateForm == false ||
+                tuple.isAlternateForm == false ||
                 e.isOptionalForAlternateForms != true)
             .where((e) =>
-                tupel.isCompanion == false ||
+                tuple.isCompanion == false ||
                 e.isOptionalForCompanionCharacters != true)
             .toList();
 
         characterStatWithMaxValueForBarVisuals =
             getIntWithMaxValueStatForCharacter(
-                statsToConsiderForCharacter, tupel.characterToRender);
+                statsToConsiderForCharacter, tuple.characterToRender);
 
         var intStatsToConsider = statsToConsiderForCharacter
             .where((e) => e.valueType == CharacterStatValueType.int)
@@ -56,7 +56,7 @@ class RenderCharactersAsCards {
 
         for (var statToConsider in intStatsToConsider) {
           // search stat in char
-          var statValue = tupel.characterToRender.characterStats
+          var statValue = tuple.characterToRender.characterStats
               .firstWhereOrNull((cs) => cs.statUuid == statToConsider.statUuid);
           if (statValue != null) {
             // => RpgCharacterStatValue.serializedValue == {"value": 17}
@@ -80,7 +80,7 @@ class RenderCharactersAsCards {
 
           for (var statConfiguration in intListStatsToConsider) {
             // search stat in char
-            var statValue = tupel.characterToRender.characterStats
+            var statValue = tuple.characterToRender.characterStats
                 .firstWhereOrNull(
                     (cs) => cs.statUuid == statConfiguration.statUuid);
             if (statValue != null) {

@@ -669,7 +669,7 @@ class _ShowGetDmConfigurationModalContentState
                         variant: CustomButtonVariant.FlatButton,
                         onPressed: () {
                           setState(() {
-                            multiselectOptions.removeAt(tuple.key);
+                            groupOfLabeledValues.removeAt(tuple.key);
                           });
                         },
                         icon: const CustomFaIcon(
@@ -736,7 +736,7 @@ class SelectableTile extends StatelessWidget {
     required this.label,
   });
 
-  final Null Function() onValueChange;
+  final VoidCallback onValueChange;
   final bool isSet;
   final String label;
 

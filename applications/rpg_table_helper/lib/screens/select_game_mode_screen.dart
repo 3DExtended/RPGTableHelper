@@ -496,7 +496,7 @@ class AddableColumnHeader extends StatelessWidget {
   final String title;
   final String subtitle;
   final String subsubtitle;
-  final Null Function() onPressedHandler;
+  final VoidCallback onPressedHandler;
 
   @override
   Widget build(BuildContext context) {

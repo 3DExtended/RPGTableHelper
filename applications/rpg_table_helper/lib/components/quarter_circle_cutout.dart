@@ -9,14 +9,14 @@ class QuarterCircleCutout extends StatelessWidget {
     required this.circleDegrees,
     required this.circleColor,
     required this.circleInnerDiameter,
-    required this.cicleInnerColor,
+    required this.circleInnerColor,
   });
 
   final double circleOuterDiameter;
   final int circleDegrees;
   final Color circleColor;
   final double circleInnerDiameter;
-  final Color cicleInnerColor;
+  final Color circleInnerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class QuarterCircleCutout extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: cicleInnerColor,
+                    color: circleInnerColor,
                   ),
                 ),
               ),

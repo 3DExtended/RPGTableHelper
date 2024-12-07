@@ -529,7 +529,7 @@ class CategoryFilterButton extends StatelessWidget {
   final bool? withoutLeadingPadding;
   final bool isSelected;
   final ItemCategory categoryForFilter;
-  final Null Function() onpressedHandler;
+  final VoidCallback onpressedHandler;
 
   @override
   Widget build(BuildContext context) {

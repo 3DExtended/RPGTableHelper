@@ -31,7 +31,9 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
     childrenKeys =
         List.generate(widget.children.length, (index) => GlobalKey());
 
-    Future.delayed(Duration.zero, () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _retryCounter = 0;
+
       assignChildrenToCorrectColumn();
     });
     super.initState();
@@ -40,6 +42,8 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
   @override
   void didUpdateWidget(covariant DynamicHeightColumnLayout oldWidget) {
     Future.delayed(Duration.zero, () {
+      _retryCounter = 0;
+
       assignChildrenToCorrectColumn();
     });
     super.didUpdateWidget(oldWidget);
@@ -83,7 +87,11 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
     );
   }
 
+  var _retryCounter = 0;
   void assignChildrenToCorrectColumn() {
+    if (_retryCounter >= 5) return;
+    _retryCounter++;
+
     Map<int, int> tempMapping = {};
 
     var heightsOfChildren = childrenKeys
@@ -115,22 +123,5 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
     setState(() {
       childMapping = tempMapping;
     });
-  }
-}
-
-class MeasureHeightWidget extends StatelessWidget {
-  final Widget child;
-
-  const MeasureHeightWidget({super.key, required this.child});
-
-  // This widget wraps the child and calculates its height when rendered.
-  @override
-  Widget build(BuildContext context) {
-    return child;
-  }
-
-  double measure(BuildContext context) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    return renderBox.hasSize ? renderBox.size.height : 0;
   }
 }

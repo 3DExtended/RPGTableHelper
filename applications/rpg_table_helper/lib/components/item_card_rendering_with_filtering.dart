@@ -246,162 +246,153 @@ class _ItemCardRenderingWithFilteringState
         SizedBox(
           height: 0,
         ),
-        Expanded(child: LayoutBuilder(builder: (context, constraints) {
-          var layoutWidth = constraints.maxWidth;
-          const scalar = 1.0;
-
-          const cardWidth = 289 * scalar;
-
-          const targetedCardWidth = cardWidth;
-          const itemCardPadding = 9.0;
-
-          var numberOfColumnsOnScreen = 1;
-          var calculatedWidth = itemCardPadding + targetedCardWidth;
-
-          while (calculatedWidth < layoutWidth) {
-            calculatedWidth += itemCardPadding + targetedCardWidth;
-            numberOfColumnsOnScreen++;
-          }
-
-          numberOfColumnsOnScreen--;
-
-          var itemsAsMapList = itemsToRender.where((it) {
-            var itemCategoryForItem =
-                ItemCategory.parentCategoryForCategoryIdRecursive(
-                    categories: widget._allItemCategories,
-                    categoryId: it.value.item.categoryId);
-
-            return widget.selectedItemCategoryId == null ||
-                it.value.item.categoryId == widget.selectedItemCategoryId ||
-                (itemCategoryForItem != null &&
-                    itemCategoryForItem.uuid == widget.selectedItemCategoryId);
-          }).toList();
-
-          if (itemsAsMapList.isEmpty) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 50,
-                ),
-                Text(
-                  "Keine Items unter dieser Kategorie",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontSize: 24, color: darkTextColor),
-                ),
-              ],
-            );
-          }
-          var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
-              categories: widget._allItemCategories);
-
-          return ListView.builder(
-            itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
-                        numberOfColumnsOnScreen ==
-                    itemsAsMapList.length)
-                ? (itemsAsMapList.length ~/ numberOfColumnsOnScreen)
-                : (itemsAsMapList.length ~/ numberOfColumnsOnScreen) + 1,
-            itemBuilder: (context, index) {
-              return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...List.generate(numberOfColumnsOnScreen, (subindex) {
-                      var indexOfItemToRender =
-                          index * numberOfColumnsOnScreen + subindex;
-                      if (indexOfItemToRender >= itemsAsMapList.length) {
-                        return List<Widget>.empty();
-                      }
-
-                      var itemToRender = itemsAsMapList[indexOfItemToRender];
-                      var categoryForItem =
-                          flattenedCategories.firstWhereOrNull((e) =>
-                              e.uuid == itemToRender.value.item.categoryId);
-
-                      var parentCategoryOfItem = categoryForItem != null
-                          ? flattenedCategories.firstWhereOrNull((fc) =>
-                                  fc.subCategories.any((sub) =>
-                                      sub.uuid == categoryForItem.uuid)) ??
-                              categoryForItem
-                          : categoryForItem;
-
-                      return [
-                        Column(
-                          children: [
-                            CupertinoButton(
-                              minSize: 0,
-                              padding: EdgeInsets.all(0),
-                              onPressed: () async {
-                                if (widget.onItemCardPressed != null) {
-                                  await widget.onItemCardPressed!(itemToRender);
-                                }
-                              },
-                              child: CustomItemCard(
-                                scalarOverride: scalar,
-                                imageUrl: itemToRender
-                                    .value.item.imageUrlWithoutBasePath,
-                                title: itemToRender.value.item.name,
-                                description:
-                                    itemToRender.value.item.description,
-                                categoryIconColor: parentCategoryOfItem
-                                    ?.colorCode
-                                    ?.parseHexColorRepresentation(),
-                                categoryIconName:
-                                    parentCategoryOfItem?.iconName,
-                              ),
-                            ),
-                            if (widget.hideAmount != true &&
-                                widget.onEditItemAmount == null)
-                              SizedBox(
-                                height: 5,
-                              ),
-                            if (widget.hideAmount != true &&
-                                widget.onEditItemAmount == null)
-                              Text(
-                                "Anzahl: ${itemToRender.value.amount}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium!
-                                    .copyWith(
-                                      color: darkTextColor,
-                                      fontSize: 16,
-                                    ),
-                              ),
-                            if (widget.onEditItemAmount != null)
-                              SizedBox(
-                                height: 5,
-                              ),
-                            if (widget.onEditItemAmount != null)
-                              CustomIntEditField(
-                                key: ValueKey(
-                                    "ItemEditField${itemToRender.value.item.uuid}"),
-                                onValueChange: (newValue) {
-                                  widget.onEditItemAmount!(
-                                      itemToRender.value.item.uuid, newValue);
-                                },
-                                minValue: 0,
-                                maxValue: 999,
-                                label: "Hinzufügen",
-                                startValue: itemToRender.value.amount,
-                              ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        ),
-                        if (numberOfColumnsOnScreen != subindex + 1)
-                          SizedBox(
-                            width: itemCardPadding,
-                          ),
-                      ];
-                    }).expand((i) => i),
-                  ]);
-            },
-          );
-        }))
+        Expanded(child: LayoutBuilder(builder: getListOfItemCardsAsColumns))
       ],
+    );
+  }
+
+  Widget getListOfItemCardsAsColumns(context, constraints) {
+    var layoutWidth = constraints.maxWidth;
+    const scalar = 1.0;
+
+    const cardWidth = 289 * scalar;
+
+    const targetedCardWidth = cardWidth;
+    const itemCardPadding = 9.0;
+
+    var numberOfColumnsOnScreen = 1;
+    var calculatedWidth = itemCardPadding + targetedCardWidth;
+
+    while (calculatedWidth < layoutWidth) {
+      calculatedWidth += itemCardPadding + targetedCardWidth;
+      numberOfColumnsOnScreen++;
+    }
+
+    numberOfColumnsOnScreen--;
+
+    var itemsAsMapList = itemsToRender.where((it) {
+      var itemCategoryForItem =
+          ItemCategory.parentCategoryForCategoryIdRecursive(
+              categories: widget._allItemCategories,
+              categoryId: it.value.item.categoryId);
+
+      return widget.selectedItemCategoryId == null ||
+          it.value.item.categoryId == widget.selectedItemCategoryId ||
+          (itemCategoryForItem != null &&
+              itemCategoryForItem.uuid == widget.selectedItemCategoryId);
+    }).toList();
+
+    if (itemsAsMapList.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 50,
+          ),
+          Text(
+            "Keine Items unter dieser Kategorie",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(fontSize: 24, color: darkTextColor),
+          ),
+        ],
+      );
+    }
+    var flattenedCategories = ItemCategory.flattenCategoriesRecursive(
+        categories: widget._allItemCategories);
+
+    return ListView.builder(
+      itemCount: ((itemsAsMapList.length ~/ numberOfColumnsOnScreen) *
+                  numberOfColumnsOnScreen ==
+              itemsAsMapList.length)
+          ? (itemsAsMapList.length ~/ numberOfColumnsOnScreen)
+          : (itemsAsMapList.length ~/ numberOfColumnsOnScreen) + 1,
+      itemBuilder: (context, index) {
+        return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          ...List.generate(numberOfColumnsOnScreen, (subindex) {
+            var indexOfItemToRender =
+                index * numberOfColumnsOnScreen + subindex;
+            if (indexOfItemToRender >= itemsAsMapList.length) {
+              return List<Widget>.empty();
+            }
+
+            var itemToRender = itemsAsMapList[indexOfItemToRender];
+            var categoryForItem = flattenedCategories.firstWhereOrNull(
+                (e) => e.uuid == itemToRender.value.item.categoryId);
+
+            var parentCategoryOfItem = categoryForItem != null
+                ? flattenedCategories.firstWhereOrNull((fc) => fc.subCategories
+                        .any((sub) => sub.uuid == categoryForItem.uuid)) ??
+                    categoryForItem
+                : categoryForItem;
+
+            return [
+              Column(
+                children: [
+                  CupertinoButton(
+                    minSize: 0,
+                    padding: EdgeInsets.all(0),
+                    onPressed: () async {
+                      if (widget.onItemCardPressed != null) {
+                        await widget.onItemCardPressed!(itemToRender);
+                      }
+                    },
+                    child: CustomItemCard(
+                      scalarOverride: scalar,
+                      imageUrl: itemToRender.value.item.imageUrlWithoutBasePath,
+                      title: itemToRender.value.item.name,
+                      description: itemToRender.value.item.description,
+                      categoryIconColor: parentCategoryOfItem?.colorCode
+                          ?.parseHexColorRepresentation(),
+                      categoryIconName: parentCategoryOfItem?.iconName,
+                    ),
+                  ),
+                  if (widget.hideAmount != true &&
+                      widget.onEditItemAmount == null)
+                    SizedBox(
+                      height: 5,
+                    ),
+                  if (widget.hideAmount != true &&
+                      widget.onEditItemAmount == null)
+                    Text(
+                      "Anzahl: ${itemToRender.value.amount}",
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                            color: darkTextColor,
+                            fontSize: 16,
+                          ),
+                    ),
+                  if (widget.onEditItemAmount != null)
+                    SizedBox(
+                      height: 5,
+                    ),
+                  if (widget.onEditItemAmount != null)
+                    CustomIntEditField(
+                      key: ValueKey(
+                          "ItemEditField${itemToRender.value.item.uuid}"),
+                      onValueChange: (newValue) {
+                        widget.onEditItemAmount!(
+                            itemToRender.value.item.uuid, newValue);
+                      },
+                      minValue: 0,
+                      maxValue: 999,
+                      label: "Hinzufügen",
+                      startValue: itemToRender.value.amount,
+                    ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              if (numberOfColumnsOnScreen != subindex + 1)
+                SizedBox(
+                  width: itemCardPadding,
+                ),
+            ];
+          }).expand((i) => i),
+        ]);
+      },
     );
   }
 }

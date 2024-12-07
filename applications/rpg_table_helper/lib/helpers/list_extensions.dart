@@ -103,9 +103,6 @@ extension CustomListExtensions<T> on List<T> {
 
   List<T> insertBetween(T separator) {
     if (isEmpty) return [];
-    return List<T>.generate(
-      length * 2 - 1,
-      (index) => index % 2 == 0 ? this[index ~/ 2] : separator,
-    );
+    return expand((element) => [element, separator]).toList()..removeLast();
   }
 }
