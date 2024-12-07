@@ -128,7 +128,7 @@ To run the app, ensure you have the following installed:
 
 ## 📬 Contact
 
-For feedback, questions, or collaboration, please use the [GitHub Issues](https://github.com/<repository-url>/issues).
+For feedback, questions, or collaboration, please use the [GitHub Issues](https://github.com/3DExtended/RPGTableHelper/issues).
 
 Thank you for supporting RPG Table Helper! Happy role-playing! 🎲
 
