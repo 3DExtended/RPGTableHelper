@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
@@ -15,6 +17,7 @@ class RpgConfigurationWizardStep3CurrencyDefinition extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -47,6 +50,11 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
   void initState() {
     smallestCurrencyNameTextEditingController
         .addListener(_updateStateForFormValidation);
+
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Währungen");
+    });
+
     super.initState();
   }
 
@@ -94,10 +102,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Währungen", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null
@@ -109,12 +115,19 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
+      sideBarFlex: 1,
+      contentFlex: 2,
       footerWidget: Column(
         children: [
           const HorizontalLine(),
           Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 30),
-            child: Text(buildTextForCurrencyComparison()),
+            child: Text(
+              buildTextForCurrencyComparison(),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: darkTextColor,
+                  ),
+            ),
           ),
         ],
       ),
@@ -161,16 +174,23 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   ),
                   Container(
                     height: 50,
-                    width: 70,
+                    width: 40,
                     clipBehavior: Clip.none,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: CustomButton(
+                      isSubbutton: true,
+                      variant: CustomButtonVariant.FlatButton,
                       onPressed: () {
                         // remove this pair from list
                         setState(() {
                           currencyControllerPairs.removeAt(e.key);
                         });
                       },
-                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        color: darkColor,
+                        size: 22,
+                      ),
                     ),
                   ),
                 ],
@@ -180,21 +200,20 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
               ),
               Row(
                 children: [
+                  const SizedBox(
+                    width: 30,
+                  ),
                   Expanded(
                     child: CustomTextField(
                       keyboardType: TextInputType.number,
-
                       labelText:
                           "Gleichwertige Anzahl an vorheriger Währung:", // TODO localize
                       textEditingController: e.value.$2,
                     ),
                   ),
                   const SizedBox(
-                    width: 20,
-                  ),
-                  const SizedBox(
                     height: 50,
-                    width: 50,
+                    width: 40,
                   ),
                 ],
               ),
@@ -209,6 +228,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           );
         }),
         CustomButton(
+          variant: CustomButtonVariant.Default,
+          isSubbutton: true,
           onPressed: () {
             setState(() {
               addNewCurrencyPair("New", "10");
@@ -217,12 +238,12 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           icon: Theme(
               data: ThemeData(
                 iconTheme: const IconThemeData(
-                  color: Colors.white,
+                  color: darkColor,
                   size: 16,
                 ),
                 textTheme: const TextTheme(
                   bodyMedium: TextStyle(
-                    color: Colors.white,
+                    color: darkColor,
                   ),
                 ),
               ),
@@ -303,12 +324,14 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
   }
 
   String buildTextForCurrencyComparison() {
+    var numberFormat = NumberFormat('#,###');
+
     var result = "";
     var currentMultiple = 1;
     for (var i = currencyControllerPairs.length - 1; i >= 0; i--) {
       if (i != currencyControllerPairs.length - 1) result += " = ";
 
-      result += "$currentMultiple ";
+      result += "${numberFormat.format(currentMultiple)} ";
       result += currencyControllerPairs[i].$1.text;
 
       var parseInt = int.tryParse(currencyControllerPairs[i].$2.text);
@@ -319,7 +342,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
 
     if (currencyControllerPairs.isNotEmpty) result += " = ";
 
-    result += "$currentMultiple ";
+    result += "${numberFormat.format(currentMultiple)} ";
     result += smallestCurrencyNameTextEditingController.text;
 
     return result;

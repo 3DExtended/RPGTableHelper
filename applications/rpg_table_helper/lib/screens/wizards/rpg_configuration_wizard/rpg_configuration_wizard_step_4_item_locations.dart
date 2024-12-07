@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:uuid/v7.dart';
@@ -16,6 +17,7 @@ class RpgConfigurationWizardStep4ItemLocations extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -27,7 +29,7 @@ class _RpgConfigurationWizardStep4ItemLocations
     extends ConsumerState<RpgConfigurationWizardStep4ItemLocations> {
   bool hasDataLoaded = false;
   bool isFormValid = false;
-
+  RpgConfigurationModel? rpgConfig;
   List<(String uuid, TextEditingController nameControlle)> locationPairs = [];
 
   void _updateStateForFormValidation() {
@@ -42,6 +44,10 @@ class _RpgConfigurationWizardStep4ItemLocations
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Fundorte");
+    });
+
     super.initState();
   }
 
@@ -56,6 +62,8 @@ class _RpgConfigurationWizardStep4ItemLocations
       if (!hasDataLoaded) {
         setState(() {
           hasDataLoaded = true;
+
+          rpgConfig = data;
 
           var loadedItemLocations = data.placesOfFindings;
           if (loadedItemLocations.isNotEmpty) {
@@ -81,10 +89,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Fundorte", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null
@@ -96,6 +102,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
+      sideBarFlex: 1,
+      contentFlex: 2,
       contentChildren: [
         const SizedBox(
           height: 20,
@@ -104,10 +112,14 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
           return Column(
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: CustomTextField(
                       keyboardType: TextInputType.text,
+                      placeholderText: rpgConfig == null
+                          ? null
+                          : "An diesem Fundort können ${getNumberOfToPlaceAssignedItems(rpgConfig!, e.value.$1)} Items gefunden werden.",
 
                       labelText: "Fundort #${e.key + 1}", // TODO localize
                       textEditingController: e.value.$2,
@@ -115,9 +127,12 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                   ),
                   Container(
                     height: 50,
-                    width: 70,
+                    width: 40,
                     clipBehavior: Clip.none,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
+                      isSubbutton: true,
                       onPressed: () {
                         // remove this pair from list
                         // TODO check if assigned...
@@ -126,7 +141,11 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                         });
                         _updateStateForFormValidation();
                       },
-                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        size: 22,
+                        color: darkColor,
+                      ),
                     ),
                   ),
                 ],
@@ -142,28 +161,21 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
           );
         }),
         CustomButton(
+          variant: CustomButtonVariant.Default,
+          isSubbutton: true,
           onPressed: () {
             setState(() {
               addNewLocationPair("", const UuidV7().generate());
             });
           },
-          icon: Theme(
-              data: ThemeData(
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
-                ),
-                textTheme: const TextTheme(
-                  bodyMedium: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              child: Container(
-                  width: 24,
-                  height: 24,
-                  alignment: AlignmentDirectional.center,
-                  child: const FaIcon(FontAwesomeIcons.plus))),
+          icon: Container(
+              width: 24,
+              height: 24,
+              alignment: AlignmentDirectional.center,
+              child: const FaIcon(
+                FontAwesomeIcons.plus,
+                color: darkColor,
+              )),
         ),
         const SizedBox(
           height: 20,
@@ -215,5 +227,15 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
     }
 
     return true;
+  }
+
+  int getNumberOfToPlaceAssignedItems(
+      RpgConfigurationModel rpgConfig, String placeOfFindingUuid) {
+    var itemsWithSamePlaceOfFindingAssigned = rpgConfig.allItems
+        .where((it) => it.placeOfFindings
+            .any((pof) => pof.placeOfFindingId == placeOfFindingUuid))
+        .length;
+
+    return itemsWithSamePlaceOfFindingAssigned;
   }
 }

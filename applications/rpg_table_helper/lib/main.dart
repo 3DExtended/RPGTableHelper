@@ -3,17 +3,26 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/lifecycle_event_handler.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/login_screen.dart';
 import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:rpg_table_helper/services/server_methods_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -31,7 +40,6 @@ class MyApp extends StatefulWidget {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
 class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
@@ -62,12 +70,13 @@ class AppRoutingShell extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           fontFamily: 'Roboto',
           useMaterial3: true,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
           iconTheme: const IconThemeData(
             color: Colors.white,
             size: 16,
@@ -80,27 +89,42 @@ class AppRoutingShell extends ConsumerWidget {
           switch (settings.name) {
             case AuthorizedScreenWrapper.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => AuthorizedScreenWrapper(),
+                builder: (_) =>
+                    ThemeConfigurationForApp(child: AuthorizedScreenWrapper()),
+                settings: settings,
+              );
+            case DmPageScreen.route:
+              return MaterialWithModalsPageRoute(
+                builder: (_) => ThemeConfigurationForApp(child: DmPageScreen()),
+                settings: settings,
+              );
+            case PlayerPageScreen.route:
+              return MaterialWithModalsPageRoute(
+                builder: (_) =>
+                    ThemeConfigurationForApp(child: PlayerPageScreen()),
                 settings: settings,
               );
             case LoginScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => LoginScreen(),
+                builder: (_) => ThemeConfigurationForApp(child: LoginScreen()),
                 settings: settings,
               );
             case RegisterScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => RegisterScreen(),
+                builder: (_) =>
+                    ThemeConfigurationForApp(child: RegisterScreen()),
                 settings: settings,
               );
             case CompleteSsoScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => CompleteSsoScreen(),
+                builder: (_) =>
+                    ThemeConfigurationForApp(child: CompleteSsoScreen()),
                 settings: settings,
               );
             case SelectGameModeScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => SelectGameModeScreen(),
+                builder: (_) =>
+                    ThemeConfigurationForApp(child: SelectGameModeScreen()),
                 settings: settings,
               );
           }
@@ -108,8 +132,10 @@ class AppRoutingShell extends ConsumerWidget {
           for (var config in allWizardConfigurations.entries.toList()) {
             if (settings.name == config.key) {
               return MaterialWithModalsPageRoute(
-                builder: (_) => WizardRendererForConfiguration(
-                  configuration: config.value,
+                builder: (_) => ThemeConfigurationForApp(
+                  child: WizardRendererForConfiguration(
+                    configuration: config.value,
+                  ),
                 ),
                 settings: settings,
               );
@@ -119,6 +145,138 @@ class AppRoutingShell extends ConsumerWidget {
           return null;
         },
       ),
+    );
+  }
+}
+
+class ThemeConfigurationForApp extends ConsumerStatefulWidget {
+  const ThemeConfigurationForApp({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  ConsumerState<ThemeConfigurationForApp> createState() =>
+      _ThemeConfigurationForAppState();
+}
+
+class _ThemeConfigurationForAppState
+    extends ConsumerState<ThemeConfigurationForApp> {
+  LifecycleEventHandler? observer;
+
+  // This widget is the root of your application.
+  @override
+  void initState() {
+    super.initState();
+    observer = getObserver();
+    WidgetsBinding.instance.addObserver(observer!);
+  }
+
+  LifecycleEventHandler getObserver() {
+    return LifecycleEventHandler(resumeCallBack: () async {
+      var serverMethods =
+          DependencyProvider.getIt!.get<IServerMethodsService>();
+      var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+
+      // should return early in the case the use is not in the session.
+      if (connectionDetails == null || connectionDetails.isInSession == false) {
+        return;
+      }
+
+      // readd to groups if the connection had to be reastablished
+      await serverMethods.readdToSignalRGroups();
+
+      ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+          ref.read(connectionDetailsProvider).value?.copyWith(
+                    isConnected: true,
+                    isConnecting: false,
+                  ) ??
+              ConnectionDetails.defaultValue());
+    });
+  }
+
+  @override
+  void dispose() {
+    if (observer != null) WidgetsBinding.instance.removeObserver(observer!);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        textTheme: Theme.of(context).textTheme.copyWith(
+              headlineLarge:
+                  TextStyle(color: darkTextColor, fontFamily: "Roboto"),
+              headlineMedium: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              headlineSmall: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              titleLarge: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              titleMedium: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              titleSmall: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              bodySmall: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              bodyMedium: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              bodyLarge: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              labelSmall: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              labelMedium: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              labelLarge: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              displaySmall: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              displayMedium: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+              displayLarge: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Roboto",
+              ),
+            ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+          size: 16,
+        ),
+      ),
+      child: widget.child,
     );
   }
 }

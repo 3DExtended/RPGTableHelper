@@ -101,6 +101,151 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<String>> _imageGenerateimageCampagneidPost({
+    required String? campagneid,
+    required String? body,
+  }) {
+    final Uri $url = Uri.parse('/Image/generateimage/${campagneid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> _imageStreamimageuploadPost({
+    String? campagneId,
+    List<int>? image,
+  }) {
+    final Uri $url = Uri.parse('/Image/streamimageupload');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'campagneId': campagneId
+    };
+    final List<PartValue> $parts = <PartValue>[
+      PartValueFile<List<int>?>(
+        'image',
+        image,
+      )
+    ];
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      parts: $parts,
+      multipart: true,
+      parameters: $params,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet(
+      {required String? notedocumentid}) {
+    final Uri $url = Uri.parse('/Notes/getdocument/${notedocumentid}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<NoteDocumentDto, NoteDocumentDto>($request);
+  }
+
+  @override
+  Future<Response<NoteDocumentDto>> _notesDeletedocumentNotedocumentidDelete(
+      {required String? notedocumentid}) {
+    final Uri $url = Uri.parse('/Notes/deletedocument/${notedocumentid}');
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<NoteDocumentDto, NoteDocumentDto>($request);
+  }
+
+  @override
+  Future<Response<NoteDocumentIdentifier>> _notesCreatedocumentPost(
+      {required NoteDocumentDto? body}) {
+    final Uri $url = Uri.parse('/Notes/createdocument');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client
+        .send<NoteDocumentIdentifier, NoteDocumentIdentifier>($request);
+  }
+
+  @override
+  Future<Response<NoteBlockModelBaseIdentifier>>
+      _notesCreatetextblockNotedocumentidPost({
+    required String? notedocumentid,
+    required TextBlock? body,
+  }) {
+    final Uri $url = Uri.parse('/Notes/createtextblock/${notedocumentid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<NoteBlockModelBaseIdentifier,
+        NoteBlockModelBaseIdentifier>($request);
+  }
+
+  @override
+  Future<Response<NoteBlockModelBaseIdentifier>>
+      _notesCreateimageblockNotedocumentidPost({
+    required String? notedocumentid,
+    required ImageBlock? body,
+  }) {
+    final Uri $url = Uri.parse('/Notes/createimageblock/${notedocumentid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<NoteBlockModelBaseIdentifier,
+        NoteBlockModelBaseIdentifier>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesUpdatetextblockPut(
+      {required TextBlock? body}) {
+    final Uri $url = Uri.parse('/Notes/updatetextblock');
+    final $body = body;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesUpdateimageblockPut(
+      {required ImageBlock? body}) {
+    final Uri $url = Uri.parse('/Notes/updateimageblock');
+    final $body = body;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {
@@ -143,6 +288,21 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<PlayerCharacter>>>
+      _playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
+    final Uri $url =
+        Uri.parse('/PlayerCharacter/getplayercharactersincampagne');
+    final Map<String, dynamic> $params = <String, dynamic>{'Value': $Value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<List<PlayerCharacter>, PlayerCharacter>($request);
+  }
+
+  @override
   Future<Response<String>> _publicGetminimalversionGet() {
     final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(
@@ -151,6 +311,33 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
     );
     return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _publicCreateimagePost({String? prompt}) {
+    final Uri $url = Uri.parse('/Public/createimage');
+    final Map<String, dynamic> $params = <String, dynamic>{'prompt': prompt};
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _publicGetimageUuidApikeyGet({
+    required String? uuid,
+    required String? apikey,
+  }) {
+    final Uri $url = Uri.parse('/Public/getimage/${uuid}/${apikey}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override

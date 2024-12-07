@@ -64,6 +64,22 @@ class OpenPlayerConnection {
 
 @JsonSerializable()
 @CopyWith()
+class FightSequence {
+  final String fightUuid;
+
+  // characterId is null for opponents the DM added manually to the fight
+  final List<(String? characterId, String characterName, int roll)> sequence;
+
+  FightSequence({required this.fightUuid, required this.sequence});
+
+  factory FightSequence.fromJson(Map<String, dynamic> json) =>
+      _$FightSequenceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FightSequenceToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
 class ConnectionDetails {
   final bool isConnected;
   final bool isConnecting;
@@ -73,6 +89,8 @@ class ConnectionDetails {
   final List<OpenPlayerConnection>? connectedPlayers;
   final bool isDm;
   final List<GrantedItemsForPlayer>? lastGrantedItems;
+
+  final FightSequence? fightSequence;
 
   final String? campagneId;
   final String? playerCharacterId;
@@ -85,6 +103,7 @@ class ConnectionDetails {
     required this.connectedPlayers,
     required this.isInSession,
     required this.isDm,
+    required this.fightSequence,
     required this.lastGrantedItems,
     required this.campagneId,
     required this.playerCharacterId,
@@ -94,6 +113,7 @@ class ConnectionDetails {
         isConnected: false,
         isConnecting: false,
         isInSession: false,
+        fightSequence: null,
         isDm: false,
         sessionConnectionNumberForPlayers: null,
         connectedPlayers: [],

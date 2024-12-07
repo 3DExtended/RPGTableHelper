@@ -1,5 +1,20 @@
 # RPGTableHelper
 
+## TODOs
+
+- [ ] Read-Query for NoteDocument
+
+- [ ] Create-Query for NoteDocument
+- [ ] Create-Query for new NoteBlockEntity (either type)
+- [ ] Update-Query for NoteDocument
+- [ ] Update-Query for NoteBlockEntity (either type)
+  - [ ] With check if permissions are correctly updated
+- [ ] Delete-Query for NoteDocument
+- [ ] Delete-Query for NoteBlockEntity (either type)
+
+- [ ] ReadList-Query for NoteDocuments of the campagne
+- [ ] ReadList-Query for NoteDocuments of a given user
+
 ## Add efcore migration
 
 Run this in the root folder:

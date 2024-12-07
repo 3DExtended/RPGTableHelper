@@ -10,8 +10,8 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
 import 'package:rpg_table_helper/components/row_column_flipper.dart';
-import 'package:rpg_table_helper/components/styled_box.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -23,7 +23,8 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
@@ -44,84 +45,38 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   List<Campagne>? campagnes;
   List<PlayerCharacter>? characters;
 
+  var showLoadingSpinner = true;
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      if (!mounted) return;
-
-      if (!DependencyProvider.of(context).isMocked) {
-        // TODO can i remove this code?
-        //var prefs = await SharedPreferences.getInstance();
-        //// synchronize local campagnes
-        //if (prefs.containsKey(sharedPrefsKeyRpgConfigJson)) {
-        //  var loadedJsonForRpgConfig =
-        //      prefs.getString(sharedPrefsKeyRpgConfigJson);
-        //  var parsedJson = RpgConfigurationModel.fromJson(
-        //      jsonDecode(loadedJsonForRpgConfig!));
-        //  if (!mounted) return;
-        //  await showSynchronizeLocallySavedRpgCampagne(context)
-        //      .then((value) async {
-        //    if (value != true) {
-        //      return;
-        //    }
-        //    // save to cloud
-        //    if (!mounted) return;
-        //    var service =
-        //        DependencyProvider.of(context).getService<IRpgEntityService>();
-        //    var createResult = await service.saveCampagneAsNewCampagne(
-        //        campagneName: parsedJson.rpgName,
-        //        rpgConfig: loadedJsonForRpgConfig);
-        //    if (!mounted) return;
-        //    await createResult.possiblyHandleError(context);
-        //  });
-        //}
-        //// synchronize local characters
-        //if (prefs.containsKey(sharedPrefsKeyRpgCharacterConfigJson)) {
-        //  var loadedJsonForRpgCharacterConfig =
-        //      prefs.getString(sharedPrefsKeyRpgCharacterConfigJson);
-        //  var parsedJson = RpgCharacterConfiguration.fromJson(
-        //      jsonDecode(loadedJsonForRpgCharacterConfig!));
-        //  if (!mounted) return;
-        //  await showSynchronizeLocallySavedRpgPlayerCharacter(context)
-        //      .then((value) async {
-        //    if (value != true) {
-        //      return;
-        //    }
-        //    // save to cloud
-        //    if (!mounted) return;
-        //    var service =
-        //        DependencyProvider.of(context).getService<IRpgEntityService>();
-        //    var createResult = await service.savePlayerCharacterAsNewCharacter(
-        //        characterName: parsedJson.characterName.isNotEmpty
-        //            ? parsedJson.characterName
-        //            : "SomePlayerCharacterName",
-        //        characterConfigJson: loadedJsonForRpgCharacterConfig);
-        //    if (!mounted) return;
-        //    await createResult.possiblyHandleError(context);
-        //  });
-        //}
-      }
-
-      // load campagnes and players
-      if (!mounted) return;
-
-      var service =
-          DependencyProvider.of(context).getService<IRpgEntityService>();
-      var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
-      var charactersResponse = await service.getPlayerCharacetersForPlayer();
-
-      if (!mounted) return;
-      await campagnesResponse.possiblyHandleError(context);
-      if (!mounted) return;
-      await charactersResponse.possiblyHandleError(context);
-
-      setState(() {
-        campagnes = campagnesResponse.result ?? [];
-        characters = charactersResponse.result ?? [];
-      });
+      await loadCampagnesAndPlayersFromServer();
     });
 
     super.initState();
+  }
+
+  Future loadCampagnesAndPlayersFromServer() async {
+    // load campagnes and players
+    if (!mounted) return;
+    setState(() {
+      showLoadingSpinner = true;
+    });
+
+    var service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
+    var charactersResponse = await service.getPlayerCharacetersForPlayer();
+
+    if (!mounted) return;
+    await campagnesResponse.possiblyHandleError(context);
+    if (!mounted) return;
+    await charactersResponse.possiblyHandleError(context);
+    setState(() {
+      campagnes = campagnesResponse.result ?? [];
+      characters = charactersResponse.result ?? [];
+      showLoadingSpinner = false;
+    });
   }
 
   @override
@@ -139,124 +94,62 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     if (kDebugMode || !kDebugMode) isLandscape = true;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            "assets/images/bg.png",
-            fit: BoxFit.fill,
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: const Color.fromARGB(79, 0, 0, 0),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                isLandscape ? outerPadding : outerPadding * 2,
-                outerPadding * 2,
-                outerPadding * 2,
-                !isLandscape ? outerPadding : outerPadding * 2,
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        color: bgColor,
+        child: Column(
+          children: [
+            Navbar(
+              backInsteadOfCloseIcon: false,
+              closeFunction: null,
+              menuOpen: null,
+              useTopSafePadding: true,
+              titleWidget: Text(
+                "Select Game Mode", // TODO localize
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(color: textColor, fontSize: 24),
               ),
-              child: StyledBox(
-                overrideInnerDecoration: BoxDecoration(
-                  image: const DecorationImage(
-                    image: AssetImage(
-                      "assets/images/bg.png",
-                    ),
-                    fit: BoxFit.fill,
-                  ),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Container(
-                  color: const Color.fromARGB(34, 67, 67, 67),
-                  child: campagnes == null
-                      ? CustomLoadingSpinner()
-                      : LayoutBuilder(builder: (context, constraints) {
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Select Game Mode", // TODO localize
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium!
-                                    .copyWith(
-                                      color: Colors.white,
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              HorizontalLine(),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Expanded(
-                                child: RowColumnFlipper(
-                                  isLandscapeMode: isLandscape,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ConditionalWidgetWrapper(
-                                        condition: isLandscape,
-                                        wrapper: (context, child) =>
-                                            Expanded(child: child),
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            left: !isLandscape ? 20.0 : 20.0,
-                                            right: !isLandscape ? 20.0 : 0.0,
-                                          ),
-                                          child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                AddableColumnHeader(
-                                                    title:
-                                                        "Choose a campagne", // TODO localize
-                                                    subtitle:
-                                                        "Start as DM", // TODO localize
-                                                    subsubtitle:
-                                                        "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
-                                                    onPressedHandler: () {}),
-                                                Expanded(
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      children: [
-                                                        ...getOpenCampagnes(),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
-                                              ]),
-                                        )),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                    isLandscape
-                                        ? Container(
-                                            width: 1,
-                                            height: constraints.maxHeight - 120,
-                                            color: const Color.fromARGB(
-                                                78, 255, 255, 255),
-                                          )
-                                        : HorizontalLine(),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                    ConditionalWidgetWrapper(
+            ),
+            Expanded(
+              child: campagnes == null ||
+                      (showLoadingSpinner == true &&
+                          !DependencyProvider.of(context).isMocked)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(child: CustomLoadingSpinner()),
+                          ],
+                        ),
+                      ],
+                    )
+                  : LayoutBuilder(builder: (context, constraints) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: RowColumnFlipper(
+                                isLandscapeMode: isLandscape,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ConditionalWidgetWrapper(
                                       condition: isLandscape,
                                       wrapper: (context, child) =>
                                           Expanded(child: child),
                                       child: Padding(
                                         padding: EdgeInsets.only(
-                                          left: !isLandscape ? 20.0 : 0.0,
+                                          left: !isLandscape ? 20.0 : 20.0,
                                           right: !isLandscape ? 20.0 : 0.0,
                                         ),
                                         child: Column(
@@ -265,39 +158,89 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                             children: [
                                               AddableColumnHeader(
                                                   title:
-                                                      "Choose a character (Join as Player)", // TODO localize
+                                                      "Choose a campagne", // TODO localize
                                                   subtitle:
-                                                      "Join as Player", // TODO localize
+                                                      "Start as DM", // TODO localize
                                                   subsubtitle:
-                                                      "You own ${characters?.length ?? 0} character.", // TODO localize
-                                                  onPressedHandler: () {}),
+                                                      "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
+                                                  onPressedHandler: () {
+                                                    // TODO add new campagne
+                                                  }),
                                               Expanded(
                                                 child: SingleChildScrollView(
                                                   child: Column(
                                                     children: [
-                                                      ...getCharacters(),
+                                                      ...getOpenCampagnes(),
                                                     ],
                                                   ),
                                                 ),
                                               )
                                             ]),
+                                      )),
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  isLandscape
+                                      ? Container(
+                                          width: 1,
+                                          height: constraints.maxHeight - 40,
+                                          color: darkColor,
+                                        )
+                                      : HorizontalLine(),
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  ConditionalWidgetWrapper(
+                                    condition: isLandscape,
+                                    wrapper: (context, child) =>
+                                        Expanded(child: child),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        left: !isLandscape ? 20.0 : 0.0,
+                                        right: !isLandscape ? 20.0 : 0.0,
                                       ),
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AddableColumnHeader(
+                                                title:
+                                                    "Choose a character (Join as Player)", // TODO localize
+                                                subtitle:
+                                                    "Join as Player", // TODO localize
+                                                subsubtitle:
+                                                    "You own ${characters?.length ?? 0} character.", // TODO localize
+                                                onPressedHandler: () {
+                                                  // TODO add new character
+                                                }),
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    ...getCharacters(),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ]),
                                     ),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          );
-                        }),
-                ),
-              ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -308,6 +251,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               padding: const EdgeInsets.only(top: 10.0, bottom: 10),
               child: CupertinoButton(
                 onPressed: () async {
+                  setState(() {
+                    showLoadingSpinner = true;
+                  });
                   if (campagne.rpgConfiguration != null &&
                       campagne.rpgConfiguration!.isNotEmpty) {
                     var parsedJson = RpgConfigurationModel.fromJson(
@@ -347,12 +293,23 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   if (!mounted) return;
 
                   // navigate to main game screen (auth screen wrapper)
-                  navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                      AuthorizedScreenWrapper.route, (r) => false);
+                  navigatorKey.currentState!
+                      .pushNamed(DmPageScreen.route)
+                      .then((asdf) async {
+                    // when returning to this screen we want to stop all connections as the user is "disconnected"
+                    //(in the sense that the DM can't send notifications to this player)
+                    await serverCommunicationService.stopConnection();
+
+                    await loadCampagnesAndPlayersFromServer();
+                  });
                 },
                 minSize: 0,
                 padding: EdgeInsets.all(0),
-                child: StyledBox(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: darkColor),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -385,8 +342,39 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 minSize: 0,
                 padding: EdgeInsets.all(0),
                 onPressed: () async {
+                  setState(() {
+                    showLoadingSpinner = true;
+                  });
+                  var serverCommunicationService =
+                      DependencyProvider.of(context)
+                          .getService<IServerCommunicationService>();
+                  serverCommunicationService.stopConnection();
+
                   if (character.campagneId != null &&
                       character.campagneId!.$value != null) {
+                    // set initial rpg config
+                    // rpgConfigurationProvider
+                    var rpgService = DependencyProvider.of(context)
+                        .getService<IRpgEntityService>();
+
+                    var campagneLoadResult = await rpgService.getCampagneById(
+                        campagneId: character.campagneId!);
+                    if (!mounted) return;
+                    await campagneLoadResult.possiblyHandleError(context);
+                    if (!mounted) return;
+
+                    if (!campagneLoadResult.isSuccessful) {
+                      return;
+                    }
+
+                    Map<String, dynamic> map = jsonDecode(
+                        campagneLoadResult.result!.rpgConfiguration!);
+
+                    var receivedConfig = RpgConfigurationModel.fromJson(map);
+                    ref
+                        .read(rpgConfigurationProvider.notifier)
+                        .updateConfiguration(receivedConfig);
+
                     if (character.rpgCharacterConfiguration != null &&
                         character.rpgCharacterConfiguration!.isNotEmpty) {
                       var parsedJson = RpgCharacterConfiguration.fromJson(
@@ -402,12 +390,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                             (ref.read(connectionDetailsProvider).valueOrNull ??
                                     ConnectionDetails.defaultValue())
                                 .copyWith(
+                                    campagneId: character.campagneId?.$value,
                                     playerCharacterId: character.id!.$value!));
 
                     // start SignalR connection
-                    var serverCommunicationService =
-                        DependencyProvider.of(context)
-                            .getService<IServerCommunicationService>();
                     await serverCommunicationService.startConnection();
                     if (!mounted) return;
 
@@ -418,13 +404,23 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         playerCharacterId: character.id!.$value!);
 
                     // navigate to main game screen (auth screen wrapper)
-                    navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                        AuthorizedScreenWrapper.route, (r) => false);
+                    navigatorKey.currentState!
+                        .pushNamed(PlayerPageScreen.route)
+                        .then((asdf) async {
+                      // when returning to this screen we want to stop all connections as the user is "disconnected"
+                      //(in the sense that the DM can't send notifications to this player)
+                      await serverCommunicationService.stopConnection();
+
+                      await loadCampagnesAndPlayersFromServer();
+                    });
                   } else {
                     // 1. show modal for entering a join code
                     await askForCampagneJoinCode(context)
                         .then((joinCode) async {
                       if (joinCode == null) {
+                        setState(() {
+                          showLoadingSpinner = false;
+                        });
                         return;
                       }
 
@@ -445,7 +441,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                     });
                   }
                 },
-                child: StyledBox(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: darkColor),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -455,9 +455,22 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Expanded(
-                              child: CustomMarkdownBody(
-                                  text:
-                                      "# ${character.characterName!}\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}"),
+                              child: Builder(builder: (context) {
+                                var characterNameToDisplay =
+                                    character.characterName!;
+                                if (character.rpgCharacterConfiguration !=
+                                    null) {
+                                  var parsedConfig =
+                                      RpgCharacterConfiguration.fromJson(
+                                          jsonDecode(character
+                                              .rpgCharacterConfiguration!));
+                                  characterNameToDisplay =
+                                      parsedConfig.characterName;
+                                }
+                                return CustomMarkdownBody(
+                                    text:
+                                        "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}");
+                              }),
                             ),
                           ],
                         ),
@@ -483,12 +496,13 @@ class AddableColumnHeader extends StatelessWidget {
   final String title;
   final String subtitle;
   final String subsubtitle;
-  final Null Function() onPressedHandler;
+  final VoidCallback onPressedHandler;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: 1,
@@ -503,7 +517,7 @@ class AddableColumnHeader extends StatelessWidget {
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: Colors.white,
+                      color: darkTextColor,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -513,25 +527,26 @@ class AddableColumnHeader extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: Colors.white),
+                    .copyWith(color: darkTextColor),
               ),
               Text(
                 subsubtitle,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: Colors.white),
+                    .copyWith(color: darkTextColor),
               ),
             ],
           ),
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: CustomButton(
-              onPressed: onPressedHandler,
-              icon: CustomFaIcon(size: 12, icon: FontAwesomeIcons.plus),
+          child: CustomButton(
+            onPressed: onPressedHandler,
+            icon: CustomFaIcon(
+              size: 16,
+              icon: FontAwesomeIcons.plus,
+              color: darkColor,
             ),
           ),
         )

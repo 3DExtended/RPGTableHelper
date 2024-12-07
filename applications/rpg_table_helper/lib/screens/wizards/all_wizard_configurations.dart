@@ -10,36 +10,47 @@ import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_co
 Map<String, WizardConfiguration> allWizardConfigurations = {
   "/rpgconfigurationwizard": WizardConfiguration(
     stepBuilders: [
-      (moveToPrevious, moveToNext) => RpgConfigurationWizardStep1CampagneName(
+      (moveToPrevious, moveToNext, setTitle) =>
+          RpgConfigurationWizardStep1CampagneName(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
-      (moveToPrevious, moveToNext) =>
+      (moveToPrevious, moveToNext, setTitle) =>
           RpgConfigurationWizardStep2CharacterConfigurationsPreset(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
-      (moveToPrevious, moveToNext) =>
+      (moveToPrevious, moveToNext, setTitle) =>
           RpgConfigurationWizardStep3CurrencyDefinition(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
-      (moveToPrevious, moveToNext) => RpgConfigurationWizardStep4ItemLocations(
+      (moveToPrevious, moveToNext, setTitle) =>
+          RpgConfigurationWizardStep4ItemLocations(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
-      (moveToPrevious, moveToNext) => RpgConfigurationWizardStep5ItemCategories(
+      (moveToPrevious, moveToNext, setTitle) =>
+          RpgConfigurationWizardStep5ItemCategories(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
-      (moveToPrevious, moveToNext) => RpgConfigurationWizardStep6Items(
+      (moveToPrevious, moveToNext, setTitle) =>
+          RpgConfigurationWizardStep6Items(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
-      (moveToPrevious, moveToNext) =>
+      (moveToPrevious, moveToNext, setTitle) =>
           RpgConfigurationWizardStep7CraftingRecipes(
             onPreviousBtnPressed: moveToPrevious,
             onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
           ),
     ],
   )

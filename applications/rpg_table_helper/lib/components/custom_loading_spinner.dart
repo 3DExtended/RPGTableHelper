@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
+
+const loadingSpinnerAlphaValues = [100, 130, 180, 215, 255];
 
 class CustomLoadingSpinner extends StatelessWidget {
   const CustomLoadingSpinner({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     var isMocked = DependencyProvider.of(context).isMocked;
-
     return Center(
       child: SizedBox(
         width: 50,
@@ -22,11 +23,8 @@ class CustomLoadingSpinner extends StatelessWidget {
 
                 /// Required, The loading type of the widget
                 colors: [
-                  Colors.white.withAlpha(50),
-                  Colors.white.withAlpha(100),
-                  Colors.white.withAlpha(150),
-                  Colors.white.withAlpha(200),
-                  Colors.white,
+                  ...loadingSpinnerAlphaValues
+                      .map((alpha) => accentColor.withAlpha(alpha)),
                 ],
 
                 /// Optional, The color collections

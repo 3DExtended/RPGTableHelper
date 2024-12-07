@@ -1,5 +1,6 @@
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Entities.Base;
+using RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
 
 namespace RPGTableHelper.DataLayer.Entities
 {

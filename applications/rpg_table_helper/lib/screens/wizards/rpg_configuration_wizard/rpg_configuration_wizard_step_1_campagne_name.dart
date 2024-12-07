@@ -9,6 +9,7 @@ class RpgConfigurationWizardStep1CampagneName extends WizardStepBase {
   const RpgConfigurationWizardStep1CampagneName({
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
+    required super.setWizardTitle,
     super.key,
   });
 
@@ -35,6 +36,9 @@ class _RpgConfigurationWizardStep1CampagneNameState
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Kampagnen Name");
+    });
     textEditingController.addListener(_updateStateForFormValidation);
     super.initState();
   }
@@ -67,10 +71,8 @@ Wir beginnen mit der wohl schwierigsten Frage überhaupt:
 Wie heißt deine Kampagne?'''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Kampangen Name", // TODO Localize,
       stepHelperText: stepHelperText,
       onNextBtnPressed: !isFormValid
           ? null
@@ -82,6 +84,8 @@ Wie heißt deine Kampagne?'''; // TODO localize
         // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
         widget.onPreviousBtnPressed();
       },
+      sideBarFlex: 1,
+      contentFlex: 2,
       contentChildren: [
         CustomTextField(
             labelText: "Campagne Name:",

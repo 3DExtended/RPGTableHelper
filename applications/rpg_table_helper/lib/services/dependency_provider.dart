@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
 import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/auth/encryption_service.dart';
+import 'package:rpg_table_helper/services/image_generation_service.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
@@ -86,6 +87,18 @@ class DependencyProvider extends InheritedWidget {
         apiConnectorService: apiConnectorService,
       );
     });
+    _registerService<IImageGenerationService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return ImageGenerationService(
+        apiConnectorService: apiConnectorService,
+      );
+    }, () {
+      var apiConnectorService = getService<IApiConnectorService>();
+
+      return MockImageGenerationService(
+        apiConnectorService: apiConnectorService,
+      );
+    });
 
     _registerService<INavigationService>(
         () => NavigationService(), () => NavigationService());
@@ -123,12 +136,12 @@ class DependencyProvider extends InheritedWidget {
   void _registerService<T extends Object>(T Function() realServiceFactoryFunc,
       T Function() mockServiceFactoryFunc) {
     if (mockOverrides != null && mockOverrides!.keys.any((t) => T == t)) {
-      getIt!.registerLazySingleton<T>(() => mockOverrides![T]!());
+      getIt!.registerSingleton<T>(mockOverrides![T]!());
     } else {
       if (isMocked) {
-        getIt!.registerLazySingleton<T>(mockServiceFactoryFunc);
+        getIt!.registerSingleton<T>(mockServiceFactoryFunc());
       } else {
-        getIt!.registerLazySingleton<T>(realServiceFactoryFunc);
+        getIt!.registerSingleton<T>(realServiceFactoryFunc());
       }
     }
   }

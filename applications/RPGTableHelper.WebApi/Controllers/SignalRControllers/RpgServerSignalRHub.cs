@@ -24,6 +24,23 @@ public class RpgServerSignalRHub : Hub
         _queryProcessor = queryProcessor;
     }
 
+    public async Task AskPlayersForRolls(string campagneId, string fightSequenceSerialized)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        await Clients
+            .OthersInGroup(campagneId + "_All")
+            .SendAsync("playersAreAskedForRolls", fightSequenceSerialized, (CancellationToken)default);
+    }
+
     /// <summary>
     /// Test method for testing connections
     /// </summary>
@@ -224,6 +241,38 @@ public class RpgServerSignalRHub : Hub
             .SendAsync("requestStatusFromPlayers", (CancellationToken)default);
     }
 
+    public async Task SendFightSequenceRollsToDm(string playercharacterid, string fightSequenceSerialized)
+    {
+        var playerCharacter = await new PlayerCharacterQuery
+        {
+            ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (
+            playerCharacter.IsNone
+            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
+            || playerCharacter.Get().CampagneId == null
+        )
+        {
+            return;
+        }
+
+        var campagneOfCharacter = await new CampagneQuery { ModelId = playerCharacter.Get().CampagneId! }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagneOfCharacter.IsNone)
+        {
+            return;
+        }
+
+        await Clients
+            .OthersInGroup(campagneOfCharacter.Get().Id.Value + "_Dms")
+            .SendAsync("dmReceivedFightSequenceAnswer", fightSequenceSerialized, (CancellationToken)default);
+    }
+
     /// <summary>
     /// Grants a list of items to players.
     /// </summary>
@@ -293,11 +342,15 @@ public class RpgServerSignalRHub : Hub
 
         Console.WriteLine("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
-        string timestamp = DateTime.Now.ToString("yyyyMMdd");
+        string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
         string fileName =
             $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
+
         string currentDirectory = Directory.GetCurrentDirectory();
-        string filePath = Path.Combine(currentDirectory, fileName);
+        string fileBackupFolders = "configbackups";
+        Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
+
+        string filePath = Path.Combine(currentDirectory, fileBackupFolders, fileName);
         try
         {
             // Write the long string to the file
@@ -354,8 +407,12 @@ public class RpgServerSignalRHub : Hub
 
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
         string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";
+
         string currentDirectory = Directory.GetCurrentDirectory();
-        string filePath = Path.Combine(currentDirectory, fileName);
+        string fileBackupFolders = "configbackups";
+        Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
+
+        string filePath = Path.Combine(currentDirectory, fileBackupFolders, fileName);
         try
         {
             // Write the long string to the file

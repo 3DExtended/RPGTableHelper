@@ -1,3 +1,4 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,12 +7,21 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/color_extension.dart';
+import 'package:rpg_table_helper/helpers/icons_helper.dart';
+import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:uuid/v7.dart';
 
+part 'rpg_configuration_wizard_step_5_item_categories.g.dart';
+
+@CopyWith()
 class _ItemCategoryEdit {
   final String uuid;
+  final String? iconName;
+  final Color? iconColor;
   final TextEditingController nameController;
   final List<_ItemCategoryEdit> subCategories;
   final bool hideInInventoryFilters;
@@ -19,12 +29,16 @@ class _ItemCategoryEdit {
   _ItemCategoryEdit({
     required this.uuid,
     required this.nameController,
+    required this.iconName,
+    required this.iconColor,
     required this.subCategories,
     this.hideInInventoryFilters = false,
   });
 
   ItemCategory toItemCategory() {
     return ItemCategory(
+      colorCode: iconColor?.toHex(),
+      iconName: iconName,
       uuid: uuid,
       name: nameController.text,
       subCategories: subCategories.isNotEmpty
@@ -42,6 +56,8 @@ class _ItemCategoryEdit {
     return _ItemCategoryEdit(
       nameController: editController,
       uuid: cat.uuid,
+      iconName: cat.iconName,
+      iconColor: cat.colorCode?.parseHexColorRepresentation(),
       hideInInventoryFilters: cat.hideInInventoryFilters,
       subCategories: cat.subCategories
           .map((e) => _ItemCategoryEdit.fromItemCategory(e, listener))
@@ -55,6 +71,7 @@ class RpgConfigurationWizardStep5ItemCategories extends WizardStepBase {
     required super.onPreviousBtnPressed,
     required super.onNextBtnPressed,
     super.key,
+    required super.setWizardTitle,
   });
 
   @override
@@ -81,6 +98,10 @@ class _RpgConfigurationWizardStep5ItemCategories
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      widget.setWizardTitle("Item Kategorien");
+    });
+
     super.initState();
   }
 
@@ -89,12 +110,15 @@ class _RpgConfigurationWizardStep5ItemCategories
     super.dispose();
   }
 
+  RpgConfigurationModel? rpgConfig;
+
   @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData((data) {
       if (!hasDataLoaded) {
         setState(() {
           hasDataLoaded = true;
+          rpgConfig = data;
 
           var loadedItemCategories = data.itemCategories;
           if (loadedItemCategories.isNotEmpty) {
@@ -110,7 +134,7 @@ class _RpgConfigurationWizardStep5ItemCategories
 
     var stepHelperText = '''
 
-Damit die Spieler ihre Items filtern können, wollen wir die Items in bestimmte Kategorien einsortieren. Hierzu haben wir dir eine Reihe von Kategorien und Subkategorien vorbereitet. 
+Damit die Spieler ihre Items filtern können, wollen wir die Items in bestimmte Kategorien einsortieren. Hierzu haben wir dir eine Reihe von Kategorien und Subkategorien vorbereitet.
 
 Nimm gerne Anpassungen vor, wenn diese Kategorien nicht zu eurem RPG passen!
 
@@ -118,11 +142,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
 '''; // TODO localize
 
     return TwoPartWizardStepBody(
-      wizardTitle: "RPG Configuration", // TODO localize
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
-      stepTitle: "Item Kategorien", // TODO Localize,
       stepHelperText: stepHelperText,
+      sideBarFlex: 1,
+      contentFlex: 2,
       onNextBtnPressed: !isFormValid
           ? null
           : () {
@@ -141,19 +165,61 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
           return Column(
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                    child: CustomButton(
+                      isSubbutton: true,
+                      variant: CustomButtonVariant.Default,
+                      onPressed: () async {
+                        // open icon and color selector
+                        await showSelectIconWithColorModal(context,
+                                alreadySelectedIcoName: e.value.iconName,
+                                alreadySelectedIconColor: e.value.iconColor,
+                                titleSuffix:
+                                    " (für Kategorie ${e.value.nameController.text})")
+                            .then((value) {
+                          if (value == null) {
+                            return;
+                          }
+
+                          setState(() {
+                            categories[e.key] = categories[e.key].copyWith(
+                              iconName: value.$1,
+                              iconColor: value.$2,
+                            );
+                          });
+                        });
+                      },
+                      icon: Padding(
+                        padding: const EdgeInsets.all(4.5),
+                        child: getIconForIdentifier(
+                          name: e.value.iconName ?? "leaf",
+                          color: darkColor,
+                          size: 32,
+                        ).$2,
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: CustomTextField(
                       keyboardType: TextInputType.text,
                       labelText: "Name der Kategorie:", // TODO localize
                       textEditingController: e.value.nameController,
+                      placeholderText: rpgConfig == null
+                          ? null
+                          : "In dieser Kategorie sind ${getNumberOfToCategoryAssignedItems(rpgConfig!, e.value.uuid)} Items.",
                     ),
                   ),
                   Container(
                     height: 50,
-                    width: 70,
+                    width: 40,
                     clipBehavior: Clip.none,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
+                      isSubbutton: true,
                       onPressed: () {
                         // remove this pair from list
                         // TODO check if assigned...
@@ -162,7 +228,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                           categories.removeAt(e.key);
                         });
                       },
-                      icon: const CustomFaIcon(icon: FontAwesomeIcons.trashCan),
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        color: darkColor,
+                        size: 22,
+                      ),
                     ),
                   ),
                 ],
@@ -172,6 +242,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     (subCat) => Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: CustomTextField(
@@ -180,13 +251,19 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                   "Name der Sub-Kategorie:", // TODO localize
                               textEditingController:
                                   subCat.value.nameController,
+                              placeholderText: rpgConfig == null
+                                  ? null
+                                  : "In dieser Kategorie sind ${getNumberOfToCategoryAssignedItems(rpgConfig!, subCat.value.uuid)} Items.",
                             ),
                           ),
                           Container(
                             height: 50,
-                            width: 70,
+                            width: 40,
                             clipBehavior: Clip.none,
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: CustomButton(
+                              variant: CustomButtonVariant.FlatButton,
+                              isSubbutton: true,
                               onPressed: () {
                                 // remove this pair from list
                                 // TODO check if assigned...
@@ -197,24 +274,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                       .removeAt(subCat.key);
                                 });
                               },
-                              icon: Theme(
-                                  data: ThemeData(
-                                    iconTheme: const IconThemeData(
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                    textTheme: const TextTheme(
-                                      bodyMedium: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Container(
-                                      width: 24,
-                                      height: 24,
-                                      alignment: AlignmentDirectional.center,
-                                      child: const FaIcon(
-                                          FontAwesomeIcons.trashCan))),
+                              icon: const CustomFaIcon(
+                                icon: FontAwesomeIcons.trashCan,
+                                color: darkColor,
+                                size: 22,
+                              ),
                             ),
                           ),
                         ],
@@ -231,6 +295,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                       categories[e.key].subCategories.add(
                           _ItemCategoryEdit.fromItemCategory(
                               ItemCategory(
+                                  colorCode: "#ffff00ff",
+                                  iconName: "spellbook-svgrepo-com",
                                   uuid: const UuidV7().generate(),
                                   name: "Neu",
                                   subCategories: []),
@@ -238,26 +304,17 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                     });
                   },
                   label: "Neue Sub-Kategorie",
-                  icon: Theme(
-                      data: ThemeData(
-                        iconTheme: const IconThemeData(
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        textTheme: const TextTheme(
-                          bodyMedium: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                        child: Container(
-                            width: 16,
-                            height: 16,
-                            alignment: AlignmentDirectional.center,
-                            child: const FaIcon(FontAwesomeIcons.plus)),
-                      )),
+                  icon: Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: Container(
+                        width: 16,
+                        height: 16,
+                        alignment: AlignmentDirectional.center,
+                        child: const CustomFaIcon(
+                          icon: FontAwesomeIcons.plus,
+                          color: darkColor,
+                        )),
+                  ),
                 ),
               ),
               // const SizedBox(
@@ -271,33 +328,28 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
           );
         }),
         CustomButton(
+          variant: CustomButtonVariant.Default,
           onPressed: () {
             setState(() {
               addNewItemCategory(_ItemCategoryEdit.fromItemCategory(
                   ItemCategory(
+                      colorCode: "#ffff00ff",
+                      iconName: "spellbook-svgrepo-com",
                       uuid: const UuidV7().generate(),
                       name: "Neu",
                       subCategories: []),
                   _updateStateForFormValidation));
             });
           },
-          icon: Theme(
-              data: ThemeData(
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
-                ),
-                textTheme: const TextTheme(
-                  bodyMedium: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              child: Container(
-                  width: 24,
-                  height: 24,
-                  alignment: AlignmentDirectional.center,
-                  child: const FaIcon(FontAwesomeIcons.plus))),
+          icon: Container(
+              width: 24,
+              height: 24,
+              alignment: AlignmentDirectional.center,
+              child: const CustomFaIcon(
+                icon: FontAwesomeIcons.plus,
+                size: 16,
+                color: darkColor,
+              )),
         ),
         const SizedBox(
           height: 20,
@@ -354,5 +406,12 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
     }
 
     return true;
+  }
+
+  int getNumberOfToCategoryAssignedItems(
+      RpgConfigurationModel rpgConfigurationModel, String uuid) {
+    return rpgConfigurationModel.allItems
+        .where((it) => it.categoryId == uuid)
+        .length;
   }
 }

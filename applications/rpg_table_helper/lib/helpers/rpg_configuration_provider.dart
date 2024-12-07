@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
@@ -76,6 +78,15 @@ class RpgConfigurationNotifier
   }
 
   void updateConfiguration(RpgConfigurationModel config) {
+    if (state.hasValue) {
+      var jsonEncodingOfNewConfig = jsonEncode(config);
+      var jsonEncodingOfState = jsonEncode(state.requireValue);
+
+      if (jsonEncodingOfState == jsonEncodingOfNewConfig) {
+        return;
+      }
+    }
+
     state = AsyncValue.data(config);
   }
 

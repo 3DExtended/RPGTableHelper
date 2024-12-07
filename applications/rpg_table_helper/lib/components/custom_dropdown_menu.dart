@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rpg_table_helper/constants.dart';
 
 class CustomDropdownMenu extends StatelessWidget {
   const CustomDropdownMenu({
@@ -20,18 +21,21 @@ class CustomDropdownMenu extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
+              fillColor: darkColor,
               enabledBorder: noBorder == true
                   ? InputBorder.none
-                  : const OutlineInputBorder(
+                  : OutlineInputBorder(
                       borderSide: BorderSide(
-                      color: Color(0xff938f99),
+                      color: darkColor,
                     )),
             ),
       ),
       child: DropdownButtonFormField<String?>(
+        iconEnabledColor: darkColor,
+        iconDisabledColor: const Color.fromARGB(255, 140, 133, 125),
         borderRadius: BorderRadius.circular(10),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: Colors.white,
+              color: darkTextColor,
               fontSize: noBorder == true ? 24 : null,
               height: noBorder == true ? 1 : null,
             ),
@@ -39,13 +43,18 @@ class CustomDropdownMenu extends StatelessWidget {
           labelStyle: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: Colors.white),
+              .copyWith(color: darkTextColor),
           filled: true,
           fillColor: const Color.fromARGB(0, 0, 0, 0),
           labelText: label,
-          border:
-              noBorder == true ? InputBorder.none : const OutlineInputBorder(),
+          border: noBorder == true
+              ? InputBorder.none
+              : OutlineInputBorder(
+                  borderSide: BorderSide(
+                  color: darkColor,
+                )),
         ),
+        dropdownColor: bgColor,
         value: selectedValueTemp,
         isDense: true,
         onChanged: setter,

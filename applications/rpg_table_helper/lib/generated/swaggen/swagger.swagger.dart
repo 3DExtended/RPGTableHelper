@@ -144,6 +144,179 @@ abstract class Swagger extends ChopperService {
       _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
           {@Path('campagneId') required String? campagneId});
 
+  ///
+  ///@param campagneid
+  Future<chopper.Response<String>> imageGenerateimageCampagneidPost({
+    required String? campagneid,
+    required String? body,
+  }) {
+    return _imageGenerateimageCampagneidPost(
+        campagneid: campagneid, body: body);
+  }
+
+  ///
+  ///@param campagneid
+  @Post(
+    path: '/Image/generateimage/{campagneid}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<String>> _imageGenerateimageCampagneidPost({
+    @Path('campagneid') required String? campagneid,
+    @Body() required String? body,
+  });
+
+  ///Streams an image upload directly to the server.
+  ///@param campagneId
+  Future<chopper.Response<String>> imageStreamimageuploadPost({
+    String? campagneId,
+    List<int>? image,
+  }) {
+    return _imageStreamimageuploadPost(campagneId: campagneId, image: image);
+  }
+
+  ///Streams an image upload directly to the server.
+  ///@param campagneId
+  @Post(
+    path: '/Image/streamimageupload',
+    optionalBody: true,
+  )
+  @Multipart()
+  Future<chopper.Response<String>> _imageStreamimageuploadPost({
+    @Query('campagneId') String? campagneId,
+    @PartFile() List<int>? image,
+  });
+
+  ///Returns a single document.
+  ///@param notedocumentid The id of the desired campagne
+  Future<chopper.Response<NoteDocumentDto>> notesGetdocumentNotedocumentidGet(
+      {required String? notedocumentid}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+
+    return _notesGetdocumentNotedocumentidGet(notedocumentid: notedocumentid);
+  }
+
+  ///Returns a single document.
+  ///@param notedocumentid The id of the desired campagne
+  @Get(path: '/Notes/getdocument/{notedocumentid}')
+  Future<chopper.Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet(
+      {@Path('notedocumentid') required String? notedocumentid});
+
+  ///Deletes a single document.
+  ///@param notedocumentid The id of the desired campagne
+  Future<chopper.Response<NoteDocumentDto>>
+      notesDeletedocumentNotedocumentidDelete(
+          {required String? notedocumentid}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+
+    return _notesDeletedocumentNotedocumentidDelete(
+        notedocumentid: notedocumentid);
+  }
+
+  ///Deletes a single document.
+  ///@param notedocumentid The id of the desired campagne
+  @Delete(path: '/Notes/deletedocument/{notedocumentid}')
+  Future<chopper.Response<NoteDocumentDto>>
+      _notesDeletedocumentNotedocumentidDelete(
+          {@Path('notedocumentid') required String? notedocumentid});
+
+  ///Creates a single document.
+  Future<chopper.Response<NoteDocumentIdentifier>> notesCreatedocumentPost(
+      {required NoteDocumentDto? body}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentIdentifier, () => NoteDocumentIdentifier.fromJsonFactory);
+
+    return _notesCreatedocumentPost(body: body);
+  }
+
+  ///Creates a single document.
+  @Post(
+    path: '/Notes/createdocument',
+    optionalBody: true,
+  )
+  Future<chopper.Response<NoteDocumentIdentifier>> _notesCreatedocumentPost(
+      {@Body() required NoteDocumentDto? body});
+
+  ///Creates a single text block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      notesCreatetextblockNotedocumentidPost({
+    required String? notedocumentid,
+    required TextBlock? body,
+  }) {
+    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
+        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+
+    return _notesCreatetextblockNotedocumentidPost(
+        notedocumentid: notedocumentid, body: body);
+  }
+
+  ///Creates a single text block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  @Post(
+    path: '/Notes/createtextblock/{notedocumentid}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      _notesCreatetextblockNotedocumentidPost({
+    @Path('notedocumentid') required String? notedocumentid,
+    @Body() required TextBlock? body,
+  });
+
+  ///Creates a single image block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      notesCreateimageblockNotedocumentidPost({
+    required String? notedocumentid,
+    required ImageBlock? body,
+  }) {
+    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
+        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+
+    return _notesCreateimageblockNotedocumentidPost(
+        notedocumentid: notedocumentid, body: body);
+  }
+
+  ///Creates a single image block for a given document.
+  ///@param notedocumentid The document id where this block will be assigned
+  @Post(
+    path: '/Notes/createimageblock/{notedocumentid}',
+    optionalBody: true,
+  )
+  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+      _notesCreateimageblockNotedocumentidPost({
+    @Path('notedocumentid') required String? notedocumentid,
+    @Body() required ImageBlock? body,
+  });
+
+  ///Updates a single text block for a given document.
+  Future<chopper.Response> notesUpdatetextblockPut({required TextBlock? body}) {
+    return _notesUpdatetextblockPut(body: body);
+  }
+
+  ///Updates a single text block for a given document.
+  @Put(
+    path: '/Notes/updatetextblock',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _notesUpdatetextblockPut(
+      {@Body() required TextBlock? body});
+
+  ///Updates a single image block for a given document.
+  Future<chopper.Response> notesUpdateimageblockPut(
+      {required ImageBlock? body}) {
+    return _notesUpdateimageblockPut(body: body);
+  }
+
+  ///Updates a single image block for a given document.
+  @Put(
+    path: '/Notes/updateimageblock',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _notesUpdateimageblockPut(
+      {@Body() required ImageBlock? body});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(
@@ -196,6 +369,23 @@ abstract class Swagger extends ChopperService {
       _playerCharacterGetplayercharacterPlayercharacteridGet(
           {@Path('playercharacterid') required String? playercharacterid});
 
+  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///@param Value
+  Future<chopper.Response<List<PlayerCharacter>>>
+      playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
+    generatedMapping.putIfAbsent(
+        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+
+    return _playerCharacterGetplayercharactersincampagneGet($Value: $Value);
+  }
+
+  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///@param Value
+  @Get(path: '/PlayerCharacter/getplayercharactersincampagne')
+  Future<chopper.Response<List<PlayerCharacter>>>
+      _playerCharacterGetplayercharactersincampagneGet(
+          {@Query('Value') String? $Value});
+
   ///Returns the minimal app version supported by this api.
   Future<chopper.Response<String>> publicGetminimalversionGet() {
     return _publicGetminimalversionGet();
@@ -204,6 +394,40 @@ abstract class Swagger extends ChopperService {
   ///Returns the minimal app version supported by this api.
   @Get(path: '/Public/getminimalversion')
   Future<chopper.Response<String>> _publicGetminimalversionGet();
+
+  ///
+  ///@param prompt
+  Future<chopper.Response> publicCreateimagePost({String? prompt}) {
+    return _publicCreateimagePost(prompt: prompt);
+  }
+
+  ///
+  ///@param prompt
+  @Post(
+    path: '/Public/createimage',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _publicCreateimagePost(
+      {@Query('prompt') String? prompt});
+
+  ///
+  ///@param uuid
+  ///@param apikey
+  Future<chopper.Response> publicGetimageUuidApikeyGet({
+    required String? uuid,
+    required String? apikey,
+  }) {
+    return _publicGetimageUuidApikeyGet(uuid: uuid, apikey: apikey);
+  }
+
+  ///
+  ///@param uuid
+  ///@param apikey
+  @Get(path: '/Public/getimage/{uuid}/{apikey}')
+  Future<chopper.Response> _publicGetimageUuidApikeyGet({
+    @Path('uuid') required String? uuid,
+    @Path('apikey') required String? apikey,
+  });
 
   ///This method generates a new encryptionChallenge and stores it in the db.
   ///Use this method as first start point for a register operation.

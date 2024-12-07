@@ -46,6 +46,43 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.ToTable("EncryptionChallenges");
                 });
 
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.Images.ImageMetaDataEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ApiKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatedForCampagneId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ImageType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("LocallyStored")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedForCampagneId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("imageMetaDatas");
+                });
+
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.OpenSignInProviderRegisterRequestEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -151,6 +188,111 @@ namespace RPGTableHelper.DataLayer.Migrations
                         .IsUnique();
 
                     b.ToTable("CampagneJoinRequests");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatingUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("NoteDocumentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("block_type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatingUserId");
+
+                    b.HasIndex("NoteDocumentId");
+
+                    b.ToTable("NoteBlocks");
+
+                    b.HasDiscriminator<int>("block_type");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteDocumentEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatedForCampagneId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CreatingUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedForCampagneId");
+
+                    b.HasIndex("CreatingUserId");
+
+                    b.ToTable("CampagneDocuments");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.PermittedUsersToNotesBlockEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("NotesBlockId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("PermittedUserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotesBlockId");
+
+                    b.HasIndex("PermittedUserId");
+
+                    b.ToTable("PermittedUsersToNotesBlocks");
                 });
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.PlayerCharacterEntity", b =>
@@ -271,6 +413,33 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.ImageBlockEntity", b =>
+                {
+                    b.HasBaseType("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase");
+
+                    b.Property<Guid>("ImageMetaDataId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PublicImageUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("ImageMetaDataId");
+
+                    b.HasDiscriminator().HasValue(2);
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.TextBlockEntity", b =>
+                {
+                    b.HasBaseType("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase");
+
+                    b.Property<string>("MarkdownText")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue(1);
+                });
+
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.EncryptionChallengeEntity", b =>
                 {
                     b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "User")
@@ -278,6 +447,25 @@ namespace RPGTableHelper.DataLayer.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.Images.ImageMetaDataEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", "CreatedForCampagne")
+                        .WithMany()
+                        .HasForeignKey("CreatedForCampagneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedForCampagne");
+
+                    b.Navigation("CreatorUser");
                 });
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", b =>
@@ -318,6 +506,63 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "CreatingUser")
+                        .WithMany()
+                        .HasForeignKey("CreatingUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteDocumentEntity", "NoteDocument")
+                        .WithMany("NoteBlocks")
+                        .HasForeignKey("NoteDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatingUser");
+
+                    b.Navigation("NoteDocument");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteDocumentEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", "CreatedForCampagne")
+                        .WithMany()
+                        .HasForeignKey("CreatedForCampagneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "CreatingUser")
+                        .WithMany()
+                        .HasForeignKey("CreatingUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedForCampagne");
+
+                    b.Navigation("CreatingUser");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.PermittedUsersToNotesBlockEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", "NotesBlock")
+                        .WithMany("PermittedUsers")
+                        .HasForeignKey("NotesBlockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "PermittedUser")
+                        .WithMany()
+                        .HasForeignKey("PermittedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NotesBlock");
+
+                    b.Navigation("PermittedUser");
+                });
+
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.PlayerCharacterEntity", b =>
                 {
                     b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", "Campagne")
@@ -352,9 +597,30 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.ImageBlockEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.Images.ImageMetaDataEntity", "ImageMetaData")
+                        .WithMany()
+                        .HasForeignKey("ImageMetaDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ImageMetaData");
+                });
+
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", b =>
                 {
                     b.Navigation("Characters");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", b =>
+                {
+                    b.Navigation("PermittedUsers");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteDocumentEntity", b =>
+                {
+                    b.Navigation("NoteBlocks");
                 });
 #pragma warning restore 612, 618
         }

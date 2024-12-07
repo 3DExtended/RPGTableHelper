@@ -1,7 +1,13 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
+import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
+import 'package:rpg_table_helper/services/internals/internal_image_upload_service.dart';
 
 abstract class IRpgEntityService {
   final bool isMock;
@@ -20,6 +26,15 @@ abstract class IRpgEntityService {
   Future<HRResponse<CampagneIdentifier>> saveCampagneAsNewCampagne(
       {required String campagneName, String? rpgConfig});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharacetersForPlayer();
+  Future<HRResponse<Campagne>> getCampagneById(
+      {required CampagneIdentifier campagneId});
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId});
+
+  Future<HRResponse<String>> uploadImageToCampagneStorage({
+    required CampagneIdentifier campagneId,
+    required MultipartFile image,
+  });
 
   Future<HRResponse<CampagneJoinRequestIdentifier>>
       createNewCampagneJoinRequest(
@@ -188,6 +203,64 @@ class RpgEntityService extends IRpgEntityService {
 
     return createPlayerCharacterResult;
   }
+
+  @override
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          'a9ac7bc7-6556-48d0-a18c-c27399065977');
+    }
+
+    var playerCharactersForCampagne = await HRResponse.fromApiFuture(
+        api.playerCharacterGetplayercharactersincampagneGet(
+            $Value: campagneId.$value),
+        'Could not load player characters for campagne.',
+        '7bf67791-1a1b-46b0-9327-297d362eed56');
+
+    return playerCharactersForCampagne;
+  }
+
+  @override
+  Future<HRResponse<Campagne>> getCampagneById(
+      {required CampagneIdentifier campagneId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          'a2cebb9d-02e5-4731-8b60-0a7747daffeb');
+    }
+
+    var loadedCampagne = await HRResponse.fromApiFuture(
+        api.campagneGetcampagneCampagneidGet(campagneid: campagneId.$value),
+        'Could not load campagne by id.',
+        '2e44ba90-8d1b-4644-b8d6-3a66719109a4');
+
+    return loadedCampagne;
+  }
+
+  @override
+  Future<HRResponse<String>> uploadImageToCampagneStorage({
+    required CampagneIdentifier campagneId,
+    required MultipartFile image,
+  }) async {
+    var chopperClient =
+        await apiConnectorService.getChopperClient(requiresJwt: true);
+    if (chopperClient == null) {
+      return HRResponse.error('Could not load chopper client.',
+          '648167cd-9318-47df-b81b-a6cd87791860');
+    }
+
+    var internalImageUploadService =
+        InternalImageUploadService.create(chopperClient);
+
+    var result = await HRResponse.fromApiFuture(
+        internalImageUploadService.uploadImage(campagneId.$value!, image),
+        'Could not upload image.',
+        '286c7e84-0875-4c2c-9b56-a42af6cdcaf9');
+
+    return result;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -196,10 +269,14 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<List<PlayerCharacter>>?
       getPlayerCharacetersForPlayerOverride;
 
+  final HRResponse<List<PlayerCharacter>>?
+      getPlayerCharactersForCampagneOverride;
+
   final HRResponse<bool>? handleJoinRequestOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
+    this.getPlayerCharactersForCampagneOverride,
     this.saveCampagneAsNewCampagneOverride,
     this.getPlayerCharacetersForPlayerOverride,
     this.handleJoinRequestOverride,
@@ -279,6 +356,59 @@ class MockRpgEntityService extends IRpgEntityService {
       savePlayerCharacterAsNewCharacter(
           {required String characterName, String? characterConfigJson}) {
     // TODO: implement savePlayerCharacterAsNewCharacter
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId}) {
+    return Future.value(getPlayerCharactersForCampagneOverride ??
+        HRResponse.fromResult([
+          PlayerCharacter(
+            campagneId: campagneId,
+            characterName: "Frodo",
+            creationDate: DateTime(2024, 11, 7, 11, 11, 11),
+            lastModifiedAt: DateTime(2024, 11, 7, 11, 11, 11),
+            id: PlayerCharacterIdentifier(
+                $value: "52716f7e-9532-4ed1-a7b0-b4cc86a3f425"),
+            playerUserId:
+                UserIdentifier($value: "b6a03252-8dde-4fe7-8c65-7d1b90599ef8"),
+            rpgCharacterConfiguration: jsonEncode(
+                RpgCharacterConfiguration.getBaseConfiguration(
+                        RpgConfigurationModel.getBaseConfiguration())
+                    .copyWith(characterName: "Frodo")),
+          ),
+          PlayerCharacter(
+            campagneId: campagneId,
+            characterName: "Gandalf",
+            creationDate: DateTime(2024, 11, 7, 11, 11, 11),
+            lastModifiedAt: DateTime(2024, 11, 7, 11, 11, 11),
+            id: PlayerCharacterIdentifier(
+                $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d"),
+            playerUserId:
+                UserIdentifier($value: "9a709402-5620-479c-85b7-718ae01e0a83"),
+            rpgCharacterConfiguration: jsonEncode(
+              RpgCharacterConfiguration.getBaseConfiguration(
+                      RpgConfigurationModel.getBaseConfiguration())
+                  .copyWith(characterName: "Gandalf"),
+            ),
+          )
+        ]));
+  }
+
+  @override
+  Future<HRResponse<Campagne>> getCampagneById(
+      {required CampagneIdentifier campagneId}) {
+    // TODO: implement getCampagneById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<String>> uploadImageToCampagneStorage({
+    required CampagneIdentifier campagneId,
+    required MultipartFile image,
+  }) {
+    // TODO: implement uploadImageToCampagneStorage
     throw UnimplementedError();
   }
 }

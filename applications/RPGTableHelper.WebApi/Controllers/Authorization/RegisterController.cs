@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +65,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         [AllowAnonymous]
         [HttpPost("createencryptionchallenge")]
         public async Task<ActionResult<string>> CreateNewChallenge(
-            [FromBody] string encryptedAppPubKey,
+            [FromBody] [Required] string encryptedAppPubKey,
             CancellationToken cancellationToken
         )
         {
@@ -145,7 +146,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [AllowAnonymous]
         public async Task<ActionResult<string>> RegisterAsync(
-            [FromBody] string encryptedRegisterDto,
+            [FromBody] [Required] string encryptedRegisterDto,
             CancellationToken cancellationToken
         )
         {
@@ -289,7 +290,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         [AllowAnonymous]
         [HttpPost("registerwithapikey")]
         public async Task<ActionResult<string>> RegisterWithApiKeyAsync(
-            [FromBody] RegisterWithApiKeyDto registerDto,
+            [FromBody] [Required] RegisterWithApiKeyDto registerDto,
             CancellationToken cancellationToken
         )
         {

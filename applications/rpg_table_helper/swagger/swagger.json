@@ -34,7 +34,8 @@
                 "$ref": "#/components/schemas/CampagneCreateDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -82,17 +83,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -161,17 +180,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -241,17 +278,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -288,7 +343,8 @@
                 "$ref": "#/components/schemas/CampagneJoinRequestCreateDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -336,17 +392,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -383,7 +457,8 @@
                 "$ref": "#/components/schemas/HandleJoinRequestDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -414,17 +489,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -502,17 +595,950 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Image/generateimage/{campagneid}": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "parameters": [{
+          "name": "campagneid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Image/streamimageupload": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Streams an image upload directly to the server.",
+        "parameters": [{
+          "name": "campagneId",
+          "in": "query",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "image": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The image was uploaded successfully.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid image or file size exceeded the limit.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error while processing the file."
+          }
+        }
+      }
+    },
+    "/Notes/getdocument/{notedocumentid}": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Returns a single document.",
+        "description": "You must be within the correct campagne and the document has to be your own or shared with you",
+        "parameters": [{
+          "name": "notedocumentid",
+          "in": "path",
+          "description": "The id of the desired campagne",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/deletedocument/{notedocumentid}": {
+      "delete": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Deletes a single document.",
+        "description": "You must be within the correct campagne and the document has to be your own",
+        "parameters": [{
+          "name": "notedocumentid",
+          "in": "path",
+          "description": "The id of the desired campagne",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/createdocument": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Creates a single document.",
+        "description": "You must be within the correct campagne",
+        "requestBody": {
+          "description": "The new document",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/createtextblock/{notedocumentid}": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Creates a single text block for a given document.",
+        "description": "You must be the owner of the document",
+        "parameters": [{
+          "name": "notedocumentid",
+          "in": "path",
+          "description": "The document id where this block will be assigned",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "description": "The new textblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/createimageblock/{notedocumentid}": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Creates a single image block for a given document.",
+        "description": "You must be the owner of the document",
+        "parameters": [{
+          "name": "notedocumentid",
+          "in": "path",
+          "description": "The document id where this block will be assigned",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "description": "The new imageblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/updatetextblock": {
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Updates a single text block for a given document.",
+        "description": "You must be the owner of the document",
+        "requestBody": {
+          "description": "The new textblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document"
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/updateimageblock": {
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Updates a single image block for a given document.",
+        "description": "You must be the owner of the document",
+        "requestBody": {
+          "description": "The new imageblock",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageBlock"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document"
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -549,7 +1575,8 @@
                 "$ref": "#/components/schemas/PlayerCharacterCreateDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -597,17 +1624,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -676,17 +1721,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -756,17 +1819,140 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PlayerCharacter/getplayercharactersincampagne": {
+      "get": {
+        "tags": [
+          "PlayerCharacter"
+        ],
+        "summary": "Returns a list of player characters for a given campagne (if the calling user is the dm).",
+        "parameters": [{
+          "name": "Value",
+          "in": "query",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "A list of all playerCharacters for this user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the playerCharacters",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or not the dm",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -804,6 +1990,54 @@
         }
       }
     },
+    "/Public/createimage": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "parameters": [{
+          "name": "prompt",
+          "in": "query",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/Public/getimage/{uuid}/{apikey}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "parameters": [{
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "apikey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/Register/createencryptionchallenge": {
       "post": {
         "tags": [
@@ -834,7 +2068,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -862,17 +2097,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -910,7 +2163,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -938,17 +2192,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -958,17 +2230,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -1005,7 +2295,8 @@
                 "$ref": "#/components/schemas/RegisterWithApiKeyDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1033,17 +2324,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -1053,17 +2362,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -1073,17 +2400,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -1143,17 +2488,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -1193,17 +2556,35 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
                 }
               }
             }
@@ -1250,7 +2631,8 @@
                 "$ref": "#/components/schemas/EncryptedMessageWrapperDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1325,7 +2707,8 @@
                 "$ref": "#/components/schemas/LoginWithUsernameAndPasswordDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1398,7 +2781,8 @@
                 "$ref": "#/components/schemas/AppleLoginDetails"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1451,7 +2835,8 @@
                 "$ref": "#/components/schemas/GoogleLoginDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1506,7 +2891,8 @@
                 "$ref": "#/components/schemas/ResetPasswordRequestDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1581,7 +2967,8 @@
                 "$ref": "#/components/schemas/ResetPasswordDto"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1649,36 +3036,31 @@
         "additionalProperties": false
       },
       "Campagne": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/CampagneIdentifier"
+        "allOf": [{
+            "$ref": "#/components/schemas/CampagneIdentifierGuidNodeModelBase"
           },
-          "creationDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "lastModifiedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "rpgConfiguration": {
-            "type": "string",
-            "nullable": true
-          },
-          "campagneName": {
-            "type": "string",
-            "nullable": true
-          },
-          "joinCode": {
-            "type": "string",
-            "nullable": true
-          },
-          "dmUserId": {
-            "$ref": "#/components/schemas/UserIdentifier"
+          {
+            "type": "object",
+            "properties": {
+              "rpgConfiguration": {
+                "type": "string",
+                "nullable": true
+              },
+              "campagneName": {
+                "type": "string",
+                "nullable": true
+              },
+              "joinCode": {
+                "type": "string",
+                "nullable": true
+              },
+              "dmUserId": {
+                "$ref": "#/components/schemas/UserIdentifier"
+              }
+            },
+            "additionalProperties": false
           }
-        },
-        "additionalProperties": false
+        ]
       },
       "CampagneCreateDto": {
         "required": [
@@ -1708,11 +3090,11 @@
         },
         "additionalProperties": false
       },
-      "CampagneJoinRequest": {
+      "CampagneIdentifierGuidNodeModelBase": {
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/CampagneJoinRequestIdentifier"
+            "$ref": "#/components/schemas/CampagneIdentifier"
           },
           "creationDate": {
             "type": "string",
@@ -1721,18 +3103,30 @@
           "lastModifiedAt": {
             "type": "string",
             "format": "date-time"
-          },
-          "userId": {
-            "$ref": "#/components/schemas/UserIdentifier"
-          },
-          "playerId": {
-            "$ref": "#/components/schemas/PlayerCharacterIdentifier"
-          },
-          "campagneId": {
-            "$ref": "#/components/schemas/CampagneIdentifier"
           }
         },
         "additionalProperties": false
+      },
+      "CampagneJoinRequest": {
+        "allOf": [{
+            "$ref": "#/components/schemas/CampagneJoinRequestIdentifierGuidNodeModelBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "$ref": "#/components/schemas/UserIdentifier"
+              },
+              "playerId": {
+                "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+              },
+              "campagneId": {
+                "$ref": "#/components/schemas/CampagneIdentifier"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
       },
       "CampagneJoinRequestCreateDto": {
         "required": [
@@ -1758,6 +3152,23 @@
           "value": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CampagneJoinRequestIdentifierGuidNodeModelBase": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CampagneJoinRequestIdentifier"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -1828,6 +3239,57 @@
         ],
         "type": "string"
       },
+      "HttpValidationProblemDetails": {
+        "allOf": [{
+            "$ref": "#/components/schemas/ProblemDetails"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "errors": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "nullable": true
+              }
+            },
+            "additionalProperties": {}
+          }
+        ]
+      },
+      "ImageBlock": {
+        "allOf": [{
+            "$ref": "#/components/schemas/NoteBlockModelBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "imageMetaDataId": {
+                "$ref": "#/components/schemas/ImageMetaDataIdentifier"
+              },
+              "publicImageUrl": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ImageMetaDataIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "JoinRequestForCampagneDto": {
         "required": [
           "playerCharacter",
@@ -1870,11 +3332,49 @@
         "additionalProperties": false,
         "description": "Data Transfer Object for user login information."
       },
-      "PlayerCharacter": {
+      "NoteBlockModelBase": {
+        "allOf": [{
+            "$ref": "#/components/schemas/NoteBlockModelBaseIdentifierGuidNodeModelBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "noteDocumentId": {
+                "$ref": "#/components/schemas/NoteDocumentIdentifier"
+              },
+              "creatingUserId": {
+                "$ref": "#/components/schemas/UserIdentifier"
+              },
+              "visibility": {
+                "$ref": "#/components/schemas/NotesBlockVisibility"
+              },
+              "permittedUsers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UserIdentifier"
+                },
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "NoteBlockModelBaseIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NoteBlockModelBaseIdentifierGuidNodeModelBase": {
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+            "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
           },
           "creationDate": {
             "type": "string",
@@ -1883,23 +3383,103 @@
           "lastModifiedAt": {
             "type": "string",
             "format": "date-time"
-          },
-          "rpgCharacterConfiguration": {
-            "type": "string",
-            "nullable": true
-          },
-          "characterName": {
-            "type": "string",
-            "nullable": true
-          },
-          "playerUserId": {
-            "$ref": "#/components/schemas/UserIdentifier"
-          },
-          "campagneId": {
-            "$ref": "#/components/schemas/CampagneIdentifier"
           }
         },
         "additionalProperties": false
+      },
+      "NoteDocumentDto": {
+        "required": [
+          "createdForCampagneId",
+          "groupName",
+          "imageBlocks",
+          "textBlocks",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "$ref": "#/components/schemas/NoteDocumentIdentifier"
+          },
+          "groupName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "creatingUserId": {
+            "$ref": "#/components/schemas/UserIdentifier"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "createdForCampagneId": {
+            "$ref": "#/components/schemas/CampagneIdentifier"
+          },
+          "imageBlocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageBlock"
+            }
+          },
+          "textBlocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TextBlock"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "NoteDocumentIdentifier": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotesBlockVisibility": {
+        "enum": [
+          "HiddenForAllExceptAuthor",
+          "VisibleForSomeUsers",
+          "VisibleForCampagne"
+        ],
+        "type": "string"
+      },
+      "PlayerCharacter": {
+        "allOf": [{
+            "$ref": "#/components/schemas/PlayerCharacterIdentifierGuidNodeModelBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "rpgCharacterConfiguration": {
+                "type": "string",
+                "nullable": true
+              },
+              "characterName": {
+                "type": "string",
+                "nullable": true
+              },
+              "playerUserId": {
+                "$ref": "#/components/schemas/UserIdentifier"
+              },
+              "campagneId": {
+                "$ref": "#/components/schemas/CampagneIdentifier"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
       },
       "PlayerCharacterCreateDto": {
         "required": [
@@ -1931,6 +3511,23 @@
           "value": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayerCharacterIdentifierGuidNodeModelBase": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/PlayerCharacterIdentifier"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -2067,6 +3664,22 @@
         },
         "additionalProperties": false,
         "description": "Data Transfer Object for password reset requests."
+      },
+      "TextBlock": {
+        "allOf": [{
+            "$ref": "#/components/schemas/NoteBlockModelBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "markdownText": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
       },
       "UserIdentifier": {
         "type": "object",

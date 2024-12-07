@@ -6,10 +6,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_dropdown_menu_with_search.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/styled_box.dart';
-import 'package:rpg_table_helper/helpers/iterator_extensions.dart';
+import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -25,7 +27,7 @@ Future<CraftingRecipe?> showCreateOrEditCraftingRecipeModal(
     expand: true,
     closeProgressThreshold: -50000,
     enableDrag: false,
-    backgroundColor: const Color.fromARGB(158, 49, 49, 49),
+    backgroundColor: const Color.fromARGB(192, 21, 21, 21),
     context: context,
     // barrierColor: const Color.fromARGB(20, 201, 201, 201),
     builder: (context) =>
@@ -98,381 +100,413 @@ class _CreateOrEditCraftingRecipeModalContentState
     if (MediaQuery.of(context).size.width < 800) {
       modalPadding = 20.0;
     }
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: modalPadding,
-          vertical: modalPadding), // TODO maybe percentage of total width?
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: StyledBox(
-              borderThickness: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(21.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "Rezept bearbeiten", // TODO localize/ switch text between add and edit
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(color: Colors.white, fontSize: 32),
-                          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        top: true,
+        bottom: true,
+        right: false,
+        left: false,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: 20, top: 20, left: modalPadding, right: modalPadding),
+            child: Center(
+              child: CustomShadowWidget(
+                child: Container(
+                  color: bgColor,
+                  child: Column(
+                    children: [
+                      Navbar(
+                        backInsteadOfCloseIcon: false,
+                        closeFunction: () {
+                          navigatorKey.currentState!.pop(null);
+                        },
+                        menuOpen: null,
+                        useTopSafePadding: false,
+                        titleWidget: Text(
+                          "Rezept bearbeiten", // TODO localize/ switch text between add and edit
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(color: textColor, fontSize: 24),
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: CustomDropdownMenuWithSearch(
-                                      selectedValueTemp:
-                                          selectedCreatingItem.$1,
-                                      setter: (newValue) {
-                                        setState(() {
-                                          selectedCreatingItem = (
-                                            newValue,
-                                            selectedCreatingItem.$2
-                                          );
-                                        });
-                                      },
-                                      label:
-                                          'Herzustellendes Item', // TODO localize
-                                      items: _allItems.map((item) {
-                                        return DropdownMenuEntry<String?>(
-                                          value: item.uuid == ""
-                                              ? null
-                                              : item.uuid,
-                                          label: item.name,
-                                        );
-                                      }).toList()),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      // TODO make into new design
+                                      child: CustomDropdownMenuWithSearch(
+                                          selectedValueTemp:
+                                              selectedCreatingItem.$1,
+                                          setter: (newValue) {
+                                            setState(() {
+                                              selectedCreatingItem = (
+                                                newValue,
+                                                selectedCreatingItem.$2
+                                              );
+                                            });
+                                          },
+                                          label:
+                                              'Herzustellendes Item', // TODO localize
+                                          items: _allItems.map((item) {
+                                            return DropdownMenuEntry<String?>(
+                                              value: item.uuid == ""
+                                                  ? null
+                                                  : item.uuid,
+                                              label: item.name,
+                                            );
+                                          }).toList()),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    SizedBox(
+                                      width: 70,
+                                      child: CustomTextField(
+                                        keyboardType: TextInputType.number,
+                                        labelText: "Anzahl", // TODO localize
+                                        textEditingController:
+                                            selectedCreatingItem.$2,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  height: 10,
+                                ),
+                                const HorizontalLine(),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Voraussetzungen:",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                        color: darkColor,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                ...requiredItemIdsSelected.asMap().entries.map(
+                                      (tuple) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child:
+                                                  // TODO make into new design
+
+                                                  CustomDropdownMenuWithSearch(
+                                                      selectedValueTemp:
+                                                          tuple.value == ""
+                                                              ? null
+                                                              : tuple.value,
+                                                      setter: (newValue) {
+                                                        setState(() {
+                                                          requiredItemIdsSelected[
+                                                                  tuple.key] =
+                                                              newValue;
+                                                        });
+                                                      },
+                                                      label:
+                                                          'Voraussetzung #${tuple.key + 1}', // TODO localize
+                                                      items: _allItems
+                                                          .sortBy((p) => p.name)
+                                                          .map((item) {
+                                                        return DropdownMenuEntry<
+                                                            String?>(
+                                                          value: item.uuid == ""
+                                                              ? null
+                                                              : item.uuid,
+                                                          label: item.name,
+                                                        );
+                                                      }).toList()),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Container(
+                                              height: 50,
+                                              width: 60,
+                                              clipBehavior: Clip.none,
+                                              child: CustomButton(
+                                                variant: CustomButtonVariant
+                                                    .FlatButton,
+                                                onPressed: () {
+                                                  // remove this pair from list
+                                                  setState(() {
+                                                    requiredItemIdsSelected
+                                                        .removeAt(tuple.key);
+                                                  });
+                                                },
+                                                icon: const CustomFaIcon(
+                                                    size: 24,
+                                                    color: darkColor,
+                                                    icon: FontAwesomeIcons
+                                                        .trashCan),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      CustomButton(
+                                        isSubbutton: true,
+                                        onPressed: () {
+                                          setState(() {
+                                            requiredItemIdsSelected.add("");
+                                          });
+                                        },
+                                        label: "Weitere Voraussetzung",
+                                        icon: Theme(
+                                            data: ThemeData(
+                                              iconTheme: const IconThemeData(
+                                                color: Colors.white,
+                                                size: 16,
+                                              ),
+                                              textTheme: const TextTheme(
+                                                bodyMedium: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      5, 0, 5, 0),
+                                              child: const CustomFaIcon(
+                                                  color: darkColor,
+                                                  size: 16,
+                                                  icon: FontAwesomeIcons.plus),
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                const HorizontalLine(),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Zutaten:",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium!
+                                      .copyWith(
+                                        color: darkColor,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                ...selectedIngredient.asMap().entries.map(
+                                      (tuple) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child:
+                                                  // TODO update with new design
+                                                  CustomDropdownMenuWithSearch(
+                                                      selectedValueTemp:
+                                                          tuple.value.$1 == ""
+                                                              ? null
+                                                              : tuple.value.$1,
+                                                      setter: (newValue) {
+                                                        setState(() {
+                                                          selectedIngredient[
+                                                              tuple.key] = (
+                                                            newValue,
+                                                            selectedIngredient[
+                                                                    tuple.key]
+                                                                .$2
+                                                          );
+                                                        });
+                                                      },
+                                                      label:
+                                                          'Zutat #${tuple.key + 1}', // TODO localize
+                                                      items: _allItems
+                                                          .sortBy((p) => p.name)
+                                                          .map((item) {
+                                                        return DropdownMenuEntry<
+                                                            String?>(
+                                                          value: item.uuid == ""
+                                                              ? null
+                                                              : item.uuid,
+                                                          label: item.name,
+                                                        );
+                                                      }).toList()),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            SizedBox(
+                                              width: 70,
+                                              child: CustomTextField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                labelText:
+                                                    "Anzahl", // TODO localize
+                                                textEditingController:
+                                                    tuple.value.$2,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Container(
+                                              height: 50,
+                                              width: 60,
+                                              clipBehavior: Clip.none,
+                                              child: CustomButton(
+                                                variant: CustomButtonVariant
+                                                    .FlatButton,
+                                                onPressed: () {
+                                                  // remove this pair from list
+                                                  setState(() {
+                                                    selectedIngredient
+                                                        .removeAt(tuple.key);
+                                                  });
+                                                },
+                                                icon: const CustomFaIcon(
+                                                    size: 24,
+                                                    color: darkColor,
+                                                    icon: FontAwesomeIcons
+                                                        .trashCan),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      CustomButton(
+                                        variant: CustomButtonVariant.Default,
+                                        isSubbutton: true,
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedIngredient.add((
+                                              "",
+                                              TextEditingController(text: "1")
+                                            ));
+                                          });
+                                        },
+                                        label: "Weitere Zutat",
+                                        icon: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 0, 5, 0),
+                                          child: Container(
+                                              width: 16,
+                                              height: 16,
+                                              alignment:
+                                                  AlignmentDirectional.center,
+                                              child: const CustomFaIcon(
+                                                  color: darkColor,
+                                                  size: 16,
+                                                  icon: FontAwesomeIcons.plus)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
                                 ),
                                 SizedBox(
-                                  width: 70,
-                                  child: CustomTextField(
-                                    keyboardType: TextInputType.number,
-                                    labelText: "Anzahl", // TODO localize
-                                    textEditingController:
-                                        selectedCreatingItem.$2,
-                                  ),
-                                ),
+                                    height: EdgeInsets.fromViewPadding(
+                                            View.of(context).viewInsets,
+                                            View.of(context).devicePixelRatio)
+                                        .bottom),
                               ],
                             ),
-                            const SizedBox(
-                              height: 10,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                        child: Row(
+                          children: [
+                            CustomButton(
+                              label: "Abbrechen", // TODO localize
+                              onPressed: () {
+                                navigatorKey.currentState!.pop(null);
+                              },
                             ),
-                            const HorizontalLine(),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text("Voraussetzungen:"),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            ...requiredItemIdsSelected.asMap().entries.map(
-                                  (tuple) => Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 10.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomDropdownMenuWithSearch(
-                                              selectedValueTemp:
-                                                  tuple.value == ""
-                                                      ? null
-                                                      : tuple.value,
-                                              setter: (newValue) {
-                                                setState(() {
-                                                  requiredItemIdsSelected[
-                                                      tuple.key] = newValue;
-                                                });
-                                              },
-                                              label:
-                                                  'Voraussetzung #${tuple.key + 1}', // TODO localize
-                                              items: _allItems
-                                                  .sortBy((p) => p.name)
-                                                  .map((item) {
-                                                return DropdownMenuEntry<
-                                                    String?>(
-                                                  value: item.uuid == ""
-                                                      ? null
-                                                      : item.uuid,
-                                                  label: item.name,
-                                                );
-                                              }).toList()),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Container(
-                                          height: 50,
-                                          width: 70,
-                                          clipBehavior: Clip.none,
-                                          child: CustomButton(
-                                            onPressed: () {
-                                              // remove this pair from list
-                                              setState(() {
-                                                requiredItemIdsSelected
-                                                    .removeAt(tuple.key);
-                                              });
-                                            },
-                                            icon: const CustomFaIcon(
-                                                icon:
-                                                    FontAwesomeIcons.trashCan),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  CustomButton(
-                                    isSubbutton: true,
-                                    onPressed: () {
-                                      setState(() {
-                                        requiredItemIdsSelected.add("");
-                                      });
-                                    },
-                                    label: "Weitere Voraussetzung",
-                                    icon: Theme(
-                                        data: ThemeData(
-                                          iconTheme: const IconThemeData(
-                                            color: Colors.white,
-                                            size: 16,
-                                          ),
-                                          textTheme: const TextTheme(
-                                            bodyMedium: TextStyle(
-                                              color: Colors.white,
+                            const Spacer(),
+                            CustomButton(
+                              label: "Speichern", // TODO localize
+                              onPressed: () {
+                                try {
+                                  navigatorKey.currentState!.pop(
+                                    CraftingRecipe(
+                                      recipeUuid: widget.itemToEdit.recipeUuid,
+                                      requiredItemIds: requiredItemIdsSelected
+                                          .where((str) => str != null)
+                                          .map((str) => str!)
+                                          .toList(),
+                                      ingredients: selectedIngredient
+                                          .map(
+                                            (pair) =>
+                                                CraftingRecipeIngredientPair(
+                                              itemUuid: pair.$1!,
+                                              amountOfUsedItem:
+                                                  int.tryParse(pair.$2.text) ??
+                                                      1,
                                             ),
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              5, 0, 5, 0),
-                                          child: Container(
-                                              width: 16,
-                                              height: 16,
-                                              alignment:
-                                                  AlignmentDirectional.center,
-                                              child: const FaIcon(
-                                                  FontAwesomeIcons.plus)),
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            const HorizontalLine(),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text("Zutaten:"),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            ...selectedIngredient.asMap().entries.map(
-                                  (tuple) => Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 10.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomDropdownMenuWithSearch(
-                                              selectedValueTemp:
-                                                  tuple.value.$1 == ""
-                                                      ? null
-                                                      : tuple.value.$1,
-                                              setter: (newValue) {
-                                                setState(() {
-                                                  selectedIngredient[
-                                                      tuple.key] = (
-                                                    newValue,
-                                                    selectedIngredient[
-                                                            tuple.key]
-                                                        .$2
-                                                  );
-                                                });
-                                              },
-                                              label:
-                                                  'Zutat #${tuple.key + 1}', // TODO localize
-                                              items: _allItems
-                                                  .sortBy((p) => p.name)
-                                                  .map((item) {
-                                                return DropdownMenuEntry<
-                                                    String?>(
-                                                  value: item.uuid == ""
-                                                      ? null
-                                                      : item.uuid,
-                                                  label: item.name,
-                                                );
-                                              }).toList()),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        SizedBox(
-                                          width: 70,
-                                          child: CustomTextField(
-                                            keyboardType: TextInputType.number,
-                                            labelText:
-                                                "Anzahl", // TODO localize
-                                            textEditingController:
-                                                tuple.value.$2,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Container(
-                                          height: 50,
-                                          width: 70,
-                                          clipBehavior: Clip.none,
-                                          child: CustomButton(
-                                            onPressed: () {
-                                              // remove this pair from list
-                                              setState(() {
-                                                selectedIngredient
-                                                    .removeAt(tuple.key);
-                                              });
-                                            },
-                                            icon: const CustomFaIcon(
-                                                icon:
-                                                    FontAwesomeIcons.trashCan),
-                                          ),
-                                        ),
-                                      ],
+                                          )
+                                          .toList(),
+                                      createdItem: CraftingRecipeIngredientPair(
+                                          itemUuid: selectedCreatingItem.$1!,
+                                          amountOfUsedItem: int.tryParse(
+                                                  selectedCreatingItem
+                                                      .$2.text) ??
+                                              1),
                                     ),
-                                  ),
-                                ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  CustomButton(
-                                    isSubbutton: true,
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedIngredient.add((
-                                          "",
-                                          TextEditingController(text: "1")
-                                        ));
-                                      });
-                                    },
-                                    label: "Weitere Zutat",
-                                    icon: Theme(
-                                        data: ThemeData(
-                                          iconTheme: const IconThemeData(
-                                            color: Colors.white,
-                                            size: 16,
-                                          ),
-                                          textTheme: const TextTheme(
-                                            bodyMedium: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              5, 0, 5, 0),
-                                          child: Container(
-                                              width: 16,
-                                              height: 16,
-                                              alignment:
-                                                  AlignmentDirectional.center,
-                                              child: const FaIcon(
-                                                  FontAwesomeIcons.plus)),
-                                        )),
-                                  ),
-                                ],
-                              ),
+                                  );
+                                } catch (e) {
+                                  log(e.toString());
+                                }
+                              },
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                                height: EdgeInsets.fromViewPadding(
-                                        View.of(context).viewInsets,
-                                        View.of(context).devicePixelRatio)
-                                    .bottom),
                           ],
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                      child: Row(
-                        children: [
-                          CustomButton(
-                            label: "Abbrechen", // TODO localize
-                            onPressed: () {
-                              navigatorKey.currentState!.pop(null);
-                            },
-                          ),
-                          const Spacer(),
-                          CustomButton(
-                            label: "Speichern", // TODO localize
-                            onPressed: () {
-                              try {
-                                navigatorKey.currentState!.pop(
-                                  CraftingRecipe(
-                                    recipeUuid: widget.itemToEdit.recipeUuid,
-                                    requiredItemIds: requiredItemIdsSelected
-                                        .where((str) => str != null)
-                                        .map((str) => str!)
-                                        .toList(),
-                                    ingredients: selectedIngredient
-                                        .map(
-                                          (pair) =>
-                                              CraftingRecipeIngredientPair(
-                                            itemUuid: pair.$1!,
-                                            amountOfUsedItem:
-                                                int.tryParse(pair.$2.text) ?? 1,
-                                          ),
-                                        )
-                                        .toList(),
-                                    createdItem: CraftingRecipeIngredientPair(
-                                        itemUuid: selectedCreatingItem.$1!,
-                                        amountOfUsedItem: int.tryParse(
-                                                selectedCreatingItem.$2.text) ??
-                                            1),
-                                  ),
-                                );
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -22,10 +22,10 @@ abstract class _$PlayerJoinRequestsCWProxy {
   /// PlayerJoinRequests(...).copyWith(id: 12, name: "My name")
   /// ````
   PlayerJoinRequests call({
-    String? playerName,
-    String? username,
-    String? campagneJoinRequestId,
-    String? playerCharacterId,
+    String playerName,
+    String username,
+    String campagneJoinRequestId,
+    String playerCharacterId,
   });
 }
 
@@ -65,23 +65,20 @@ class _$PlayerJoinRequestsCWProxyImpl implements _$PlayerJoinRequestsCWProxy {
     Object? playerCharacterId = const $CopyWithPlaceholder(),
   }) {
     return PlayerJoinRequests(
-      playerName:
-          playerName == const $CopyWithPlaceholder() || playerName == null
-              ? _value.playerName
-              // ignore: cast_nullable_to_non_nullable
-              : playerName as String,
-      username: username == const $CopyWithPlaceholder() || username == null
+      playerName: playerName == const $CopyWithPlaceholder()
+          ? _value.playerName
+          // ignore: cast_nullable_to_non_nullable
+          : playerName as String,
+      username: username == const $CopyWithPlaceholder()
           ? _value.username
           // ignore: cast_nullable_to_non_nullable
           : username as String,
       campagneJoinRequestId:
-          campagneJoinRequestId == const $CopyWithPlaceholder() ||
-                  campagneJoinRequestId == null
+          campagneJoinRequestId == const $CopyWithPlaceholder()
               ? _value.campagneJoinRequestId
               // ignore: cast_nullable_to_non_nullable
               : campagneJoinRequestId as String,
-      playerCharacterId: playerCharacterId == const $CopyWithPlaceholder() ||
-              playerCharacterId == null
+      playerCharacterId: playerCharacterId == const $CopyWithPlaceholder()
           ? _value.playerCharacterId
           // ignore: cast_nullable_to_non_nullable
           : playerCharacterId as String,
@@ -111,9 +108,9 @@ abstract class _$GrantedItemsForPlayerCWProxy {
   /// GrantedItemsForPlayer(...).copyWith(id: 12, name: "My name")
   /// ````
   GrantedItemsForPlayer call({
-    String? characterName,
-    String? playerId,
-    List<RpgCharacterOwnedItemPair>? grantedItems,
+    String characterName,
+    String playerId,
+    List<RpgCharacterOwnedItemPair> grantedItems,
   });
 }
 
@@ -150,20 +147,18 @@ class _$GrantedItemsForPlayerCWProxyImpl
     Object? grantedItems = const $CopyWithPlaceholder(),
   }) {
     return GrantedItemsForPlayer(
-      characterName:
-          characterName == const $CopyWithPlaceholder() || characterName == null
-              ? _value.characterName
-              // ignore: cast_nullable_to_non_nullable
-              : characterName as String,
-      playerId: playerId == const $CopyWithPlaceholder() || playerId == null
+      characterName: characterName == const $CopyWithPlaceholder()
+          ? _value.characterName
+          // ignore: cast_nullable_to_non_nullable
+          : characterName as String,
+      playerId: playerId == const $CopyWithPlaceholder()
           ? _value.playerId
           // ignore: cast_nullable_to_non_nullable
           : playerId as String,
-      grantedItems:
-          grantedItems == const $CopyWithPlaceholder() || grantedItems == null
-              ? _value.grantedItems
-              // ignore: cast_nullable_to_non_nullable
-              : grantedItems as List<RpgCharacterOwnedItemPair>,
+      grantedItems: grantedItems == const $CopyWithPlaceholder()
+          ? _value.grantedItems
+          // ignore: cast_nullable_to_non_nullable
+          : grantedItems as List<RpgCharacterOwnedItemPair>,
     );
   }
 }
@@ -190,9 +185,9 @@ abstract class _$OpenPlayerConnectionCWProxy {
   /// OpenPlayerConnection(...).copyWith(id: 12, name: "My name")
   /// ````
   OpenPlayerConnection call({
-    UserIdentifier? userId,
-    PlayerCharacterIdentifier? playerCharacterId,
-    RpgCharacterConfiguration? configuration,
+    UserIdentifier userId,
+    PlayerCharacterIdentifier playerCharacterId,
+    RpgCharacterConfiguration configuration,
   });
 }
 
@@ -229,20 +224,18 @@ class _$OpenPlayerConnectionCWProxyImpl
     Object? configuration = const $CopyWithPlaceholder(),
   }) {
     return OpenPlayerConnection(
-      userId: userId == const $CopyWithPlaceholder() || userId == null
+      userId: userId == const $CopyWithPlaceholder()
           ? _value.userId
           // ignore: cast_nullable_to_non_nullable
           : userId as UserIdentifier,
-      playerCharacterId: playerCharacterId == const $CopyWithPlaceholder() ||
-              playerCharacterId == null
+      playerCharacterId: playerCharacterId == const $CopyWithPlaceholder()
           ? _value.playerCharacterId
           // ignore: cast_nullable_to_non_nullable
           : playerCharacterId as PlayerCharacterIdentifier,
-      configuration:
-          configuration == const $CopyWithPlaceholder() || configuration == null
-              ? _value.configuration
-              // ignore: cast_nullable_to_non_nullable
-              : configuration as RpgCharacterConfiguration,
+      configuration: configuration == const $CopyWithPlaceholder()
+          ? _value.configuration
+          // ignore: cast_nullable_to_non_nullable
+          : configuration as RpgCharacterConfiguration,
     );
   }
 }
@@ -252,6 +245,67 @@ extension $OpenPlayerConnectionCopyWith on OpenPlayerConnection {
   // ignore: library_private_types_in_public_api
   _$OpenPlayerConnectionCWProxy get copyWith =>
       _$OpenPlayerConnectionCWProxyImpl(this);
+}
+
+abstract class _$FightSequenceCWProxy {
+  FightSequence fightUuid(String fightUuid);
+
+  FightSequence sequence(List<(String?, String, int)> sequence);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `FightSequence(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// FightSequence(...).copyWith(id: 12, name: "My name")
+  /// ````
+  FightSequence call({
+    String fightUuid,
+    List<(String?, String, int)> sequence,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfFightSequence.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfFightSequence.copyWith.fieldName(...)`
+class _$FightSequenceCWProxyImpl implements _$FightSequenceCWProxy {
+  const _$FightSequenceCWProxyImpl(this._value);
+
+  final FightSequence _value;
+
+  @override
+  FightSequence fightUuid(String fightUuid) => this(fightUuid: fightUuid);
+
+  @override
+  FightSequence sequence(List<(String?, String, int)> sequence) =>
+      this(sequence: sequence);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `FightSequence(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// FightSequence(...).copyWith(id: 12, name: "My name")
+  /// ````
+  FightSequence call({
+    Object? fightUuid = const $CopyWithPlaceholder(),
+    Object? sequence = const $CopyWithPlaceholder(),
+  }) {
+    return FightSequence(
+      fightUuid: fightUuid == const $CopyWithPlaceholder()
+          ? _value.fightUuid
+          // ignore: cast_nullable_to_non_nullable
+          : fightUuid as String,
+      sequence: sequence == const $CopyWithPlaceholder()
+          ? _value.sequence
+          // ignore: cast_nullable_to_non_nullable
+          : sequence as List<(String?, String, int)>,
+    );
+  }
+}
+
+extension $FightSequenceCopyWith on FightSequence {
+  /// Returns a callable class that can be used as follows: `instanceOfFightSequence.copyWith(...)` or like so:`instanceOfFightSequence.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$FightSequenceCWProxy get copyWith => _$FightSequenceCWProxyImpl(this);
 }
 
 abstract class _$ConnectionDetailsCWProxy {
@@ -272,6 +326,8 @@ abstract class _$ConnectionDetailsCWProxy {
 
   ConnectionDetails isDm(bool isDm);
 
+  ConnectionDetails fightSequence(FightSequence? fightSequence);
+
   ConnectionDetails lastGrantedItems(
       List<GrantedItemsForPlayer>? lastGrantedItems);
 
@@ -287,12 +343,13 @@ abstract class _$ConnectionDetailsCWProxy {
   /// ````
   ConnectionDetails call({
     List<PlayerJoinRequests>? openPlayerRequests,
-    bool? isConnected,
+    bool isConnected,
     String? sessionConnectionNumberForPlayers,
-    bool? isConnecting,
+    bool isConnecting,
     List<OpenPlayerConnection>? connectedPlayers,
-    bool? isInSession,
-    bool? isDm,
+    bool isInSession,
+    bool isDm,
+    FightSequence? fightSequence,
     List<GrantedItemsForPlayer>? lastGrantedItems,
     String? campagneId,
     String? playerCharacterId,
@@ -337,6 +394,10 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
   ConnectionDetails isDm(bool isDm) => this(isDm: isDm);
 
   @override
+  ConnectionDetails fightSequence(FightSequence? fightSequence) =>
+      this(fightSequence: fightSequence);
+
+  @override
   ConnectionDetails lastGrantedItems(
           List<GrantedItemsForPlayer>? lastGrantedItems) =>
       this(lastGrantedItems: lastGrantedItems);
@@ -365,6 +426,7 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
     Object? connectedPlayers = const $CopyWithPlaceholder(),
     Object? isInSession = const $CopyWithPlaceholder(),
     Object? isDm = const $CopyWithPlaceholder(),
+    Object? fightSequence = const $CopyWithPlaceholder(),
     Object? lastGrantedItems = const $CopyWithPlaceholder(),
     Object? campagneId = const $CopyWithPlaceholder(),
     Object? playerCharacterId = const $CopyWithPlaceholder(),
@@ -374,34 +436,35 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
           ? _value.openPlayerRequests
           // ignore: cast_nullable_to_non_nullable
           : openPlayerRequests as List<PlayerJoinRequests>?,
-      isConnected:
-          isConnected == const $CopyWithPlaceholder() || isConnected == null
-              ? _value.isConnected
-              // ignore: cast_nullable_to_non_nullable
-              : isConnected as bool,
+      isConnected: isConnected == const $CopyWithPlaceholder()
+          ? _value.isConnected
+          // ignore: cast_nullable_to_non_nullable
+          : isConnected as bool,
       sessionConnectionNumberForPlayers:
           sessionConnectionNumberForPlayers == const $CopyWithPlaceholder()
               ? _value.sessionConnectionNumberForPlayers
               // ignore: cast_nullable_to_non_nullable
               : sessionConnectionNumberForPlayers as String?,
-      isConnecting:
-          isConnecting == const $CopyWithPlaceholder() || isConnecting == null
-              ? _value.isConnecting
-              // ignore: cast_nullable_to_non_nullable
-              : isConnecting as bool,
+      isConnecting: isConnecting == const $CopyWithPlaceholder()
+          ? _value.isConnecting
+          // ignore: cast_nullable_to_non_nullable
+          : isConnecting as bool,
       connectedPlayers: connectedPlayers == const $CopyWithPlaceholder()
           ? _value.connectedPlayers
           // ignore: cast_nullable_to_non_nullable
           : connectedPlayers as List<OpenPlayerConnection>?,
-      isInSession:
-          isInSession == const $CopyWithPlaceholder() || isInSession == null
-              ? _value.isInSession
-              // ignore: cast_nullable_to_non_nullable
-              : isInSession as bool,
-      isDm: isDm == const $CopyWithPlaceholder() || isDm == null
+      isInSession: isInSession == const $CopyWithPlaceholder()
+          ? _value.isInSession
+          // ignore: cast_nullable_to_non_nullable
+          : isInSession as bool,
+      isDm: isDm == const $CopyWithPlaceholder()
           ? _value.isDm
           // ignore: cast_nullable_to_non_nullable
           : isDm as bool,
+      fightSequence: fightSequence == const $CopyWithPlaceholder()
+          ? _value.fightSequence
+          // ignore: cast_nullable_to_non_nullable
+          : fightSequence as FightSequence?,
       lastGrantedItems: lastGrantedItems == const $CopyWithPlaceholder()
           ? _value.lastGrantedItems
           // ignore: cast_nullable_to_non_nullable
@@ -482,6 +545,39 @@ Map<String, dynamic> _$OpenPlayerConnectionToJson(
       'playerCharacterId': instance.playerCharacterId,
     };
 
+FightSequence _$FightSequenceFromJson(Map<String, dynamic> json) =>
+    FightSequence(
+      fightUuid: json['fightUuid'] as String,
+      sequence: (json['sequence'] as List<dynamic>)
+          .map((e) => _$recordConvert(
+                e,
+                ($jsonValue) => (
+                  $jsonValue[r'$1'] as String?,
+                  $jsonValue[r'$2'] as String,
+                  ($jsonValue[r'$3'] as num).toInt(),
+                ),
+              ))
+          .toList(),
+    );
+
+Map<String, dynamic> _$FightSequenceToJson(FightSequence instance) =>
+    <String, dynamic>{
+      'fightUuid': instance.fightUuid,
+      'sequence': instance.sequence
+          .map((e) => <String, dynamic>{
+                r'$1': e.$1,
+                r'$2': e.$2,
+                r'$3': e.$3,
+              })
+          .toList(),
+    };
+
+$Rec _$recordConvert<$Rec>(
+  Object? value,
+  $Rec Function(Map) convert,
+) =>
+    convert(value as Map<String, dynamic>);
+
 ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
     ConnectionDetails(
       openPlayerRequests: (json['openPlayerRequests'] as List<dynamic>?)
@@ -496,6 +592,10 @@ ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
           .toList(),
       isInSession: json['isInSession'] as bool,
       isDm: json['isDm'] as bool,
+      fightSequence: json['fightSequence'] == null
+          ? null
+          : FightSequence.fromJson(
+              json['fightSequence'] as Map<String, dynamic>),
       lastGrantedItems: (json['lastGrantedItems'] as List<dynamic>?)
           ?.map(
               (e) => GrantedItemsForPlayer.fromJson(e as Map<String, dynamic>))
@@ -515,6 +615,7 @@ Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
       'connectedPlayers': instance.connectedPlayers,
       'isDm': instance.isDm,
       'lastGrantedItems': instance.lastGrantedItems,
+      'fightSequence': instance.fightSequence,
       'campagneId': instance.campagneId,
       'playerCharacterId': instance.playerCharacterId,
     };

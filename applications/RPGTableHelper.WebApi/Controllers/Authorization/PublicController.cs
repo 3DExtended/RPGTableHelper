@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Prodot.Patterns.Cqrs;
+using RPGTableHelper.DataLayer.Contracts.Models.Images;
+using RPGTableHelper.DataLayer.Contracts.Queries.Images;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 
 namespace RPGTableHelper.WebApi.Controllers
@@ -29,23 +32,45 @@ namespace RPGTableHelper.WebApi.Controllers
             return Task.FromResult<ActionResult<string>>(Ok(MinimalAppVersionSupported));
         }
 
-        // TODO remove me
-        [HttpPost("openaiimages")]
-        public async Task<ActionResult<string>> GetOpenAIImageForQuery(
-            [FromBody] string prompt,
+        [HttpGet("getimage/{uuid}/{apikey}")]
+        public async Task<IActionResult> GetImageFromUuidAndApiKey(
+            [FromRoute] string uuid,
+            [FromRoute] string apikey,
             CancellationToken cancellationToken
         )
         {
-            var result = await new AiGenerateImageQuery { ImagePrompt = prompt }
+            if (!Guid.TryParse(uuid, out var parsedUuid))
+            {
+                return BadRequest("Could not parse uuid");
+            }
+
+            var imageMetaData = await new ImageMetaDataQuery
+            {
+                ModelId = ImageMetaData.ImageMetaDataIdentifier.From(parsedUuid),
+            }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (result.IsNone)
+            if (imageMetaData.IsNone)
             {
-                return BadRequest();
+                return BadRequest("Could not load imageMetaData");
             }
 
-            return Ok(result.Get());
+            if (imageMetaData.Get().ApiKey != apikey)
+            {
+                return BadRequest("Invalid API key provided.");
+            }
+
+            var streamForImage = await new ImageLoadQuery { MetaData = imageMetaData.Get() }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (streamForImage.IsNone)
+            {
+                return BadRequest("Could not load image");
+            }
+
+            return File(streamForImage.Get(), "image/" + imageMetaData.Get().ImageType.ToString().ToLower());
         }
     }
 }

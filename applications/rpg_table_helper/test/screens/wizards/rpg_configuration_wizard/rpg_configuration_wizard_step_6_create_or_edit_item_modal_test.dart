@@ -7,7 +7,7 @@ import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.da
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
 import '../../../test_configuration.dart';
@@ -76,6 +76,8 @@ void main() {
                         overrideNavigatorKey: navigatorKey,
                         context,
                         RpgItem(
+                            imageDescription: null,
+                            imageUrlWithoutBasePath: null,
                             uuid: "asdf",
                             name: "Test",
                             categoryId: "",

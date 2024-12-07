@@ -37,6 +37,8 @@ abstract class IServerCommunicationService {
   void registerCallbackWithoutParameters(
       {required void Function() function, required String functionName});
 
+  void completeFunctionRegistration();
+
   void registerCallbackSingleString({
     required void Function(String parameter) function,
     required String functionName,
@@ -57,20 +59,20 @@ abstract class IServerCommunicationService {
 }
 
 class ServerCommunicationService extends IServerCommunicationService {
-  bool connectionIsOpen = false;
-  late HubConnection? hubConnection;
+  HubConnection? hubConnection; // initalized within buildHubConnection()
+
+  bool get connectionIsOpen =>
+      hubConnection != null &&
+      (hubConnection!.state == HubConnectionState.Connected);
 
   ServerCommunicationService({
     required super.widgetRef,
     required super.apiConnectorService,
   }) : super(isMock: false) {
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        widgetRef.read(connectionDetailsProvider).value?.copyWith(
-                  isConnected: false,
-                  isConnecting: true,
-                ) ??
-            ConnectionDetails.defaultValue());
+    print("New ServerCommunicationService created");
+  }
 
+  void buildHubConnection() {
     // NOTE: Headers are not working in this current signal r version...
     final defaultHeaders = MessageHeaders();
     // defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
@@ -115,7 +117,6 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     hubConnection!.onreconnecting(({error}) {
       log("onreconnecting called");
-      connectionIsOpen = false;
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
                     isConnected: false,
@@ -126,7 +127,6 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     hubConnection!.onreconnected(({connectionId}) async {
       log("onreconnected called");
-      connectionIsOpen = true;
 
       // users cannot be assigned to signalR groups (see here: https://github.com/dotnet/aspnetcore/issues/26133)
       // hence, everytime a user is reconnected, we must ensure we add them to the appropiate groups
@@ -144,14 +144,25 @@ class ServerCommunicationService extends IServerCommunicationService {
                   ) ??
               ConnectionDetails.defaultValue());
     });
-
-    hubConnection!
-        .on("aClientProvidedFunction", _handleAClientProvidedFunction);
   }
 
   @override
   Future startConnection() async {
+    if (hubConnection == null) {
+      buildHubConnection();
+    }
+
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        widgetRef.read(connectionDetailsProvider).value?.copyWith(
+                  isConnected: false,
+                  isConnecting: true,
+                ) ??
+            ConnectionDetails.defaultValue());
+
     await tryOpenConnection();
+
+    var serverMethods = DependencyProvider.getIt!.get<IServerMethodsService>();
+    await serverMethods.readdToSignalRGroups();
   }
 
   @override
@@ -159,20 +170,20 @@ class ServerCommunicationService extends IServerCommunicationService {
     await hubConnection?.stop();
   }
 
-  void _handleAClientProvidedFunction(List<Object?>? parameters) {
-    log("Server invoked the method");
-  }
-
   void httpClientCreateCallback(Client httpClient) {
     // TODO check if we need this only on dev or also on prod
     HttpOverrides.global = HttpOverrideCertificateVerificationInDev();
   }
 
+  List<void Function()> registrationMethods = [];
+
   @override
   void registerCallbackWithoutParameters(
       {required void Function() function, required String functionName}) {
-    hubConnection!.on(functionName, (List<Object?>? parameters) {
-      function();
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        function();
+      });
     });
   }
 
@@ -181,15 +192,17 @@ class ServerCommunicationService extends IServerCommunicationService {
     required void Function(String parameter) function,
     required String functionName,
   }) {
-    hubConnection!.on(functionName, (List<Object?>? parameters) {
-      if (parameters == null || parameters.isEmpty) return;
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
 
-      final String? param =
-          parameters[0] != null ? parameters[0] as String : null;
+        final String? param =
+            parameters[0] != null ? parameters[0] as String : null;
 
-      if (param == null) return;
+        if (param == null) return;
 
-      function(param);
+        function(param);
+      });
     });
   }
 
@@ -198,19 +211,21 @@ class ServerCommunicationService extends IServerCommunicationService {
       {required void Function(String param1, String param2, String param3)
           function,
       required String functionName}) {
-    hubConnection!.on(functionName, (List<Object?>? parameters) {
-      if (parameters == null || parameters.isEmpty) return;
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
 
-      final String? param1 =
-          parameters[0] != null ? parameters[0] as String : null;
-      final String? param2 =
-          parameters[1] != null ? parameters[1] as String : null;
-      final String? param3 =
-          parameters[2] != null ? parameters[2] as String : null;
+        final String? param1 =
+            parameters[0] != null ? parameters[0] as String : null;
+        final String? param2 =
+            parameters[1] != null ? parameters[1] as String : null;
+        final String? param3 =
+            parameters[2] != null ? parameters[2] as String : null;
 
-      if (param1 == null || param2 == null || param3 == null) return;
+        if (param1 == null || param2 == null || param3 == null) return;
 
-      function(param1, param2, param3);
+        function(param1, param2, param3);
+      });
     });
   }
 
@@ -220,26 +235,28 @@ class ServerCommunicationService extends IServerCommunicationService {
               String param1, String param2, String param3, String param4)
           function,
       required String functionName}) {
-    hubConnection!.on(functionName, (List<Object?>? parameters) {
-      if (parameters == null || parameters.isEmpty) return;
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
 
-      final String? param1 =
-          parameters[0] != null ? parameters[0] as String : null;
-      final String? param2 =
-          parameters[1] != null ? parameters[1] as String : null;
-      final String? param3 =
-          parameters[2] != null ? parameters[2] as String : null;
-      final String? param4 =
-          parameters[3] != null ? parameters[3] as String : null;
+        final String? param1 =
+            parameters[0] != null ? parameters[0] as String : null;
+        final String? param2 =
+            parameters[1] != null ? parameters[1] as String : null;
+        final String? param3 =
+            parameters[2] != null ? parameters[2] as String : null;
+        final String? param4 =
+            parameters[3] != null ? parameters[3] as String : null;
 
-      if (param1 == null ||
-          param2 == null ||
-          param3 == null ||
-          param4 == null) {
-        return;
-      }
+        if (param1 == null ||
+            param2 == null ||
+            param3 == null ||
+            param4 == null) {
+          return;
+        }
 
-      function(param1, param2, param3, param4);
+        function(param1, param2, param3, param4);
+      });
     });
   }
 
@@ -250,13 +267,34 @@ class ServerCommunicationService extends IServerCommunicationService {
       await tryOpenConnection();
     }
 
+    if (hubConnection == null) {
+      print("DID NOT SEND TO SERVER: $functionName");
+
+      // dont send something if not connected
+      return;
+    }
+
+    var retryCounter = 0;
+    final maxRetries = 5;
+    while (retryCounter < maxRetries &&
+        hubConnection?.state == HubConnectionState.Connecting) {
+      retryCounter++;
+      await Future.delayed(Duration(seconds: retryCounter + 1));
+    }
+
     await hubConnection!.invoke(functionName, args: args);
   }
 
   Future tryOpenConnection() async {
+    if (hubConnection == null ||
+        hubConnection?.state == HubConnectionState.Disconnected ||
+        hubConnection?.state == HubConnectionState.Disconnecting) {
+      // restart connection here!
+      completeFunctionRegistration();
+    }
+
     try {
       await hubConnection!.start();
-      connectionIsOpen = true;
 
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -266,6 +304,18 @@ class ServerCommunicationService extends IServerCommunicationService {
               ConnectionDetails.defaultValue());
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  @override
+  void completeFunctionRegistration() {
+    buildHubConnection();
+
+    // ensure methods were registered
+    var _ = DependencyProvider.getIt!.get<IServerMethodsService>();
+
+    for (var i = 0; i < registrationMethods.length; i++) {
+      registrationMethods[i]();
     }
   }
 }
@@ -315,6 +365,9 @@ class MockServerCommunicationService extends IServerCommunicationService {
               String param1, String param2, String param3, String param4)
           function,
       required String functionName}) {}
+
+  @override
+  void completeFunctionRegistration() {}
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

@@ -9,18 +9,20 @@ using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 
 namespace RPGTableHelper.DataLayer.OpenAI.QueryHandlers;
 
-public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, string>
+public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, Stream>
 {
     private readonly OpenAIOptions _options;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public AiGenerateImageQueryHandler(OpenAIOptions options)
+    public AiGenerateImageQueryHandler(OpenAIOptions options, IHttpClientFactory httpClientFactory)
     {
         _options = options;
+        _httpClientFactory = httpClientFactory;
     }
 
-    public IQueryHandler<AiGenerateImageQuery, string> Successor { get; set; } = default!;
+    public IQueryHandler<AiGenerateImageQuery, Stream> Successor { get; set; } = default!;
 
-    public async Task<Option<string>> RunQueryAsync(AiGenerateImageQuery query, CancellationToken cancellationToken)
+    public async Task<Option<Stream>> RunQueryAsync(AiGenerateImageQuery query, CancellationToken cancellationToken)
     {
         if (_options.ApiKey == null || _options.OpenAIUrl == null)
         {
@@ -50,7 +52,22 @@ public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, s
 
             Console.WriteLine(imageGeneration.Value.ImageUri);
             Console.WriteLine(imageGeneration.Value.RevisedPrompt);
-            return imageGeneration.Value.ImageUri.ToString();
+
+            try
+            {
+                using (var client = _httpClientFactory.CreateClient())
+                {
+                    // Get the file content as a stream
+                    Stream stream = await client.GetStreamAsync(imageGeneration.Value.ImageUri);
+                    return stream;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
+            // return imageGeneration.Value.ImageUri.ToString();
         }
         catch (Exception ex)
         {

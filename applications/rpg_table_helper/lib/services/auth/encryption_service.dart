@@ -48,7 +48,7 @@ class EncryptionService extends IEncryptionService {
 
   EncryptionService() : super(isMock: false) {
     // Don't await here, just schedule key pair generation
-    getKeyPair();
+    // getKeyPair();
   }
 
   @override

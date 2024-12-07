@@ -5,9 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/helpers/list_extensions.dart';
+import 'package:rpg_table_helper/helpers/modals/show_ask_player_for_fight_order_roll.dart';
+import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -29,6 +32,16 @@ abstract class IServerMethodsService {
     serverCommunicationService.registerCallbackSingleString(
       function: registerGameResponse,
       functionName: "registerGameResponse",
+    );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: playersAreAskedForRolls,
+      functionName: "playersAreAskedForRolls",
+    );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: dmReceivedFightSequenceAnswer,
+      functionName: "dmReceivedFightSequenceAnswer",
     );
 
     serverCommunicationService.registerCallbackFourStrings(
@@ -66,6 +79,9 @@ abstract class IServerMethodsService {
   }
 
   // this should contain every method that is callable by the server
+  void playersAreAskedForRolls(String serializedFightSequence);
+  void dmReceivedFightSequenceAnswer(String serializedFightSequence);
+
   void registerGameResponse(String parameter);
   void requestJoinPermission(String playerName, String username,
       String playerCharacterId, String campagneJoinRequestId);
@@ -84,6 +100,12 @@ abstract class IServerMethodsService {
 
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig, required String campagneId});
+
+  Future askPlayersForRolls(
+      {required String campagneId, required FightSequence fightSequence});
+
+  Future sendFightSequenceRollsToDm(
+      {required String playerId, required FightSequence fightSequence});
 
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
@@ -201,9 +223,33 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig,
       required String campagneId}) async {
+    var serializedConfig = jsonEncode(rpgConfig);
+
     await serverCommunicationService.executeServerFunction(
         "SendUpdatedRpgConfig",
-        args: [campagneId, jsonEncode(rpgConfig)]);
+        args: [campagneId, serializedConfig]);
+  }
+
+  @override
+  Future askPlayersForRolls(
+      {required String campagneId,
+      required FightSequence fightSequence}) async {
+    var strippedFightSequence = fightSequence.copyWith(
+        sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
+
+    await serverCommunicationService.executeServerFunction("AskPlayersForRolls",
+        args: [campagneId, jsonEncode(strippedFightSequence)]);
+  }
+
+  @override
+  Future sendFightSequenceRollsToDm(
+      {required String playerId, required FightSequence fightSequence}) async {
+    var strippedFightSequence = fightSequence.copyWith(
+        sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
+
+    await serverCommunicationService.executeServerFunction(
+        "SendFightSequenceRollsToDm",
+        args: [playerId, jsonEncode(strippedFightSequence)]);
   }
 
   @override
@@ -264,6 +310,71 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
+  void playersAreAskedForRolls(String serializedFightSequence) {
+    // TODO
+    // decode fight sequence
+    var decodedFightSequence =
+        FightSequence.fromJson(jsonDecode(serializedFightSequence));
+
+    // search which of my characters are asked for a roll
+    var currentCharacter =
+        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
+
+    var connectionDetails =
+        widgetRef.read(connectionDetailsProvider).requireValue;
+
+    List<RpgCharacterConfigurationBase> charactersInQuestion = [];
+    if (decodedFightSequence.sequence
+        .any((t) => t.$1 == currentCharacter.uuid)) {
+      charactersInQuestion.add(currentCharacter);
+    }
+
+    var companionsAsked = currentCharacter.companionCharacters
+        ?.where((c) => decodedFightSequence.sequence
+            .any((fighttuple) => fighttuple.$1 == c.uuid))
+        .toList();
+    if (companionsAsked != null && companionsAsked.isNotEmpty) {
+      charactersInQuestion.addAll(companionsAsked);
+    }
+
+    var alternateFormsAsked = currentCharacter.alternateForms
+        ?.where((c) => decodedFightSequence.sequence
+            .any((fighttuple) => fighttuple.$1 == c.uuid))
+        .toList();
+    if (alternateFormsAsked != null && alternateFormsAsked.isNotEmpty) {
+      charactersInQuestion.addAll(alternateFormsAsked);
+    }
+
+    Future.delayed(Duration.zero, () async {
+      List<(String?, String, int)> rollAnswers = [];
+      var navKey = navigationService.getCurrentNavigationKey();
+      if (navKey.currentContext == null) {
+        navKey = navigatorKey;
+      }
+
+      for (var characterAsked in charactersInQuestion) {
+        // for every character ask show modal which asks for a roll
+        var roll = await showAskPlayerForFightOrderRoll(
+          navKey.currentContext!,
+          characterName: characterAsked.characterName,
+        );
+
+        if (roll == null) continue;
+        rollAnswers
+            .add((characterAsked.uuid, characterAsked.characterName, roll));
+      }
+
+      var fightSequenceAnswer = FightSequence(
+          fightUuid: decodedFightSequence.fightUuid, sequence: rollAnswers);
+
+      // send answer to dm
+      await sendFightSequenceRollsToDm(
+          playerId: connectionDetails.playerCharacterId!,
+          fightSequence: fightSequenceAnswer);
+    });
+  }
+
+  @override
   void grantPlayerItems(String grantedItemsJson) {
     List<dynamic> listOfGrants = jsonDecode(grantedItemsJson);
     var castedList = listOfGrants
@@ -285,11 +396,14 @@ class ServerMethodsService extends IServerMethodsService {
     // update inventory
     widgetRef
         .read(rpgCharacterConfigurationProvider.notifier)
-        .grantItems(myNewItems);
+        .grantItems(myNewItems.grantedItems);
 
     var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
 
     var navKey = navigationService.getCurrentNavigationKey();
+    if (navKey.currentContext == null) {
+      navKey = navigatorKey;
+    }
 
     // show modal
     showPlayerHasBeenGrantedItemsThroughDmModal(
@@ -354,5 +468,35 @@ class ServerMethodsService extends IServerMethodsService {
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         currentConnectionDetails.copyWith(
             connectedPlayers: updatedPlayerProfiles));
+  }
+
+  @override
+  void dmReceivedFightSequenceAnswer(String serializedFightSequence) {
+    // decode fight sequence
+    var decodedFightSequence =
+        FightSequence.fromJson(jsonDecode(serializedFightSequence));
+
+    var currentConnectionDetails =
+        widgetRef.read(connectionDetailsProvider).requireValue;
+
+    var currentFightSequenceAskedFor = currentConnectionDetails.fightSequence;
+
+    if (currentFightSequenceAskedFor == null ||
+        currentFightSequenceAskedFor.fightUuid !=
+            decodedFightSequence.fightUuid) {
+      return;
+    }
+
+    // merge answers into connectiondetails
+    var fightSequenceList = currentFightSequenceAskedFor.sequence;
+
+    fightSequenceList.addAllIntoSortedList(
+        decodedFightSequence.sequence, (a, b) => b.$3.compareTo(a.$3));
+
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        currentConnectionDetails.copyWith(
+            fightSequence: FightSequence(
+                fightUuid: currentFightSequenceAskedFor.fightUuid,
+                sequence: fightSequenceList)));
   }
 }

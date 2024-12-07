@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,7 +68,7 @@ namespace RPGTableHelper.WebApi.Controllers
         [HttpPost("getloginchallengeforusername/{username}")]
         public async Task<ActionResult<string>> GetChallengeByUsername(
             [FromRoute] string username,
-            [FromBody] EncryptedMessageWrapperDto encryptedAppPubKey,
+            [FromBody] [Required] EncryptedMessageWrapperDto encryptedAppPubKey,
             CancellationToken cancellationToken
         )
         {
@@ -126,7 +127,7 @@ namespace RPGTableHelper.WebApi.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [HttpPost("login")]
         public async Task<ActionResult<string>> LoginWithUsernameAndPasswordAsync(
-            [FromBody] LoginWithUsernameAndPasswordDto loginDto,
+            [FromBody] [Required] LoginWithUsernameAndPasswordDto loginDto,
             CancellationToken cancellationToken
         )
         {
@@ -152,7 +153,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
         [HttpPost("loginwithapple")]
         public async Task<ActionResult<string>> LoginWithAppleAsync(
-            [FromBody] AppleLoginDetails loginDto,
+            [FromBody] [Required] AppleLoginDetails loginDto,
             CancellationToken cancellationToken
         )
         {
@@ -225,7 +226,7 @@ namespace RPGTableHelper.WebApi.Controllers
 
         [HttpPost("loginwithgoogle")]
         public async Task<ActionResult<string>> LoginWithGoogleAsync(
-            [FromBody] GoogleLoginDto loginDto,
+            [FromBody] [Required] GoogleLoginDto loginDto,
             CancellationToken cancellationToken
         )
         {
@@ -326,7 +327,7 @@ namespace RPGTableHelper.WebApi.Controllers
         [HttpPost("requestresetpassword")]
         [AllowAnonymous]
         public async Task<ActionResult<string>> RequestPasswordReset(
-            [FromBody] ResetPasswordRequestDto requestDto,
+            [FromBody] [Required] ResetPasswordRequestDto requestDto,
             CancellationToken cancellationToken
         )
         {
@@ -364,7 +365,7 @@ namespace RPGTableHelper.WebApi.Controllers
         [HttpPost("resetpassword")]
         [AllowAnonymous]
         public async Task<ActionResult<string>> CompleteUserPasswordReset(
-            [FromBody] ResetPasswordDto requestDto,
+            [FromBody] [Required] ResetPasswordDto requestDto,
             CancellationToken cancellationToken
         )
         {

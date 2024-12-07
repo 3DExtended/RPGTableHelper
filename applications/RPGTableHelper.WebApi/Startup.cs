@@ -195,7 +195,7 @@ public class Startup
                     },
                 }
             );
-            // c.GeneratePolymorphicSchemas();
+            c.GeneratePolymorphicSchemas();
         });
 
         services.AddCors(options =>
@@ -210,7 +210,11 @@ public class Startup
         services.AddMemoryCache();
         services.AddHttpClient();
 
-        services.AddAutoMapper(typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile));
+        services.AddAutoMapper(
+            typeof(DataLayerEntitiesMapperProfile),
+            typeof(SharedMapperProfile),
+            typeof(ApiDtoMapperProfile)
+        );
 
         // services.AddSingleton<ITypedMemoryCache<AzureBlobStorageOptions>>(
         //     new TypedMemoryCache<AzureBlobStorageOptions>(cache, memoryCacheSize)

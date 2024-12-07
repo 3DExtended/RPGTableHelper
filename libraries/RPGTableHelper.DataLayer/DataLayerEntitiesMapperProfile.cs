@@ -1,18 +1,71 @@
+using System.Reflection.Emit;
 using AutoMapper;
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.EfCore;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Models.Images;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
+using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
 
 namespace RPGTableHelper.DataLayer
 {
+    public class CustomTypeConverter
+        : IValueConverter<ICollection<PermittedUsersToNotesBlockEntity>?, IList<User.UserIdentifier>>
+    {
+        public IList<User.UserIdentifier> Convert(
+            ICollection<PermittedUsersToNotesBlockEntity>? source,
+            ResolutionContext context
+        )
+        {
+            if (source == null)
+            {
+                return new List<User.UserIdentifier>();
+            }
+
+            return source.Select(pu => User.UserIdentifier.From(pu.PermittedUserId)).ToList();
+        }
+    }
+
     public class DataLayerEntitiesMapperProfile : Profile
     {
         public DataLayerEntitiesMapperProfile()
         {
+            CreateMapBetweenIdentifiers<NoteDocument.NoteDocumentIdentifier, Guid>();
+            CreateMap<NoteDocument, NoteDocumentEntity>()
+                .ForMember(x => x.NoteBlocks, opt => opt.MapFrom(src => src.NoteBlocks))
+                .ReverseMap()
+                .ForMember(x => x.NoteBlocks, opt => opt.MapFrom(src => src.NoteBlocks));
+
+            // have to be handled manually
+            CreateMap<NoteDocumentEntity, NoteDocumentEntity>()
+                .ForMember(x => x.NoteBlocks, opt => opt.Ignore());
+
+            CreateMap<NoteBlockModelBase, NoteBlockEntityBase>()
+                .IncludeAllDerived()
+                .ForMember(x => x.PermittedUsers, opt => opt.Ignore());
+
+            CreateMap<NoteBlockEntityBase, NoteBlockModelBase>()
+                .IncludeAllDerived()
+                .ForMember(x => x.PermittedUsers, opt => opt.ConvertUsing(new CustomTypeConverter()));
+
+            CreateMapBetweenIdentifiers<NoteBlockModelBase.NoteBlockModelBaseIdentifier, Guid>();
+            CreateMap<TextBlock, TextBlockEntity>().ReverseMap();
+            CreateMap<ImageBlock, ImageBlockEntity>().ReverseMap();
+
+            CreateMap<TextBlockEntity, TextBlockEntity>()
+                .ForMember(x => x.CreatingUserId, opt => opt.Ignore())
+                .ForMember(x => x.NoteDocumentId, opt => opt.Ignore());
+
+            CreateMap<ImageBlockEntity, ImageBlockEntity>()
+                .ForMember(x => x.CreatingUserId, opt => opt.Ignore())
+                .ForMember(x => x.NoteDocumentId, opt => opt.Ignore());
+
             CreateModelMaps<User, User.UserIdentifier, Guid, UserEntity>();
+            CreateModelMaps<ImageMetaData, ImageMetaData.ImageMetaDataIdentifier, Guid, ImageMetaDataEntity>();
 
             CreateModelMaps<Campagne, Campagne.CampagneIdentifier, Guid, CampagneEntity>();
             CreateModelMaps<
@@ -22,10 +75,7 @@ namespace RPGTableHelper.DataLayer
                 CampagneJoinRequestEntity
             >();
 
-            CreateMap<CampagneEntity, CampagneEntity>();
-
             CreateModelMaps<PlayerCharacter, PlayerCharacter.PlayerCharacterIdentifier, Guid, PlayerCharacterEntity>();
-            CreateMap<PlayerCharacterEntity, PlayerCharacterEntity>();
 
             CreateMap<Guid?, Option<Campagne.CampagneIdentifier>>()
                 .ConvertUsing(
@@ -35,6 +85,7 @@ namespace RPGTableHelper.DataLayer
                 .ConvertUsing((tmid) => tmid.IsNone ? (Guid?)null : tmid.Get().Value);
 
             CreateOptionMapForType<SupportedSignInProviders>();
+            CreateOptionMapForType<ImageType>();
 
             CreateModelMaps<
                 OpenSignInProviderRegisterRequest,
@@ -103,6 +154,7 @@ namespace RPGTableHelper.DataLayer
             CreateMapBetweenIdentifiers<TIdentifier, TIdentifierValue>();
 
             CreateMap<TModel, TEntity>().ReverseMap();
+            CreateMap<TEntity, TEntity>().ReverseMap();
         }
 
         private void CreateMapBetweenIdentifiers<TIdentifier, TIdentifierValue>()

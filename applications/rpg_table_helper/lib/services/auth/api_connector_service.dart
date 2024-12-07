@@ -15,6 +15,10 @@ abstract class IApiConnectorService {
   Future<bool> setJwt(String jwt);
   Future<bool> deleteJwt();
 
+  Future<ChopperClient?> getChopperClient({
+    bool requiresJwt = true,
+  });
+
   void clearCache();
 }
 
@@ -41,13 +45,9 @@ class ApiConnectorService extends IApiConnectorService {
   }
 
   @override
-  Future<Swagger?> getApiConnector({
+  Future<ChopperClient?> getChopperClient({
     bool requiresJwt = true,
   }) async {
-    if (_cachedSwaggerClient != null) {
-      return _cachedSwaggerClient;
-    }
-
     var jwt = await getJwt();
 
     List<Interceptor> interceptorsToUse = [];
@@ -62,14 +62,28 @@ class ApiConnectorService extends IApiConnectorService {
     }
 
     final telemetryHttpClient = Client();
+    var chopperClient = ChopperClient(
+      client: telemetryHttpClient,
+      services: [Swagger.create(baseUrl: Uri.parse(apiBaseUrl))],
+      converter: $JsonSerializableConverter(),
+      interceptors: interceptorsToUse,
+      baseUrl: Uri.parse(apiBaseUrl),
+    );
 
-    var tempClient = Swagger.create(
-        client: ChopperClient(
-            client: telemetryHttpClient,
-            services: [Swagger.create(baseUrl: Uri.parse(apiBaseUrl))],
-            converter: $JsonSerializableConverter(),
-            interceptors: interceptorsToUse,
-            baseUrl: Uri.parse(apiBaseUrl)));
+    return chopperClient;
+  }
+
+  @override
+  Future<Swagger?> getApiConnector({
+    bool requiresJwt = true,
+  }) async {
+    if (_cachedSwaggerClient != null) {
+      return _cachedSwaggerClient;
+    }
+    var chopperClient = await getChopperClient(requiresJwt: requiresJwt);
+    if (chopperClient == null) return null;
+
+    var tempClient = Swagger.create(client: chopperClient);
 
     if (requiresJwt) {
       // only cache if jwt is configured
@@ -128,5 +142,10 @@ class MockApiConnectorService extends IApiConnectorService {
   @override
   Future<bool> deleteJwt() async {
     return Future.value(jwtRemoveResultOverride ?? true);
+  }
+
+  @override
+  Future<ChopperClient?> getChopperClient({bool requiresJwt = true}) {
+    return Future.value(null);
   }
 }

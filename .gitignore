@@ -518,3 +518,4 @@ coveragereport/
 Cobertura.xml
 applications/RPGTableHelper.WebApi/maindb1
 applications/RPGTableHelper.WebApi/maindb2.db
+applications/RPGTableHelper.WebApi/userimages/**

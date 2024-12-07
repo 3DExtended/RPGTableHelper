@@ -70,15 +70,15 @@ class SignInButton extends StatelessWidget {
               child: Image(
                 image: AssetImage(
                   button == Buttons.Google
-                      ? 'assets/extern/logos/android_neutral_sq_na@4x.png'
+                      ? 'assets/extern/logos/google_light.png'
                       : 'assets/extern/logos/google_dark.png',
                 ),
-                height: 38.0,
+                height: 42.0,
               ),
             ),
           ),
           backgroundColor: button == Buttons.Google
-              ? const Color(0xFFf2f2f2)
+              ? const Color.fromARGB(255, 255, 255, 255)
               : const Color(0xff131314),
           onPressed: onPressed,
           padding: padding,
@@ -121,7 +121,7 @@ class SignInButton extends StatelessWidget {
           mini: mini,
           text: text ?? 'Sign in with GitHub',
           icon: FontAwesomeIcons.github,
-          backgroundColor: const Color(0xFF444444),
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
           onPressed: onPressed,
           padding: padding,
           shape: shape,
