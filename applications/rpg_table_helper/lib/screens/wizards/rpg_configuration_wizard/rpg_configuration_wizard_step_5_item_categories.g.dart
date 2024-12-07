@@ -26,12 +26,12 @@ abstract class _$_ItemCategoryEditCWProxy {
   /// _ItemCategoryEdit(...).copyWith(id: 12, name: "My name")
   /// ````
   _ItemCategoryEdit call({
-    String? uuid,
-    TextEditingController? nameController,
+    String uuid,
+    TextEditingController nameController,
     String? iconName,
     Color? iconColor,
-    List<_ItemCategoryEdit>? subCategories,
-    bool? hideInInventoryFilters,
+    List<_ItemCategoryEdit> subCategories,
+    bool hideInInventoryFilters,
   });
 }
 
@@ -79,12 +79,11 @@ class _$_ItemCategoryEditCWProxyImpl implements _$_ItemCategoryEditCWProxy {
     Object? hideInInventoryFilters = const $CopyWithPlaceholder(),
   }) {
     return _ItemCategoryEdit(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      nameController: nameController == const $CopyWithPlaceholder() ||
-              nameController == null
+      nameController: nameController == const $CopyWithPlaceholder()
           ? _value.nameController
           // ignore: cast_nullable_to_non_nullable
           : nameController as TextEditingController,
@@ -96,14 +95,12 @@ class _$_ItemCategoryEditCWProxyImpl implements _$_ItemCategoryEditCWProxy {
           ? _value.iconColor
           // ignore: cast_nullable_to_non_nullable
           : iconColor as Color?,
-      subCategories:
-          subCategories == const $CopyWithPlaceholder() || subCategories == null
-              ? _value.subCategories
-              // ignore: cast_nullable_to_non_nullable
-              : subCategories as List<_ItemCategoryEdit>,
+      subCategories: subCategories == const $CopyWithPlaceholder()
+          ? _value.subCategories
+          // ignore: cast_nullable_to_non_nullable
+          : subCategories as List<_ItemCategoryEdit>,
       hideInInventoryFilters:
-          hideInInventoryFilters == const $CopyWithPlaceholder() ||
-                  hideInInventoryFilters == null
+          hideInInventoryFilters == const $CopyWithPlaceholder()
               ? _value.hideInInventoryFilters
               // ignore: cast_nullable_to_non_nullable
               : hideInInventoryFilters as bool,

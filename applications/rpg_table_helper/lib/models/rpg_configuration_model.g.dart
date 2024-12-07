@@ -30,13 +30,13 @@ abstract class _$RpgConfigurationModelCWProxy {
   /// RpgConfigurationModel(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgConfigurationModel call({
-    String? rpgName,
-    List<RpgItem>? allItems,
-    List<PlaceOfFinding>? placesOfFindings,
-    CurrencyDefinition? currencyDefinition,
-    List<ItemCategory>? itemCategories,
+    String rpgName,
+    List<RpgItem> allItems,
+    List<PlaceOfFinding> placesOfFindings,
+    CurrencyDefinition currencyDefinition,
+    List<ItemCategory> itemCategories,
     List<CharacterStatsTabDefinition>? characterStatTabsDefinition,
-    List<CraftingRecipe>? craftingRecipes,
+    List<CraftingRecipe> craftingRecipes,
   });
 }
 
@@ -95,26 +95,23 @@ class _$RpgConfigurationModelCWProxyImpl
     Object? craftingRecipes = const $CopyWithPlaceholder(),
   }) {
     return RpgConfigurationModel(
-      rpgName: rpgName == const $CopyWithPlaceholder() || rpgName == null
+      rpgName: rpgName == const $CopyWithPlaceholder()
           ? _value.rpgName
           // ignore: cast_nullable_to_non_nullable
           : rpgName as String,
-      allItems: allItems == const $CopyWithPlaceholder() || allItems == null
+      allItems: allItems == const $CopyWithPlaceholder()
           ? _value.allItems
           // ignore: cast_nullable_to_non_nullable
           : allItems as List<RpgItem>,
-      placesOfFindings: placesOfFindings == const $CopyWithPlaceholder() ||
-              placesOfFindings == null
+      placesOfFindings: placesOfFindings == const $CopyWithPlaceholder()
           ? _value.placesOfFindings
           // ignore: cast_nullable_to_non_nullable
           : placesOfFindings as List<PlaceOfFinding>,
-      currencyDefinition: currencyDefinition == const $CopyWithPlaceholder() ||
-              currencyDefinition == null
+      currencyDefinition: currencyDefinition == const $CopyWithPlaceholder()
           ? _value.currencyDefinition
           // ignore: cast_nullable_to_non_nullable
           : currencyDefinition as CurrencyDefinition,
-      itemCategories: itemCategories == const $CopyWithPlaceholder() ||
-              itemCategories == null
+      itemCategories: itemCategories == const $CopyWithPlaceholder()
           ? _value.itemCategories
           // ignore: cast_nullable_to_non_nullable
           : itemCategories as List<ItemCategory>,
@@ -123,8 +120,7 @@ class _$RpgConfigurationModelCWProxyImpl
           ? _value.characterStatTabsDefinition
           // ignore: cast_nullable_to_non_nullable
           : characterStatTabsDefinition as List<CharacterStatsTabDefinition>?,
-      craftingRecipes: craftingRecipes == const $CopyWithPlaceholder() ||
-              craftingRecipes == null
+      craftingRecipes: craftingRecipes == const $CopyWithPlaceholder()
           ? _value.craftingRecipes
           // ignore: cast_nullable_to_non_nullable
           : craftingRecipes as List<CraftingRecipe>,
@@ -159,12 +155,12 @@ abstract class _$ItemCategoryCWProxy {
   /// ItemCategory(...).copyWith(id: 12, name: "My name")
   /// ````
   ItemCategory call({
-    String? uuid,
-    String? name,
+    String uuid,
+    String name,
     String? colorCode,
     String? iconName,
-    List<ItemCategory>? subCategories,
-    bool? hideInInventoryFilters,
+    List<ItemCategory> subCategories,
+    bool hideInInventoryFilters,
   });
 }
 
@@ -211,11 +207,11 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
     Object? hideInInventoryFilters = const $CopyWithPlaceholder(),
   }) {
     return ItemCategory(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      name: name == const $CopyWithPlaceholder() || name == null
+      name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -227,14 +223,12 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
           ? _value.iconName
           // ignore: cast_nullable_to_non_nullable
           : iconName as String?,
-      subCategories:
-          subCategories == const $CopyWithPlaceholder() || subCategories == null
-              ? _value.subCategories
-              // ignore: cast_nullable_to_non_nullable
-              : subCategories as List<ItemCategory>,
+      subCategories: subCategories == const $CopyWithPlaceholder()
+          ? _value.subCategories
+          // ignore: cast_nullable_to_non_nullable
+          : subCategories as List<ItemCategory>,
       hideInInventoryFilters:
-          hideInInventoryFilters == const $CopyWithPlaceholder() ||
-                  hideInInventoryFilters == null
+          hideInInventoryFilters == const $CopyWithPlaceholder()
               ? _value.hideInInventoryFilters
               // ignore: cast_nullable_to_non_nullable
               : hideInInventoryFilters as bool,
@@ -260,7 +254,7 @@ abstract class _$CurrencyTypeCWProxy {
   /// CurrencyType(...).copyWith(id: 12, name: "My name")
   /// ````
   CurrencyType call({
-    String? name,
+    String name,
     int? multipleOfPreviousValue,
   });
 }
@@ -291,7 +285,7 @@ class _$CurrencyTypeCWProxyImpl implements _$CurrencyTypeCWProxy {
     Object? multipleOfPreviousValue = const $CopyWithPlaceholder(),
   }) {
     return CurrencyType(
-      name: name == const $CopyWithPlaceholder() || name == null
+      name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -320,7 +314,7 @@ abstract class _$CurrencyDefinitionCWProxy {
   /// CurrencyDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
   CurrencyDefinition call({
-    List<CurrencyType>? currencyTypes,
+    List<CurrencyType> currencyTypes,
   });
 }
 
@@ -346,11 +340,10 @@ class _$CurrencyDefinitionCWProxyImpl implements _$CurrencyDefinitionCWProxy {
     Object? currencyTypes = const $CopyWithPlaceholder(),
   }) {
     return CurrencyDefinition(
-      currencyTypes:
-          currencyTypes == const $CopyWithPlaceholder() || currencyTypes == null
-              ? _value.currencyTypes
-              // ignore: cast_nullable_to_non_nullable
-              : currencyTypes as List<CurrencyType>,
+      currencyTypes: currencyTypes == const $CopyWithPlaceholder()
+          ? _value.currencyTypes
+          // ignore: cast_nullable_to_non_nullable
+          : currencyTypes as List<CurrencyType>,
     );
   }
 }
@@ -374,8 +367,8 @@ abstract class _$CraftingRecipeIngredientPairCWProxy {
   /// CraftingRecipeIngredientPair(...).copyWith(id: 12, name: "My name")
   /// ````
   CraftingRecipeIngredientPair call({
-    String? itemUuid,
-    int? amountOfUsedItem,
+    String itemUuid,
+    int amountOfUsedItem,
   });
 }
 
@@ -407,12 +400,11 @@ class _$CraftingRecipeIngredientPairCWProxyImpl
     Object? amountOfUsedItem = const $CopyWithPlaceholder(),
   }) {
     return CraftingRecipeIngredientPair(
-      itemUuid: itemUuid == const $CopyWithPlaceholder() || itemUuid == null
+      itemUuid: itemUuid == const $CopyWithPlaceholder()
           ? _value.itemUuid
           // ignore: cast_nullable_to_non_nullable
           : itemUuid as String,
-      amountOfUsedItem: amountOfUsedItem == const $CopyWithPlaceholder() ||
-              amountOfUsedItem == null
+      amountOfUsedItem: amountOfUsedItem == const $CopyWithPlaceholder()
           ? _value.amountOfUsedItem
           // ignore: cast_nullable_to_non_nullable
           : amountOfUsedItem as int,
@@ -444,10 +436,10 @@ abstract class _$CraftingRecipeCWProxy {
   /// CraftingRecipe(...).copyWith(id: 12, name: "My name")
   /// ````
   CraftingRecipe call({
-    String? recipeUuid,
-    List<CraftingRecipeIngredientPair>? ingredients,
-    List<String>? requiredItemIds,
-    CraftingRecipeIngredientPair? createdItem,
+    String recipeUuid,
+    List<CraftingRecipeIngredientPair> ingredients,
+    List<String> requiredItemIds,
+    CraftingRecipeIngredientPair createdItem,
   });
 }
 
@@ -487,26 +479,22 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
     Object? createdItem = const $CopyWithPlaceholder(),
   }) {
     return CraftingRecipe(
-      recipeUuid:
-          recipeUuid == const $CopyWithPlaceholder() || recipeUuid == null
-              ? _value.recipeUuid
-              // ignore: cast_nullable_to_non_nullable
-              : recipeUuid as String,
-      ingredients:
-          ingredients == const $CopyWithPlaceholder() || ingredients == null
-              ? _value.ingredients
-              // ignore: cast_nullable_to_non_nullable
-              : ingredients as List<CraftingRecipeIngredientPair>,
-      requiredItemIds: requiredItemIds == const $CopyWithPlaceholder() ||
-              requiredItemIds == null
+      recipeUuid: recipeUuid == const $CopyWithPlaceholder()
+          ? _value.recipeUuid
+          // ignore: cast_nullable_to_non_nullable
+          : recipeUuid as String,
+      ingredients: ingredients == const $CopyWithPlaceholder()
+          ? _value.ingredients
+          // ignore: cast_nullable_to_non_nullable
+          : ingredients as List<CraftingRecipeIngredientPair>,
+      requiredItemIds: requiredItemIds == const $CopyWithPlaceholder()
           ? _value.requiredItemIds
           // ignore: cast_nullable_to_non_nullable
           : requiredItemIds as List<String>,
-      createdItem:
-          createdItem == const $CopyWithPlaceholder() || createdItem == null
-              ? _value.createdItem
-              // ignore: cast_nullable_to_non_nullable
-              : createdItem as CraftingRecipeIngredientPair,
+      createdItem: createdItem == const $CopyWithPlaceholder()
+          ? _value.createdItem
+          // ignore: cast_nullable_to_non_nullable
+          : createdItem as CraftingRecipeIngredientPair,
     );
   }
 }
@@ -546,12 +534,12 @@ abstract class _$CharacterStatDefinitionCWProxy {
   /// CharacterStatDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
   CharacterStatDefinition call({
-    String? statUuid,
-    String? name,
+    String statUuid,
+    String name,
     int? groupId,
-    String? helperText,
-    CharacterStatValueType? valueType,
-    CharacterStatEditType? editType,
+    String helperText,
+    CharacterStatValueType valueType,
+    CharacterStatEditType editType,
     bool? isOptionalForAlternateForms,
     bool? isOptionalForCompanionCharacters,
     String? jsonSerializedAdditionalData,
@@ -621,11 +609,11 @@ class _$CharacterStatDefinitionCWProxyImpl
     Object? jsonSerializedAdditionalData = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatDefinition(
-      statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
+      statUuid: statUuid == const $CopyWithPlaceholder()
           ? _value.statUuid
           // ignore: cast_nullable_to_non_nullable
           : statUuid as String,
-      name: name == const $CopyWithPlaceholder() || name == null
+      name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -633,16 +621,15 @@ class _$CharacterStatDefinitionCWProxyImpl
           ? _value.groupId
           // ignore: cast_nullable_to_non_nullable
           : groupId as int?,
-      helperText:
-          helperText == const $CopyWithPlaceholder() || helperText == null
-              ? _value.helperText
-              // ignore: cast_nullable_to_non_nullable
-              : helperText as String,
-      valueType: valueType == const $CopyWithPlaceholder() || valueType == null
+      helperText: helperText == const $CopyWithPlaceholder()
+          ? _value.helperText
+          // ignore: cast_nullable_to_non_nullable
+          : helperText as String,
+      valueType: valueType == const $CopyWithPlaceholder()
           ? _value.valueType
           // ignore: cast_nullable_to_non_nullable
           : valueType as CharacterStatValueType,
-      editType: editType == const $CopyWithPlaceholder() || editType == null
+      editType: editType == const $CopyWithPlaceholder()
           ? _value.editType
           // ignore: cast_nullable_to_non_nullable
           : editType as CharacterStatEditType,
@@ -691,11 +678,11 @@ abstract class _$CharacterStatsTabDefinitionCWProxy {
   /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
   /// ````
   CharacterStatsTabDefinition call({
-    String? uuid,
-    String? tabName,
-    bool? isOptional,
-    List<CharacterStatDefinition>? statsInTab,
-    bool? isDefaultTab,
+    String uuid,
+    String tabName,
+    bool isOptional,
+    List<CharacterStatDefinition> statsInTab,
+    bool isDefaultTab,
   });
 }
 
@@ -741,29 +728,26 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
     Object? isDefaultTab = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatsTabDefinition(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      tabName: tabName == const $CopyWithPlaceholder() || tabName == null
+      tabName: tabName == const $CopyWithPlaceholder()
           ? _value.tabName
           // ignore: cast_nullable_to_non_nullable
           : tabName as String,
-      isOptional:
-          isOptional == const $CopyWithPlaceholder() || isOptional == null
-              ? _value.isOptional
-              // ignore: cast_nullable_to_non_nullable
-              : isOptional as bool,
-      statsInTab:
-          statsInTab == const $CopyWithPlaceholder() || statsInTab == null
-              ? _value.statsInTab
-              // ignore: cast_nullable_to_non_nullable
-              : statsInTab as List<CharacterStatDefinition>,
-      isDefaultTab:
-          isDefaultTab == const $CopyWithPlaceholder() || isDefaultTab == null
-              ? _value.isDefaultTab
-              // ignore: cast_nullable_to_non_nullable
-              : isDefaultTab as bool,
+      isOptional: isOptional == const $CopyWithPlaceholder()
+          ? _value.isOptional
+          // ignore: cast_nullable_to_non_nullable
+          : isOptional as bool,
+      statsInTab: statsInTab == const $CopyWithPlaceholder()
+          ? _value.statsInTab
+          // ignore: cast_nullable_to_non_nullable
+          : statsInTab as List<CharacterStatDefinition>,
+      isDefaultTab: isDefaultTab == const $CopyWithPlaceholder()
+          ? _value.isDefaultTab
+          // ignore: cast_nullable_to_non_nullable
+          : isDefaultTab as bool,
     );
   }
 }
@@ -787,8 +771,8 @@ abstract class _$PlaceOfFindingCWProxy {
   /// PlaceOfFinding(...).copyWith(id: 12, name: "My name")
   /// ````
   PlaceOfFinding call({
-    String? uuid,
-    String? name,
+    String uuid,
+    String name,
   });
 }
 
@@ -817,11 +801,11 @@ class _$PlaceOfFindingCWProxyImpl implements _$PlaceOfFindingCWProxy {
     Object? name = const $CopyWithPlaceholder(),
   }) {
     return PlaceOfFinding(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      name: name == const $CopyWithPlaceholder() || name == null
+      name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -847,8 +831,8 @@ abstract class _$RpgItemRarityCWProxy {
   /// RpgItemRarity(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgItemRarity call({
-    String? placeOfFindingId,
-    int? diceChallenge,
+    String placeOfFindingId,
+    int diceChallenge,
   });
 }
 
@@ -879,16 +863,14 @@ class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
     Object? diceChallenge = const $CopyWithPlaceholder(),
   }) {
     return RpgItemRarity(
-      placeOfFindingId: placeOfFindingId == const $CopyWithPlaceholder() ||
-              placeOfFindingId == null
+      placeOfFindingId: placeOfFindingId == const $CopyWithPlaceholder()
           ? _value.placeOfFindingId
           // ignore: cast_nullable_to_non_nullable
           : placeOfFindingId as String,
-      diceChallenge:
-          diceChallenge == const $CopyWithPlaceholder() || diceChallenge == null
-              ? _value.diceChallenge
-              // ignore: cast_nullable_to_non_nullable
-              : diceChallenge as int,
+      diceChallenge: diceChallenge == const $CopyWithPlaceholder()
+          ? _value.diceChallenge
+          // ignore: cast_nullable_to_non_nullable
+          : diceChallenge as int,
     );
   }
 }
@@ -925,15 +907,15 @@ abstract class _$RpgItemCWProxy {
   /// RpgItem(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgItem call({
-    String? uuid,
-    String? name,
+    String uuid,
+    String name,
     String? imageUrlWithoutBasePath,
     DiceRoll? patchSize,
-    String? categoryId,
-    String? description,
+    String categoryId,
+    String description,
     String? imageDescription,
-    int? baseCurrencyPrice,
-    List<RpgItemRarity>? placeOfFindings,
+    int baseCurrencyPrice,
+    List<RpgItemRarity> placeOfFindings,
   });
 }
 
@@ -994,11 +976,11 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
     Object? placeOfFindings = const $CopyWithPlaceholder(),
   }) {
     return RpgItem(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      name: name == const $CopyWithPlaceholder() || name == null
+      name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -1011,27 +993,23 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.patchSize
           // ignore: cast_nullable_to_non_nullable
           : patchSize as DiceRoll?,
-      categoryId:
-          categoryId == const $CopyWithPlaceholder() || categoryId == null
-              ? _value.categoryId
-              // ignore: cast_nullable_to_non_nullable
-              : categoryId as String,
-      description:
-          description == const $CopyWithPlaceholder() || description == null
-              ? _value.description
-              // ignore: cast_nullable_to_non_nullable
-              : description as String,
+      categoryId: categoryId == const $CopyWithPlaceholder()
+          ? _value.categoryId
+          // ignore: cast_nullable_to_non_nullable
+          : categoryId as String,
+      description: description == const $CopyWithPlaceholder()
+          ? _value.description
+          // ignore: cast_nullable_to_non_nullable
+          : description as String,
       imageDescription: imageDescription == const $CopyWithPlaceholder()
           ? _value.imageDescription
           // ignore: cast_nullable_to_non_nullable
           : imageDescription as String?,
-      baseCurrencyPrice: baseCurrencyPrice == const $CopyWithPlaceholder() ||
-              baseCurrencyPrice == null
+      baseCurrencyPrice: baseCurrencyPrice == const $CopyWithPlaceholder()
           ? _value.baseCurrencyPrice
           // ignore: cast_nullable_to_non_nullable
           : baseCurrencyPrice as int,
-      placeOfFindings: placeOfFindings == const $CopyWithPlaceholder() ||
-              placeOfFindings == null
+      placeOfFindings: placeOfFindings == const $CopyWithPlaceholder()
           ? _value.placeOfFindings
           // ignore: cast_nullable_to_non_nullable
           : placeOfFindings as List<RpgItemRarity>,
@@ -1059,9 +1037,9 @@ abstract class _$DiceRollCWProxy {
   /// DiceRoll(...).copyWith(id: 12, name: "My name")
   /// ````
   DiceRoll call({
-    int? numDice,
-    int? diceSides,
-    int? modifier,
+    int numDice,
+    int diceSides,
+    int modifier,
   });
 }
 
@@ -1094,15 +1072,15 @@ class _$DiceRollCWProxyImpl implements _$DiceRollCWProxy {
     Object? modifier = const $CopyWithPlaceholder(),
   }) {
     return DiceRoll(
-      numDice: numDice == const $CopyWithPlaceholder() || numDice == null
+      numDice: numDice == const $CopyWithPlaceholder()
           ? _value.numDice
           // ignore: cast_nullable_to_non_nullable
           : numDice as int,
-      diceSides: diceSides == const $CopyWithPlaceholder() || diceSides == null
+      diceSides: diceSides == const $CopyWithPlaceholder()
           ? _value.diceSides
           // ignore: cast_nullable_to_non_nullable
           : diceSides as int,
-      modifier: modifier == const $CopyWithPlaceholder() || modifier == null
+      modifier: modifier == const $CopyWithPlaceholder()
           ? _value.modifier
           // ignore: cast_nullable_to_non_nullable
           : modifier as int,

@@ -21,9 +21,9 @@ abstract class _$RpgAlternateCharacterConfigurationCWProxy {
   /// RpgAlternateCharacterConfiguration(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgAlternateCharacterConfiguration call({
-    String? uuid,
-    String? characterName,
-    List<RpgCharacterStatValue>? characterStats,
+    String uuid,
+    String characterName,
+    List<RpgCharacterStatValue> characterStats,
   });
 }
 
@@ -60,17 +60,15 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
     Object? characterStats = const $CopyWithPlaceholder(),
   }) {
     return RpgAlternateCharacterConfiguration(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      characterName:
-          characterName == const $CopyWithPlaceholder() || characterName == null
-              ? _value.characterName
-              // ignore: cast_nullable_to_non_nullable
-              : characterName as String,
-      characterStats: characterStats == const $CopyWithPlaceholder() ||
-              characterStats == null
+      characterName: characterName == const $CopyWithPlaceholder()
+          ? _value.characterName
+          // ignore: cast_nullable_to_non_nullable
+          : characterName as String,
+      characterStats: characterStats == const $CopyWithPlaceholder()
           ? _value.characterStats
           // ignore: cast_nullable_to_non_nullable
           : characterStats as List<RpgCharacterStatValue>,
@@ -115,13 +113,13 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   /// RpgCharacterConfiguration(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterConfiguration call({
-    String? uuid,
-    String? characterName,
+    String uuid,
+    String characterName,
     List<RpgAlternateCharacterConfiguration>? alternateForms,
     int? moneyInBaseType,
     int? activeAlternateFormIndex,
-    List<RpgCharacterStatValue>? characterStats,
-    List<RpgCharacterOwnedItemPair>? inventory,
+    List<RpgCharacterStatValue> characterStats,
+    List<RpgCharacterOwnedItemPair> inventory,
     List<RpgAlternateCharacterConfiguration>? companionCharacters,
   });
 }
@@ -188,15 +186,14 @@ class _$RpgCharacterConfigurationCWProxyImpl
     Object? companionCharacters = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterConfiguration(
-      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
+      uuid: uuid == const $CopyWithPlaceholder()
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      characterName:
-          characterName == const $CopyWithPlaceholder() || characterName == null
-              ? _value.characterName
-              // ignore: cast_nullable_to_non_nullable
-              : characterName as String,
+      characterName: characterName == const $CopyWithPlaceholder()
+          ? _value.characterName
+          // ignore: cast_nullable_to_non_nullable
+          : characterName as String,
       alternateForms: alternateForms == const $CopyWithPlaceholder()
           ? _value.alternateForms
           // ignore: cast_nullable_to_non_nullable
@@ -210,12 +207,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
               ? _value.activeAlternateFormIndex
               // ignore: cast_nullable_to_non_nullable
               : activeAlternateFormIndex as int?,
-      characterStats: characterStats == const $CopyWithPlaceholder() ||
-              characterStats == null
+      characterStats: characterStats == const $CopyWithPlaceholder()
           ? _value.characterStats
           // ignore: cast_nullable_to_non_nullable
           : characterStats as List<RpgCharacterStatValue>,
-      inventory: inventory == const $CopyWithPlaceholder() || inventory == null
+      inventory: inventory == const $CopyWithPlaceholder()
           ? _value.inventory
           // ignore: cast_nullable_to_non_nullable
           : inventory as List<RpgCharacterOwnedItemPair>,
@@ -252,8 +248,8 @@ abstract class _$RpgCharacterStatValueCWProxy {
   /// RpgCharacterStatValue(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterStatValue call({
-    String? statUuid,
-    String? serializedValue,
+    String statUuid,
+    String serializedValue,
     bool? hideFromCharacterScreen,
     int? variant,
     bool? hideLabelOfStat,
@@ -302,12 +298,11 @@ class _$RpgCharacterStatValueCWProxyImpl
     Object? hideLabelOfStat = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterStatValue(
-      statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
+      statUuid: statUuid == const $CopyWithPlaceholder()
           ? _value.statUuid
           // ignore: cast_nullable_to_non_nullable
           : statUuid as String,
-      serializedValue: serializedValue == const $CopyWithPlaceholder() ||
-              serializedValue == null
+      serializedValue: serializedValue == const $CopyWithPlaceholder()
           ? _value.serializedValue
           // ignore: cast_nullable_to_non_nullable
           : serializedValue as String,
@@ -347,8 +342,8 @@ abstract class _$RpgCharacterOwnedItemPairCWProxy {
   /// RpgCharacterOwnedItemPair(...).copyWith(id: 12, name: "My name")
   /// ````
   RpgCharacterOwnedItemPair call({
-    String? itemUuid,
-    int? amount,
+    String itemUuid,
+    int amount,
   });
 }
 
@@ -379,11 +374,11 @@ class _$RpgCharacterOwnedItemPairCWProxyImpl
     Object? amount = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterOwnedItemPair(
-      itemUuid: itemUuid == const $CopyWithPlaceholder() || itemUuid == null
+      itemUuid: itemUuid == const $CopyWithPlaceholder()
           ? _value.itemUuid
           // ignore: cast_nullable_to_non_nullable
           : itemUuid as String,
-      amount: amount == const $CopyWithPlaceholder() || amount == null
+      amount: amount == const $CopyWithPlaceholder()
           ? _value.amount
           // ignore: cast_nullable_to_non_nullable
           : amount as int,
