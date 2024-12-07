@@ -4,10 +4,12 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.Images;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
+using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
 
 namespace RPGTableHelper.DataLayer.Tests.QueryHandlers;
 
@@ -66,6 +68,34 @@ public static class RpgDbContextHelpers
             await context.SaveChangesAsync();
 
             return mapper.Map<ImageMetaData>(imageMetaDataEntity);
+        }
+    }
+
+    public static async Task<NoteDocument> CreateNoteDocumentInDb(
+        IDbContextFactory<RpgDbContext> contextFactory,
+        IMapper mapper,
+        User userOfImage,
+        Campagne campagneForImage,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var noteDocument = new NoteDocument
+        {
+            CreationDate = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
+            CreatedForCampagneId = campagneForImage.Id,
+            CreatingUserId = userOfImage.Id,
+            GroupName = "asdf",
+            Title = "SomeTitle",
+        };
+
+        using (var context = contextFactory.CreateDbContext())
+        {
+            var noteDocumentEntity = mapper.Map<NoteDocumentEntity>(noteDocument);
+            await context.CampagneDocuments.AddAsync(noteDocumentEntity, cancellationToken);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<NoteDocument>(noteDocumentEntity);
         }
     }
 

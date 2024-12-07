@@ -13,6 +13,8 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities
     [KnownType(typeof(TextBlock))]
     public abstract class NoteBlockModelBase : NodeModelBase<NoteBlockModelBase.NoteBlockModelBaseIdentifier, Guid>
     {
+        public bool IsDeleted { get; set; } = false;
+
         public NoteDocument.NoteDocumentIdentifier NoteDocumentId { get; set; } = default!;
         public User.UserIdentifier CreatingUserId { get; set; } = default!;
 

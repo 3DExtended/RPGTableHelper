@@ -9,6 +9,8 @@ namespace RPGTableHelper.WebApi.Dtos.RpgEntities;
 
 public class NoteDocumentDto
 {
+    public bool IsDeleted { get; set; } = false;
+
     public DateTimeOffset CreationDate { get; set; }
 
     public DateTimeOffset LastModifiedAt { get; set; }

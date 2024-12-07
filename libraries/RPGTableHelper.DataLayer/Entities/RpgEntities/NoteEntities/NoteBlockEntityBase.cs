@@ -8,6 +8,7 @@ public abstract class NoteBlockEntityBase : EntityBase<Guid>
 {
     [ForeignKey(nameof(NoteDocument))]
     public Guid NoteDocumentId { get; set; } = Guid.Empty;
+    public bool IsDeleted { get; set; } = default!;
 
     public virtual NoteDocumentEntity? NoteDocument { get; set; }
 

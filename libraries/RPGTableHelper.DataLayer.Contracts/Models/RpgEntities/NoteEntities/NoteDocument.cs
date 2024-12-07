@@ -7,6 +7,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities
     public class NoteDocument : NodeModelBase<NoteDocument.NoteDocumentIdentifier, Guid>
     {
         public string GroupName { get; set; } = default!;
+        public bool IsDeleted { get; set; } = false;
 
         public User.UserIdentifier CreatingUserId { get; set; } = default!;
         public string Title { get; set; } = default!;

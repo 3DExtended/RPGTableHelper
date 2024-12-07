@@ -82,6 +82,7 @@ public class RpgDbContext : DbContext
         modelBuilder.Entity<NoteBlockEntityBase>().HasOne(e => e.CreatingUser);
 
         modelBuilder.Entity<NoteDocumentEntity>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<NoteBlockEntityBase>().HasQueryFilter(e => !e.IsDeleted);
 
         modelBuilder
             .Entity<CampagneEntity>()
