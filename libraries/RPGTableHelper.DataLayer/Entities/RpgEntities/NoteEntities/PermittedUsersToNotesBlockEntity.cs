@@ -4,8 +4,10 @@ using RPGTableHelper.DataLayer.Entities.Base;
 
 namespace RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
 
-public class PermittedUsersToNotesBlock
+public class PermittedUsersToNotesBlockEntity
 {
+    public bool IsDeleted { get; set; } = default!;
+
     [Key]
     public int Id { get; set; } = default!;
 

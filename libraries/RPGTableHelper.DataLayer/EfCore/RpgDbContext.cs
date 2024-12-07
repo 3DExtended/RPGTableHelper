@@ -55,7 +55,7 @@ public class RpgDbContext : DbContext
     public DbSet<UserEntity> Users { get; set; } = default!;
     public DbSet<NoteBlockEntityBase> NoteBlocks { get; set; } = default!;
     public DbSet<NoteDocumentEntity> CampagneDocuments { get; set; } = default!;
-    public DbSet<PermittedUsersToNotesBlock> PermittedUsersToNotesBlocks { get; set; } = default!;
+    public DbSet<PermittedUsersToNotesBlockEntity> PermittedUsersToNotesBlocks { get; set; } = default!;
     public DbSet<UserCredentialEntity> UserCredentials { get; set; } = default!;
     public DbSet<EncryptionChallengeEntity> EncryptionChallenges { get; set; } = default!;
     public DbSet<ImageMetaDataEntity> imageMetaDatas { get; set; } = default!;
@@ -83,6 +83,9 @@ public class RpgDbContext : DbContext
 
         modelBuilder.Entity<NoteDocumentEntity>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<NoteBlockEntityBase>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder
+            .Entity<PermittedUsersToNotesBlockEntity>()
+            .HasQueryFilter(e => !e.IsDeleted && !e.NotesBlock.IsDeleted);
 
         modelBuilder
             .Entity<CampagneEntity>()
@@ -107,9 +110,9 @@ public class RpgDbContext : DbContext
 
         modelBuilder
             .Entity<NoteBlockEntityBase>()
-            .HasDiscriminator<string>("block_type")
-            .HasValue<TextBlockEntity>(nameof(TextBlockEntity).Replace("Entity", string.Empty))
-            .HasValue<ImageBlockEntity>(nameof(ImageBlockEntity).Replace("Entity", string.Empty));
+            .HasDiscriminator<int>("block_type")
+            .HasValue<TextBlockEntity>(1)
+            .HasValue<ImageBlockEntity>(2);
 
         base.OnModelCreating(modelBuilder);
     }

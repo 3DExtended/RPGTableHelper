@@ -90,15 +90,15 @@ public class NoteDocumentQueryHandlerTests : QueryHandlersTestBase
         }
 
         Context.PermittedUsersToNotesBlocks.AddRange(
-            new List<PermittedUsersToNotesBlock>
+            new List<PermittedUsersToNotesBlockEntity>
             {
-                new PermittedUsersToNotesBlock
+                new PermittedUsersToNotesBlockEntity
                 {
                     PermittedUserId = user2.Id.Value,
                     Id = 0,
                     NotesBlockId = noteBlockText.Id,
                 },
-                new PermittedUsersToNotesBlock
+                new PermittedUsersToNotesBlockEntity
                 {
                     PermittedUserId = user3.Id.Value,
                     Id = 0,
@@ -108,15 +108,15 @@ public class NoteDocumentQueryHandlerTests : QueryHandlersTestBase
         );
 
         Context.PermittedUsersToNotesBlocks.AddRange(
-            new List<PermittedUsersToNotesBlock>
+            new List<PermittedUsersToNotesBlockEntity>
             {
-                new PermittedUsersToNotesBlock
+                new PermittedUsersToNotesBlockEntity
                 {
                     PermittedUserId = user2.Id.Value,
                     Id = 0,
                     NotesBlockId = noteBlockImage.Id,
                 },
-                new PermittedUsersToNotesBlock
+                new PermittedUsersToNotesBlockEntity
                 {
                     PermittedUserId = user3.Id.Value,
                     Id = 0,

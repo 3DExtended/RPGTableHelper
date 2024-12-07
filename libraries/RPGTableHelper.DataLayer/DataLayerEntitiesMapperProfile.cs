@@ -14,10 +14,10 @@ using RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
 namespace RPGTableHelper.DataLayer
 {
     public class CustomTypeConverter
-        : IValueConverter<ICollection<PermittedUsersToNotesBlock>?, IList<User.UserIdentifier>>
+        : IValueConverter<ICollection<PermittedUsersToNotesBlockEntity>?, IList<User.UserIdentifier>>
     {
         public IList<User.UserIdentifier> Convert(
-            ICollection<PermittedUsersToNotesBlock>? source,
+            ICollection<PermittedUsersToNotesBlockEntity>? source,
             ResolutionContext context
         )
         {
