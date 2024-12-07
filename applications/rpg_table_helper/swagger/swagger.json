@@ -983,6 +983,120 @@
         }
       }
     },
+    "/Notes/createdocument": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Creates a single document.",
+        "description": "You must be within the correct campagne",
+        "requestBody": {
+          "description": "The new document",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The id of the new document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentIdentifier"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentIdentifier"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteDocumentIdentifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/PlayerCharacter/createcharacter": {
       "post": {
         "tags": [
@@ -2815,6 +2929,13 @@
         "additionalProperties": false
       },
       "NoteDocumentDto": {
+        "required": [
+          "createdForCampagneId",
+          "groupName",
+          "imageBlocks",
+          "textBlocks",
+          "title"
+        ],
         "type": "object",
         "properties": {
           "creationDate": {
@@ -2829,15 +2950,15 @@
             "$ref": "#/components/schemas/NoteDocumentIdentifier"
           },
           "groupName": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "creatingUserId": {
             "$ref": "#/components/schemas/UserIdentifier"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "createdForCampagneId": {
             "$ref": "#/components/schemas/CampagneIdentifier"
@@ -2846,15 +2967,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ImageBlock"
-            },
-            "nullable": true
+            }
           },
           "textBlocks": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TextBlock"
-            },
-            "nullable": true
+            }
           }
         },
         "additionalProperties": false

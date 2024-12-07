@@ -168,5 +168,63 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Creates a single document.
+        /// </summary>
+        /// <remarks>You must be within the correct campagne</remarks>
+        /// <param name="notedocument">The new document</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The id of the new document</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(typeof(NoteDocument.NoteDocumentIdentifier), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("createdocument")]
+        public async Task<ActionResult<NoteDocument.NoteDocumentIdentifier>> CreateNoteDocumentAsync(
+            [FromBody] NoteDocumentDto notedocument,
+            CancellationToken cancellationToken
+        )
+        {
+            if (notedocument == null)
+            {
+                return BadRequest("No valid notedocument passed");
+            }
+
+            var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
+            {
+                CampagneId = notedocument.CreatedForCampagneId,
+                UserIdToCheck = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (isUserInCampagneResult.IsNone)
+            {
+                return BadRequest("Could not retrieve info.");
+            }
+
+            if (!isUserInCampagneResult.Get())
+            {
+                return Unauthorized();
+            }
+
+            notedocument.CreatingUserId = _userContext.User.UserIdentifier;
+
+            var noteDocumentCreationResult = await new NoteDocumentCreateQuery
+            {
+                ModelToCreate = _mapper.Map<NoteDocument>(notedocument),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (noteDocumentCreationResult.IsNone)
+            {
+                return BadRequest("Could not create NoteDocument");
+            }
+
+            return Ok(noteDocumentCreationResult.Get());
+        }
     }
 }

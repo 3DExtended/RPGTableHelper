@@ -221,6 +221,23 @@ abstract class Swagger extends ChopperService {
       _notesDeletedocumentNotedocumentidDelete(
           {@Path('notedocumentid') required String? notedocumentid});
 
+  ///Creates a single document.
+  Future<chopper.Response<NoteDocumentIdentifier>> notesCreatedocumentPost(
+      {required NoteDocumentDto? body}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentIdentifier, () => NoteDocumentIdentifier.fromJsonFactory);
+
+    return _notesCreatedocumentPost(body: body);
+  }
+
+  ///Creates a single document.
+  @Post(
+    path: '/Notes/createdocument',
+    optionalBody: true,
+  )
+  Future<chopper.Response<NoteDocumentIdentifier>> _notesCreatedocumentPost(
+      {@Body() required NoteDocumentDto? body});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(

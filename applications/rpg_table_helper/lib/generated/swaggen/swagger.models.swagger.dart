@@ -1551,12 +1551,12 @@ class NoteDocumentDto {
     this.creationDate,
     this.lastModifiedAt,
     this.id,
-    this.groupName,
+    required this.groupName,
     this.creatingUserId,
-    this.title,
-    this.createdForCampagneId,
-    this.imageBlocks,
-    this.textBlocks,
+    required this.title,
+    required this.createdForCampagneId,
+    required this.imageBlocks,
+    required this.textBlocks,
   });
 
   factory NoteDocumentDto.fromJson(Map<String, dynamic> json) =>
@@ -1572,17 +1572,17 @@ class NoteDocumentDto {
   @JsonKey(name: 'id')
   final NoteDocumentIdentifier? id;
   @JsonKey(name: 'groupName')
-  final String? groupName;
+  final String groupName;
   @JsonKey(name: 'creatingUserId')
   final UserIdentifier? creatingUserId;
   @JsonKey(name: 'title')
-  final String? title;
+  final String title;
   @JsonKey(name: 'createdForCampagneId')
-  final CampagneIdentifier? createdForCampagneId;
+  final CampagneIdentifier createdForCampagneId;
   @JsonKey(name: 'imageBlocks', defaultValue: <ImageBlock>[])
-  final List<ImageBlock>? imageBlocks;
+  final List<ImageBlock> imageBlocks;
   @JsonKey(name: 'textBlocks', defaultValue: <TextBlock>[])
-  final List<TextBlock>? textBlocks;
+  final List<TextBlock> textBlocks;
   static const fromJsonFactory = _$NoteDocumentDtoFromJson;
 
   @override
@@ -1660,12 +1660,12 @@ extension $NoteDocumentDtoExtension on NoteDocumentDto {
       {Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
       Wrapped<NoteDocumentIdentifier?>? id,
-      Wrapped<String?>? groupName,
+      Wrapped<String>? groupName,
       Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<String?>? title,
-      Wrapped<CampagneIdentifier?>? createdForCampagneId,
-      Wrapped<List<ImageBlock>?>? imageBlocks,
-      Wrapped<List<TextBlock>?>? textBlocks}) {
+      Wrapped<String>? title,
+      Wrapped<CampagneIdentifier>? createdForCampagneId,
+      Wrapped<List<ImageBlock>>? imageBlocks,
+      Wrapped<List<TextBlock>>? textBlocks}) {
     return NoteDocumentDto(
         creationDate:
             (creationDate != null ? creationDate.value : this.creationDate),

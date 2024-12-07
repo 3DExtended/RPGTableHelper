@@ -425,16 +425,14 @@ NoteDocumentDto _$NoteDocumentDtoFromJson(Map<String, dynamic> json) =>
       id: json['id'] == null
           ? null
           : NoteDocumentIdentifier.fromJson(json['id'] as Map<String, dynamic>),
-      groupName: json['groupName'] as String?,
+      groupName: json['groupName'] as String,
       creatingUserId: json['creatingUserId'] == null
           ? null
           : UserIdentifier.fromJson(
               json['creatingUserId'] as Map<String, dynamic>),
-      title: json['title'] as String?,
-      createdForCampagneId: json['createdForCampagneId'] == null
-          ? null
-          : CampagneIdentifier.fromJson(
-              json['createdForCampagneId'] as Map<String, dynamic>),
+      title: json['title'] as String,
+      createdForCampagneId: CampagneIdentifier.fromJson(
+          json['createdForCampagneId'] as Map<String, dynamic>),
       imageBlocks: (json['imageBlocks'] as List<dynamic>?)
               ?.map((e) => ImageBlock.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -453,9 +451,9 @@ Map<String, dynamic> _$NoteDocumentDtoToJson(NoteDocumentDto instance) =>
       'groupName': instance.groupName,
       'creatingUserId': instance.creatingUserId?.toJson(),
       'title': instance.title,
-      'createdForCampagneId': instance.createdForCampagneId?.toJson(),
-      'imageBlocks': instance.imageBlocks?.map((e) => e.toJson()).toList(),
-      'textBlocks': instance.textBlocks?.map((e) => e.toJson()).toList(),
+      'createdForCampagneId': instance.createdForCampagneId.toJson(),
+      'imageBlocks': instance.imageBlocks.map((e) => e.toJson()).toList(),
+      'textBlocks': instance.textBlocks.map((e) => e.toJson()).toList(),
     };
 
 NoteDocumentIdentifier _$NoteDocumentIdentifierFromJson(

@@ -167,6 +167,21 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<NoteDocumentIdentifier>> _notesCreatedocumentPost(
+      {required NoteDocumentDto? body}) {
+    final Uri $url = Uri.parse('/Notes/createdocument');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client
+        .send<NoteDocumentIdentifier, NoteDocumentIdentifier>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {
