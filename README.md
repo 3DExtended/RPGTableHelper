@@ -2,7 +2,7 @@
 
 ## 🎲 Overview
 
-**RPG Table Helper** is a Flutter-powered application with an ASP.NET backend designed to assist Dungeon Masters (DMs) and players in managing their tabletop RPG campaigns, characters, and notes. This tool is tailored for games like *Dungeons & Dragons*, *Daggerheart*, and similar physical RPGs to streamline gameplay, remove the need for paper, and provide real-time synchronization.
+**RPG Table Helper** is a Flutter-powered application with an ASP.NET backend designed to assist Dungeon Masters (DMs) and players in managing their tabletop RPG campaigns, characters, and notes. This tool is tailored for games like *Dungeons & Dragons*, *Daggerheart*, and similar physical RPGs to streamline gameplay, remove the need for paper, and provide real-time synchronization. This app focuses on tablets but does work on smartphones as well.
 
 ---
 
@@ -44,19 +44,33 @@ Below are visual examples of the app’s interface:
 
 #### Logo
 
-![App Logo](/applications/rpg_table_helper/assets/icons/icon.png)
-
-#### Login Screen
-
-![Login Screen](/applications/rpg_table_helper/test/goldens/loginscreen/1 - loginscreen (Language de, default).ipad 6th gen landscape.png)
+<img src="/applications/rpg_table_helper/assets/icons/icon.png" width="256">
 
 #### DM Campaign Management Screen
 
-![DM Campaign Management](/applications/rpg_table_helper/test/goldens/dmpagescreensdmcampagnemanagmentscreen/1 - dmpagescreensdmcampagnemanagmentscreen (Language de, default).ipad 6th gen landscape.png)
+<img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdmcampagnemanagmentscreen/1 - dmpagescreensdmcampagnemanagmentscreen (Language de, default).ipad 6th gen landscape.png" width="768">
 
 #### Player Character Stats Screen
 
-![Player Character Stats](/applications/rpg_table_helper/test/goldens/playerpagescreens1-playerstatsscreen/1 - playerpagescreens1-playerstatsscreen (Language de, default).ipad pro 11inch 4th gen.png)
+<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens1-playerstatsscreen/1 - playerpagescreens1-playerstatsscreen (Language de, default).ipad pro 11inch 4th gen.png" width="768">
+
+---
+
+## 🧩 Features Roadmap
+
+Here are some features we plan to implement in the near future:
+
+- **"Druid" Characters:** A modular character system allowing players to mix and select traits, features, and abilities into a single unified character. This system is similar to shapeshifters or hybrid forms, allowing versatile customization.
+- **Improved Real-Time Performance:** Optimizing SignalR communication to ensure faster and seamless updates when sending real-time updates about characters.
+- **Decentralized Hosting with Azure:** Investigating decentralized hosting with Azure to improve scalability, reliability, and provide hosting options for DMs or campaigns.
+
+## 💬 Contributing
+
+We welcome all feedback and contributions to improve RPG Table Helper. If you find a bug, have feature suggestions, or would like to contribute:
+
+- **Report issues or ideas via GitHub Issues.**
+
+Your feedback and help are always appreciated! 💖
 
 ---
 
@@ -111,22 +125,6 @@ To run the app, ensure you have the following installed:
 - **Frontend:** Flutter
 - **Backend:** ASP.NET
 - **Real-Time Communication:** SignalR
-
-## 🧩 Features Roadmap
-
-Here are some features we plan to implement in the near future:
-
-- **"Druid" Characters:** A modular character system allowing players to mix and select traits, features, and abilities into a single unified character. This system is similar to shapeshifters or hybrid forms, allowing versatile customization.
-- **Improved Real-Time Performance:** Optimizing SignalR communication to ensure faster and seamless updates when sending real-time updates about characters.
-- **Decentralized Hosting with Azure:** Investigating decentralized hosting with Azure to improve scalability, reliability, and provide hosting options for DMs or campaigns.
-
-## 💬 Contributing
-
-We welcome all feedback and contributions to improve RPG Table Helper. If you find a bug, have feature suggestions, or would like to contribute:
-
-- **Report issues or ideas via GitHub Issues.**
-
-Your feedback and help are always appreciated! 💖
 
 ## 📬 Contact
 
