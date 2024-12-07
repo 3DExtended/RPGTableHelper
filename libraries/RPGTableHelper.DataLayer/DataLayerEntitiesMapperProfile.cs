@@ -40,7 +40,9 @@ namespace RPGTableHelper.DataLayer
                 .ReverseMap()
                 .ForMember(x => x.NoteBlocks, opt => opt.MapFrom(src => src.NoteBlocks));
 
-            CreateMap<NoteDocumentEntity, NoteDocumentEntity>().ReverseMap();
+            // have to be handled manually
+            CreateMap<NoteDocumentEntity, NoteDocumentEntity>()
+                .ForMember(x => x.NoteBlocks, opt => opt.Ignore());
 
             CreateMap<NoteBlockModelBase, NoteBlockEntityBase>()
                 .IncludeAllDerived()
