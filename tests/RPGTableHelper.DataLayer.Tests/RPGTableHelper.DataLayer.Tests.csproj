@@ -35,7 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\RPGTableHelper.DataLayer\RPGTableHelper.DataLayer.csproj" />
+    <ProjectReference
+      Include="..\..\extern\Prodot.Patterns.Cqrs\Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection\Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.csproj" />
+
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer\RPGTableHelper.DataLayer.csproj" />
   </ItemGroup>
 
 </Project>
