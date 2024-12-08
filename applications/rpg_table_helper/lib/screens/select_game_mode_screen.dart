@@ -125,9 +125,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                       ],
                     )
                   : LayoutBuilder(builder: (context, constraints) {
-                      return Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: SingleChildScrollView(
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
                           child: Column(
                             children: [
                               AddableColumnHeader(
