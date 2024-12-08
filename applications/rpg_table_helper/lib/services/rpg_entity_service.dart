@@ -41,6 +41,10 @@ abstract class IRpgEntityService {
           {required String joinCode,
           required PlayerCharacterIdentifier playerCharacterId});
 
+  Future<HRResponse<CampagneIdentifier>> createNewCampagne(
+      {required String campagneName,
+      required RpgConfigurationModel baseConfig});
+
   Future<HRResponse<List<JoinRequestForCampagneDto>>>
       getOpenJoinRequestsForCampagne({required CampagneIdentifier campagneId});
 
@@ -261,6 +265,27 @@ class RpgEntityService extends IRpgEntityService {
 
     return result;
   }
+
+  @override
+  Future<HRResponse<CampagneIdentifier>> createNewCampagne(
+      {required String campagneName,
+      required RpgConfigurationModel baseConfig}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          '707c0772-f7cb-41e3-a205-f5b453e6787b');
+    }
+
+    var createCampagneResult = await HRResponse.fromApiFuture(
+        api.campagneCreatecampagnePost(
+            body: CampagneCreateDto(
+                campagneName: campagneName,
+                rpgConfiguration: jsonEncode(baseConfig))),
+        'Could not create new campagne.',
+        'e933abe6-0651-466c-8f5d-6f411c653e88');
+
+    return createCampagneResult;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -409,6 +434,14 @@ class MockRpgEntityService extends IRpgEntityService {
     required MultipartFile image,
   }) {
     // TODO: implement uploadImageToCampagneStorage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<CampagneIdentifier>> createNewCampagne(
+      {required String campagneName,
+      required RpgConfigurationModel baseConfig}) {
+    // TODO: implement createNewCampagne
     throw UnimplementedError();
   }
 }

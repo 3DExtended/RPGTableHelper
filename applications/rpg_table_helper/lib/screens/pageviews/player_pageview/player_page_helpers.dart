@@ -27,6 +27,8 @@ class PlayerPageHelpers {
     var result = await showGetPlayerConfigurationModal(
         context: context,
         statConfiguration: characterNameStat,
+        hideAdditionalSetting: true,
+        hideVariantSelection: true,
         characterToRenderStatFor: null,
         characterName: currentCharacterName ?? "Player Name",
         characterValue: currentCharacterName == null

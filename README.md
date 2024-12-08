@@ -63,6 +63,7 @@ Here are some features we plan to implement in the near future:
 - **"Druid" Characters:** A modular character system allowing players to mix and select traits, features, and abilities into a single unified character. This system is similar to shapeshifters or hybrid forms, allowing versatile customization.
 - **Improved Real-Time Performance:** Optimizing SignalR communication to ensure faster and seamless updates when sending real-time updates about characters.
 - **Decentralized Hosting with Azure:** Investigating decentralized hosting with Azure to improve scalability, reliability, and provide hosting options for DMs or campaigns.
+- **Localization:** I am planning on localizing this app at least for english and german. Help is very much appreciated for other languages!
 
 ## 💬 Contributing
 

@@ -35,6 +35,8 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   required RpgCharacterConfiguration? characterToRenderStatFor,
   RpgCharacterStatValue? characterValue,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
+  bool hideVariantSelection = false,
+  bool hideAdditionalSetting = false,
 }) async {
   return await customShowCupertinoModalBottomSheet<RpgCharacterStatValue>(
       isDismissible: true,
@@ -51,6 +53,8 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
           overrideNavigatorKey: overrideNavigatorKey,
           characterName: characterName,
           characterToRenderStatFor: characterToRenderStatFor,
+          hideVariantSelection: hideVariantSelection,
+          hideAdditionalSetting: hideAdditionalSetting,
         );
       });
 }
@@ -63,8 +67,12 @@ class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
     required this.characterToRenderStatFor,
     this.characterValue,
     this.overrideNavigatorKey,
+    this.hideVariantSelection = false,
+    this.hideAdditionalSetting = false,
   });
 
+  final bool hideVariantSelection;
+  final bool hideAdditionalSetting;
   final String characterName;
   final RpgCharacterConfiguration? characterToRenderStatFor;
   final CharacterStatDefinition statConfiguration;
@@ -417,91 +425,103 @@ class _ShowGetPlayerConfigurationModalContentState
                   );
               }
             }),
-            SizedBox(
-              height: 10,
-            ),
-            HorizontalLine(
-              useDarkColor: true,
-            ),
-            SizedBox(
-              height: 10,
-            ),
+
+            if (!widget.hideAdditionalSetting)
+              SizedBox(
+                height: 10,
+              ),
+            if (!widget.hideAdditionalSetting)
+              HorizontalLine(
+                useDarkColor: true,
+              ),
+
+            if (!widget.hideAdditionalSetting)
+              SizedBox(
+                height: 10,
+              ),
 
             // additional settings
-            getAdditionalSettingsTile(),
+            if (!widget.hideAdditionalSetting) getAdditionalSettingsTile(),
 
-            SizedBox(
-              height: 10,
-            ),
-            HorizontalLine(
-              useDarkColor: true,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Vorschau:",
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: darkTextColor,
-                      fontSize: 24,
+            if (!widget.hideVariantSelection)
+              SizedBox(
+                height: 10,
+              ),
+            if (!widget.hideVariantSelection)
+              HorizontalLine(
+                useDarkColor: true,
+              ),
+            if (!widget.hideVariantSelection)
+              SizedBox(
+                height: 10,
+              ),
+            if (!widget.hideVariantSelection)
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Vorschau:",
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: darkTextColor,
+                        fontSize: 24,
+                      ),
+                ),
+              ),
+            if (!widget.hideVariantSelection)
+              SizedBox(
+                height: 10,
+              ),
+            if (!widget.hideVariantSelection)
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                child: PageViewDotIndicator(
+                  currentItem: currentlyVisibleVariant,
+                  count: numberOfVariantsForValueTypes(
+                      widget.statConfiguration.valueType),
+                  unselectedColor: Colors.black26,
+                  selectedColor: Colors.blue,
+                  duration: const Duration(milliseconds: 200),
+                  boxShape: BoxShape.circle,
+                  unselectedSize: Size(6, 6),
+                  size: Size(6, 6),
+                ),
+              ),
+            if (!widget.hideVariantSelection)
+              SizedBox(
+                height: 400,
+                child: PageView(
+                    controller: pageController,
+                    children: List.generate(
+                      numberOfVariantsForValueTypes(
+                          widget.statConfiguration.valueType),
+                      (index) {
+                        var statValue = getCurrentStatValueOrDefault()
+                            .copyWith(variant: index);
+                        return Align(
+                          key: ValueKey(statValue),
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            // decoration: BoxDecoration(
+                            //     border: Border.all(color: darkTextColor),
+                            //     borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(10),
+                            child: getPlayerVisualizationWidget(
+                                characterToRenderStatFor:
+                                    widget.characterToRenderStatFor,
+                                onNewStatValue: (newSerializedValue) {},
+                                context: context,
+                                statConfiguration: widget.statConfiguration,
+                                characterValue: statValue,
+                                characterName: widget.characterName),
+                          ),
+                        );
+                      },
                     ),
+                    onPageChanged: (value) {
+                      setState(() {
+                        currentlyVisibleVariant = value;
+                      });
+                    }),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-              child: PageViewDotIndicator(
-                currentItem: currentlyVisibleVariant,
-                count: numberOfVariantsForValueTypes(
-                    widget.statConfiguration.valueType),
-                unselectedColor: Colors.black26,
-                selectedColor: Colors.blue,
-                duration: const Duration(milliseconds: 200),
-                boxShape: BoxShape.circle,
-                unselectedSize: Size(6, 6),
-                size: Size(6, 6),
-              ),
-            ),
-            SizedBox(
-              height: 400,
-              child: PageView(
-                  controller: pageController,
-                  children: List.generate(
-                    numberOfVariantsForValueTypes(
-                        widget.statConfiguration.valueType),
-                    (index) {
-                      var statValue = getCurrentStatValueOrDefault()
-                          .copyWith(variant: index);
-                      return Align(
-                        key: ValueKey(statValue),
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          // decoration: BoxDecoration(
-                          //     border: Border.all(color: darkTextColor),
-                          //     borderRadius: BorderRadius.circular(5)),
-                          padding: EdgeInsets.all(10),
-                          child: getPlayerVisualizationWidget(
-                              characterToRenderStatFor:
-                                  widget.characterToRenderStatFor,
-                              onNewStatValue: (newSerializedValue) {},
-                              context: context,
-                              statConfiguration: widget.statConfiguration,
-                              characterValue: statValue,
-                              characterName: widget.characterName),
-                        ),
-                      );
-                    },
-                  ),
-                  onPageChanged: (value) {
-                    setState(() {
-                      currentlyVisibleVariant = value;
-                    });
-                  }),
-            ),
           ],
         ));
   }

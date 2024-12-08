@@ -22,6 +22,7 @@ import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/connection_details.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_helpers.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -134,8 +135,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                   subtitle: "Start as DM", // TODO localize
                                   subsubtitle:
                                       "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
-                                  onPressedHandler: () {
-                                    // TODO add new campagne
+                                  onPressedHandler: () async {
+                                    createNewCampagne();
                                   }),
                               SizedBox(
                                 height: 20,
@@ -358,11 +359,32 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           .updateConfiguration(RpgConfigurationModel.getBaseConfiguration());
     }
 
+    var rpgService =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+
+    var joinRequestsResponse = await rpgService.getOpenJoinRequestsForCampagne(
+        campagneId: campagne.id!);
+
     ref.read(connectionDetailsProvider.notifier).updateConfiguration(
         (ref.read(connectionDetailsProvider).valueOrNull ??
                 ConnectionDetails.defaultValue())
             .copyWith(
                 isDm: true,
+                connectedPlayers: null,
+                fightSequence: null,
+                lastGrantedItems: null,
+                // TODO test me (once you can create new characters)!!!
+                openPlayerRequests: joinRequestsResponse.isSuccessful
+                    ? (joinRequestsResponse.result!
+                        .map((j) => PlayerJoinRequests(
+                              campagneJoinRequestId: j.request.id!.$value!,
+                              playerCharacterId: j.playerCharacter.id!.$value!,
+                              playerName:
+                                  j.playerCharacter.characterName ?? "Player",
+                              username: j.username,
+                            ))
+                        .toList())
+                    : List<PlayerJoinRequests>.empty(),
                 campagneId: campagne.id!.$value!,
                 sessionConnectionNumberForPlayers: campagne.joinCode));
 
@@ -433,6 +455,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           (ref.read(connectionDetailsProvider).valueOrNull ??
                   ConnectionDetails.defaultValue())
               .copyWith(
+                  isDm: false,
+                  connectedPlayers: null,
+                  fightSequence: null,
+                  lastGrantedItems: null,
+                  openPlayerRequests: null,
                   campagneId: character.campagneId?.$value,
                   playerCharacterId: character.id!.$value!));
 
@@ -480,6 +507,60 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         // 5. TODO reload this screen after "joinrequesthandled" for this player
       });
     }
+  }
+
+  Future createNewCampagne() async {
+    var service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    var result = await DmPageHelpers.askDmForNameOfCampagne(context: context);
+    if (result == null) return;
+
+    setState(() {
+      showLoadingSpinner = true;
+    });
+    var createResponse = await service.createNewCampagne(
+      campagneName: result,
+      baseConfig: RpgConfigurationModel.getBaseConfiguration().copyWith(
+        rpgName: result,
+        allItems: [],
+      ),
+    );
+
+    if (!mounted) {
+      return;
+    }
+    await createResponse.possiblyHandleError(context);
+    if (!mounted) {
+      return;
+    }
+
+    if (!createResponse.isSuccessful) {
+      setState(() {
+        showLoadingSpinner = false;
+      });
+      return;
+    }
+
+    // load campagne from server
+    var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
+    if (!mounted) {
+      return;
+    }
+    await campagnesResponse.possiblyHandleError(context);
+    if (!mounted) {
+      return;
+    }
+    if (!campagnesResponse.isSuccessful) {
+      setState(() {
+        showLoadingSpinner = false;
+      });
+      return;
+    }
+
+    campagnes = campagnesResponse.result ?? [];
+
+    await onCampagneSelected(campagnes!
+        .singleWhere((e) => e.id!.$value! == createResponse.result!.$value!));
   }
 }
 

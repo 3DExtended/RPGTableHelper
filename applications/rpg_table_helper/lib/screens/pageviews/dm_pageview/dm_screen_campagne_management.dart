@@ -126,7 +126,7 @@ class _DmScreenCampagneManagementState
 
               if ((connectionDetails?.openPlayerRequests ?? []).isEmpty)
                 Text(
-                  "Keine Items unter dieser Kategorie",
+                  "Keine offenen Anfragen",
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
