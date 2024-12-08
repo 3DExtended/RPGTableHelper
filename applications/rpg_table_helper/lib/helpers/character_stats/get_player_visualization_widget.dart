@@ -35,7 +35,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.listOfIntsWithIcons:
       return 2;
     case CharacterStatValueType.intWithMaxValue:
-      return 4;
+      return 5;
   }
 }
 
@@ -479,6 +479,87 @@ Widget renderIntWithMaxValueStat(
                   size: iconSizeInlineButtons,
                   color: textColor,
                 ),
+              ),
+            ),
+        ],
+      );
+    case 4:
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            CustomButton(
+              isSubbutton: true,
+              variant: CustomButtonVariant.FlatButton,
+              onPressed: value <= 0
+                  ? null
+                  : () {
+                      onValueChanged(max(0, value - 1));
+                    },
+              icon: CustomFaIcon(
+                icon: FontAwesomeIcons.minus,
+                size: iconSizeInlineButtons,
+                color: darkColor,
+              ),
+            ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            SizedBox(
+              width: 10,
+            ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Wrap(
+                  spacing: 5,
+                  runSpacing: 5,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    ...List.generate(
+                      maxValue,
+                      (index) => Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: index < value ? darkColor : bgColor,
+                            border: Border.all(color: darkColor)),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  statConfiguration.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: darkTextColor, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            SizedBox(
+              width: 10,
+            ),
+          if (statConfiguration.editType == CharacterStatEditType.oneTap)
+            CustomButton(
+              isSubbutton: true,
+              variant: CustomButtonVariant.FlatButton,
+              onPressed: maxValue == value
+                  ? null
+                  : () {
+                      onValueChanged(min(value + 1, maxValue));
+                    },
+              icon: CustomFaIcon(
+                icon: FontAwesomeIcons.plus,
+                size: iconSizeInlineButtons,
+                color: darkColor,
               ),
             ),
         ],
