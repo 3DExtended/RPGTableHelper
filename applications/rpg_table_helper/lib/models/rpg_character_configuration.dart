@@ -22,7 +22,17 @@ abstract class RpgCharacterConfigurationBase {
   String getImageUrlWithoutBasePath(RpgConfigurationModel? rpgConfig) {
     var result = "assets/images/charactercard_placeholder.png";
 
-    if (rpgConfig == null) return result;
+    if (rpgConfig == null) {
+      // we seemingly have no information about the current rpg. hence we search for a single image stat
+      for (var stat in characterStats) {
+        if (stat.serializedValue.contains("imageUrl")) {
+          var imageUrl = jsonDecode(stat.serializedValue)["imageUrl"];
+          if (imageUrl != null) return imageUrl;
+        }
+      }
+
+      return result;
+    }
 
     // check if there are generated image stats in default tab
     var imageStat = rpgConfig.characterStatTabsDefinition
