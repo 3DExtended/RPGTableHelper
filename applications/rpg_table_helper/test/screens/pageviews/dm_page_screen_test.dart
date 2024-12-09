@@ -20,6 +20,7 @@ void main() {
     (1, "dmplayeroverviewscreen"),
     (2, "dminitiativescreen"),
     (3, "dmgrantitemsscreen"),
+    (4, "dmlorescreen"),
   ];
 
   group('dmpagescreens renderings', () {
