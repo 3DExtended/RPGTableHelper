@@ -168,7 +168,7 @@ abstract class Swagger extends ChopperService {
   ///Streams an image upload directly to the server.
   ///@param campagneId
   Future<chopper.Response<String>> imageStreamimageuploadPost({
-    String? campagneId,
+    required String? campagneId,
     List<int>? image,
   }) {
     return _imageStreamimageuploadPost(campagneId: campagneId, image: image);
@@ -182,9 +182,26 @@ abstract class Swagger extends ChopperService {
   )
   @Multipart()
   Future<chopper.Response<String>> _imageStreamimageuploadPost({
-    @Query('campagneId') String? campagneId,
+    @Query('campagneId') required String? campagneId,
     @PartFile() List<int>? image,
   });
+
+  ///Returns a list of documents this user can see for a given campagne.
+  ///@param campagneid The id of the desired campagne
+  Future<chopper.Response<List<NoteDocumentDto>>>
+      notesGetdocumentsCampagneidGet({required String? campagneid}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+
+    return _notesGetdocumentsCampagneidGet(campagneid: campagneid);
+  }
+
+  ///Returns a list of documents this user can see for a given campagne.
+  ///@param campagneid The id of the desired campagne
+  @Get(path: '/Notes/getdocuments/{campagneid}')
+  Future<chopper.Response<List<NoteDocumentDto>>>
+      _notesGetdocumentsCampagneidGet(
+          {@Path('campagneid') required String? campagneid});
 
   ///Returns a single document.
   ///@param notedocumentid The id of the desired campagne
@@ -394,21 +411,6 @@ abstract class Swagger extends ChopperService {
   ///Returns the minimal app version supported by this api.
   @Get(path: '/Public/getminimalversion')
   Future<chopper.Response<String>> _publicGetminimalversionGet();
-
-  ///
-  ///@param prompt
-  Future<chopper.Response> publicCreateimagePost({String? prompt}) {
-    return _publicCreateimagePost(prompt: prompt);
-  }
-
-  ///
-  ///@param prompt
-  @Post(
-    path: '/Public/createimage',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _publicCreateimagePost(
-      {@Query('prompt') String? prompt});
 
   ///
   ///@param uuid

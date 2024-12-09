@@ -973,6 +973,7 @@ class ImageBlock {
     this.id,
     this.creationDate,
     this.lastModifiedAt,
+    this.isDeleted,
     this.noteDocumentId,
     this.creatingUserId,
     this.visibility,
@@ -995,6 +996,8 @@ class ImageBlock {
   final DateTime? creationDate;
   @JsonKey(name: 'lastModifiedAt')
   final DateTime? lastModifiedAt;
+  @JsonKey(name: 'isDeleted')
+  final bool? isDeleted;
   @JsonKey(name: 'noteDocumentId')
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
@@ -1027,6 +1030,9 @@ class ImageBlock {
             (identical(other.lastModifiedAt, lastModifiedAt) ||
                 const DeepCollectionEquality()
                     .equals(other.lastModifiedAt, lastModifiedAt)) &&
+            (identical(other.isDeleted, isDeleted) ||
+                const DeepCollectionEquality()
+                    .equals(other.isDeleted, isDeleted)) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
                 const DeepCollectionEquality()
                     .equals(other.noteDocumentId, noteDocumentId)) &&
@@ -1051,6 +1057,7 @@ class ImageBlock {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(lastModifiedAt) ^
+      const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
       const DeepCollectionEquality().hash(visibility) ^
@@ -1065,6 +1072,7 @@ extension $ImageBlockExtension on ImageBlock {
       NoteBlockModelBaseIdentifier? id,
       DateTime? creationDate,
       DateTime? lastModifiedAt,
+      bool? isDeleted,
       NoteDocumentIdentifier? noteDocumentId,
       UserIdentifier? creatingUserId,
       enums.NotesBlockVisibility? visibility,
@@ -1075,6 +1083,7 @@ extension $ImageBlockExtension on ImageBlock {
         id: id ?? this.id,
         creationDate: creationDate ?? this.creationDate,
         lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+        isDeleted: isDeleted ?? this.isDeleted,
         noteDocumentId: noteDocumentId ?? this.noteDocumentId,
         creatingUserId: creatingUserId ?? this.creatingUserId,
         visibility: visibility ?? this.visibility,
@@ -1087,6 +1096,7 @@ extension $ImageBlockExtension on ImageBlock {
       Wrapped<NoteBlockModelBaseIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
+      Wrapped<bool?>? isDeleted,
       Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
       Wrapped<UserIdentifier?>? creatingUserId,
       Wrapped<enums.NotesBlockVisibility?>? visibility,
@@ -1104,6 +1114,7 @@ extension $ImageBlockExtension on ImageBlock {
         lastModifiedAt: (lastModifiedAt != null
             ? lastModifiedAt.value
             : this.lastModifiedAt),
+        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
         noteDocumentId: (noteDocumentId != null
             ? noteDocumentId.value
             : this.noteDocumentId),
@@ -1301,6 +1312,7 @@ extension $LoginWithUsernameAndPasswordDtoExtension
 @JsonSerializable(explicitToJson: true)
 class NoteBlockModelBase {
   const NoteBlockModelBase({
+    this.isDeleted,
     this.noteDocumentId,
     this.creatingUserId,
     this.visibility,
@@ -1316,6 +1328,8 @@ class NoteBlockModelBase {
   static const toJsonFactory = _$NoteBlockModelBaseToJson;
   Map<String, dynamic> toJson() => _$NoteBlockModelBaseToJson(this);
 
+  @JsonKey(name: 'isDeleted')
+  final bool? isDeleted;
   @JsonKey(name: 'noteDocumentId')
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
@@ -1340,6 +1354,9 @@ class NoteBlockModelBase {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is NoteBlockModelBase &&
+            (identical(other.isDeleted, isDeleted) ||
+                const DeepCollectionEquality()
+                    .equals(other.isDeleted, isDeleted)) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
                 const DeepCollectionEquality()
                     .equals(other.noteDocumentId, noteDocumentId)) &&
@@ -1367,6 +1384,7 @@ class NoteBlockModelBase {
 
   @override
   int get hashCode =>
+      const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
       const DeepCollectionEquality().hash(visibility) ^
@@ -1379,7 +1397,8 @@ class NoteBlockModelBase {
 
 extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
   NoteBlockModelBase copyWith(
-      {NoteDocumentIdentifier? noteDocumentId,
+      {bool? isDeleted,
+      NoteDocumentIdentifier? noteDocumentId,
       UserIdentifier? creatingUserId,
       enums.NotesBlockVisibility? visibility,
       List<UserIdentifier>? permittedUsers,
@@ -1387,6 +1406,7 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
       DateTime? creationDate,
       DateTime? lastModifiedAt}) {
     return NoteBlockModelBase(
+        isDeleted: isDeleted ?? this.isDeleted,
         noteDocumentId: noteDocumentId ?? this.noteDocumentId,
         creatingUserId: creatingUserId ?? this.creatingUserId,
         visibility: visibility ?? this.visibility,
@@ -1397,7 +1417,8 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
   }
 
   NoteBlockModelBase copyWithWrapped(
-      {Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
+      {Wrapped<bool?>? isDeleted,
+      Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
       Wrapped<UserIdentifier?>? creatingUserId,
       Wrapped<enums.NotesBlockVisibility?>? visibility,
       Wrapped<List<UserIdentifier>?>? permittedUsers,
@@ -1405,6 +1426,7 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
       Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt}) {
     return NoteBlockModelBase(
+        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
         noteDocumentId: (noteDocumentId != null
             ? noteDocumentId.value
             : this.noteDocumentId),
@@ -1548,6 +1570,7 @@ extension $NoteBlockModelBaseIdentifierGuidNodeModelBaseExtension
 @JsonSerializable(explicitToJson: true)
 class NoteDocumentDto {
   const NoteDocumentDto({
+    this.isDeleted,
     this.creationDate,
     this.lastModifiedAt,
     this.id,
@@ -1565,6 +1588,8 @@ class NoteDocumentDto {
   static const toJsonFactory = _$NoteDocumentDtoToJson;
   Map<String, dynamic> toJson() => _$NoteDocumentDtoToJson(this);
 
+  @JsonKey(name: 'isDeleted')
+  final bool? isDeleted;
   @JsonKey(name: 'creationDate')
   final DateTime? creationDate;
   @JsonKey(name: 'lastModifiedAt')
@@ -1589,6 +1614,9 @@ class NoteDocumentDto {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is NoteDocumentDto &&
+            (identical(other.isDeleted, isDeleted) ||
+                const DeepCollectionEquality()
+                    .equals(other.isDeleted, isDeleted)) &&
             (identical(other.creationDate, creationDate) ||
                 const DeepCollectionEquality()
                     .equals(other.creationDate, creationDate)) &&
@@ -1621,6 +1649,7 @@ class NoteDocumentDto {
 
   @override
   int get hashCode =>
+      const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(lastModifiedAt) ^
       const DeepCollectionEquality().hash(id) ^
@@ -1635,7 +1664,8 @@ class NoteDocumentDto {
 
 extension $NoteDocumentDtoExtension on NoteDocumentDto {
   NoteDocumentDto copyWith(
-      {DateTime? creationDate,
+      {bool? isDeleted,
+      DateTime? creationDate,
       DateTime? lastModifiedAt,
       NoteDocumentIdentifier? id,
       String? groupName,
@@ -1645,6 +1675,7 @@ extension $NoteDocumentDtoExtension on NoteDocumentDto {
       List<ImageBlock>? imageBlocks,
       List<TextBlock>? textBlocks}) {
     return NoteDocumentDto(
+        isDeleted: isDeleted ?? this.isDeleted,
         creationDate: creationDate ?? this.creationDate,
         lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
         id: id ?? this.id,
@@ -1657,7 +1688,8 @@ extension $NoteDocumentDtoExtension on NoteDocumentDto {
   }
 
   NoteDocumentDto copyWithWrapped(
-      {Wrapped<DateTime?>? creationDate,
+      {Wrapped<bool?>? isDeleted,
+      Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
       Wrapped<NoteDocumentIdentifier?>? id,
       Wrapped<String>? groupName,
@@ -1667,6 +1699,7 @@ extension $NoteDocumentDtoExtension on NoteDocumentDto {
       Wrapped<List<ImageBlock>>? imageBlocks,
       Wrapped<List<TextBlock>>? textBlocks}) {
     return NoteDocumentDto(
+        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
         creationDate:
             (creationDate != null ? creationDate.value : this.creationDate),
         lastModifiedAt: (lastModifiedAt != null
@@ -2421,6 +2454,7 @@ class TextBlock {
     this.id,
     this.creationDate,
     this.lastModifiedAt,
+    this.isDeleted,
     this.noteDocumentId,
     this.creatingUserId,
     this.visibility,
@@ -2441,6 +2475,8 @@ class TextBlock {
   final DateTime? creationDate;
   @JsonKey(name: 'lastModifiedAt')
   final DateTime? lastModifiedAt;
+  @JsonKey(name: 'isDeleted')
+  final bool? isDeleted;
   @JsonKey(name: 'noteDocumentId')
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
@@ -2470,6 +2506,9 @@ class TextBlock {
             (identical(other.lastModifiedAt, lastModifiedAt) ||
                 const DeepCollectionEquality()
                     .equals(other.lastModifiedAt, lastModifiedAt)) &&
+            (identical(other.isDeleted, isDeleted) ||
+                const DeepCollectionEquality()
+                    .equals(other.isDeleted, isDeleted)) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
                 const DeepCollectionEquality()
                     .equals(other.noteDocumentId, noteDocumentId)) &&
@@ -2493,6 +2532,7 @@ class TextBlock {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(lastModifiedAt) ^
+      const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
       const DeepCollectionEquality().hash(visibility) ^
@@ -2506,6 +2546,7 @@ extension $TextBlockExtension on TextBlock {
       NoteBlockModelBaseIdentifier? id,
       DateTime? creationDate,
       DateTime? lastModifiedAt,
+      bool? isDeleted,
       NoteDocumentIdentifier? noteDocumentId,
       UserIdentifier? creatingUserId,
       enums.NotesBlockVisibility? visibility,
@@ -2515,6 +2556,7 @@ extension $TextBlockExtension on TextBlock {
         id: id ?? this.id,
         creationDate: creationDate ?? this.creationDate,
         lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+        isDeleted: isDeleted ?? this.isDeleted,
         noteDocumentId: noteDocumentId ?? this.noteDocumentId,
         creatingUserId: creatingUserId ?? this.creatingUserId,
         visibility: visibility ?? this.visibility,
@@ -2526,6 +2568,7 @@ extension $TextBlockExtension on TextBlock {
       Wrapped<NoteBlockModelBaseIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
+      Wrapped<bool?>? isDeleted,
       Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
       Wrapped<UserIdentifier?>? creatingUserId,
       Wrapped<enums.NotesBlockVisibility?>? visibility,
@@ -2539,6 +2582,7 @@ extension $TextBlockExtension on TextBlock {
         lastModifiedAt: (lastModifiedAt != null
             ? lastModifiedAt.value
             : this.lastModifiedAt),
+        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
         noteDocumentId: (noteDocumentId != null
             ? noteDocumentId.value
             : this.noteDocumentId),

@@ -5,8 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/colored_rotated_square.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
@@ -14,6 +15,7 @@ import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/lore_screen.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_money.dart';
@@ -44,7 +46,7 @@ class PlayerPageScreenRouteSettings {
       showInventory: true,
       showMoney: true,
       showRecipes: true,
-      showLore: false,
+      showLore: true,
     );
   }
 }
@@ -202,8 +204,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       result.add(("Herstellen", PlayerScreenRecepies()));
     }
 
-    if (showLore) {
-      result.add(("Weltgeschichte", Container())); // TODO add me
+    var campagneId =
+        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+    if (showLore && campagneId != null) {
+      result.add(("Weltgeschichte", LoreScreen()));
     }
 
     return result;
@@ -311,20 +315,11 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                     onPressed: () async {
                       await _goToStepId(index);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: index == _currentStep
-                                ? FontAwesomeIcons.solidSquare
-                                : FontAwesomeIcons.square,
-                            color: index == _currentStep
-                                ? accentColor
-                                : middleBgColor),
-                      ),
-                    ),
+                    child: ColoredRotatedSquare(
+                        isSolidSquare: index == _currentStep,
+                        color: index == _currentStep
+                            ? accentColor
+                            : middleBgColor),
                   ),
                 ),
                 Padding(

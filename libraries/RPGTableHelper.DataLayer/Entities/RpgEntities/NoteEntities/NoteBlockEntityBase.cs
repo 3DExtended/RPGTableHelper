@@ -18,6 +18,6 @@ public abstract class NoteBlockEntityBase : EntityBase<Guid>
 
     public NotesBlockVisibility Visibility { get; set; }
 
-    public ICollection<PermittedUsersToNotesBlockEntity>? PermittedUsers { get; set; } =
+    public ICollection<PermittedUsersToNotesBlockEntity> PermittedUsers { get; set; } =
         new List<PermittedUsersToNotesBlockEntity>();
 }

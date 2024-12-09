@@ -34,6 +34,71 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         /// <summary>
+        /// Returns a list of documents this user can see for a given campagne.
+        /// </summary>
+        /// <remarks>You must be within the correct campagne</remarks>
+        /// <param name="campagneid">The id of the desired campagne</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Returns the document.</returns>
+        /// <response code="200">The documents for the user</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(typeof(List<NoteDocumentDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("getdocuments/{campagneid}")]
+        public async Task<ActionResult<List<NoteDocumentDto>>> GetNoteDocumentsForUserAsync(
+            string campagneid,
+            CancellationToken cancellationToken
+        )
+        {
+            if (campagneid == null)
+            {
+                return BadRequest("No valid campagneid passed");
+            }
+
+            if (!Guid.TryParse(campagneid, out var campagneidparsed))
+            {
+                return BadRequest("No valid campagneid passed");
+            }
+
+            // check if user is allowed to see document
+            var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
+            {
+                CampagneId = Campagne.CampagneIdentifier.From(campagneidparsed),
+                UserIdToCheck = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (isUserInCampagneResult.IsNone)
+            {
+                return BadRequest("Could not retrieve info.");
+            }
+
+            if (!isUserInCampagneResult.Get())
+            {
+                return Unauthorized();
+            }
+
+            var noteDocuments = await new NoteDocumentsForUserAndCampagneQuery
+            {
+                CampagneId = Campagne.CampagneIdentifier.From(campagneidparsed),
+                UserId = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (noteDocuments.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            var mappedDtos = noteDocuments.Get().Select(_mapper.Map<NoteDocumentDto>).ToList();
+            return Ok(mappedDtos);
+        }
+
+        /// <summary>
         /// Returns a single document.
         /// </summary>
         /// <remarks>You must be within the correct campagne and the document has to be your own or shared with you</remarks>

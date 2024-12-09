@@ -702,6 +702,7 @@
         "parameters": [{
           "name": "campagneId",
           "in": "query",
+          "required": true,
           "schema": {
             "type": "string"
           }
@@ -787,6 +788,113 @@
           },
           "500": {
             "description": "Server error while processing the file."
+          }
+        }
+      }
+    },
+    "/Notes/getdocuments/{campagneid}": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Returns a list of documents this user can see for a given campagne.",
+        "description": "You must be within the correct campagne",
+        "parameters": [{
+          "name": "campagneid",
+          "in": "path",
+          "description": "The id of the desired campagne",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The documents for the user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -1986,25 +2094,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/Public/createimage": {
-      "post": {
-        "tags": [
-          "Public"
-        ],
-        "parameters": [{
-          "name": "prompt",
-          "in": "query",
-          "schema": {
-            "type": "string"
-          }
-        }],
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -3339,6 +3428,9 @@
           {
             "type": "object",
             "properties": {
+              "isDeleted": {
+                "type": "boolean"
+              },
               "noteDocumentId": {
                 "$ref": "#/components/schemas/NoteDocumentIdentifier"
               },
@@ -3397,6 +3489,9 @@
         ],
         "type": "object",
         "properties": {
+          "isDeleted": {
+            "type": "boolean"
+          },
           "creationDate": {
             "type": "string",
             "format": "date-time"

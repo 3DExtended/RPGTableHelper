@@ -10,7 +10,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -124,67 +124,65 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         ),
                       ],
                     )
-                  : LayoutBuilder(builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              AddableColumnHeader(
-                                  title: "Choose a campagne", // TODO localize
-                                  subtitle: "Start as DM", // TODO localize
-                                  subsubtitle:
-                                      "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
-                                  onPressedHandler: () async {
-                                    createNewCampagne();
-                                  }),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...getOpenCampagnes(),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                              ),
-                              HorizontalLine(),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                              ),
-                              AddableColumnHeader(
-                                  title:
-                                      "Choose a character (Join as Player)", // TODO localize
-                                  subtitle: "Join as Player", // TODO localize
-                                  subsubtitle:
-                                      "You own ${characters?.length ?? 0} character.", // TODO localize
-                                  onPressedHandler: () {
-                                    // TODO add new character
-                                  }),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...getCharacters(),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                              )
-                            ],
-                          ),
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            AddableColumnHeader(
+                                title: "Choose a campagne", // TODO localize
+                                subtitle: "Start as DM", // TODO localize
+                                subsubtitle:
+                                    "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
+                                onPressedHandler: () async {
+                                  createNewCampagne();
+                                }),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Wrap(
+                              runSpacing: 10,
+                              spacing: 10,
+                              children: [
+                                ...getOpenCampagnes(),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                            ),
+                            HorizontalLine(),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                            ),
+                            AddableColumnHeader(
+                                title:
+                                    "Choose a character (Join as Player)", // TODO localize
+                                subtitle: "Join as Player", // TODO localize
+                                subsubtitle:
+                                    "You own ${characters?.length ?? 0} character.", // TODO localize
+                                onPressedHandler: () {
+                                  // TODO add new character
+                                }),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Wrap(
+                              runSpacing: 10,
+                              spacing: 10,
+                              children: [
+                                ...getCharacters(),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                            )
+                          ],
                         ),
-                      );
-                    }),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -373,6 +371,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 connectedPlayers: null,
                 fightSequence: null,
                 lastGrantedItems: null,
+
                 // TODO test me (once you can create new characters)!!!
                 openPlayerRequests: joinRequestsResponse.isSuccessful
                     ? (joinRequestsResponse.result!

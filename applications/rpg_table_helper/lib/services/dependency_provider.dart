@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/services/auth/authentication_service.dart';
 import 'package:rpg_table_helper/services/auth/encryption_service.dart';
 import 'package:rpg_table_helper/services/image_generation_service.dart';
 import 'package:rpg_table_helper/services/navigation_service.dart';
+import 'package:rpg_table_helper/services/note_documents_service.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/server_communication_service.dart';
 import 'package:rpg_table_helper/services/server_methods_service.dart';
@@ -87,6 +88,20 @@ class DependencyProvider extends InheritedWidget {
         apiConnectorService: apiConnectorService,
       );
     });
+    _registerService<INoteDocumentService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return MockNoteDocumentService(
+        // TODO change me to NoteDocumentService after you are finished testing
+        apiConnectorService: apiConnectorService,
+      );
+    }, () {
+      var apiConnectorService = getService<IApiConnectorService>();
+
+      return MockNoteDocumentService(
+        apiConnectorService: apiConnectorService,
+      );
+    });
+
     _registerService<IImageGenerationService>(() {
       var apiConnectorService = getService<IApiConnectorService>();
       return ImageGenerationService(

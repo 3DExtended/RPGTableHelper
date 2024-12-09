@@ -264,6 +264,7 @@ ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
       lastModifiedAt: json['lastModifiedAt'] == null
           ? null
           : DateTime.parse(json['lastModifiedAt'] as String),
+      isDeleted: json['isDeleted'] as bool?,
       noteDocumentId: json['noteDocumentId'] == null
           ? null
           : NoteDocumentIdentifier.fromJson(
@@ -286,6 +287,7 @@ Map<String, dynamic> _$ImageBlockToJson(ImageBlock instance) =>
       'id': instance.id?.toJson(),
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'isDeleted': instance.isDeleted,
       'noteDocumentId': instance.noteDocumentId?.toJson(),
       'creatingUserId': instance.creatingUserId?.toJson(),
       'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
@@ -341,6 +343,7 @@ Map<String, dynamic> _$LoginWithUsernameAndPasswordDtoToJson(
 
 NoteBlockModelBase _$NoteBlockModelBaseFromJson(Map<String, dynamic> json) =>
     NoteBlockModelBase(
+      isDeleted: json['isDeleted'] as bool?,
       noteDocumentId: json['noteDocumentId'] == null
           ? null
           : NoteDocumentIdentifier.fromJson(
@@ -368,6 +371,7 @@ NoteBlockModelBase _$NoteBlockModelBaseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$NoteBlockModelBaseToJson(NoteBlockModelBase instance) =>
     <String, dynamic>{
+      'isDeleted': instance.isDeleted,
       'noteDocumentId': instance.noteDocumentId?.toJson(),
       'creatingUserId': instance.creatingUserId?.toJson(),
       'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
@@ -416,6 +420,7 @@ Map<String, dynamic> _$NoteBlockModelBaseIdentifierGuidNodeModelBaseToJson(
 
 NoteDocumentDto _$NoteDocumentDtoFromJson(Map<String, dynamic> json) =>
     NoteDocumentDto(
+      isDeleted: json['isDeleted'] as bool?,
       creationDate: json['creationDate'] == null
           ? null
           : DateTime.parse(json['creationDate'] as String),
@@ -445,6 +450,7 @@ NoteDocumentDto _$NoteDocumentDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$NoteDocumentDtoToJson(NoteDocumentDto instance) =>
     <String, dynamic>{
+      'isDeleted': instance.isDeleted,
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
       'id': instance.id?.toJson(),
@@ -649,6 +655,7 @@ TextBlock _$TextBlockFromJson(Map<String, dynamic> json) => TextBlock(
       lastModifiedAt: json['lastModifiedAt'] == null
           ? null
           : DateTime.parse(json['lastModifiedAt'] as String),
+      isDeleted: json['isDeleted'] as bool?,
       noteDocumentId: json['noteDocumentId'] == null
           ? null
           : NoteDocumentIdentifier.fromJson(
@@ -669,6 +676,7 @@ Map<String, dynamic> _$TextBlockToJson(TextBlock instance) => <String, dynamic>{
       'id': instance.id?.toJson(),
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+      'isDeleted': instance.isDeleted,
       'noteDocumentId': instance.noteDocumentId?.toJson(),
       'creatingUserId': instance.creatingUserId?.toJson(),
       'visibility': notesBlockVisibilityNullableToJson(instance.visibility),

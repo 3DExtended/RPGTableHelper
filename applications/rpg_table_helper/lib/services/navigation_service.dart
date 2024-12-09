@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:rpg_table_helper/screens/character_screen.dart';
 import 'package:rpg_table_helper/screens/crafting_screen.dart';
 import 'package:rpg_table_helper/screens/inventory_screen.dart';
-import 'package:rpg_table_helper/screens/lore_screen.dart';
 import 'package:rpg_table_helper/screens/search_screen.dart';
 
 enum TabItem {
@@ -35,8 +34,6 @@ abstract class INavigationService {
         return InventoryScreen.route; // TODO make me
       case TabItem.crafting:
         return CraftingScreen.route; // TODO make me
-      case TabItem.lore:
-        return LoreScreen.route; // TODO make me
       default:
         throw Exception(
             'tried opeing the signinflow from the wrong navigation key');
