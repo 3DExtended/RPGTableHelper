@@ -1,17 +1,28 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rpg_table_helper/components/bordered_image.dart';
 import 'package:rpg_table_helper/components/colored_rotated_square.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
+import 'package:rpg_table_helper/components/custom_markdown_body.dart';
+import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
+import 'package:rpg_table_helper/helpers/list_extensions.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/note_documents_service.dart';
+import 'package:rpg_table_helper/services/systemclock_service.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class LoreScreen extends ConsumerStatefulWidget {
   static String route = "lore";
@@ -23,10 +34,23 @@ class LoreScreen extends ConsumerStatefulWidget {
 }
 
 class _LoreScreenState extends ConsumerState<LoreScreen> {
-  var isLoading = true;
+  final Duration duration = Duration(milliseconds: 150);
 
   Map<String, List<NoteDocumentDto>> groupedDocuments = {};
   List<String> groupLabels = [];
+
+  NoteDocumentIdentifier? selectedDocumentId;
+  NoteDocumentDto? selectedDocument;
+
+  bool isLoading = true;
+  bool _isCollapsed = false;
+  double collapsedWidth = 64.0;
+  double expandedWidth = 256.0;
+
+  var refreshController = RefreshController(
+    initialRefreshStatus: RefreshStatus.refreshing,
+    initialRefresh: false,
+  );
 
   @override
   void initState() {
@@ -36,14 +60,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     super.initState();
   }
 
-  bool _isCollapsed = false;
-  double collapsedWidth = 64.0;
-  double expandedWidth = 250.0;
-
   @override
   Widget build(BuildContext context) {
-    var duration = Duration(milliseconds: 300);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // collapsable navbar
         AnimatedContainer(
@@ -51,87 +71,109 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           width: _isCollapsed ? collapsedWidth : expandedWidth,
           color: middleBgColor,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 height: 5,
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: groupLabels.map((group) {
-                      return DragTarget<NoteDocumentDto>(
-                        key: ValueKey(group),
-                        onWillAcceptWithDetails: (doc) => true,
-                        onAcceptWithDetails: (details) {
-                          final draggedDoc = details.data;
-                          final index = groupedDocuments[group]?.length ?? 0;
-                          onDocumentDropped(
-                              draggedDoc.groupName, group, index, draggedDoc);
-                        },
-                        builder: (context, candidateData, rejectedData) {
-                          return Container(
-                            color: candidateData.isNotEmpty
-                                ? Colors.blue[50]
-                                : Colors.transparent,
+                child: AnimatedAlign(
+                  duration: duration,
+                  alignment:
+                      _isCollapsed ? Alignment.center : Alignment.topCenter,
+                  child: ConditionalWidgetWrapper(
+                    condition: !_isCollapsed,
+                    wrapper: (context, child) {
+                      return SmartRefresher(
+                          controller: refreshController,
+                          enablePullDown: true,
+                          enablePullUp: false,
+                          onRefresh: () async {
+                            await reloadAllPages();
+
+                            refreshController.refreshCompleted();
+                          },
+                          child: child);
+                    },
+                    child: SingleChildScrollView(
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        return ConstrainedBox(
+                          constraints:
+                              BoxConstraints(minHeight: constraints.minHeight),
+                          child: Center(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildNavItem(group),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  padding: EdgeInsets.all(0),
-                                  itemCount:
-                                      groupedDocuments[group]?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    final doc = groupedDocuments[group]![index];
-                                    return LongPressDraggable<NoteDocumentDto>(
-                                      key: ValueKey(doc.id!.$value!),
-                                      data: doc,
-                                      feedback: SizedBox(
-                                        width: expandedWidth,
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              20, 5, 20, 5),
-                                          child: Text(
-                                            doc.title,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineSmall!
-                                                .copyWith(
-                                                  fontSize: 16,
-                                                  color: darkTextColor,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: groupLabels.map((group) {
+                                return DragTarget<NoteDocumentDto>(
+                                  key: ValueKey(group),
+                                  onWillAcceptWithDetails: (doc) => true,
+                                  onAcceptWithDetails: (details) {
+                                    final draggedDoc = details.data;
+                                    final index =
+                                        groupedDocuments[group]?.length ?? 0;
+                                    _onDocumentDropped(draggedDoc.groupName,
+                                        group, index, draggedDoc);
+                                  },
+                                  builder:
+                                      (context, candidateData, rejectedData) {
+                                    return Container(
+                                      color: candidateData.isNotEmpty
+                                          ? accentColor.withAlpha(25)
+                                          : Colors.transparent,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _buildNavItem(group),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            padding: EdgeInsets.zero,
+                                            itemCount: groupedDocuments[group]
+                                                    ?.length ??
+                                                0,
+                                            itemBuilder: (context, index) {
+                                              final doc = groupedDocuments[
+                                                  group]![index];
+                                              return CupertinoButton(
+                                                minSize: 0,
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    selectedDocument = doc;
+                                                    selectedDocumentId = doc.id;
+                                                  });
+                                                },
+                                                child: LongPressDraggable<
+                                                    NoteDocumentDto>(
+                                                  hapticFeedbackOnStart: true,
+                                                  key:
+                                                      ValueKey(doc.id!.$value!),
+                                                  data: doc,
+                                                  feedback: SizedBox(
+                                                    width: expandedWidth,
+                                                    child:
+                                                        _getDocumentDragChild(
+                                                            doc, context),
+                                                  ),
+                                                  child: _getDocumentDragChild(
+                                                      doc, context),
                                                 ),
+                                              );
+                                            },
                                           ),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 5, 20, 5),
-                                        child: Text(
-                                          doc.title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall!
-                                              .copyWith(
-                                                fontSize: 16,
-                                                color: darkTextColor,
-                                              ),
-                                        ),
+                                        ],
                                       ),
                                     );
                                   },
-                                ),
-                              ],
+                                );
+                              }).toList(),
                             ),
-                          );
-                        },
-                      );
-                    }).toList(),
+                          ),
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ),
@@ -145,29 +187,184 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     );
   }
 
-  Widget _getContent() {
-    return SingleChildScrollView(
-      child: Column(
+  Padding _getDocumentDragChild(NoteDocumentDto doc, BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: 500,
-            width: 200,
-            color: Colors.red,
-          )
+          ColoredRotatedSquare(
+            key: ValueKey("ColoredRotatedSquare${doc.id!.$value!}"),
+            isSolidSquare: selectedDocumentId?.$value == doc.id?.$value,
+            color: accentColor,
+          ),
+          if (!_isCollapsed)
+            Expanded(
+              child: Text(
+                doc.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      fontSize: 16,
+                      color: darkTextColor,
+                    ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  AnimatedPadding _getCollapseButton(Duration duration) {
+  Widget _getContent() {
+    var systemClock =
+        DependencyProvider.of(context).getService<ISystemClockService>();
+
+    if (isLoading) {
+      return Column(
+        children: [
+          Center(
+            child: CustomLoadingSpinner(),
+          )
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10),
+          child: Row(
+            children: [
+              Text(
+                selectedDocument?.title ?? "",
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      color: darkTextColor,
+                      fontSize: 24,
+                    ),
+              ),
+              Spacer(),
+              Text(
+                "Bearbeitet vor:\n${selectedDocument == null ? "" : timeago.format(
+                    selectedDocument!.lastModifiedAt!,
+                    clock: systemClock.now(),
+                    locale: 'de_short',
+                  )}",
+                textAlign: TextAlign.end,
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                      color: darkTextColor,
+                      fontSize: 12,
+                    ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: HorizontalLine(
+            useDarkColor: true,
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child:
+                        CupertinoSlidingSegmentedControl<NotesBlockVisibility>(
+                      backgroundColor: middleBgColor,
+                      thumbColor: darkColor,
+                      // This represents the currently selected segmented control.
+                      groupValue: getVisibilityForSelectedDocument(),
+                      // Callback that sets the selected segmented control.
+                      onValueChanged: (NotesBlockVisibility? value) {
+                        // TODO make me
+                      },
+                      children: <NotesBlockVisibility, Widget>{
+                        NotesBlockVisibility.hiddenforallexceptauthor: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Text(
+                            'Versteckt', // TODO localize
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                    fontSize: 16,
+                                    color: getVisibilityForSelectedDocument() ==
+                                            NotesBlockVisibility
+                                                .hiddenforallexceptauthor
+                                        ? textColor
+                                        : darkTextColor),
+                          ),
+                        ),
+                        NotesBlockVisibility.visibleforsomeusers: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Text(
+                            'Teilweise Sichtbar', // TODO localize
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                    fontSize: 16,
+                                    color: getVisibilityForSelectedDocument() ==
+                                            NotesBlockVisibility
+                                                .visibleforsomeusers
+                                        ? textColor
+                                        : darkTextColor),
+                          ),
+                        ),
+                        NotesBlockVisibility.visibleforcampagne: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Text(
+                            'Sichtbar', // TODO localize
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                    fontSize: 16,
+                                    color: getVisibilityForSelectedDocument() ==
+                                            NotesBlockVisibility
+                                                .visibleforcampagne
+                                        ? textColor
+                                        : darkTextColor),
+                          ),
+                        ),
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ..._renderContentBlocks()
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getCollapseButton(Duration duration) {
     return AnimatedPadding(
       duration: duration,
       padding: EdgeInsets.fromLTRB(0, 0, _isCollapsed ? 0 : 20, 20),
       child: AnimatedAlign(
         duration: duration,
         alignment: _isCollapsed ? Alignment.center : Alignment.centerRight,
-        child: GestureDetector(
-          onTap: () {
+        child: CupertinoButton(
+          minSize: 0,
+          padding: EdgeInsets.zero,
+          onPressed: () {
             setState(() {
               _isCollapsed = !_isCollapsed;
             });
@@ -229,15 +426,24 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       groupLabels = [...groupedDocuments.keys, otherGroupName]
           .distinct(by: (e) => e)
           .toList();
+      groupLabels.sort();
 
       if (!groupedDocuments.containsKey(otherGroupName)) {
         groupedDocuments[otherGroupName] = [];
       }
+
+      if (documentsResponse.result?.isNotEmpty == true) {
+        selectedDocumentId = groupedDocuments[groupLabels.first]![0].id;
+        selectedDocument = groupedDocuments[groupLabels.first]![0];
+      }
+
       isLoading = false;
+
+      refreshController.loadComplete();
     });
   }
 
-  void onDocumentDropped(
+  void _onDocumentDropped(
       String sourceGroup, String targetGroup, int index, NoteDocumentDto doc) {
     setState(() {
       // Remove from source group
@@ -256,24 +462,140 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _buildNavItem(String label) {
+    if (_isCollapsed)
+      return Padding(
+        padding: const EdgeInsets.only(left: 12),
+        child: Container(
+          width: 40,
+          decoration:
+              BoxDecoration(border: Border(bottom: BorderSide(color: bgColor))),
+        ),
+      );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-      child: Row(
-        children: [
-          ColoredRotatedSquare(isSolidSquare: false, color: accentColor),
-          if (!_isCollapsed)
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    color: darkTextColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: darkTextColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-            ),
-        ],
+        ),
       ),
     );
+  }
+
+  NotesBlockVisibility getVisibilityForSelectedDocument() {
+    if (selectedDocument == null) {
+      return NotesBlockVisibility.hiddenforallexceptauthor;
+    }
+
+    List<dynamic> blocks = getBlocksOfSelectedDocument;
+
+    if (blocks.every(
+        (b) => b.visibility == NotesBlockVisibility.visibleforcampagne)) {
+      return NotesBlockVisibility.visibleforcampagne;
+    }
+
+    if (blocks
+        .any((b) => b.visibility == NotesBlockVisibility.visibleforsomeusers)) {
+      return NotesBlockVisibility.visibleforsomeusers;
+    }
+
+    return NotesBlockVisibility.hiddenforallexceptauthor;
+  }
+
+  // TODO for every blocklist in selectedDocument:
+  List<dynamic> get getBlocksOfSelectedDocument {
+    List<dynamic> blocks = [
+      ...selectedDocument!.imageBlocks,
+      ...selectedDocument!.textBlocks
+    ];
+
+    blocks.sortBy<DateTime>((k) => k.creationDate);
+
+    return blocks;
+  }
+
+  List<Widget> _renderContentBlocks() {
+    List<dynamic> blocks = getBlocksOfSelectedDocument;
+
+    List<Widget> result = [];
+
+    for (var block in blocks) {
+      Widget? blockRendering;
+      // TODO add block types
+      if (block is TextBlock) {
+        // text block
+        blockRendering = getRenderingForTextBlock(block);
+      } else if (block is ImageBlock) {
+        // image block
+        blockRendering = getRenderingForImageBlock(block);
+      }
+
+      assert(blockRendering != null);
+
+      result.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 3, child: blockRendering!),
+          Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                child: Container(
+                  color: Colors.red,
+                  height: 10,
+                ),
+              )),
+        ],
+      ));
+    }
+
+    return result.insertBetween(Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: HorizontalLine(),
+    ));
+  }
+
+  Widget getRenderingForTextBlock(TextBlock textBlock) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+      child: CustomMarkdownBody(text: textBlock.markdownText ?? ""),
+    );
+  }
+
+  Widget getRenderingForImageBlock(ImageBlock imageBlock) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: darkColor),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: CustomImage(
+                  isGreyscale: false,
+                  isLoading: false,
+                  imageUrl: imageBlock.publicImageUrl!,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

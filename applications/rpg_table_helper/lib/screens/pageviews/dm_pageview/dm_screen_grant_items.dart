@@ -329,7 +329,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
       for (var item in itemsWithTheirDcSorted) {
         result.add(CheckboxListTile.adaptive(
           controlAffinity: ListTileControlAffinity.leading,
-          contentPadding: EdgeInsets.all(0),
+          contentPadding: EdgeInsets.zero,
           splashRadius: 0,
           dense: true,
           checkColor: const Color.fromARGB(255, 57, 245, 88),

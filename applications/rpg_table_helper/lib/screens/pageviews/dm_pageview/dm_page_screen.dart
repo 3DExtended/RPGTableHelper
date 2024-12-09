@@ -84,7 +84,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
                   _currentStep + 1,
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       await _goToStepId(index);
                     },
@@ -120,7 +120,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
                   dmScreensToSwipe.length - (_currentStep + 1),
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       _goToStepId(index + _currentStep + 1);
                     },

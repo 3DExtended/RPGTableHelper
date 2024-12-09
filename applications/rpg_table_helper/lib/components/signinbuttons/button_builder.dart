@@ -81,7 +81,7 @@ class SignInButtonBuilder extends StatelessWidget {
       minWidth: mini ? width ?? 35.0 : null,
       height: height,
       elevation: 0,
-      padding: padding ?? const EdgeInsets.all(0),
+      padding: padding ?? EdgeInsets.zero,
       color: backgroundColor,
       highlightColor: backgroundColor,
       onPressed: onPressed as void Function()?,

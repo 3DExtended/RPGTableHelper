@@ -333,7 +333,7 @@ class _ItemCardRenderingWithFilteringState
                 children: [
                   CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       if (widget.onItemCardPressed != null) {
                         await widget.onItemCardPressed!(itemToRender);

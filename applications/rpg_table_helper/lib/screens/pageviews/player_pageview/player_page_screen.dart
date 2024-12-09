@@ -311,7 +311,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   _currentStep + 1,
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       await _goToStepId(index);
                     },
@@ -339,7 +339,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                       : playerScreensToSwipe.length - (_currentStep + 1),
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       _goToStepId(index + _currentStep + 1);
                     },

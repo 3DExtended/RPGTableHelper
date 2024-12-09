@@ -53,7 +53,7 @@ class CustomButton extends StatelessWidget {
     return CupertinoButton(
       onPressed: onPressed,
       minSize: 0,
-      padding: const EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       child: Container(
         decoration: BoxDecoration(
           color: _getBackgroundColor(variantToUse, onPressed != null),

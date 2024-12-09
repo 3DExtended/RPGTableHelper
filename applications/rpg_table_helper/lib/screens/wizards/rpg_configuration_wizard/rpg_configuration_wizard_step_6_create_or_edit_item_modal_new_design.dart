@@ -669,7 +669,7 @@ class _CreateOrEditItemModalContentState
                               });
                             },
                       minSize: 0,
-                      padding: EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       child: Text(
                         "Neues Bild",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -686,7 +686,7 @@ class _CreateOrEditItemModalContentState
                     ),
                     CupertinoButton(
                         minSize: 0,
-                        padding: EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         child: Text(
                           "Bild auswählen",
                           style:

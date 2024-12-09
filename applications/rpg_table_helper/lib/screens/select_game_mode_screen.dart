@@ -199,7 +199,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   await onCampagneSelected(campagne);
                 },
                 minSize: 0,
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: darkColor),
@@ -249,7 +249,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               constraints: BoxConstraints(maxWidth: 500),
               child: CupertinoButton(
                 minSize: 0,
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 onPressed: () async {
                   await onCharacterSelected(character);
                 },

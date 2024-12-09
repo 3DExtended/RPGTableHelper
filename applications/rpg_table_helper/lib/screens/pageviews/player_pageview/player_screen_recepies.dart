@@ -326,7 +326,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                               children: [
                                 CupertinoButton(
                                   minSize: 0,
-                                  padding: EdgeInsets.all(0),
+                                  padding: EdgeInsets.zero,
                                   onPressed: () async {
                                     await showRecipeCardDetails(context,
                                             recipe: recipeToRender.recipe,

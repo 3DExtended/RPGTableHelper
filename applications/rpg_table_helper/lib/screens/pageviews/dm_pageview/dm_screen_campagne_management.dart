@@ -376,7 +376,7 @@ class _DmScreenCampagneManagementState
             ));
       },
       minSize: 0,
-      padding: EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

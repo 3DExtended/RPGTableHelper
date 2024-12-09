@@ -200,7 +200,7 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                             return [
                               CupertinoButton(
                                 minSize: 0,
-                                padding: EdgeInsets.all(0),
+                                padding: EdgeInsets.zero,
                                 onPressed: () async {
                                   // open edit modal with clicked item
                                   await showCreateOrEditCraftingRecipeModal(

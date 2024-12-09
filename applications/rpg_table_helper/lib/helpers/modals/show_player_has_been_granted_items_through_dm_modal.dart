@@ -238,7 +238,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                   condition: isLast,
                   wrapper: (context, child) => CupertinoButton(
                       minSize: 0,
-                      padding: EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       child: child,
                       onPressed: () {
                         hideNextCard();

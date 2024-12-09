@@ -667,7 +667,7 @@ class _ShowGetPlayerConfigurationModalContentState
                       });
                     },
               minSize: 0,
-              padding: EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               child: Text(
                 "Neues Bild",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -995,7 +995,7 @@ class _ShowGetPlayerConfigurationModalContentState
               (e) => multiselectIsAllowedToBeSelectedMultipleTimes == false
                   ? CheckboxListTile.adaptive(
                       controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: EdgeInsets.zero,
                       splashRadius: 0,
                       dense: true,
                       checkColor: const Color.fromARGB(255, 57, 245, 88),
@@ -1305,7 +1305,7 @@ class _ShowGetPlayerConfigurationModalContentState
             .map(
               (e) => CheckboxListTile.adaptive(
                 controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.all(0),
+                contentPadding: EdgeInsets.zero,
                 splashRadius: 0,
                 dense: true,
                 checkColor: const Color.fromARGB(255, 57, 245, 88),
