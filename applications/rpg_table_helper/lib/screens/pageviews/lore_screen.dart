@@ -462,7 +462,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _buildNavItem(String label) {
-    if (_isCollapsed)
+    if (_isCollapsed) {
       return Padding(
         padding: const EdgeInsets.only(left: 12),
         child: Container(
@@ -471,6 +471,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               BoxDecoration(border: Border(bottom: BorderSide(color: bgColor))),
         ),
       );
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),

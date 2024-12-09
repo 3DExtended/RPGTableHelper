@@ -11,6 +11,7 @@ import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_campagn
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_character_overview.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_fight_squence.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_grant_items.dart';
+import 'package:rpg_table_helper/screens/pageviews/lore_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class DmPageScreen extends StatefulWidget {
@@ -48,6 +49,10 @@ class _DmPageScreenState extends State<DmPageScreen> {
       (
         "Items verteilen",
         DmScreenGrantItems(),
+      ),
+      (
+        "Weltgeschichte",
+        LoreScreen(),
       ),
     ];
   }

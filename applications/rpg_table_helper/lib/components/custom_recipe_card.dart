@@ -69,17 +69,84 @@ class CustomRecipeCard extends StatelessWidget {
                 borderSize: 6,
 
                 // This border has to be interrupted
-                child: Container(
-                  child: RecipeCardBorders(
-                      lightColor: lightColor,
-                      borderSize: borderSize,
-                      backgroundColor: backgroundColor,
-                      child: Container(
-                        color: backgroundColor,
-                        child: Column(
-                          children: [
-                            // TITLE
-                            Padding(
+                child: RecipeCardBorders(
+                    lightColor: lightColor,
+                    borderSize: borderSize,
+                    backgroundColor: backgroundColor,
+                    child: Container(
+                      color: backgroundColor,
+                      child: Column(
+                        children: [
+                          // TITLE
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            child: CardBorder(
+                              borderRadius: 5,
+                              color: lightColor,
+                              borderSize: 3,
+                              child: CardBorder(
+                                borderRadius: 4,
+                                color: backgroundColor,
+                                borderSize: 2,
+                                child: CardBorder(
+                                  borderRadius: 2,
+                                  color: lightColor,
+                                  borderSize: 2,
+                                  child: SizedBox(
+                                    height: 32,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child: AutoSizeText(
+                                              softWrap: true,
+                                              textAlign: TextAlign.center,
+                                              title,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: darkColor),
+                                              minFontSize: 10,
+                                              maxFontSize: 24,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // IMAGE
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: BorderedImage(
+                              lightColor: lightColor,
+                              backgroundColor: backgroundColor,
+                              imageUrl: fullImageUrl,
+                              isLoading: false,
+                            ),
+                          ),
+
+                          // Text
+                          Expanded(
+                            child: Padding(
                               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                               child: CardBorder(
                                 borderRadius: 5,
@@ -93,148 +160,77 @@ class CustomRecipeCard extends StatelessWidget {
                                     borderRadius: 2,
                                     color: lightColor,
                                     borderSize: 2,
-                                    child: SizedBox(
-                                      height: 32,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4),
+                                    child: Container(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 8),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Expanded(
                                               child: AutoSizeText(
-                                                softWrap: true,
-                                                textAlign: TextAlign.center,
-                                                title ?? "Empty title",
+                                                getMarkdownText().$1,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headlineMedium!
                                                     .copyWith(
-                                                        fontSize: 24,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         color: darkColor),
                                                 minFontSize: 10,
-                                                maxFontSize: 24,
-                                                maxLines: 1,
+                                                maxFontSize: 16,
+                                                textAlign: TextAlign.left,
+                                                maxLines: getMarkdownText()
+                                                            .$2 ==
+                                                        true
+                                                    ? 7
+                                                    : '\n'
+                                                            .allMatches(
+                                                                getMarkdownText()
+                                                                    .$1)
+                                                            .length +
+                                                        1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                          ],
+                                        )
+                                        // Row(
+                                        //   children: [
+                                        //     Expanded(
+                                        //       child: Column(
+                                        //         children: [
+                                        //           Expanded(
+                                        //             child: AutoSizeText(
+                                        //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //     ),
+                                        //     Expanded(
+                                        //       child: Column(
+                                        //         children: [
+                                        //           Expanded(
+                                        //             child: AutoSizeText(
+                                        //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        ),
                                   ),
                                 ),
                               ),
                             ),
-
-                            // IMAGE
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: BorderedImage(
-                                lightColor: lightColor,
-                                backgroundColor: backgroundColor,
-                                imageUrl: fullImageUrl,
-                                isLoading: false,
-                              ),
-                            ),
-
-                            // Text
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                child: CardBorder(
-                                  borderRadius: 5,
-                                  color: lightColor,
-                                  borderSize: 3,
-                                  child: CardBorder(
-                                    borderRadius: 4,
-                                    color: backgroundColor,
-                                    borderSize: 2,
-                                    child: CardBorder(
-                                      borderRadius: 2,
-                                      color: lightColor,
-                                      borderSize: 2,
-                                      child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 8),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: AutoSizeText(
-                                                  getMarkdownText().$1,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headlineMedium!
-                                                      .copyWith(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: darkColor),
-                                                  minFontSize: 10,
-                                                  maxFontSize: 16,
-                                                  textAlign: TextAlign.left,
-                                                  maxLines: getMarkdownText()
-                                                              .$2 ==
-                                                          true
-                                                      ? 7
-                                                      : '\n'
-                                                              .allMatches(
-                                                                  getMarkdownText()
-                                                                      .$1)
-                                                              .length +
-                                                          1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                          // Row(
-                                          //   children: [
-                                          //     Expanded(
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Expanded(
-                                          //             child: AutoSizeText(
-                                          //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //     Expanded(
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Expanded(
-                                          //             child: AutoSizeText(
-                                          //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
+                          ),
+                        ],
+                      ),
+                    )),
               ),
             ),
           ),
