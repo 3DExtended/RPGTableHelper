@@ -12,7 +12,6 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
@@ -288,8 +287,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       // This represents the currently selected segmented control.
                       groupValue: getVisibilityForSelectedDocument(),
                       // Callback that sets the selected segmented control.
-                      onValueChanged: (NotesBlockVisibility? value) {
-                        // TODO make me
+                      onValueChanged: (newValue) {
+                        // TODO this is ugly but i dont understand why this is needed yet...
+                        onDocumentVisibilityChanged(newValue);
+                        onDocumentVisibilityChanged(newValue);
                       },
                       children: <NotesBlockVisibility, Widget>{
                         NotesBlockVisibility.hiddenforallexceptauthor: Padding(
@@ -357,6 +358,28 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         ),
       ],
     );
+  }
+
+  void onDocumentVisibilityChanged(NotesBlockVisibility? value) {
+    if (value == null) return;
+    if (value == NotesBlockVisibility.hiddenforallexceptauthor) {
+      // loop through blocks and remove all permitted users
+      for (int i = 0; i < selectedDocument!.textBlocks.length; i++) {
+        List<UserIdentifier> newPermittedUsers = [];
+        updatePermittedUsersOnBlock(
+            newPermittedUsers, selectedDocument!.textBlocks[i]);
+      }
+
+      for (int i = 0; i < selectedDocument!.imageBlocks.length; i++) {
+        List<UserIdentifier> newPermittedUsers = [];
+        updatePermittedUsersOnBlock(
+            newPermittedUsers, selectedDocument!.imageBlocks[i]);
+      }
+    }
+
+    if (value == NotesBlockVisibility.visibleforcampagne) {
+      // TODO loop through blocks and add all permitted users
+    }
   }
 
   Widget _getCollapseButton(Duration duration) {
@@ -518,8 +541,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       return NotesBlockVisibility.visibleforcampagne;
     }
 
-    if (blocks
-        .any((b) => b.visibility == NotesBlockVisibility.visibleforsomeusers)) {
+    if (blocks.any((b) =>
+        b.visibility == NotesBlockVisibility.visibleforsomeusers ||
+        b.visibility == NotesBlockVisibility.visibleforcampagne)) {
       return NotesBlockVisibility.visibleforsomeusers;
     }
 
@@ -561,40 +585,30 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         children: [
           Expanded(flex: 3, child: blockRendering!),
           Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                child: StaticGrid(
-                  children: [
-                    Text(
-                      "Versteckt",
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .copyWith(fontSize: 16, color: darkTextColor),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          border:
-                              Border(left: BorderSide(color: middleBgColor))),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          "Sichtbar",
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium!
-                              .copyWith(fontSize: 16, color: darkTextColor),
-                        ),
-                      ),
-                    ),
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+              child: Column(
+                children: [
+                  Text(
+                    "Sichtbar für:",
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(fontSize: 16, color: darkTextColor),
+                  ),
 
-                    // for every user create a pill which indicates
-                    ...getPillsToIndicateVisibilityForPlayers(
-                        block.id, block.permittedUsers ?? []),
-                  ],
-                ),
-              )),
+                  SizedBox(
+                    height: 5,
+                  ),
+
+                  // for every user create a pill which indicates
+                  ...getPillsToIndicateVisibilityForPlayers(
+                      block.id, block.permittedUsers ?? []),
+                ],
+              ),
+            ),
+          ),
         ],
       ));
     }
@@ -665,22 +679,13 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     permittedUserResult.sortByDescending((u) => u.playerCharacterName!);
     List<Widget> result = [];
 
-    while (permittedUserResult.isNotEmpty || prohibitedUserResult.isNotEmpty) {
-      if (prohibitedUserResult.isNotEmpty) {
-        var prohibitedUser = prohibitedUserResult.removeLast();
-        result.add(getVisibilityPillForUser(blockId, prohibitedUser,
-            isProhibited: true));
-      } else {
-        result.add(Container());
-      }
-
-      if (permittedUserResult.isNotEmpty) {
-        var permitteddUser = permittedUserResult.removeLast();
-        result.add(getVisibilityPillForUser(blockId, permitteddUser,
-            isProhibited: false));
-      } else {
-        result.add(Container());
-      }
+    for (var permittedUser in permittedUserResult) {
+      result.add(getVisibilityPillForUser(blockId, permittedUser,
+          isProhibited: false));
+    }
+    for (var prohibitedUser in prohibitedUserResult) {
+      result.add(getVisibilityPillForUser(blockId, prohibitedUser,
+          isProhibited: true));
     }
 
     return result;
@@ -689,18 +694,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   Widget getVisibilityPillForUser(NoteBlockModelBaseIdentifier blockId,
       NoteDocumentPlayerDescriptorDto permitteddUser,
       {required bool isProhibited}) {
-    return ConditionalWidgetWrapper(
-      condition: !isProhibited,
-      wrapper: (context, child) {
-        return Container(
-          decoration: BoxDecoration(
-              border: Border(left: BorderSide(color: middleBgColor))),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: child,
-          ),
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: CupertinoButton(
         minSize: 0,
         padding: EdgeInsets.zero,
@@ -710,21 +705,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           var block =
               getBlocksOfSelectedDocument.singleWhere((b) => b.id == blockId);
 
+          var newPermittedUsers =
+              (block.permittedUsers as List<UserIdentifier>?) ?? [];
           if (isProhibited) {
             // add user to permitted users
-            setState(() {
-              var newPermittedUsers =
-                  (block.permittedUsers as List<UserIdentifier>?) ?? [];
-              newPermittedUsers.add(permitteddUser.userId);
-            });
+            newPermittedUsers.add(permitteddUser.userId);
           } else {
             // remove user from permitted users
-            setState(() {
-              var newPermittedUsers =
-                  (block.permittedUsers as List<UserIdentifier>?) ?? [];
-              newPermittedUsers.removeWhere((u) => u == permitteddUser.userId);
-            });
+            newPermittedUsers
+                .removeWhere((u) => u.$value == permitteddUser.userId.$value);
           }
+
+          updatePermittedUsersOnBlock(newPermittedUsers, block);
         },
         child: Row(
           children: [
@@ -739,6 +731,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   permitteddUser.playerCharacterName!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: darkTextColor,
                         fontSize: 16,
@@ -750,16 +744,20 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               width: 5,
             ),
             Container(
-              width: 32,
-              height: 32,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: darkColor,
+                color: isProhibited ? lightRed : lightGreen,
+                borderRadius: BorderRadius.circular(3.0),
+                border: Border.all(
+                  color: darkColor,
+                ),
               ),
               child: CustomFaIcon(
-                  icon: isProhibited
-                      ? FontAwesomeIcons.chevronRight
-                      : FontAwesomeIcons.chevronLeft),
+                icon: isProhibited
+                    ? FontAwesomeIcons.xmark
+                    : FontAwesomeIcons.check,
+                color: darkColor,
+                size: 22,
+              ),
             ),
             SizedBox(
               width: 10,
@@ -768,5 +766,58 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         ),
       ),
     );
+  }
+
+  void updatePermittedUsersOnBlock(
+      List<UserIdentifier> newPermittedUsers, block) {
+    newPermittedUsers = newPermittedUsers
+        .where(
+            (u) => usersInCampagne.any((uic) => uic.userId.$value == u.$value))
+        .toList();
+
+    setState(() {
+      if (block is TextBlock) {
+        block = (block as TextBlock).copyWith(
+          visibility: recalculateBlockVisibility(block),
+          permittedUsers: newPermittedUsers,
+        );
+
+        var indexToReplace =
+            selectedDocument!.textBlocks.indexWhere((b) => b.id == block.id);
+        if (indexToReplace >= 0) {
+          selectedDocument!.textBlocks[indexToReplace] = block;
+          selectedDocument = selectedDocument!
+              .copyWith(textBlocks: [...selectedDocument!.textBlocks]);
+        }
+      } else if (block is ImageBlock) {
+        block = (block as ImageBlock).copyWith(
+          visibility: recalculateBlockVisibility(block),
+          permittedUsers: newPermittedUsers,
+        );
+
+        var indexToReplace =
+            selectedDocument!.imageBlocks.indexWhere((b) => b.id == block.id);
+        if (indexToReplace >= 0) {
+          selectedDocument!.imageBlocks[indexToReplace] = block;
+          selectedDocument = selectedDocument!
+              .copyWith(imageBlocks: [...selectedDocument!.imageBlocks]);
+        }
+      }
+    });
+  }
+
+  NotesBlockVisibility recalculateBlockVisibility(dynamic block) {
+    if (block.permittedUsers == null || block.permittedUsers.isEmpty) {
+      return NotesBlockVisibility.hiddenforallexceptauthor;
+    }
+
+    var userExceptAuthorOfBlock =
+        usersInCampagne.where((u) => u.userId != block.creatingUserId).toList();
+    if (userExceptAuthorOfBlock
+        .any((u) => !block.permittedUsers.contains(u.userId))) {
+      return NotesBlockVisibility.visibleforsomeusers;
+    }
+
+    return NotesBlockVisibility.visibleforcampagne;
   }
 }
