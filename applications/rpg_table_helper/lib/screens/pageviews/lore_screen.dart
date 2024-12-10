@@ -12,15 +12,18 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/note_documents_service.dart';
+import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/systemclock_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -51,6 +54,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     initialRefreshStatus: RefreshStatus.refreshing,
     initialRefresh: false,
   );
+
+  List<NoteDocumentPlayerDescriptorDto> usersInCampagne = [];
 
   @override
   void initState() {
@@ -407,10 +412,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         campagneId: CampagneIdentifier($value: campagneId));
 
     if (!mounted) return;
+    var rpgservice =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    var loadedCharsResponse = await rpgservice.getUserDetailsForCampagne(
+        campagneId: CampagneIdentifier($value: campagneId));
+
+    if (!mounted) return;
+    await loadedCharsResponse.possiblyHandleError(context);
+    if (!mounted) return;
     await documentsResponse.possiblyHandleError(context);
     if (!mounted) return;
 
-    if (!documentsResponse.isSuccessful) {
+    if (!documentsResponse.isSuccessful || !loadedCharsResponse.isSuccessful) {
       setState(() {
         isLoading = false;
       });
@@ -418,6 +431,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     }
 
     setState(() {
+      usersInCampagne = loadedCharsResponse.result ?? [];
+
       var otherGroupName = "Sonstiges"; // TODO localize
       groupedDocuments =
           (documentsResponse.result ?? []).groupListsBy((d) => d.groupName);
@@ -549,9 +564,35 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               flex: 1,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                child: Container(
-                  color: Colors.red,
-                  height: 10,
+                child: StaticGrid(
+                  children: [
+                    Text(
+                      "Versteckt",
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(fontSize: 16, color: darkTextColor),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          border:
+                              Border(left: BorderSide(color: middleBgColor))),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "Sichtbar",
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(fontSize: 16, color: darkTextColor),
+                        ),
+                      ),
+                    ),
+
+                    // for every user create a pill which indicates
+                    ...getPillsToIndicateVisibilityForPlayers(
+                        block.id, block.permittedUsers ?? []),
+                  ],
                 ),
               )),
         ],
@@ -589,6 +630,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 clipBehavior: Clip.hardEdge,
                 child: CustomImage(
                   isGreyscale: false,
+                  isClickableForZoom: true,
                   isLoading: false,
                   imageUrl: imageBlock.publicImageUrl!,
                 ),
@@ -598,5 +640,133 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         ),
       );
     });
+  }
+
+  List<Widget> getPillsToIndicateVisibilityForPlayers(
+      NoteBlockModelBaseIdentifier blockId,
+      List<UserIdentifier> permittedUsers) {
+    // get all users execpt me:
+    var usersExceptMe = usersInCampagne.where((u) => !u.isYou).toList();
+
+    List<NoteDocumentPlayerDescriptorDto> prohibitedUserResult = [];
+    List<NoteDocumentPlayerDescriptorDto> permittedUserResult = [];
+
+    for (var user in usersExceptMe) {
+      if (permittedUsers.contains(user.userId)) {
+        permittedUserResult.add(user.copyWith(
+            playerCharacterName: user.isDm ? "DM" : user.playerCharacterName));
+      } else {
+        prohibitedUserResult.add(user.copyWith(
+            playerCharacterName: user.isDm ? "DM" : user.playerCharacterName));
+      }
+    }
+
+    prohibitedUserResult.sortByDescending((u) => u.playerCharacterName!);
+    permittedUserResult.sortByDescending((u) => u.playerCharacterName!);
+    List<Widget> result = [];
+
+    while (permittedUserResult.isNotEmpty || prohibitedUserResult.isNotEmpty) {
+      if (prohibitedUserResult.isNotEmpty) {
+        var prohibitedUser = prohibitedUserResult.removeLast();
+        result.add(getVisibilityPillForUser(blockId, prohibitedUser,
+            isProhibited: true));
+      } else {
+        result.add(Container());
+      }
+
+      if (permittedUserResult.isNotEmpty) {
+        var permitteddUser = permittedUserResult.removeLast();
+        result.add(getVisibilityPillForUser(blockId, permitteddUser,
+            isProhibited: false));
+      } else {
+        result.add(Container());
+      }
+    }
+
+    return result;
+  }
+
+  Widget getVisibilityPillForUser(NoteBlockModelBaseIdentifier blockId,
+      NoteDocumentPlayerDescriptorDto permitteddUser,
+      {required bool isProhibited}) {
+    return ConditionalWidgetWrapper(
+      condition: !isProhibited,
+      wrapper: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: middleBgColor))),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: child,
+          ),
+        );
+      },
+      child: CupertinoButton(
+        minSize: 0,
+        padding: EdgeInsets.zero,
+        onPressed: () {
+          // TODO Switch user
+          // find correct block to update
+          var block =
+              getBlocksOfSelectedDocument.singleWhere((b) => b.id == blockId);
+
+          if (isProhibited) {
+            // add user to permitted users
+            setState(() {
+              var newPermittedUsers =
+                  (block.permittedUsers as List<UserIdentifier>?) ?? [];
+              newPermittedUsers.add(permitteddUser.userId);
+            });
+          } else {
+            // remove user from permitted users
+            setState(() {
+              var newPermittedUsers =
+                  (block.permittedUsers as List<UserIdentifier>?) ?? [];
+              newPermittedUsers.removeWhere((u) => u == permitteddUser.userId);
+            });
+          }
+        },
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: 32,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: middleBgColor,
+                ),
+                padding: EdgeInsets.all(5),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  permitteddUser.playerCharacterName!,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: darkTextColor,
+                        fontSize: 16,
+                      ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: darkColor,
+              ),
+              child: CustomFaIcon(
+                  icon: isProhibited
+                      ? FontAwesomeIcons.chevronRight
+                      : FontAwesomeIcons.chevronLeft),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1968,7 +1968,8 @@
         "tags": [
           "PlayerCharacter"
         ],
-        "summary": "Returns a list of player characters for a given campagne (if the calling user is the dm).",
+        "summary": "Returns a list of player characters for a given campagne.",
+        "description": "Please note that only the dm is allowed to retrieve the rpg character configs of the players. if you are not the dm, those configs will be empty!",
         "parameters": [{
           "name": "Value",
           "in": "query",
@@ -2002,6 +2003,111 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/PlayerCharacter"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the playerCharacters",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or not the dm",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne": {
+      "get": {
+        "tags": [
+          "PlayerCharacter"
+        ],
+        "summary": "Returns a list of all users assigned to the campagne with meta information.",
+        "parameters": [{
+          "name": "Value",
+          "in": "query",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "A list of all playerCharacters for this user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentPlayerDescriptorDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentPlayerDescriptorDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentPlayerDescriptorDto"
                   }
                 }
               }
@@ -3538,6 +3644,30 @@
           "value": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NoteDocumentPlayerDescriptorDto": {
+        "required": [
+          "isDm",
+          "isYou",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "$ref": "#/components/schemas/UserIdentifier"
+          },
+          "playerCharacterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDm": {
+            "type": "boolean"
+          },
+          "isYou": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

@@ -1764,6 +1764,88 @@ extension $NoteDocumentIdentifierExtension on NoteDocumentIdentifier {
 }
 
 @JsonSerializable(explicitToJson: true)
+class NoteDocumentPlayerDescriptorDto {
+  const NoteDocumentPlayerDescriptorDto({
+    required this.userId,
+    this.playerCharacterName,
+    required this.isDm,
+    required this.isYou,
+  });
+
+  factory NoteDocumentPlayerDescriptorDto.fromJson(Map<String, dynamic> json) =>
+      _$NoteDocumentPlayerDescriptorDtoFromJson(json);
+
+  static const toJsonFactory = _$NoteDocumentPlayerDescriptorDtoToJson;
+  Map<String, dynamic> toJson() =>
+      _$NoteDocumentPlayerDescriptorDtoToJson(this);
+
+  @JsonKey(name: 'userId')
+  final UserIdentifier userId;
+  @JsonKey(name: 'playerCharacterName')
+  final String? playerCharacterName;
+  @JsonKey(name: 'isDm')
+  final bool isDm;
+  @JsonKey(name: 'isYou')
+  final bool isYou;
+  static const fromJsonFactory = _$NoteDocumentPlayerDescriptorDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is NoteDocumentPlayerDescriptorDto &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
+            (identical(other.playerCharacterName, playerCharacterName) ||
+                const DeepCollectionEquality()
+                    .equals(other.playerCharacterName, playerCharacterName)) &&
+            (identical(other.isDm, isDm) ||
+                const DeepCollectionEquality().equals(other.isDm, isDm)) &&
+            (identical(other.isYou, isYou) ||
+                const DeepCollectionEquality().equals(other.isYou, isYou)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(userId) ^
+      const DeepCollectionEquality().hash(playerCharacterName) ^
+      const DeepCollectionEquality().hash(isDm) ^
+      const DeepCollectionEquality().hash(isYou) ^
+      runtimeType.hashCode;
+}
+
+extension $NoteDocumentPlayerDescriptorDtoExtension
+    on NoteDocumentPlayerDescriptorDto {
+  NoteDocumentPlayerDescriptorDto copyWith(
+      {UserIdentifier? userId,
+      String? playerCharacterName,
+      bool? isDm,
+      bool? isYou}) {
+    return NoteDocumentPlayerDescriptorDto(
+        userId: userId ?? this.userId,
+        playerCharacterName: playerCharacterName ?? this.playerCharacterName,
+        isDm: isDm ?? this.isDm,
+        isYou: isYou ?? this.isYou);
+  }
+
+  NoteDocumentPlayerDescriptorDto copyWithWrapped(
+      {Wrapped<UserIdentifier>? userId,
+      Wrapped<String?>? playerCharacterName,
+      Wrapped<bool>? isDm,
+      Wrapped<bool>? isYou}) {
+    return NoteDocumentPlayerDescriptorDto(
+        userId: (userId != null ? userId.value : this.userId),
+        playerCharacterName: (playerCharacterName != null
+            ? playerCharacterName.value
+            : this.playerCharacterName),
+        isDm: (isDm != null ? isDm.value : this.isDm),
+        isYou: (isYou != null ? isYou.value : this.isYou));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class PlayerCharacter {
   const PlayerCharacter({
     this.rpgCharacterConfiguration,

@@ -315,6 +315,23 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<NoteDocumentPlayerDescriptorDto>>>
+      _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+          {String? $Value}) {
+    final Uri $url = Uri.parse(
+        '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne');
+    final Map<String, dynamic> $params = <String, dynamic>{'Value': $Value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<List<NoteDocumentPlayerDescriptorDto>,
+        NoteDocumentPlayerDescriptorDto>($request);
+  }
+
+  @override
   Future<Response<String>> _publicGetminimalversionGet() {
     final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(

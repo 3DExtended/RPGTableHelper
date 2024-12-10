@@ -474,6 +474,24 @@ Map<String, dynamic> _$NoteDocumentIdentifierToJson(
       'value': instance.$value,
     };
 
+NoteDocumentPlayerDescriptorDto _$NoteDocumentPlayerDescriptorDtoFromJson(
+        Map<String, dynamic> json) =>
+    NoteDocumentPlayerDescriptorDto(
+      userId: UserIdentifier.fromJson(json['userId'] as Map<String, dynamic>),
+      playerCharacterName: json['playerCharacterName'] as String?,
+      isDm: json['isDm'] as bool,
+      isYou: json['isYou'] as bool,
+    );
+
+Map<String, dynamic> _$NoteDocumentPlayerDescriptorDtoToJson(
+        NoteDocumentPlayerDescriptorDto instance) =>
+    <String, dynamic>{
+      'userId': instance.userId.toJson(),
+      'playerCharacterName': instance.playerCharacterName,
+      'isDm': instance.isDm,
+      'isYou': instance.isYou,
+    };
+
 PlayerCharacter _$PlayerCharacterFromJson(Map<String, dynamic> json) =>
     PlayerCharacter(
       rpgCharacterConfiguration: json['rpgCharacterConfiguration'] as String?,

@@ -386,7 +386,7 @@ abstract class Swagger extends ChopperService {
       _playerCharacterGetplayercharacterPlayercharacteridGet(
           {@Path('playercharacterid') required String? playercharacterid});
 
-  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///Returns a list of player characters for a given campagne.
   ///@param Value
   Future<chopper.Response<List<PlayerCharacter>>>
       playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
@@ -396,11 +396,30 @@ abstract class Swagger extends ChopperService {
     return _playerCharacterGetplayercharactersincampagneGet($Value: $Value);
   }
 
-  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///Returns a list of player characters for a given campagne.
   ///@param Value
   @Get(path: '/PlayerCharacter/getplayercharactersincampagne')
   Future<chopper.Response<List<PlayerCharacter>>>
       _playerCharacterGetplayercharactersincampagneGet(
+          {@Query('Value') String? $Value});
+
+  ///Returns a list of all users assigned to the campagne with meta information.
+  ///@param Value
+  Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
+      playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+          {String? $Value}) {
+    generatedMapping.putIfAbsent(NoteDocumentPlayerDescriptorDto,
+        () => NoteDocumentPlayerDescriptorDto.fromJsonFactory);
+
+    return _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+        $Value: $Value);
+  }
+
+  ///Returns a list of all users assigned to the campagne with meta information.
+  ///@param Value
+  @Get(path: '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne')
+  Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
+      _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
           {@Query('Value') String? $Value});
 
   ///Returns the minimal app version supported by this api.

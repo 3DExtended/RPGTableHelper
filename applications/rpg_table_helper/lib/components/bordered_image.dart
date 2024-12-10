@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rpg_table_helper/components/card_border.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
@@ -67,9 +68,11 @@ class CustomImage extends StatelessWidget {
     required this.imageUrl,
     required this.isLoading,
     this.aspectRatio,
+    this.isClickableForZoom,
   });
 
   final bool? isGreyscale;
+  final bool? isClickableForZoom;
   final String? imageUrl;
   final bool? isLoading;
   final double? aspectRatio;
@@ -107,22 +110,50 @@ class CustomImage extends StatelessWidget {
                   aspectRatio: aspectRatio!,
                   child: child,
                 ),
-                child: CachedNetworkImage(
-                  placeholder: (context, url) {
-                    return Image.memory(
-                      kTransparentImage,
-                      fit: BoxFit.cover,
-                    );
+                child: ConditionalWidgetWrapper(
+                  condition: isClickableForZoom == true,
+                  wrapper: (context, child) {
+                    return CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 1,
+                        child: child,
+                        onPressed: () {
+                          showImageViewer(
+                              context,
+                              swipeDismissible: true,
+                              useSafeArea: true,
+                              doubleTapZoomable: true,
+                              // barrierColor: Colors.black12,
+                              CachedNetworkImageProvider(
+                                imageUrl!,
+                                cacheManager: CacheManager(Config(
+                                  "rpgborderedimage",
+                                  stalePeriod: const Duration(
+                                      days: 30), // images dont change, urls to
+                                )),
+                              ), onViewerDismissed: () {
+                            print("dismissed");
+                          });
+                        });
                   },
-                  imageUrl: imageUrl!,
-                  cacheManager: CacheManager(Config(
-                    "rpgborderedimage",
-                    stalePeriod:
-                        const Duration(days: 30), // images dont change, urls to
-                  )),
-                  fit: BoxFit.cover,
-                  fadeInDuration: const Duration(milliseconds: 500),
-                  fadeOutDuration: const Duration(milliseconds: 500),
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) {
+                      return Image.memory(
+                        kTransparentImage,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                    imageUrl: imageUrl!,
+                    cacheManager: CacheManager(Config(
+                      "rpgborderedimage",
+                      stalePeriod: const Duration(
+                          days: 30), // images dont change, urls to
+                    )),
+                    fit: BoxFit.cover,
+                    fadeInDuration: const Duration(milliseconds: 500),
+                    fadeOutDuration: const Duration(milliseconds: 500),
+                  ),
                 ),
               ),
             ),
