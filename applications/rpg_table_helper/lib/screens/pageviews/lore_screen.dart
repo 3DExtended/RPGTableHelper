@@ -16,6 +16,7 @@ import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
@@ -59,139 +60,158 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      await reloadAllPages();
+      await _reloadAllPages();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // the navbar is rendered on top of the content if this setting is true
+    var useStackOption = !context.isTablet;
+
+    var children = [
+      // collapsable navbar
+      _getCollapsableNavbar(),
+
+      // content
+      if (!useStackOption)
+        Expanded(
+          child: _getContent(),
+        ),
+      if (useStackOption)
+        Padding(
+          padding: EdgeInsets.only(left: context.isTablet ? collapsedWidth : 0),
+          child: _getContent(),
+        )
+    ];
+
+    if (useStackOption) {
+      return Stack(
+        children: children.reversed.toList(),
+      );
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // collapsable navbar
-        AnimatedContainer(
-          duration: duration,
-          width: _isCollapsed ? collapsedWidth : expandedWidth,
-          color: middleBgColor,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 5,
-              ),
-              Expanded(
-                child: AnimatedAlign(
-                  duration: duration,
-                  alignment:
-                      _isCollapsed ? Alignment.center : Alignment.topCenter,
-                  child: ConditionalWidgetWrapper(
-                    condition: !_isCollapsed,
-                    wrapper: (context, child) {
-                      return SmartRefresher(
-                          controller: refreshController,
-                          enablePullDown: true,
-                          enablePullUp: false,
-                          onRefresh: () async {
-                            await reloadAllPages();
-
-                            refreshController.refreshCompleted();
-                          },
-                          child: child);
-                    },
-                    child: SingleChildScrollView(
-                      child: LayoutBuilder(builder: (context, constraints) {
-                        return ConstrainedBox(
-                          constraints:
-                              BoxConstraints(minHeight: constraints.minHeight),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: groupLabels.map((group) {
-                                return DragTarget<NoteDocumentDto>(
-                                  key: ValueKey(group),
-                                  onWillAcceptWithDetails: (doc) => true,
-                                  onAcceptWithDetails: (details) {
-                                    final draggedDoc = details.data;
-                                    final index =
-                                        groupedDocuments[group]?.length ?? 0;
-                                    _onDocumentDropped(draggedDoc.groupName,
-                                        group, index, draggedDoc);
-                                  },
-                                  builder:
-                                      (context, candidateData, rejectedData) {
-                                    return Container(
-                                      color: candidateData.isNotEmpty
-                                          ? accentColor.withAlpha(25)
-                                          : Colors.transparent,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          _buildNavItem(group),
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            padding: EdgeInsets.zero,
-                                            itemCount: groupedDocuments[group]
-                                                    ?.length ??
-                                                0,
-                                            itemBuilder: (context, index) {
-                                              final doc = groupedDocuments[
-                                                  group]![index];
-                                              return CupertinoButton(
-                                                minSize: 0,
-                                                padding: EdgeInsets.zero,
-                                                onPressed: () {
-                                                  setState(() {
-                                                    selectedDocument = doc;
-                                                    selectedDocumentId = doc.id;
-                                                  });
-                                                },
-                                                child: LongPressDraggable<
-                                                    NoteDocumentDto>(
-                                                  hapticFeedbackOnStart: true,
-                                                  key:
-                                                      ValueKey(doc.id!.$value!),
-                                                  data: doc,
-                                                  feedback: SizedBox(
-                                                    width: expandedWidth,
-                                                    child:
-                                                        _getDocumentDragChild(
-                                                            doc, context),
-                                                  ),
-                                                  child: _getDocumentDragChild(
-                                                      doc, context),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-              ),
-              _getCollapseButton(duration),
-            ],
-          ),
-        ),
-        // content
-        Expanded(child: _getContent())
-      ],
+      children: children,
     );
   }
 
-  Padding _getDocumentDragChild(NoteDocumentDto doc, BuildContext context) {
+  Widget _getCollapsableNavbar() {
+    return AnimatedContainer(
+      duration: duration,
+      width: _isCollapsed ? collapsedWidth : expandedWidth,
+      color: middleBgColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 5,
+          ),
+          Expanded(
+            child: AnimatedAlign(
+              duration: duration,
+              alignment: _isCollapsed ? Alignment.center : Alignment.topCenter,
+              child: ConditionalWidgetWrapper(
+                condition: !_isCollapsed && !isInTestEnvironment,
+                wrapper: (context, child) {
+                  return SmartRefresher(
+                      controller: refreshController,
+                      enablePullDown: true,
+                      enablePullUp: false,
+                      onRefresh: () async {
+                        await _reloadAllPages();
+
+                        refreshController.refreshCompleted();
+                      },
+                      child: child);
+                },
+                child: SingleChildScrollView(
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraints.minHeight),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: groupLabels.map((group) {
+                            return DragTarget<NoteDocumentDto>(
+                              key: ValueKey(group),
+                              onWillAcceptWithDetails: (doc) => true,
+                              onAcceptWithDetails: (details) {
+                                final draggedDoc = details.data;
+                                final index =
+                                    groupedDocuments[group]?.length ?? 0;
+                                _onDocumentDropped(draggedDoc.groupName, group,
+                                    index, draggedDoc);
+                              },
+                              builder: (context, candidateData, rejectedData) {
+                                return Container(
+                                  color: candidateData.isNotEmpty
+                                      ? accentColor.withAlpha(25)
+                                      : Colors.transparent,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildNavItem(group),
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        padding: EdgeInsets.zero,
+                                        itemCount:
+                                            groupedDocuments[group]?.length ??
+                                                0,
+                                        itemBuilder: (context, index) {
+                                          final doc =
+                                              groupedDocuments[group]![index];
+                                          return CupertinoButton(
+                                            minSize: 0,
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              setState(() {
+                                                selectedDocument = doc;
+                                                selectedDocumentId = doc.id;
+                                              });
+                                            },
+                                            child: LongPressDraggable<
+                                                NoteDocumentDto>(
+                                              hapticFeedbackOnStart: true,
+                                              key: ValueKey(doc.id!.$value!),
+                                              data: doc,
+                                              feedback: SizedBox(
+                                                width: expandedWidth,
+                                                child: _getDocumentDragChild(
+                                                    doc, context),
+                                              ),
+                                              child: _getDocumentDragChild(
+                                                  doc, context),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+          _getCollapseButton(duration),
+        ],
+      ),
+    );
+  }
+
+  Widget _getDocumentDragChild(NoteDocumentDto doc, BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(5),
       child: Row(
@@ -275,111 +295,13 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Center(
-                    child:
-                        CupertinoSlidingSegmentedControl<NotesBlockVisibility>(
-                      backgroundColor: middleBgColor,
-                      thumbColor: darkColor,
-                      // This represents the currently selected segmented control.
-                      groupValue: getVisibilityForSelectedDocument(),
-                      // Callback that sets the selected segmented control.
-                      onValueChanged: (newValue) {
-                        // TODO this is ugly but i dont understand why this is needed yet...
-                        onDocumentVisibilityChanged(newValue);
-                        onDocumentVisibilityChanged(newValue);
-                      },
-                      children: <NotesBlockVisibility, Widget>{
-                        NotesBlockVisibility.hiddenforallexceptauthor: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: Text(
-                            'Versteckt', // TODO localize
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .copyWith(
-                                    fontSize: 16,
-                                    color: getVisibilityForSelectedDocument() ==
-                                            NotesBlockVisibility
-                                                .hiddenforallexceptauthor
-                                        ? textColor
-                                        : darkTextColor),
-                          ),
-                        ),
-                        NotesBlockVisibility.visibleforsomeusers: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: Text(
-                            'Teilweise Sichtbar', // TODO localize
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .copyWith(
-                                    fontSize: 16,
-                                    color: getVisibilityForSelectedDocument() ==
-                                            NotesBlockVisibility
-                                                .visibleforsomeusers
-                                        ? textColor
-                                        : darkTextColor),
-                          ),
-                        ),
-                        NotesBlockVisibility.visibleforcampagne: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: Text(
-                            'Sichtbar', // TODO localize
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .copyWith(
-                                    fontSize: 16,
-                                    color: getVisibilityForSelectedDocument() ==
-                                            NotesBlockVisibility
-                                                .visibleforcampagne
-                                        ? textColor
-                                        : darkTextColor),
-                          ),
-                        ),
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ..._renderContentBlocks()
-                ],
+                children: _renderContentBlocks(),
               ),
             ),
           ),
         ),
       ],
     );
-  }
-
-  void onDocumentVisibilityChanged(NotesBlockVisibility? value) {
-    if (value == null) return;
-    if (value == NotesBlockVisibility.hiddenforallexceptauthor) {
-      // loop through blocks and remove all permitted users
-      for (int i = 0; i < selectedDocument!.textBlocks.length; i++) {
-        List<UserIdentifier> newPermittedUsers = [];
-        updatePermittedUsersOnBlock(
-            newPermittedUsers, selectedDocument!.textBlocks[i]);
-      }
-
-      for (int i = 0; i < selectedDocument!.imageBlocks.length; i++) {
-        List<UserIdentifier> newPermittedUsers = [];
-        updatePermittedUsersOnBlock(
-            newPermittedUsers, selectedDocument!.imageBlocks[i]);
-      }
-    }
-
-    if (value == NotesBlockVisibility.visibleforcampagne) {
-      // TODO loop through blocks and add all permitted users
-    }
   }
 
   Widget _getCollapseButton(Duration duration) {
@@ -419,7 +341,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     );
   }
 
-  Future reloadAllPages() async {
+  Future _reloadAllPages() async {
     var campagneId =
         ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
     if (campagneId == null) {
@@ -529,28 +451,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     );
   }
 
-  NotesBlockVisibility getVisibilityForSelectedDocument() {
-    if (selectedDocument == null) {
-      return NotesBlockVisibility.hiddenforallexceptauthor;
-    }
-
-    List<dynamic> blocks = getBlocksOfSelectedDocument;
-
-    if (blocks.every(
-        (b) => b.visibility == NotesBlockVisibility.visibleforcampagne)) {
-      return NotesBlockVisibility.visibleforcampagne;
-    }
-
-    if (blocks.any((b) =>
-        b.visibility == NotesBlockVisibility.visibleforsomeusers ||
-        b.visibility == NotesBlockVisibility.visibleforcampagne)) {
-      return NotesBlockVisibility.visibleforsomeusers;
-    }
-
-    return NotesBlockVisibility.hiddenforallexceptauthor;
-  }
-
-  // TODO for every blocklist in selectedDocument:
   List<dynamic> get getBlocksOfSelectedDocument {
     List<dynamic> blocks = [
       ...selectedDocument!.imageBlocks,
@@ -563,19 +463,20 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   List<Widget> _renderContentBlocks() {
+    if (selectedDocument == null) return [];
     List<dynamic> blocks = getBlocksOfSelectedDocument;
 
     List<Widget> result = [];
 
     for (var block in blocks) {
       Widget? blockRendering;
-      // TODO add block types
+
       if (block is TextBlock) {
         // text block
-        blockRendering = getRenderingForTextBlock(block);
+        blockRendering = _getRenderingForTextBlock(block);
       } else if (block is ImageBlock) {
         // image block
-        blockRendering = getRenderingForImageBlock(block);
+        blockRendering = _getRenderingForImageBlock(block);
       }
 
       assert(blockRendering != null);
@@ -603,7 +504,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                   ),
 
                   // for every user create a pill which indicates
-                  ...getPillsToIndicateVisibilityForPlayers(
+                  ..._getPillsToIndicateVisibilityForPlayers(
                       block.id, block.permittedUsers ?? []),
                 ],
               ),
@@ -619,14 +520,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     ));
   }
 
-  Widget getRenderingForTextBlock(TextBlock textBlock) {
+  Widget _getRenderingForTextBlock(TextBlock textBlock) {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
       child: CustomMarkdownBody(text: textBlock.markdownText ?? ""),
     );
   }
 
-  Widget getRenderingForImageBlock(ImageBlock imageBlock) {
+  Widget _getRenderingForImageBlock(ImageBlock imageBlock) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
@@ -656,7 +557,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     });
   }
 
-  List<Widget> getPillsToIndicateVisibilityForPlayers(
+  List<Widget> _getPillsToIndicateVisibilityForPlayers(
       NoteBlockModelBaseIdentifier blockId,
       List<UserIdentifier> permittedUsers) {
     // get all users execpt me:
@@ -680,18 +581,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     List<Widget> result = [];
 
     for (var permittedUser in permittedUserResult) {
-      result.add(getVisibilityPillForUser(blockId, permittedUser,
+      result.add(_getVisibilityPillForUser(blockId, permittedUser,
           isProhibited: false));
     }
     for (var prohibitedUser in prohibitedUserResult) {
-      result.add(getVisibilityPillForUser(blockId, prohibitedUser,
+      result.add(_getVisibilityPillForUser(blockId, prohibitedUser,
           isProhibited: true));
     }
 
     return result;
   }
 
-  Widget getVisibilityPillForUser(NoteBlockModelBaseIdentifier blockId,
+  Widget _getVisibilityPillForUser(NoteBlockModelBaseIdentifier blockId,
       NoteDocumentPlayerDescriptorDto permitteddUser,
       {required bool isProhibited}) {
     return Padding(
@@ -700,7 +601,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         minSize: 0,
         padding: EdgeInsets.zero,
         onPressed: () {
-          // TODO Switch user
           // find correct block to update
           var block =
               getBlocksOfSelectedDocument.singleWhere((b) => b.id == blockId);
@@ -716,7 +616,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 .removeWhere((u) => u.$value == permitteddUser.userId.$value);
           }
 
-          updatePermittedUsersOnBlock(newPermittedUsers, block);
+          _updatePermittedUsersOnBlock(newPermittedUsers, block);
         },
         child: Row(
           children: [
@@ -768,7 +668,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     );
   }
 
-  void updatePermittedUsersOnBlock(
+  void _updatePermittedUsersOnBlock(
       List<UserIdentifier> newPermittedUsers, block) {
     newPermittedUsers = newPermittedUsers
         .where(
@@ -778,7 +678,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     setState(() {
       if (block is TextBlock) {
         block = (block as TextBlock).copyWith(
-          visibility: recalculateBlockVisibility(block),
+          visibility: _recalculateBlockVisibility(block),
           permittedUsers: newPermittedUsers,
         );
 
@@ -791,7 +691,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         }
       } else if (block is ImageBlock) {
         block = (block as ImageBlock).copyWith(
-          visibility: recalculateBlockVisibility(block),
+          visibility: _recalculateBlockVisibility(block),
           permittedUsers: newPermittedUsers,
         );
 
@@ -806,7 +706,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     });
   }
 
-  NotesBlockVisibility recalculateBlockVisibility(dynamic block) {
+  NotesBlockVisibility _recalculateBlockVisibility(dynamic block) {
     if (block.permittedUsers == null || block.permittedUsers.isEmpty) {
       return NotesBlockVisibility.hiddenforallexceptauthor;
     }
