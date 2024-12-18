@@ -14,6 +14,10 @@ abstract class INoteDocumentService {
 
   Future<HRResponse<List<NoteDocumentDto>>> getDocumentsForCampagne(
       {required CampagneIdentifier campagneId});
+
+  Future<HRResponse<NoteDocumentIdentifier>> createNewDocumentForCampagne({
+    required NoteDocumentDto dto,
+  });
 }
 
 class NoteDocumentService extends INoteDocumentService {
@@ -36,6 +40,25 @@ class NoteDocumentService extends INoteDocumentService {
         '70de032a-ace9-4ac3-8189-698fd5afffe6');
 
     return documentsForUser;
+  }
+
+  @override
+  Future<HRResponse<NoteDocumentIdentifier>> createNewDocumentForCampagne({
+    required NoteDocumentDto dto,
+  }) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<NoteDocumentIdentifier>(
+          'Could not load api connector.',
+          '5fc80da3-53df-422b-bd67-3b7591d54f8c');
+    }
+
+    var documentCreateResponse = await HRResponse.fromApiFuture(
+        api.notesCreatedocumentPost(body: dto),
+        'Could not create new document for campagne.',
+        '82b9e2b6-27bb-4a10-8dbe-988abed7a4c4');
+
+    return documentCreateResponse;
   }
 }
 
@@ -264,5 +287,13 @@ class MockNoteDocumentService extends INoteDocumentService {
             ],
           ),
     );
+  }
+
+  @override
+  Future<HRResponse<NoteDocumentIdentifier>> createNewDocumentForCampagne({
+    required NoteDocumentDto dto,
+  }) {
+    return Future.value(HRResponse.fromResult(NoteDocumentIdentifier(
+        $value: "32301ee6-c38a-43d7-bbdf-85c812a7f878")));
   }
 }

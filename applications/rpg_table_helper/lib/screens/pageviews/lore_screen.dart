@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rpg_table_helper/components/bordered_image.dart';
 import 'package:rpg_table_helper/components/colored_rotated_square.dart';
+import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
@@ -27,6 +28,27 @@ import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/systemclock_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+/// This file defines the `LoreScreen` widget, which is responsible for displaying
+/// a screen with various lore-related documents. The screen includes a navigation
+/// bar, a list of grouped documents, and drag-and-drop functionality for organizing
+/// the documents.
+///
+/// The main components of the `LoreScreen` include:
+/// - A `SingleChildScrollView` that allows the entire content to be scrollable.
+/// - A `LayoutBuilder` that provides the constraints for the layout.
+/// - A `ConstrainedBox` that ensures the minimum height of the content.
+/// - A `Center` widget that centers the content.
+/// - A `Column` that arranges the child widgets vertically.
+/// - A `DragTarget` for each group of documents, allowing documents to be dragged
+///   and dropped into different groups.
+/// - A `ListView.builder` that displays the list of documents within each group.
+/// - A `CupertinoButton` for each document, allowing the user to select a document.
+/// - A `LongPressDraggable` for each document, enabling drag-and-drop functionality.
+/// - Conditional widgets that display additional buttons and options based on the
+///   state of the navigation bar.
+///
+/// The `LoreScreen` widget interacts with various providers and state management
+/// solutions to handle the loading, refreshing, and organizing of documents.
 class LoreScreen extends ConsumerStatefulWidget {
   static String route = "lore";
 
@@ -46,7 +68,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   NoteDocumentDto? selectedDocument;
 
   bool isLoading = true;
-  bool _isCollapsed = false;
+  bool _isNavbarCollapsed = false;
+  bool _isVisibleForBarCollapsed = false;
   double collapsedWidth = 64.0;
   double expandedWidth = 256.0;
 
@@ -56,6 +79,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   );
 
   List<NoteDocumentPlayerDescriptorDto> usersInCampagne = [];
+
+  int numberOfDocumentsForThisPlayer = 0;
+  UserIdentifier? get _myUser =>
+      usersInCampagne.singleWhereOrNull((u) => u.isYou)?.userId;
+
+  bool get _isAllowedToEdit =>
+      selectedDocument?.creatingUserId?.$value != null &&
+      selectedDocument?.creatingUserId?.$value == _myUser?.$value;
 
   @override
   void initState() {
@@ -101,7 +132,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   Widget _getCollapsableNavbar() {
     return AnimatedContainer(
       duration: duration,
-      width: _isCollapsed ? collapsedWidth : expandedWidth,
+      width: _isNavbarCollapsed ? collapsedWidth : expandedWidth,
       color: middleBgColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -112,9 +143,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           Expanded(
             child: AnimatedAlign(
               duration: duration,
-              alignment: _isCollapsed ? Alignment.center : Alignment.topCenter,
+              alignment:
+                  _isNavbarCollapsed ? Alignment.center : Alignment.topCenter,
               child: ConditionalWidgetWrapper(
-                condition: !_isCollapsed && !isInTestEnvironment,
+                condition: !_isNavbarCollapsed && !isInTestEnvironment,
                 wrapper: (context, child) {
                   return SmartRefresher(
                       controller: refreshController,
@@ -135,68 +167,146 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: groupLabels.map((group) {
-                            return DragTarget<NoteDocumentDto>(
-                              key: ValueKey(group),
-                              onWillAcceptWithDetails: (doc) => true,
-                              onAcceptWithDetails: (details) {
-                                final draggedDoc = details.data;
-                                final index =
-                                    groupedDocuments[group]?.length ?? 0;
-                                _onDocumentDropped(draggedDoc.groupName, group,
-                                    index, draggedDoc);
-                              },
-                              builder: (context, candidateData, rejectedData) {
-                                return Container(
-                                  color: candidateData.isNotEmpty
-                                      ? accentColor.withAlpha(25)
-                                      : Colors.transparent,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildNavItem(group),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        padding: EdgeInsets.zero,
-                                        itemCount:
-                                            groupedDocuments[group]?.length ??
-                                                0,
-                                        itemBuilder: (context, index) {
-                                          final doc =
-                                              groupedDocuments[group]![index];
-                                          return CupertinoButton(
-                                            minSize: 0,
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              setState(() {
-                                                selectedDocument = doc;
-                                                selectedDocumentId = doc.id;
-                                              });
-                                            },
-                                            child: LongPressDraggable<
-                                                NoteDocumentDto>(
-                                              hapticFeedbackOnStart: true,
-                                              key: ValueKey(doc.id!.$value!),
-                                              data: doc,
-                                              feedback: SizedBox(
-                                                width: expandedWidth,
+                          children: [
+                            ...groupLabels.map((group) {
+                              return DragTarget<NoteDocumentDto>(
+                                key: ValueKey(group),
+                                onWillAcceptWithDetails: (doc) => true,
+                                onAcceptWithDetails: (details) {
+                                  final draggedDoc = details.data;
+                                  final index =
+                                      groupedDocuments[group]?.length ?? 0;
+                                  _onDocumentDropped(draggedDoc.groupName,
+                                      group, index, draggedDoc);
+                                },
+                                builder:
+                                    (context, candidateData, rejectedData) {
+                                  return Container(
+                                    color: candidateData.isNotEmpty
+                                        ? accentColor.withAlpha(25)
+                                        : Colors.transparent,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        _buildNavItem(group),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          padding: EdgeInsets.zero,
+                                          itemCount:
+                                              groupedDocuments[group]?.length ??
+                                                  0,
+                                          itemBuilder: (context, index) {
+                                            final doc =
+                                                groupedDocuments[group]![index];
+                                            return CupertinoButton(
+                                              minSize: 0,
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                setState(() {
+                                                  selectedDocument = doc;
+                                                  selectedDocumentId = doc.id;
+                                                });
+                                              },
+                                              child: LongPressDraggable<
+                                                  NoteDocumentDto>(
+                                                hapticFeedbackOnStart: true,
+                                                key: ValueKey(doc.id!.$value!),
+                                                data: doc,
+                                                feedback: SizedBox(
+                                                  width: expandedWidth,
+                                                  child: _getDocumentDragChild(
+                                                      doc, context),
+                                                ),
                                                 child: _getDocumentDragChild(
                                                     doc, context),
                                               ),
-                                              child: _getDocumentDragChild(
-                                                  doc, context),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }),
+                            if (!_isNavbarCollapsed)
+                              SizedBox(
+                                height: 20,
+                              ),
+                            if (!_isNavbarCollapsed)
+                              CustomButton(
+                                onPressed: () async {
+                                  var campagneId = ref
+                                      .read(connectionDetailsProvider)
+                                      .valueOrNull
+                                      ?.campagneId;
+                                  if (campagneId == null) {
+                                    return;
+                                  }
+
+                                  var systemClock =
+                                      DependencyProvider.of(context)
+                                          .getService<ISystemClockService>();
+
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  // TODO
+                                  var newDocument = NoteDocumentDto(
+                                    groupName: "Sonstiges", // TODO localization
+                                    title:
+                                        "Dokument #${numberOfDocumentsForThisPlayer + 1}",
+                                    createdForCampagneId:
+                                        CampagneIdentifier($value: campagneId),
+                                    lastModifiedAt: systemClock.now(),
+                                    creationDate: systemClock.now(),
+                                    creatingUserId: _myUser,
+                                    isDeleted: false,
+                                    imageBlocks: [],
+                                    textBlocks: [],
+                                  );
+
+                                  var service = DependencyProvider.of(context)
+                                      .getService<INoteDocumentService>();
+                                  var createResult = await service
+                                      .createNewDocumentForCampagne(
+                                    dto: newDocument,
+                                  );
+
+                                  if (!mounted || !context.mounted) return;
+                                  await createResult
+                                      .possiblyHandleError(context);
+                                  if (!mounted || !context.mounted) return;
+
+                                  setState(() {
+                                    isLoading = false;
+                                    if (createResult.isSuccessful) {
+                                      newDocument = newDocument.copyWith(
+                                          id: createResult.result!);
+
+                                      if (!groupedDocuments
+                                          .containsKey(newDocument.groupName)) {
+                                        groupedDocuments[
+                                            newDocument.groupName] = [];
+                                      }
+                                      groupedDocuments[newDocument.groupName]!
+                                          .add(newDocument);
+                                    }
+                                  });
+                                },
+                                icon: CustomFaIcon(
+                                  icon: FontAwesomeIcons.plus,
+                                  size: iconSizeInlineButtons,
+                                  color: textColor,
+                                ),
+                                label: "Neu",
+                                variant: CustomButtonVariant.AccentButton,
+                              ),
+                          ],
                         ),
                       ),
                     );
@@ -222,7 +332,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             isSolidSquare: selectedDocumentId?.$value == doc.id?.$value,
             color: accentColor,
           ),
-          if (!_isCollapsed)
+          if (!_isNavbarCollapsed)
             Expanded(
               child: Text(
                 doc.title,
@@ -266,6 +376,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       fontSize: 24,
                     ),
               ),
+              if (_isAllowedToEdit == true)
+                CustomButton(
+                    onPressed: () {},
+                    icon: CustomFaIcon(
+                        icon: FontAwesomeIcons.penToSquare,
+                        size: 20,
+                        color: darkColor),
+                    variant: CustomButtonVariant.FlatButton),
               Spacer(),
               Text(
                 "Bearbeitet vor:\n${selectedDocument == null ? "" : timeago.format(
@@ -307,16 +425,17 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   Widget _getCollapseButton(Duration duration) {
     return AnimatedPadding(
       duration: duration,
-      padding: EdgeInsets.fromLTRB(0, 0, _isCollapsed ? 0 : 20, 20),
+      padding: EdgeInsets.fromLTRB(0, 0, _isNavbarCollapsed ? 0 : 20, 20),
       child: AnimatedAlign(
         duration: duration,
-        alignment: _isCollapsed ? Alignment.center : Alignment.centerRight,
+        alignment:
+            _isNavbarCollapsed ? Alignment.center : Alignment.centerRight,
         child: CupertinoButton(
           minSize: 0,
           padding: EdgeInsets.zero,
           onPressed: () {
             setState(() {
-              _isCollapsed = !_isCollapsed;
+              _isNavbarCollapsed = !_isNavbarCollapsed;
             });
           },
           child: Container(
@@ -329,7 +448,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             ),
             padding: EdgeInsets.all(5),
             child: CustomFaIcon(
-              icon: !_isCollapsed
+              icon: !_isNavbarCollapsed
                   ? FontAwesomeIcons.chevronLeft
                   : FontAwesomeIcons.chevronRight,
               color: darkTextColor,
@@ -379,6 +498,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       usersInCampagne = loadedCharsResponse.result ?? [];
 
       var otherGroupName = "Sonstiges"; // TODO localize
+      numberOfDocumentsForThisPlayer = (documentsResponse.result ?? []).length;
       groupedDocuments =
           (documentsResponse.result ?? []).groupListsBy((d) => d.groupName);
 
@@ -422,7 +542,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _buildNavItem(String label) {
-    if (_isCollapsed) {
+    if (_isNavbarCollapsed) {
       return Padding(
         padding: const EdgeInsets.only(left: 12),
         child: Container(
@@ -485,31 +605,66 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(flex: 3, child: blockRendering!),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-              child: Column(
-                children: [
-                  Text(
-                    "Sichtbar für:",
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(fontSize: 16, color: darkTextColor),
-                  ),
-
-                  SizedBox(
-                    height: 5,
-                  ),
-
-                  // for every user create a pill which indicates
-                  ..._getPillsToIndicateVisibilityForPlayers(
-                      block.id, block.permittedUsers ?? []),
-                ],
+          if (_isAllowedToEdit == true)
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CupertinoButton(
+                minSize: 0,
+                padding: EdgeInsets.all(0),
+                onPressed: () {
+                  // TODO make me
+                },
+                child: CustomFaIcon(
+                  icon: FontAwesomeIcons.penToSquare,
+                  size: 20,
+                  color: darkColor,
+                ),
               ),
             ),
-          ),
+          if (_isVisibleForBarCollapsed == true)
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                child: Column(
+                  children: [
+                    Text(
+                      "Sichtbar für:",
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(fontSize: 16, color: darkTextColor),
+                    ),
+
+                    SizedBox(
+                      height: 5,
+                    ),
+
+                    // for every user create a pill which indicates
+                    ..._getPillsToIndicateVisibilityForPlayers(
+                        block.id, block.permittedUsers ?? []),
+                  ],
+                ),
+              ),
+            ),
+          if (_isAllowedToEdit == true)
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CupertinoButton(
+                minSize: 0,
+                padding: EdgeInsets.all(0),
+                onPressed: () {
+                  setState(() {
+                    _isVisibleForBarCollapsed = !_isVisibleForBarCollapsed;
+                  });
+                },
+                child: CustomFaIcon(
+                  icon: FontAwesomeIcons.users,
+                  size: 20,
+                  color: darkColor,
+                ),
+              ),
+            )
         ],
       ));
     }
