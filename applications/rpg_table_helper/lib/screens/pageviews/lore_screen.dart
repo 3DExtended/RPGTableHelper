@@ -86,7 +86,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
   bool get _isAllowedToEdit =>
       selectedDocument?.creatingUserId?.$value != null &&
-      selectedDocument?.creatingUserId?.$value == _myUser?.$value;
+      selectedDocument?.creatingUserId?.$value == _myUser?.$value &&
+      context.isTablet; // disable editing on mobile
 
   @override
   void initState() {
