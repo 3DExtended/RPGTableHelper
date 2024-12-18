@@ -81,7 +81,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         ),
       if (useStackOption)
         Padding(
-          padding: EdgeInsets.only(left: context.isTablet ? collapsedWidth : 0),
+          padding: EdgeInsets.only(left: useStackOption ? collapsedWidth : 0),
           child: _getContent(),
         )
     ];
