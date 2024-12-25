@@ -258,6 +258,20 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _notesUpdatenotePut(
+      {required NoteDocumentDto? body}) {
+    final Uri $url = Uri.parse('/Notes/updatenote');
+    final $body = body;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<PlayerCharacterIdentifier>>
       _playerCharacterCreatecharacterPost(
           {required PlayerCharacterCreateDto? body}) {

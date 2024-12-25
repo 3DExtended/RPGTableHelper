@@ -121,6 +121,32 @@ To run the app, ensure you have the following installed:
     flutter run
     ```
 
+### Other Useful Commands
+
+#### Add efcore migration
+
+Run this in the root folder:
+```dotnet ef migrations add <Name> -c RpgDbContext -s applications/RPGTableHelper.WebApi -p libraries/RPGTableHelper.DataLayer```
+
+```dotnet ef database update -c RpgDbContext -s applications/RPGTableHelper.WebApi -p libraries/RPGTableHelper.DataLayer```
+
+#### Update C# dependencies
+
+```dotnet outdated -u:Prompt -r```
+
+**NOTE:** To find, why a given dependency is in your repository search all ```obj/project.assets``` files.
+
+#### Code Coverage
+
+```sh
+dotnet test --collect:"XPlat Code Coverage" --results-directory cobertura
+reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml")
+COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc)
+'echo "TOTAL_COVERAGE=$COVERAGE%"'
+```
+
 ## 🛠️ Technologies Used
 
 - **Frontend:** Flutter

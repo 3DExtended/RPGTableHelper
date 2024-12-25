@@ -90,8 +90,7 @@ class DependencyProvider extends InheritedWidget {
     });
     _registerService<INoteDocumentService>(() {
       var apiConnectorService = getService<IApiConnectorService>();
-      return MockNoteDocumentService(
-        // TODO change me to NoteDocumentService after you are finished testing
+      return NoteDocumentService(
         apiConnectorService: apiConnectorService,
       );
     }, () {

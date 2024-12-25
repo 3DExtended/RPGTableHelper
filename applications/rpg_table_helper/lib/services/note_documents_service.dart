@@ -1,6 +1,7 @@
 import 'package:rpg_table_helper/generated/swaggen/swagger.swagger.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
 import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
+import 'package:uuid/v7.dart';
 
 abstract class INoteDocumentService {
   final bool isMock;
@@ -16,6 +17,10 @@ abstract class INoteDocumentService {
       {required CampagneIdentifier campagneId});
 
   Future<HRResponse<NoteDocumentIdentifier>> createNewDocumentForCampagne({
+    required NoteDocumentDto dto,
+  });
+
+  Future<HRResponse<bool>> updateDocumentForCampagne({
     required NoteDocumentDto dto,
   });
 }
@@ -59,6 +64,29 @@ class NoteDocumentService extends INoteDocumentService {
         '82b9e2b6-27bb-4a10-8dbe-988abed7a4c4');
 
     return documentCreateResponse;
+  }
+
+  @override
+  Future<HRResponse<bool>> updateDocumentForCampagne(
+      {required NoteDocumentDto dto}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<bool>('Could not load api connector.',
+          'c7d22948-f849-4f24-8a1f-e71a036cc594');
+    }
+
+    var updateResponse = await HRResponse.fromApiFuture(
+        api.notesUpdatenotePut(body: dto),
+        'Could not update document for campagne.',
+        '1dc9e1d5-a5ab-42da-b706-dd55b1626cae');
+
+    if (updateResponse.isSuccessful) {
+      return HRResponse.fromResult(true);
+    } else {
+      return HRResponse.error<bool>('Could not update document for campagne.',
+          '1dc9e1d5-a5ab-42da-b706-dd55b1626cae',
+          statusCode: updateResponse.statusCode);
+    }
   }
 }
 
@@ -293,7 +321,13 @@ class MockNoteDocumentService extends INoteDocumentService {
   Future<HRResponse<NoteDocumentIdentifier>> createNewDocumentForCampagne({
     required NoteDocumentDto dto,
   }) {
-    return Future.value(HRResponse.fromResult(NoteDocumentIdentifier(
-        $value: "32301ee6-c38a-43d7-bbdf-85c812a7f878")));
+    return Future.value(HRResponse.fromResult(
+        NoteDocumentIdentifier($value: UuidV7().generate())));
+  }
+
+  @override
+  Future<HRResponse<bool>> updateDocumentForCampagne(
+      {required NoteDocumentDto dto}) {
+    return Future.value(HRResponse.fromResult(true));
   }
 }

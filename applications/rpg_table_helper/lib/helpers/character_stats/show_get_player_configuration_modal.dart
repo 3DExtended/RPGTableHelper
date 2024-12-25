@@ -374,6 +374,7 @@ class _ShowGetPlayerConfigurationModalContentState
   @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<RpgCharacterStatValue>(
+        isFullscreen: true,
         title:
             "Eigenschaften konfigurieren${widget.characterName == null ? "" : " (für ${widget.characterName})"}",
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,

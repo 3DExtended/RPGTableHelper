@@ -21,6 +21,7 @@ import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
+import 'package:rpg_table_helper/helpers/modals/show_edit_lore_page_title.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/note_documents_service.dart';
@@ -72,6 +73,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   bool _isVisibleForBarCollapsed = false;
   double collapsedWidth = 64.0;
   double expandedWidth = 256.0;
+
+  final String otherGroupName = "Sonstiges"; // TODO localize
 
   var refreshController = RefreshController(
     initialRefreshStatus: RefreshStatus.refreshing,
@@ -269,6 +272,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                     isDeleted: false,
                                     imageBlocks: [],
                                     textBlocks: [],
+                                    id: NoteDocumentIdentifier(
+                                        $value:
+                                            "00000000-0000-0000-0000-000000000000"),
                                   );
 
                                   var service = DependencyProvider.of(context)
@@ -379,7 +385,67 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               ),
               if (_isAllowedToEdit == true)
                 CustomButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await showEditLorePageTitle(
+                        context,
+                        allGroupTitles: groupLabels,
+                        currentGroupTitle: selectedDocument!.groupName,
+                        currentTitle: selectedDocument!.title,
+                      ).then((value) async {
+                        if (value == null) return;
+
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        var updatedDocument = selectedDocument!.copyWith(
+                          title: value.title,
+                          groupName: value.groupName,
+                          lastModifiedAt: systemClock.now(),
+                        );
+
+                        // update document
+                        var service = DependencyProvider.of(context)
+                            .getService<INoteDocumentService>();
+                        var updateResult = await service
+                            .updateDocumentForCampagne(dto: updatedDocument);
+
+                        if (!mounted || !context.mounted) return;
+                        await updateResult.possiblyHandleError(context);
+                        if (!mounted || !context.mounted) return;
+
+                        setState(() {
+                          isLoading = false;
+
+                          if (updateResult.isSuccessful) {
+                            if (!groupedDocuments
+                                .containsKey(value.groupName)) {
+                              groupedDocuments[value.groupName] = [];
+                            }
+
+                            var indexToRemove =
+                                groupedDocuments[selectedDocument!.groupName]!
+                                    .indexWhere(
+                                        (d) => d.id == selectedDocument!.id);
+                            if (indexToRemove >= 0) {
+                              groupedDocuments[selectedDocument!.groupName]!
+                                  .removeAt(indexToRemove);
+                            }
+
+                            selectedDocument = updatedDocument;
+
+                            groupedDocuments[value.groupName]!
+                                .add(updatedDocument);
+
+                            groupLabels = [
+                              ...groupedDocuments.keys,
+                              otherGroupName
+                            ].distinct(by: (e) => e).toList();
+                            groupLabels.sort();
+                          }
+                        });
+                      });
+                    },
                     icon: CustomFaIcon(
                         icon: FontAwesomeIcons.penToSquare,
                         size: 20,
@@ -498,7 +564,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     setState(() {
       usersInCampagne = loadedCharsResponse.result ?? [];
 
-      var otherGroupName = "Sonstiges"; // TODO localize
       numberOfDocumentsForThisPlayer = (documentsResponse.result ?? []).length;
       groupedDocuments =
           (documentsResponse.result ?? []).groupListsBy((d) => d.groupName);

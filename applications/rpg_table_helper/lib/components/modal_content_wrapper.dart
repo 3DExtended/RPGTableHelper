@@ -3,6 +3,7 @@ import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 
 class ModalContentWrapper<T> extends StatelessWidget {
   const ModalContentWrapper({
@@ -12,10 +13,12 @@ class ModalContentWrapper<T> extends StatelessWidget {
     required this.navigatorKey,
     required this.onSave,
     required this.onCancel,
+    required this.isFullscreen,
   });
 
   final String title;
   final Widget child;
+  final bool isFullscreen;
   final GlobalKey<NavigatorState> navigatorKey;
 
   final Future<T?> Function()? onSave;
@@ -36,61 +39,78 @@ class ModalContentWrapper<T> extends StatelessWidget {
               bottom: 20, top: 20, left: modalPadding, right: modalPadding),
           child: Center(
             child: CustomShadowWidget(
-                child: Container(
-              color: bgColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Navbar(
-                    backInsteadOfCloseIcon: false,
-                    closeFunction: () {
-                      navigatorKey.currentState!.pop(null);
-                    },
-                    menuOpen: null,
-                    useTopSafePadding: false,
-                    titleWidget: Text(
-                      title, // TODO localize/ switch text between add and edit
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: textColor, fontSize: 24),
+                child: ConditionalWidgetWrapper(
+              condition: !isFullscreen,
+              wrapper: (context, child) {
+                return ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 800),
+                  child: child,
+                );
+              },
+              child: Container(
+                color: bgColor,
+                child: Column(
+                  mainAxisSize:
+                      isFullscreen ? MainAxisSize.max : MainAxisSize.min,
+                  children: [
+                    Navbar(
+                      backInsteadOfCloseIcon: false,
+                      closeFunction: () {
+                        navigatorKey.currentState!.pop(null);
+                      },
+                      menuOpen: null,
+                      useTopSafePadding: false,
+                      titleWidget: Text(
+                        title, // TODO localize/ switch text between add and edit
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: textColor, fontSize: 24),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: SingleChildScrollView(child: child),
-                  )),
-                  const SizedBox(
-                    height: 0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 10),
-                    child: Row(
-                      children: [
-                        CustomButton(
-                          label: "Abbrechen", // TODO localize
-                          onPressed: () async {
-                            await onCancel();
-                            navigatorKey.currentState!.pop(null);
-                          },
+                    if (isFullscreen)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: SingleChildScrollView(child: child),
                         ),
-                        const Spacer(),
-                        CustomButton(
-                          label: "Speichern", // TODO localize
-                          onPressed: onSave == null
-                              ? null
-                              : () async {
-                                  var result = await onSave!();
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SingleChildScrollView(child: child),
+                      ),
+                    const SizedBox(
+                      height: 0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 20),
+                      child: Row(
+                        children: [
+                          CustomButton(
+                            label: "Abbrechen", // TODO localize
+                            onPressed: () async {
+                              await onCancel();
+                              navigatorKey.currentState!.pop(null);
+                            },
+                          ),
+                          const Spacer(),
+                          CustomButton(
+                            label: "Speichern", // TODO localize
+                            onPressed: onSave == null
+                                ? null
+                                : () async {
+                                    var result = await onSave!();
 
-                                  navigatorKey.currentState!.pop(result);
-                                },
-                        ),
-                      ],
+                                    navigatorKey.currentState!.pop(result);
+                                  },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )),
           ),

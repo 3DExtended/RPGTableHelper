@@ -334,6 +334,20 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _notesUpdateimageblockPut(
       {@Body() required ImageBlock? body});
 
+  ///Updates a document.
+  Future<chopper.Response> notesUpdatenotePut(
+      {required NoteDocumentDto? body}) {
+    return _notesUpdatenotePut(body: body);
+  }
+
+  ///Updates a document.
+  @Put(
+    path: '/Notes/updatenote',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _notesUpdatenotePut(
+      {@Body() required NoteDocumentDto? body});
+
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
       playerCharacterCreatecharacterPost(

@@ -178,6 +178,7 @@ class _ShowGetDmConfigurationModalContentState
   @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<CharacterStatDefinition>(
+        isFullscreen: true,
         title: "Eigenschaft bearbeiten",
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},

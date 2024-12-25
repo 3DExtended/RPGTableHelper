@@ -513,5 +513,56 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
             return Ok(imageBlockUpdateResult.Get());
         }
+
+        /// <summary>
+        /// Updates a document.
+        /// </summary>
+        /// <remarks>You must be the owner of the document</remarks>
+        /// <remarks>You cannot update text or image blocks through this endpoint</remarks>
+        /// <param name="documentToUpdate">The updated document</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("updatenote")]
+        public async Task<IActionResult> UpdateNoteAsync(
+            [FromBody] [Required] NoteDocumentDto documentToUpdate,
+            CancellationToken cancellationToken
+        )
+        {
+            var documentLoaded = await new NoteDocumentQuery { ModelId = documentToUpdate.Id }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (documentLoaded.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            if (_userContext.User.UserIdentifier != documentLoaded.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            documentToUpdate.CreatingUserId = _userContext.User.UserIdentifier;
+            documentToUpdate.IsDeleted = false;
+            documentToUpdate.CreatedForCampagneId = documentLoaded.Get().CreatedForCampagneId;
+
+            var documentUpdateResult = await new NoteDocumentUpdateQuery
+            {
+                UpdatedModel = _mapper.Map<NoteDocument>(documentToUpdate),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (documentUpdateResult.IsNone)
+            {
+                return BadRequest("Could not update note document");
+            }
+
+            return Ok(documentUpdateResult.Get());
+        }
     }
 }
