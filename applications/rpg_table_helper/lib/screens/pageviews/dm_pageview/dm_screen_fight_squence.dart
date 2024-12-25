@@ -310,110 +310,109 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                           Expanded(
                             child: connectionDetails == null
                                 ? CustomLoadingSpinner()
-                                : SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        getAllOnlineCharactersAndCompanions(
-                                                    connectionDetails)
-                                                .isEmpty
-                                            ? Center(
-                                                child: Text(
-                                                  "Aktuell keine Player Online",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .copyWith(
-                                                          color: darkTextColor,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                ),
-                                              )
-                                            : Wrap(
-                                                spacing: 10,
-                                                runSpacing: 10,
-                                                alignment:
-                                                    WrapAlignment.spaceEvenly,
-                                                children: [
-                                                  // show selection of all characters
-                                                  ...getAllOnlineCharactersAndCompanions(
-                                                          connectionDetails)
-                                                      .map((char) => Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color:
-                                                                  middleBgColor,
-                                                            ),
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    10),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                CustomButton(
-                                                                  isSubbutton:
-                                                                      true,
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      if (excludedPlayerCharacterIds
-                                                                          .contains(
-                                                                              char.uuid)) {
-                                                                        excludedPlayerCharacterIds
-                                                                            .remove(char.uuid);
-                                                                      } else {
-                                                                        excludedPlayerCharacterIds
-                                                                            .add(char.uuid);
-                                                                      }
-                                                                    });
-                                                                  },
-                                                                  icon:
-                                                                      Container(
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                    color: !excludedPlayerCharacterIds.contains(char
-                                                                            .uuid)
-                                                                        ? darkColor
-                                                                        : Colors
-                                                                            .transparent,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                                Text(
-                                                                  "Charakter: ${char.characterName}",
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .labelMedium!
-                                                                      .copyWith(
-                                                                          color:
-                                                                              darkTextColor,
-                                                                          fontSize:
-                                                                              16),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )),
-                                                ],
-                                              ),
-                                        SizedBox(
-                                          height: 20,
+                                : getAllOnlineCharactersAndCompanions(
+                                            connectionDetails)
+                                        .isEmpty
+                                    ? Center(
+                                        child: Text(
+                                          "Aktuell keine Player Online",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                  color: darkTextColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
                                         ),
-                                      ],
-                                    ),
-                                  ),
+                                      )
+                                    : SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            Wrap(
+                                              spacing: 10,
+                                              runSpacing: 10,
+                                              alignment:
+                                                  WrapAlignment.spaceEvenly,
+                                              children: [
+                                                // show selection of all characters
+                                                ...getAllOnlineCharactersAndCompanions(
+                                                        connectionDetails)
+                                                    .map((char) => Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            color:
+                                                                middleBgColor,
+                                                          ),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  10),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              CustomButton(
+                                                                isSubbutton:
+                                                                    true,
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    if (excludedPlayerCharacterIds
+                                                                        .contains(
+                                                                            char.uuid)) {
+                                                                      excludedPlayerCharacterIds
+                                                                          .remove(
+                                                                              char.uuid);
+                                                                    } else {
+                                                                      excludedPlayerCharacterIds
+                                                                          .add(char
+                                                                              .uuid);
+                                                                    }
+                                                                  });
+                                                                },
+                                                                icon: Container(
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  color: !excludedPlayerCharacterIds
+                                                                          .contains(char
+                                                                              .uuid)
+                                                                      ? darkColor
+                                                                      : Colors
+                                                                          .transparent,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                "Charakter: ${char.characterName}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .labelMedium!
+                                                                    .copyWith(
+                                                                        color:
+                                                                            darkTextColor,
+                                                                        fontSize:
+                                                                            16),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                           ),
                         ],
                       ),

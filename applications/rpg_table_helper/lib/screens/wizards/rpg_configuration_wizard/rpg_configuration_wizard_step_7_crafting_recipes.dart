@@ -198,31 +198,100 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                             }).toList();
 
                             return [
-                              CupertinoButton(
-                                minSize: 0,
-                                padding: EdgeInsets.zero,
-                                onPressed: () async {
-                                  // open edit modal with clicked item
-                                  await showCreateOrEditCraftingRecipeModal(
-                                          context, recipeToRender.value)
-                                      .then((returnValue) {
-                                    if (returnValue == null) {
-                                      return;
-                                    }
+                              CupertinoContextMenu(
+                                actions: [
+                                  CupertinoContextMenuAction(
+                                    isDestructiveAction: false,
+                                    isDefaultAction: true,
+                                    child: Text('Details öffnen'),
+                                    onPressed: () async {
+                                      Navigator.pop(context); // Close the popup
 
-                                    setState(() {
-                                      _recipes[recipeToRender.key] =
-                                          returnValue;
-                                      _recipes = [..._recipes];
-                                      saveChanges();
+                                      // open edit modal with clicked item
+                                      await showCreateOrEditCraftingRecipeModal(
+                                              context, recipeToRender.value)
+                                          .then((returnValue) {
+                                        if (returnValue == null) {
+                                          return;
+                                        }
+
+                                        setState(() {
+                                          _recipes[recipeToRender.key] =
+                                              returnValue;
+                                          _recipes = [..._recipes];
+                                          saveChanges();
+                                        });
+                                      });
+                                    },
+                                  ),
+                                  CupertinoContextMenuAction(
+                                    isDestructiveAction: false,
+                                    isDefaultAction: false,
+                                    child: Text('Duplizieren und öffnen'),
+                                    onPressed: () async {
+                                      Navigator.pop(context); // Close the popup
+
+                                      // open edit modal with clicked item
+                                      await showCreateOrEditCraftingRecipeModal(
+                                              context,
+                                              recipeToRender.value.copyWith(
+                                                  recipeUuid:
+                                                      UuidV7().generate()))
+                                          .then((returnValue) {
+                                        if (returnValue == null) {
+                                          return;
+                                        }
+
+                                        setState(() {
+                                          _recipes.insert(
+                                              recipeToRender.key + 1,
+                                              returnValue);
+                                          _recipes = [..._recipes];
+                                          saveChanges();
+                                        });
+                                      });
+                                    },
+                                  ),
+                                  CupertinoContextMenuAction(
+                                    isDestructiveAction: true,
+                                    child: Text('Unwiderruflich Löschen'),
+                                    onPressed: () {
+                                      Navigator.pop(context); // Close the popup
+                                      setState(() {
+                                        _recipes.removeAt(recipeToRender.key);
+                                        _recipes = [..._recipes];
+                                        saveChanges();
+                                      });
+                                    },
+                                  ),
+                                ],
+                                child: CupertinoButton(
+                                  minSize: 0,
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () async {
+                                    // open edit modal with clicked item
+                                    await showCreateOrEditCraftingRecipeModal(
+                                            context, recipeToRender.value)
+                                        .then((returnValue) {
+                                      if (returnValue == null) {
+                                        return;
+                                      }
+
+                                      setState(() {
+                                        _recipes[recipeToRender.key] =
+                                            returnValue;
+                                        _recipes = [..._recipes];
+                                        saveChanges();
+                                      });
                                     });
-                                  });
-                                },
-                                child: CustomRecipeCard(
-                                  imageUrl: createdItem.imageUrlWithoutBasePath,
-                                  title: createdItem.name,
-                                  requirements: requirements,
-                                  ingedients: ingredients,
+                                  },
+                                  child: CustomRecipeCard(
+                                    imageUrl:
+                                        createdItem.imageUrlWithoutBasePath,
+                                    title: createdItem.name,
+                                    requirements: requirements,
+                                    ingedients: ingredients,
+                                  ),
                                 ),
                               ),
                               if (numberOfColumnsOnScreen != subindex + 1)
