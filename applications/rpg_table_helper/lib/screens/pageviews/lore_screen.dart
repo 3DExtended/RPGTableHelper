@@ -96,6 +96,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       await _reloadAllPages();
+      setState(() {
+        _isNavbarCollapsed = context.isTablet;
+      });
     });
     super.initState();
   }
