@@ -20,6 +20,7 @@ Future<String?> askForCampagneJoinCode(BuildContext context,
     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   // show error to user
   return await customShowCupertinoModalBottomSheet<String>(
+      backgroundColor: const Color.fromARGB(192, 21, 21, 21),
       isDismissible: false,
       expand: false,
       closeProgressThreshold: -50000,
@@ -169,6 +170,7 @@ Future<void> showGenericErrorModal<T>(
     HRResponseBase response, BuildContext context) async {
   // show error to user
   await customShowCupertinoModalBottomSheet(
+    backgroundColor: const Color.fromARGB(192, 21, 21, 21),
     context: context,
     builder: (context) => Container(
       color: Colors.red,
@@ -367,7 +369,7 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
 Future<T?> customShowCupertinoModalBottomSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
-  Color? backgroundColor,
+  required Color? backgroundColor,
   double? elevation,
   ShapeBorder? shape,
   Clip? clipBehavior,
