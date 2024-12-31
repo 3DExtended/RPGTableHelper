@@ -1,9 +1,16 @@
+using System;
 using System.ClientModel;
+
 using Azure;
 using Azure.AI.OpenAI;
+
+using Microsoft.Extensions.Logging;
+
 using OpenAI;
 using OpenAI.Images;
+
 using Prodot.Patterns.Cqrs;
+
 using RPGTableHelper.DataLayer.OpenAI.Contracts.Options;
 using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 
@@ -11,13 +18,15 @@ namespace RPGTableHelper.DataLayer.OpenAI.QueryHandlers;
 
 public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, Stream>
 {
-    private readonly OpenAIOptions _options;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger _logger;
+    private readonly OpenAIOptions _options;
 
-    public AiGenerateImageQueryHandler(OpenAIOptions options, IHttpClientFactory httpClientFactory)
+    public AiGenerateImageQueryHandler(OpenAIOptions options, IHttpClientFactory httpClientFactory, ILogger logger)
     {
         _options = options;
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public IQueryHandler<AiGenerateImageQuery, Stream> Successor { get; set; } = default!;
@@ -50,8 +59,8 @@ public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, S
                 }
             );
 
-            Console.WriteLine(imageGeneration.Value.ImageUri);
-            Console.WriteLine(imageGeneration.Value.RevisedPrompt);
+            _logger.LogInformation(imageGeneration.Value.ImageUri.ToString());
+            _logger.LogInformation(imageGeneration.Value.RevisedPrompt);
 
             try
             {
@@ -64,14 +73,14 @@ public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, S
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                _logger.LogError(exception: ex, message: "An error occured");
             }
 
             // return imageGeneration.Value.ImageUri.ToString();
         }
-        catch (Exception ex)
+        catch (Exception ex1)
         {
-            Console.WriteLine(ex.Message);
+            _logger.LogError(exception: ex1, message: "An error occured");
         }
 
         return Option.None;
