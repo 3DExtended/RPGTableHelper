@@ -36,6 +36,14 @@ public class Program
                     }
                 }
             )
+        .ConfigureLogging(
+            opt =>
+            {
+                opt.AddConsole(options =>
+                {
+                    options.TimestampFormat = "dd.MM.yyyy HH:mm:ss ";
+                });
+            })
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>().UseUrls(urls: "http://*:5012");
