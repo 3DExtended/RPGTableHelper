@@ -23,6 +23,28 @@ abstract class INoteDocumentService {
   Future<HRResponse<bool>> updateDocumentForCampagne({
     required NoteDocumentDto dto,
   });
+
+  Future<HRResponse<TextBlock>> createNewTextBlockForDocument({
+    required TextBlock textBlockToCreate,
+    required NoteDocumentIdentifier notedocumentid,
+  });
+
+  Future<HRResponse<ImageBlock>> createNewImageBlockForDocument({
+    required ImageBlock imageBlockToCreate,
+    required NoteDocumentIdentifier notedocumentid,
+  });
+
+  Future<HRResponse<bool>> updateTextBlock({
+    required TextBlock textBlockToUpdate,
+  });
+
+  Future<HRResponse<bool>> updateImageBlock({
+    required ImageBlock imageBlockToUpdate,
+  });
+
+  Future<HRResponse<bool>> deleteNoteBlock({
+    required NoteBlockModelBaseIdentifier blockIdToDelete,
+  });
 }
 
 class NoteDocumentService extends INoteDocumentService {
@@ -87,6 +109,79 @@ class NoteDocumentService extends INoteDocumentService {
           '1dc9e1d5-a5ab-42da-b706-dd55b1626cae',
           statusCode: updateResponse.statusCode);
     }
+  }
+
+  @override
+  Future<HRResponse<ImageBlock>> createNewImageBlockForDocument(
+      {required ImageBlock imageBlockToCreate,
+      required NoteDocumentIdentifier notedocumentid}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<ImageBlock>('Could not load api connector.',
+          'bcfd688e-3acb-4971-951b-99f9aa737cb5');
+    }
+
+    var createResponse = await HRResponse.fromApiFuture(
+        api.notesCreateimageblockNotedocumentidPost(
+            notedocumentid: notedocumentid.$value, body: imageBlockToCreate),
+        'Could not create image block in document.',
+        '3ef467ea-4bd6-4478-af96-0bdb2d1da038');
+    return createResponse;
+  }
+
+  @override
+  Future<HRResponse<TextBlock>> createNewTextBlockForDocument(
+      {required TextBlock textBlockToCreate,
+      required NoteDocumentIdentifier notedocumentid}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<TextBlock>('Could not load api connector.',
+          '7a9db512-bd03-48a8-b0f8-b60de7ecff9b');
+    }
+
+    var createResponse = await HRResponse.fromApiFuture(
+        api.notesCreatetextblockNotedocumentidPost(
+            notedocumentid: notedocumentid.$value, body: textBlockToCreate),
+        'Could not create text block in document.',
+        '91956dae-503d-4f58-b8c1-5ebd3d860397');
+    return createResponse;
+  }
+
+  @override
+  Future<HRResponse<bool>> deleteNoteBlock(
+      {required NoteBlockModelBaseIdentifier blockIdToDelete}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<bool>('Could not load api connector.',
+          '444b293f-bae6-4fe3-9d2b-63474cccaaaa');
+    }
+
+    var deleteResponse = await HRResponse.fromApiFuture(
+        api.notesDeleteblockDelete($Value: blockIdToDelete.$value),
+        'Could not delete note block in document.',
+        'e1ba988c-d38a-4427-a995-da915b3f4155');
+
+    if (deleteResponse.isSuccessful) {
+      return HRResponse.fromResult(true);
+    } else {
+      return HRResponse.error<bool>('Could not delete note block in document.',
+          'c13378d5-717f-496c-b8c0-f8b8eb40ac34',
+          statusCode: deleteResponse.statusCode);
+    }
+  }
+
+  @override
+  Future<HRResponse<bool>> updateImageBlock(
+      {required ImageBlock imageBlockToUpdate}) {
+    // TODO: implement updateImageBlock
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> updateTextBlock(
+      {required TextBlock textBlockToUpdate}) {
+    // TODO: implement updateTextBlock
+    throw UnimplementedError();
   }
 }
 
@@ -329,5 +424,37 @@ class MockNoteDocumentService extends INoteDocumentService {
   Future<HRResponse<bool>> updateDocumentForCampagne(
       {required NoteDocumentDto dto}) {
     return Future.value(HRResponse.fromResult(true));
+  }
+
+  @override
+  Future<HRResponse<ImageBlock>> createNewImageBlockForDocument(
+      {required ImageBlock imageBlockToCreate,
+      required NoteDocumentIdentifier notedocumentid}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<TextBlock>> createNewTextBlockForDocument(
+      {required TextBlock textBlockToCreate,
+      required NoteDocumentIdentifier notedocumentid}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> deleteNoteBlock(
+      {required NoteBlockModelBaseIdentifier blockIdToDelete}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> updateImageBlock(
+      {required ImageBlock imageBlockToUpdate}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> updateTextBlock(
+      {required TextBlock textBlockToUpdate}) {
+    throw UnimplementedError();
   }
 }

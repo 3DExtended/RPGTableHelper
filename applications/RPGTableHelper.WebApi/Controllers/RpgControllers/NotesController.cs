@@ -304,13 +304,11 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// <response code="200">The id of the new document</response>
         /// <response code="400">If there was an error retrieving the document</response>
         /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
-        [ProducesResponseType(typeof(NoteBlockModelBase.NoteBlockModelBaseIdentifier), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TextBlock), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("createtextblock/{notedocumentid}")]
-        public async Task<
-            ActionResult<NoteBlockModelBase.NoteBlockModelBaseIdentifier>
-        > CreateTextBlockForDocumentAsync(
+        public async Task<ActionResult<TextBlock>> CreateTextBlockForDocumentAsync(
             [FromBody] [Required] TextBlock textBlockToCreate,
             [FromRoute] string notedocumentid,
             CancellationToken cancellationToken
@@ -355,7 +353,16 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not create textblock");
             }
 
-            return Ok(textBlockCreationResult.Get());
+            var textBlock = await new NoteBlockQuery { ModelId = textBlockCreationResult.Get() }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (textBlock.IsNone)
+            {
+                return BadRequest("Could not load textblock");
+            }
+
+            return Ok(textBlock.Get());
         }
 
         /// <summary>
@@ -368,13 +375,11 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// <response code="200">The id of the new document</response>
         /// <response code="400">If there was an error retrieving the document</response>
         /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
-        [ProducesResponseType(typeof(NoteBlockModelBase.NoteBlockModelBaseIdentifier), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ImageBlock), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("createimageblock/{notedocumentid}")]
-        public async Task<
-            ActionResult<NoteBlockModelBase.NoteBlockModelBaseIdentifier>
-        > CreateImageBlockForDocumentAsync(
+        public async Task<ActionResult<ImageBlock>> CreateImageBlockForDocumentAsync(
             [FromBody] [Required] ImageBlock imageBlockToCreate,
             [FromRoute] string notedocumentid,
             CancellationToken cancellationToken
@@ -419,7 +424,16 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not create imageblock");
             }
 
-            return Ok(imageBlockCreationResult.Get());
+            var imageBlock = await new NoteBlockQuery { ModelId = imageBlockCreationResult.Get() }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (imageBlock.IsNone)
+            {
+                return BadRequest("Could not load imageBlock");
+            }
+
+            return Ok(imageBlock.Get());
         }
 
         /// <summary>
@@ -563,6 +577,50 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             return Ok(documentUpdateResult.Get());
+        }
+
+        /// <summary>
+        /// Deletes a single note block for a given document.
+        /// </summary>
+        /// <remarks>You must be the owner of the document</remarks>
+        /// <param name="blockToDeleteId">The new textblock</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">Ok if deleted</response>
+        /// <response code="400">If there was an error retrieving the document</response>
+        /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpDelete("deleteblock")]
+        public async Task<IActionResult> DeleteNoteBlockForDocumentAsync(
+            [FromQuery] [Required] NoteBlockModelBase.NoteBlockModelBaseIdentifier blockToDeleteId,
+            CancellationToken cancellationToken
+        )
+        {
+            var blockLoaded = await new NoteBlockQuery { ModelId = blockToDeleteId }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (blockLoaded.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            if (_userContext.User.UserIdentifier != blockLoaded.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            var noteBlockDeleteResult = await new NoteBlockDeleteQuery { Id = blockToDeleteId }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (noteBlockDeleteResult.IsNone)
+            {
+                return BadRequest("Could not delete note block");
+            }
+
+            return Ok(noteBlockDeleteResult.Get());
         }
     }
 }

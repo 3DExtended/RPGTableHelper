@@ -194,8 +194,7 @@ final class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<NoteBlockModelBaseIdentifier>>
-      _notesCreatetextblockNotedocumentidPost({
+  Future<Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     required String? notedocumentid,
     required TextBlock? body,
   }) {
@@ -207,13 +206,11 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
       body: $body,
     );
-    return client.send<NoteBlockModelBaseIdentifier,
-        NoteBlockModelBaseIdentifier>($request);
+    return client.send<TextBlock, TextBlock>($request);
   }
 
   @override
-  Future<Response<NoteBlockModelBaseIdentifier>>
-      _notesCreateimageblockNotedocumentidPost({
+  Future<Response<ImageBlock>> _notesCreateimageblockNotedocumentidPost({
     required String? notedocumentid,
     required ImageBlock? body,
   }) {
@@ -225,8 +222,7 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
       body: $body,
     );
-    return client.send<NoteBlockModelBaseIdentifier,
-        NoteBlockModelBaseIdentifier>($request);
+    return client.send<ImageBlock, ImageBlock>($request);
   }
 
   @override
@@ -267,6 +263,19 @@ final class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesDeleteblockDelete({String? $Value}) {
+    final Uri $url = Uri.parse('/Notes/deleteblock');
+    final Map<String, dynamic> $params = <String, dynamic>{'Value': $Value};
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      parameters: $params,
     );
     return client.send<dynamic, dynamic>($request);
   }

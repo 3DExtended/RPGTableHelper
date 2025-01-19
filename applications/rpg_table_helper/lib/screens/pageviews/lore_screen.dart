@@ -98,7 +98,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       await _reloadAllPages();
       setState(() {
         if (!isInTestEnvironment) {
-          _isNavbarCollapsed = context.isTablet;
+          _isNavbarCollapsed = !context.isTablet;
         }
       });
     });
@@ -737,6 +737,103 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               ),
             )
         ],
+      ));
+    }
+
+    if (_isAllowedToEdit) {
+      result.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Center(
+          child: Wrap(
+            runAlignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: [
+              CustomButton(
+                variant: CustomButtonVariant.AccentButton,
+                onPressed: () async {
+                  var service = DependencyProvider.of(context)
+                      .getService<INoteDocumentService>();
+                  var createResult =
+                      await service.createNewTextBlockForDocument(
+                          textBlockToCreate: TextBlock(
+                            creationDate: DateTime.now(),
+                            lastModifiedAt: DateTime.now(),
+                            creatingUserId: _myUser,
+                            id: NoteBlockModelBaseIdentifier(
+                                $value: "00000000-0000-0000-0000-000000000000"),
+                            isDeleted: false,
+                            permittedUsers: [],
+                            visibility:
+                                NotesBlockVisibility.hiddenforallexceptauthor,
+                            markdownText: "",
+                            noteDocumentId: selectedDocument!.id,
+                          ),
+                          notedocumentid: selectedDocument!.id!);
+
+                  if (!context.mounted || !mounted) return;
+                  await createResult.possiblyHandleError(context);
+                  if (!context.mounted || !mounted) return;
+
+                  if (createResult.isSuccessful) {
+                    setState(() {
+                      selectedDocument!.textBlocks.add(createResult.result!);
+                    });
+                  }
+                },
+                label: "Absatz",
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.plus,
+                  size: iconSizeInlineButtons,
+                  color: textColor,
+                ),
+              ),
+              CustomButton(
+                variant: CustomButtonVariant.AccentButton,
+                onPressed: () async {
+                  var service = DependencyProvider.of(context)
+                      .getService<INoteDocumentService>();
+                  var createResult =
+                      await service.createNewImageBlockForDocument(
+                          imageBlockToCreate: ImageBlock(
+                            creationDate: DateTime.now(),
+                            lastModifiedAt: DateTime.now(),
+                            creatingUserId: _myUser,
+                            id: NoteBlockModelBaseIdentifier(
+                                $value: "00000000-0000-0000-0000-000000000000"),
+                            isDeleted: false,
+                            permittedUsers: [],
+                            visibility:
+                                NotesBlockVisibility.hiddenforallexceptauthor,
+                            noteDocumentId: selectedDocument!.id,
+                            imageMetaDataId:
+                                null, // TODO make me, we need to upload the image before creating an image block here...
+                            publicImageUrl:
+                                null, // TODO make me, we need to upload the image before creating an image block here...
+                          ),
+                          notedocumentid: selectedDocument!.id!);
+
+                  if (!context.mounted || !mounted) return;
+                  await createResult.possiblyHandleError(context);
+                  if (!context.mounted || !mounted) return;
+
+                  if (createResult.isSuccessful) {
+                    setState(() {
+                      selectedDocument!.imageBlocks.add(createResult.result!);
+                    });
+                  }
+                },
+                label: "Bild",
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.plus,
+                  size: iconSizeInlineButtons,
+                  color: textColor,
+                ),
+              ),
+            ],
+          ),
+        ),
       ));
     }
 

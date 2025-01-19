@@ -257,13 +257,11 @@ abstract class Swagger extends ChopperService {
 
   ///Creates a single text block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
-      notesCreatetextblockNotedocumentidPost({
+  Future<chopper.Response<TextBlock>> notesCreatetextblockNotedocumentidPost({
     required String? notedocumentid,
     required TextBlock? body,
   }) {
-    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
-        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+    generatedMapping.putIfAbsent(TextBlock, () => TextBlock.fromJsonFactory);
 
     return _notesCreatetextblockNotedocumentidPost(
         notedocumentid: notedocumentid, body: body);
@@ -275,21 +273,18 @@ abstract class Swagger extends ChopperService {
     path: '/Notes/createtextblock/{notedocumentid}',
     optionalBody: true,
   )
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
-      _notesCreatetextblockNotedocumentidPost({
+  Future<chopper.Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required TextBlock? body,
   });
 
   ///Creates a single image block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
-      notesCreateimageblockNotedocumentidPost({
+  Future<chopper.Response<ImageBlock>> notesCreateimageblockNotedocumentidPost({
     required String? notedocumentid,
     required ImageBlock? body,
   }) {
-    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
-        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+    generatedMapping.putIfAbsent(ImageBlock, () => ImageBlock.fromJsonFactory);
 
     return _notesCreateimageblockNotedocumentidPost(
         notedocumentid: notedocumentid, body: body);
@@ -301,7 +296,7 @@ abstract class Swagger extends ChopperService {
     path: '/Notes/createimageblock/{notedocumentid}',
     optionalBody: true,
   )
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+  Future<chopper.Response<ImageBlock>>
       _notesCreateimageblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required ImageBlock? body,
@@ -347,6 +342,18 @@ abstract class Swagger extends ChopperService {
   )
   Future<chopper.Response> _notesUpdatenotePut(
       {@Body() required NoteDocumentDto? body});
+
+  ///Deletes a single note block for a given document.
+  ///@param Value
+  Future<chopper.Response> notesDeleteblockDelete({String? $Value}) {
+    return _notesDeleteblockDelete($Value: $Value);
+  }
+
+  ///Deletes a single note block for a given document.
+  ///@param Value
+  @Delete(path: '/Notes/deleteblock')
+  Future<chopper.Response> _notesDeleteblockDelete(
+      {@Query('Value') String? $Value});
 
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
