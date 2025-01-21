@@ -10,6 +10,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -322,17 +323,19 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                             : middleBgColor),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                  child: Text(
-                    currentTitle,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: textColor,
-                          fontSize: 24,
-                        ),
+                if (context.isTablet)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                    child: Text(
+                      currentTitle,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
+                    ),
                   ),
-                ),
                 ...List.generate(
                   playerScreensToSwipe.isEmpty
                       ? 0

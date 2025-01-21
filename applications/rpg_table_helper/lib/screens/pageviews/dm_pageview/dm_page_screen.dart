@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_character_overview.dart';
@@ -109,17 +110,19 @@ class _DmPageScreenState extends State<DmPageScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                  child: Text(
-                    currentTitle,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: textColor,
-                          fontSize: 24,
-                        ),
+                if (context.isTablet)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                    child: Text(
+                      currentTitle,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
+                    ),
                   ),
-                ),
                 ...List.generate(
                   // TODO what is the correct number of steps
                   dmScreensToSwipe.length - (_currentStep + 1),

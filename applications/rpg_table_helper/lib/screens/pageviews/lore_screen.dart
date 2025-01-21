@@ -100,6 +100,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       await _reloadAllPages();
       setState(() {
         if (!isInTestEnvironment) {
+          // so we can see the navbar in golden tests
           _isNavbarCollapsed = !context.isTablet;
         }
       });
