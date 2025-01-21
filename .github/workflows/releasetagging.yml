@@ -16,6 +16,15 @@ jobs:
     # Checkout the repository
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        # Number of commits to fetch. 0 indicates all history for all branches and tags.
+        # Default: 1
+        fetch-depth: 0
+
+        # Whether to fetch tags, even if fetch-depth > 0.
+        # Default: false
+        fetch-tags: 10
+
 
     # Capture the username of the tag creator
     - name: Capture tag creator username
@@ -90,9 +99,6 @@ jobs:
         conventional-changelog -r 2 > ${{ github.workspace }}-CHANGELOG.txt
         conventional-changelog > ${{ github.workspace }}-CHANGELOG_ALL.txt
 
-
-    - name: Generate Changelog
-      run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
     - name: Release
       uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
