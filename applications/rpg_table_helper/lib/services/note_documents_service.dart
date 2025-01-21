@@ -172,16 +172,48 @@ class NoteDocumentService extends INoteDocumentService {
 
   @override
   Future<HRResponse<bool>> updateImageBlock(
-      {required ImageBlock imageBlockToUpdate}) {
-    // TODO: implement updateImageBlock
-    throw UnimplementedError();
+      {required ImageBlock imageBlockToUpdate}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<bool>('Could not load api connector.',
+          '4f004de6-1e86-41b1-8319-45084079dcbb');
+    }
+
+    var deleteResponse = await HRResponse.fromApiFuture(
+        api.notesUpdateimageblockPut(body: imageBlockToUpdate),
+        'Could not update image block in document.',
+        'b43fc09f-b3ba-48d6-a692-7af65d90275f');
+
+    if (deleteResponse.isSuccessful) {
+      return HRResponse.fromResult(true);
+    } else {
+      return HRResponse.error<bool>('Could not update image block in document.',
+          '0a6fcb54-3cfb-4d27-8a8e-7660dafcfcd1',
+          statusCode: deleteResponse.statusCode);
+    }
   }
 
   @override
   Future<HRResponse<bool>> updateTextBlock(
-      {required TextBlock textBlockToUpdate}) {
-    // TODO: implement updateTextBlock
-    throw UnimplementedError();
+      {required TextBlock textBlockToUpdate}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<bool>('Could not load api connector.',
+          'c69ac7d9-3a15-4f8b-b71e-a62a7fcf1546');
+    }
+
+    var deleteResponse = await HRResponse.fromApiFuture(
+        api.notesUpdatetextblockPut(body: textBlockToUpdate),
+        'Could not update text block in document.',
+        '71d394d8-aa74-4c45-9193-e49d7995d666');
+
+    if (deleteResponse.isSuccessful) {
+      return HRResponse.fromResult(true);
+    } else {
+      return HRResponse.error<bool>('Could not update text block in document.',
+          '4247f7c5-3076-4699-bf8f-a70c02f24d82',
+          statusCode: deleteResponse.statusCode);
+    }
   }
 }
 
