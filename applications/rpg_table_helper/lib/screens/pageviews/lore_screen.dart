@@ -378,6 +378,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       );
     }
 
+    // TODO remove me
+
     return Column(
       children: [
         Padding(
