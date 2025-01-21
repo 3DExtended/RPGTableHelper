@@ -18,6 +18,9 @@ class BorderedImage extends StatelessWidget {
     this.isLoading,
     this.noPadding,
     this.isGreyscale,
+    this.hideLoadingImage,
+    this.isClickableForZoom,
+    this.aspectRatio = 1.0,
   });
 
   final Color lightColor;
@@ -25,8 +28,11 @@ class BorderedImage extends StatelessWidget {
   final String? imageUrl;
   final bool? isLoading;
   final bool? noPadding;
+  final bool? hideLoadingImage;
+  final bool? isClickableForZoom;
 
   final bool? isGreyscale;
+  final double? aspectRatio;
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +55,11 @@ class BorderedImage extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(14),
               child: CustomImage(
-                  aspectRatio: 1.0,
+                  aspectRatio: aspectRatio,
                   isGreyscale: isGreyscale,
                   imageUrl: imageUrl,
+                  hideLoadingImage: hideLoadingImage,
+                  isClickableForZoom: isClickableForZoom,
                   isLoading: isLoading),
             ),
           ),

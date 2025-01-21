@@ -381,19 +381,15 @@ class _LoreBlockRenderingEditableState
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: darkColor),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: CustomImage(
-                  hideLoadingImage: true,
-                  isGreyscale: false,
-                  isClickableForZoom: true,
-                  isLoading: false,
-                  imageUrl: fullImageUrl,
-                ),
+              child: BorderedImage(
+                backgroundColor: bgColor,
+                lightColor: darkColor,
+                hideLoadingImage: true,
+                isGreyscale: false,
+                isClickableForZoom: true,
+                isLoading: false,
+                imageUrl: fullImageUrl,
+                aspectRatio: null,
               ),
             ),
           ],
