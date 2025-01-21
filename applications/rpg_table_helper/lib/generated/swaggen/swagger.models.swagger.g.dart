@@ -254,6 +254,7 @@ ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
           : ImageMetaDataIdentifier.fromJson(
               json['imageMetaDataId'] as Map<String, dynamic>),
       publicImageUrl: json['publicImageUrl'] as String?,
+      markdownText: json['markdownText'] as String?,
       id: json['id'] == null
           ? null
           : NoteBlockModelBaseIdentifier.fromJson(
@@ -284,6 +285,7 @@ Map<String, dynamic> _$ImageBlockToJson(ImageBlock instance) =>
     <String, dynamic>{
       'imageMetaDataId': instance.imageMetaDataId?.toJson(),
       'publicImageUrl': instance.publicImageUrl,
+      'markdownText': instance.markdownText,
       'id': instance.id?.toJson(),
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),

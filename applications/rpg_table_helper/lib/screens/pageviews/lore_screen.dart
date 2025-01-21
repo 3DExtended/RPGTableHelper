@@ -673,15 +673,22 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             updatePermittedUsersOnBlock: _updatePermittedUsersOnBlock,
             isUserAllowedToEdit: _isAllowedToEdit,
             updateTextContent: (String newText) async {
-              if (block is! TextBlock) {
-                assert(
-                    false); // we should not come here... images should run another update method
+              if (block is! TextBlock && block is! ImageBlock) {
+                assert(false); // we should not come here...
                 return false;
               }
 
-              var textBlockCopy = (block).copyWith(markdownText: newText);
+              if (block is TextBlock) {
+                var textBlockCopy = (block).copyWith(markdownText: newText);
 
-              return await updateTextBlock(context, textBlockCopy);
+                return await updateTextBlock(context, textBlockCopy);
+              } else if (block is ImageBlock) {
+                var imageBlockCopy = (block).copyWith(markdownText: newText);
+
+                return await updateImageBlock(context, imageBlockCopy);
+              }
+
+              return false;
             },
             updateImageContent: (String pathToImageToUpload) async {
               if (block is! ImageBlock) {

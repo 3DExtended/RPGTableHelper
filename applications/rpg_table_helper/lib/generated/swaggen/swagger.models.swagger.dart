@@ -970,6 +970,7 @@ class ImageBlock {
   const ImageBlock({
     this.imageMetaDataId,
     this.publicImageUrl,
+    this.markdownText,
     this.id,
     this.creationDate,
     this.lastModifiedAt,
@@ -990,6 +991,8 @@ class ImageBlock {
   final ImageMetaDataIdentifier? imageMetaDataId;
   @JsonKey(name: 'publicImageUrl')
   final String? publicImageUrl;
+  @JsonKey(name: 'markdownText')
+  final String? markdownText;
   @JsonKey(name: 'id')
   final NoteBlockModelBaseIdentifier? id;
   @JsonKey(name: 'creationDate')
@@ -1022,6 +1025,9 @@ class ImageBlock {
             (identical(other.publicImageUrl, publicImageUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.publicImageUrl, publicImageUrl)) &&
+            (identical(other.markdownText, markdownText) ||
+                const DeepCollectionEquality()
+                    .equals(other.markdownText, markdownText)) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
@@ -1054,6 +1060,7 @@ class ImageBlock {
   int get hashCode =>
       const DeepCollectionEquality().hash(imageMetaDataId) ^
       const DeepCollectionEquality().hash(publicImageUrl) ^
+      const DeepCollectionEquality().hash(markdownText) ^
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(lastModifiedAt) ^
@@ -1069,6 +1076,7 @@ extension $ImageBlockExtension on ImageBlock {
   ImageBlock copyWith(
       {ImageMetaDataIdentifier? imageMetaDataId,
       String? publicImageUrl,
+      String? markdownText,
       NoteBlockModelBaseIdentifier? id,
       DateTime? creationDate,
       DateTime? lastModifiedAt,
@@ -1080,6 +1088,7 @@ extension $ImageBlockExtension on ImageBlock {
     return ImageBlock(
         imageMetaDataId: imageMetaDataId ?? this.imageMetaDataId,
         publicImageUrl: publicImageUrl ?? this.publicImageUrl,
+        markdownText: markdownText ?? this.markdownText,
         id: id ?? this.id,
         creationDate: creationDate ?? this.creationDate,
         lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
@@ -1093,6 +1102,7 @@ extension $ImageBlockExtension on ImageBlock {
   ImageBlock copyWithWrapped(
       {Wrapped<ImageMetaDataIdentifier?>? imageMetaDataId,
       Wrapped<String?>? publicImageUrl,
+      Wrapped<String?>? markdownText,
       Wrapped<NoteBlockModelBaseIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
       Wrapped<DateTime?>? lastModifiedAt,
@@ -1108,6 +1118,8 @@ extension $ImageBlockExtension on ImageBlock {
         publicImageUrl: (publicImageUrl != null
             ? publicImageUrl.value
             : this.publicImageUrl),
+        markdownText:
+            (markdownText != null ? markdownText.value : this.markdownText),
         id: (id != null ? id.value : this.id),
         creationDate:
             (creationDate != null ? creationDate.value : this.creationDate),

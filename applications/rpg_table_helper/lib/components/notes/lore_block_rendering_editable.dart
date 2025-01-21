@@ -43,23 +43,18 @@ class LoreBlockRenderingEditable extends StatefulWidget {
 class _LoreBlockRenderingEditableState
     extends State<LoreBlockRenderingEditable> {
   bool isEditEnabled = false;
-  bool get hasChanged => // TODO add changes in images
-      widget.block is TextBlock &&
-      ((widget.block as TextBlock).markdownText ?? "") !=
-          _textEditingController.text;
+  bool get hasChanged =>
+      (widget.block.markdownText ?? "") != _textEditingController.text;
 
   final TextEditingController _textEditingController = TextEditingController();
   @override
   void initState() {
-    if (widget.block is TextBlock) {
-      // text block
-      _textEditingController.text =
-          (widget.block as TextBlock).markdownText ?? "";
+    // text block
+    _textEditingController.text = widget.block.markdownText ?? "";
 
-      _textEditingController.addListener(() {
-        setState(() {});
-      });
-    }
+    _textEditingController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -69,10 +64,16 @@ class _LoreBlockRenderingEditableState
 
     if (widget.block is TextBlock) {
       // text block
-      blockRendering = _getRenderingForTextBlock(widget.block);
+      blockRendering = _getRenderingForTextBlock(widget.block.markdownText);
     } else if (widget.block is ImageBlock) {
       // image block
-      blockRendering = _getRenderingForImageBlock(widget.block);
+      blockRendering = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(child: _getRenderingForImageBlock(widget.block)),
+          _getRenderingForTextBlock(widget.block.markdownText)
+        ],
+      );
     }
 
     assert(blockRendering != null);
@@ -298,13 +299,13 @@ class _LoreBlockRenderingEditableState
     );
   }
 
-  Widget _getRenderingForTextBlock(TextBlock textBlock) {
+  Widget _getRenderingForTextBlock(String? markdownText) {
     var padding = EdgeInsets.fromLTRB(0, 10, 10, 10);
 
     if (!isEditEnabled) {
       return Padding(
         padding: padding,
-        child: CustomMarkdownBody(text: textBlock.markdownText ?? ""),
+        child: CustomMarkdownBody(text: markdownText ?? ""),
       );
     }
 
@@ -346,7 +347,8 @@ class _LoreBlockRenderingEditableState
                     // reset text block
                     setState(() {
                       _textEditingController.text =
-                          (widget.block as TextBlock).markdownText ?? "";
+                          (widget.block).markdownText ?? "";
+
                       isEditEnabled = false;
                     });
                   },

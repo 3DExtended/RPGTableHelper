@@ -3647,6 +3647,10 @@
               "publicImageUrl": {
                 "type": "string",
                 "nullable": true
+              },
+              "markdownText": {
+                "type": "string",
+                "nullable": true
               }
             },
             "additionalProperties": false
