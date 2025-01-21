@@ -21,6 +21,7 @@ import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/context_extension.dart';
+import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
 import 'package:rpg_table_helper/helpers/modals/show_edit_lore_page_title.dart';
@@ -29,7 +30,6 @@ import 'package:rpg_table_helper/services/dependency_provider.dart';
 import 'package:rpg_table_helper/services/note_documents_service.dart';
 import 'package:rpg_table_helper/services/rpg_entity_service.dart';
 import 'package:rpg_table_helper/services/systemclock_service.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// This file defines the `LoreScreen` widget, which is responsible for displaying
 /// a screen with various lore-related documents. The screen includes a navigation
@@ -381,91 +381,109 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10),
+          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 3),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                selectedDocument?.title ?? "",
-                style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      color: darkTextColor,
-                      fontSize: 24,
-                    ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        selectedDocument?.title ?? "",
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: darkTextColor,
+                              fontSize: 24,
+                            ),
+                      ),
+                      if (_isAllowedToEdit == true)
+                        CustomButton(
+                          onPressed: () async {
+                            await showEditLorePageTitle(
+                              context,
+                              allGroupTitles: groupLabels,
+                              currentGroupTitle: selectedDocument!.groupName,
+                              currentTitle: selectedDocument!.title,
+                            ).then((value) async {
+                              if (value == null) return;
+
+                              setState(() {
+                                isLoading = true;
+                              });
+
+                              var updatedDocument = selectedDocument!.copyWith(
+                                title: value.title,
+                                groupName: value.groupName,
+                                lastModifiedAt: systemClock.now(),
+                              );
+
+                              // update document
+                              var service = DependencyProvider.of(context)
+                                  .getService<INoteDocumentService>();
+                              var updateResult =
+                                  await service.updateDocumentForCampagne(
+                                      dto: updatedDocument);
+
+                              if (!mounted || !context.mounted) return;
+                              await updateResult.possiblyHandleError(context);
+                              if (!mounted || !context.mounted) return;
+
+                              setState(() {
+                                isLoading = false;
+
+                                if (updateResult.isSuccessful) {
+                                  if (!groupedDocuments
+                                      .containsKey(value.groupName)) {
+                                    groupedDocuments[value.groupName] = [];
+                                  }
+
+                                  var indexToRemove = groupedDocuments[
+                                          selectedDocument!.groupName]!
+                                      .indexWhere(
+                                          (d) => d.id == selectedDocument!.id);
+                                  if (indexToRemove >= 0) {
+                                    groupedDocuments[
+                                            selectedDocument!.groupName]!
+                                        .removeAt(indexToRemove);
+                                  }
+
+                                  selectedDocument = updatedDocument;
+
+                                  groupedDocuments[value.groupName]!
+                                      .add(updatedDocument);
+
+                                  groupLabels = [
+                                    ...groupedDocuments.keys,
+                                    otherGroupName
+                                  ].distinct(by: (e) => e).toList();
+                                  groupLabels.sort();
+                                }
+                              });
+                            });
+                          },
+                          icon: CustomFaIcon(
+                              noPadding: true,
+                              icon: FontAwesomeIcons.penToSquare,
+                              size: 20,
+                              color: darkColor),
+                          variant: CustomButtonVariant.FlatButton,
+                        ),
+                    ],
+                  ),
+                  Text(
+                    "Autor: ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? "Du" : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? "DM")}",
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                          color: darkTextColor,
+                          fontSize: 12,
+                        ),
+                  ),
+                ],
               ),
-              if (_isAllowedToEdit == true)
-                CustomButton(
-                    onPressed: () async {
-                      await showEditLorePageTitle(
-                        context,
-                        allGroupTitles: groupLabels,
-                        currentGroupTitle: selectedDocument!.groupName,
-                        currentTitle: selectedDocument!.title,
-                      ).then((value) async {
-                        if (value == null) return;
-
-                        setState(() {
-                          isLoading = true;
-                        });
-
-                        var updatedDocument = selectedDocument!.copyWith(
-                          title: value.title,
-                          groupName: value.groupName,
-                          lastModifiedAt: systemClock.now(),
-                        );
-
-                        // update document
-                        var service = DependencyProvider.of(context)
-                            .getService<INoteDocumentService>();
-                        var updateResult = await service
-                            .updateDocumentForCampagne(dto: updatedDocument);
-
-                        if (!mounted || !context.mounted) return;
-                        await updateResult.possiblyHandleError(context);
-                        if (!mounted || !context.mounted) return;
-
-                        setState(() {
-                          isLoading = false;
-
-                          if (updateResult.isSuccessful) {
-                            if (!groupedDocuments
-                                .containsKey(value.groupName)) {
-                              groupedDocuments[value.groupName] = [];
-                            }
-
-                            var indexToRemove =
-                                groupedDocuments[selectedDocument!.groupName]!
-                                    .indexWhere(
-                                        (d) => d.id == selectedDocument!.id);
-                            if (indexToRemove >= 0) {
-                              groupedDocuments[selectedDocument!.groupName]!
-                                  .removeAt(indexToRemove);
-                            }
-
-                            selectedDocument = updatedDocument;
-
-                            groupedDocuments[value.groupName]!
-                                .add(updatedDocument);
-
-                            groupLabels = [
-                              ...groupedDocuments.keys,
-                              otherGroupName
-                            ].distinct(by: (e) => e).toList();
-                            groupLabels.sort();
-                          }
-                        });
-                      });
-                    },
-                    icon: CustomFaIcon(
-                        icon: FontAwesomeIcons.penToSquare,
-                        size: 20,
-                        color: darkColor),
-                    variant: CustomButtonVariant.FlatButton),
               Spacer(),
               Text(
-                "Bearbeitet vor:\n${selectedDocument == null ? "" : timeago.format(
-                    selectedDocument!.lastModifiedAt!,
-                    clock: systemClock.now(),
-                    locale: 'de_short',
-                  )}",
+                selectedDocument!.lastModifiedAt!
+                    .format("%H:%M %d.%m.%Y"), // TODO localize
                 textAlign: TextAlign.end,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
                       color: darkTextColor,
