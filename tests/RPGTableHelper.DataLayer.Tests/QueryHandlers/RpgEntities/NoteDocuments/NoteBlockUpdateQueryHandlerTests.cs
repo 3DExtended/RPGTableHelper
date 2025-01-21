@@ -108,6 +108,17 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
         Context.NoteBlocks.Add(entity2);
         Context.SaveChanges();
 
+        Context.PermittedUsersToNotesBlocks.Add(
+            new PermittedUsersToNotesBlockEntity
+            {
+                NotesBlockId = entity2.Id,
+                PermittedUserId = user1.Id.Value,
+                IsDeleted = false,
+                Id = 0,
+            }
+        );
+        Context.SaveChanges();
+
         var query = new NoteBlockUpdateQuery
         {
             UpdatedModel = new TextBlock()
@@ -138,6 +149,8 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
         updatedEntity!.Should().BeOfType<TextBlockEntity>();
         updatedEntity!.As<TextBlockEntity>().Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         updatedEntity!.As<TextBlockEntity>().MarkdownText.Should().Be("Foo");
+
+        Context.PermittedUsersToNotesBlocks.Count().Should().Be(1);
         updatedEntity!.PermittedUsers.Should().HaveCount(1);
         updatedEntity!.PermittedUsers.First().PermittedUserId.Should().Be(user2.Id.Value);
         updatedEntity!.PermittedUsers.First().NotesBlockId.Should().Be(entity2.Id);

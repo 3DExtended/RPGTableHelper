@@ -47,7 +47,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.NoteEntities
 
                 // update permitted users manually
                 var permittedUsers = await context
-                    .PermittedUsersToNotesBlocks.Where(e => e.NotesBlockId == existingEntity.Id)
+                    .PermittedUsersToNotesBlocks.Where(e => e.NotesBlockId == query.UpdatedModel.Id.Value)
                     .ToListAsync(cancellationToken)
                     .ConfigureAwait(false);
 
@@ -64,10 +64,14 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.NoteEntities
                     })
                     .ToList();
 
+                await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
                 if (permittedUsersToRemove.Any())
                 {
                     context.PermittedUsersToNotesBlocks.RemoveRange(permittedUsersToRemove);
                 }
+
+                await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
                 if (permittedUsersToAdd.Any())
                 {
