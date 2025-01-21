@@ -74,7 +74,6 @@ jobs:
         CHANGELOG="${CHANGELOG//'%'/'%25'}"
         CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
         CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-        echo "$(CHANGELOG)"
 
         echo "Got changelog: $CHANGELOG"
 
@@ -86,7 +85,7 @@ jobs:
         echo 'changelog<<EOF' >> $GITHUB_ENV
         echo $CHANGELOG >> $GITHUB_ENV
         echo 'EOF' >> $GITHUB_ENV
-        echo "$(CHANGELOG)"
+        echo "Got changelog: $CHANGELOG"
 
     - name: Create GitHub Release
       uses: actions/create-release@master
