@@ -28,11 +28,29 @@ jobs:
     - name: Verify the tag creator
       id: verify_author
       run: |
-        if [ "${{ steps.capture_username.outputs.username }}" != "3DExtended" ]; then
+        if [ "${{ steps.capture_username.outputs.username }}" != "Peter Esser" ]; then
           echo "Unauthorized user: ${{ steps.capture_username.outputs.username }} tried to run this workflow."
           exit 1
         fi
       shell: bash
+
+    # Determine the branch associated with the tag
+    - name: Determine branch
+      id: determine_branch
+      run: |
+        BRANCH=$(git branch --contains ${GITHUB_REF} | grep -v "detached" | sed 's/* //')
+        echo "Branch associated with tag: $BRANCH"
+        echo "::set-output name=branch::$BRANCH"
+
+    # Set the prerelease flag based on the branch
+    - name: Set prerelease flag
+      id: set_prerelease
+      run: |
+        if [ "${{ steps.determine_branch.outputs.branch }}" = "main" ]; then
+          echo "::set-output name=prerelease::false"
+        else
+          echo "::set-output name=prerelease::true"
+        fi
 
     # Set up Node.js (required for many changelog tools like conventional-changelog)
     - name: Set up Node.js
@@ -62,4 +80,4 @@ jobs:
         release_name: ${{ github.ref_name }}
         body: ${{ steps.generate_notes.outputs.notes }}
         draft: false
-        prerelease: false
+        prerelease: ${{ steps.set_prerelease.outputs.prerelease }}
