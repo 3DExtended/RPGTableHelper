@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
@@ -81,6 +82,7 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
     {
         // Arrange
         var user1 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper);
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper, usernameOverride: "User2");
         var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory, Mapper, user1);
         var someDocument = await RpgDbContextHelpers.CreateNoteDocumentInDb(ContextFactory, Mapper, user1, campagne);
 
@@ -115,6 +117,7 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
                 Visibility = NotesBlockVisibility.HiddenForAllExceptAuthor,
                 CreatingUserId = user1.Id,
                 NoteDocumentId = someDocument.Id,
+                PermittedUsers = new List<User.UserIdentifier> { user2.Id },
             },
         };
         var subjectUnderTest = new NoteBlockUpdateQueryHandler(Mapper, ContextFactory);
@@ -127,9 +130,16 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
         var entityCount = Context.NoteBlocks.Count();
         entityCount.Should().Be(2);
 
-        var updatedEntity = Context.NoteBlocks.AsNoTracking().First(x => x.Id == entity2.Id);
+        var updatedEntity = Context
+            .NoteBlocks.Include(n => n.PermittedUsers)
+            .AsNoTracking()
+            .First(x => x.Id == entity2.Id);
+
         updatedEntity!.Should().BeOfType<TextBlockEntity>();
         updatedEntity!.As<TextBlockEntity>().Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         updatedEntity!.As<TextBlockEntity>().MarkdownText.Should().Be("Foo");
+        updatedEntity!.PermittedUsers.Should().HaveCount(1);
+        updatedEntity!.PermittedUsers.First().PermittedUserId.Should().Be(user2.Id.Value);
+        updatedEntity!.PermittedUsers.First().NotesBlockId.Should().Be(entity2.Id);
     }
 }

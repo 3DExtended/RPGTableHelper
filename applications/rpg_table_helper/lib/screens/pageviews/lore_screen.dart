@@ -668,9 +668,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             updatePermittedUsersOnBlock: _updatePermittedUsersOnBlock,
             isUserAllowedToEdit: _isAllowedToEdit,
             updateTextContent: (String newText) async {
-              var service = DependencyProvider.of(context)
-                  .getService<INoteDocumentService>();
-
               if (block is! TextBlock) {
                 assert(
                     false); // we should not come here... images should run another update method
@@ -679,32 +676,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
               var textBlockCopy = (block).copyWith(markdownText: newText);
 
-              var updateResult = await service.updateTextBlock(
-                  textBlockToUpdate: textBlockCopy);
-
-              if (!mounted || !context.mounted) return false;
-              await updateResult.possiblyHandleError(context);
-              if (!mounted || !context.mounted) return false;
-
-              var indexOfTextBlockToUpdate = selectedDocument!.textBlocks
-                  .indexWhere(
-                      (tb) => tb.id!.$value == textBlockCopy.id!.$value);
-
-              assert(indexOfTextBlockToUpdate >= 0);
-              setState(() {
-                selectedDocument!.textBlocks[indexOfTextBlockToUpdate] =
-                    textBlockCopy;
-
-                var indexToRemove =
-                    groupedDocuments[selectedDocument!.groupName]!
-                        .indexWhere((d) => d.id == selectedDocument!.id);
-                assert(indexToRemove >= 0);
-
-                groupedDocuments[selectedDocument!.groupName]![indexToRemove] =
-                    selectedDocument!;
-              });
-
-              return updateResult.isSuccessful;
+              return await updateTextBlock(context, textBlockCopy);
             },
             isShowingPermittedUsers: _isVisibleForBarCollapsed,
             toggleIsVisibleForBarCollapsed: () {
@@ -818,28 +790,55 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     ));
   }
 
-  void _updatePermittedUsersOnBlock(
-      List<UserIdentifier> newPermittedUsers, dynamic block) {
+  Future<bool> updateTextBlock(
+      BuildContext context, TextBlock textBlockCopy) async {
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var updateResult =
+        await service.updateTextBlock(textBlockToUpdate: textBlockCopy);
+
+    if (!mounted || !context.mounted) return false;
+    await updateResult.possiblyHandleError(context);
+    if (!mounted || !context.mounted) return false;
+    if (updateResult.isSuccessful == false) return false;
+
+    var indexOfTextBlockToUpdate = selectedDocument!.textBlocks
+        .indexWhere((tb) => tb.id!.$value == textBlockCopy.id!.$value);
+
+    assert(indexOfTextBlockToUpdate >= 0);
+    setState(() {
+      selectedDocument!.textBlocks[indexOfTextBlockToUpdate] = textBlockCopy;
+
+      var indexToRemove = groupedDocuments[selectedDocument!.groupName]!
+          .indexWhere((d) => d.id == selectedDocument!.id);
+      assert(indexToRemove >= 0);
+
+      groupedDocuments[selectedDocument!.groupName]![indexToRemove] =
+          selectedDocument!;
+
+      selectedDocument = selectedDocument!
+          .copyWith(textBlocks: [...selectedDocument!.textBlocks]);
+    });
+
+    return updateResult.isSuccessful;
+  }
+
+  Future<void> _updatePermittedUsersOnBlock(
+      List<UserIdentifier> newPermittedUsers, dynamic block) async {
     newPermittedUsers = newPermittedUsers
         .where(
             (u) => usersInCampagne.any((uic) => uic.userId.$value == u.$value))
         .toList();
 
-    setState(() {
-      if (block is TextBlock) {
-        block = (block as TextBlock).copyWith(
-          visibility: _recalculateBlockVisibility(block),
-          permittedUsers: newPermittedUsers,
-        );
+    if (block is TextBlock) {
+      block = (block).copyWith(
+        visibility: _recalculateBlockVisibility(block),
+        permittedUsers: newPermittedUsers,
+      );
 
-        var indexToReplace =
-            selectedDocument!.textBlocks.indexWhere((b) => b.id == block.id);
-        if (indexToReplace >= 0) {
-          selectedDocument!.textBlocks[indexToReplace] = block;
-          selectedDocument = selectedDocument!
-              .copyWith(textBlocks: [...selectedDocument!.textBlocks]);
-        }
-      } else if (block is ImageBlock) {
+      await updateTextBlock(context, block);
+    } else if (block is ImageBlock) {
+      setState(() {
         block = (block as ImageBlock).copyWith(
           visibility: _recalculateBlockVisibility(block),
           permittedUsers: newPermittedUsers,
@@ -852,8 +851,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           selectedDocument = selectedDocument!
               .copyWith(imageBlocks: [...selectedDocument!.imageBlocks]);
         }
-      }
-    });
+      });
+    }
   }
 
   NotesBlockVisibility _recalculateBlockVisibility(dynamic block) {

@@ -20,7 +20,7 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities
 
         public NotesBlockVisibility Visibility { get; set; }
 
-        public IList<User.UserIdentifier> PermittedUsers { get; set; } = default!;
+        public IList<User.UserIdentifier> PermittedUsers { get; set; } = new List<User.UserIdentifier>();
 
         public record NoteBlockModelBaseIdentifier : Identifier<Guid, NoteBlockModelBaseIdentifier> { }
     }
