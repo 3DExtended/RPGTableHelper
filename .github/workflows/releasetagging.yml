@@ -77,16 +77,24 @@ jobs:
         echo "$(CHANGELOG)"
 
         echo "Got changelog: $CHANGELOG"
-        echo "::set-output name=notes::$CHANGELOG"
 
-    # Create a GitHub release
+        CHANGELOG="$(cat release-notes.md)"
+        CHANGELOG="${CHANGELOG//'%'/'%25'}"
+        CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+        CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+
+        echo 'changelog<<EOF' >> $GITHUB_ENV
+        echo $CHANGELOG >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+        echo "$(CHANGELOG)"
+
     - name: Create GitHub Release
-      uses: actions/create-release@v1
+      uses: actions/create-release@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref_name }}
-        release_name: ${{ github.ref_name }}
-        body: ${{ steps.generate_notes.outputs.notes }}
+        tag_name: ${{ env.RELEASE_VERSION }}
+        release_name: Release ${{ env.RELEASE_VERSION }}
+        body: ${{ env.GITHUB_ENV.changelog }}
         draft: false
         prerelease: ${{ steps.set_prerelease.outputs.prerelease }}
