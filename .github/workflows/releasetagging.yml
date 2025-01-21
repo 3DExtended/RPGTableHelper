@@ -1,0 +1,65 @@
+name: Create Release on Tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Capture the username of the tag creator
+    - name: Capture tag creator username
+      id: capture_username
+      run: |
+        AUTHOR=$(git log -1 --pretty=format:'%an')
+        echo "Tag pushed by: $AUTHOR"
+        echo "::set-output name=username::$AUTHOR"
+      shell: bash
+
+    # Verify the author of the push
+    - name: Verify the tag creator
+      id: verify_author
+      run: |
+        if [ "${{ steps.capture_username.outputs.username }}" != "3DExtended" ]; then
+          echo "Unauthorized user: ${{ steps.capture_username.outputs.username }} tried to run this workflow."
+          exit 1
+        fi
+      shell: bash
+
+    # Set up Node.js (required for many changelog tools like conventional-changelog)
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    # Install dependencies (adjust if your project has its own `package.json`)
+    - name: Install dependencies
+      run: |
+        npm install -g conventional-changelog-cli
+
+    # Generate release notes using conventional commits
+    - name: Generate release notes
+      id: generate_notes
+      run: |
+        conventional-changelog -p angular -r 0 > release-notes.md
+        echo "::set-output name=notes::$(cat release-notes.md)"
+
+    # Create a GitHub release
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: ${{ github.ref_name }}
+        body: ${{ steps.generate_notes.outputs.notes }}
+        draft: false
+        prerelease: false
