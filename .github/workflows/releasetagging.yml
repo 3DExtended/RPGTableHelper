@@ -70,7 +70,14 @@ jobs:
       id: generate_notes
       run: |
         conventional-changelog -r 2 > release-notes.md
-        echo "::set-output name=notes::$(cat release-notes.md)"
+        CHANGELOG="$(cat release-notes.md)"
+        CHANGELOG="${CHANGELOG//'%'/'%25'}"
+        CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+        CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+        echo "$(CHANGELOG)"
+
+        echo "Got changelog: $CHANGELOG"
+        echo "::set-output name=notes::$CHANGELOG"
 
     # Create a GitHub release
     - name: Create GitHub Release
