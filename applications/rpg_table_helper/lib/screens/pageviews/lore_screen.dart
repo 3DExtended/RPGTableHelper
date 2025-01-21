@@ -5,6 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rpg_table_helper/components/colored_rotated_square.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
@@ -774,35 +778,107 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               CustomButton(
                 variant: CustomButtonVariant.AccentButton,
                 onPressed: () async {
-                  var service = DependencyProvider.of(context)
-                      .getService<INoteDocumentService>();
-                  var createResult =
-                      await service.createNewImageBlockForDocument(
-                          imageBlockToCreate: ImageBlock(
-                            creationDate: DateTime.now(),
-                            lastModifiedAt: DateTime.now(),
-                            creatingUserId: _myUser,
-                            id: NoteBlockModelBaseIdentifier(
-                                $value: "00000000-0000-0000-0000-000000000000"),
-                            isDeleted: false,
-                            permittedUsers: [],
-                            visibility:
-                                NotesBlockVisibility.hiddenforallexceptauthor,
-                            noteDocumentId: selectedDocument!.id,
-                            imageMetaDataId:
-                                null, // TODO make me, we need to upload the image before creating an image block here...
-                            publicImageUrl:
-                                null, // TODO make me, we need to upload the image before creating an image block here...
-                          ),
-                          notedocumentid: selectedDocument!.id!);
+                  var connectionDetails =
+                      ref.read(connectionDetailsProvider).requireValue;
+                  var campagneId = connectionDetails.campagneId;
+                  if (campagneId == null) return;
 
-                  if (!context.mounted || !mounted) return;
-                  await createResult.possiblyHandleError(context);
-                  if (!context.mounted || !mounted) return;
-
-                  if (createResult.isSuccessful) {
+                  final ImagePicker picker = ImagePicker();
+                  try {
+                    var pickedFile = await picker.pickImage(
+                      source: ImageSource.gallery,
+                      maxWidth: 4196 * 2,
+                      maxHeight: 4196 * 2,
+                      requestFullMetadata: false,
+                    );
                     setState(() {
-                      selectedDocument!.imageBlocks.add(createResult.result!);
+                      isLoading = true;
+                    });
+                    final mimeType = lookupMimeType(pickedFile!.path);
+
+                    if (mimeType == null || !(mimeType.startsWith('image/'))) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Invalid image file selected.")));
+                      setState(() {
+                        isLoading = false;
+                      });
+                      return;
+                    }
+
+                    final fileName = pickedFile.path.split('/').last;
+
+                    final multipartFile = await MultipartFile.fromPath(
+                      'image',
+                      pickedFile.path,
+                      contentType: MediaType.parse(mimeType),
+                      filename: fileName,
+                    );
+                    if (!context.mounted) return;
+                    var service = DependencyProvider.of(context)
+                        .getService<IRpgEntityService>();
+                    var response = await service.uploadImageToCampagneStorage(
+                        campagneId: CampagneIdentifier($value: campagneId),
+                        image: multipartFile);
+
+                    if (!context.mounted) return;
+                    await response.possiblyHandleError(context);
+                    if (!context.mounted) return;
+
+                    if (response.isSuccessful && response.result != null) {
+                      // structure: $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
+                      var imageUrl = response.result!;
+
+                      // extract metadata id from url
+                      var urlSplits = imageUrl.split("?metadataid=");
+                      var publicUrl = urlSplits[0];
+                      var metadataId = urlSplits[1];
+
+                      var service = DependencyProvider.of(context)
+                          .getService<INoteDocumentService>();
+                      var createResult =
+                          await service.createNewImageBlockForDocument(
+                              imageBlockToCreate: ImageBlock(
+                                creationDate: DateTime.now(),
+                                lastModifiedAt: DateTime.now(),
+                                creatingUserId: _myUser,
+                                id: NoteBlockModelBaseIdentifier(
+                                    $value:
+                                        "00000000-0000-0000-0000-000000000000"),
+                                isDeleted: false,
+                                permittedUsers: [],
+                                visibility: NotesBlockVisibility
+                                    .hiddenforallexceptauthor,
+                                noteDocumentId: selectedDocument!.id,
+                                imageMetaDataId:
+                                    ImageMetaDataIdentifier($value: metadataId),
+                                publicImageUrl: publicUrl,
+                              ),
+                              notedocumentid: selectedDocument!.id!);
+
+                      if (!context.mounted || !mounted) return;
+                      await createResult.possiblyHandleError(context);
+                      if (!context.mounted || !mounted) return;
+
+                      if (createResult.isSuccessful) {
+                        setState(() {
+                          selectedDocument!.imageBlocks
+                              .add(createResult.result!);
+                        });
+                      }
+                    }
+                    setState(() {
+                      isLoading = false;
+                    });
+                  } catch (e) {
+                    print("------------------------");
+                    print("------------------------");
+                    print("Image picker exception: ");
+                    print(e);
+                    print("------------------------");
+                    print("------------------------");
+                    setState(() {
+                      isLoading = false;
                     });
                   }
                 },

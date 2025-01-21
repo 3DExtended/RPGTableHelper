@@ -362,6 +362,17 @@ class _LoreBlockRenderingEditableState
 
   Widget _getRenderingForImageBlock(ImageBlock imageBlock) {
     return LayoutBuilder(builder: (context, constraints) {
+      var imageUrl = imageBlock.publicImageUrl;
+      var fullImageUrl = imageUrl == null
+          ? "assets/images/charactercard_placeholder.png"
+          : (imageUrl.startsWith("assets")
+                  ? imageUrl
+                  : (apiBaseUrl +
+                      (imageUrl.startsWith("/")
+                          ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
+                          : imageUrl))) ??
+              "assets/images/charactercard_placeholder.png";
+
       return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
         child: Row(
@@ -377,10 +388,11 @@ class _LoreBlockRenderingEditableState
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: CustomImage(
+                  hideLoadingImage: true,
                   isGreyscale: false,
                   isClickableForZoom: true,
                   isLoading: false,
-                  imageUrl: imageBlock.publicImageUrl!,
+                  imageUrl: fullImageUrl,
                 ),
               ),
             ),

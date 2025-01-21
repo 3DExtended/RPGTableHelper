@@ -69,8 +69,10 @@ class CustomImage extends StatelessWidget {
     required this.isLoading,
     this.aspectRatio,
     this.isClickableForZoom,
+    this.hideLoadingImage,
   });
 
+  final bool? hideLoadingImage;
   final bool? isGreyscale;
   final bool? isClickableForZoom;
   final String? imageUrl;
@@ -82,22 +84,23 @@ class CustomImage extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        ChangeColors(
-          saturation: isGreyscale == true ? -1 : 0,
-          child: ConditionalWidgetWrapper(
-            condition: aspectRatio != null,
-            wrapper: (context, child) => AspectRatio(
-              aspectRatio: aspectRatio!,
-              child: child,
-            ),
-            child: Image.asset(
-              imageUrl != null && imageUrl!.startsWith("assets/")
-                  ? imageUrl!
-                  : "assets/images/itemcard_placeholder.png",
-              fit: BoxFit.cover,
+        if (hideLoadingImage != true)
+          ChangeColors(
+            saturation: isGreyscale == true ? -1 : 0,
+            child: ConditionalWidgetWrapper(
+              condition: aspectRatio != null,
+              wrapper: (context, child) => AspectRatio(
+                aspectRatio: aspectRatio!,
+                child: child,
+              ),
+              child: Image.asset(
+                imageUrl != null && imageUrl!.startsWith("assets/")
+                    ? imageUrl!
+                    : "assets/images/itemcard_placeholder.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
         if (!isInTestEnvironment &&
             imageUrl != null &&
             !imageUrl!.startsWith("assets/"))
