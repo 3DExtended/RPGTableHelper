@@ -38,6 +38,8 @@ flutter build appbundle --no-tree-shake-icons --no-shrink --obfuscate --split-de
 git add obfuscation/*
 git commit -m "chore: Checkin symbols for ${version}"
 git push
+git push origin tag $version
+
 
 end=`date +%s`
 runtime=$((end-start))
