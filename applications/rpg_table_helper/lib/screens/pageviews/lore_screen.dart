@@ -6,19 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:rpg_table_helper/components/bordered_image.dart';
 import 'package:rpg_table_helper/components/colored_rotated_square.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
+import 'package:rpg_table_helper/components/notes/lore_block_rendering_editable.dart';
 import 'package:rpg_table_helper/constants.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/context_extension.dart';
-import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/iterable_extension.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
 import 'package:rpg_table_helper/helpers/modals/show_edit_lore_page_title.dart';
@@ -660,84 +658,61 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     List<Widget> result = [];
 
     for (var block in blocks) {
-      Widget? blockRendering;
+      result.add(Builder(builder: (context) {
+        assert(block.id != null);
 
-      if (block is TextBlock) {
-        // text block
-        blockRendering = _getRenderingForTextBlock(block);
-      } else if (block is ImageBlock) {
-        // image block
-        blockRendering = _getRenderingForImageBlock(block);
-      }
+        return LoreBlockRenderingEditable(
+            key: ValueKey(block.id),
+            block: block,
+            usersInCampagne: usersInCampagne,
+            updatePermittedUsersOnBlock: _updatePermittedUsersOnBlock,
+            isUserAllowedToEdit: _isAllowedToEdit,
+            updateTextContent: (String newText) async {
+              var service = DependencyProvider.of(context)
+                  .getService<INoteDocumentService>();
 
-      assert(blockRendering != null);
+              if (block is! TextBlock) {
+                assert(
+                    false); // we should not come here... images should run another update method
+                return false;
+              }
 
-      result.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(flex: 3, child: blockRendering!),
-          if (_isAllowedToEdit == true)
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: CupertinoButton(
-                minSize: 0,
-                padding: EdgeInsets.all(0),
-                onPressed: () {
-                  // TODO make me
-                },
-                child: CustomFaIcon(
-                  icon: FontAwesomeIcons.penToSquare,
-                  size: 20,
-                  color: darkColor,
-                ),
-              ),
-            ),
-          if (_isVisibleForBarCollapsed == true)
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                child: Column(
-                  children: [
-                    Text(
-                      "Sichtbar für:",
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .copyWith(fontSize: 16, color: darkTextColor),
-                    ),
+              var textBlockCopy = (block).copyWith(markdownText: newText);
 
-                    SizedBox(
-                      height: 5,
-                    ),
+              var updateResult = await service.updateTextBlock(
+                  textBlockToUpdate: textBlockCopy);
 
-                    // for every user create a pill which indicates
-                    ..._getPillsToIndicateVisibilityForPlayers(
-                        block.id, block.permittedUsers ?? []),
-                  ],
-                ),
-              ),
-            ),
-          if (_isAllowedToEdit == true)
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: CupertinoButton(
-                minSize: 0,
-                padding: EdgeInsets.all(0),
-                onPressed: () {
-                  setState(() {
-                    _isVisibleForBarCollapsed = !_isVisibleForBarCollapsed;
-                  });
-                },
-                child: CustomFaIcon(
-                  icon: FontAwesomeIcons.users,
-                  size: 20,
-                  color: darkColor,
-                ),
-              ),
-            )
-        ],
-      ));
+              if (!mounted || !context.mounted) return false;
+              await updateResult.possiblyHandleError(context);
+              if (!mounted || !context.mounted) return false;
+
+              var indexOfTextBlockToUpdate = selectedDocument!.textBlocks
+                  .indexWhere(
+                      (tb) => tb.id!.$value == textBlockCopy.id!.$value);
+
+              assert(indexOfTextBlockToUpdate >= 0);
+              setState(() {
+                selectedDocument!.textBlocks[indexOfTextBlockToUpdate] =
+                    textBlockCopy;
+
+                var indexToRemove =
+                    groupedDocuments[selectedDocument!.groupName]!
+                        .indexWhere((d) => d.id == selectedDocument!.id);
+                assert(indexToRemove >= 0);
+
+                groupedDocuments[selectedDocument!.groupName]![indexToRemove] =
+                    selectedDocument!;
+              });
+
+              return updateResult.isSuccessful;
+            },
+            isShowingPermittedUsers: _isVisibleForBarCollapsed,
+            toggleIsVisibleForBarCollapsed: () {
+              setState(() {
+                _isVisibleForBarCollapsed = !_isVisibleForBarCollapsed;
+              });
+            });
+      }));
     }
 
     if (_isAllowedToEdit) {
@@ -843,156 +818,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     ));
   }
 
-  Widget _getRenderingForTextBlock(TextBlock textBlock) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-      child: CustomMarkdownBody(text: textBlock.markdownText ?? ""),
-    );
-  }
-
-  Widget _getRenderingForImageBlock(ImageBlock imageBlock) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-        padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: darkColor),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: CustomImage(
-                  isGreyscale: false,
-                  isClickableForZoom: true,
-                  isLoading: false,
-                  imageUrl: imageBlock.publicImageUrl!,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  List<Widget> _getPillsToIndicateVisibilityForPlayers(
-      NoteBlockModelBaseIdentifier blockId,
-      List<UserIdentifier> permittedUsers) {
-    // get all users execpt me:
-    var usersExceptMe = usersInCampagne.where((u) => !u.isYou).toList();
-
-    List<NoteDocumentPlayerDescriptorDto> prohibitedUserResult = [];
-    List<NoteDocumentPlayerDescriptorDto> permittedUserResult = [];
-
-    for (var user in usersExceptMe) {
-      if (permittedUsers.contains(user.userId)) {
-        permittedUserResult.add(user.copyWith(
-            playerCharacterName: user.isDm ? "DM" : user.playerCharacterName));
-      } else {
-        prohibitedUserResult.add(user.copyWith(
-            playerCharacterName: user.isDm ? "DM" : user.playerCharacterName));
-      }
-    }
-
-    prohibitedUserResult.sortByDescending((u) => u.playerCharacterName!);
-    permittedUserResult.sortByDescending((u) => u.playerCharacterName!);
-    List<Widget> result = [];
-
-    for (var permittedUser in permittedUserResult) {
-      result.add(_getVisibilityPillForUser(blockId, permittedUser,
-          isProhibited: false));
-    }
-    for (var prohibitedUser in prohibitedUserResult) {
-      result.add(_getVisibilityPillForUser(blockId, prohibitedUser,
-          isProhibited: true));
-    }
-
-    return result;
-  }
-
-  Widget _getVisibilityPillForUser(NoteBlockModelBaseIdentifier blockId,
-      NoteDocumentPlayerDescriptorDto permitteddUser,
-      {required bool isProhibited}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: CupertinoButton(
-        minSize: 0,
-        padding: EdgeInsets.zero,
-        onPressed: () {
-          // find correct block to update
-          var block =
-              getBlocksOfSelectedDocument.singleWhere((b) => b.id == blockId);
-
-          var newPermittedUsers =
-              (block.permittedUsers as List<UserIdentifier>?) ?? [];
-          if (isProhibited) {
-            // add user to permitted users
-            newPermittedUsers.add(permitteddUser.userId);
-          } else {
-            // remove user from permitted users
-            newPermittedUsers
-                .removeWhere((u) => u.$value == permitteddUser.userId.$value);
-          }
-
-          _updatePermittedUsersOnBlock(newPermittedUsers, block);
-        },
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: middleBgColor,
-                ),
-                padding: EdgeInsets.all(5),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  permitteddUser.playerCharacterName!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: darkTextColor,
-                        fontSize: 16,
-                      ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: isProhibited ? lightRed : lightGreen,
-                borderRadius: BorderRadius.circular(3.0),
-                border: Border.all(
-                  color: darkColor,
-                ),
-              ),
-              child: CustomFaIcon(
-                icon: isProhibited
-                    ? FontAwesomeIcons.xmark
-                    : FontAwesomeIcons.check,
-                color: darkColor,
-                size: 22,
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _updatePermittedUsersOnBlock(
-      List<UserIdentifier> newPermittedUsers, block) {
+      List<UserIdentifier> newPermittedUsers, dynamic block) {
     newPermittedUsers = newPermittedUsers
         .where(
             (u) => usersInCampagne.any((uic) => uic.userId.$value == u.$value))
