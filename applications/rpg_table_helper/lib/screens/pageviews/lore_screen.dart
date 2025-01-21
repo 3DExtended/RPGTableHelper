@@ -934,6 +934,39 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     return updateResult.isSuccessful;
   }
 
+  Future<bool> updateImageBlock(
+      BuildContext context, ImageBlock imageBlockCopy) async {
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var updateResult =
+        await service.updateImageBlock(imageBlockToUpdate: imageBlockCopy);
+
+    if (!mounted || !context.mounted) return false;
+    await updateResult.possiblyHandleError(context);
+    if (!mounted || !context.mounted) return false;
+    if (updateResult.isSuccessful == false) return false;
+
+    var indexOfImageBlockToUpdate = selectedDocument!.imageBlocks
+        .indexWhere((tb) => tb.id!.$value == imageBlockCopy.id!.$value);
+
+    assert(indexOfImageBlockToUpdate >= 0);
+    setState(() {
+      selectedDocument!.imageBlocks[indexOfImageBlockToUpdate] = imageBlockCopy;
+
+      var indexToRemove = groupedDocuments[selectedDocument!.groupName]!
+          .indexWhere((d) => d.id == selectedDocument!.id);
+      assert(indexToRemove >= 0);
+
+      groupedDocuments[selectedDocument!.groupName]![indexToRemove] =
+          selectedDocument!;
+
+      selectedDocument = selectedDocument!
+          .copyWith(imageBlocks: [...selectedDocument!.imageBlocks]);
+    });
+
+    return updateResult.isSuccessful;
+  }
+
   Future<void> _updatePermittedUsersOnBlock(
       List<UserIdentifier> newPermittedUsers, dynamic block) async {
     newPermittedUsers = newPermittedUsers
@@ -949,20 +982,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
       await updateTextBlock(context, block);
     } else if (block is ImageBlock) {
-      setState(() {
-        block = (block as ImageBlock).copyWith(
-          visibility: _recalculateBlockVisibility(block),
-          permittedUsers: newPermittedUsers,
-        );
+      block = (block).copyWith(
+        visibility: _recalculateBlockVisibility(block),
+        permittedUsers: newPermittedUsers,
+      );
 
-        var indexToReplace =
-            selectedDocument!.imageBlocks.indexWhere((b) => b.id == block.id);
-        if (indexToReplace >= 0) {
-          selectedDocument!.imageBlocks[indexToReplace] = block;
-          selectedDocument = selectedDocument!
-              .copyWith(imageBlocks: [...selectedDocument!.imageBlocks]);
-        }
-      });
+      await updateImageBlock(context, block);
     }
   }
 
