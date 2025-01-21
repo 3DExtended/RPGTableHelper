@@ -678,6 +678,41 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
               return await updateTextBlock(context, textBlockCopy);
             },
+            updateImageContent: (String pathToImageToUpload) async {
+              if (block is! ImageBlock) {
+                assert(
+                    false); // we should not come here... images should run another update method
+                return false;
+              }
+
+              // TODO make me
+              // var textBlockCopy = (block).copyWith(markdownText: newText);
+              // return await updateTextBlock(context, textBlockCopy);
+              return false;
+            },
+            deleteBlock: () async {
+              var service = DependencyProvider.of(context)
+                  .getService<INoteDocumentService>();
+              var deleteResult = await service.deleteNoteBlock(
+                blockIdToDelete: block.id!,
+              );
+
+              if (!mounted || !context.mounted) return false;
+              await deleteResult.possiblyHandleError(context);
+              if (!mounted || !context.mounted) return false;
+              if (deleteResult.isSuccessful == false) return false;
+
+              setState(() {
+                if (block is TextBlock) {
+                  selectedDocument!.textBlocks
+                      .removeWhere((b) => b.id == block.id);
+                } else if (block is ImageBlock) {
+                  selectedDocument!.imageBlocks
+                      .removeWhere((b) => b.id == block.id);
+                }
+              });
+              return true;
+            },
             isShowingPermittedUsers: _isVisibleForBarCollapsed,
             toggleIsVisibleForBarCollapsed: () {
               setState(() {

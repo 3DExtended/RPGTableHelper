@@ -20,7 +20,12 @@ class LoreBlockRenderingEditable extends StatefulWidget {
     required this.block,
     required this.usersInCampagne,
     required this.updatePermittedUsersOnBlock,
+    required this.updateImageContent,
+    required this.deleteBlock,
   });
+
+  final Future<bool> Function() deleteBlock;
+  final Future<bool> Function(String pathToImageToUpload) updateImageContent;
   final List<NoteDocumentPlayerDescriptorDto> usersInCampagne;
   final void Function(List<UserIdentifier> newPermittedUsers, dynamic block)
       updatePermittedUsersOnBlock;
@@ -76,9 +81,7 @@ class _LoreBlockRenderingEditableState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(flex: 3, child: blockRendering!),
-        if (widget.isUserAllowedToEdit == true &&
-            !(isEditEnabled && // we only allow you to exit edit mode by saving or cancelling
-                hasChanged)) // we only allow you to exit edit mode by saving or cancelling
+        if (widget.isUserAllowedToEdit == true && !isEditEnabled)
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: CupertinoButton(
@@ -96,29 +99,18 @@ class _LoreBlockRenderingEditableState
               ),
             ),
           ),
-        if (widget.isUserAllowedToEdit == true &&
-            (isEditEnabled && // we only allow you to exit edit mode by saving or cancelling
-                hasChanged)) // we only allow you to exit edit mode by saving or cancelling
+        if (widget.isUserAllowedToEdit == true && isEditEnabled)
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: CupertinoButton(
               minSize: 0,
               padding: EdgeInsets.all(0),
               onPressed: () async {
-                // TODO make me
-                setState(() {
-                  if (widget.block is TextBlock) {
-                    // text block
-                    _textEditingController.text =
-                        (widget.block as TextBlock).markdownText ?? "";
-                  }
-                  isEditEnabled = false;
-
-                  // TODO handle image changes here
-                });
+                // TODO make me ask the user if they really want to discard changes
+                await widget.deleteBlock();
               },
               child: CustomFaIcon(
-                icon: FontAwesomeIcons.ban,
+                icon: FontAwesomeIcons.trashCan,
                 size: 20,
                 color: darkColor,
               ),
