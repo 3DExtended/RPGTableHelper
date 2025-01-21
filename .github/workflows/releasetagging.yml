@@ -28,7 +28,7 @@ jobs:
     - name: Verify the tag creator
       id: verify_author
       run: |
-        if [ "${{ steps.capture_username.outputs.username }}" != "Your GitHub Username" ]; then
+        if [ "${{ steps.capture_username.outputs.username }}" != "Peter Esser" ]; then
           echo "Unauthorized user: ${{ steps.capture_username.outputs.username }} tried to run this workflow."
           exit 1
         fi
