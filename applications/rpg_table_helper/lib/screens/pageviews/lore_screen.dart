@@ -269,7 +269,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
                                   // TODO
                                   var newDocument = NoteDocumentDto(
-                                    groupName: "Sonstiges", // TODO localization
+                                    // if some document is selected, add it to the same group
+                                    groupName: selectedDocument?.groupName ??
+                                        "Sonstiges", // TODO localization,
                                     title:
                                         "Dokument #${numberOfDocumentsForThisPlayer + 1}",
                                     createdForCampagneId:
@@ -310,6 +312,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                       }
                                       groupedDocuments[newDocument.groupName]!
                                           .add(newDocument);
+
+                                      // select new document
+                                      selectedDocument = newDocument;
+                                      selectedDocumentId = newDocument.id;
                                     }
                                   });
                                 },
@@ -617,8 +623,21 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     });
   }
 
-  void _onDocumentDropped(
-      String sourceGroup, String targetGroup, int index, NoteDocumentDto doc) {
+  Future<void> _onDocumentDropped(String sourceGroup, String targetGroup,
+      int index, NoteDocumentDto doc) async {
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+
+    var updateResponse = await service.updateDocumentForCampagne(
+      dto: doc.copyWith(groupName: targetGroup),
+    );
+
+    if (!mounted || !context.mounted) return;
+    await updateResponse.possiblyHandleError(context);
+    if (!mounted || !context.mounted) return;
+
+    if (!updateResponse.isSuccessful) return;
+
     setState(() {
       // Remove from source group
       groupedDocuments[sourceGroup]?.remove(doc);
