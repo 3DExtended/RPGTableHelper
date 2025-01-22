@@ -183,12 +183,27 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                           : '{"value": 25, "maxValue": 25}',
                 );
               case CharacterStatValueType.listOfIntWithCalculatedValues:
+                var values =
+                    jsonDecode(stat.jsonSerializedAdditionalData!)["values"];
+
+                var stringToAdd = "";
+                for (var i = 0; i < values.length; i++) {
+                  if (i > 3) {
+                    stringToAdd +=
+                        '{"uuid":"${values[i]["uuid"]}", "value":9, "otherValue": -1}';
+                  } else {
+                    stringToAdd +=
+                        '{"uuid":"${values[i]["uuid"]}", "value":12, "otherValue": 1}';
+                  }
+                  if (i < values.length - 1) stringToAdd += ",";
+                }
+
                 return RpgCharacterStatValue(
                   hideFromCharacterScreen: false,
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"values": []}',
+                  serializedValue: '{"values": [$stringToAdd]}',
                 );
               case CharacterStatValueType.listOfIntsWithIcons:
                 return RpgCharacterStatValue(
