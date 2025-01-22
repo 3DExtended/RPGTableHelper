@@ -97,16 +97,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(
                         height: 40,
                       ),
-                      Text(
-                        "Login", // TODO localize
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: darkColor,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.2),
+                        child: Image.asset(
+                          "assets/icons/icon_flat.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       SizedBox(
                         height: 40,
@@ -132,6 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: CustomButton(
+                            boderRadiusOverride: 7,
                             icon: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15.0),
@@ -351,6 +350,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
 
                       CustomButton(
+                        width: 298,
+                        height: 55,
+                        boderRadiusOverride: 7,
                         label: "Neuen Account anlegen", // TODO localize
                         variant: CustomButtonVariant.DarkButton,
                         onPressed: () {

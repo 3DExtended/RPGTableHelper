@@ -14,6 +14,9 @@ class CustomButton extends StatelessWidget {
   final String? label;
   final Widget? icon;
   final bool? isSubbutton;
+  final double? width;
+  final double? height;
+  final double? boderRadiusOverride;
   final CustomButtonVariant? variant;
   const CustomButton({
     super.key,
@@ -22,6 +25,9 @@ class CustomButton extends StatelessWidget {
     this.icon,
     this.variant,
     this.isSubbutton,
+    this.width,
+    this.height,
+    this.boderRadiusOverride,
   });
 
   Color _getBackgroundColor(CustomButtonVariant variant, bool isEnabled) {
@@ -55,9 +61,13 @@ class CustomButton extends StatelessWidget {
       minSize: 0,
       padding: EdgeInsets.zero,
       child: Container(
+        height: height,
+        width: width,
+        alignment: height != null || width != null ? Alignment.center : null,
         decoration: BoxDecoration(
           color: _getBackgroundColor(variantToUse, onPressed != null),
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius:
+              BorderRadius.all(Radius.circular(boderRadiusOverride ?? 5)),
           border: variantToUse == CustomButtonVariant.FlatButton
               ? null
               : Border.all(
