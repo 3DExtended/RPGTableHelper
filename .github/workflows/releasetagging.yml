@@ -78,8 +78,8 @@ jobs:
     - name: Generate release notes
       id: generate_notes
       run: |
-        conventional-changelog -r 2 > ${{ github.workspace }}-CHANGELOG.txt
-        conventional-changelog > ${{ github.workspace }}-CHANGELOG_ALL.txt
+        conventional-changelog > ${{ github.workspace }}-CHANGELOG.txt
+        conventional-changelog -r 0 > ${{ github.workspace }}-FULL_CHANGELOG.txt
 
     - name: Release
       uses: softprops/action-gh-release@v2
@@ -89,5 +89,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: ${{ steps.set_prerelease.outputs.prerelease }}
         files: |
-          ${{ github.workspace }}-CHANGELOG_ALL.txt
+          ${{ github.workspace }}-FULL_CHANGELOG.txt
 
