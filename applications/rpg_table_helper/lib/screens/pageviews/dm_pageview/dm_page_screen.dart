@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
@@ -44,15 +45,15 @@ class _DmPageScreenState extends State<DmPageScreen> {
 
   List<(String title, Widget child)> getDmScreens(BuildContext context) {
     return [
-      ("Kampagnen Management", DmScreenCampagneManagement()),
-      ("Charakter Übersicht", DmScreenCharacterOverview()),
-      ("Kampf Reihenfolge", DmScreenFightSquence()),
+      (S.of(context).campaignManagement, DmScreenCampagneManagement()),
+      (S.of(context).characterOverview, DmScreenCharacterOverview()),
+      (S.of(context).fightingOrdering, DmScreenFightSquence()),
       (
-        "Items verteilen",
+        S.of(context).grantItems,
         DmScreenGrantItems(),
       ),
       (
-        "Weltgeschichte",
+        S.of(context).lore,
         LoreScreen(),
       ),
     ];

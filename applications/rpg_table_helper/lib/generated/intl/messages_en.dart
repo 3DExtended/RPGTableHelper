@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add element"),
         "additionalSettings":
             MessageLookupByLibrary.simpleMessage("Additional settings"),
+        "allPlayers": MessageLookupByLibrary.simpleMessage("All players:"),
         "assignCharacterToCampagneModalContent":
             MessageLookupByLibrary.simpleMessage(
                 "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM."),
@@ -39,25 +40,41 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Calculated value"),
         "calculatedValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("The calculated value"),
+        "campaignManagement":
+            MessageLookupByLibrary.simpleMessage("Campaign management"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "character": MessageLookupByLibrary.simpleMessage("Character:"),
         "characterNameDefault":
             MessageLookupByLibrary.simpleMessage("Player name"),
         "characterNameWithLevelAndConfigurableDetails":
             MessageLookupByLibrary.simpleMessage(
                 "Character name with level and configurable details"),
+        "characterOverview":
+            MessageLookupByLibrary.simpleMessage("Charakter overview"),
         "companionOverview":
             MessageLookupByLibrary.simpleMessage("Companion overview"),
+        "completeRegistration":
+            MessageLookupByLibrary.simpleMessage("Complete registration"),
         "configureProperties":
             MessageLookupByLibrary.simpleMessage("Configure properties"),
         "configurePropertiesForCharacterNameSuffix": m0,
+        "createNewAccount":
+            MessageLookupByLibrary.simpleMessage("Create new account"),
         "currentValue": MessageLookupByLibrary.simpleMessage("Current value"),
         "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "The current value for this property"),
         "descriptionOfProperty":
             MessageLookupByLibrary.simpleMessage("Help text for the property"),
+        "diceChallengeAbbr": MessageLookupByLibrary.simpleMessage("DC"),
+        "diceRoll": MessageLookupByLibrary.simpleMessage("Dice roll"),
+        "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
+        "fightingOrdering": MessageLookupByLibrary.simpleMessage("Fight order"),
         "firstValue": MessageLookupByLibrary.simpleMessage("First value"),
         "firstValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("The first value"),
+        "followingItemsArePossibleAtPlaceOfFinding":
+            MessageLookupByLibrary.simpleMessage(
+                "The following items are possible at the place of finding:"),
         "forIntegerValueWithName":
             MessageLookupByLibrary.simpleMessage("for number value"),
         "generatedImage":
@@ -70,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Error text:"),
         "genericErrorModalTechnicalDetailsHeader":
             MessageLookupByLibrary.simpleMessage("Technical details: "),
+        "grantItems": MessageLookupByLibrary.simpleMessage("Grant items"),
         "hideHeading": MessageLookupByLibrary.simpleMessage("Hide heading"),
         "hidePropertyForCharacter": MessageLookupByLibrary.simpleMessage(
             "Hide property for my character"),
@@ -78,14 +96,27 @@ class MessageLookup extends MessageLookupByLibrary {
             "Number value with additional number"),
         "integerValueWithMaxValue":
             MessageLookupByLibrary.simpleMessage("Number value with max value"),
+        "item": MessageLookupByLibrary.simpleMessage("Item"),
+        "itemExampleDescription":
+            MessageLookupByLibrary.simpleMessage("Some item description"),
+        "itemsToBeFoundInPlaceMarkdown": MessageLookupByLibrary.simpleMessage(
+            "## Items to be found in place:"),
         "joinCode": MessageLookupByLibrary.simpleMessage("Join Code:"),
+        "joinCodeForNewPlayers": MessageLookupByLibrary.simpleMessage(
+            "Join code (for new players):"),
         "kindOfProperty":
             MessageLookupByLibrary.simpleMessage("Kind of property"),
+        "lastGrantedItems":
+            MessageLookupByLibrary.simpleMessage("Last granted items"),
+        "lastGrantedItemsMarkdownPrefix":
+            MessageLookupByLibrary.simpleMessage("Last granted items:"),
         "listOfIntegersWithIcons": MessageLookupByLibrary.simpleMessage(
             "List of number values with icons"),
         "listOfInterValuesWithCalculatedIntegerValues":
             MessageLookupByLibrary.simpleMessage(
                 "Group of number values with additional number"),
+        "login": MessageLookupByLibrary.simpleMessage("Login"),
+        "lore": MessageLookupByLibrary.simpleMessage("Lore"),
         "maxValue": MessageLookupByLibrary.simpleMessage("Max value"),
         "maxValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "The max value for this property"),
@@ -103,6 +134,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Name of property"),
         "newImageBtnLabel": MessageLookupByLibrary.simpleMessage("New image"),
         "newPetBtnLabel": MessageLookupByLibrary.simpleMessage("New pet"),
+        "noItemsGranted":
+            MessageLookupByLibrary.simpleMessage("No items granted yet..."),
+        "noItemsGrantedToPlayerThisRound":
+            MessageLookupByLibrary.simpleMessage("No items granted this round"),
+        "noOpenJoinRequests":
+            MessageLookupByLibrary.simpleMessage("No open requests"),
+        "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
+            "No place of finding selected."),
+        "offline": MessageLookupByLibrary.simpleMessage("Offline"),
+        "online": MessageLookupByLibrary.simpleMessage("Online"),
+        "openJoinRequests":
+            MessageLookupByLibrary.simpleMessage("Join requests:"),
         "optionalPropertyForAlternateForms":
             MessageLookupByLibrary.simpleMessage(
                 "Optional property for alternate forms"),
@@ -113,7 +156,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "otherValue": MessageLookupByLibrary.simpleMessage("Other value"),
         "otherValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("The other value"),
+        "password": MessageLookupByLibrary.simpleMessage("Password"),
         "petDefaultNamePrefix": MessageLookupByLibrary.simpleMessage("Pet"),
+        "placeOfFinding":
+            MessageLookupByLibrary.simpleMessage("Place of finding"),
+        "player": MessageLookupByLibrary.simpleMessage("Player"),
+        "playerRolls": MessageLookupByLibrary.simpleMessage("Player rolls"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "propertyEditTypeLabel":
             MessageLookupByLibrary.simpleMessage("Change frequency"),
@@ -122,12 +170,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Rarely changed (e.g. per level-up)"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+        "register": MessageLookupByLibrary.simpleMessage("Register"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "secondValue": MessageLookupByLibrary.simpleMessage("Second value"),
         "secondValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("The second value"),
+        "select": MessageLookupByLibrary.simpleMessage("Select"),
+        "selectAColor": MessageLookupByLibrary.simpleMessage("Select a color:"),
+        "selectAnIcon": MessageLookupByLibrary.simpleMessage("Select an icon:"),
+        "selectIconModalTitle":
+            MessageLookupByLibrary.simpleMessage("Select icon"),
+        "sendItems": MessageLookupByLibrary.simpleMessage("Send items"),
+        "signInWithApple":
+            MessageLookupByLibrary.simpleMessage("Sign in with Apple"),
+        "signInWithGoogle":
+            MessageLookupByLibrary.simpleMessage("Sign in with Google"),
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Single line text"),
+        "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m1
       };

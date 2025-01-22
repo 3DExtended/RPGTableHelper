@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
@@ -80,7 +81,7 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
                       height: 40,
                     ),
                     Text(
-                      "Complete Registration", // TODO localize
+                      S.of(context).completeRegistration,
                       style:
                           Theme.of(context).textTheme.headlineMedium!.copyWith(
                                 color: darkColor,
@@ -95,7 +96,7 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
 
                     // Username Textfield
                     CustomTextField(
-                      labelText: "Username", // TODO Localize
+                      labelText: S.of(context).username,
                       textEditingController: usernameTextEditingController,
                       keyboardType: TextInputType.name,
                     ),
@@ -108,8 +109,7 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
                     Center(
                       child: CustomButton(
                         variant: CustomButtonVariant.AccentButton,
-                        label: "Complete registration", // TODO localize
-
+                        label: S.of(context).completeRegistration,
                         onPressed: isLoginButtonDisabled
                             ? null
                             : () async {

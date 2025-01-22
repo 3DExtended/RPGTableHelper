@@ -52,6 +52,7 @@ void testConfigurations({
   Future<void> Function(WidgetTester tester, Locale local)? testerInteractions,
   bool useMaterialAppWrapper = true,
   String? pathPrefix = "",
+  bool disableAllScreenSizes = false,
 }) {
   Widget? widgetToTest;
   var supportedLocales = S.delegate.supportedLocales;
@@ -123,7 +124,8 @@ void testConfigurations({
         await multiScreenGolden(
           tester,
           '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
-          devices: testDevices,
+          devices:
+              disableAllScreenSizes == true ? [testDevices[1]] : testDevices,
         );
       });
     }

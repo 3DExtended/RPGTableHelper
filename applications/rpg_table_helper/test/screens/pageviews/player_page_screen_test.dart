@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
@@ -33,7 +34,7 @@ void main() {
 
     for (var testcase in testCases) {
       testConfigurations(
-        disableLocals: true,
+        disableLocals: false,
         pathPrefix: "../",
         widgetName: 'playerpagescreens${testcase.$1}-${testcase.$2}',
         useMaterialAppWrapper: true,
@@ -140,7 +141,11 @@ void main() {
           child: MaterialApp(
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               darkTheme: ThemeData.dark(),
               themeMode: ThemeMode.dark,

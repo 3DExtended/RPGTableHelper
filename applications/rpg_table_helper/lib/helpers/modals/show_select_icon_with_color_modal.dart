@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -125,8 +126,7 @@ class _SelectIconWithColorModalContentState
                     menuOpen: null,
                     useTopSafePadding: false,
                     titleWidget: Text(
-                      "Icon auswählen${widget.titleSuffix}" ??
-                          "", // TODO localize/ switch text between add and edit
+                      "${S.of(context).selectIconModalTitle}${(widget.titleSuffix ?? "")}",
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
@@ -146,7 +146,7 @@ class _SelectIconWithColorModalContentState
                                 children: [
                                   if (widget.disableColorSelect != true)
                                     Text(
-                                      "Select a color:",
+                                      S.of(context).selectAColor,
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineMedium!
@@ -188,7 +188,7 @@ class _SelectIconWithColorModalContentState
                                     ),
 
                                   Text(
-                                    "Select an icon:",
+                                    S.of(context).selectAnIcon,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineMedium!
@@ -236,7 +236,7 @@ class _SelectIconWithColorModalContentState
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Vorschau:",
+                                    S.of(context).preview,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge!
@@ -250,10 +250,9 @@ class _SelectIconWithColorModalContentState
                                   ),
                                   CustomItemCard(
                                     scalarOverride: 1,
-                                    title: "Item", // TODO localize
+                                    title: S.of(context).item,
                                     description:
-                                        "Some items description", // TODO localize
-
+                                        S.of(context).itemExampleDescription,
                                     categoryIconColor: selectedIconColor,
                                     categoryIconName: selectedIconName,
                                   ),
@@ -277,7 +276,7 @@ class _SelectIconWithColorModalContentState
                       children: [
                         const Spacer(),
                         CustomButton(
-                          label: "Auswählen", // TODO localize
+                          label: S.of(context).select,
                           onPressed: () {
                             navigatorKey.currentState!.pop(
                                 selectedIconName == null ||

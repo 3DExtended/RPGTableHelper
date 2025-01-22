@@ -120,7 +120,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                       // password Textfield
                       CustomTextField(
-                        labelText: "Password", // TODO Localize
+                        labelText: S.of(context).password,
                         textEditingController: passwordTextEditingController,
                         password: true,
                         keyboardType: TextInputType.visiblePassword,
@@ -136,7 +136,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15.0),
                               child: Text(
-                                "Login",
+                                S.of(context).login,
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelMedium!
@@ -197,7 +197,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               child: CustomSignInWithAppleButton(
                                 style: CustomSignInWithAppleButtonStyle.white,
-                                text: "Mit Apple anmelden",
+                                text: S.of(context).signInWithApple,
                                 height: 55,
                                 onPressed: () async {
                                   AuthorizationCredentialAppleID? credential;
@@ -273,7 +273,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           BorderRadius.all(Radius.circular(7))),
                                   padding:
                                       const EdgeInsets.fromLTRB(40, 7, 40, 7),
-                                  text: "Sign in with Google",
+                                  text: S.of(context).signInWithGoogle,
                                   onPressed: () async {
                                     // Default definition
                                     GoogleSignIn googleSignIn = GoogleSignIn(
@@ -354,7 +354,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         width: 298,
                         height: 55,
                         boderRadiusOverride: 7,
-                        label: "Neuen Account anlegen", // TODO localize
+                        label: S.of(context).createNewAccount,
                         variant: CustomButtonVariant.DarkButton,
                         onPressed: () {
                           // navigate to register screen

@@ -79,7 +79,7 @@ class _DmScreenCampagneManagementState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Alle Spieler:",
+                S.of(context).allPlayers,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     color: darkTextColor,
                     fontSize: 24,
@@ -105,7 +105,7 @@ class _DmScreenCampagneManagementState
               ),
 
               Text(
-                "Join Anfragen:",
+                S.of(context).openJoinRequests,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     color: darkTextColor,
                     fontSize: 24,
@@ -114,7 +114,7 @@ class _DmScreenCampagneManagementState
 
               if (connectionDetails?.sessionConnectionNumberForPlayers != null)
                 Text(
-                  "Join Code (für neue Spieler): ${connectionDetails!.sessionConnectionNumberForPlayers!}",
+                  "${S.of(context).joinCodeForNewPlayers}${connectionDetails!.sessionConnectionNumberForPlayers!}",
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color: darkTextColor,
                       fontSize: 16,
@@ -127,7 +127,7 @@ class _DmScreenCampagneManagementState
 
               if ((connectionDetails?.openPlayerRequests ?? []).isEmpty)
                 Text(
-                  "Keine offenen Anfragen",
+                  S.of(context).noOpenJoinRequests,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -160,7 +160,7 @@ class _DmScreenCampagneManagementState
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "User: ${request.value.username}",
+                                          "${S.of(context).user} ${request.value.username}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -170,7 +170,7 @@ class _DmScreenCampagneManagementState
                                               ),
                                         ),
                                         Text(
-                                          "Charakter: ${request.value.playerName}",
+                                          "${S.of(context).character} ${request.value.playerName}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -318,7 +318,7 @@ class _DmScreenCampagneManagementState
 
         var playerCharacterName = char.characterName ??
             connectedPlayerDetails?.configuration.characterName ??
-            "Player Name";
+            S.of(context).characterNameDefault;
 
         result.add(getSingleConfiguredPlayerOnlineStatus(
           isOnline: isOnline,
@@ -431,7 +431,7 @@ class _DmScreenCampagneManagementState
                         ),
                   ),
                   Text(
-                    isOnline ? "Online" : "Offline",
+                    isOnline ? S.of(context).online : S.of(context).offline,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           color: darkTextColor,
                           fontSize: 12,

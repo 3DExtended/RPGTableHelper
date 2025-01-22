@@ -398,6 +398,7 @@ void main() {
 
     for (var testConfiguration in enrichedallConfigurationPairs) {
       testConfigurations(
+        disableAllScreenSizes: true,
         disableLocals: false,
         pathPrefix: "../",
         widgetName: 'CharacterStatValueType_DMConfig_${testConfiguration.$1}',
@@ -477,6 +478,7 @@ void main() {
       );
 
       testConfigurations(
+        disableAllScreenSizes: true,
         disableLocals: false,
         pathPrefix: "../",
         widgetName:
@@ -563,6 +565,7 @@ void main() {
       );
 
       testConfigurations(
+        disableAllScreenSizes: true,
         disableLocals: false,
         pathPrefix: "../",
         widgetName:
@@ -649,6 +652,7 @@ void main() {
       );
 
       testConfigurations(
+        disableAllScreenSizes: true,
         disableLocals: false,
         pathPrefix: "../",
         widgetName:

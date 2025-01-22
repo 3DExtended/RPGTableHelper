@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
 
@@ -13,7 +14,7 @@ void main() {
     GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
     testConfigurations(
-      disableLocals: true,
+      disableLocals: false,
       pathPrefix: "",
       widgetName: 'showSelectIconWithColorModal',
       useMaterialAppWrapper: true,
@@ -31,7 +32,11 @@ void main() {
         child: MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: [
+              ...AppLocalizations.localizationsDelegates,
+              S.delegate
+            ],
+            locale: locale,
             supportedLocales: AppLocalizations.supportedLocales,
             darkTheme: ThemeData.dark(),
             themeMode: ThemeMode.dark,

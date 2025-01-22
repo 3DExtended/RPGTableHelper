@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `Password`
+  String get password {
+    return Intl.message(
+      'Password',
+      name: 'password',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Player name`
   String get characterNameDefault {
     return Intl.message(
@@ -645,6 +655,396 @@ class S {
     return Intl.message(
       'Name:',
       name: 'propertyNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete registration`
+  String get completeRegistration {
+    return Intl.message(
+      'Complete registration',
+      name: 'completeRegistration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select icon`
+  String get selectIconModalTitle {
+    return Intl.message(
+      'Select icon',
+      name: 'selectIconModalTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a color:`
+  String get selectAColor {
+    return Intl.message(
+      'Select a color:',
+      name: 'selectAColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select an icon:`
+  String get selectAnIcon {
+    return Intl.message(
+      'Select an icon:',
+      name: 'selectAnIcon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Item`
+  String get item {
+    return Intl.message(
+      'Item',
+      name: 'item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some item description`
+  String get itemExampleDescription {
+    return Intl.message(
+      'Some item description',
+      name: 'itemExampleDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select`
+  String get select {
+    return Intl.message(
+      'Select',
+      name: 'select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Campaign management`
+  String get campaignManagement {
+    return Intl.message(
+      'Campaign management',
+      name: 'campaignManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Charakter overview`
+  String get characterOverview {
+    return Intl.message(
+      'Charakter overview',
+      name: 'characterOverview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fight order`
+  String get fightingOrdering {
+    return Intl.message(
+      'Fight order',
+      name: 'fightingOrdering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grant items`
+  String get grantItems {
+    return Intl.message(
+      'Grant items',
+      name: 'grantItems',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lore`
+  String get lore {
+    return Intl.message(
+      'Lore',
+      name: 'lore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online`
+  String get online {
+    return Intl.message(
+      'Online',
+      name: 'online',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline`
+  String get offline {
+    return Intl.message(
+      'Offline',
+      name: 'offline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All players:`
+  String get allPlayers {
+    return Intl.message(
+      'All players:',
+      name: 'allPlayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join requests:`
+  String get openJoinRequests {
+    return Intl.message(
+      'Join requests:',
+      name: 'openJoinRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join code (for new players):`
+  String get joinCodeForNewPlayers {
+    return Intl.message(
+      'Join code (for new players):',
+      name: 'joinCodeForNewPlayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No open requests`
+  String get noOpenJoinRequests {
+    return Intl.message(
+      'No open requests',
+      name: 'noOpenJoinRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User:`
+  String get user {
+    return Intl.message(
+      'User:',
+      name: 'user',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Character:`
+  String get character {
+    return Intl.message(
+      'Character:',
+      name: 'character',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last granted items`
+  String get lastGrantedItems {
+    return Intl.message(
+      'Last granted items',
+      name: 'lastGrantedItems',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No items granted yet...`
+  String get noItemsGranted {
+    return Intl.message(
+      'No items granted yet...',
+      name: 'noItemsGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Place of finding`
+  String get placeOfFinding {
+    return Intl.message(
+      'Place of finding',
+      name: 'placeOfFinding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Player rolls`
+  String get playerRolls {
+    return Intl.message(
+      'Player rolls',
+      name: 'playerRolls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dice roll`
+  String get diceRoll {
+    return Intl.message(
+      'Dice roll',
+      name: 'diceRoll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Player`
+  String get player {
+    return Intl.message(
+      'Player',
+      name: 'player',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send items`
+  String get sendItems {
+    return Intl.message(
+      'Send items',
+      name: 'sendItems',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Items to be found in place:`
+  String get itemsToBeFoundInPlaceMarkdown {
+    return Intl.message(
+      '## Items to be found in place:',
+      name: 'itemsToBeFoundInPlaceMarkdown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No place of finding selected.`
+  String get noPlaceOfFindingSelected {
+    return Intl.message(
+      'No place of finding selected.',
+      name: 'noPlaceOfFindingSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The following items are possible at the place of finding:`
+  String get followingItemsArePossibleAtPlaceOfFinding {
+    return Intl.message(
+      'The following items are possible at the place of finding:',
+      name: 'followingItemsArePossibleAtPlaceOfFinding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DC`
+  String get diceChallengeAbbr {
+    return Intl.message(
+      'DC',
+      name: 'diceChallengeAbbr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last granted items:`
+  String get lastGrantedItemsMarkdownPrefix {
+    return Intl.message(
+      'Last granted items:',
+      name: 'lastGrantedItemsMarkdownPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No items granted this round`
+  String get noItemsGrantedToPlayerThisRound {
+    return Intl.message(
+      'No items granted this round',
+      name: 'noItemsGrantedToPlayerThisRound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login`
+  String get login {
+    return Intl.message(
+      'Login',
+      name: 'login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in with Apple`
+  String get signInWithApple {
+    return Intl.message(
+      'Sign in with Apple',
+      name: 'signInWithApple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in with Google`
+  String get signInWithGoogle {
+    return Intl.message(
+      'Sign in with Google',
+      name: 'signInWithGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create new account`
+  String get createNewAccount {
+    return Intl.message(
+      'Create new account',
+      name: 'createNewAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `E-Mail`
+  String get email {
+    return Intl.message(
+      'E-Mail',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Register`
+  String get register {
+    return Intl.message(
+      'Register',
+      name: 'register',
       desc: '',
       args: [],
     );
