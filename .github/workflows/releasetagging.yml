@@ -78,7 +78,7 @@ jobs:
     - name: Generate release notes
       id: generate_notes
       run: |
-        conventional-changelog > ${{ github.workspace }}-CHANGELOG.txt
+        conventional-changelog -r 2 > ${{ github.workspace }}-CHANGELOG.txt
         conventional-changelog -r 0 > ${{ github.workspace }}-FULL_CHANGELOG.txt
 
     - name: Release
