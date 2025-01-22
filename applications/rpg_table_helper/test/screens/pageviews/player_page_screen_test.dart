@@ -60,7 +60,8 @@ void main() {
               return RpgCharacterConfigurationNotifier(
                 decks: AsyncValue.data(
                   RpgCharacterConfiguration.getBaseConfiguration(
-                      RpgConfigurationModel.getBaseConfiguration()),
+                      RpgConfigurationModel.getBaseConfiguration(),
+                      variant: 0),
                 ),
                 ref: ref,
                 runningInTests: true,
