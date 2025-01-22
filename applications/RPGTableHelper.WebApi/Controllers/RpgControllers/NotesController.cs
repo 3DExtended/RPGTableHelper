@@ -163,12 +163,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
                 // there is nothing to see in this document for user
                 if (
-                    !noteDocument
-                        .Get()
-                        .NoteBlocks.Any(b =>
-                            b.Visibility == NotesBlockVisibility.VisibleForCampagne
-                            || b.PermittedUsers.Contains(_userContext.User.UserIdentifier)
-                        )
+                    !noteDocument.Get().NoteBlocks.Any(b => b.PermittedUsers.Contains(_userContext.User.UserIdentifier))
                 )
                 {
                     return Unauthorized();

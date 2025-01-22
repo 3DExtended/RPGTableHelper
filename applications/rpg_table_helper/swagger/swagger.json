@@ -3639,14 +3639,18 @@
             "$ref": "#/components/schemas/NoteBlockModelBase"
           },
           {
+            "required": [
+              "imageMetaDataId",
+              "publicImageUrl"
+            ],
             "type": "object",
             "properties": {
               "imageMetaDataId": {
                 "$ref": "#/components/schemas/ImageMetaDataIdentifier"
               },
               "publicImageUrl": {
-                "type": "string",
-                "nullable": true
+                "minLength": 1,
+                "type": "string"
               },
               "markdownText": {
                 "type": "string",
@@ -3724,9 +3728,6 @@
               },
               "creatingUserId": {
                 "$ref": "#/components/schemas/UserIdentifier"
-              },
-              "visibility": {
-                "$ref": "#/components/schemas/NotesBlockVisibility"
               },
               "permittedUsers": {
                 "type": "array",
@@ -3853,14 +3854,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "NotesBlockVisibility": {
-        "enum": [
-          "HiddenForAllExceptAuthor",
-          "VisibleForSomeUsers",
-          "VisibleForCampagne"
-        ],
-        "type": "string"
       },
       "PlayerCharacter": {
         "allOf": [{

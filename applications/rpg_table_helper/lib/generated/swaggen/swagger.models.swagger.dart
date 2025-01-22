@@ -968,8 +968,8 @@ extension $HttpValidationProblemDetailsExtension
 @JsonSerializable(explicitToJson: true)
 class ImageBlock {
   const ImageBlock({
-    this.imageMetaDataId,
-    this.publicImageUrl,
+    required this.imageMetaDataId,
+    required this.publicImageUrl,
     this.markdownText,
     this.id,
     this.creationDate,
@@ -977,7 +977,6 @@ class ImageBlock {
     this.isDeleted,
     this.noteDocumentId,
     this.creatingUserId,
-    this.visibility,
     this.permittedUsers,
   });
 
@@ -988,9 +987,9 @@ class ImageBlock {
   Map<String, dynamic> toJson() => _$ImageBlockToJson(this);
 
   @JsonKey(name: 'imageMetaDataId')
-  final ImageMetaDataIdentifier? imageMetaDataId;
+  final ImageMetaDataIdentifier imageMetaDataId;
   @JsonKey(name: 'publicImageUrl')
-  final String? publicImageUrl;
+  final String publicImageUrl;
   @JsonKey(name: 'markdownText')
   final String? markdownText;
   @JsonKey(name: 'id')
@@ -1005,12 +1004,6 @@ class ImageBlock {
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
   final UserIdentifier? creatingUserId;
-  @JsonKey(
-    name: 'visibility',
-    toJson: notesBlockVisibilityNullableToJson,
-    fromJson: notesBlockVisibilityNullableFromJson,
-  )
-  final enums.NotesBlockVisibility? visibility;
   @JsonKey(name: 'permittedUsers', defaultValue: <UserIdentifier>[])
   final List<UserIdentifier>? permittedUsers;
   static const fromJsonFactory = _$ImageBlockFromJson;
@@ -1045,9 +1038,6 @@ class ImageBlock {
             (identical(other.creatingUserId, creatingUserId) ||
                 const DeepCollectionEquality()
                     .equals(other.creatingUserId, creatingUserId)) &&
-            (identical(other.visibility, visibility) ||
-                const DeepCollectionEquality()
-                    .equals(other.visibility, visibility)) &&
             (identical(other.permittedUsers, permittedUsers) ||
                 const DeepCollectionEquality()
                     .equals(other.permittedUsers, permittedUsers)));
@@ -1067,7 +1057,6 @@ class ImageBlock {
       const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
-      const DeepCollectionEquality().hash(visibility) ^
       const DeepCollectionEquality().hash(permittedUsers) ^
       runtimeType.hashCode;
 }
@@ -1083,7 +1072,6 @@ extension $ImageBlockExtension on ImageBlock {
       bool? isDeleted,
       NoteDocumentIdentifier? noteDocumentId,
       UserIdentifier? creatingUserId,
-      enums.NotesBlockVisibility? visibility,
       List<UserIdentifier>? permittedUsers}) {
     return ImageBlock(
         imageMetaDataId: imageMetaDataId ?? this.imageMetaDataId,
@@ -1095,13 +1083,12 @@ extension $ImageBlockExtension on ImageBlock {
         isDeleted: isDeleted ?? this.isDeleted,
         noteDocumentId: noteDocumentId ?? this.noteDocumentId,
         creatingUserId: creatingUserId ?? this.creatingUserId,
-        visibility: visibility ?? this.visibility,
         permittedUsers: permittedUsers ?? this.permittedUsers);
   }
 
   ImageBlock copyWithWrapped(
-      {Wrapped<ImageMetaDataIdentifier?>? imageMetaDataId,
-      Wrapped<String?>? publicImageUrl,
+      {Wrapped<ImageMetaDataIdentifier>? imageMetaDataId,
+      Wrapped<String>? publicImageUrl,
       Wrapped<String?>? markdownText,
       Wrapped<NoteBlockModelBaseIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
@@ -1109,7 +1096,6 @@ extension $ImageBlockExtension on ImageBlock {
       Wrapped<bool?>? isDeleted,
       Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
       Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<enums.NotesBlockVisibility?>? visibility,
       Wrapped<List<UserIdentifier>?>? permittedUsers}) {
     return ImageBlock(
         imageMetaDataId: (imageMetaDataId != null
@@ -1133,7 +1119,6 @@ extension $ImageBlockExtension on ImageBlock {
         creatingUserId: (creatingUserId != null
             ? creatingUserId.value
             : this.creatingUserId),
-        visibility: (visibility != null ? visibility.value : this.visibility),
         permittedUsers: (permittedUsers != null
             ? permittedUsers.value
             : this.permittedUsers));
@@ -1327,7 +1312,6 @@ class NoteBlockModelBase {
     this.isDeleted,
     this.noteDocumentId,
     this.creatingUserId,
-    this.visibility,
     this.permittedUsers,
     this.id,
     this.creationDate,
@@ -1346,12 +1330,6 @@ class NoteBlockModelBase {
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
   final UserIdentifier? creatingUserId;
-  @JsonKey(
-    name: 'visibility',
-    toJson: notesBlockVisibilityNullableToJson,
-    fromJson: notesBlockVisibilityNullableFromJson,
-  )
-  final enums.NotesBlockVisibility? visibility;
   @JsonKey(name: 'permittedUsers', defaultValue: <UserIdentifier>[])
   final List<UserIdentifier>? permittedUsers;
   @JsonKey(name: 'id')
@@ -1375,9 +1353,6 @@ class NoteBlockModelBase {
             (identical(other.creatingUserId, creatingUserId) ||
                 const DeepCollectionEquality()
                     .equals(other.creatingUserId, creatingUserId)) &&
-            (identical(other.visibility, visibility) ||
-                const DeepCollectionEquality()
-                    .equals(other.visibility, visibility)) &&
             (identical(other.permittedUsers, permittedUsers) ||
                 const DeepCollectionEquality()
                     .equals(other.permittedUsers, permittedUsers)) &&
@@ -1399,7 +1374,6 @@ class NoteBlockModelBase {
       const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
-      const DeepCollectionEquality().hash(visibility) ^
       const DeepCollectionEquality().hash(permittedUsers) ^
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(creationDate) ^
@@ -1412,7 +1386,6 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
       {bool? isDeleted,
       NoteDocumentIdentifier? noteDocumentId,
       UserIdentifier? creatingUserId,
-      enums.NotesBlockVisibility? visibility,
       List<UserIdentifier>? permittedUsers,
       NoteBlockModelBaseIdentifier? id,
       DateTime? creationDate,
@@ -1421,7 +1394,6 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
         isDeleted: isDeleted ?? this.isDeleted,
         noteDocumentId: noteDocumentId ?? this.noteDocumentId,
         creatingUserId: creatingUserId ?? this.creatingUserId,
-        visibility: visibility ?? this.visibility,
         permittedUsers: permittedUsers ?? this.permittedUsers,
         id: id ?? this.id,
         creationDate: creationDate ?? this.creationDate,
@@ -1432,7 +1404,6 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
       {Wrapped<bool?>? isDeleted,
       Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
       Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<enums.NotesBlockVisibility?>? visibility,
       Wrapped<List<UserIdentifier>?>? permittedUsers,
       Wrapped<NoteBlockModelBaseIdentifier?>? id,
       Wrapped<DateTime?>? creationDate,
@@ -1445,7 +1416,6 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
         creatingUserId: (creatingUserId != null
             ? creatingUserId.value
             : this.creatingUserId),
-        visibility: (visibility != null ? visibility.value : this.visibility),
         permittedUsers: (permittedUsers != null
             ? permittedUsers.value
             : this.permittedUsers),
@@ -2551,7 +2521,6 @@ class TextBlock {
     this.isDeleted,
     this.noteDocumentId,
     this.creatingUserId,
-    this.visibility,
     this.permittedUsers,
   });
 
@@ -2575,12 +2544,6 @@ class TextBlock {
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
   final UserIdentifier? creatingUserId;
-  @JsonKey(
-    name: 'visibility',
-    toJson: notesBlockVisibilityNullableToJson,
-    fromJson: notesBlockVisibilityNullableFromJson,
-  )
-  final enums.NotesBlockVisibility? visibility;
   @JsonKey(name: 'permittedUsers', defaultValue: <UserIdentifier>[])
   final List<UserIdentifier>? permittedUsers;
   static const fromJsonFactory = _$TextBlockFromJson;
@@ -2609,9 +2572,6 @@ class TextBlock {
             (identical(other.creatingUserId, creatingUserId) ||
                 const DeepCollectionEquality()
                     .equals(other.creatingUserId, creatingUserId)) &&
-            (identical(other.visibility, visibility) ||
-                const DeepCollectionEquality()
-                    .equals(other.visibility, visibility)) &&
             (identical(other.permittedUsers, permittedUsers) ||
                 const DeepCollectionEquality()
                     .equals(other.permittedUsers, permittedUsers)));
@@ -2629,7 +2589,6 @@ class TextBlock {
       const DeepCollectionEquality().hash(isDeleted) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
-      const DeepCollectionEquality().hash(visibility) ^
       const DeepCollectionEquality().hash(permittedUsers) ^
       runtimeType.hashCode;
 }
@@ -2643,7 +2602,6 @@ extension $TextBlockExtension on TextBlock {
       bool? isDeleted,
       NoteDocumentIdentifier? noteDocumentId,
       UserIdentifier? creatingUserId,
-      enums.NotesBlockVisibility? visibility,
       List<UserIdentifier>? permittedUsers}) {
     return TextBlock(
         markdownText: markdownText ?? this.markdownText,
@@ -2653,7 +2611,6 @@ extension $TextBlockExtension on TextBlock {
         isDeleted: isDeleted ?? this.isDeleted,
         noteDocumentId: noteDocumentId ?? this.noteDocumentId,
         creatingUserId: creatingUserId ?? this.creatingUserId,
-        visibility: visibility ?? this.visibility,
         permittedUsers: permittedUsers ?? this.permittedUsers);
   }
 
@@ -2665,7 +2622,6 @@ extension $TextBlockExtension on TextBlock {
       Wrapped<bool?>? isDeleted,
       Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
       Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<enums.NotesBlockVisibility?>? visibility,
       Wrapped<List<UserIdentifier>?>? permittedUsers}) {
     return TextBlock(
         markdownText:
@@ -2683,7 +2639,6 @@ extension $TextBlockExtension on TextBlock {
         creatingUserId: (creatingUserId != null
             ? creatingUserId.value
             : this.creatingUserId),
-        visibility: (visibility != null ? visibility.value : this.visibility),
         permittedUsers: (permittedUsers != null
             ? permittedUsers.value
             : this.permittedUsers));
@@ -2852,80 +2807,6 @@ List<enums.HandleJoinRequestType>? handleJoinRequestTypeNullableListFromJson(
 
   return handleJoinRequestType
       .map((e) => handleJoinRequestTypeFromJson(e.toString()))
-      .toList();
-}
-
-String? notesBlockVisibilityNullableToJson(
-    enums.NotesBlockVisibility? notesBlockVisibility) {
-  return notesBlockVisibility?.value;
-}
-
-String? notesBlockVisibilityToJson(
-    enums.NotesBlockVisibility notesBlockVisibility) {
-  return notesBlockVisibility.value;
-}
-
-enums.NotesBlockVisibility notesBlockVisibilityFromJson(
-  Object? notesBlockVisibility, [
-  enums.NotesBlockVisibility? defaultValue,
-]) {
-  return enums.NotesBlockVisibility.values.firstWhereOrNull((e) =>
-          e.value.toString().toLowerCase() ==
-          notesBlockVisibility?.toString().toLowerCase()) ??
-      defaultValue ??
-      enums.NotesBlockVisibility.swaggerGeneratedUnknown;
-}
-
-enums.NotesBlockVisibility? notesBlockVisibilityNullableFromJson(
-  Object? notesBlockVisibility, [
-  enums.NotesBlockVisibility? defaultValue,
-]) {
-  if (notesBlockVisibility == null) {
-    return null;
-  }
-  return enums.NotesBlockVisibility.values.firstWhereOrNull((e) =>
-          e.value.toString().toLowerCase() ==
-          notesBlockVisibility.toString().toLowerCase()) ??
-      defaultValue;
-}
-
-String notesBlockVisibilityExplodedListToJson(
-    List<enums.NotesBlockVisibility>? notesBlockVisibility) {
-  return notesBlockVisibility?.map((e) => e.value!).join(',') ?? '';
-}
-
-List<String> notesBlockVisibilityListToJson(
-    List<enums.NotesBlockVisibility>? notesBlockVisibility) {
-  if (notesBlockVisibility == null) {
-    return [];
-  }
-
-  return notesBlockVisibility.map((e) => e.value!).toList();
-}
-
-List<enums.NotesBlockVisibility> notesBlockVisibilityListFromJson(
-  List? notesBlockVisibility, [
-  List<enums.NotesBlockVisibility>? defaultValue,
-]) {
-  if (notesBlockVisibility == null) {
-    return defaultValue ?? [];
-  }
-
-  return notesBlockVisibility
-      .map((e) => notesBlockVisibilityFromJson(e.toString()))
-      .toList();
-}
-
-List<enums.NotesBlockVisibility>? notesBlockVisibilityNullableListFromJson(
-  List? notesBlockVisibility, [
-  List<enums.NotesBlockVisibility>? defaultValue,
-]) {
-  if (notesBlockVisibility == null) {
-    return defaultValue;
-  }
-
-  return notesBlockVisibility
-      .map((e) => notesBlockVisibilityFromJson(e.toString()))
       .toList();
 }
 

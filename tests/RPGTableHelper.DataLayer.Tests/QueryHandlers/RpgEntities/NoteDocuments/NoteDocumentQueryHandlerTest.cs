@@ -63,7 +63,6 @@ public class NoteDocumentQueryHandlerTests : QueryHandlersTestBase
         {
             MarkdownText = "# Some text\nasdf asdf asdf asdf asdf",
             CreatingUserId = user.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         var noteBlockImage = new ImageBlockEntity
@@ -71,7 +70,6 @@ public class NoteDocumentQueryHandlerTests : QueryHandlersTestBase
             ImageMetaDataId = someImage.Id.Value,
             PublicImageUrl = "asdf/asdf",
             CreatingUserId = user.Id.Value,
-            Visibility = NotesBlockVisibility.HiddenForAllExceptAuthor,
         };
 
         for (int i = 0; i < 2; i++)
@@ -143,13 +141,11 @@ public class NoteDocumentQueryHandlerTests : QueryHandlersTestBase
 
         var textBlock = result.Get().NoteBlocks.First(block => block is TextBlock);
         textBlock.NoteDocumentId.Value.Should().Be(entities[1].Id);
-        textBlock.Visibility.Should().Be(NotesBlockVisibility.VisibleForCampagne);
         (textBlock as TextBlock)!.MarkdownText.Should().Be(noteBlockText.MarkdownText);
         textBlock.PermittedUsers.Count().Should().Be(2);
 
         var imageBlock = result.Get().NoteBlocks.First(block => block is ImageBlock);
         imageBlock.NoteDocumentId.Value.Should().Be(entities[1].Id);
-        imageBlock.Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         (imageBlock as ImageBlock)!.PublicImageUrl.Should().Be(noteBlockImage.PublicImageUrl);
         imageBlock.PermittedUsers.Count().Should().Be(2);
     }

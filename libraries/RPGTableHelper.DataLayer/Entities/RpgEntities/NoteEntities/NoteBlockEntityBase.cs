@@ -16,8 +16,6 @@ public abstract class NoteBlockEntityBase : EntityBase<Guid>
     public Guid CreatingUserId { get; set; } = Guid.Empty;
     public virtual UserEntity? CreatingUser { get; set; }
 
-    public NotesBlockVisibility Visibility { get; set; }
-
     public ICollection<PermittedUsersToNotesBlockEntity> PermittedUsers { get; set; } =
         new List<PermittedUsersToNotesBlockEntity>();
 }

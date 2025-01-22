@@ -249,11 +249,9 @@ Map<String, dynamic> _$HttpValidationProblemDetailsToJson(
     };
 
 ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
-      imageMetaDataId: json['imageMetaDataId'] == null
-          ? null
-          : ImageMetaDataIdentifier.fromJson(
-              json['imageMetaDataId'] as Map<String, dynamic>),
-      publicImageUrl: json['publicImageUrl'] as String?,
+      imageMetaDataId: ImageMetaDataIdentifier.fromJson(
+          json['imageMetaDataId'] as Map<String, dynamic>),
+      publicImageUrl: json['publicImageUrl'] as String,
       markdownText: json['markdownText'] as String?,
       id: json['id'] == null
           ? null
@@ -274,7 +272,6 @@ ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
           ? null
           : UserIdentifier.fromJson(
               json['creatingUserId'] as Map<String, dynamic>),
-      visibility: notesBlockVisibilityNullableFromJson(json['visibility']),
       permittedUsers: (json['permittedUsers'] as List<dynamic>?)
               ?.map((e) => UserIdentifier.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -283,7 +280,7 @@ ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
 
 Map<String, dynamic> _$ImageBlockToJson(ImageBlock instance) =>
     <String, dynamic>{
-      'imageMetaDataId': instance.imageMetaDataId?.toJson(),
+      'imageMetaDataId': instance.imageMetaDataId.toJson(),
       'publicImageUrl': instance.publicImageUrl,
       'markdownText': instance.markdownText,
       'id': instance.id?.toJson(),
@@ -292,7 +289,6 @@ Map<String, dynamic> _$ImageBlockToJson(ImageBlock instance) =>
       'isDeleted': instance.isDeleted,
       'noteDocumentId': instance.noteDocumentId?.toJson(),
       'creatingUserId': instance.creatingUserId?.toJson(),
-      'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
       'permittedUsers':
           instance.permittedUsers?.map((e) => e.toJson()).toList(),
     };
@@ -354,7 +350,6 @@ NoteBlockModelBase _$NoteBlockModelBaseFromJson(Map<String, dynamic> json) =>
           ? null
           : UserIdentifier.fromJson(
               json['creatingUserId'] as Map<String, dynamic>),
-      visibility: notesBlockVisibilityNullableFromJson(json['visibility']),
       permittedUsers: (json['permittedUsers'] as List<dynamic>?)
               ?.map((e) => UserIdentifier.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -376,7 +371,6 @@ Map<String, dynamic> _$NoteBlockModelBaseToJson(NoteBlockModelBase instance) =>
       'isDeleted': instance.isDeleted,
       'noteDocumentId': instance.noteDocumentId?.toJson(),
       'creatingUserId': instance.creatingUserId?.toJson(),
-      'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
       'permittedUsers':
           instance.permittedUsers?.map((e) => e.toJson()).toList(),
       'id': instance.id?.toJson(),
@@ -684,7 +678,6 @@ TextBlock _$TextBlockFromJson(Map<String, dynamic> json) => TextBlock(
           ? null
           : UserIdentifier.fromJson(
               json['creatingUserId'] as Map<String, dynamic>),
-      visibility: notesBlockVisibilityNullableFromJson(json['visibility']),
       permittedUsers: (json['permittedUsers'] as List<dynamic>?)
               ?.map((e) => UserIdentifier.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -699,7 +692,6 @@ Map<String, dynamic> _$TextBlockToJson(TextBlock instance) => <String, dynamic>{
       'isDeleted': instance.isDeleted,
       'noteDocumentId': instance.noteDocumentId?.toJson(),
       'creatingUserId': instance.creatingUserId?.toJson(),
-      'visibility': notesBlockVisibilityNullableToJson(instance.visibility),
       'permittedUsers':
           instance.permittedUsers?.map((e) => e.toJson()).toList(),
     };

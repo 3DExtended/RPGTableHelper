@@ -32,7 +32,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             ImageMetaDataId = someImage.Id.Value,
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         var entity2 = new ImageBlockEntity
@@ -42,7 +41,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             ImageMetaDataId = someImage2.Id.Value,
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         Context.NoteBlocks.Add(entity1);
@@ -55,7 +53,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             {
                 Id = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(entity2.Id),
                 PublicImageUrl = "Foo",
-                Visibility = NotesBlockVisibility.HiddenForAllExceptAuthor,
                 ImageMetaDataId = someImage.Id,
                 CreatingUserId = user1.Id,
                 NoteDocumentId = someDocument.Id,
@@ -73,7 +70,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
 
         var updatedEntity = Context.NoteBlocks.AsNoTracking().First(x => x.Id == entity2.Id);
         updatedEntity!.Should().BeOfType<ImageBlockEntity>();
-        updatedEntity!.As<ImageBlockEntity>().Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         updatedEntity!.As<ImageBlockEntity>().PublicImageUrl.Should().Be("Foo");
     }
 
@@ -92,7 +88,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             MarkdownText = "Bar",
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         var entity2 = new TextBlockEntity
@@ -101,7 +96,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             MarkdownText = "Bar",
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         Context.NoteBlocks.Add(entity1);
@@ -125,7 +119,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             {
                 Id = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(entity2.Id),
                 MarkdownText = "Foo",
-                Visibility = NotesBlockVisibility.HiddenForAllExceptAuthor,
                 CreatingUserId = user1.Id,
                 NoteDocumentId = someDocument.Id,
                 PermittedUsers = new List<User.UserIdentifier> { user2.Id },
@@ -147,7 +140,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             .First(x => x.Id == entity2.Id);
 
         updatedEntity!.Should().BeOfType<TextBlockEntity>();
-        updatedEntity!.As<TextBlockEntity>().Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         updatedEntity!.As<TextBlockEntity>().MarkdownText.Should().Be("Foo");
 
         Context.PermittedUsersToNotesBlocks.Count().Should().Be(1);

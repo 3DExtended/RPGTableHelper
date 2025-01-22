@@ -34,7 +34,6 @@ public class NoteDocumentsForUserAndCampagneQueryHandler
                     cp.CreatedForCampagneId == query.CampagneId.Value
                     && (
                         cp.CreatingUserId == query.UserId.Value
-                        || cp.NoteBlocks.Any(nb => nb.Visibility == NotesBlockVisibility.VisibleForCampagne)
                         || cp.NoteBlocks.Any(nb =>
                             nb.PermittedUsers.Any(pu => pu.PermittedUserId == query.UserId.Value)
                         )
@@ -64,10 +63,7 @@ public class NoteDocumentsForUserAndCampagneQueryHandler
                 if (mappedEntity.CreatingUserId != query.UserId)
                 {
                     mappedEntity.NoteBlocks = mappedEntity
-                        .NoteBlocks.Where(nb =>
-                            nb.Visibility == NotesBlockVisibility.VisibleForSomeUsers
-                            || nb.PermittedUsers.Any(pu => pu == query.UserId)
-                        )
+                        .NoteBlocks.Where(nb => nb.PermittedUsers.Any(pu => pu == query.UserId))
                         .ToList();
                 }
 

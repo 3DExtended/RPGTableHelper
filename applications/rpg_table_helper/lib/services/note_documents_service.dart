@@ -254,7 +254,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "cea440c4-ea51-41ea-9cf4-b6602f9a5356"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     markdownText:
                         "# Zusammenfassung\n\nSkadi ist der Gott der Erde und verstarb vor kurzem. Seine Anhänger waren gering und er wanderte die letzten Jahre scheinbar ohne Ziel im Kreis durch die Wüste. Nachdem er verstarb traten merkwürdige Phänomene auf. Ob die Party herausfindet, woran es liegt?",
@@ -268,7 +267,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "b585ee5e-0cd9-495b-a76c-d45c44d255b0"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.hiddenforallexceptauthor,
                     permittedUsers: [
                       UserIdentifier(
                           $value: "f59df7f4-7189-4435-9759-081c11bd887b")
@@ -287,7 +285,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "c0792fc0-d2e4-40e4-bfb7-7745fee5c925"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     imageMetaDataId: ImageMetaDataIdentifier(
                       $value: "103df1ac-f15d-4eac-9591-738963377294",
@@ -319,7 +316,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "87f6b71c-ea8c-4401-81dd-d05c218a731e"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     markdownText:
                         "# Zusammenfassung\n\nWir stecken in starken Schwierigkeiten.",
@@ -335,7 +331,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "56204fda-b632-415c-a458-d8c1f6b77c5f"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     imageMetaDataId: ImageMetaDataIdentifier(
                       $value: "103df1ac-f15d-4eac-9591-738963377294",
@@ -367,7 +362,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "9d73e7a6-3ad2-48c6-9d07-31966544a238"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     markdownText: "Alles mist...",
                   ),
@@ -382,7 +376,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "8a4f729a-b173-4e91-95a8-1c43664a8ed9"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     imageMetaDataId: ImageMetaDataIdentifier(
                       $value: "103df1ac-f15d-4eac-9591-738963377294",
@@ -414,7 +407,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "ac3f1595-3ac4-414e-95f7-ef993eb077f3"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     markdownText: "Alles mist...",
                   ),
@@ -429,7 +421,6 @@ class MockNoteDocumentService extends INoteDocumentService {
                         $value: "e8f81849-c552-4750-99ba-37a8bdeceec2"),
                     isDeleted: false,
                     lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
-                    visibility: NotesBlockVisibility.visibleforcampagne,
                     permittedUsers: [],
                     imageMetaDataId: ImageMetaDataIdentifier(
                       $value: "103df1ac-f15d-4eac-9591-738963377294",

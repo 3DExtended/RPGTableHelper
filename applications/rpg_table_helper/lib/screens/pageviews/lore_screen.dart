@@ -17,7 +17,6 @@ import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/notes/lore_block_rendering_editable.dart';
 import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/context_extension.dart';
@@ -742,8 +741,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                 $value: "00000000-0000-0000-0000-000000000000"),
                             isDeleted: false,
                             permittedUsers: [],
-                            visibility:
-                                NotesBlockVisibility.hiddenforallexceptauthor,
                             markdownText: "",
                             noteDocumentId: selectedDocument!.id,
                           ),
@@ -838,8 +835,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                         "00000000-0000-0000-0000-000000000000"),
                                 isDeleted: false,
                                 permittedUsers: [],
-                                visibility: NotesBlockVisibility
-                                    .hiddenforallexceptauthor,
                                 noteDocumentId: selectedDocument!.id,
                                 imageMetaDataId:
                                     ImageMetaDataIdentifier($value: metadataId),
@@ -967,34 +962,17 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
     if (block is TextBlock) {
       block = (block).copyWith(
-        visibility: _recalculateBlockVisibility(block),
         permittedUsers: newPermittedUsers,
       );
 
       await updateTextBlock(context, block);
     } else if (block is ImageBlock) {
       block = (block).copyWith(
-        visibility: _recalculateBlockVisibility(block),
         permittedUsers: newPermittedUsers,
       );
 
       await updateImageBlock(context, block);
     }
-  }
-
-  NotesBlockVisibility _recalculateBlockVisibility(dynamic block) {
-    if (block.permittedUsers == null || block.permittedUsers.isEmpty) {
-      return NotesBlockVisibility.hiddenforallexceptauthor;
-    }
-
-    var userExceptAuthorOfBlock =
-        usersInCampagne.where((u) => u.userId != block.creatingUserId).toList();
-    if (userExceptAuthorOfBlock
-        .any((u) => !block.permittedUsers.contains(u.userId))) {
-      return NotesBlockVisibility.visibleforsomeusers;
-    }
-
-    return NotesBlockVisibility.visibleforcampagne;
   }
 
   Future<void> modalBasedEditPageEdit(BuildContext context) async {

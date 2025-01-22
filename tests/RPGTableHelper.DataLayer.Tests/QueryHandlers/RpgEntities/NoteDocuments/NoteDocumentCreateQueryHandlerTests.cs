@@ -40,14 +40,12 @@ public class NoteDocumentCreateQueryHandlerTests : QueryHandlersTestBase
                         CreatingUserId = user.Id,
                         ImageMetaDataId = someImage.Id,
                         PublicImageUrl = "asdf",
-                        Visibility = NotesBlockVisibility.VisibleForCampagne,
                     },
                     new TextBlock
                     {
                         CreatingUserId = user.Id,
 
                         MarkdownText = "# Hello world",
-                        Visibility = NotesBlockVisibility.VisibleForCampagne,
                     },
                 },
             },
