@@ -117,7 +117,8 @@ class _LoreBlockRenderingEditableState
               ),
             ),
           ),
-        if (widget.isShowingPermittedUsers == true)
+        if (widget.isShowingPermittedUsers == true &&
+            widget.isUserAllowedToEdit)
           Expanded(
             flex: 1,
             child: Padding(
