@@ -313,6 +313,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                       groupedDocuments[newDocument.groupName]!
                                           .add(newDocument);
 
+                                      groupedDocuments[newDocument.groupName]!
+                                          .sortBy((e) => e.title);
+
                                       // select new document
                                       selectedDocument = newDocument;
                                       selectedDocumentId = newDocument.id;
@@ -371,9 +374,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _getContent() {
-    var systemClock =
-        DependencyProvider.of(context).getService<ISystemClockService>();
-
     if (isLoading) {
       return Column(
         children: [
@@ -408,67 +408,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       if (_isAllowedToEdit == true)
                         CustomButton(
                           onPressed: () async {
-                            await showEditLorePageTitle(
-                              context,
-                              allGroupTitles: groupLabels,
-                              currentGroupTitle: selectedDocument!.groupName,
-                              currentTitle: selectedDocument!.title,
-                            ).then((value) async {
-                              if (value == null) return;
-
-                              setState(() {
-                                isLoading = true;
-                              });
-
-                              var updatedDocument = selectedDocument!.copyWith(
-                                title: value.title,
-                                groupName: value.groupName,
-                                lastModifiedAt: systemClock.now(),
-                              );
-
-                              // update document
-                              var service = DependencyProvider.of(context)
-                                  .getService<INoteDocumentService>();
-                              var updateResult =
-                                  await service.updateDocumentForCampagne(
-                                      dto: updatedDocument);
-
-                              if (!mounted || !context.mounted) return;
-                              await updateResult.possiblyHandleError(context);
-                              if (!mounted || !context.mounted) return;
-
-                              setState(() {
-                                isLoading = false;
-
-                                if (updateResult.isSuccessful) {
-                                  if (!groupedDocuments
-                                      .containsKey(value.groupName)) {
-                                    groupedDocuments[value.groupName] = [];
-                                  }
-
-                                  var indexToRemove = groupedDocuments[
-                                          selectedDocument!.groupName]!
-                                      .indexWhere(
-                                          (d) => d.id == selectedDocument!.id);
-                                  if (indexToRemove >= 0) {
-                                    groupedDocuments[
-                                            selectedDocument!.groupName]!
-                                        .removeAt(indexToRemove);
-                                  }
-
-                                  selectedDocument = updatedDocument;
-
-                                  groupedDocuments[value.groupName]!
-                                      .add(updatedDocument);
-
-                                  groupLabels = [
-                                    ...groupedDocuments.keys,
-                                    otherGroupName
-                                  ].distinct(by: (e) => e).toList();
-                                  groupLabels.sort();
-                                }
-                              });
-                            });
+                            await modalBasedEditPageEdit(context);
                           },
                           icon: CustomFaIcon(
                               noPadding: true,
@@ -601,6 +541,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       numberOfDocumentsForThisPlayer = (documentsResponse.result ?? []).length;
       groupedDocuments =
           (documentsResponse.result ?? []).groupListsBy((d) => d.groupName);
+
+      groupedDocuments.forEach((key, list) {
+        list.sort((a, b) => a.title.compareTo(b.title));
+      });
 
       // TODO maybe show "sonstiges" only when needed?
       groupLabels = [...groupedDocuments.keys, otherGroupName]
@@ -1051,5 +995,65 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     }
 
     return NotesBlockVisibility.visibleforcampagne;
+  }
+
+  Future<void> modalBasedEditPageEdit(BuildContext context) async {
+    var systemClock =
+        DependencyProvider.of(context).getService<ISystemClockService>();
+
+    await showEditLorePageTitle(
+      context,
+      allGroupTitles: groupLabels,
+      currentGroupTitle: selectedDocument!.groupName,
+      currentTitle: selectedDocument!.title,
+    ).then((value) async {
+      if (value == null) return;
+
+      setState(() {
+        isLoading = true;
+      });
+
+      var updatedDocument = selectedDocument!.copyWith(
+        title: value.title,
+        groupName: value.groupName,
+        lastModifiedAt: systemClock.now(),
+      );
+
+      // update document
+      var service =
+          DependencyProvider.of(context).getService<INoteDocumentService>();
+      var updateResult =
+          await service.updateDocumentForCampagne(dto: updatedDocument);
+
+      if (!mounted || !context.mounted) return;
+      await updateResult.possiblyHandleError(context);
+      if (!mounted || !context.mounted) return;
+
+      setState(() {
+        isLoading = false;
+
+        if (updateResult.isSuccessful) {
+          if (!groupedDocuments.containsKey(value.groupName)) {
+            groupedDocuments[value.groupName] = [];
+          }
+
+          var indexToRemove = groupedDocuments[selectedDocument!.groupName]!
+              .indexWhere((d) => d.id == selectedDocument!.id);
+          if (indexToRemove >= 0) {
+            groupedDocuments[selectedDocument!.groupName]!
+                .removeAt(indexToRemove);
+          }
+
+          selectedDocument = updatedDocument;
+
+          groupedDocuments[value.groupName]!.add(updatedDocument);
+
+          groupLabels = [...groupedDocuments.keys, otherGroupName]
+              .distinct(by: (e) => e)
+              .toList();
+          groupLabels.sort();
+        }
+      });
+    });
   }
 }
