@@ -1,3 +1,78 @@
 {
-    "test": "Tests"
+  "username": "Nutzername",
+  "characterNameDefault": "Spielername",
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "firstValue": "Erster Wert",
+  "firstValuePlaceholder": "Der erster Wert",
+  "currentValue": "Aktueller Wert",
+  "currentValuePlaceholder": "Der aktuelle Wert für diese Eigenschaft",
+  "maxValue": "Maximaler Wert",
+  "maxValuePlaceholder": "Der maximaler Wert für diese Eigenschaft",
+  "secondValue": "Zweiter Wert",
+  "secondValuePlaceholder": "Der zweiter Wert",
+  "otherValue": "Anderer Wert",
+  "otherValuePlaceholder": "Der andere Wert",
+  "calculatedValue": "Berechneter Wert",
+  "calculatedValuePlaceholder": "Der berechnete Wert",
+  "configureProperties": "Eigenschaften konfigurieren",
+  "configurePropertiesForCharacterNameSuffix": " (für {username})",
+  "@configurePropertiesForCharacterNameSuffix": {
+    "placeholders": {
+      "username": {
+        "type": "String",
+        "example": "3dextended"
+      }
+    }
+  },
+  "valueOfPropertyWithName": "Der Wert von {property}",
+  "@valueOfPropertyWithName": {
+    "placeholders": {
+      "property": {
+        "type": "String",
+        "example": "Charisma"
+      }
+    }
+  },
+  "newPetBtnLabel": "Neuer Begleiter",
+  "petDefaultNamePrefix": "Begleiter",
+  "preview": "Vorschau",
+  "newImageBtnLabel": "Neues Bild",
+  "additionalSettings": "Erweiterte Optionen",
+  "hidePropertyForCharacter": "Eigenschaft für meinen Charakter ausblenden",
+  "hideHeading": "Überschrift ausblenden",
+  "addCharacterToCampagneModalTitle": "Charakter zur Kampagne hinzufügen",
+  "assignCharacterToCampagneModalContent": "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
+  "joinCode": "Join Code:",
+  "genericErrorModalHeader": "Fehler",
+  "genericErrorModalTechnicalDetailsHeader": "Technische Details: ",
+  "genericErrorModalTechnicalDetailsErrorCodeRowLabel": "Fehlercode:",
+  "genericErrorModalTechnicalDetailsExceptionRowLabel": "Fehlertext:",
+  "nameOfPropertyLabel": "Name der Eigenschaft",
+  "descriptionOfProperty": "Hilfstext für die Eigenschaft",
+  "propertyEditTypeOneTap": "Häufig verändert (bspw. jede Session)",
+  "propertyEditTypeStatic": "Selten verändert (bspw. je Level-Up)",
+  "propertyEditTypeLabel": "Veränderungshäufigkeit",
+  "generatedImage": "Generiertes Bild",
+  "multilineText": "Mehrzeiliger Text",
+  "singleLineText": "Einzeiliger Text",
+  "integerValue": "Zahlen-Wert",
+  "listOfIntegersWithIcons": "Liste von Zahlen-Werten mit Icons",
+  "integerValueWithMaxValue": "Zahlen-Wert mit maximal Wert",
+  "listOfInterValuesWithCalculatedIntegerValues": "Gruppe von Zahlen-Werten mit zusätzlicher Zahl",
+  "integerValueWithCalculatedValue": "Zahlen-Wert mit zusätzlicher Zahl",
+  "characterNameWithLevelAndConfigurableDetails": "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)",
+  "multiselectOption": "Mehrfach-Auswahl",
+  "companionOverview": "Begleiter Übersicht",
+  "kindOfProperty": "Art der Eigenschaft",
+  "multiselectOptionsAreSelectableMultipleTimes": "Optionen können mehrmals ausgewählt werden",
+  "optionalPropertyForCompanions": "Optionale Eigenschaft für Begleiter",
+  "optionalPropertyForAlternateForms": "Optionale Eigenschaft für andere Formen",
+  "optionsForMultiselect": "Optionen für Mehrfach-Auswahl",
+  "multiselectOptionName": "Name:",
+  "multiselectOptionDescription": "Beschreibung:",
+  "additionalElement": "Neues Element",
+  "moreValues": "Weitere Werte",
+  "forIntegerValueWithName": "für Zahlen-Wert",
+  "propertyNameLabel": "Name:"
 }

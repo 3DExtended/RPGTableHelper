@@ -8,6 +8,7 @@ import 'package:rpg_table_helper/components/signinbuttons/button_list.dart';
 import 'package:rpg_table_helper/components/signinbuttons/button_view.dart';
 import 'package:rpg_table_helper/components/signinbuttons/custom_sign_in_with_apple.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
@@ -112,7 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       // LOGIN
                       // Username Textfield
                       CustomTextField(
-                        labelText: "Username", // TODO Localize
+                        labelText: S.of(context).username,
                         textEditingController: usernameTextEditingController,
                         keyboardType: TextInputType.name,
                       ),

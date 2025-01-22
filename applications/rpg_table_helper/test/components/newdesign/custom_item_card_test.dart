@@ -96,7 +96,7 @@ void main() {
     for (var i = 0; i < itemCards.length; i++) {
       var itemcard = itemCards[i];
       testConfigurations(
-        disableLocals: true,
+        disableLocals: false,
         widgetName: 'CustomItemCard$i',
         pathPrefix: "../",
         useMaterialAppWrapper: true,

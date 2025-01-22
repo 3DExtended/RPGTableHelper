@@ -18,6 +18,7 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -807,8 +808,7 @@ class _CreateOrEditItemModalContentState
             padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 20),
             child: CustomButton(
               variant: CustomButtonVariant.AccentButton,
-
-              label: "Speichern", // TODO localize
+              label: S.of(context).save,
               onPressed: () {
                 if (selectedItemCategoryId == null ||
                     selectedItemCategoryId!.isEmpty) return;

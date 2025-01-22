@@ -3,6 +3,7 @@ import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 
 class ModalContentWrapper<T> extends StatelessWidget {
@@ -89,7 +90,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                       child: Row(
                         children: [
                           CustomButton(
-                            label: "Abbrechen", // TODO localize
+                            label: S.of(context).cancel,
                             onPressed: () async {
                               await onCancel();
                               navigatorKey.currentState!.pop(null);
@@ -97,7 +98,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                           ),
                           const Spacer(),
                           CustomButton(
-                            label: "Speichern", // TODO localize
+                            label: S.of(context).save,
                             onPressed: onSave == null
                                 ? null
                                 : () async {

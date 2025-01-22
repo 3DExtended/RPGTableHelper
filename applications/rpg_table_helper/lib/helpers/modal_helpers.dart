@@ -12,6 +12,7 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/humanreadable_response.dart';
@@ -86,7 +87,7 @@ class _AskForCampagneJoinCodeModalContentState
                         menuOpen: null,
                         useTopSafePadding: false,
                         titleWidget: Text(
-                          "Charakter zur Kampagne hinzufügen", // TODO localize/ switch text between add and edit
+                          S.of(context).addCharacterToCampagneModalTitle,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
@@ -100,8 +101,9 @@ class _AskForCampagneJoinCodeModalContentState
                           children: [
                             Expanded(
                               child: CustomMarkdownBody(
-                                text:
-                                    "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.", // TODO localize/ switch text between add and edit
+                                text: S
+                                    .of(context)
+                                    .assignCharacterToCampagneModalContent,
                               ),
                             ),
                           ],
@@ -117,7 +119,7 @@ class _AskForCampagneJoinCodeModalContentState
                             Expanded(
                               child: CustomTextField(
                                 keyboardType: TextInputType.text,
-                                labelText: "Join Code:", // TODO localize
+                                labelText: S.of(context).joinCode,
                                 textEditingController: joinCodeTextEditor,
                               ),
                             ),
@@ -133,7 +135,7 @@ class _AskForCampagneJoinCodeModalContentState
                           children: [
                             CustomButton(
                               variant: CustomButtonVariant.DarkButton,
-                              label: "Abbrechen", // TODO localize
+                              label: S.of(context).cancel,
                               onPressed: () {
                                 navigatorKey.currentState!.pop(null);
                               },
@@ -141,8 +143,7 @@ class _AskForCampagneJoinCodeModalContentState
                             const Spacer(),
                             CustomButton(
                               variant: CustomButtonVariant.AccentButton,
-
-                              label: "Speichern", // TODO localize
+                              label: S.of(context).save,
                               onPressed: () {
                                 // TODO activate only when join code matches format
                                 if (joinCodeValid(joinCodeTextEditor.text)) {
@@ -186,7 +187,7 @@ Future<void> showGenericErrorModal<T>(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "S.of(context).genericErrorModalHeader",
+                  S.of(context).genericErrorModalHeader,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontFamily: 'Pangram',
                         color: Colors.white,
@@ -212,7 +213,7 @@ Future<void> showGenericErrorModal<T>(
               child: SingleChildScrollView(
                 child: Column(children: [
                   Text(
-                    "S.of(context).genericErrorModalTechnicalDetailsHeader",
+                    S.of(context).genericErrorModalTechnicalDetailsHeader,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontFamily: 'Pangram',
                           color: Colors.white,
@@ -229,7 +230,9 @@ Future<void> showGenericErrorModal<T>(
                     rowGap: 30,
                     children: [
                       Text(
-                        "S.of(context).genericErrorModalTechnicalDetailsErrorCodeRowLabel",
+                        S
+                            .of(context)
+                            .genericErrorModalTechnicalDetailsErrorCodeRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.white,
                               fontSize: 14,
@@ -243,7 +246,9 @@ Future<void> showGenericErrorModal<T>(
                             ),
                       ),
                       Text(
-                        "S.of(context).genericErrorModalTechnicalDetailsExceptionRowLabel",
+                        S
+                            .of(context)
+                            .genericErrorModalTechnicalDetailsExceptionRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.white,
                               fontSize: 14,
@@ -257,7 +262,9 @@ Future<void> showGenericErrorModal<T>(
                             ),
                       ),
                       Text(
-                        "S.of(context).genericErrorModalServerErrorMessageExceptionRowLabel",
+                        S
+                            .of(context)
+                            .genericErrorModalTechnicalDetailsExceptionRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.white,
                               fontSize: 14,
@@ -271,7 +278,9 @@ Future<void> showGenericErrorModal<T>(
                             ),
                       ),
                       Text(
-                        "S.of(context).genericErrorModalStatusCodeRowLabel",
+                        S
+                            .of(context)
+                            .genericErrorModalTechnicalDetailsErrorCodeRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: Colors.white,
                               fontSize: 14,

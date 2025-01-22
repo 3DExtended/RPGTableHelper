@@ -10,6 +10,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -306,7 +307,7 @@ class _DmScreenCampagneManagementState
             ?.firstWhereOrNull(
                 (cp) => cp.playerCharacterId.$value == char.id!.$value!);
 
-        var isOnline = connectedPlayerDetails != null ?? false;
+        var isOnline = connectedPlayerDetails != null;
 
         var parsedConfig = RpgCharacterConfiguration.fromJson(
             jsonDecode(char.rpgCharacterConfiguration!));
@@ -335,8 +336,8 @@ class _DmScreenCampagneManagementState
         var imageOfPlayerCharacter =
             connectedPlayer.configuration.getImageUrlWithoutBasePath(rpgConfig);
 
-        var playerCharacterName =
-            connectedPlayer.configuration.characterName ?? "Player Name";
+        var playerCharacterName = connectedPlayer.configuration.characterName ??
+            S.of(context).characterNameDefault;
 
         result.add(getSingleConfiguredPlayerOnlineStatus(
           charConfig: connectedPlayer.configuration,

@@ -93,7 +93,7 @@ void main() {
     for (var i = 0; i < recipeCards.length; i++) {
       var itemcard = recipeCards[i];
       testConfigurations(
-        disableLocals: true,
+        disableLocals: false,
         widgetName: 'CustomRecipeCard$i',
         pathPrefix: "../",
         useMaterialAppWrapper: true,

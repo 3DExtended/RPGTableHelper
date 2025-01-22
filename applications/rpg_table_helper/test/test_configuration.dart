@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 
 const testDevices = [
   Device(
@@ -53,14 +54,17 @@ void testConfigurations({
   String? pathPrefix = "",
 }) {
   Widget? widgetToTest;
-  var supportedLocales = AppLocalizations.supportedLocales;
+  var supportedLocales = S.delegate.supportedLocales;
   if (disableLocals) {
     supportedLocales = [supportedLocales[0]];
   }
   for (var local in supportedLocales) {
     if (useMaterialAppWrapper) {
       widgetToTest = MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          S.delegate
+        ],
         locale: local,
         supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,

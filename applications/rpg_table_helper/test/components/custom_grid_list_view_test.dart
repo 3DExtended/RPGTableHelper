@@ -11,7 +11,7 @@ void main() {
 
     for (var test in tests) {
       testConfigurations(
-        disableLocals: true,
+        disableLocals: false,
         widgetName: 'CustomGridListView$test',
         useMaterialAppWrapper: true,
         screenFactory: (Locale locale) => CustomGridListView(

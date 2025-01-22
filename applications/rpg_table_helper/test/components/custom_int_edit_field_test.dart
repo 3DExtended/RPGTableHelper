@@ -8,7 +8,7 @@ import '../test_configuration.dart';
 void main() {
   group('CustomIntEditField rendering', () {
     testConfigurations(
-      disableLocals: true,
+      disableLocals: false,
       widgetName: 'CustomIntEditField',
       useMaterialAppWrapper: true,
       screenFactory: (Locale locale) => CustomIntEditField(

@@ -10,6 +10,7 @@ import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -226,14 +227,14 @@ class _ItemCardDetailsModalContentState
                         children: [
                           const Spacer(),
                           CustomButton(
-                            label: "Abbrechen", // TODO localize
+                            label: S.of(context).cancel,
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
                           CustomButton(
-                            label: "Speichern", // TODO localize
+                            label: S.of(context).save,
                             onPressed: () {
                               navigatorKey.currentState!.pop(currentlyOwned -
                                   (widget.currentlyOwned ?? 0));

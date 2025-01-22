@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 
@@ -333,14 +334,14 @@ class _LoreBlockRenderingEditableState
                   variant: CustomButtonVariant.AccentButton,
                   onPressed: hasChanged
                       ? () async {
-                          var updateResult = await widget
+                          var _ = await widget
                               .updateTextContent(_textEditingController.text);
                           setState(() {
                             isEditEnabled = false;
                           });
                         }
                       : null,
-                  label: "Speichern", // TODO localize
+                  label: S.of(context).save,
                 ),
                 CustomButton(
                   variant: CustomButtonVariant.Default,
@@ -353,7 +354,7 @@ class _LoreBlockRenderingEditableState
                       isEditEnabled = false;
                     });
                   },
-                  label: "Abbrechen", // TODO localize
+                  label: S.of(context).cancel,
                 )
               ],
             ),
@@ -365,16 +366,15 @@ class _LoreBlockRenderingEditableState
 
   Widget _getRenderingForImageBlock(ImageBlock imageBlock) {
     return LayoutBuilder(builder: (context, constraints) {
-      var imageUrl = imageBlock.publicImageUrl;
+      var imageUrl = imageBlock.publicImageUrl as String?;
       var fullImageUrl = imageUrl == null
           ? "assets/images/charactercard_placeholder.png"
           : (imageUrl.startsWith("assets")
-                  ? imageUrl
-                  : (apiBaseUrl +
-                      (imageUrl.startsWith("/")
-                          ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
-                          : imageUrl))) ??
-              "assets/images/charactercard_placeholder.png";
+              ? imageUrl
+              : (apiBaseUrl +
+                  (imageUrl.startsWith("/")
+                      ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
+                      : imageUrl)));
 
       return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 10, 10),

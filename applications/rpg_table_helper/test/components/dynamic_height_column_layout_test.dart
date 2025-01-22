@@ -9,7 +9,7 @@ import '../test_configuration.dart';
 void main() {
   group('DynamicHeightColumnLayout rendering', () {
     testConfigurations(
-      disableLocals: true,
+      disableLocals: false,
       widgetName: 'DynamicHeightColumnLayout',
       useMaterialAppWrapper: true,
       testerInteractions: (tester, local) async {
