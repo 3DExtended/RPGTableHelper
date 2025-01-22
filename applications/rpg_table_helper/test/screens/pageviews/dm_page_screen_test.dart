@@ -132,6 +132,7 @@ void main() {
                             $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d"),
                         configuration:
                             RpgCharacterConfiguration.getBaseConfiguration(
+                                    variant: 0,
                                     RpgConfigurationModel
                                         .getBaseConfiguration())
                                 .copyWith(characterName: "Gandalf"),

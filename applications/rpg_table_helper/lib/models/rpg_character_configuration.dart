@@ -120,20 +120,21 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   Map<String, dynamic> toJson() => _$RpgCharacterConfigurationToJson(this);
 
   static RpgCharacterConfiguration getBaseConfiguration(
-          RpgConfigurationModel? rpgConfig) =>
+          RpgConfigurationModel? rpgConfig,
+          {int? variant}) =>
       RpgCharacterConfiguration(
         activeAlternateFormIndex: null,
         companionCharacters: [
           RpgAlternateCharacterConfiguration(
             uuid: "f6af1852-e928-4a4f-8d07-93ce87b879e8",
             characterName: "Lucky",
-            characterStats: getDefaultStats(rpgConfig, true),
+            characterStats: getDefaultStats(rpgConfig, true, 2),
           ),
         ],
         alternateForms: [],
         uuid: const UuidV7().generate(),
         characterName: "Gandalf",
-        characterStats: getDefaultStats(rpgConfig, false),
+        characterStats: getDefaultStats(rpgConfig, false, variant),
         inventory: [
           RpgCharacterOwnedItemPair(
               itemUuid: "a7537746-260d-4aed-b182-26768a9c2d51", amount: 2),
@@ -144,7 +145,9 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
       );
 
   static List<RpgCharacterStatValue> getDefaultStats(
-      RpgConfigurationModel? rpgConfig, bool filterForCompanionStats) {
+      RpgConfigurationModel? rpgConfig,
+      bool filterForCompanionStats,
+      int? variant) {
     return rpgConfig == null || rpgConfig.characterStatTabsDefinition == null
         ? []
         : rpgConfig.characterStatTabsDefinition!
@@ -161,7 +164,11 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"value": 17}',
+                  serializedValue: variant == null
+                      ? '{"value": 17}'
+                      : variant == 0
+                          ? '{"value": 25}'
+                          : '{"value": 30}',
                 );
               case CharacterStatValueType.intWithMaxValue:
                 return RpgCharacterStatValue(
@@ -169,7 +176,11 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"value": 17, "maxValue": 21}',
+                  serializedValue: variant == null
+                      ? '{"value": 17, "maxValue": 21}'
+                      : variant == 0
+                          ? '{"value": 25, "maxValue": 25}'
+                          : '{"value": 17, "maxValue": 30}',
                 );
               case CharacterStatValueType.listOfIntWithCalculatedValues:
                 return RpgCharacterStatValue(
@@ -185,7 +196,11 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"value": 17, "otherValue": 2}',
+                  serializedValue: variant == null
+                      ? '{"value": 17, "calculatedValue": 2}'
+                      : variant == 0
+                          ? '{"value": 10, "calculatedValue": 0}'
+                          : '{"value": 9, "calculatedValue": -1}',
                 );
               case CharacterStatValueType.multiLineText:
                 return RpgCharacterStatValue(
@@ -203,7 +218,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   variant: null,
                   statUuid: stat.statUuid,
                   serializedValue:
-                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/charactercard_placeholder.png"}',
+                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/fortests/${variant == null ? 'charactercard_placeholder' : (variant == 0 ? 'somegandalfcharacter' : (variant == 1 ? 'somefrodocharacter' : 'somewolfcharacter'))}.png"}',
                 );
               case CharacterStatValueType.singleLineText:
                 return RpgCharacterStatValue(

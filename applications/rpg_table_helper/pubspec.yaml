@@ -69,6 +69,7 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - assets/images/fortests/
     - assets/extern/
     - assets/extern/logos/
     - assets/

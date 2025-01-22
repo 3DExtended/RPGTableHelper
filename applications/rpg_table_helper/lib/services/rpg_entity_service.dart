@@ -421,7 +421,8 @@ class MockRpgEntityService extends IRpgEntityService {
                 UserIdentifier($value: "b6a03252-8dde-4fe7-8c65-7d1b90599ef8"),
             rpgCharacterConfiguration: jsonEncode(
                 RpgCharacterConfiguration.getBaseConfiguration(
-                        RpgConfigurationModel.getBaseConfiguration())
+                        RpgConfigurationModel.getBaseConfiguration(),
+                        variant: 1)
                     .copyWith(characterName: "Frodo")),
           ),
           PlayerCharacter(
@@ -435,7 +436,8 @@ class MockRpgEntityService extends IRpgEntityService {
                 UserIdentifier($value: "9a709402-5620-479c-85b7-718ae01e0a83"),
             rpgCharacterConfiguration: jsonEncode(
               RpgCharacterConfiguration.getBaseConfiguration(
-                      RpgConfigurationModel.getBaseConfiguration())
+                      RpgConfigurationModel.getBaseConfiguration(),
+                      variant: 0)
                   .copyWith(characterName: "Gandalf"),
             ),
           )

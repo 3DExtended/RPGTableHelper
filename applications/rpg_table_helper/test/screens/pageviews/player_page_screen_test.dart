@@ -126,7 +126,8 @@ void main() {
                         configuration:
                             RpgCharacterConfiguration.getBaseConfiguration(
                                     RpgConfigurationModel
-                                        .getBaseConfiguration())
+                                        .getBaseConfiguration(),
+                                    variant: 0)
                                 .copyWith(characterName: "Gandalf"),
                       ),
                     ])),
