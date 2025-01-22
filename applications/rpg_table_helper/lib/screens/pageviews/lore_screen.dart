@@ -1025,6 +1025,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           selectedDocument = updatedDocument;
 
           groupedDocuments[value.groupName]!.add(updatedDocument);
+          groupedDocuments[value.groupName]!.sortBy((e) => e.title);
 
           groupLabels = [...groupedDocuments.keys, otherGroupName]
               .distinct(by: (e) => e)
