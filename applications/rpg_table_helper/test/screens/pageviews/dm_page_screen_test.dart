@@ -61,13 +61,15 @@ void main() {
                               (
                                 "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
                                 "Frodo",
-                                17
+                                21
                               ),
+                              (null, "Gegner #2", 17),
                               (
                                 "0eff8827-14f1-46a1-8695-ef7dc5323137",
                                 "Gandalf",
-                                17
+                                16
                               ),
+                              (null, "Gegner #1", 15),
                             ]),
                         isConnected: true,
                         isConnecting: true,
