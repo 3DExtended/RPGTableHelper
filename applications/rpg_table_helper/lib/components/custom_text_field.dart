@@ -32,12 +32,15 @@ class CustomTextField extends StatelessWidget {
               ? 5
               : (password == true ? 1 : null),
           maxLines: keyboardType == TextInputType.multiline
-              ? (disableMaxLineLimit == true ? 20 : 5)
+              ? (disableMaxLineLimit == true ? null : 5)
               : (password == true ? 1 : null),
           keyboardType: keyboardType,
           textCapitalization: TextCapitalization.sentences,
           obscureText: password ?? false,
           enableSuggestions: true,
+          scrollPhysics: disableMaxLineLimit == true
+              ? NeverScrollableScrollPhysics()
+              : null,
           scribbleEnabled: true,
           decoration: InputDecoration(
             suffixIcon: contraints.maxWidth > 350 &&
