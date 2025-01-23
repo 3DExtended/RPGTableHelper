@@ -100,6 +100,8 @@ class PlayerPageHelpers {
         if (updatedCharacterName.trim().isEmpty ||
             (filterTabId != null &&
                 tabsToValidate?.firstOrNull?.isDefaultTab == true)) {
+          if (!context.mounted) return;
+
           updatedCharacterName = await askPlayerForCharacterName(
               context: context,
               currentCharacterName: selectedCharacter.characterName);
@@ -111,6 +113,7 @@ class PlayerPageHelpers {
           // check if the user already configured some stats
           var possiblyFilledStat = selectedCharacterStats
               .firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
+          if (!context.mounted) return;
 
           var modalResult = await showGetPlayerConfigurationModal(
             characterToRenderStatFor:

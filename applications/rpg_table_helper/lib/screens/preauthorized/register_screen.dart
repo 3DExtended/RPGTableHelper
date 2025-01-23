@@ -167,7 +167,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     email: emailTextEditingController.text,
                                   );
 
-                                  if (!mounted) return;
+                                  if (!mounted || !context.mounted) return;
 
                                   await registerResponse
                                       .possiblyHandleError(context);

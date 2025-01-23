@@ -130,7 +130,7 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
                                             usernameTextEditingController.text,
                                         apiKey: apiKey);
 
-                                if (!context.mounted) return;
+                                if (!context.mounted || !mounted) return;
                                 await signinResponse
                                     .possiblyHandleError(context);
 

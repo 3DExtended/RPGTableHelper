@@ -160,7 +160,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             password:
                                                 passwordTextEditingController
                                                     .text);
-                                    if (!mounted) return;
+                                    if (!mounted || !context.mounted) return;
 
                                     await signinResponse
                                         .possiblyHandleError(context);
@@ -213,6 +213,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   } catch (e) {
                                     return;
                                   }
+                                  if (!mounted || !context.mounted) return;
+
                                   var service = DependencyProvider.of(context)
                                       .getService<IAuthenticationService>();
 
@@ -223,7 +225,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           authorizationCode:
                                               credential.authorizationCode);
 
-                                  if (!context.mounted) return;
+                                  if (!context.mounted || !mounted) return;
 
                                   await signInResult
                                       .possiblyHandleError(context);
@@ -294,6 +296,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         googleAuthentication =
                                         await googleAccount.authentication;
 
+                                    if (!mounted || !context.mounted) return;
+
                                     var service = DependencyProvider.of(context)
                                         .getService<IAuthenticationService>();
 
@@ -305,12 +309,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                 googleAuthentication
                                                     .serverAuthCode!);
 
-                                    if (!mounted) return;
+                                    if (!mounted || !context.mounted) return;
 
                                     await signInResult
                                         .possiblyHandleError(context);
 
-                                    // TODO navigate
                                     if (signInResult.isSuccessful &&
                                         signInResult.result!.resultType ==
                                             SignInResultType.loginSucessfull) {

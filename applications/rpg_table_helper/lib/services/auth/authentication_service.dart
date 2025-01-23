@@ -190,7 +190,6 @@ class AuthenticationService extends IAuthenticationService {
     // set jwt!
     apiConnectorService.setJwt(registerResult.result!);
     apiConnectorService.clearCache();
-    print("Successfully set jwt");
 
     return HRResponse.fromResult(
       SignInResult(resultType: SignInResultType.loginSucessfull),

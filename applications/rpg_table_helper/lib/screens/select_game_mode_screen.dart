@@ -388,6 +388,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 sessionConnectionNumberForPlayers: campagne.joinCode));
 
     // start SignalR connection
+    if (!mounted || !context.mounted) return;
+
     var serverCommunicationService = DependencyProvider.of(context)
         .getService<IServerCommunicationService>();
     await serverCommunicationService.startConnection();
@@ -490,6 +492,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           });
           return;
         }
+        if (!mounted || !context.mounted) return;
 
         // 2. create new join request for campagne with join code
         var service =
@@ -498,6 +501,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           joinCode: joinCode,
           playerCharacterId: character.id!,
         );
+        if (!mounted || !context.mounted) return;
 
         await createResponse.possiblyHandleError(context);
 

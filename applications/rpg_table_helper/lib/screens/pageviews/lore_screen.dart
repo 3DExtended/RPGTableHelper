@@ -785,7 +785,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     final mimeType = lookupMimeType(pickedFile!.path);
 
                     if (mimeType == null || !(mimeType.startsWith('image/'))) {
-                      if (!context.mounted) return;
+                      if (!context.mounted || !mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("Invalid image file selected.")));
                       setState(() {
@@ -802,16 +802,16 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       contentType: MediaType.parse(mimeType),
                       filename: fileName,
                     );
-                    if (!context.mounted) return;
+                    if (!context.mounted || !mounted) return;
                     var service = DependencyProvider.of(context)
                         .getService<IRpgEntityService>();
                     var response = await service.uploadImageToCampagneStorage(
                         campagneId: CampagneIdentifier($value: campagneId),
                         image: multipartFile);
 
-                    if (!context.mounted) return;
+                    if (!context.mounted || !mounted) return;
                     await response.possiblyHandleError(context);
-                    if (!context.mounted) return;
+                    if (!context.mounted || !mounted) return;
 
                     if (response.isSuccessful && response.result != null) {
                       // structure: $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
@@ -821,7 +821,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       var urlSplits = imageUrl.split("?metadataid=");
                       var publicUrl = urlSplits[0];
                       var metadataId = urlSplits[1];
-
+                      if (!context.mounted || !mounted) return;
                       var service = DependencyProvider.of(context)
                           .getService<INoteDocumentService>();
                       var createResult =
@@ -857,12 +857,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       isLoading = false;
                     });
                   } catch (e) {
-                    print("------------------------");
-                    print("------------------------");
-                    print("Image picker exception: ");
-                    print(e);
-                    print("------------------------");
-                    print("------------------------");
                     setState(() {
                       isLoading = false;
                     });
@@ -998,6 +992,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       );
 
       // update document
+      if (!context.mounted || !mounted) return;
+
       var service =
           DependencyProvider.of(context).getService<INoteDocumentService>();
       var updateResult =

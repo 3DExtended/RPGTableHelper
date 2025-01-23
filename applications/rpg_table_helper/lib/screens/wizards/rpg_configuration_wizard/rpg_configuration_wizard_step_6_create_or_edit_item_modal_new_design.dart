@@ -651,10 +651,10 @@ class _CreateOrEditItemModalContentState
                                     CampagneIdentifier($value: campagneId),
                               );
 
-                              if (!context.mounted) return;
+                              if (!context.mounted || !mounted) return;
                               await generationResult
                                   .possiblyHandleError(context);
-                              if (!context.mounted) return;
+                              if (!context.mounted || !mounted) return;
 
                               if (generationResult.isSuccessful &&
                                   generationResult.result != null) {
@@ -719,7 +719,7 @@ class _CreateOrEditItemModalContentState
 
                             if (mimeType == null ||
                                 !(mimeType.startsWith('image/'))) {
-                              if (!context.mounted) return;
+                              if (!context.mounted || !mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(
@@ -738,7 +738,7 @@ class _CreateOrEditItemModalContentState
                               contentType: MediaType.parse(mimeType),
                               filename: fileName,
                             );
-                            if (!context.mounted) return;
+                            if (!context.mounted || !mounted) return;
                             var service = DependencyProvider.of(context)
                                 .getService<IRpgEntityService>();
                             var response =
@@ -747,9 +747,9 @@ class _CreateOrEditItemModalContentState
                                         CampagneIdentifier($value: campagneId),
                                     image: multipartFile);
 
-                            if (!context.mounted) return;
+                            if (!context.mounted || !mounted) return;
                             await response.possiblyHandleError(context);
-                            if (!context.mounted) return;
+                            if (!context.mounted || !mounted) return;
 
                             if (response.isSuccessful &&
                                 response.result != null) {
@@ -763,12 +763,6 @@ class _CreateOrEditItemModalContentState
                               isLoading = false;
                             });
                           } catch (e) {
-                            print("------------------------");
-                            print("------------------------");
-                            print("Image picker exception: ");
-                            print(e);
-                            print("------------------------");
-                            print("------------------------");
                             setState(() {
                               isLoading = false;
                             });

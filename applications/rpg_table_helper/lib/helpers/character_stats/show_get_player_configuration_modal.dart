@@ -634,9 +634,9 @@ class _ShowGetPlayerConfigurationModalContentState
                         campagneId: CampagneIdentifier($value: campagneId),
                       );
 
-                      if (!context.mounted) return;
+                      if (!context.mounted || !mounted) return;
                       await generationResult.possiblyHandleError(context);
-                      if (!context.mounted) return;
+                      if (!context.mounted || !mounted) return;
 
                       if (generationResult.isSuccessful &&
                           generationResult.result != null) {

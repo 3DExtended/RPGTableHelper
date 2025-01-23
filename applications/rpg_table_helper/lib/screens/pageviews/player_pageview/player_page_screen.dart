@@ -233,6 +233,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       }
 
       // check route settings
+      if (!mounted || !context.mounted) return;
+
       final currentRouteSettings = ModalRoute.of(context)!.settings;
 
       var applicableRouteSettings = currentRouteSettings.arguments == null
@@ -278,6 +280,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
       if (connectionDetails.isPlayer) {
         Future.delayed(Duration.zero, () async {
+          if (!mounted || !context.mounted) return;
+
           PlayerPageHelpers.handlePossiblyMissingCharacterStats(
             context: context,
             ref: ref,
@@ -372,6 +376,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                 ? null
                 : () {
                     Future.delayed(Duration.zero, () async {
+                      if (!mounted || !context.mounted) return;
+
                       PlayerPageHelpers.handlePossiblyMissingCharacterStats(
                           ref: ref,
                           context: context,
