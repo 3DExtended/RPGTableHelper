@@ -28,18 +28,28 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
+        "addAdditionalEnemy":
+            MessageLookupByLibrary.simpleMessage("Neue Gegner hinzufügen"),
+        "addAnAdditionalEnemyBtnLabel":
+            MessageLookupByLibrary.simpleMessage("Weiterer Gegner"),
         "addCharacterToCampagneModalTitle":
             MessageLookupByLibrary.simpleMessage(
                 "Charakter zur Kampagne hinzufügen"),
+        "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Bild"),
+        "addParagraphBtnLabel": MessageLookupByLibrary.simpleMessage("Absatz"),
         "additionalElement":
             MessageLookupByLibrary.simpleMessage("Neues Element"),
         "additionalSettings":
             MessageLookupByLibrary.simpleMessage("Erweiterte Optionen"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("Alle Spieler:"),
         "amount": MessageLookupByLibrary.simpleMessage("Anzahl"),
+        "amountToCraftFieldLabel":
+            MessageLookupByLibrary.simpleMessage("Anzahl"),
         "assignCharacterToCampagneModalContent":
             MessageLookupByLibrary.simpleMessage(
                 "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden."),
+        "authorLabel": MessageLookupByLibrary.simpleMessage("Autor:"),
         "calculatedValue":
             MessageLookupByLibrary.simpleMessage("Berechneter Wert"),
         "calculatedValuePlaceholder":
@@ -62,16 +72,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "configureProperties":
             MessageLookupByLibrary.simpleMessage("Eigenschaften konfigurieren"),
         "configurePropertiesForCharacterNameSuffix": m0,
+        "craft": MessageLookupByLibrary.simpleMessage("Herstellen"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Neuen Account anlegen"),
         "currentValue": MessageLookupByLibrary.simpleMessage("Aktueller Wert"),
         "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "Der aktuelle Wert für diese Eigenschaft"),
+        "defaultGroupNameForDocuments":
+            MessageLookupByLibrary.simpleMessage("Sonstiges"),
+        "defaultTab": MessageLookupByLibrary.simpleMessage("Default Tab"),
         "descriptionOfProperty": MessageLookupByLibrary.simpleMessage(
             "Hilfstext für die Eigenschaft"),
         "diceChallengeAbbr": MessageLookupByLibrary.simpleMessage("SG"),
         "diceRoll": MessageLookupByLibrary.simpleMessage("Wurf"),
+        "dm": MessageLookupByLibrary.simpleMessage("DM"),
+        "documentDefaultNamePrefix":
+            MessageLookupByLibrary.simpleMessage("Dokument"),
+        "documentGroupLabel":
+            MessageLookupByLibrary.simpleMessage("Gruppenname"),
+        "documentTitleLabel": MessageLookupByLibrary.simpleMessage("Titel"),
+        "editPageModalText": MessageLookupByLibrary.simpleMessage(
+            "Hier kannst du sowohl den Titel als auch die Gruppierung deiner Seite verändern."),
+        "editPageTitle":
+            MessageLookupByLibrary.simpleMessage("Seite bearbeiten"),
         "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
+        "enemy": MessageLookupByLibrary.simpleMessage("Gegner"),
+        "enemyName": MessageLookupByLibrary.simpleMessage("Gegnername"),
         "fightingOrdering":
             MessageLookupByLibrary.simpleMessage("Kampf Reihenfolge"),
         "firstValue": MessageLookupByLibrary.simpleMessage("Erster Wert"),
@@ -97,12 +123,22 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Überschrift ausblenden"),
         "hidePropertyForCharacter": MessageLookupByLibrary.simpleMessage(
             "Eigenschaft für meinen Charakter ausblenden"),
+        "hourMinutesDayMonthYearFormatString":
+            MessageLookupByLibrary.simpleMessage("%H:%M %d.%m.%Y"),
+        "initiativeRollForCharacterPrefix":
+            MessageLookupByLibrary.simpleMessage("Kampf Reihenfolge Wurf"),
+        "initiativeRollText": MessageLookupByLibrary.simpleMessage(
+            "Ein Kampf startet: Würfel deinen Platz in der Reihenfolge!"),
+        "initiativeRollTextFieldLabel":
+            MessageLookupByLibrary.simpleMessage("Kampf Wurf"),
         "integerValue": MessageLookupByLibrary.simpleMessage("Zahlen-Wert"),
         "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
             "Zahlen-Wert mit zusätzlicher Zahl"),
         "integerValueWithMaxValue": MessageLookupByLibrary.simpleMessage(
             "Zahlen-Wert mit maximal Wert"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
+        "itemCardDescRequires":
+            MessageLookupByLibrary.simpleMessage("Braucht:"),
         "itemDetailsDescriptionHeader":
             MessageLookupByLibrary.simpleMessage("Beschreibung:"),
         "itemDetailsForPrefix":
@@ -122,6 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Letzte verteilte Items"),
         "lastGrantedItemsMarkdownPrefix": MessageLookupByLibrary.simpleMessage(
             "Zuletzt wurden diese Items verteilt:"),
+        "levelAbbr": MessageLookupByLibrary.simpleMessage("LVL"),
         "listOfIntegersWithIcons": MessageLookupByLibrary.simpleMessage(
             "Liste von Zahlen-Werten mit Icons"),
         "listOfInterValuesWithCalculatedIntegerValues":
@@ -145,13 +182,19 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Optionen können mehrmals ausgewählt werden"),
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name der Eigenschaft"),
+        "newGroup": MessageLookupByLibrary.simpleMessage("Neue Gruppe:"),
+        "newGroupBtnLabel": MessageLookupByLibrary.simpleMessage("Neue Gruppe"),
         "newImageBtnLabel": MessageLookupByLibrary.simpleMessage("Neues Bild"),
+        "newItem": MessageLookupByLibrary.simpleMessage("Neu"),
         "newItemsMarkdownPlural":
             MessageLookupByLibrary.simpleMessage("# Neue Items"),
         "newItemsMarkdownSingular":
             MessageLookupByLibrary.simpleMessage("# Neues Item"),
         "newPetBtnLabel":
             MessageLookupByLibrary.simpleMessage("Neuer Begleiter"),
+        "newPropertyBtnLabel":
+            MessageLookupByLibrary.simpleMessage("Neue Eigenschaft"),
+        "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("Neuer Tab"),
         "noItemsGranted": MessageLookupByLibrary.simpleMessage(
             "Noch keine Items verteilt..."),
         "noItemsGrantedToPlayerThisRound":
@@ -175,6 +218,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "otherValue": MessageLookupByLibrary.simpleMessage("Anderer Wert"),
         "otherValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("Der andere Wert"),
+        "ownedIngredientCountPrefix":
+            MessageLookupByLibrary.simpleMessage("in Besitz:"),
         "password": MessageLookupByLibrary.simpleMessage("Passwort"),
         "petDefaultNamePrefix":
             MessageLookupByLibrary.simpleMessage("Begleiter"),
@@ -194,7 +239,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
             "Du hast ein neues Item erhalten:"),
         "receivedXNewItems": m1,
+        "recipeForTitlePrefix":
+            MessageLookupByLibrary.simpleMessage("Rezept für"),
+        "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
+        "recipeRequirements":
+            MessageLookupByLibrary.simpleMessage("Voraussetzungen:"),
         "register": MessageLookupByLibrary.simpleMessage("Registrieren"),
+        "requiredIngredientCountPrefix":
+            MessageLookupByLibrary.simpleMessage("Benötigt:"),
+        "rollOfInititive":
+            MessageLookupByLibrary.simpleMessage("Reihenfolgenwurf"),
+        "rpgConfigurationDmWizardStep2Tutorial":
+            MessageLookupByLibrary.simpleMessage(
+                "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:"),
         "save": MessageLookupByLibrary.simpleMessage("Speichern"),
         "secondValue": MessageLookupByLibrary.simpleMessage("Zweiter Wert"),
         "secondValuePlaceholder":
@@ -205,6 +262,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectAnIcon": MessageLookupByLibrary.simpleMessage("Icon auswählen:"),
         "selectIconModalTitle":
             MessageLookupByLibrary.simpleMessage("Icon auswählen"),
+        "send": MessageLookupByLibrary.simpleMessage("Absenden"),
         "sendItems": MessageLookupByLibrary.simpleMessage("Items verschicken"),
         "signInWithApple":
             MessageLookupByLibrary.simpleMessage("Mit Apple anmelden"),
@@ -214,6 +272,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Einzeiliger Text"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-        "valueOfPropertyWithName": m2
+        "valueOfPropertyWithName": m2,
+        "you": MessageLookupByLibrary.simpleMessage("Du")
       };
 }

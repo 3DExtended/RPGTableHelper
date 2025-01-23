@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 
@@ -82,7 +83,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Kampf Reihenfolge Wurf (${widget.characterName})", // TODO localize/ switch text between add and edit
+                        "${S.of(context).initiativeRollForCharacterPrefix} (${widget.characterName})",
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -97,7 +98,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                           child: Column(
                             children: [
                               Text(
-                                "Ein Kampf startet: Würfel deinen Platz in der Reihenfolge!",
+                                S.of(context).initiativeRollText,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -110,7 +111,8 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                                 height: 10,
                               ),
                               CustomTextField(
-                                labelText: "Kampf Wurf",
+                                labelText:
+                                    S.of(context).initiativeRollTextFieldLabel,
                                 textEditingController: textEditingController,
                                 keyboardType: TextInputType.number,
                               )
@@ -128,7 +130,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                         children: [
                           const Spacer(),
                           CustomButton(
-                            label: "Absenden", // TODO localize
+                            label: S.of(context).send,
                             onPressed: () {
                               // TODO add validation
                               var numberParsed =

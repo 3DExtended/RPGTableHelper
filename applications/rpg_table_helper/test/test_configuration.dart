@@ -64,7 +64,7 @@ void testConfigurations({
       widgetToTest = MaterialApp(
         localizationsDelegates: [
           ...AppLocalizations.localizationsDelegates,
-          S.delegate
+          S.delegate,
         ],
         locale: local,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -105,6 +105,8 @@ void testConfigurations({
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate,
               ],
               locale: local,
               child: Localizations.override(

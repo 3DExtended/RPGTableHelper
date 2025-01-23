@@ -94,7 +94,6 @@ class CustomCharacterCard extends StatelessWidget {
                           ),
                         ),
 
-                        // TODO TITLE
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

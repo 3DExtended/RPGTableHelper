@@ -11,83 +11,94 @@ void main() {
   group('CustomRecipeCard rendering', () {
     var recipeCards = [
       // display placeholder image
-      CustomRecipeCard(
-        title: "Small Healing Potion",
-        requirements: [],
-        ingedients: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
-        ],
-      ),
+      () => CustomRecipeCard(
+            title: "Small Healing Potion",
+            requirements: [],
+            ingedients: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
+            ],
+          ),
 
       // test test asset image override
-      CustomRecipeCard(
-        title: "Small Healing Potion",
-        imageUrl: "assets/images/itemhealingpotion.png",
-        requirements: [],
-        ingedients: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
-        ],
-      ),
+      () => CustomRecipeCard(
+            title: "Small Healing Potion",
+            imageUrl: "assets/images/itemhealingpotion.png",
+            requirements: [],
+            ingedients: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
+            ],
+          ),
 
-      Container(
-        width: 100,
-        height: 100,
-        color: Colors.orange,
-        child: QuarterCircleCutout(
-            circleOuterDiameter: 50.0,
-            circleDegrees: 45,
-            circleColor: bgColor,
-            circleInnerDiameter: 40.0,
-            circleInnerColor: darkColor),
-      ),
+      () => Container(
+            width: 100,
+            height: 100,
+            color: Colors.orange,
+            child: QuarterCircleCutout(
+                circleOuterDiameter: 50.0,
+                circleDegrees: 45,
+                circleColor: bgColor,
+                circleInnerDiameter: 40.0,
+                circleInnerColor: darkColor),
+          ),
 
-      CustomRecipeCard(
-        title: "Small Healing Potion",
-        imageUrl: "assets/images/itemhealingpotion.png",
-        requirements: [],
-        ingedients: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
-        ],
-      ),
+      () => CustomRecipeCard(
+            title: "Small Healing Potion",
+            imageUrl: "assets/images/itemhealingpotion.png",
+            requirements: [],
+            ingedients: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
+            ],
+          ),
 
-      CustomRecipeCard(
-        title: "Small Healing Potion",
-        imageUrl: "assets/images/itemhealingpotion.png",
-        requirements: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-        ],
-        ingedients: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
-        ],
-      ),
+      () => CustomRecipeCard(
+            title: "Small Healing Potion",
+            imageUrl: "assets/images/itemhealingpotion.png",
+            requirements: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+            ],
+            ingedients: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
+            ],
+          ),
 
-      CustomRecipeCard(
-        title: "Small Healing Potion",
-        imageUrl: "assets/images/itemhealingpotion.png",
-        requirements: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-        ],
-        ingedients: [
-          CustomRecipeCardItemPair(amount: 2, itemName: "Roter Fuchsschwanz"),
-          CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
-          CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
-        ],
-      ),
+      () => CustomRecipeCard(
+            title: "Small Healing Potion",
+            imageUrl: "assets/images/itemhealingpotion.png",
+            requirements: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+            ],
+            ingedients: [
+              CustomRecipeCardItemPair(
+                  amount: 2, itemName: "Roter Fuchsschwanz"),
+              CustomRecipeCardItemPair(amount: 1, itemName: "Blüte der Nacht"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Mondgrass"),
+              CustomRecipeCardItemPair(amount: 2, itemName: "Dunkelflechte"),
+            ],
+          ),
     ];
 
     for (var i = 0; i < recipeCards.length; i++) {
@@ -97,11 +108,9 @@ void main() {
         widgetName: 'CustomRecipeCard$i',
         pathPrefix: "../",
         useMaterialAppWrapper: true,
-        screenFactory: (Locale locale) => SizedBox(
-          width: 300,
-          height: 600,
-          child: itemcard,
-        ),
+        screenFactory: (Locale locale) => Builder(builder: (context) {
+          return itemcard();
+        }),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
             'default',
@@ -110,9 +119,7 @@ void main() {
                   child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    itemcard,
-                  ],
+                  children: [widgetToTest],
                 ),
               )),
             ),

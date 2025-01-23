@@ -30,7 +30,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
   @override
   Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var _ = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
       color: bgColor,
@@ -495,6 +495,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                             newFightingSequence.copyWith(
                                                 sequence:
                                                     sequenceToAskPlayers));
+                                    if (!context.mounted || !mounted) return;
 
                                     // show modal and add further enemies
                                     await showAddFurtherEnemiesToFightSequence(

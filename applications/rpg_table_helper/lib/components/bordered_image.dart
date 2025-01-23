@@ -143,9 +143,8 @@ class CustomImage extends StatelessWidget {
                                   stalePeriod: const Duration(
                                       days: 30), // images dont change, urls to
                                 )),
-                              ), onViewerDismissed: () {
-                            print("dismissed");
-                          });
+                              ),
+                              onViewerDismissed: () {});
                         });
                   },
                   child: CachedNetworkImage(

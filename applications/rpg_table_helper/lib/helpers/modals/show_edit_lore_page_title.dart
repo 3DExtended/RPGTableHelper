@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 
@@ -80,8 +81,7 @@ class _ShowEditLorePageModalContentState
   Widget build(BuildContext context) {
     return ModalContentWrapper<({String title, String groupName})>(
       isFullscreen: false,
-      title:
-          "Seite bearbeiten", // TODO localize/ switch text between add and edit,
+      title: S.of(context).editPageTitle,
       navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
       onCancel: () async {},
       onSave: () async {
@@ -95,15 +95,14 @@ class _ShowEditLorePageModalContentState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomMarkdownBody(
-            text:
-                "Hier kannst du sowohl den Titel als auch die Gruppierung deiner Seite verändern.", // TODO localize/ switch text between add and edit
+            text: S.of(context).editPageModalText,
           ),
           SizedBox(
             height: 10,
           ),
           CustomTextField(
             keyboardType: TextInputType.text,
-            labelText: "Titel", // TODO localize
+            labelText: S.of(context).documentTitleLabel,
             textEditingController: titleTextEditor,
           ),
           SizedBox(
@@ -111,7 +110,7 @@ class _ShowEditLorePageModalContentState
           ),
           CustomTextField(
             keyboardType: TextInputType.text,
-            labelText: "Gruppenname", // TODO localize
+            labelText: S.of(context).documentGroupLabel,
             textEditingController: groupTitleTextEditor,
           ),
         ],

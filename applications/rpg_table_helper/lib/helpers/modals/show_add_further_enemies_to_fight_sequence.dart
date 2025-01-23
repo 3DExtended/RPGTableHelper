@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/list_extensions.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
@@ -77,7 +78,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                   menuOpen: null,
                   useTopSafePadding: false,
                   titleWidget: Text(
-                    "Neue Gegner hinzufügen", // TODO localize/ switch text between add and edit
+                    S.of(context).addAdditionalEnemy,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
@@ -107,7 +108,8 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                             children: [
                                               Expanded(
                                                 child: CustomTextField(
-                                                    labelText: "Gegnername",
+                                                    labelText:
+                                                        S.of(context).enemyName,
                                                     textEditingController:
                                                         en.value.$1,
                                                     keyboardType:
@@ -118,8 +120,9 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                               ),
                                               Expanded(
                                                 child: CustomTextField(
-                                                    labelText:
-                                                        "Reihenfolgenwurf",
+                                                    labelText: S
+                                                        .of(context)
+                                                        .rollOfInititive,
                                                     textEditingController:
                                                         en.value.$2,
                                                     keyboardType:
@@ -157,7 +160,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                           ),
                           Center(
                             child: CustomButton(
-                              label: "Weiterer Gegner", // TODO localize
+                              label: S.of(context).addAnAdditionalEnemyBtnLabel,
                               onPressed: () {
                                 var connectionDetails = ref
                                     .read(connectionDetailsProvider)
@@ -172,7 +175,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                   enemiesToAdd.add((
                                     TextEditingController(
                                         text:
-                                            "Gegner #${numberOfEnemies + 1 + enemiesToAdd.length}"),
+                                            "${S.of(context).enemy} #${numberOfEnemies + 1 + enemiesToAdd.length}"),
                                     TextEditingController()
                                   ));
                                 });
@@ -189,14 +192,14 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                               children: [
                                 const Spacer(),
                                 CustomButton(
-                                  label: "Abbrechen", // TODO localize
+                                  label: S.of(context).cancel,
                                   onPressed: () {
                                     navigatorKey.currentState!.pop(null);
                                   },
                                 ),
                                 const Spacer(),
                                 CustomButton(
-                                  label: "Hinzufügen", // TODO localize
+                                  label: S.of(context).add,
                                   onPressed: () {
                                     // add enemies to connectiondetails
                                     var connectionDetails = ref

@@ -17,6 +17,7 @@ import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/notes/lore_block_rendering_editable.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/context_extension.dart';
@@ -75,7 +76,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   double collapsedWidth = 64.0;
   double expandedWidth = 256.0;
 
-  final String otherGroupName = "Sonstiges"; // TODO localize
+  String get otherGroupName => S.of(context).defaultGroupNameForDocuments;
 
   var refreshController = RefreshController(
     initialRefreshStatus: RefreshStatus.refreshing,
@@ -266,13 +267,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                     isLoading = true;
                                   });
 
-                                  // TODO
                                   var newDocument = NoteDocumentDto(
                                     // if some document is selected, add it to the same group
                                     groupName: selectedDocument?.groupName ??
-                                        "Sonstiges", // TODO localization,
+                                        S
+                                            .of(context)
+                                            .defaultGroupNameForDocuments,
                                     title:
-                                        "Dokument #${numberOfDocumentsForThisPlayer + 1}",
+                                        "${S.of(context).documentDefaultNamePrefix} #${numberOfDocumentsForThisPlayer + 1}",
                                     createdForCampagneId:
                                         CampagneIdentifier($value: campagneId),
                                     lastModifiedAt: systemClock.now(),
@@ -326,7 +328,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                   size: iconSizeInlineButtons,
                                   color: textColor,
                                 ),
-                                label: "Neu",
+                                label: S.of(context).newItem,
                                 variant: CustomButtonVariant.AccentButton,
                               ),
                           ],
@@ -383,8 +385,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       );
     }
 
-    // TODO remove me
-
     return Column(
       children: [
         Padding(
@@ -419,7 +419,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     ],
                   ),
                   Text(
-                    "Autor: ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? "Du" : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? "DM")}",
+                    "${S.of(context).authorLabel} ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? S.of(context).you : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? S.of(context).dm)}",
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           color: darkTextColor,
                           fontSize: 12,
@@ -430,7 +430,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               Spacer(),
               Text(
                 selectedDocument!.lastModifiedAt!
-                    .format("%H:%M %d.%m.%Y"), // TODO localize
+                    .format(S.of(context).hourMinutesDayMonthYearFormatString),
                 textAlign: TextAlign.end,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
                       color: darkTextColor,
@@ -756,7 +756,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     });
                   }
                 },
-                label: "Absatz",
+                label: S.of(context).addParagraphBtnLabel,
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,
@@ -868,7 +868,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     });
                   }
                 },
-                label: "Bild",
+                label: S.of(context).addImageBtnLabel,
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,

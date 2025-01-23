@@ -14,6 +14,7 @@ import 'package:rpg_table_helper/components/pentagon_with_label.dart';
 import 'package:rpg_table_helper/components/progress_indicator_for_character_screen.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -91,7 +92,6 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.multiselect:
       return renderMultiselectStat(onNewStatValue, characterValue, context,
           statConfiguration, characterName);
-    case CharacterStatValueType.companionSelector: // TODO make me
     default:
       return Container(
         height: 50,
@@ -851,7 +851,7 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                             .copyWith(color: textColor, fontSize: 28),
                       ),
                       Text(
-                        "LVL", // TODO localize?
+                        S.of(context).levelAbbr,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!

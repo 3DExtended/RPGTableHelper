@@ -12,6 +12,7 @@ import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -112,7 +113,7 @@ class _RecipeCardDetailsModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Rezept für ${creatableItem.name}", // TODO localize/ switch text between add and edit
+                        "${S.of(context).recipeForTitlePrefix} ${creatableItem.name}",
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -168,7 +169,7 @@ class _RecipeCardDetailsModalContentState
                                 rowMainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Beschreibung:",
+                                    S.of(context).itemDetailsDescriptionHeader,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -188,7 +189,7 @@ class _RecipeCardDetailsModalContentState
                                         ),
                                   ),
                                   Text(
-                                    "Voraussetzungen:",
+                                    S.of(context).recipeRequirements,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -225,7 +226,7 @@ class _RecipeCardDetailsModalContentState
                                     ],
                                   ),
                                   Text(
-                                    "Zutaten:",
+                                    S.of(context).recipeIngredients,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -273,7 +274,7 @@ class _RecipeCardDetailsModalContentState
 
                                             // Number of required items for current multiplier
                                             Text(
-                                              "Benötigt: ${i.amountOfUsedItem * currentlyCrafted}, in Besitz: ${getNumberOfItemInInventory(i.item.uuid)}",
+                                              "${S.of(context).requiredIngredientCountPrefix} ${i.amountOfUsedItem * currentlyCrafted}, ${S.of(context).ownedIngredientCountPrefix} ${getNumberOfItemInInventory(i.item.uuid)}",
                                               maxLines: 2,
                                               softWrap: true,
                                               style: Theme.of(context)
@@ -304,7 +305,7 @@ class _RecipeCardDetailsModalContentState
                           currentlyCrafted = newValue;
                         });
                       },
-                      label: "Anzahl",
+                      label: S.of(context).amountToCraftFieldLabel,
                       startValue: currentlyCrafted,
                     ),
                     const SizedBox(
@@ -316,7 +317,7 @@ class _RecipeCardDetailsModalContentState
                         children: [
                           const Spacer(),
                           CustomButton(
-                            label: "Abbrechen", // TODO localize
+                            label: S.of(context).cancel,
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
@@ -324,7 +325,7 @@ class _RecipeCardDetailsModalContentState
                           const Spacer(),
                           CustomButton(
                             variant: CustomButtonVariant.AccentButton,
-                            label: "Herstellen", // TODO localize
+                            label: S.of(context).craft,
                             onPressed: isCraftButtonDisabled()
                                 ? null
                                 : () {

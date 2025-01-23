@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_recipe_card.dart';
@@ -158,8 +157,6 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                             1,
                     itemExtent: targetedCardHeight + itemCardPadding,
                     itemBuilder: (context, index) {
-                      var recipe = recipesAsMapList[index];
-
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -328,61 +325,6 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
 
   RpgItem? getItemForId(String itemId) {
     return _allItems.where((i) => i.uuid == itemId).firstOrNull;
-  }
-}
-
-class _LabeledRow extends StatelessWidget {
-  const _LabeledRow({
-    required this.label,
-    required this.text,
-    required this.labelWidthFlex,
-    required this.valueWidthFlex,
-  });
-  final int? labelWidthFlex;
-  final int? valueWidthFlex;
-  final String label;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ConditionalWidgetWrapper(
-              condition: labelWidthFlex != null,
-              wrapper: (BuildContext context, Widget child) =>
-                  Expanded(flex: labelWidthFlex!, child: child),
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              flex: valueWidthFlex ?? 1,
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-              ),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-          ],
-        ),
-      ],
-    );
   }
 }
 

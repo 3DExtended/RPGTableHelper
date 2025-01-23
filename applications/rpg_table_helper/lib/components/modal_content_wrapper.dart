@@ -62,7 +62,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        title, // TODO localize/ switch text between add and edit
+                        title,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme

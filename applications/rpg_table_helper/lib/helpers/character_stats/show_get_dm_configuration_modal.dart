@@ -373,14 +373,12 @@ class _ShowGetDmConfigurationModalContentState
                     case CharacterStatValueType.multiselect:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            S.of(context).multiselectOption), // TODO localize
+                        child: Text(S.of(context).multiselectOption),
                       );
                     case CharacterStatValueType.companionSelector:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            S.of(context).companionOverview), // TODO localize
+                        child: Text(S.of(context).companionOverview),
                       );
                   }
                 }).toList(),

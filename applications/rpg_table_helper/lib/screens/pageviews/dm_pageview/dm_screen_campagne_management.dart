@@ -42,6 +42,8 @@ class _DmScreenCampagneManagementState
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
+      if (!context.mounted || !mounted) return;
+
       var service =
           DependencyProvider.of(context).getService<IRpgEntityService>();
 
@@ -51,9 +53,9 @@ class _DmScreenCampagneManagementState
           campagneId:
               CampagneIdentifier($value: connectionDetails.campagneId!));
 
-      if (!context.mounted) return;
+      if (!context.mounted || !mounted) return;
       await loadedCharsResponse.possiblyHandleError(context);
-      if (!context.mounted) return;
+      if (!context.mounted || !mounted) return;
 
       setState(() {
         if (loadedCharsResponse.isSuccessful) {
@@ -217,6 +219,10 @@ class _DmScreenCampagneManagementState
                                                       HandleJoinRequestType
                                                           .accept);
 
+                                          if (!context.mounted || !mounted) {
+                                            return;
+                                          }
+
                                           await response
                                               .possiblyHandleError(context);
 
@@ -258,8 +264,14 @@ class _DmScreenCampagneManagementState
                                                   typeOfHandle:
                                                       HandleJoinRequestType
                                                           .deny);
+                                          if (!context.mounted || !mounted) {
+                                            return;
+                                          }
                                           await response
                                               .possiblyHandleError(context);
+                                          if (!context.mounted || !mounted) {
+                                            return;
+                                          }
                                           // remove this particular request from open requests
                                           deleteJoinRequestAt(
                                               request.value, ref);
@@ -336,8 +348,7 @@ class _DmScreenCampagneManagementState
         var imageOfPlayerCharacter =
             connectedPlayer.configuration.getImageUrlWithoutBasePath(rpgConfig);
 
-        var playerCharacterName = connectedPlayer.configuration.characterName ??
-            S.of(context).characterNameDefault;
+        var playerCharacterName = connectedPlayer.configuration.characterName;
 
         result.add(getSingleConfiguredPlayerOnlineStatus(
           charConfig: connectedPlayer.configuration,

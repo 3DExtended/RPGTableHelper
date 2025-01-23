@@ -1149,6 +1149,386 @@ class S {
       args: [],
     );
   }
+
+  /// `Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character's backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:`
+  String get rpgConfigurationDmWizardStep2Tutorial {
+    return Intl.message(
+      'Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:',
+      name: 'rpgConfigurationDmWizardStep2Tutorial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LVL`
+  String get levelAbbr {
+    return Intl.message(
+      'LVL',
+      name: 'levelAbbr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add additional enemy`
+  String get addAdditionalEnemy {
+    return Intl.message(
+      'Add additional enemy',
+      name: 'addAdditionalEnemy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enemy name`
+  String get enemyName {
+    return Intl.message(
+      'Enemy name',
+      name: 'enemyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Roll of initiative`
+  String get rollOfInititive {
+    return Intl.message(
+      'Roll of initiative',
+      name: 'rollOfInititive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add more`
+  String get addAnAdditionalEnemyBtnLabel {
+    return Intl.message(
+      'Add more',
+      name: 'addAnAdditionalEnemyBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enemy`
+  String get enemy {
+    return Intl.message(
+      'Enemy',
+      name: 'enemy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initiative roll`
+  String get initiativeRollForCharacterPrefix {
+    return Intl.message(
+      'Initiative roll',
+      name: 'initiativeRollForCharacterPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A fight has started. Please roll for initiative.`
+  String get initiativeRollText {
+    return Intl.message(
+      'A fight has started. Please roll for initiative.',
+      name: 'initiativeRollText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initiative roll`
+  String get initiativeRollTextFieldLabel {
+    return Intl.message(
+      'Initiative roll',
+      name: 'initiativeRollTextFieldLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Absenden`
+  String get send {
+    return Intl.message(
+      'Absenden',
+      name: 'send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit document`
+  String get editPageTitle {
+    return Intl.message(
+      'Edit document',
+      name: 'editPageTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can edit both the title and the grouping of your document here.`
+  String get editPageModalText {
+    return Intl.message(
+      'You can edit both the title and the grouping of your document here.',
+      name: 'editPageModalText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Titel`
+  String get documentTitleLabel {
+    return Intl.message(
+      'Titel',
+      name: 'documentTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grouping`
+  String get documentGroupLabel {
+    return Intl.message(
+      'Grouping',
+      name: 'documentGroupLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recipe for`
+  String get recipeForTitlePrefix {
+    return Intl.message(
+      'Recipe for',
+      name: 'recipeForTitlePrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prerequisites:`
+  String get recipeRequirements {
+    return Intl.message(
+      'Prerequisites:',
+      name: 'recipeRequirements',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ingredients:`
+  String get recipeIngredients {
+    return Intl.message(
+      'Ingredients:',
+      name: 'recipeIngredients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required:`
+  String get requiredIngredientCountPrefix {
+    return Intl.message(
+      'Required:',
+      name: 'requiredIngredientCountPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `owned:`
+  String get ownedIngredientCountPrefix {
+    return Intl.message(
+      'owned:',
+      name: 'ownedIngredientCountPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get amountToCraftFieldLabel {
+    return Intl.message(
+      'Amount',
+      name: 'amountToCraftFieldLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Craft`
+  String get craft {
+    return Intl.message(
+      'Craft',
+      name: 'craft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New`
+  String get newItem {
+    return Intl.message(
+      'New',
+      name: 'newItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other`
+  String get defaultGroupNameForDocuments {
+    return Intl.message(
+      'Other',
+      name: 'defaultGroupNameForDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document`
+  String get documentDefaultNamePrefix {
+    return Intl.message(
+      'Document',
+      name: 'documentDefaultNamePrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Author:`
+  String get authorLabel {
+    return Intl.message(
+      'Author:',
+      name: 'authorLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You`
+  String get you {
+    return Intl.message(
+      'You',
+      name: 'you',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DM`
+  String get dm {
+    return Intl.message(
+      'DM',
+      name: 'dm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `%H:%M %m-%d-%Y`
+  String get hourMinutesDayMonthYearFormatString {
+    return Intl.message(
+      '%H:%M %m-%d-%Y',
+      name: 'hourMinutesDayMonthYearFormatString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paragraph`
+  String get addParagraphBtnLabel {
+    return Intl.message(
+      'Paragraph',
+      name: 'addParagraphBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image`
+  String get addImageBtnLabel {
+    return Intl.message(
+      'Image',
+      name: 'addImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New grouping:`
+  String get newGroup {
+    return Intl.message(
+      'New grouping:',
+      name: 'newGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New grouping`
+  String get newGroupBtnLabel {
+    return Intl.message(
+      'New grouping',
+      name: 'newGroupBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New property`
+  String get newPropertyBtnLabel {
+    return Intl.message(
+      'New property',
+      name: 'newPropertyBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New tab`
+  String get newTabBtnLabel {
+    return Intl.message(
+      'New tab',
+      name: 'newTabBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requires:`
+  String get itemCardDescRequires {
+    return Intl.message(
+      'Requires:',
+      name: 'itemCardDescRequires',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default tab`
+  String get defaultTab {
+    return Intl.message(
+      'Default tab',
+      name: 'defaultTab',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
