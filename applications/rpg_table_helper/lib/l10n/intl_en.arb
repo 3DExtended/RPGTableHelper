@@ -98,5 +98,15 @@
     "signInWithGoogle": "Sign in with Google",
     "createNewAccount": "Create new account",
     "email": "E-Mail",
-    "register": "Register"
+    "register": "Register",
+    "itemDetailsForPrefix": "Item details for",
+    "itemDetailsDescriptionHeader": "Description:",
+    "itemDetailsPriceHeader": "Price:",
+    "amount": "Amount",
+    "receivedItemsModalHeader": "Received items",
+    "newItemsMarkdownPlural": "# New items",
+    "newItemsMarkdownSingular": "# New item",
+    "receivedOneNewItemText": "You received one new item:",
+    "receivedXNewItems": "You received {amount} new items:",
+    "ok": "Ok"
 }

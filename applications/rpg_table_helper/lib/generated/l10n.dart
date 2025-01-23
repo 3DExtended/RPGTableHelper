@@ -1049,6 +1049,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Item details for`
+  String get itemDetailsForPrefix {
+    return Intl.message(
+      'Item details for',
+      name: 'itemDetailsForPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description:`
+  String get itemDetailsDescriptionHeader {
+    return Intl.message(
+      'Description:',
+      name: 'itemDetailsDescriptionHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price:`
+  String get itemDetailsPriceHeader {
+    return Intl.message(
+      'Price:',
+      name: 'itemDetailsPriceHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get amount {
+    return Intl.message(
+      'Amount',
+      name: 'amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received items`
+  String get receivedItemsModalHeader {
+    return Intl.message(
+      'Received items',
+      name: 'receivedItemsModalHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `# New items`
+  String get newItemsMarkdownPlural {
+    return Intl.message(
+      '# New items',
+      name: 'newItemsMarkdownPlural',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `# New item`
+  String get newItemsMarkdownSingular {
+    return Intl.message(
+      '# New item',
+      name: 'newItemsMarkdownSingular',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You received one new item:`
+  String get receivedOneNewItemText {
+    return Intl.message(
+      'You received one new item:',
+      name: 'receivedOneNewItemText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You received {amount} new items:`
+  String receivedXNewItems(Object amount) {
+    return Intl.message(
+      'You received $amount new items:',
+      name: 'receivedXNewItems',
+      desc: '',
+      args: [amount],
+    );
+  }
+
+  /// `Ok`
+  String get ok {
+    return Intl.message(
+      'Ok',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -113,7 +113,7 @@ class _ItemCardDetailsModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Item Details für ${widget.item.name}", // TODO localize/ switch text between add and edit
+                        "${S.of(context).itemDetailsForPrefix} ${widget.item.name}",
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -155,7 +155,9 @@ class _ItemCardDetailsModalContentState
                                       CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Beschreibung:",
+                                      S
+                                          .of(context)
+                                          .itemDetailsDescriptionHeader,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -175,7 +177,7 @@ class _ItemCardDetailsModalContentState
                                           ),
                                     ),
                                     Text(
-                                      "Preis:",
+                                      S.of(context).itemDetailsPriceHeader,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -215,7 +217,7 @@ class _ItemCardDetailsModalContentState
                           currentlyOwned = newValue;
                         });
                       },
-                      label: "Anzahl",
+                      label: S.of(context).amount,
                       startValue: currentlyOwned,
                     ),
                     const SizedBox(

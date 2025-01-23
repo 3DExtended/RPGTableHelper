@@ -22,7 +22,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(username) => " (for ${username})";
 
-  static String m1(property) => "The value of ${property}";
+  static String m1(amount) => "You received ${amount} new items:";
+
+  static String m2(property) => "The value of ${property}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -33,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "additionalSettings":
             MessageLookupByLibrary.simpleMessage("Additional settings"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("All players:"),
+        "amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "assignCharacterToCampagneModalContent":
             MessageLookupByLibrary.simpleMessage(
                 "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM."),
@@ -97,6 +100,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "integerValueWithMaxValue":
             MessageLookupByLibrary.simpleMessage("Number value with max value"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
+        "itemDetailsDescriptionHeader":
+            MessageLookupByLibrary.simpleMessage("Description:"),
+        "itemDetailsForPrefix":
+            MessageLookupByLibrary.simpleMessage("Item details for"),
+        "itemDetailsPriceHeader":
+            MessageLookupByLibrary.simpleMessage("Price:"),
         "itemExampleDescription":
             MessageLookupByLibrary.simpleMessage("Some item description"),
         "itemsToBeFoundInPlaceMarkdown": MessageLookupByLibrary.simpleMessage(
@@ -133,6 +142,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name of property"),
         "newImageBtnLabel": MessageLookupByLibrary.simpleMessage("New image"),
+        "newItemsMarkdownPlural":
+            MessageLookupByLibrary.simpleMessage("# New items"),
+        "newItemsMarkdownSingular":
+            MessageLookupByLibrary.simpleMessage("# New item"),
         "newPetBtnLabel": MessageLookupByLibrary.simpleMessage("New pet"),
         "noItemsGranted":
             MessageLookupByLibrary.simpleMessage("No items granted yet..."),
@@ -143,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
             "No place of finding selected."),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
+        "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
         "openJoinRequests":
             MessageLookupByLibrary.simpleMessage("Join requests:"),
@@ -170,6 +184,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Rarely changed (e.g. per level-up)"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+        "receivedItemsModalHeader":
+            MessageLookupByLibrary.simpleMessage("Received items"),
+        "receivedOneNewItemText":
+            MessageLookupByLibrary.simpleMessage("You received one new item:"),
+        "receivedXNewItems": m1,
         "register": MessageLookupByLibrary.simpleMessage("Register"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "secondValue": MessageLookupByLibrary.simpleMessage("Second value"),
@@ -189,6 +208,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Single line text"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
-        "valueOfPropertyWithName": m1
+        "valueOfPropertyWithName": m2
       };
 }

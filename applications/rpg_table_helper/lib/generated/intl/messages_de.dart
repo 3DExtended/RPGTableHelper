@@ -22,7 +22,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(username) => " (für ${username})";
 
-  static String m1(property) => "Der Wert von ${property}";
+  static String m1(amount) => "Du hast ${amount} neue Items erhalten:";
+
+  static String m2(property) => "Der Wert von ${property}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -34,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "additionalSettings":
             MessageLookupByLibrary.simpleMessage("Erweiterte Optionen"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("Alle Spieler:"),
+        "amount": MessageLookupByLibrary.simpleMessage("Anzahl"),
         "assignCharacterToCampagneModalContent":
             MessageLookupByLibrary.simpleMessage(
                 "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden."),
@@ -100,6 +103,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "integerValueWithMaxValue": MessageLookupByLibrary.simpleMessage(
             "Zahlen-Wert mit maximal Wert"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
+        "itemDetailsDescriptionHeader":
+            MessageLookupByLibrary.simpleMessage("Beschreibung:"),
+        "itemDetailsForPrefix":
+            MessageLookupByLibrary.simpleMessage("Item Details für"),
+        "itemDetailsPriceHeader":
+            MessageLookupByLibrary.simpleMessage("Preis:"),
         "itemExampleDescription":
             MessageLookupByLibrary.simpleMessage("Beschreibung eines Items"),
         "itemsToBeFoundInPlaceMarkdown": MessageLookupByLibrary.simpleMessage(
@@ -137,6 +146,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name der Eigenschaft"),
         "newImageBtnLabel": MessageLookupByLibrary.simpleMessage("Neues Bild"),
+        "newItemsMarkdownPlural":
+            MessageLookupByLibrary.simpleMessage("# Neue Items"),
+        "newItemsMarkdownSingular":
+            MessageLookupByLibrary.simpleMessage("# Neues Item"),
         "newPetBtnLabel":
             MessageLookupByLibrary.simpleMessage("Neuer Begleiter"),
         "noItemsGranted": MessageLookupByLibrary.simpleMessage(
@@ -148,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
             "Es wurde noch kein Fundort ausgewählt."),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
+        "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
         "openJoinRequests":
             MessageLookupByLibrary.simpleMessage("Join Anfragen:"),
@@ -175,6 +189,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Selten verändert (bspw. je Level-Up)"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+        "receivedItemsModalHeader":
+            MessageLookupByLibrary.simpleMessage("Neue Items"),
+        "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
+            "Du hast ein neues Item erhalten:"),
+        "receivedXNewItems": m1,
         "register": MessageLookupByLibrary.simpleMessage("Registrieren"),
         "save": MessageLookupByLibrary.simpleMessage("Speichern"),
         "secondValue": MessageLookupByLibrary.simpleMessage("Zweiter Wert"),
@@ -195,6 +214,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Einzeiliger Text"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-        "valueOfPropertyWithName": m1
+        "valueOfPropertyWithName": m2
       };
 }

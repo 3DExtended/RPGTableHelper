@@ -12,6 +12,7 @@ import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -101,7 +102,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                     menuOpen: null,
                     useTopSafePadding: false,
                     titleWidget: Text(
-                      "Neue Items", // TODO localize/ switch text between add and edit
+                      S.of(context).receivedItemsModalHeader,
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
@@ -128,12 +129,15 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                                 Expanded(
                                   child: Builder(builder: (context) {
                                     var text = widget.numberOfReceivedItems > 1
-                                        ? "# Neue Items" // TODO localize
-                                        : "# Neues Item"; // TODO localize
+                                        ? S.of(context).newItemsMarkdownPlural
+                                        : S
+                                            .of(context)
+                                            .newItemsMarkdownSingular;
                                     text += "\n\n";
                                     text += widget.numberOfReceivedItems > 1
-                                        ? "Du hast ${widget.numberOfReceivedItems} neue Items erhalten:"
-                                        : "Du hast ein neues Item erhalten";
+                                        ? S.of(context).receivedXNewItems(
+                                            widget.numberOfReceivedItems)
+                                        : S.of(context).receivedOneNewItemText;
                                     text += "\n\n";
 
                                     for (var itemPair
@@ -169,7 +173,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                       children: [
                         const Spacer(),
                         CustomButton(
-                          label: "Ok", // TODO localize
+                          label: S.of(context).ok,
                           onPressed: () {
                             navigatorKey.currentState!.pop(null);
                           },
