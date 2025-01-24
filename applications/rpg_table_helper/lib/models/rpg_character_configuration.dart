@@ -139,7 +139,13 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
           RpgCharacterOwnedItemPair(
               itemUuid: "a7537746-260d-4aed-b182-26768a9c2d51", amount: 2),
           RpgCharacterOwnedItemPair(
-              itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7", amount: 1)
+              itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7", amount: 1),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34", amount: 5),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "01921428-f433-7519-880f-d012289b60da", amount: 1),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "01921424-0eca-74bb-bc3d-be2c82996103", amount: 2)
         ],
         moneyInBaseType: 23456,
       );

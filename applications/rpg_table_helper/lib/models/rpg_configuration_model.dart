@@ -92,15 +92,15 @@ class RpgConfigurationModel {
             ],
           ),
           ItemCategory(
-            colorCode: "#ffff00ff",
-            iconName: "spellbook-svgrepo-com",
+            colorCode: "#ff3df956",
+            iconName: "leaf",
             uuid: "b895a30a-2c0a-4aba-8629-9a363e405281",
             name: "Zutat",
             subCategories: [],
           ),
           ItemCategory(
-            colorCode: "#ffff00ff",
-            iconName: "spellbook-svgrepo-com",
+            colorCode: "#ff3df9bd",
+            iconName: "flask-laboratory-svgrepo-com",
             uuid: "4bba577f-c4c0-43a4-bc70-cbb39cbb7bee",
             name: "Trank",
             subCategories: [
@@ -252,6 +252,58 @@ class RpgConfigurationModel {
             description: "Ein Tool zum erstellen von Tränken",
             patchSize: DiceRoll(numDice: 0, diceSides: 6, modifier: 0),
           ),
+          RpgItem(
+            uuid: "01920bc1-5c79-74fd-b604-c7c825067186",
+            name: "Gelber Morgentau",
+            description:
+                "Der Gelbe Morgentau wächst dicht am Boden und hat winzige runde Blätter, die vom Stiel weg leicht gelblich werden. Er ist leicht zu verwechseln mit dem Grünen Morgentau, ist im Gegensatz zu diesem allerdings hochgiftig.",
+            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            imageUrlWithoutBasePath: null,
+            imageDescription:
+                "Der Gelbe Morgentau wächst in großen Patches dicht am Boden, wie eine bodendeckende Pflanze. Die Pflanze hat winzige runde Blätter und Blüten, die vom Stiel weg leicht gelblich werden. Die Pflanze erinnert an Klee oder Moos und wächst in dicht bewachsenen Wäldern.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
+            placeOfFindings: [],
+            patchSize: DiceRoll(numDice: 2, diceSides: 2, modifier: 2),
+            baseCurrencyPrice: 50,
+          ),
+          RpgItem(
+            uuid: "01920bc5-599a-783f-8d88-38257ecf78f5",
+            name: "Gemeiner Farn",
+            description:
+                "Der Gemeine Farn wächst gerne zwischen anderen Pflanzen und stiehlt ihre Nährstoffe. Bei Berührung drehen sich die fedrigen Farnblätter seitlich ein.",
+            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            imageUrlWithoutBasePath: null,
+            imageDescription:
+                "Der Gemeine Farn hat fedrige hellgrüne Farnblätter die sich seitlich eindrehen.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
+            placeOfFindings: [],
+            patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
+            baseCurrencyPrice: 50,
+          ),
+          RpgItem(
+            uuid: "01921424-0eca-74bb-bc3d-be2c82996103",
+            name: "Glücksklee",
+            description:
+                "Heilt bei rohem Verzehr 3 verlorene HP.\n\nDiese Kleeart wächst nah am Boden und besteht nur vier-blättrigen Pflanzen, deren Äderung leicht golden schimmert.",
+            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            imageUrlWithoutBasePath: null,
+            imageDescription:
+                "\n\nDiese Kleeart wächst nah am Boden und besteht nur knallgrünen Blättern, die wie bei Glücksklee aussehen und deren Äderung leicht golden schimmert.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
+            placeOfFindings: [],
+            patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
+            baseCurrencyPrice: 10000,
+          ),
+          RpgItem(
+            uuid: "01921428-f433-7519-880f-d012289b60da",
+            name: "Glutflechte",
+            description:
+                "Verringert unbehandelt für 1h jeglichen erhaltenen Kälteschaden um 1.\n\nDie Glutflechte wächst schuppenartig an Steinen entlang. Sie ist leicht an ihrer gelb-orangen Farbe zu erkennen.",
+            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            imageUrlWithoutBasePath: null,
+            imageDescription:
+                "\n\nDie Glutflechte wächst in schuppenartig Verflechtungen auf Steinen, wie eine Moosflechte. Sie ist gelb-orange.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
+            placeOfFindings: [],
+            patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
+            baseCurrencyPrice: 2000,
+          )
         ],
         craftingRecipes: [
           CraftingRecipe(

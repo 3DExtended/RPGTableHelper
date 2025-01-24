@@ -9,6 +9,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -74,7 +75,7 @@ class _PlayerScreenCharacterMoneyState
               ),
               Text(
                 charToRender == null
-                    ? "0 Gold"
+                    ? S.of(context).noMoneyDefaultText
                     : buildTextForCurrencyComparison(
                         widget.rpgConfig, charToRender!.moneyInBaseType ?? 0),
                 style: Theme.of(context)
@@ -83,7 +84,7 @@ class _PlayerScreenCharacterMoneyState
                     .copyWith(color: darkTextColor, fontSize: 24),
               ),
               Text(
-                "Aktuelles Guthaben",
+                S.of(context).currentBalance,
                 style: Theme.of(context)
                     .textTheme
                     .labelMedium!
@@ -113,7 +114,7 @@ class _PlayerScreenCharacterMoneyState
                   MoneyChangeMode.addMoney: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text(
-                      'Guthaben hinzufügen', // TODO localize
+                      S.of(context).addBalance,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           fontSize: 16,
                           color: _selectedMoneyChangeMode ==
@@ -125,7 +126,7 @@ class _PlayerScreenCharacterMoneyState
                   MoneyChangeMode.spendMoney: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text(
-                      'Guthaben abziehen', // TODO localize
+                      S.of(context).reduceBalance,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           fontSize: 16,
                           color: _selectedMoneyChangeMode ==
@@ -174,7 +175,6 @@ class _PlayerScreenCharacterMoneyState
                                 minValue: 0,
                                 maxValue: 9999,
                                 onValueChange: (newValue) {
-                                  // TODO make me
                                   setState(() {
                                     _currencyValues[cv.key] = (
                                       label: _currencyValues[cv.key].label,
@@ -197,7 +197,7 @@ class _PlayerScreenCharacterMoneyState
               ),
               Text(
                 charToRender == null
-                    ? "0 Gold"
+                    ? S.of(context).noMoneyDefaultText
                     : buildTextForCurrencyComparisonAfterAdjustment(
                         widget.rpgConfig, charToRender!),
                 style: Theme.of(context)
@@ -206,7 +206,7 @@ class _PlayerScreenCharacterMoneyState
                     .copyWith(color: darkTextColor, fontSize: 24),
               ),
               Text(
-                "Neues Guthaben",
+                S.of(context).newBalance,
                 style: Theme.of(context)
                     .textTheme
                     .labelMedium!
@@ -247,8 +247,8 @@ class _PlayerScreenCharacterMoneyState
                       },
                 variant: CustomButtonVariant.AccentButton,
                 label: _selectedMoneyChangeMode == MoneyChangeMode.addMoney
-                    ? "Geld hinzufügen" // TODO localize
-                    : "Geld abziehen", // TODO localize
+                    ? S.of(context).addBalance
+                    : S.of(context).reduceBalance,
               )
             ],
           )),
@@ -291,7 +291,7 @@ class _PlayerScreenCharacterMoneyState
       var updatedMoney = updatedMoneyValue;
 
       if (updatedMoney < 0) {
-        return "Zu wenig Geld für diese Ausgabe"; // TODO localize
+        return S.of(context).notEnoughBalance;
       }
       return buildTextForCurrencyComparison(rpgConfig, max(0, updatedMoney));
     }

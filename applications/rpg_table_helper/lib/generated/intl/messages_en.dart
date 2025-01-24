@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add additional enemy"),
         "addAnAdditionalEnemyBtnLabel":
             MessageLookupByLibrary.simpleMessage("Add more"),
+        "addBalance": MessageLookupByLibrary.simpleMessage("Add balance"),
         "addCharacterToCampagneModalTitle":
             MessageLookupByLibrary.simpleMessage("Add character to campaign"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Image"),
@@ -44,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Additional settings"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("All players:"),
         "amount": MessageLookupByLibrary.simpleMessage("Amount"),
+        "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Amount:"),
         "amountToCraftFieldLabel":
             MessageLookupByLibrary.simpleMessage("Amount"),
         "assignCharacterToCampagneModalContent":
@@ -73,8 +75,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Configure properties"),
         "configurePropertiesForCharacterNameSuffix": m0,
         "craft": MessageLookupByLibrary.simpleMessage("Craft"),
+        "craftableAmountText":
+            MessageLookupByLibrary.simpleMessage("Craftable:"),
+        "craftableRecipeFilter":
+            MessageLookupByLibrary.simpleMessage("Craftable"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Create new account"),
+        "currentBalance":
+            MessageLookupByLibrary.simpleMessage("Current balance"),
         "currentValue": MessageLookupByLibrary.simpleMessage("Current value"),
         "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "The current value for this property"),
@@ -135,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item": MessageLookupByLibrary.simpleMessage("Item"),
         "itemCardDescRequires":
             MessageLookupByLibrary.simpleMessage("Requires:"),
+        "itemCategoryFilterAll": MessageLookupByLibrary.simpleMessage("All"),
         "itemDetailsDescriptionHeader":
             MessageLookupByLibrary.simpleMessage("Description:"),
         "itemDetailsForPrefix":
@@ -177,6 +186,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Multiselect options are selectable multiple times"),
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name of property"),
+        "navBarHeaderCrafting":
+            MessageLookupByLibrary.simpleMessage("Crafting"),
+        "navBarHeaderInventory":
+            MessageLookupByLibrary.simpleMessage("Inventory"),
+        "navBarHeaderLore": MessageLookupByLibrary.simpleMessage("Lore"),
+        "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Currency"),
+        "newBalance": MessageLookupByLibrary.simpleMessage("New balance"),
         "newGroup": MessageLookupByLibrary.simpleMessage("New grouping:"),
         "newGroupBtnLabel":
             MessageLookupByLibrary.simpleMessage("New grouping"),
@@ -194,10 +210,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No items granted yet..."),
         "noItemsGrantedToPlayerThisRound":
             MessageLookupByLibrary.simpleMessage("No items granted this round"),
+        "noItemsInCategory":
+            MessageLookupByLibrary.simpleMessage("No items in this category"),
+        "noItemsInCategoryCraftable": MessageLookupByLibrary.simpleMessage(
+            "No craftable items in this category"),
+        "noItemsInCategoryErrorText":
+            MessageLookupByLibrary.simpleMessage("No items in this category"),
+        "noMoneyDefaultText": MessageLookupByLibrary.simpleMessage("0 Gold"),
         "noOpenJoinRequests":
             MessageLookupByLibrary.simpleMessage("No open requests"),
         "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
             "No place of finding selected."),
+        "notEnoughBalance": MessageLookupByLibrary.simpleMessage(
+            "Not enough balance for this transaction"),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
@@ -240,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ingredients:"),
         "recipeRequirements":
             MessageLookupByLibrary.simpleMessage("Prerequisites:"),
+        "reduceBalance": MessageLookupByLibrary.simpleMessage("Reduce balance"),
         "register": MessageLookupByLibrary.simpleMessage("Register"),
         "requiredIngredientCountPrefix":
             MessageLookupByLibrary.simpleMessage("Required:"),
@@ -249,6 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "searchLabel": MessageLookupByLibrary.simpleMessage("Search"),
         "secondValue": MessageLookupByLibrary.simpleMessage("Second value"),
         "secondValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("The second value"),

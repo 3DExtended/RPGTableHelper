@@ -1529,6 +1529,186 @@ class S {
       args: [],
     );
   }
+
+  /// `Amount:`
+  String get amountHeaderLabel {
+    return Intl.message(
+      'Amount:',
+      name: 'amountHeaderLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No items in this category`
+  String get noItemsInCategoryErrorText {
+    return Intl.message(
+      'No items in this category',
+      name: 'noItemsInCategoryErrorText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get searchLabel {
+    return Intl.message(
+      'Search',
+      name: 'searchLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get itemCategoryFilterAll {
+    return Intl.message(
+      'All',
+      name: 'itemCategoryFilterAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Craftable`
+  String get craftableRecipeFilter {
+    return Intl.message(
+      'Craftable',
+      name: 'craftableRecipeFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No craftable items in this category`
+  String get noItemsInCategoryCraftable {
+    return Intl.message(
+      'No craftable items in this category',
+      name: 'noItemsInCategoryCraftable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No items in this category`
+  String get noItemsInCategory {
+    return Intl.message(
+      'No items in this category',
+      name: 'noItemsInCategory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Craftable:`
+  String get craftableAmountText {
+    return Intl.message(
+      'Craftable:',
+      name: 'craftableAmountText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Crafting`
+  String get navBarHeaderCrafting {
+    return Intl.message(
+      'Crafting',
+      name: 'navBarHeaderCrafting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lore`
+  String get navBarHeaderLore {
+    return Intl.message(
+      'Lore',
+      name: 'navBarHeaderLore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inventory`
+  String get navBarHeaderInventory {
+    return Intl.message(
+      'Inventory',
+      name: 'navBarHeaderInventory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currency`
+  String get navBarHeaderMoney {
+    return Intl.message(
+      'Currency',
+      name: 'navBarHeaderMoney',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0 Gold`
+  String get noMoneyDefaultText {
+    return Intl.message(
+      '0 Gold',
+      name: 'noMoneyDefaultText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current balance`
+  String get currentBalance {
+    return Intl.message(
+      'Current balance',
+      name: 'currentBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add balance`
+  String get addBalance {
+    return Intl.message(
+      'Add balance',
+      name: 'addBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reduce balance`
+  String get reduceBalance {
+    return Intl.message(
+      'Reduce balance',
+      name: 'reduceBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New balance`
+  String get newBalance {
+    return Intl.message(
+      'New balance',
+      name: 'newBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not enough balance for this transaction`
+  String get notEnoughBalance {
+    return Intl.message(
+      'Not enough balance for this transaction',
+      name: 'notEnoughBalance',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -9,6 +9,7 @@ import 'package:rpg_table_helper/components/colored_rotated_square.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
@@ -181,7 +182,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
       result.add((
-        "Währung",
+        S.of(context).navBarHeaderMoney,
         PlayerScreenCharacterMoney(
           rpgConfig: rpgConfig,
           charToRender: charToRender as RpgCharacterConfiguration,
@@ -192,7 +193,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
       result.add((
-        "Inventar",
+        S.of(context).navBarHeaderInventory,
         PlayerScreenCharacterInventory(
           rpgConfig: rpgConfig,
           charToRender: charToRender,
@@ -202,13 +203,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     if (showRecipes &&
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
-      result.add(("Herstellen", PlayerScreenRecepies()));
+      result.add((S.of(context).navBarHeaderCrafting, PlayerScreenRecepies()));
     }
 
     var campagneId =
         ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
     if (showLore && campagneId != null) {
-      result.add(("Weltgeschichte", LoreScreen()));
+      result.add((S.of(context).navBarHeaderLore, LoreScreen()));
     }
 
     return result;

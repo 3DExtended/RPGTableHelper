@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Neue Gegner hinzufügen"),
         "addAnAdditionalEnemyBtnLabel":
             MessageLookupByLibrary.simpleMessage("Weiterer Gegner"),
+        "addBalance":
+            MessageLookupByLibrary.simpleMessage("Guthaben hinzufügen"),
         "addCharacterToCampagneModalTitle":
             MessageLookupByLibrary.simpleMessage(
                 "Charakter zur Kampagne hinzufügen"),
@@ -44,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Erweiterte Optionen"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("Alle Spieler:"),
         "amount": MessageLookupByLibrary.simpleMessage("Anzahl"),
+        "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Anzahl:"),
         "amountToCraftFieldLabel":
             MessageLookupByLibrary.simpleMessage("Anzahl"),
         "assignCharacterToCampagneModalContent":
@@ -73,8 +76,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Eigenschaften konfigurieren"),
         "configurePropertiesForCharacterNameSuffix": m0,
         "craft": MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "craftableAmountText":
+            MessageLookupByLibrary.simpleMessage("Herstellbar:"),
+        "craftableRecipeFilter":
+            MessageLookupByLibrary.simpleMessage("Herstellbar"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Neuen Account anlegen"),
+        "currentBalance":
+            MessageLookupByLibrary.simpleMessage("Aktuelles Guthaben"),
         "currentValue": MessageLookupByLibrary.simpleMessage("Aktueller Wert"),
         "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "Der aktuelle Wert für diese Eigenschaft"),
@@ -139,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item": MessageLookupByLibrary.simpleMessage("Item"),
         "itemCardDescRequires":
             MessageLookupByLibrary.simpleMessage("Braucht:"),
+        "itemCategoryFilterAll": MessageLookupByLibrary.simpleMessage("Alles"),
         "itemDetailsDescriptionHeader":
             MessageLookupByLibrary.simpleMessage("Beschreibung:"),
         "itemDetailsForPrefix":
@@ -182,6 +192,14 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Optionen können mehrmals ausgewählt werden"),
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name der Eigenschaft"),
+        "navBarHeaderCrafting":
+            MessageLookupByLibrary.simpleMessage("Herstellen"),
+        "navBarHeaderInventory":
+            MessageLookupByLibrary.simpleMessage("Inventar"),
+        "navBarHeaderLore":
+            MessageLookupByLibrary.simpleMessage("Weltgeschichte"),
+        "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Währung"),
+        "newBalance": MessageLookupByLibrary.simpleMessage("Neues Guthaben"),
         "newGroup": MessageLookupByLibrary.simpleMessage("Neue Gruppe:"),
         "newGroupBtnLabel": MessageLookupByLibrary.simpleMessage("Neue Gruppe"),
         "newImageBtnLabel": MessageLookupByLibrary.simpleMessage("Neues Bild"),
@@ -199,10 +217,19 @@ class MessageLookup extends MessageLookupByLibrary {
             "Noch keine Items verteilt..."),
         "noItemsGrantedToPlayerThisRound":
             MessageLookupByLibrary.simpleMessage("Keine Items in dieser Runde"),
+        "noItemsInCategory": MessageLookupByLibrary.simpleMessage(
+            "Keine Items unter dieser Kategorie"),
+        "noItemsInCategoryCraftable": MessageLookupByLibrary.simpleMessage(
+            "In dieser Kategorie sind keine Items herstellbar"),
+        "noItemsInCategoryErrorText": MessageLookupByLibrary.simpleMessage(
+            "Keine Items unter dieser Kategorie"),
+        "noMoneyDefaultText": MessageLookupByLibrary.simpleMessage("0 Gold"),
         "noOpenJoinRequests":
             MessageLookupByLibrary.simpleMessage("Keine offenen Anfragen"),
         "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
             "Es wurde noch kein Fundort ausgewählt."),
+        "notEnoughBalance": MessageLookupByLibrary.simpleMessage(
+            "Zu wenig Geld für diese Ausgabe"),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
@@ -244,6 +271,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
         "recipeRequirements":
             MessageLookupByLibrary.simpleMessage("Voraussetzungen:"),
+        "reduceBalance":
+            MessageLookupByLibrary.simpleMessage("Guthaben abziehen"),
         "register": MessageLookupByLibrary.simpleMessage("Registrieren"),
         "requiredIngredientCountPrefix":
             MessageLookupByLibrary.simpleMessage("Benötigt:"),
@@ -253,6 +282,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:"),
         "save": MessageLookupByLibrary.simpleMessage("Speichern"),
+        "searchLabel": MessageLookupByLibrary.simpleMessage("Suche"),
         "secondValue": MessageLookupByLibrary.simpleMessage("Zweiter Wert"),
         "secondValuePlaceholder":
             MessageLookupByLibrary.simpleMessage("Der zweiter Wert"),
