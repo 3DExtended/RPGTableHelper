@@ -124,6 +124,15 @@ class _ShowGetPlayerConfigurationModalContentState
 
   @override
   void initState() {
+    pageController = PageController(
+      initialPage: widget.characterValue?.variant ?? 0,
+    );
+
+    Future.delayed(Duration.zero, delayedInitState);
+    super.initState();
+  }
+
+  void delayedInitState() {
     if (widget.statConfiguration.valueType ==
         CharacterStatValueType.multiselect) {
       // jsonSerializedAdditionalData = {"options:":[{"uuid": "3a7fd649-2d76-4a93-8513-d5a8e8249b40", "label": "", "description": ""}], "multiselectIsAllowedToBeSelectedMultipleTimes":false}
@@ -251,10 +260,7 @@ class _ShowGetPlayerConfigurationModalContentState
 
       if (widget.statConfiguration.valueType ==
           CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
-        Future.delayed(Duration.zero, () {
-          if (!context.mounted || !mounted) return;
-          labelDefinitions.add((label: S.of(context).level, uuid: ""));
-        });
+        labelDefinitions.add((label: S.of(context).level, uuid: ""));
       }
 
       List<({String uuid, String value})> filledListOfValues = [];
@@ -297,9 +303,6 @@ class _ShowGetPlayerConfigurationModalContentState
       ).toList();
     }
 
-    pageController = PageController(
-      initialPage: widget.characterValue?.variant ?? 0,
-    );
     setState(() {
       currentlyVisibleVariant = min(
           widget.characterValue?.variant ?? 0,
@@ -353,8 +356,6 @@ class _ShowGetPlayerConfigurationModalContentState
         }
       }
     }
-
-    super.initState();
   }
 
   @override
