@@ -188,5 +188,47 @@
   "addBalance": "Guthaben hinzufügen",
   "reduceBalance": "Guthaben abziehen",
   "newBalance": "Neues Guthaben",
-  "notEnoughBalance": "Zu wenig Geld für diese Ausgabe"
+  "notEnoughBalance": "Zu wenig Geld für diese Ausgabe",
+  "noteblockVisibleFor": "Sichtbar für:",
+  "nothingSelected": "- Nichts ausgewählt -",
+  "characterNameLabel": "Name:",
+  "level": "Level",
+  "count": "Anzahl",
+  "addItems": "Items hinzufügen",
+  "selectGameMode": "Rolle auswählen",
+  "chooseACampagne": "Kampagne auswählen",
+  "startAsDm": "Als DM spielen",
+  "youOwnXCampaigns": "Dir gehören {count} Kampagnen",
+  "@youOwnXCampaigns": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "joinAsPlayer": "Tritt als Spieler bei",
+  "chooseACharacter": "Charakter auswählen",
+  "youOwnXCharacters": "Dir gehören {count} Charaktere",
+  "@youOwnXCharacters": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "campaigneName": "Name",
+  "helperTextForNameOfCampaign": "Wie soll die Kampagne heißen?",
+  "newCampaign": "Neue Kampagne",
+  "noPlayersOnline": "Aktuell keine Spieler online",
+  "currentFightOrdering": "Aktuelle Kampfreihenfolge",
+  "noFIghtStarted": "Aktuell kein Kampf gestartet",
+  "newFightOrdering": "Neue Kampfreihenfolge",
+  "additionalFightParticipants": "Weitere Teilnehmer",
+  "rollForInitiativeBtnLabel": "Kampfreihenfolge würfeln",
+  "rollForInitiative": "Kampfreihenfolge würfeln",
+  "characterName": "Name",
+  "nameOfCharacterHelperText": "Wie heißt dein Charakter?",
+  "campaignName": "Kampagnen Name"
 }

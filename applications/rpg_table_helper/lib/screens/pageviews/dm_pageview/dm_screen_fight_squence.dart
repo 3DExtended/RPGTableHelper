@@ -5,6 +5,7 @@ import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -56,7 +57,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "Aktuelle Kampfreihenfolge",
+                            S.of(context).currentFightOrdering,
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium!
@@ -74,7 +75,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                 : (connectionDetails.fightSequence == null
                                     ? Center(
                                         child: Text(
-                                          "Aktuell kein Kampf gestartet",
+                                          S.of(context).noFIghtStarted,
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -295,7 +296,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "Neue Kampfreihenfolge",
+                            S.of(context).newFightOrdering,
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium!
@@ -315,7 +316,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                         .isEmpty
                                     ? Center(
                                         child: Text(
-                                          "Aktuell keine Player Online",
+                                          S.of(context).noPlayersOnline,
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -388,7 +389,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                 width: 10,
                                                               ),
                                                               Text(
-                                                                "Charakter: ${char.characterName}",
+                                                                "${S.of(context).character} ${char.characterName}",
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
@@ -429,7 +430,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                       Center(
                         child: CustomButton(
                             variant: CustomButtonVariant.AccentButton,
-                            label: "Weitere Teilnehmer",
+                            label: S.of(context).additionalFightParticipants,
                             onPressed: connectionDetails == null ||
                                     connectionDetails.fightSequence == null
                                 ? null
@@ -451,7 +452,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                       Center(
                         child: CustomButton(
                             variant: CustomButtonVariant.AccentButton,
-                            label: "Kampfreihenfolge würfeln",
+                            label: S.of(context).rollForInitiative,
                             onPressed: connectionDetails == null
                                 ? null
                                 : () async {

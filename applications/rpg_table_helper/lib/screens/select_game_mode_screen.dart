@@ -12,6 +12,7 @@ import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
@@ -99,7 +100,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               menuOpen: null,
               useTopSafePadding: true,
               titleWidget: Text(
-                "Select Game Mode", // TODO localize
+                S.of(context).selectGameMode,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
@@ -130,10 +131,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         child: Column(
                           children: [
                             AddableColumnHeader(
-                                title: "Choose a campagne", // TODO localize
-                                subtitle: "Start as DM", // TODO localize
-                                subsubtitle:
-                                    "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
+                                title: S.of(context).chooseACampagne,
+                                subtitle: S.of(context).startAsDm,
+                                subsubtitle: S
+                                    .of(context)
+                                    .youOwnXCampaigns(campagnes?.length ?? 0),
                                 onPressedHandler: () async {
                                   createNewCampagne();
                                 }),
@@ -157,11 +159,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                               width: 20,
                             ),
                             AddableColumnHeader(
-                                title:
-                                    "Choose a character (Join as Player)", // TODO localize
-                                subtitle: "Join as Player", // TODO localize
-                                subsubtitle:
-                                    "You own ${characters?.length ?? 0} character.", // TODO localize
+                                title: S.of(context).chooseACharacter,
+                                subtitle: S.of(context).joinAsPlayer,
+                                subsubtitle: S
+                                    .of(context)
+                                    .youOwnXCharacters(characters?.length ?? 0),
                                 onPressedHandler: () {
                                   // TODO add new character
                                 }),
@@ -226,6 +228,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                 children: [
                                   Expanded(
                                     child: CustomMarkdownBody(
+                                        // TODO remove me?
                                         text:
                                             "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Join Code:__ ${campagne.joinCode}\n\n__Config Length (Debug):__ ${(campagne.rpgConfiguration?.length ?? 0).toString()}"),
                                   ),
@@ -378,8 +381,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         .map((j) => PlayerJoinRequests(
                               campagneJoinRequestId: j.request.id!.$value!,
                               playerCharacterId: j.playerCharacter.id!.$value!,
-                              playerName:
-                                  j.playerCharacter.characterName ?? "Player",
+                              playerName: j.playerCharacter.characterName ??
+                                  S.of(context).characterNameDefault,
                               username: j.username,
                             ))
                         .toList())

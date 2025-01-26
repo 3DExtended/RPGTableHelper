@@ -110,7 +110,7 @@ class _AddNewItemModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Items hinzufügen", // TODO localize/ switch text between add and edit
+                        S.of(context).addItems,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme

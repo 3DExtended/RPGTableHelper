@@ -251,7 +251,10 @@ class _ShowGetPlayerConfigurationModalContentState
 
       if (widget.statConfiguration.valueType ==
           CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
-        labelDefinitions.add((label: "Level", uuid: ""));
+        Future.delayed(Duration.zero, () {
+          if (!context.mounted || !mounted) return;
+          labelDefinitions.add((label: S.of(context).level, uuid: ""));
+        });
       }
 
       List<({String uuid, String value})> filledListOfValues = [];
@@ -1042,7 +1045,7 @@ class _ShowGetPlayerConfigurationModalContentState
                               multiselectOptions = deepCopy;
                             });
                           },
-                          label: "Anzahl",
+                          label: S.of(context).count,
                           startValue: e.value.$5,
                         ),
                         SizedBox(

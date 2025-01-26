@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rpg_table_helper/components/custom_character_card.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
 
 class RenderCharactersAsCards {
   static List<Widget> renderCharactersAsCharacterCard(
+      BuildContext context,
       List<
               ({
                 RpgCharacterConfigurationBase characterToRender,
@@ -23,7 +25,7 @@ class RenderCharactersAsCards {
       var defaultStatTab = rpgConfig.characterStatTabsDefinition
           ?.firstWhere((e) => e.isDefaultTab);
       var characterName = tuple.characterToRender.characterName.trim().isEmpty
-          ? "Player"
+          ? S.of(context).characterNameDefault
           : tuple.characterToRender.characterName;
       var characterImage =
           tuple.characterToRender.getImageUrlWithoutBasePath(rpgConfig);

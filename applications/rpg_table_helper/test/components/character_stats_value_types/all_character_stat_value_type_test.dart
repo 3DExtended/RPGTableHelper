@@ -667,18 +667,20 @@ void main() {
                 ...AppLocalizations.localizationsDelegates,
                 S.delegate
               ],
-              child: Center(
-                child: getPlayerVisualizationWidget(
-                  characterToRenderStatFor:
-                      RpgCharacterConfiguration.getBaseConfiguration(
-                          RpgConfigurationModel.getBaseConfiguration()),
-                  context: context,
-                  onNewStatValue: (newSerializedValue) {},
-                  statConfiguration: testConfiguration.$2,
-                  characterValue: testConfiguration.$3,
-                  characterName: "Frodo",
-                ),
-              ),
+              child: Builder(builder: (context) {
+                return Center(
+                  child: getPlayerVisualizationWidget(
+                    characterToRenderStatFor:
+                        RpgCharacterConfiguration.getBaseConfiguration(
+                            RpgConfigurationModel.getBaseConfiguration()),
+                    context: context,
+                    onNewStatValue: (newSerializedValue) {},
+                    statConfiguration: testConfiguration.$2,
+                    characterValue: testConfiguration.$3,
+                    characterName: "Frodo",
+                  ),
+                );
+              }),
             );
           }),
         ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -13,8 +14,8 @@ class DmPageHelpers {
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: false,
       statUuid: "00000000-0000-0000-0000-000000000000",
-      name: "Name",
-      helperText: "Wie soll die Kampagne heißen?",
+      name: S.of(context).campaigneName,
+      helperText: S.of(context).helperTextForNameOfCampaign,
       valueType: CharacterStatValueType.singleLineText,
       editType: CharacterStatEditType.static,
     );
@@ -23,7 +24,7 @@ class DmPageHelpers {
         context: context,
         statConfiguration: characterNameStat,
         characterToRenderStatFor: null,
-        characterName: "Neue Kampagne",
+        characterName: S.of(context).newCampaign,
         hideAdditionalSetting: true,
         hideVariantSelection: true,
         characterValue: currentCampagneName == null

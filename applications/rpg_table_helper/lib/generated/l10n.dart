@@ -1709,6 +1709,266 @@ class S {
       args: [],
     );
   }
+
+  /// `Visible for:`
+  String get noteblockVisibleFor {
+    return Intl.message(
+      'Visible for:',
+      name: 'noteblockVisibleFor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `- Nothinge selected -`
+  String get nothingSelected {
+    return Intl.message(
+      '- Nothinge selected -',
+      name: 'nothingSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name:`
+  String get characterNameLabel {
+    return Intl.message(
+      'Name:',
+      name: 'characterNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level`
+  String get level {
+    return Intl.message(
+      'Level',
+      name: 'level',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Count`
+  String get count {
+    return Intl.message(
+      'Count',
+      name: 'count',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add items`
+  String get addItems {
+    return Intl.message(
+      'Add items',
+      name: 'addItems',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Game Mode`
+  String get selectGameMode {
+    return Intl.message(
+      'Select Game Mode',
+      name: 'selectGameMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a campaign`
+  String get chooseACampagne {
+    return Intl.message(
+      'Choose a campaign',
+      name: 'chooseACampagne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Play as DM`
+  String get startAsDm {
+    return Intl.message(
+      'Play as DM',
+      name: 'startAsDm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You own {count} campaigns`
+  String youOwnXCampaigns(Object count) {
+    return Intl.message(
+      'You own $count campaigns',
+      name: 'youOwnXCampaigns',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Join as Player`
+  String get joinAsPlayer {
+    return Intl.message(
+      'Join as Player',
+      name: 'joinAsPlayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a character`
+  String get chooseACharacter {
+    return Intl.message(
+      'Choose a character',
+      name: 'chooseACharacter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You own {count} characters`
+  String youOwnXCharacters(Object count) {
+    return Intl.message(
+      'You own $count characters',
+      name: 'youOwnXCharacters',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Name`
+  String get campaigneName {
+    return Intl.message(
+      'Name',
+      name: 'campaigneName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The name of the campaign`
+  String get helperTextForNameOfCampaign {
+    return Intl.message(
+      'The name of the campaign',
+      name: 'helperTextForNameOfCampaign',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New campaign`
+  String get newCampaign {
+    return Intl.message(
+      'New campaign',
+      name: 'newCampaign',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currently no players are online`
+  String get noPlayersOnline {
+    return Intl.message(
+      'Currently no players are online',
+      name: 'noPlayersOnline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current fight ordering`
+  String get currentFightOrdering {
+    return Intl.message(
+      'Current fight ordering',
+      name: 'currentFightOrdering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No fight started yet`
+  String get noFIghtStarted {
+    return Intl.message(
+      'No fight started yet',
+      name: 'noFIghtStarted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New fight ordering`
+  String get newFightOrdering {
+    return Intl.message(
+      'New fight ordering',
+      name: 'newFightOrdering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Additional fight participants`
+  String get additionalFightParticipants {
+    return Intl.message(
+      'Additional fight participants',
+      name: 'additionalFightParticipants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Roll for initiative`
+  String get rollForInitiative {
+    return Intl.message(
+      'Roll for initiative',
+      name: 'rollForInitiative',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get characterName {
+    return Intl.message(
+      'Name',
+      name: 'characterName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The name of the character`
+  String get nameOfCharacterHelperText {
+    return Intl.message(
+      'The name of the character',
+      name: 'nameOfCharacterHelperText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Campaign name`
+  String get campaignName {
+    return Intl.message(
+      'Campaign name',
+      name: 'campaignName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Roll for initiative`
+  String get rollForInitiativeBtnLabel {
+    return Intl.message(
+      'Roll for initiative',
+      name: 'rollForInitiativeBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

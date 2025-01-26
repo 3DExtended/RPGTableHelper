@@ -127,7 +127,7 @@ class _LoreBlockRenderingEditableState
               child: Column(
                 children: [
                   Text(
-                    "Sichtbar für:",
+                    S.of(context).noteblockVisibleFor,
                     style: Theme.of(context)
                         .textTheme
                         .labelMedium!
@@ -187,10 +187,12 @@ class _LoreBlockRenderingEditableState
     for (var user in usersExceptMe) {
       if (permittedUsers.contains(user.userId)) {
         permittedUserResult.add(user.copyWith(
-            playerCharacterName: user.isDm ? "DM" : user.playerCharacterName));
+            playerCharacterName:
+                user.isDm ? S.of(context).dm : user.playerCharacterName));
       } else {
         prohibitedUserResult.add(user.copyWith(
-            playerCharacterName: user.isDm ? "DM" : user.playerCharacterName));
+            playerCharacterName:
+                user.isDm ? S.of(context).dm : user.playerCharacterName));
       }
     }
 

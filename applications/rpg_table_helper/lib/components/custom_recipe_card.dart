@@ -203,32 +203,7 @@ class CustomRecipeCard extends StatelessWidget {
                                                 ),
                                               ),
                                             ],
-                                          )
-                                          // Row(
-                                          //   children: [
-                                          //     Expanded(
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Expanded(
-                                          //             child: AutoSizeText(
-                                          //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //     Expanded(
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Expanded(
-                                          //             child: AutoSizeText(
-                                          //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                          ),
+                                          )),
                                     ),
                                   ),
                                 ),

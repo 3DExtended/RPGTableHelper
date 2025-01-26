@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -18,8 +19,8 @@ class PlayerPageHelpers {
       isOptionalForAlternateForms: false,
       isOptionalForCompanionCharacters: false,
       statUuid: "00000000-0000-0000-0000-000000000000",
-      name: "Name",
-      helperText: "Wie heißt dein Charakter?",
+      name: S.of(context).characterName,
+      helperText: S.of(context).nameOfCharacterHelperText,
       valueType: CharacterStatValueType.singleLineText,
       editType: CharacterStatEditType.static,
     );
@@ -30,7 +31,8 @@ class PlayerPageHelpers {
         hideAdditionalSetting: true,
         hideVariantSelection: true,
         characterToRenderStatFor: null,
-        characterName: currentCharacterName ?? "Player Name",
+        characterName:
+            currentCharacterName ?? S.of(context).characterNameDefault,
         characterValue: currentCharacterName == null
             ? null
             : RpgCharacterStatValue(

@@ -26,6 +26,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(property) => "The value of ${property}";
 
+  static String m3(count) => "You own ${count} campaigns";
+
+  static String m4(count) => "You own ${count} characters";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "add": MessageLookupByLibrary.simpleMessage("Add"),
@@ -37,10 +41,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "addCharacterToCampagneModalTitle":
             MessageLookupByLibrary.simpleMessage("Add character to campaign"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Image"),
+        "addItems": MessageLookupByLibrary.simpleMessage("Add items"),
         "addParagraphBtnLabel":
             MessageLookupByLibrary.simpleMessage("Paragraph"),
         "additionalElement":
             MessageLookupByLibrary.simpleMessage("Add element"),
+        "additionalFightParticipants": MessageLookupByLibrary.simpleMessage(
+            "Additional fight participants"),
         "additionalSettings":
             MessageLookupByLibrary.simpleMessage("Additional settings"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("All players:"),
@@ -58,15 +65,23 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("The calculated value"),
         "campaignManagement":
             MessageLookupByLibrary.simpleMessage("Campaign management"),
+        "campaignName": MessageLookupByLibrary.simpleMessage("Campaign name"),
+        "campaigneName": MessageLookupByLibrary.simpleMessage("Name"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "character": MessageLookupByLibrary.simpleMessage("Character:"),
+        "characterName": MessageLookupByLibrary.simpleMessage("Name"),
         "characterNameDefault":
             MessageLookupByLibrary.simpleMessage("Player name"),
+        "characterNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
         "characterNameWithLevelAndConfigurableDetails":
             MessageLookupByLibrary.simpleMessage(
                 "Character name with level and configurable details"),
         "characterOverview":
             MessageLookupByLibrary.simpleMessage("Charakter overview"),
+        "chooseACampagne":
+            MessageLookupByLibrary.simpleMessage("Choose a campaign"),
+        "chooseACharacter":
+            MessageLookupByLibrary.simpleMessage("Choose a character"),
         "companionOverview":
             MessageLookupByLibrary.simpleMessage("Companion overview"),
         "completeRegistration":
@@ -74,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "configureProperties":
             MessageLookupByLibrary.simpleMessage("Configure properties"),
         "configurePropertiesForCharacterNameSuffix": m0,
+        "count": MessageLookupByLibrary.simpleMessage("Count"),
         "craft": MessageLookupByLibrary.simpleMessage("Craft"),
         "craftableAmountText":
             MessageLookupByLibrary.simpleMessage("Craftable:"),
@@ -83,6 +99,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Create new account"),
         "currentBalance":
             MessageLookupByLibrary.simpleMessage("Current balance"),
+        "currentFightOrdering":
+            MessageLookupByLibrary.simpleMessage("Current fight ordering"),
         "currentValue": MessageLookupByLibrary.simpleMessage("Current value"),
         "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "The current value for this property"),
@@ -124,6 +142,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "genericErrorModalTechnicalDetailsHeader":
             MessageLookupByLibrary.simpleMessage("Technical details: "),
         "grantItems": MessageLookupByLibrary.simpleMessage("Grant items"),
+        "helperTextForNameOfCampaign":
+            MessageLookupByLibrary.simpleMessage("The name of the campaign"),
         "hideHeading": MessageLookupByLibrary.simpleMessage("Hide heading"),
         "hidePropertyForCharacter": MessageLookupByLibrary.simpleMessage(
             "Hide property for my character"),
@@ -154,6 +174,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Some item description"),
         "itemsToBeFoundInPlaceMarkdown": MessageLookupByLibrary.simpleMessage(
             "## Items to be found in place:"),
+        "joinAsPlayer": MessageLookupByLibrary.simpleMessage("Join as Player"),
         "joinCode": MessageLookupByLibrary.simpleMessage("Join Code:"),
         "joinCodeForNewPlayers": MessageLookupByLibrary.simpleMessage(
             "Join code (for new players):"),
@@ -163,6 +184,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Last granted items"),
         "lastGrantedItemsMarkdownPrefix":
             MessageLookupByLibrary.simpleMessage("Last granted items:"),
+        "level": MessageLookupByLibrary.simpleMessage("Level"),
         "levelAbbr": MessageLookupByLibrary.simpleMessage("LVL"),
         "listOfIntegersWithIcons": MessageLookupByLibrary.simpleMessage(
             "List of number values with icons"),
@@ -184,6 +206,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "multiselectOptionsAreSelectableMultipleTimes":
             MessageLookupByLibrary.simpleMessage(
                 "Multiselect options are selectable multiple times"),
+        "nameOfCharacterHelperText":
+            MessageLookupByLibrary.simpleMessage("The name of the character"),
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name of property"),
         "navBarHeaderCrafting":
@@ -193,6 +217,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "navBarHeaderLore": MessageLookupByLibrary.simpleMessage("Lore"),
         "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Currency"),
         "newBalance": MessageLookupByLibrary.simpleMessage("New balance"),
+        "newCampaign": MessageLookupByLibrary.simpleMessage("New campaign"),
+        "newFightOrdering":
+            MessageLookupByLibrary.simpleMessage("New fight ordering"),
         "newGroup": MessageLookupByLibrary.simpleMessage("New grouping:"),
         "newGroupBtnLabel":
             MessageLookupByLibrary.simpleMessage("New grouping"),
@@ -206,6 +233,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("New property"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("New tab"),
+        "noFIghtStarted":
+            MessageLookupByLibrary.simpleMessage("No fight started yet"),
         "noItemsGranted":
             MessageLookupByLibrary.simpleMessage("No items granted yet..."),
         "noItemsGrantedToPlayerThisRound":
@@ -221,8 +250,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No open requests"),
         "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
             "No place of finding selected."),
+        "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
+            "Currently no players are online"),
         "notEnoughBalance": MessageLookupByLibrary.simpleMessage(
             "Not enough balance for this transaction"),
+        "noteblockVisibleFor":
+            MessageLookupByLibrary.simpleMessage("Visible for:"),
+        "nothingSelected":
+            MessageLookupByLibrary.simpleMessage("- Nothinge selected -"),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
@@ -269,6 +304,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "register": MessageLookupByLibrary.simpleMessage("Register"),
         "requiredIngredientCountPrefix":
             MessageLookupByLibrary.simpleMessage("Required:"),
+        "rollForInitiative":
+            MessageLookupByLibrary.simpleMessage("Roll for initiative"),
+        "rollForInitiativeBtnLabel":
+            MessageLookupByLibrary.simpleMessage("Roll for initiative"),
         "rollOfInititive":
             MessageLookupByLibrary.simpleMessage("Roll of initiative"),
         "rpgConfigurationDmWizardStep2Tutorial":
@@ -282,6 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "select": MessageLookupByLibrary.simpleMessage("Select"),
         "selectAColor": MessageLookupByLibrary.simpleMessage("Select a color:"),
         "selectAnIcon": MessageLookupByLibrary.simpleMessage("Select an icon:"),
+        "selectGameMode":
+            MessageLookupByLibrary.simpleMessage("Select Game Mode"),
         "selectIconModalTitle":
             MessageLookupByLibrary.simpleMessage("Select icon"),
         "send": MessageLookupByLibrary.simpleMessage("Absenden"),
@@ -292,9 +333,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sign in with Google"),
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Single line text"),
+        "startAsDm": MessageLookupByLibrary.simpleMessage("Play as DM"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m2,
-        "you": MessageLookupByLibrary.simpleMessage("You")
+        "you": MessageLookupByLibrary.simpleMessage("You"),
+        "youOwnXCampaigns": m3,
+        "youOwnXCharacters": m4
       };
 }

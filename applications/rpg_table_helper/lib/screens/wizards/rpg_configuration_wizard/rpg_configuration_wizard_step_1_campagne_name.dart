@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 
 class RpgConfigurationWizardStep1CampagneName extends WizardStepBase {
@@ -37,7 +38,7 @@ class _RpgConfigurationWizardStep1CampagneNameState
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Kampagnen Name");
+      widget.setWizardTitle(S.of(context).campaignName);
     });
     textEditingController.addListener(_updateStateForFormValidation);
     super.initState();
@@ -88,7 +89,7 @@ Wie heißt deine Kampagne?'''; // TODO localize
       contentFlex: 2,
       contentChildren: [
         CustomTextField(
-            labelText: "Campagne Name:",
+            labelText: "${S.of(context).campaignName}:",
             keyboardType: TextInputType.text,
             textEditingController: textEditingController),
       ],

@@ -126,7 +126,7 @@ Widget renderCompanionSelector(
     if (companionOfCharacter == null) continue;
 
     // TODO search for image (still missing access to rpgconfig here...)
-    // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(charactersToRender, rpgConfig)
+    // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(context, charactersToRender, rpgConfig)
 
     companionDetailsToRender.add((
       characterName: companionOfCharacter.characterName,
@@ -243,7 +243,7 @@ Widget renderMultiselectStat(
       ),
       if (valueToConfigMapped.isEmpty)
         Text(
-          "- Nichts ausgewählt -",
+          S.of(context).nothingSelected,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: const Color.fromARGB(255, 193, 193, 193), fontSize: 16),
         ),
@@ -882,7 +882,7 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                       columnCrossAxisAlignment: CrossAxisAlignment.start,
                       columnMainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        "Name:",
+                        S.of(context).characterNameLabel,
                         characterName,
                         ...filledValues
                             .map((t) => ["${t.label}:", t.value])

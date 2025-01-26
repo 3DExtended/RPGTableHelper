@@ -26,6 +26,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(property) => "Der Wert von ${property}";
 
+  static String m3(count) => "Dir gehören ${count} Kampagnen";
+
+  static String m4(count) => "Dir gehören ${count} Charaktere";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "add": MessageLookupByLibrary.simpleMessage("Hinzufügen"),
@@ -39,9 +43,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Charakter zur Kampagne hinzufügen"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Bild"),
+        "addItems": MessageLookupByLibrary.simpleMessage("Items hinzufügen"),
         "addParagraphBtnLabel": MessageLookupByLibrary.simpleMessage("Absatz"),
         "additionalElement":
             MessageLookupByLibrary.simpleMessage("Neues Element"),
+        "additionalFightParticipants":
+            MessageLookupByLibrary.simpleMessage("Weitere Teilnehmer"),
         "additionalSettings":
             MessageLookupByLibrary.simpleMessage("Erweiterte Optionen"),
         "allPlayers": MessageLookupByLibrary.simpleMessage("Alle Spieler:"),
@@ -59,15 +66,23 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Der berechnete Wert"),
         "campaignManagement":
             MessageLookupByLibrary.simpleMessage("Kampagnen Management"),
+        "campaignName": MessageLookupByLibrary.simpleMessage("Kampagnen Name"),
+        "campaigneName": MessageLookupByLibrary.simpleMessage("Name"),
         "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
         "character": MessageLookupByLibrary.simpleMessage("Charakter:"),
+        "characterName": MessageLookupByLibrary.simpleMessage("Name"),
         "characterNameDefault":
             MessageLookupByLibrary.simpleMessage("Spielername"),
+        "characterNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
         "characterNameWithLevelAndConfigurableDetails":
             MessageLookupByLibrary.simpleMessage(
                 "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)"),
         "characterOverview":
             MessageLookupByLibrary.simpleMessage("Charakter Übersicht"),
+        "chooseACampagne":
+            MessageLookupByLibrary.simpleMessage("Kampagne auswählen"),
+        "chooseACharacter":
+            MessageLookupByLibrary.simpleMessage("Charakter auswählen"),
         "companionOverview":
             MessageLookupByLibrary.simpleMessage("Begleiter Übersicht"),
         "completeRegistration":
@@ -75,6 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "configureProperties":
             MessageLookupByLibrary.simpleMessage("Eigenschaften konfigurieren"),
         "configurePropertiesForCharacterNameSuffix": m0,
+        "count": MessageLookupByLibrary.simpleMessage("Anzahl"),
         "craft": MessageLookupByLibrary.simpleMessage("Herstellen"),
         "craftableAmountText":
             MessageLookupByLibrary.simpleMessage("Herstellbar:"),
@@ -84,6 +100,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Neuen Account anlegen"),
         "currentBalance":
             MessageLookupByLibrary.simpleMessage("Aktuelles Guthaben"),
+        "currentFightOrdering":
+            MessageLookupByLibrary.simpleMessage("Aktuelle Kampfreihenfolge"),
         "currentValue": MessageLookupByLibrary.simpleMessage("Aktueller Wert"),
         "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
             "Der aktuelle Wert für diese Eigenschaft"),
@@ -128,6 +146,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "genericErrorModalTechnicalDetailsHeader":
             MessageLookupByLibrary.simpleMessage("Technische Details: "),
         "grantItems": MessageLookupByLibrary.simpleMessage("Items verteilen"),
+        "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
+            "Wie soll die Kampagne heißen?"),
         "hideHeading":
             MessageLookupByLibrary.simpleMessage("Überschrift ausblenden"),
         "hidePropertyForCharacter": MessageLookupByLibrary.simpleMessage(
@@ -159,6 +179,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Beschreibung eines Items"),
         "itemsToBeFoundInPlaceMarkdown": MessageLookupByLibrary.simpleMessage(
             "## Auffindbare Items in Fundort: "),
+        "joinAsPlayer":
+            MessageLookupByLibrary.simpleMessage("Tritt als Spieler bei"),
         "joinCode": MessageLookupByLibrary.simpleMessage("Join Code:"),
         "joinCodeForNewPlayers": MessageLookupByLibrary.simpleMessage(
             "Join Code (für neue Spieler):"),
@@ -168,6 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Letzte verteilte Items"),
         "lastGrantedItemsMarkdownPrefix": MessageLookupByLibrary.simpleMessage(
             "Zuletzt wurden diese Items verteilt:"),
+        "level": MessageLookupByLibrary.simpleMessage("Level"),
         "levelAbbr": MessageLookupByLibrary.simpleMessage("LVL"),
         "listOfIntegersWithIcons": MessageLookupByLibrary.simpleMessage(
             "Liste von Zahlen-Werten mit Icons"),
@@ -190,6 +213,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "multiselectOptionsAreSelectableMultipleTimes":
             MessageLookupByLibrary.simpleMessage(
                 "Optionen können mehrmals ausgewählt werden"),
+        "nameOfCharacterHelperText":
+            MessageLookupByLibrary.simpleMessage("Wie heißt dein Charakter?"),
         "nameOfPropertyLabel":
             MessageLookupByLibrary.simpleMessage("Name der Eigenschaft"),
         "navBarHeaderCrafting":
@@ -200,6 +225,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Weltgeschichte"),
         "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Währung"),
         "newBalance": MessageLookupByLibrary.simpleMessage("Neues Guthaben"),
+        "newCampaign": MessageLookupByLibrary.simpleMessage("Neue Kampagne"),
+        "newFightOrdering":
+            MessageLookupByLibrary.simpleMessage("Neue Kampfreihenfolge"),
         "newGroup": MessageLookupByLibrary.simpleMessage("Neue Gruppe:"),
         "newGroupBtnLabel": MessageLookupByLibrary.simpleMessage("Neue Gruppe"),
         "newImageBtnLabel": MessageLookupByLibrary.simpleMessage("Neues Bild"),
@@ -213,6 +241,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("Neue Eigenschaft"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("Neuer Tab"),
+        "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
+            "Aktuell kein Kampf gestartet"),
         "noItemsGranted": MessageLookupByLibrary.simpleMessage(
             "Noch keine Items verteilt..."),
         "noItemsGrantedToPlayerThisRound":
@@ -228,8 +258,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Keine offenen Anfragen"),
         "noPlaceOfFindingSelected": MessageLookupByLibrary.simpleMessage(
             "Es wurde noch kein Fundort ausgewählt."),
+        "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
+            "Aktuell keine Spieler online"),
         "notEnoughBalance": MessageLookupByLibrary.simpleMessage(
             "Zu wenig Geld für diese Ausgabe"),
+        "noteblockVisibleFor":
+            MessageLookupByLibrary.simpleMessage("Sichtbar für:"),
+        "nothingSelected":
+            MessageLookupByLibrary.simpleMessage("- Nichts ausgewählt -"),
         "offline": MessageLookupByLibrary.simpleMessage("Offline"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "online": MessageLookupByLibrary.simpleMessage("Online"),
@@ -276,6 +312,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "register": MessageLookupByLibrary.simpleMessage("Registrieren"),
         "requiredIngredientCountPrefix":
             MessageLookupByLibrary.simpleMessage("Benötigt:"),
+        "rollForInitiative":
+            MessageLookupByLibrary.simpleMessage("Kampfreihenfolge würfeln"),
+        "rollForInitiativeBtnLabel":
+            MessageLookupByLibrary.simpleMessage("Kampfreihenfolge würfeln"),
         "rollOfInititive":
             MessageLookupByLibrary.simpleMessage("Reihenfolgenwurf"),
         "rpgConfigurationDmWizardStep2Tutorial":
@@ -290,6 +330,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectAColor":
             MessageLookupByLibrary.simpleMessage("Farbe auswählen:"),
         "selectAnIcon": MessageLookupByLibrary.simpleMessage("Icon auswählen:"),
+        "selectGameMode":
+            MessageLookupByLibrary.simpleMessage("Rolle auswählen"),
         "selectIconModalTitle":
             MessageLookupByLibrary.simpleMessage("Icon auswählen"),
         "send": MessageLookupByLibrary.simpleMessage("Absenden"),
@@ -300,9 +342,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mit Google anmelden"),
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Einzeiliger Text"),
+        "startAsDm": MessageLookupByLibrary.simpleMessage("Als DM spielen"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
         "valueOfPropertyWithName": m2,
-        "you": MessageLookupByLibrary.simpleMessage("Du")
+        "you": MessageLookupByLibrary.simpleMessage("Du"),
+        "youOwnXCampaigns": m3,
+        "youOwnXCharacters": m4
       };
 }
