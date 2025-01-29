@@ -322,17 +322,6 @@ class InterruptedBorder extends StatelessWidget {
             alignment: Alignment.bottomRight,
             scalar: scalar,
             backgroundColor: backgroundColor),
-
-        // TODO discuss with marie if good
-        // BorderCornerStone(
-        //     alignment: Alignment.centerLeft,
-        //     scalar: scalar,
-        //     backgroundColor: backgroundColor),
-        // BorderCornerStone(
-        //     alignment: Alignment.centerRight,
-        //     scalar: scalar,
-        //     backgroundColor: backgroundColor),
-
         Padding(padding: EdgeInsets.all(borderSize * scalar), child: child),
       ],
     );

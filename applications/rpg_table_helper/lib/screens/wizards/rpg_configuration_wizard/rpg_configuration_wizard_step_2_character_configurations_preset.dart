@@ -11,6 +11,7 @@ import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -98,19 +99,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
       });
     });
 
-    var stepHelperText = '''
-
-Nun kommen wir zu den Character Sheets.
-
-Jedes RPG hat unterschiedliche charakterisierende Eigenschaften für die Spieler (bspw. wieviele Lebenspunkte ein Spieler hat).
-
-Für jede Eigenschaft muss du, also der DM, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei brauchen wir je Eigenschaft drei Infos von dir:
-
-1. Name der Eigenschaft: Wie soll dieser Stat auf dem Character Sheet heißen? (bspw. “HP”, “SP”, “Name”, etc.)
-2. Werteart der Eigenschaft: Handelt es sich bspw. nur um einen Text, welchen der Spieler anpassen kann (bspw. Hintergrund Story zum Character) oder doch um einen Zahlenwert (bspw. den Lebenspunkten).
-3. Änderungsart: Manche von diesen Eigenschaften werden regelmäßig angepasst (bspw. die aktuellen Lebenspunkte), manche hingegen werden nur selten verändert (bspw. die maximalen Lebenspunkte). Damit das bei der Erstellung der Charactersheets berücksichtig werden kann, musst du uns diese Information mitgeben.
-
-Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen Konfigurationen und entsprechendem Aussehen auf den Character Sheets finden:'''; // TODO localize
+    var stepHelperText = S.of(context).rpgConfigurationDmWizardStep2Tutorial;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
@@ -168,7 +157,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "Default Tab",
+                        S.of(context).defaultTab,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
@@ -265,7 +254,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                             useDarkColor: true,
                                           ),
                                           Center(
-                                            child: Text("Neue Gruppe:"),
+                                            child: Text(S.of(context).newGroup),
                                           ),
                                         ],
                                       ),
@@ -304,7 +293,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                               Expanded(
                                                 child: CustomMarkdownBody(
                                                   text:
-                                                      "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString()})",
+                                                      "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString(context)})",
                                                 ),
                                               ),
                                             ],
@@ -387,7 +376,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                                   stat: null));
                         });
                       },
-                      label: "Neue Gruppe",
+                      label: S.of(context).newGroupBtnLabel,
                       icon: Theme(
                           data: ThemeData(
                             iconTheme: const IconThemeData(
@@ -432,7 +421,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
                           });
                         });
                       },
-                      label: "Neue Eigenschaft",
+                      label: S.of(context).newPropertyBtnLabel,
                       icon: Theme(
                           data: ThemeData(
                             iconTheme: const IconThemeData(
@@ -467,7 +456,7 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
           onPressed: () {
             addNewTab();
           },
-          label: "Neuer Tab",
+          label: S.of(context).newTabBtnLabel,
           icon: Theme(
               data: ThemeData(
                 iconTheme: const IconThemeData(
@@ -512,13 +501,11 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
     var constructedTabs = tabsToEdit.map((tuple) {
       List<CharacterStatDefinition> correctyGroupedStats = [];
 
-      String? lastSeenGroup;
       int groupCountInTab = 0;
 
       for (var groupStat
           in (statsUnderTab[tuple.$1] ?? List<StatOrGroupIndicator>.empty())) {
         if (groupStat.groupHandleId != null) {
-          lastSeenGroup = groupStat.groupHandleId;
           groupCountInTab++;
         } else {
           correctyGroupedStats
@@ -542,30 +529,31 @@ Falls du mehr Erklärung brauchst, kannst du hier eine Beispielseite mit allen K
 }
 
 extension on CharacterStatValueType {
-  toCustomString() {
+  toCustomString(BuildContext context) {
     switch (this) {
       case CharacterStatValueType.int:
-        return "Zahlen-Wert";
+        return S.of(context).integerValue;
       case CharacterStatValueType.listOfIntsWithIcons:
-        return "Liste von Zahlen-Werten mit Icons";
+        return S.of(context).listOfIntegersWithIcons;
       case CharacterStatValueType.intWithMaxValue:
-        return "Zahlen-Wert mit maximal Wert";
+        return S.of(context).integerValueWithMaxValue;
       case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
-        return "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)";
+        return S.of(context).characterNameWithLevelAndConfigurableDetails;
       case CharacterStatValueType.listOfIntWithCalculatedValues:
-        return "Gruppe von Zahlen-Wert mit zusätzlichem Wert";
+        return S.of(context).listOfInterValuesWithCalculatedIntegerValues;
+
       case CharacterStatValueType.intWithCalculatedValue:
-        return "Zahlen-Wert mit zusätzlicher Zahl";
+        return S.of(context).integerValueWithCalculatedValue;
       case CharacterStatValueType.multiLineText:
-        return "Mehrzeiliger Text";
+        return S.of(context).multilineText;
       case CharacterStatValueType.singleImage:
-        return "Generiertes Bild";
+        return S.of(context).generatedImage;
       case CharacterStatValueType.singleLineText:
-        return "Einzeiliger Text";
+        return S.of(context).singleLineText;
       case CharacterStatValueType.multiselect:
-        return "Mehrfach-Auswahl";
+        return S.of(context).multiselectOption;
       case CharacterStatValueType.companionSelector:
-        return "Begleiter Übersicht";
+        return S.of(context).companionOverview;
     }
   }
 }

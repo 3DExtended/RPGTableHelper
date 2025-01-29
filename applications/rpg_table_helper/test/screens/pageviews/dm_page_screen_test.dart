@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -20,6 +21,7 @@ void main() {
     (1, "dmplayeroverviewscreen"),
     (2, "dminitiativescreen"),
     (3, "dmgrantitemsscreen"),
+    (4, "dmlorescreen"),
   ];
 
   group('dmpagescreens renderings', () {
@@ -27,7 +29,7 @@ void main() {
 
     for (var testcase in testCases) {
       testConfigurations(
-        disableLocals: true,
+        disableLocals: false,
         pathPrefix: "../",
         widgetName: 'dmpagescreens${testcase.$2}',
         useMaterialAppWrapper: true,
@@ -60,13 +62,15 @@ void main() {
                               (
                                 "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
                                 "Frodo",
-                                17
+                                21
                               ),
+                              (null, "Gegner #2", 17),
                               (
                                 "0eff8827-14f1-46a1-8695-ef7dc5323137",
                                 "Gandalf",
-                                17
+                                16
                               ),
+                              (null, "Gegner #1", 15),
                             ]),
                         isConnected: true,
                         isConnecting: true,
@@ -131,6 +135,7 @@ void main() {
                             $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d"),
                         configuration:
                             RpgCharacterConfiguration.getBaseConfiguration(
+                                    variant: 0,
                                     RpgConfigurationModel
                                         .getBaseConfiguration())
                                 .copyWith(characterName: "Gandalf"),
@@ -144,7 +149,11 @@ void main() {
           child: MaterialApp(
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               darkTheme: ThemeData.dark(),
               themeMode: ThemeMode.dark,

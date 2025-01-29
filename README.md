@@ -50,6 +50,10 @@ Below are visual examples of the app’s interface:
 
 <img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdmcampagnemanagmentscreen/1 - dmpagescreensdmcampagnemanagmentscreen (Language de, default).ipad 6th gen landscape.png" width="768">
 
+#### DM Inititive Screen
+
+<img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdminitiativescreen/1%20-%20dmpagescreensdminitiativescreen%20(Language%20de,%20default).ipad%20pro%2011inch%204th%20gen.png" width="768">
+
 #### Player Character Stats Screen
 
 <img src="/applications/rpg_table_helper/test/goldens/playerpagescreens1-playerstatsscreen/1 - playerpagescreens1-playerstatsscreen (Language de, default).ipad pro 11inch 4th gen.png" width="768">
@@ -120,6 +124,32 @@ To run the app, ensure you have the following installed:
     cd applications/rpg_table_helper
     flutter run
     ```
+
+### Other Useful Commands
+
+#### Add efcore migration
+
+Run this in the root folder:
+```dotnet ef migrations add <Name> -c RpgDbContext -s applications/RPGTableHelper.WebApi -p libraries/RPGTableHelper.DataLayer```
+
+```dotnet ef database update -c RpgDbContext -s applications/RPGTableHelper.WebApi -p libraries/RPGTableHelper.DataLayer```
+
+#### Update C# dependencies
+
+```dotnet outdated -u:Prompt -r```
+
+**NOTE:** To find, why a given dependency is in your repository search all ```obj/project.assets``` files.
+
+#### Code Coverage
+
+```sh
+dotnet test --collect:"XPlat Code Coverage" --results-directory cobertura
+reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
+reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml")
+COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc)
+'echo "TOTAL_COVERAGE=$COVERAGE%"'
+```
 
 ## 🛠️ Technologies Used
 

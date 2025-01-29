@@ -104,7 +104,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest();
             }
 
-            var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}";
+            var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
             return Ok(urlForImage);
         }
 
@@ -211,7 +211,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest();
             }
 
-            var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}";
+            var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
             return Ok(urlForImage);
         }
 

@@ -10,4 +10,6 @@ public class ImageBlockEntity : NoteBlockEntityBase
     public virtual ImageMetaDataEntity? ImageMetaData { get; set; }
 
     public string PublicImageUrl { get; set; } = default!;
+
+    public string? MarkdownText { get; set; } = null;
 }

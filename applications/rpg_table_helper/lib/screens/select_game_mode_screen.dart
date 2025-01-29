@@ -10,8 +10,9 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
@@ -99,7 +100,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               menuOpen: null,
               useTopSafePadding: true,
               titleWidget: Text(
-                "Select Game Mode", // TODO localize
+                S.of(context).selectGameMode,
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
@@ -124,67 +125,66 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         ),
                       ],
                     )
-                  : LayoutBuilder(builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              AddableColumnHeader(
-                                  title: "Choose a campagne", // TODO localize
-                                  subtitle: "Start as DM", // TODO localize
-                                  subsubtitle:
-                                      "You own ${campagnes?.length ?? 0} campagnes.", // TODO localize
-                                  onPressedHandler: () async {
-                                    createNewCampagne();
-                                  }),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...getOpenCampagnes(),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                              ),
-                              HorizontalLine(),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                              ),
-                              AddableColumnHeader(
-                                  title:
-                                      "Choose a character (Join as Player)", // TODO localize
-                                  subtitle: "Join as Player", // TODO localize
-                                  subsubtitle:
-                                      "You own ${characters?.length ?? 0} character.", // TODO localize
-                                  onPressedHandler: () {
-                                    // TODO add new character
-                                  }),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...getCharacters(),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                                width: 20,
-                              )
-                            ],
-                          ),
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            AddableColumnHeader(
+                                title: S.of(context).chooseACampagne,
+                                subtitle: S.of(context).startAsDm,
+                                subsubtitle: S
+                                    .of(context)
+                                    .youOwnXCampaigns(campagnes?.length ?? 0),
+                                onPressedHandler: () async {
+                                  createNewCampagne();
+                                }),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Wrap(
+                              runSpacing: 10,
+                              spacing: 10,
+                              children: [
+                                ...getOpenCampagnes(),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                            ),
+                            HorizontalLine(),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                            ),
+                            AddableColumnHeader(
+                                title: S.of(context).chooseACharacter,
+                                subtitle: S.of(context).joinAsPlayer,
+                                subsubtitle: S
+                                    .of(context)
+                                    .youOwnXCharacters(characters?.length ?? 0),
+                                onPressedHandler: () {
+                                  // TODO add new character
+                                }),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Wrap(
+                              runSpacing: 10,
+                              spacing: 10,
+                              children: [
+                                ...getCharacters(),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                            )
+                          ],
                         ),
-                      );
-                    }),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -201,7 +201,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   await onCampagneSelected(campagne);
                 },
                 minSize: 0,
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: darkColor),
@@ -228,6 +228,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                 children: [
                                   Expanded(
                                     child: CustomMarkdownBody(
+                                        // TODO remove me?
                                         text:
                                             "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Join Code:__ ${campagne.joinCode}\n\n__Config Length (Debug):__ ${(campagne.rpgConfiguration?.length ?? 0).toString()}"),
                                   ),
@@ -251,7 +252,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               constraints: BoxConstraints(maxWidth: 500),
               child: CupertinoButton(
                 minSize: 0,
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 onPressed: () async {
                   await onCharacterSelected(character);
                 },
@@ -373,14 +374,15 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 connectedPlayers: null,
                 fightSequence: null,
                 lastGrantedItems: null,
+
                 // TODO test me (once you can create new characters)!!!
                 openPlayerRequests: joinRequestsResponse.isSuccessful
                     ? (joinRequestsResponse.result!
                         .map((j) => PlayerJoinRequests(
                               campagneJoinRequestId: j.request.id!.$value!,
                               playerCharacterId: j.playerCharacter.id!.$value!,
-                              playerName:
-                                  j.playerCharacter.characterName ?? "Player",
+                              playerName: j.playerCharacter.characterName ??
+                                  S.of(context).characterNameDefault,
                               username: j.username,
                             ))
                         .toList())
@@ -389,6 +391,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 sessionConnectionNumberForPlayers: campagne.joinCode));
 
     // start SignalR connection
+    if (!mounted || !context.mounted) return;
+
     var serverCommunicationService = DependencyProvider.of(context)
         .getService<IServerCommunicationService>();
     await serverCommunicationService.startConnection();
@@ -491,6 +495,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           });
           return;
         }
+        if (!mounted || !context.mounted) return;
 
         // 2. create new join request for campagne with join code
         var service =
@@ -499,6 +504,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           joinCode: joinCode,
           playerCharacterId: character.id!,
         );
+        if (!mounted || !context.mounted) return;
 
         await createResponse.possiblyHandleError(context);
 

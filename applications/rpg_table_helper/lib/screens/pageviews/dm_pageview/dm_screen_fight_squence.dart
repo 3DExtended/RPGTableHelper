@@ -5,6 +5,7 @@ import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -30,7 +31,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
   @override
   Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var _ = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
       color: bgColor,
@@ -56,7 +57,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "Aktuelle Kampfreihenfolge",
+                            S.of(context).currentFightOrdering,
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium!
@@ -74,7 +75,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                 : (connectionDetails.fightSequence == null
                                     ? Center(
                                         child: Text(
-                                          "Aktuell kein Kampf gestartet",
+                                          S.of(context).noFIghtStarted,
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -295,7 +296,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "Neue Kampfreihenfolge",
+                            S.of(context).newFightOrdering,
                             style: Theme.of(context)
                                 .textTheme
                                 .labelMedium!
@@ -310,110 +311,109 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                           Expanded(
                             child: connectionDetails == null
                                 ? CustomLoadingSpinner()
-                                : SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        getAllOnlineCharactersAndCompanions(
-                                                    connectionDetails)
-                                                .isEmpty
-                                            ? Center(
-                                                child: Text(
-                                                  "Aktuell keine Player Online",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .copyWith(
-                                                          color: darkTextColor,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                ),
-                                              )
-                                            : Wrap(
-                                                spacing: 10,
-                                                runSpacing: 10,
-                                                alignment:
-                                                    WrapAlignment.spaceEvenly,
-                                                children: [
-                                                  // show selection of all characters
-                                                  ...getAllOnlineCharactersAndCompanions(
-                                                          connectionDetails)
-                                                      .map((char) => Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color:
-                                                                  middleBgColor,
-                                                            ),
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    10),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                CustomButton(
-                                                                  isSubbutton:
-                                                                      true,
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      if (excludedPlayerCharacterIds
-                                                                          .contains(
-                                                                              char.uuid)) {
-                                                                        excludedPlayerCharacterIds
-                                                                            .remove(char.uuid);
-                                                                      } else {
-                                                                        excludedPlayerCharacterIds
-                                                                            .add(char.uuid);
-                                                                      }
-                                                                    });
-                                                                  },
-                                                                  icon:
-                                                                      Container(
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                    color: !excludedPlayerCharacterIds.contains(char
-                                                                            .uuid)
-                                                                        ? darkColor
-                                                                        : Colors
-                                                                            .transparent,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                                Text(
-                                                                  "Charakter: ${char.characterName}",
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .labelMedium!
-                                                                      .copyWith(
-                                                                          color:
-                                                                              darkTextColor,
-                                                                          fontSize:
-                                                                              16),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )),
-                                                ],
-                                              ),
-                                        SizedBox(
-                                          height: 20,
+                                : getAllOnlineCharactersAndCompanions(
+                                            connectionDetails)
+                                        .isEmpty
+                                    ? Center(
+                                        child: Text(
+                                          S.of(context).noPlayersOnline,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                  color: darkTextColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
                                         ),
-                                      ],
-                                    ),
-                                  ),
+                                      )
+                                    : SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            Wrap(
+                                              spacing: 10,
+                                              runSpacing: 10,
+                                              alignment:
+                                                  WrapAlignment.spaceEvenly,
+                                              children: [
+                                                // show selection of all characters
+                                                ...getAllOnlineCharactersAndCompanions(
+                                                        connectionDetails)
+                                                    .map((char) => Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            color:
+                                                                middleBgColor,
+                                                          ),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  10),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              CustomButton(
+                                                                isSubbutton:
+                                                                    true,
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    if (excludedPlayerCharacterIds
+                                                                        .contains(
+                                                                            char.uuid)) {
+                                                                      excludedPlayerCharacterIds
+                                                                          .remove(
+                                                                              char.uuid);
+                                                                    } else {
+                                                                      excludedPlayerCharacterIds
+                                                                          .add(char
+                                                                              .uuid);
+                                                                    }
+                                                                  });
+                                                                },
+                                                                icon: Container(
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  color: !excludedPlayerCharacterIds
+                                                                          .contains(char
+                                                                              .uuid)
+                                                                      ? darkColor
+                                                                      : Colors
+                                                                          .transparent,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                "${S.of(context).character} ${char.characterName}",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .labelMedium!
+                                                                    .copyWith(
+                                                                        color:
+                                                                            darkTextColor,
+                                                                        fontSize:
+                                                                            16),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                           ),
                         ],
                       ),
@@ -430,7 +430,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                       Center(
                         child: CustomButton(
                             variant: CustomButtonVariant.AccentButton,
-                            label: "Weitere Teilnehmer",
+                            label: S.of(context).additionalFightParticipants,
                             onPressed: connectionDetails == null ||
                                     connectionDetails.fightSequence == null
                                 ? null
@@ -452,7 +452,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                       Center(
                         child: CustomButton(
                             variant: CustomButtonVariant.AccentButton,
-                            label: "Kampfreihenfolge würfeln",
+                            label: S.of(context).rollForInitiative,
                             onPressed: connectionDetails == null
                                 ? null
                                 : () async {
@@ -496,6 +496,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                             newFightingSequence.copyWith(
                                                 sequence:
                                                     sequenceToAskPlayers));
+                                    if (!context.mounted || !mounted) return;
 
                                     // show modal and add further enemies
                                     await showAddFurtherEnemiesToFightSequence(

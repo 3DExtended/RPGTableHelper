@@ -20,3 +20,5 @@ bool resetCodeValid(String resetCode) =>
 
 bool joinCodeValid(String joinCode) =>
     RegExp(r'^\d{3}-?\d{3}$').hasMatch(joinCode);
+
+bool lorePageTitleValid(String title) => title.length >= 3;

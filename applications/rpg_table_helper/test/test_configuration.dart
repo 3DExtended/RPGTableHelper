@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 
 const testDevices = [
   Device(
@@ -51,16 +52,20 @@ void testConfigurations({
   Future<void> Function(WidgetTester tester, Locale local)? testerInteractions,
   bool useMaterialAppWrapper = true,
   String? pathPrefix = "",
+  bool disableAllScreenSizes = false,
 }) {
   Widget? widgetToTest;
-  var supportedLocales = AppLocalizations.supportedLocales;
+  var supportedLocales = S.delegate.supportedLocales;
   if (disableLocals) {
     supportedLocales = [supportedLocales[0]];
   }
   for (var local in supportedLocales) {
     if (useMaterialAppWrapper) {
       widgetToTest = MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          S.delegate,
+        ],
         locale: local,
         supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
@@ -100,6 +105,8 @@ void testConfigurations({
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate,
               ],
               locale: local,
               child: Localizations.override(
@@ -119,7 +126,8 @@ void testConfigurations({
         await multiScreenGolden(
           tester,
           '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
-          devices: testDevices,
+          devices:
+              disableAllScreenSizes == true ? [testDevices[1]] : testDevices,
         );
       });
     }

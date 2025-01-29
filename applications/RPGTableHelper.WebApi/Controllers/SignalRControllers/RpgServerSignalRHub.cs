@@ -1,7 +1,10 @@
 using System.Security.Cryptography;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+
 using Prodot.Patterns.Cqrs;
+
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
@@ -12,16 +15,18 @@ namespace RPGTableHelper.WebApi;
 [Authorize] // NOTE this does not work. I am using the IUserContext to ensure authorization!
 public class RpgServerSignalRHub : Hub
 {
+    private readonly ILogger _logger;
     private readonly IQueryProcessor _queryProcessor;
     private readonly IUserContext _userContext;
 
-    public RpgServerSignalRHub(IUserContext userContext, IQueryProcessor queryProcessor)
+    public RpgServerSignalRHub(IUserContext userContext, IQueryProcessor queryProcessor, ILogger logger)
     {
         // IMPORTANT NOTE: this is required as all methods in the signalr hub are authorized.
         // However, I wasnt able to configure SignalR to require an bearer token everywhere.
         // Hence, I am using the IUserContext to guard this Hub.
         _userContext = userContext;
         _queryProcessor = queryProcessor;
+        _logger = logger;
     }
 
     public async Task AskPlayersForRolls(string campagneId, string fightSequenceSerialized)
@@ -79,12 +84,10 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
-        Console.WriteLine(
-            "A player with the name "
+        _logger.LogInformation("A player with the name "
                 + playerCharacter.Get().CharacterName
                 + " would like to join the game with code "
-                + campagneOfCharacter.Get().JoinCode
-        );
+                + campagneOfCharacter.Get().JoinCode);
 
         // ask DM for joining permissions:
         await Groups.AddToGroupAsync(
@@ -106,28 +109,26 @@ public class RpgServerSignalRHub : Hub
 
     public override async Task OnConnectedAsync()
     {
-        Console.Write(Context.GetHttpContext()?.Request.Headers);
         // TODO update me for new flow
         // This newMessage call is what is not being received on the front end
         await Clients.All.SendAsync("aClientProvidedFunction", "ich bin ein test");
 
         // This console.WriteLine does print when I bring up the component in the front end.
-        Console.WriteLine("Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
-        Console.WriteLine("Context.User:" + _userContext.User!.ToString());
-        Console.WriteLine("Context.User.Identity.Name:" + _userContext.User!.UserIdentifier.Value);
-        Console.WriteLine("Context.UserIdentifier:" + Context.UserIdentifier);
+        _logger.LogInformation("Context.ConnectionId:" + Context.ConnectionId); // This one is the only one filled...
+        _logger.LogInformation("Context.User:" + _userContext.User!.ToString());
+        _logger.LogInformation("Context.User.Identity.Name:" + _userContext.User!.UserIdentifier.Value);
+        _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
 
         await base.OnConnectedAsync();
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        Console.Write(Context.GetHttpContext()?.Request.Headers);
         await Clients
             .Group("AllCampagnes_Dms")
             .SendAsync("clientDisconnected", _userContext.User.UserIdentifier.Value.ToString());
 
-        Console.WriteLine("Disconnected: Context.Username:" + Context.UserIdentifier); // This one is the only one filled...
+        _logger.LogInformation("Disconnected: Context.Username:" + Context.UserIdentifier); // This one is the only one filled...
 
         await base.OnDisconnectedAsync(exception);
     }
@@ -227,7 +228,7 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
-        Console.WriteLine("New game initiated for campagne: " + campagneId);
+        _logger.LogInformation("New game initiated for campagne: " + campagneId);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_All", (CancellationToken)default);
         await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_Dms", (CancellationToken)default);
@@ -340,7 +341,7 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
-        Console.WriteLine("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
+        _logger.LogInformation("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
         string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
         string fileName =
@@ -355,11 +356,11 @@ public class RpgServerSignalRHub : Hub
         {
             // Write the long string to the file
             await File.WriteAllTextAsync(filePath, characterConfig, (CancellationToken)default);
-            Console.WriteLine($"File saved to {filePath}");
+            _logger.LogInformation($"File saved to {filePath}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            _logger.LogInformation($"An error occurred: {ex.Message}");
         }
 
         // ask DM for joining permissions:
@@ -417,11 +418,11 @@ public class RpgServerSignalRHub : Hub
         {
             // Write the long string to the file
             await File.WriteAllTextAsync(filePath, rpgConfig, (CancellationToken)default);
-            Console.WriteLine($"File saved to {filePath}");
+            _logger.LogInformation($"File saved to {filePath}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            _logger.LogInformation($"An error occurred: {ex.Message}");
         }
     }
 }

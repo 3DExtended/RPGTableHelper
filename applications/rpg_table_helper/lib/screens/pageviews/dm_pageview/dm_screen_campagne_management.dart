@@ -10,6 +10,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -41,6 +42,8 @@ class _DmScreenCampagneManagementState
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
+      if (!context.mounted || !mounted) return;
+
       var service =
           DependencyProvider.of(context).getService<IRpgEntityService>();
 
@@ -50,9 +53,9 @@ class _DmScreenCampagneManagementState
           campagneId:
               CampagneIdentifier($value: connectionDetails.campagneId!));
 
-      if (!context.mounted) return;
+      if (!context.mounted || !mounted) return;
       await loadedCharsResponse.possiblyHandleError(context);
-      if (!context.mounted) return;
+      if (!context.mounted || !mounted) return;
 
       setState(() {
         if (loadedCharsResponse.isSuccessful) {
@@ -78,7 +81,7 @@ class _DmScreenCampagneManagementState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Alle Spieler:",
+                S.of(context).allPlayers,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     color: darkTextColor,
                     fontSize: 24,
@@ -104,7 +107,7 @@ class _DmScreenCampagneManagementState
               ),
 
               Text(
-                "Join Anfragen:",
+                S.of(context).openJoinRequests,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     color: darkTextColor,
                     fontSize: 24,
@@ -113,7 +116,7 @@ class _DmScreenCampagneManagementState
 
               if (connectionDetails?.sessionConnectionNumberForPlayers != null)
                 Text(
-                  "Join Code (für neue Spieler): ${connectionDetails!.sessionConnectionNumberForPlayers!}",
+                  "${S.of(context).joinCodeForNewPlayers}${connectionDetails!.sessionConnectionNumberForPlayers!}",
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color: darkTextColor,
                       fontSize: 16,
@@ -126,7 +129,7 @@ class _DmScreenCampagneManagementState
 
               if ((connectionDetails?.openPlayerRequests ?? []).isEmpty)
                 Text(
-                  "Keine offenen Anfragen",
+                  S.of(context).noOpenJoinRequests,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -159,7 +162,7 @@ class _DmScreenCampagneManagementState
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "User: ${request.value.username}",
+                                          "${S.of(context).user} ${request.value.username}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -169,7 +172,7 @@ class _DmScreenCampagneManagementState
                                               ),
                                         ),
                                         Text(
-                                          "Charakter: ${request.value.playerName}",
+                                          "${S.of(context).character} ${request.value.playerName}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -216,6 +219,10 @@ class _DmScreenCampagneManagementState
                                                       HandleJoinRequestType
                                                           .accept);
 
+                                          if (!context.mounted || !mounted) {
+                                            return;
+                                          }
+
                                           await response
                                               .possiblyHandleError(context);
 
@@ -257,8 +264,14 @@ class _DmScreenCampagneManagementState
                                                   typeOfHandle:
                                                       HandleJoinRequestType
                                                           .deny);
+                                          if (!context.mounted || !mounted) {
+                                            return;
+                                          }
                                           await response
                                               .possiblyHandleError(context);
+                                          if (!context.mounted || !mounted) {
+                                            return;
+                                          }
                                           // remove this particular request from open requests
                                           deleteJoinRequestAt(
                                               request.value, ref);
@@ -306,7 +319,7 @@ class _DmScreenCampagneManagementState
             ?.firstWhereOrNull(
                 (cp) => cp.playerCharacterId.$value == char.id!.$value!);
 
-        var isOnline = connectedPlayerDetails != null ?? false;
+        var isOnline = connectedPlayerDetails != null;
 
         var parsedConfig = RpgCharacterConfiguration.fromJson(
             jsonDecode(char.rpgCharacterConfiguration!));
@@ -317,7 +330,7 @@ class _DmScreenCampagneManagementState
 
         var playerCharacterName = char.characterName ??
             connectedPlayerDetails?.configuration.characterName ??
-            "Player Name";
+            S.of(context).characterNameDefault;
 
         result.add(getSingleConfiguredPlayerOnlineStatus(
           isOnline: isOnline,
@@ -335,8 +348,7 @@ class _DmScreenCampagneManagementState
         var imageOfPlayerCharacter =
             connectedPlayer.configuration.getImageUrlWithoutBasePath(rpgConfig);
 
-        var playerCharacterName =
-            connectedPlayer.configuration.characterName ?? "Player Name";
+        var playerCharacterName = connectedPlayer.configuration.characterName;
 
         result.add(getSingleConfiguredPlayerOnlineStatus(
           charConfig: connectedPlayer.configuration,
@@ -376,7 +388,7 @@ class _DmScreenCampagneManagementState
             ));
       },
       minSize: 0,
-      padding: EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -430,7 +442,7 @@ class _DmScreenCampagneManagementState
                         ),
                   ),
                   Text(
-                    isOnline ? "Online" : "Offline",
+                    isOnline ? S.of(context).online : S.of(context).offline,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           color: darkTextColor,
                           fontSize: 12,

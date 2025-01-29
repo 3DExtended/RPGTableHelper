@@ -2,12 +2,18 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+
 using FluentAssertions;
+
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json;
+
 using NSubstitute.Core;
+
 using Prodot.Patterns.Cqrs;
+
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
@@ -38,6 +44,38 @@ public class RegisterControllerTests : ControllerTestBase
         string? jwtResult = await LoginAndReceiveJWT(QueryProcessor, Client, challengeDict);
 
         // verify jwt is valid for login
+        await VerifyLoginValidity(Client, jwtResult);
+    }
+
+    [Fact]
+    public async Task RegisterWithApiKeyAsync_ShouldBeSuccessful()
+    {
+        // arrange
+        var requestEntity = new OpenSignInProviderRegisterRequestEntity
+        {
+            Id = Guid.Empty,
+            Email = "asdf@asdf.de",
+            ExposedApiKey = "sdfghjklölkjhgfdfghjk",
+            IdentityProviderId = "64f1f32a-d40b-4809-b716-b982441cc2ef",
+            SignInProviderRefreshToken = "70919681-a118-49c3-833f-9f02e848182a",
+            SignInProviderUsed = SupportedSignInProviders.Apple,
+        };
+
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            await context.OpenSignInProviderRegisterRequests.AddAsync(requestEntity, default!);
+            await context.SaveChangesAsync(default);
+        }
+
+        var requestBody = new RegisterWithApiKeyDto { ApiKey = requestEntity.ExposedApiKey, Username = "TestUsername" };
+
+        // act
+        var response = await Client.PostAsJsonAsync("/register/registerwithapikey", requestBody);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var jwtResult = await response.Content.ReadAsStringAsync();
+        jwtResult.Should().NotBeNullOrEmpty();
         await VerifyLoginValidity(Client, jwtResult);
     }
 
@@ -88,95 +126,6 @@ public class RegisterControllerTests : ControllerTestBase
         }
     }
 
-    [Fact]
-    public async Task RegisterWithApiKeyAsync_ShouldBeSuccessful()
-    {
-        // arrange
-        var requestEntity = new OpenSignInProviderRegisterRequestEntity
-        {
-            Id = Guid.Empty,
-            Email = "asdf@asdf.de",
-            ExposedApiKey = "sdfghjklölkjhgfdfghjk",
-            IdentityProviderId = "64f1f32a-d40b-4809-b716-b982441cc2ef",
-            SignInProviderRefreshToken = "70919681-a118-49c3-833f-9f02e848182a",
-            SignInProviderUsed = SupportedSignInProviders.Apple,
-        };
-
-        using (var context = await ContextFactory!.CreateDbContextAsync(default))
-        {
-            await context.OpenSignInProviderRegisterRequests.AddAsync(requestEntity, default!);
-            await context.SaveChangesAsync(default);
-        }
-
-        var requestBody = new RegisterWithApiKeyDto { ApiKey = requestEntity.ExposedApiKey, Username = "TestUsername" };
-
-        // act
-        var response = await Client.PostAsJsonAsync("/register/registerwithapikey", requestBody);
-
-        // assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var jwtResult = await response.Content.ReadAsStringAsync();
-        jwtResult.Should().NotBeNullOrEmpty();
-        await VerifyLoginValidity(Client, jwtResult);
-    }
-
-    internal static async Task VerifyLoginValidity(HttpClient client, string? jwtResult)
-    {
-        // arrange
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtResult);
-
-        // act
-        var response = await client.GetAsync("/SignIn/testlogin");
-
-        // assert
-        if (!response.IsSuccessStatusCode)
-        {
-            // Log error response content
-            var errorContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("Error Response Content: " + errorContent); // Helpful for debugging
-        }
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var responseText = await response.Content.ReadAsStringAsync();
-        responseText.Should().Be("Welcome");
-    }
-
-    internal static async Task<string?> LoginAndReceiveJWT(
-        IQueryProcessor queryProcessor,
-        HttpClient client,
-        Dictionary<string, object>? challengeDict
-    )
-    {
-        // arrange
-        var registerDto = new RegisterWithUsernamePasswordDto
-        {
-            Username = "TestUser1",
-            EncryptionChallengeIdentifier = EncryptionChallenge.EncryptionChallengeIdentifier.From(
-                Guid.Parse(challengeDict!["id"]!.ToString()!)
-            ),
-            UserSecret = "mysupersecretpassword",
-            Email = "asdf@asdf.de",
-        };
-
-        var serializedRegisterDto = JsonConvert.SerializeObject(registerDto);
-        var encryptedRegisterDto = await new RSAEncryptStringQuery { StringToEncrypt = serializedRegisterDto }
-            .RunAsync(queryProcessor, default!)
-            .ConfigureAwait(true);
-
-        // act
-        var response = await client.PostAsync(
-            "/register/register",
-            new StringContent($"\"{encryptedRegisterDto.Get()}\"", Encoding.UTF8, "application/json")
-        );
-
-        // assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var jwtResult = await response.Content.ReadAsStringAsync();
-        jwtResult.Should().NotBeNullOrEmpty();
-
-        return jwtResult;
-    }
-
     internal static async Task<Dictionary<string, object>?> GenerateAndReceiveEncryptionChallenge(
         IQueryProcessor queryProcessor,
         HttpClient client,
@@ -222,6 +171,63 @@ public class RegisterControllerTests : ControllerTestBase
         entities[0].RndInt.ToString().Should().Be(challengeDict["ri"].ToString());
 
         return challengeDict;
+    }
+
+    internal static async Task<string?> LoginAndReceiveJWT(
+        IQueryProcessor queryProcessor,
+        HttpClient client,
+        Dictionary<string, object>? challengeDict
+    )
+    {
+        // arrange
+        var registerDto = new RegisterWithUsernamePasswordDto
+        {
+            Username = "TestUser1",
+            EncryptionChallengeIdentifier = EncryptionChallenge.EncryptionChallengeIdentifier.From(
+                Guid.Parse(challengeDict!["id"]!.ToString()!)
+            ),
+            UserSecret = "mysupersecretpassword",
+            Email = "asdf@asdf.de",
+        };
+
+        var serializedRegisterDto = JsonConvert.SerializeObject(registerDto);
+        var encryptedRegisterDto = await new RSAEncryptStringQuery { StringToEncrypt = serializedRegisterDto }
+            .RunAsync(queryProcessor, default!)
+            .ConfigureAwait(true);
+
+        // act
+        var response = await client.PostAsync(
+            "/register/register",
+            new StringContent($"\"{encryptedRegisterDto.Get()}\"", Encoding.UTF8, "application/json")
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var jwtResult = await response.Content.ReadAsStringAsync();
+        jwtResult.Should().NotBeNullOrEmpty();
+
+        return jwtResult;
+    }
+
+    internal static async Task VerifyLoginValidity(HttpClient client, string? jwtResult)
+    {
+        // arrange
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtResult);
+
+        // act
+        var response = await client.GetAsync("/SignIn/testlogin");
+
+        // assert
+        if (!response.IsSuccessStatusCode)
+        {
+            // Log error response content
+            var errorContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Error Response Content: " + errorContent); // Helpful for debugging
+        }
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseText = await response.Content.ReadAsStringAsync();
+        responseText.Should().Be("Welcome");
     }
 
     private static (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()

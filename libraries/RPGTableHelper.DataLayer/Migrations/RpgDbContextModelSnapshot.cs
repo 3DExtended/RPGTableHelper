@@ -15,7 +15,7 @@ namespace RPGTableHelper.DataLayer.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.EncryptionChallengeEntity", b =>
                 {
@@ -210,9 +210,6 @@ namespace RPGTableHelper.DataLayer.Migrations
 
                     b.Property<Guid>("NoteDocumentId")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Visibility")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("block_type")
                         .HasColumnType("INTEGER");
@@ -420,6 +417,9 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Property<Guid>("ImageMetaDataId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MarkdownText")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PublicImageUrl")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -436,6 +436,12 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Property<string>("MarkdownText")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.ToTable("NoteBlocks", t =>
+                        {
+                            t.Property("MarkdownText")
+                                .HasColumnName("TextBlockEntity_MarkdownText");
+                        });
 
                     b.HasDiscriminator().HasValue(1);
                 });

@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -109,7 +110,7 @@ class _AddNewItemModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Items hinzufügen", // TODO localize/ switch text between add and edit
+                        S.of(context).addItems,
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -150,14 +151,14 @@ class _AddNewItemModalContentState
                         children: [
                           const Spacer(),
                           CustomButton(
-                            label: "Abbrechen", // TODO localize
+                            label: S.of(context).cancel,
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
                           CustomButton(
-                            label: "Speichern", // TODO localize
+                            label: S.of(context).save,
                             variant: CustomButtonVariant.AccentButton,
                             onPressed: () {
                               navigatorKey.currentState!.pop(_allItems

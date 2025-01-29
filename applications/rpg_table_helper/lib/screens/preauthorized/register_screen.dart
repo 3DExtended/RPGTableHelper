@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
@@ -101,7 +102,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       height: 40,
                     ),
                     Text(
-                      "Registrieren", // TODO localize
+                      S.of(context).register,
                       style:
                           Theme.of(context).textTheme.headlineMedium!.copyWith(
                                 color: darkColor,
@@ -115,21 +116,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     // REGISTER
                     // Username Textfield
                     CustomTextField(
-                      labelText: "Username", // TODO Localize
+                      labelText: S.of(context).username,
                       textEditingController: usernameTextEditingController,
                       keyboardType: TextInputType.name,
                     ),
 
                     // email Textfield
                     CustomTextField(
-                      labelText: "Email", // TODO Localize
+                      labelText: S.of(context).email,
                       textEditingController: emailTextEditingController,
                       keyboardType: TextInputType.emailAddress,
                     ),
 
                     // password
                     CustomTextField(
-                      labelText: "Password", // TODO Localize
+                      labelText: S.of(context).password,
                       textEditingController: passwordTextEditingController,
                       password: true,
                       keyboardType: TextInputType.visiblePassword,
@@ -146,7 +147,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           onPressed: () {
                             navigatorKey.currentState!.pop();
                           },
-                          label: "Abbrechen",
+                          label: S.of(context).cancel,
                         ),
                         CustomButton(
                           variant: CustomButtonVariant.AccentButton,
@@ -166,7 +167,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     email: emailTextEditingController.text,
                                   );
 
-                                  if (!mounted) return;
+                                  if (!mounted || !context.mounted) return;
 
                                   await registerResponse
                                       .possiblyHandleError(context);
@@ -182,7 +183,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     // TODO mark password and username fields as invalid
                                   }
                                 },
-                          label: "Register",
+                          label: S.of(context).register,
                         ),
                       ],
                     ),

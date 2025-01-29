@@ -18,7 +18,7 @@ void main() {
       // for each step in config add new testConfig
       for (var i = 0; i < config.value.stepBuilders.length; i++) {
         testConfigurations(
-          disableLocals: true,
+          disableLocals: false,
           pathPrefix: "../",
           widgetName: '$routeNameWithoutSlashes-step-${i + 1}',
           useMaterialAppWrapper: true,

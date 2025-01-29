@@ -14,6 +14,7 @@ import 'package:rpg_table_helper/components/pentagon_with_label.dart';
 import 'package:rpg_table_helper/components/progress_indicator_for_character_screen.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
@@ -91,7 +92,6 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.multiselect:
       return renderMultiselectStat(onNewStatValue, characterValue, context,
           statConfiguration, characterName);
-    case CharacterStatValueType.companionSelector: // TODO make me
     default:
       return Container(
         height: 50,
@@ -126,7 +126,7 @@ Widget renderCompanionSelector(
     if (companionOfCharacter == null) continue;
 
     // TODO search for image (still missing access to rpgconfig here...)
-    // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(charactersToRender, rpgConfig)
+    // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(context, charactersToRender, rpgConfig)
 
     companionDetailsToRender.add((
       characterName: companionOfCharacter.characterName,
@@ -243,7 +243,7 @@ Widget renderMultiselectStat(
       ),
       if (valueToConfigMapped.isEmpty)
         Text(
-          "- Nichts ausgewählt -",
+          S.of(context).nothingSelected,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: const Color.fromARGB(255, 193, 193, 193), fontSize: 16),
         ),
@@ -851,7 +851,7 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                             .copyWith(color: textColor, fontSize: 28),
                       ),
                       Text(
-                        "LVL", // TODO localize?
+                        S.of(context).levelAbbr,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
@@ -882,7 +882,7 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                       columnCrossAxisAlignment: CrossAxisAlignment.start,
                       columnMainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        "Name:",
+                        S.of(context).characterNameLabel,
                         characterName,
                         ...filledValues
                             .map((t) => ["${t.label}:", t.value])

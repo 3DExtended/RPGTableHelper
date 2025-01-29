@@ -8,6 +8,7 @@ import 'package:rpg_table_helper/components/signinbuttons/button_list.dart';
 import 'package:rpg_table_helper/components/signinbuttons/button_view.dart';
 import 'package:rpg_table_helper/components/signinbuttons/custom_sign_in_with_apple.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/validation_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
@@ -97,16 +98,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(
                         height: 40,
                       ),
-                      Text(
-                        "Login", // TODO localize
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: darkColor,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.2),
+                        child: Image.asset(
+                          "assets/icons/icon_flat.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       SizedBox(
                         height: 40,
@@ -114,14 +113,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       // LOGIN
                       // Username Textfield
                       CustomTextField(
-                        labelText: "Username", // TODO Localize
+                        labelText: S.of(context).username,
                         textEditingController: usernameTextEditingController,
                         keyboardType: TextInputType.name,
                       ),
 
                       // password Textfield
                       CustomTextField(
-                        labelText: "Password", // TODO Localize
+                        labelText: S.of(context).password,
                         textEditingController: passwordTextEditingController,
                         password: true,
                         keyboardType: TextInputType.visiblePassword,
@@ -132,11 +131,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: CustomButton(
+                            boderRadiusOverride: 7,
                             icon: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15.0),
                               child: Text(
-                                "Login",
+                                S.of(context).login,
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelMedium!
@@ -160,7 +160,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             password:
                                                 passwordTextEditingController
                                                     .text);
-                                    if (!mounted) return;
+                                    if (!mounted || !context.mounted) return;
 
                                     await signinResponse
                                         .possiblyHandleError(context);
@@ -197,7 +197,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               child: CustomSignInWithAppleButton(
                                 style: CustomSignInWithAppleButtonStyle.white,
-                                text: "Mit Apple anmelden",
+                                text: S.of(context).signInWithApple,
                                 height: 55,
                                 onPressed: () async {
                                   AuthorizationCredentialAppleID? credential;
@@ -213,6 +213,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   } catch (e) {
                                     return;
                                   }
+                                  if (!mounted || !context.mounted) return;
+
                                   var service = DependencyProvider.of(context)
                                       .getService<IAuthenticationService>();
 
@@ -223,7 +225,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           authorizationCode:
                                               credential.authorizationCode);
 
-                                  if (!context.mounted) return;
+                                  if (!context.mounted || !mounted) return;
 
                                   await signInResult
                                       .possiblyHandleError(context);
@@ -273,7 +275,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           BorderRadius.all(Radius.circular(7))),
                                   padding:
                                       const EdgeInsets.fromLTRB(40, 7, 40, 7),
-                                  text: "Sign in with Google",
+                                  text: S.of(context).signInWithGoogle,
                                   onPressed: () async {
                                     // Default definition
                                     GoogleSignIn googleSignIn = GoogleSignIn(
@@ -294,6 +296,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         googleAuthentication =
                                         await googleAccount.authentication;
 
+                                    if (!mounted || !context.mounted) return;
+
                                     var service = DependencyProvider.of(context)
                                         .getService<IAuthenticationService>();
 
@@ -305,12 +309,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                 googleAuthentication
                                                     .serverAuthCode!);
 
-                                    if (!mounted) return;
+                                    if (!mounted || !context.mounted) return;
 
                                     await signInResult
                                         .possiblyHandleError(context);
 
-                                    // TODO navigate
                                     if (signInResult.isSuccessful &&
                                         signInResult.result!.resultType ==
                                             SignInResultType.loginSucessfull) {
@@ -351,7 +354,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
 
                       CustomButton(
-                        label: "Neuen Account anlegen", // TODO localize
+                        width: 298,
+                        height: 55,
+                        boderRadiusOverride: 7,
+                        label: S.of(context).createNewAccount,
                         variant: CustomButtonVariant.DarkButton,
                         onPressed: () {
                           // navigate to register screen

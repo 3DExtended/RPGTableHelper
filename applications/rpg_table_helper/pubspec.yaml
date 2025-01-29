@@ -2,7 +2,7 @@ name: rpg_table_helper
 description: "A tablet app helping with your favorite RPG table top games!"
 publish_to: 'none'
 
-version: 0.5.2+148
+version: 0.5.3+186
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -47,6 +47,9 @@ dependencies:
   themed: ^7.0.0
   page_view_dot_indicator: ^2.3.0
   flutter_cache_manager: ^3.4.1
+  pull_to_refresh: ^2.0.0
+  easy_image_viewer: ^1.5.1
+  http_parser: ^4.0.2
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +69,7 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - assets/images/fortests/
     - assets/extern/
     - assets/extern/logos/
     - assets/

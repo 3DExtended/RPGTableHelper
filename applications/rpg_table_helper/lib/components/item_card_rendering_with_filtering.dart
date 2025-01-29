@@ -8,6 +8,7 @@ import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/fuzzysort.dart';
@@ -148,7 +149,7 @@ class _ItemCardRenderingWithFilteringState
               ? Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
                   child: CustomTextField(
-                      labelText: "Suche",
+                      labelText: S.of(context).searchLabel,
                       textEditingController: searchtextEditingController,
                       keyboardType: TextInputType.text),
                 )
@@ -167,7 +168,7 @@ class _ItemCardRenderingWithFilteringState
                         ItemCategory(
                           colorCode: null,
                           iconName: null,
-                          name: "Alles",
+                          name: S.of(context).itemCategoryFilterAll,
                           subCategories: [],
                           uuid: "",
                           hideInInventoryFilters: false,
@@ -238,7 +239,12 @@ class _ItemCardRenderingWithFilteringState
                 CustomButton(
                   variant: CustomButtonVariant.AccentButton,
                   onPressed: widget.onAddNewItemPressed,
-                  label: "+ Hinzufügen",
+                  label: S.of(context).add,
+                  icon: CustomFaIcon(
+                    icon: FontAwesomeIcons.plus,
+                    size: iconSizeInlineButtons,
+                    color: textColor,
+                  ),
                 )
             ],
           ),
@@ -291,7 +297,7 @@ class _ItemCardRenderingWithFilteringState
             height: 50,
           ),
           Text(
-            "Keine Items unter dieser Kategorie",
+            S.of(context).noItemsInCategoryErrorText,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
@@ -333,7 +339,7 @@ class _ItemCardRenderingWithFilteringState
                 children: [
                   CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       if (widget.onItemCardPressed != null) {
                         await widget.onItemCardPressed!(itemToRender);
@@ -357,7 +363,7 @@ class _ItemCardRenderingWithFilteringState
                   if (widget.hideAmount != true &&
                       widget.onEditItemAmount == null)
                     Text(
-                      "Anzahl: ${itemToRender.value.amount}",
+                      "${S.of(context).amountHeaderLabel} ${itemToRender.value.amount}",
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                             color: darkTextColor,
                             fontSize: 16,
@@ -377,7 +383,7 @@ class _ItemCardRenderingWithFilteringState
                       },
                       minValue: 0,
                       maxValue: 999,
-                      label: "Hinzufügen",
+                      label: S.of(context).add,
                       startValue: itemToRender.value.amount,
                     ),
                   SizedBox(

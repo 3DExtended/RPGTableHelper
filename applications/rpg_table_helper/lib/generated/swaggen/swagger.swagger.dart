@@ -168,7 +168,7 @@ abstract class Swagger extends ChopperService {
   ///Streams an image upload directly to the server.
   ///@param campagneId
   Future<chopper.Response<String>> imageStreamimageuploadPost({
-    String? campagneId,
+    required String? campagneId,
     List<int>? image,
   }) {
     return _imageStreamimageuploadPost(campagneId: campagneId, image: image);
@@ -182,9 +182,26 @@ abstract class Swagger extends ChopperService {
   )
   @Multipart()
   Future<chopper.Response<String>> _imageStreamimageuploadPost({
-    @Query('campagneId') String? campagneId,
+    @Query('campagneId') required String? campagneId,
     @PartFile() List<int>? image,
   });
+
+  ///Returns a list of documents this user can see for a given campagne.
+  ///@param campagneid The id of the desired campagne
+  Future<chopper.Response<List<NoteDocumentDto>>>
+      notesGetdocumentsCampagneidGet({required String? campagneid}) {
+    generatedMapping.putIfAbsent(
+        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+
+    return _notesGetdocumentsCampagneidGet(campagneid: campagneid);
+  }
+
+  ///Returns a list of documents this user can see for a given campagne.
+  ///@param campagneid The id of the desired campagne
+  @Get(path: '/Notes/getdocuments/{campagneid}')
+  Future<chopper.Response<List<NoteDocumentDto>>>
+      _notesGetdocumentsCampagneidGet(
+          {@Path('campagneid') required String? campagneid});
 
   ///Returns a single document.
   ///@param notedocumentid The id of the desired campagne
@@ -240,13 +257,11 @@ abstract class Swagger extends ChopperService {
 
   ///Creates a single text block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
-      notesCreatetextblockNotedocumentidPost({
+  Future<chopper.Response<TextBlock>> notesCreatetextblockNotedocumentidPost({
     required String? notedocumentid,
     required TextBlock? body,
   }) {
-    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
-        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+    generatedMapping.putIfAbsent(TextBlock, () => TextBlock.fromJsonFactory);
 
     return _notesCreatetextblockNotedocumentidPost(
         notedocumentid: notedocumentid, body: body);
@@ -258,21 +273,18 @@ abstract class Swagger extends ChopperService {
     path: '/Notes/createtextblock/{notedocumentid}',
     optionalBody: true,
   )
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
-      _notesCreatetextblockNotedocumentidPost({
+  Future<chopper.Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required TextBlock? body,
   });
 
   ///Creates a single image block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
-      notesCreateimageblockNotedocumentidPost({
+  Future<chopper.Response<ImageBlock>> notesCreateimageblockNotedocumentidPost({
     required String? notedocumentid,
     required ImageBlock? body,
   }) {
-    generatedMapping.putIfAbsent(NoteBlockModelBaseIdentifier,
-        () => NoteBlockModelBaseIdentifier.fromJsonFactory);
+    generatedMapping.putIfAbsent(ImageBlock, () => ImageBlock.fromJsonFactory);
 
     return _notesCreateimageblockNotedocumentidPost(
         notedocumentid: notedocumentid, body: body);
@@ -284,7 +296,7 @@ abstract class Swagger extends ChopperService {
     path: '/Notes/createimageblock/{notedocumentid}',
     optionalBody: true,
   )
-  Future<chopper.Response<NoteBlockModelBaseIdentifier>>
+  Future<chopper.Response<ImageBlock>>
       _notesCreateimageblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required ImageBlock? body,
@@ -316,6 +328,32 @@ abstract class Swagger extends ChopperService {
   )
   Future<chopper.Response> _notesUpdateimageblockPut(
       {@Body() required ImageBlock? body});
+
+  ///Updates a document.
+  Future<chopper.Response> notesUpdatenotePut(
+      {required NoteDocumentDto? body}) {
+    return _notesUpdatenotePut(body: body);
+  }
+
+  ///Updates a document.
+  @Put(
+    path: '/Notes/updatenote',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _notesUpdatenotePut(
+      {@Body() required NoteDocumentDto? body});
+
+  ///Deletes a single note block for a given document.
+  ///@param Value
+  Future<chopper.Response> notesDeleteblockDelete({String? $Value}) {
+    return _notesDeleteblockDelete($Value: $Value);
+  }
+
+  ///Deletes a single note block for a given document.
+  ///@param Value
+  @Delete(path: '/Notes/deleteblock')
+  Future<chopper.Response> _notesDeleteblockDelete(
+      {@Query('Value') String? $Value});
 
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
@@ -369,7 +407,7 @@ abstract class Swagger extends ChopperService {
       _playerCharacterGetplayercharacterPlayercharacteridGet(
           {@Path('playercharacterid') required String? playercharacterid});
 
-  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///Returns a list of player characters for a given campagne.
   ///@param Value
   Future<chopper.Response<List<PlayerCharacter>>>
       playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
@@ -379,11 +417,30 @@ abstract class Swagger extends ChopperService {
     return _playerCharacterGetplayercharactersincampagneGet($Value: $Value);
   }
 
-  ///Returns a list of player characters for a given campagne (if the calling user is the dm).
+  ///Returns a list of player characters for a given campagne.
   ///@param Value
   @Get(path: '/PlayerCharacter/getplayercharactersincampagne')
   Future<chopper.Response<List<PlayerCharacter>>>
       _playerCharacterGetplayercharactersincampagneGet(
+          {@Query('Value') String? $Value});
+
+  ///Returns a list of all users assigned to the campagne with meta information.
+  ///@param Value
+  Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
+      playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+          {String? $Value}) {
+    generatedMapping.putIfAbsent(NoteDocumentPlayerDescriptorDto,
+        () => NoteDocumentPlayerDescriptorDto.fromJsonFactory);
+
+    return _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+        $Value: $Value);
+  }
+
+  ///Returns a list of all users assigned to the campagne with meta information.
+  ///@param Value
+  @Get(path: '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne')
+  Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
+      _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
           {@Query('Value') String? $Value});
 
   ///Returns the minimal app version supported by this api.
@@ -394,21 +451,6 @@ abstract class Swagger extends ChopperService {
   ///Returns the minimal app version supported by this api.
   @Get(path: '/Public/getminimalversion')
   Future<chopper.Response<String>> _publicGetminimalversionGet();
-
-  ///
-  ///@param prompt
-  Future<chopper.Response> publicCreateimagePost({String? prompt}) {
-    return _publicCreateimagePost(prompt: prompt);
-  }
-
-  ///
-  ///@param prompt
-  @Post(
-    path: '/Public/createimage',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _publicCreateimagePost(
-      {@Query('prompt') String? prompt});
 
   ///
   ///@param uuid

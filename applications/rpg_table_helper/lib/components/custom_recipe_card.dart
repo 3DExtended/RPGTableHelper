@@ -5,6 +5,7 @@ import 'package:rpg_table_helper/components/bordered_image.dart';
 import 'package:rpg_table_helper/components/card_border.dart';
 import 'package:rpg_table_helper/components/quarter_circle_cutout.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 
 class CustomRecipeCardItemPair {
   final int amount;
@@ -44,32 +45,32 @@ class CustomRecipeCard extends StatelessWidget {
     var lightColor = bgColor;
     var borderSize = 3.5;
 
-    return SizedBox(
-      height: 423,
-      width: 289,
-      child: CardBorder(
-        borderRadius: 15,
-        color: backgroundColor,
-        borderSize: 7,
+    return Builder(builder: (context) {
+      return SizedBox(
+        height: 423,
+        width: 289,
         child: CardBorder(
-          borderRadius: 11,
-          color: lightColor,
-          borderSize: 1,
+          borderRadius: 15,
+          color: backgroundColor,
+          borderSize: 7,
           child: CardBorder(
             borderRadius: 11,
-            color: backgroundColor,
-            borderSize: 6,
+            color: lightColor,
+            borderSize: 1,
             child: CardBorder(
-              borderRadius: 7,
-              color: lightColor,
-              borderSize: 4,
+              borderRadius: 11,
+              color: backgroundColor,
+              borderSize: 6,
               child: CardBorder(
-                borderRadius: 4,
-                color: backgroundColor,
-                borderSize: 6,
+                borderRadius: 7,
+                color: lightColor,
+                borderSize: 4,
+                child: CardBorder(
+                  borderRadius: 4,
+                  color: backgroundColor,
+                  borderSize: 6,
 
-                // This border has to be interrupted
-                child: Container(
+                  // This border has to be interrupted
                   child: RecipeCardBorders(
                       lightColor: lightColor,
                       borderSize: borderSize,
@@ -110,7 +111,7 @@ class CustomRecipeCard extends StatelessWidget {
                                               child: AutoSizeText(
                                                 softWrap: true,
                                                 textAlign: TextAlign.center,
-                                                title ?? "Empty title",
+                                                title,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headlineMedium!
@@ -173,7 +174,7 @@ class CustomRecipeCard extends StatelessWidget {
                                             children: [
                                               Expanded(
                                                 child: AutoSizeText(
-                                                  getMarkdownText().$1,
+                                                  getMarkdownText(context).$1,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .headlineMedium!
@@ -185,13 +186,15 @@ class CustomRecipeCard extends StatelessWidget {
                                                   minFontSize: 10,
                                                   maxFontSize: 16,
                                                   textAlign: TextAlign.left,
-                                                  maxLines: getMarkdownText()
+                                                  maxLines: getMarkdownText(
+                                                                  context)
                                                               .$2 ==
                                                           true
                                                       ? 7
                                                       : '\n'
                                                               .allMatches(
-                                                                  getMarkdownText()
+                                                                  getMarkdownText(
+                                                                          context)
                                                                       .$1)
                                                               .length +
                                                           1,
@@ -200,32 +203,7 @@ class CustomRecipeCard extends StatelessWidget {
                                                 ),
                                               ),
                                             ],
-                                          )
-                                          // Row(
-                                          //   children: [
-                                          //     Expanded(
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Expanded(
-                                          //             child: AutoSizeText(
-                                          //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //     Expanded(
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Expanded(
-                                          //             child: AutoSizeText(
-                                          //                 "- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:\n- Voraussetzungen:"),
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                          ),
+                                          )),
                                     ),
                                   ),
                                 ),
@@ -239,11 +217,11 @@ class CustomRecipeCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
-  (String, bool) getMarkdownText({bool? denseText}) {
+  (String, bool) getMarkdownText(BuildContext context, {bool? denseText}) {
     var result = "";
     var requirementsAsText =
         requirements.map((t) => "${t.amount}x ${t.itemName}").join(", ");
@@ -252,14 +230,15 @@ class CustomRecipeCard extends StatelessWidget {
         .map(
             (t) => "${denseText == true ? "" : "- "}${t.amount}x ${t.itemName}")
         .join(denseText == true ? ", " : "\n");
-    result += "Braucht: ${requirements.isEmpty ? "-" : requirementsAsText}";
+    result +=
+        "${S.of(context).itemCardDescRequires} ${requirements.isEmpty ? "-" : requirementsAsText}";
     result += denseText == true ? ", " : "\n";
     result +=
-        "Zutaten:${denseText == true ? " " : "\n"}${ingedients.isEmpty ? "-" : ingredientsAsText}";
+        "${S.of(context).recipeIngredients}${denseText == true ? " " : "\n"}${ingedients.isEmpty ? "-" : ingredientsAsText}";
 
     var numberOfLines = '\n'.allMatches(result).length + 1;
     if (numberOfLines > 7 && denseText != true) {
-      return getMarkdownText(denseText: true);
+      return getMarkdownText(context, denseText: true);
     }
 
     return (result, denseText == true);

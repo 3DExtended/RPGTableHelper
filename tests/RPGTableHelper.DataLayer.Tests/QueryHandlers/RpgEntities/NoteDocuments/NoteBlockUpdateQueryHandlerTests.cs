@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
@@ -31,7 +32,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             ImageMetaDataId = someImage.Id.Value,
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         var entity2 = new ImageBlockEntity
@@ -41,7 +41,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             ImageMetaDataId = someImage2.Id.Value,
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         Context.NoteBlocks.Add(entity1);
@@ -54,7 +53,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             {
                 Id = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(entity2.Id),
                 PublicImageUrl = "Foo",
-                Visibility = NotesBlockVisibility.HiddenForAllExceptAuthor,
                 ImageMetaDataId = someImage.Id,
                 CreatingUserId = user1.Id,
                 NoteDocumentId = someDocument.Id,
@@ -72,7 +70,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
 
         var updatedEntity = Context.NoteBlocks.AsNoTracking().First(x => x.Id == entity2.Id);
         updatedEntity!.Should().BeOfType<ImageBlockEntity>();
-        updatedEntity!.As<ImageBlockEntity>().Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         updatedEntity!.As<ImageBlockEntity>().PublicImageUrl.Should().Be("Foo");
     }
 
@@ -81,6 +78,7 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
     {
         // Arrange
         var user1 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper);
+        var user2 = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper, usernameOverride: "User2");
         var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory, Mapper, user1);
         var someDocument = await RpgDbContextHelpers.CreateNoteDocumentInDb(ContextFactory, Mapper, user1, campagne);
 
@@ -90,7 +88,6 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             MarkdownText = "Bar",
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         var entity2 = new TextBlockEntity
@@ -99,11 +96,21 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             MarkdownText = "Bar",
             CreatingUserId = user1.Id.Value,
             NoteDocumentId = someDocument.Id.Value,
-            Visibility = NotesBlockVisibility.VisibleForCampagne,
         };
 
         Context.NoteBlocks.Add(entity1);
         Context.NoteBlocks.Add(entity2);
+        Context.SaveChanges();
+
+        Context.PermittedUsersToNotesBlocks.Add(
+            new PermittedUsersToNotesBlockEntity
+            {
+                NotesBlockId = entity2.Id,
+                PermittedUserId = user1.Id.Value,
+                IsDeleted = false,
+                Id = 0,
+            }
+        );
         Context.SaveChanges();
 
         var query = new NoteBlockUpdateQuery
@@ -112,9 +119,9 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
             {
                 Id = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(entity2.Id),
                 MarkdownText = "Foo",
-                Visibility = NotesBlockVisibility.HiddenForAllExceptAuthor,
                 CreatingUserId = user1.Id,
                 NoteDocumentId = someDocument.Id,
+                PermittedUsers = new List<User.UserIdentifier> { user2.Id },
             },
         };
         var subjectUnderTest = new NoteBlockUpdateQueryHandler(Mapper, ContextFactory);
@@ -127,9 +134,17 @@ public class NoteBlockUpdateQueryHandlerTests : QueryHandlersTestBase
         var entityCount = Context.NoteBlocks.Count();
         entityCount.Should().Be(2);
 
-        var updatedEntity = Context.NoteBlocks.AsNoTracking().First(x => x.Id == entity2.Id);
+        var updatedEntity = Context
+            .NoteBlocks.Include(n => n.PermittedUsers)
+            .AsNoTracking()
+            .First(x => x.Id == entity2.Id);
+
         updatedEntity!.Should().BeOfType<TextBlockEntity>();
-        updatedEntity!.As<TextBlockEntity>().Visibility.Should().Be(NotesBlockVisibility.HiddenForAllExceptAuthor);
         updatedEntity!.As<TextBlockEntity>().MarkdownText.Should().Be("Foo");
+
+        Context.PermittedUsersToNotesBlocks.Count().Should().Be(1);
+        updatedEntity!.PermittedUsers.Should().HaveCount(1);
+        updatedEntity!.PermittedUsers.First().PermittedUserId.Should().Be(user2.Id.Value);
+        updatedEntity!.PermittedUsers.First().NotesBlockId.Should().Be(entity2.Id);
     }
 }

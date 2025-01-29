@@ -7,9 +7,10 @@ import 'package:rpg_table_helper/components/custom_button.dart';
 import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
 import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/components/static_grid.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -112,7 +113,7 @@ class _ItemCardDetailsModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Item Details für ${widget.item.name}", // TODO localize/ switch text between add and edit
+                        "${S.of(context).itemDetailsForPrefix} ${widget.item.name}",
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme
@@ -154,7 +155,9 @@ class _ItemCardDetailsModalContentState
                                       CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Beschreibung:",
+                                      S
+                                          .of(context)
+                                          .itemDetailsDescriptionHeader,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -174,7 +177,7 @@ class _ItemCardDetailsModalContentState
                                           ),
                                     ),
                                     Text(
-                                      "Preis:",
+                                      S.of(context).itemDetailsPriceHeader,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -214,7 +217,7 @@ class _ItemCardDetailsModalContentState
                           currentlyOwned = newValue;
                         });
                       },
-                      label: "Anzahl",
+                      label: S.of(context).amount,
                       startValue: currentlyOwned,
                     ),
                     const SizedBox(
@@ -226,14 +229,14 @@ class _ItemCardDetailsModalContentState
                         children: [
                           const Spacer(),
                           CustomButton(
-                            label: "Abbrechen", // TODO localize
+                            label: S.of(context).cancel,
                             onPressed: () {
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
                           const Spacer(),
                           CustomButton(
-                            label: "Speichern", // TODO localize
+                            label: S.of(context).save,
                             onPressed: () {
                               navigatorKey.currentState!.pop(currentlyOwned -
                                   (widget.currentlyOwned ?? 0));

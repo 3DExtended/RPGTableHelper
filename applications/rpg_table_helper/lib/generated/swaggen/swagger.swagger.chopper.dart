@@ -118,7 +118,7 @@ final class _$Swagger extends Swagger {
 
   @override
   Future<Response<String>> _imageStreamimageuploadPost({
-    String? campagneId,
+    required String? campagneId,
     List<int>? image,
   }) {
     final Uri $url = Uri.parse('/Image/streamimageupload');
@@ -140,6 +140,18 @@ final class _$Swagger extends Swagger {
       parameters: $params,
     );
     return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<List<NoteDocumentDto>>> _notesGetdocumentsCampagneidGet(
+      {required String? campagneid}) {
+    final Uri $url = Uri.parse('/Notes/getdocuments/${campagneid}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<NoteDocumentDto>, NoteDocumentDto>($request);
   }
 
   @override
@@ -182,8 +194,7 @@ final class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<NoteBlockModelBaseIdentifier>>
-      _notesCreatetextblockNotedocumentidPost({
+  Future<Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     required String? notedocumentid,
     required TextBlock? body,
   }) {
@@ -195,13 +206,11 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
       body: $body,
     );
-    return client.send<NoteBlockModelBaseIdentifier,
-        NoteBlockModelBaseIdentifier>($request);
+    return client.send<TextBlock, TextBlock>($request);
   }
 
   @override
-  Future<Response<NoteBlockModelBaseIdentifier>>
-      _notesCreateimageblockNotedocumentidPost({
+  Future<Response<ImageBlock>> _notesCreateimageblockNotedocumentidPost({
     required String? notedocumentid,
     required ImageBlock? body,
   }) {
@@ -213,8 +222,7 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
       body: $body,
     );
-    return client.send<NoteBlockModelBaseIdentifier,
-        NoteBlockModelBaseIdentifier>($request);
+    return client.send<ImageBlock, ImageBlock>($request);
   }
 
   @override
@@ -241,6 +249,33 @@ final class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesUpdatenotePut(
+      {required NoteDocumentDto? body}) {
+    final Uri $url = Uri.parse('/Notes/updatenote');
+    final $body = body;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _notesDeleteblockDelete({String? $Value}) {
+    final Uri $url = Uri.parse('/Notes/deleteblock');
+    final Map<String, dynamic> $params = <String, dynamic>{'Value': $Value};
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      parameters: $params,
     );
     return client.send<dynamic, dynamic>($request);
   }
@@ -303,6 +338,23 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<NoteDocumentPlayerDescriptorDto>>>
+      _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+          {String? $Value}) {
+    final Uri $url = Uri.parse(
+        '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne');
+    final Map<String, dynamic> $params = <String, dynamic>{'Value': $Value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<List<NoteDocumentPlayerDescriptorDto>,
+        NoteDocumentPlayerDescriptorDto>($request);
+  }
+
+  @override
   Future<Response<String>> _publicGetminimalversionGet() {
     final Uri $url = Uri.parse('/Public/getminimalversion');
     final Request $request = Request(
@@ -311,19 +363,6 @@ final class _$Swagger extends Swagger {
       client.baseUrl,
     );
     return client.send<String, String>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> _publicCreateimagePost({String? prompt}) {
-    final Uri $url = Uri.parse('/Public/createimage');
-    final Map<String, dynamic> $params = <String, dynamic>{'prompt': prompt};
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
   }
 
   @override

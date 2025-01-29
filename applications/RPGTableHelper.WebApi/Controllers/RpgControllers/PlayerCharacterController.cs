@@ -149,8 +149,10 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         /// <summary>
-        /// Returns a list of player characters for a given campagne (if the calling user is the dm).
+        /// Returns a list of player characters for a given campagne.
         /// </summary>
+        /// <remarks>Please note that only the dm is allowed to retrieve the rpg character configs of the players. if you are not the dm, those configs will be empty!</remarks>
+        /// <param name="campagneIdentifier">The id of the campagne</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Returns the list of playerCharacters.</returns>
         /// <response code="200">A list of all playerCharacters for this user</response>
@@ -165,6 +167,24 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             CancellationToken cancellationToken
         )
         {
+            var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
+            {
+                CampagneId = campagneIdentifier,
+                UserIdToCheck = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (isUserInCampagneResult.IsNone)
+            {
+                return BadRequest("Could not retrieve info.");
+            }
+
+            if (!isUserInCampagneResult.Get())
+            {
+                return Unauthorized();
+            }
+
             var campagne = await new CampagneQuery { ModelId = campagneIdentifier }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -172,11 +192,6 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (campagne.IsNone)
             {
                 return BadRequest("Could not retrieve campagne.");
-            }
-
-            if (campagne.Get().DmUserId != _userContext.User.UserIdentifier)
-            {
-                return Unauthorized();
             }
 
             var playerCharacters = await new PlayerCharactersForCampagneQuery { CampagneId = campagneIdentifier }
@@ -188,7 +203,99 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not retrieve playerCharacters.");
             }
 
+            if (campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+            {
+                for (var i = 0; i < playerCharacters.Get().Count; i++)
+                {
+                    playerCharacters.Get()[i].RpgCharacterConfiguration = null;
+                }
+            }
+
             return Ok(playerCharacters.Get());
+        }
+
+        /// <summary>
+        /// Returns a list of all users assigned to the campagne with meta information.
+        /// </summary>
+        /// <param name="campagneIdentifier">The id of the campagne</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Returns the list of user details.</returns>
+        /// <response code="200">A list of all playerCharacters for this user</response>
+        /// <response code="400">If there was an error retrieving the playerCharacters</response>
+        /// <response code="401">If you are not logged in or not the dm</response>
+        [ProducesResponseType(typeof(IReadOnlyList<NoteDocumentPlayerDescriptorDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("getnoteDocumentPlayerDescriptorDtosincampagne")]
+        public async Task<
+            ActionResult<IReadOnlyList<NoteDocumentPlayerDescriptorDto>>
+        > GetNoteDocumentPlayerDescriptorsForCampagneAsync(
+            [FromQuery] [Required] Campagne.CampagneIdentifier campagneIdentifier,
+            CancellationToken cancellationToken
+        )
+        {
+            var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
+            {
+                CampagneId = campagneIdentifier,
+                UserIdToCheck = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (isUserInCampagneResult.IsNone)
+            {
+                return BadRequest("Could not retrieve info.");
+            }
+
+            if (!isUserInCampagneResult.Get())
+            {
+                return Unauthorized();
+            }
+
+            var campagne = await new CampagneQuery { ModelId = campagneIdentifier }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (campagne.IsNone)
+            {
+                return BadRequest("Could not retrieve campagne.");
+            }
+
+            var playerCharacters = await new PlayerCharactersForCampagneQuery { CampagneId = campagneIdentifier }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (playerCharacters.IsNone)
+            {
+                return BadRequest("Could not retrieve playerCharacters.");
+            }
+
+            var result = new List<NoteDocumentPlayerDescriptorDto>();
+            foreach (var playerCharacter in playerCharacters.Get())
+            {
+                result.Add(
+                    new NoteDocumentPlayerDescriptorDto
+                    {
+                        IsDm = false,
+                        IsYou = playerCharacter.PlayerUserId == _userContext.User.UserIdentifier,
+                        PlayerCharacterName = playerCharacter.CharacterName,
+                        UserId = playerCharacter.PlayerUserId,
+                    }
+                );
+            }
+
+            // Add DM
+            result.Add(
+                new NoteDocumentPlayerDescriptorDto
+                {
+                    IsDm = true,
+                    IsYou = campagne.Get().DmUserId == _userContext.User.UserIdentifier,
+                    PlayerCharacterName = null,
+                    UserId = campagne.Get().DmUserId,
+                }
+            );
+
+            return Ok(result);
         }
     }
 }

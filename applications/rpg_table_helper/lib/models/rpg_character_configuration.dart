@@ -120,31 +120,40 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   Map<String, dynamic> toJson() => _$RpgCharacterConfigurationToJson(this);
 
   static RpgCharacterConfiguration getBaseConfiguration(
-          RpgConfigurationModel? rpgConfig) =>
+          RpgConfigurationModel? rpgConfig,
+          {int? variant}) =>
       RpgCharacterConfiguration(
         activeAlternateFormIndex: null,
         companionCharacters: [
           RpgAlternateCharacterConfiguration(
             uuid: "f6af1852-e928-4a4f-8d07-93ce87b879e8",
             characterName: "Lucky",
-            characterStats: getDefaultStats(rpgConfig, true),
+            characterStats: getDefaultStats(rpgConfig, true, 2),
           ),
         ],
         alternateForms: [],
         uuid: const UuidV7().generate(),
         characterName: "Gandalf",
-        characterStats: getDefaultStats(rpgConfig, false),
+        characterStats: getDefaultStats(rpgConfig, false, variant),
         inventory: [
           RpgCharacterOwnedItemPair(
               itemUuid: "a7537746-260d-4aed-b182-26768a9c2d51", amount: 2),
           RpgCharacterOwnedItemPair(
-              itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7", amount: 1)
+              itemUuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7", amount: 1),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "73b51a58-8a07-4de2-828c-d0952d42af34", amount: 5),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "01921428-f433-7519-880f-d012289b60da", amount: 1),
+          RpgCharacterOwnedItemPair(
+              itemUuid: "01921424-0eca-74bb-bc3d-be2c82996103", amount: 2)
         ],
         moneyInBaseType: 23456,
       );
 
   static List<RpgCharacterStatValue> getDefaultStats(
-      RpgConfigurationModel? rpgConfig, bool filterForCompanionStats) {
+      RpgConfigurationModel? rpgConfig,
+      bool filterForCompanionStats,
+      int? variant) {
     return rpgConfig == null || rpgConfig.characterStatTabsDefinition == null
         ? []
         : rpgConfig.characterStatTabsDefinition!
@@ -161,23 +170,65 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"value": 17}',
+                  serializedValue: variant == null
+                      ? '{"value": 17}'
+                      : variant == 0
+                          ? '{"value": 25}'
+                          : '{"value": 30}',
                 );
               case CharacterStatValueType.intWithMaxValue:
                 return RpgCharacterStatValue(
                   hideFromCharacterScreen: false,
                   hideLabelOfStat: false,
-                  variant: null,
+                  variant: 3,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"value": 17, "maxValue": 21}',
+                  serializedValue: variant == null
+                      ? '{"value": 17, "maxValue": 21}'
+                      : variant == 0
+                          ? '{"value": 17, "maxValue": 30}'
+                          : '{"value": 25, "maxValue": 25}',
                 );
               case CharacterStatValueType.listOfIntWithCalculatedValues:
+                var values =
+                    jsonDecode(stat.jsonSerializedAdditionalData!)["values"];
+
+                var stringToAdd = "";
+                for (var i = 0; i < values.length; i++) {
+                  if (i > 3) {
+                    stringToAdd +=
+                        '{"uuid":"${values[i]["uuid"]}", "value":9, "otherValue": -1}';
+                  } else {
+                    stringToAdd +=
+                        '{"uuid":"${values[i]["uuid"]}", "value":12, "otherValue": 1}';
+                  }
+                  if (i < values.length - 1) stringToAdd += ",";
+                }
+
                 return RpgCharacterStatValue(
                   hideFromCharacterScreen: false,
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"values": []}',
+                  serializedValue: '{"values": [$stringToAdd]}',
+                );
+              case CharacterStatValueType.listOfIntsWithIcons:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: 1,
+                  statUuid: stat.statUuid,
+                  serializedValue:
+                      "{\"values\":[{\"uuid\":\"01933512-97e4-70fe-877d-0e1f64224a00\",\"value\":12},{\"uuid\":\"01933512-997d-7628-9de3-72827cf4f419\",\"value\":12},{\"uuid\":\"01933512-9cb6-7466-9977-0768e0dda2a7\",\"value\":12},{\"uuid\":\"01933512-a096-701e-875d-05ad93810ba2\",\"value\":12}]}",
+                );
+              case CharacterStatValueType
+                    .characterNameWithLevelAndAdditionalDetails:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue:
+                      '{"level":6, "values": [{"uuid":"019317b8-49eb-7575-9f8e-c28c9c8eded2","value":"Magier"},{"uuid":"019317b8-4bb6-7881-a4db-2a8ec3c751f6","value":"Mensch"}]}',
                 );
               case CharacterStatValueType.intWithCalculatedValue:
                 return RpgCharacterStatValue(
@@ -185,7 +236,11 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"value": 17, "otherValue": 2}',
+                  serializedValue: variant == null
+                      ? '{"value": 17, "calculatedValue": 2}'
+                      : variant == 0
+                          ? '{"value": 10, "calculatedValue": 0}'
+                          : '{"value": 9, "calculatedValue": -1}',
                 );
               case CharacterStatValueType.multiLineText:
                 return RpgCharacterStatValue(
@@ -203,7 +258,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   variant: null,
                   statUuid: stat.statUuid,
                   serializedValue:
-                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/charactercard_placeholder.png"}',
+                      '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmo", "imageUrl":"assets/images/fortests/${variant == null ? 'charactercard_placeholder' : (variant == 0 ? 'somegandalfcharacter' : (variant == 1 ? 'somefrodocharacter' : 'somewolfcharacter'))}.png"}',
                 );
               case CharacterStatValueType.singleLineText:
                 return RpgCharacterStatValue(
@@ -218,9 +273,16 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                 return RpgCharacterStatValue(
                   hideFromCharacterScreen: false,
                   hideLabelOfStat: false,
-                  variant: null,
+                  variant:
+                      (jsonDecode(stat.jsonSerializedAdditionalData!)["options"]
+                                      as List<dynamic>)
+                                  .length >
+                              6
+                          ? 1
+                          : null,
                   statUuid: stat.statUuid,
-                  serializedValue: '{"values": []}',
+                  serializedValue:
+                      '${'${'{"values": ["' + jsonDecode(stat.jsonSerializedAdditionalData!)["options"][0]["uuid"]}", "' + jsonDecode(stat.jsonSerializedAdditionalData!)["options"][2]["uuid"]}"]}',
                 );
 
               default:

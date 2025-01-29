@@ -38,7 +38,7 @@ class SignInButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.mini = false,
-    this.padding = const EdgeInsets.all(0),
+    this.padding = EdgeInsets.zero,
     this.shape,
     this.text,
     this.elevation = 2.0,
@@ -82,7 +82,7 @@ class SignInButton extends StatelessWidget {
               : const Color(0xff131314),
           onPressed: onPressed,
           padding: padding,
-          innerPadding: const EdgeInsets.all(0),
+          innerPadding: EdgeInsets.zero,
           shape: shape,
           height: 36.0,
         );

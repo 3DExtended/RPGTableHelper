@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
@@ -182,7 +183,7 @@ List<
       editType: CharacterStatEditType.static,
       name: "Skills",
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
-      helperText: "What are you skill values?",
+      helperText: "What are your skill values?",
       jsonSerializedAdditionalData:
           '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
     ),
@@ -206,7 +207,7 @@ List<
       editType: CharacterStatEditType.static,
       name: "Charakter Vorstellung",
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
-      helperText: "What are you skill values?",
+      helperText: "What are your skill values?",
       jsonSerializedAdditionalData:
           '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Volk"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Klasse"}]}',
     ),
@@ -229,7 +230,7 @@ List<
       editType: CharacterStatEditType.static,
       name: "Charakter Vorstellung",
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
-      helperText: "What are you skill values?",
+      helperText: "What are your skill values?",
       jsonSerializedAdditionalData:
           '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Volk", "iconName": "backpack-svgrepo-com-2"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Klasse", "iconName": "book-open"}, {"uuid":"bcc4995c-2976-4015-b6b8-7a211c69c59a", "label": "Test", "iconName": "shield"},{"uuid":"0499a51e-fab7-4641-9d2b-07a79f55e918", "label": "Test", "iconName": "shield"},{"uuid":"d1c2006a-2d43-4b19-9b75-38577c3c6b58", "label": "Test", "iconName": "shield"},{"uuid":"2eca2a8d-2fa3-4a6a-8145-3db5cb24b0b1", "label": "Test", "iconName": "shield"},{"uuid":"fc671291-fab4-4253-a4c8-c5a66f89f84c", "label": "Test", "iconName": "shield"},{"uuid":"2f744d23-8ff6-4d75-8426-a1ca3e682e7b", "label": "Test", "iconName": "shield"},{"uuid":"a1f6fa06-0b68-4067-8671-ec5c85966828", "label": "Test", "iconName": "shield"}]}',
     ),
@@ -397,7 +398,8 @@ void main() {
 
     for (var testConfiguration in enrichedallConfigurationPairs) {
       testConfigurations(
-        disableLocals: true,
+        disableAllScreenSizes: true,
+        disableLocals: false,
         pathPrefix: "../",
         widgetName: 'CharacterStatValueType_DMConfig_${testConfiguration.$1}',
         useMaterialAppWrapper: false,
@@ -434,7 +436,11 @@ void main() {
           child: MaterialApp(
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               darkTheme: ThemeData.dark(),
               themeMode: ThemeMode.dark,
@@ -472,7 +478,8 @@ void main() {
       );
 
       testConfigurations(
-        disableLocals: true,
+        disableAllScreenSizes: true,
+        disableLocals: false,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}',
@@ -510,7 +517,11 @@ void main() {
           child: MaterialApp(
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               darkTheme: ThemeData.dark(),
               themeMode: ThemeMode.dark,
@@ -554,7 +565,8 @@ void main() {
       );
 
       testConfigurations(
-        disableLocals: true,
+        disableAllScreenSizes: true,
+        disableLocals: false,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfigEmpty_${testConfiguration.$1}',
@@ -592,7 +604,11 @@ void main() {
           child: MaterialApp(
               navigatorKey: navigatorKey,
               debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               darkTheme: ThemeData.dark(),
               themeMode: ThemeMode.dark,
@@ -636,7 +652,8 @@ void main() {
       );
 
       testConfigurations(
-        disableLocals: true,
+        disableAllScreenSizes: true,
+        disableLocals: false,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerStatsScreenWidget_${testConfiguration.$1}',
@@ -644,17 +661,26 @@ void main() {
         screenFactory: (Locale locale) => Container(
           color: bgColor,
           child: Builder(builder: (context) {
-            return Center(
-              child: getPlayerVisualizationWidget(
-                characterToRenderStatFor:
-                    RpgCharacterConfiguration.getBaseConfiguration(
-                        RpgConfigurationModel.getBaseConfiguration()),
-                context: context,
-                onNewStatValue: (newSerializedValue) {},
-                statConfiguration: testConfiguration.$2,
-                characterValue: testConfiguration.$3,
-                characterName: "Frodo",
-              ),
+            return Localizations(
+              locale: locale,
+              delegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              child: Builder(builder: (context) {
+                return Center(
+                  child: getPlayerVisualizationWidget(
+                    characterToRenderStatFor:
+                        RpgCharacterConfiguration.getBaseConfiguration(
+                            RpgConfigurationModel.getBaseConfiguration()),
+                    context: context,
+                    onNewStatValue: (newSerializedValue) {},
+                    statConfiguration: testConfiguration.$2,
+                    characterValue: testConfiguration.$3,
+                    characterName: "Frodo",
+                  ),
+                );
+              }),
             );
           }),
         ),

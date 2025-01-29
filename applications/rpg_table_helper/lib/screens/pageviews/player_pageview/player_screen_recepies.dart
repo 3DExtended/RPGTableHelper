@@ -7,6 +7,7 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_recipe_card.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/fuzzysort.dart';
@@ -167,7 +168,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
               ? Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
                   child: CustomTextField(
-                      labelText: "Suche",
+                      labelText: S.of(context).searchLabel,
                       textEditingController: searchtextEditingController,
                       keyboardType: TextInputType.text),
                 )
@@ -190,7 +191,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                           categoryForFilter: ItemCategory(
                             colorCode: null,
                             iconName: null,
-                            name: "Herstellbar",
+                            name: S.of(context).craftableRecipeFilter,
                             subCategories: [],
                             uuid: "craftable",
                             hideInInventoryFilters: false,
@@ -209,7 +210,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                         ItemCategory(
                           colorCode: null,
                           iconName: null,
-                          name: "Alles",
+                          name: S.of(context).itemCategoryFilterAll,
                           subCategories: [],
                           uuid: "",
                           hideInInventoryFilters: false,
@@ -285,8 +286,8 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                     ),
                     Text(
                       showOnlyCraftableItems
-                          ? "In dieser Kategorie sind keine Items herstellbar"
-                          : "Keine Items unter dieser Kategorie",
+                          ? S.of(context).noItemsInCategoryCraftable
+                          : S.of(context).noItemsInCategory,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium!
@@ -326,7 +327,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                               children: [
                                 CupertinoButton(
                                   minSize: 0,
-                                  padding: EdgeInsets.all(0),
+                                  padding: EdgeInsets.zero,
                                   onPressed: () async {
                                     await showRecipeCardDetails(context,
                                             recipe: recipeToRender.recipe,
@@ -385,7 +386,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                                   height: 5,
                                 ),
                                 Text(
-                                  "Herstellbar: ${recipeToRender.amountCraftable}",
+                                  "${S.of(context).craftableAmountText} ${recipeToRender.amountCraftable}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelMedium!

@@ -30,6 +30,8 @@ abstract class IRpgEntityService {
       {required CampagneIdentifier campagneId});
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
       {required CampagneIdentifier campagneId});
+  Future<HRResponse<List<NoteDocumentPlayerDescriptorDto>>>
+      getUserDetailsForCampagne({required CampagneIdentifier campagneId});
 
   Future<HRResponse<String>> uploadImageToCampagneStorage({
     required CampagneIdentifier campagneId,
@@ -286,6 +288,25 @@ class RpgEntityService extends IRpgEntityService {
 
     return createCampagneResult;
   }
+
+  @override
+  Future<HRResponse<List<NoteDocumentPlayerDescriptorDto>>>
+      getUserDetailsForCampagne(
+          {required CampagneIdentifier campagneId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          '38f56f2d-8e02-4d47-bdd5-712a2c934194');
+    }
+
+    var userDescriptors = await HRResponse.fromApiFuture(
+        api.playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
+            $Value: campagneId.$value),
+        'Could not load user details for campagne.',
+        '7fccfd88-3027-4cf2-a577-2531dbf82e24');
+
+    return userDescriptors;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -400,7 +421,8 @@ class MockRpgEntityService extends IRpgEntityService {
                 UserIdentifier($value: "b6a03252-8dde-4fe7-8c65-7d1b90599ef8"),
             rpgCharacterConfiguration: jsonEncode(
                 RpgCharacterConfiguration.getBaseConfiguration(
-                        RpgConfigurationModel.getBaseConfiguration())
+                        RpgConfigurationModel.getBaseConfiguration(),
+                        variant: 1)
                     .copyWith(characterName: "Frodo")),
           ),
           PlayerCharacter(
@@ -414,7 +436,8 @@ class MockRpgEntityService extends IRpgEntityService {
                 UserIdentifier($value: "9a709402-5620-479c-85b7-718ae01e0a83"),
             rpgCharacterConfiguration: jsonEncode(
               RpgCharacterConfiguration.getBaseConfiguration(
-                      RpgConfigurationModel.getBaseConfiguration())
+                      RpgConfigurationModel.getBaseConfiguration(),
+                      variant: 0)
                   .copyWith(characterName: "Gandalf"),
             ),
           )
@@ -443,5 +466,36 @@ class MockRpgEntityService extends IRpgEntityService {
       required RpgConfigurationModel baseConfig}) {
     // TODO: implement createNewCampagne
     throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<List<NoteDocumentPlayerDescriptorDto>>>
+      getUserDetailsForCampagne({required CampagneIdentifier campagneId}) {
+    return Future.value(HRResponse.fromResult([
+      NoteDocumentPlayerDescriptorDto(
+        isDm: true,
+        userId: UserIdentifier($value: "d7c27d97-d973-465d-a2e5-9f605fd1f0c9"),
+        isYou: false,
+        playerCharacterName: null,
+      ),
+      NoteDocumentPlayerDescriptorDto(
+        isDm: false,
+        userId: UserIdentifier($value: "5def694e-8829-4fdd-afc5-342dc28c5ae2"),
+        isYou: true,
+        playerCharacterName: "MYSELF SHOULD NOT SHOW",
+      ),
+      NoteDocumentPlayerDescriptorDto(
+        isDm: false,
+        userId: UserIdentifier($value: "f59df7f4-7189-4435-9759-081c11bd887b"),
+        isYou: false,
+        playerCharacterName: "Kardan",
+      ),
+      NoteDocumentPlayerDescriptorDto(
+        isDm: false,
+        userId: UserIdentifier($value: "f918277a-db5b-4ca1-a60c-0e495f870dc1"),
+        isYou: false,
+        playerCharacterName: "Hayze",
+      ),
+    ]));
   }
 }

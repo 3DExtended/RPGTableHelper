@@ -702,6 +702,7 @@
         "parameters": [{
           "name": "campagneId",
           "in": "query",
+          "required": true,
           "schema": {
             "type": "string"
           }
@@ -787,6 +788,113 @@
           },
           "500": {
             "description": "Server error while processing the file."
+          }
+        }
+      }
+    },
+    "/Notes/getdocuments/{campagneid}": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Returns a list of documents this user can see for a given campagne.",
+        "description": "You must be within the correct campagne",
+        "parameters": [{
+          "name": "campagneid",
+          "in": "path",
+          "description": "The id of the desired campagne",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "The documents for the user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
           }
         }
       }
@@ -1150,17 +1258,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                  "$ref": "#/components/schemas/TextBlock"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                  "$ref": "#/components/schemas/TextBlock"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                  "$ref": "#/components/schemas/TextBlock"
                 }
               }
             }
@@ -1274,17 +1382,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                  "$ref": "#/components/schemas/ImageBlock"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                  "$ref": "#/components/schemas/ImageBlock"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NoteBlockModelBaseIdentifier"
+                  "$ref": "#/components/schemas/ImageBlock"
                 }
               }
             }
@@ -1484,6 +1592,184 @@
         "responses": {
           "200": {
             "description": "The id of the new document"
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/updatenote": {
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Updates a document.",
+        "description": "You must be the owner of the document",
+        "requestBody": {
+          "description": "The updated document",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteDocumentDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "If there was an error retrieving the document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or you are not allowed to see this document",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Notes/deleteblock": {
+      "delete": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Deletes a single note block for a given document.",
+        "description": "You must be the owner of the document",
+        "parameters": [{
+          "name": "Value",
+          "in": "query",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Ok if deleted"
           },
           "400": {
             "description": "If there was an error retrieving the document",
@@ -1860,7 +2146,8 @@
         "tags": [
           "PlayerCharacter"
         ],
-        "summary": "Returns a list of player characters for a given campagne (if the calling user is the dm).",
+        "summary": "Returns a list of player characters for a given campagne.",
+        "description": "Please note that only the dm is allowed to retrieve the rpg character configs of the players. if you are not the dm, those configs will be empty!",
         "parameters": [{
           "name": "Value",
           "in": "query",
@@ -1960,6 +2247,111 @@
         }
       }
     },
+    "/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne": {
+      "get": {
+        "tags": [
+          "PlayerCharacter"
+        ],
+        "summary": "Returns a list of all users assigned to the campagne with meta information.",
+        "parameters": [{
+          "name": "Value",
+          "in": "query",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "A list of all playerCharacters for this user",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentPlayerDescriptorDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentPlayerDescriptorDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoteDocumentPlayerDescriptorDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If there was an error retrieving the playerCharacters",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If you are not logged in or not the dm",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [{
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Public/getminimalversion": {
       "get": {
         "tags": [
@@ -1986,25 +2378,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/Public/createimage": {
-      "post": {
-        "tags": [
-          "Public"
-        ],
-        "parameters": [{
-          "name": "prompt",
-          "in": "query",
-          "schema": {
-            "type": "string"
-          }
-        }],
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -3266,12 +3639,20 @@
             "$ref": "#/components/schemas/NoteBlockModelBase"
           },
           {
+            "required": [
+              "imageMetaDataId",
+              "publicImageUrl"
+            ],
             "type": "object",
             "properties": {
               "imageMetaDataId": {
                 "$ref": "#/components/schemas/ImageMetaDataIdentifier"
               },
               "publicImageUrl": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "markdownText": {
                 "type": "string",
                 "nullable": true
               }
@@ -3339,14 +3720,14 @@
           {
             "type": "object",
             "properties": {
+              "isDeleted": {
+                "type": "boolean"
+              },
               "noteDocumentId": {
                 "$ref": "#/components/schemas/NoteDocumentIdentifier"
               },
               "creatingUserId": {
                 "$ref": "#/components/schemas/UserIdentifier"
-              },
-              "visibility": {
-                "$ref": "#/components/schemas/NotesBlockVisibility"
               },
               "permittedUsers": {
                 "type": "array",
@@ -3397,6 +3778,9 @@
         ],
         "type": "object",
         "properties": {
+          "isDeleted": {
+            "type": "boolean"
+          },
           "creationDate": {
             "type": "string",
             "format": "date-time"
@@ -3447,13 +3831,29 @@
         },
         "additionalProperties": false
       },
-      "NotesBlockVisibility": {
-        "enum": [
-          "HiddenForAllExceptAuthor",
-          "VisibleForSomeUsers",
-          "VisibleForCampagne"
+      "NoteDocumentPlayerDescriptorDto": {
+        "required": [
+          "isDm",
+          "isYou",
+          "userId"
         ],
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "userId": {
+            "$ref": "#/components/schemas/UserIdentifier"
+          },
+          "playerCharacterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDm": {
+            "type": "boolean"
+          },
+          "isYou": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
       },
       "PlayerCharacter": {
         "allOf": [{

@@ -6,6 +6,7 @@ import 'package:rpg_table_helper/components/custom_markdown_body.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -96,7 +97,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Letzte verteilte Items",
+                      S.of(context).lastGrantedItems,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           color: darkTextColor,
                           fontSize: 24,
@@ -108,7 +109,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: CustomMarkdownBody(
-                          text: "Noch keine Items verteilt...",
+                          text: S.of(context).noItemsGranted,
                         ),
                       ),
                     if (connectionDetails != null &&
@@ -134,7 +135,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                         child: Text(
-                          "Neue Items verteilen",
+                          S.of(context).grantItems,
                           style: Theme.of(context)
                               .textTheme
                               .labelMedium!
@@ -157,7 +158,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                     selectedPlaceOfFindingId = newValue;
                                   });
                                 },
-                                label: 'Fundort', // TODO localize
+                                label: S.of(context).placeOfFinding,
                                 items: [
                                   ...(placesOfFindings.sortBy((e) => e.name)),
                                 ].map((placeOfFinding) {
@@ -169,10 +170,10 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                           ),
                         ],
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(top: 20),
                         child: CustomMarkdownBody(
-                          text: "## Spieler Würfe",
+                          text: "## ${S.of(context).playerRolls}",
                         ),
                       ),
                       SizedBox(
@@ -191,7 +192,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                   SizedBox(
                                     width: 80,
                                     child: CustomTextField(
-                                      labelText: "Wurf",
+                                      labelText: S.of(context).diceRoll,
                                       textEditingController: playerRollPair.$3,
                                       keyboardType: TextInputType.number,
                                     ),
@@ -201,7 +202,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                   ),
                                   CustomMarkdownBody(
                                       text:
-                                          "Spieler __${playerRollPair.$2.isNotEmpty ? playerRollPair.$2.trim() : "Player Name"}__"),
+                                          "${S.of(context).player} __${playerRollPair.$2.isNotEmpty ? playerRollPair.$2.trim() : S.of(context).characterNameDefault}__"),
                                 ],
                               ),
                             )
@@ -218,7 +219,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                     grantItemsToPlayerForPlaceOfFindingRoll(
                                         rpgConfig, context);
                                   },
-                            label: "Items verschicken",
+                            label: S.of(context).sendItems,
                           ),
                         ),
                       ),
@@ -307,7 +308,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
   ) {
     List<Widget> result = [
       CustomMarkdownBody(
-        text: "## Auffindbare Items in Fundort: ",
+        text: S.of(context).itemsToBeFoundInPlaceMarkdown,
       )
     ];
 
@@ -315,11 +316,11 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
 
     if (selectedPlaceOfFindingId == null) {
       result.add(CustomMarkdownBody(
-        text: "Es wurde noch kein Fundort ausgewählt.",
+        text: S.of(context).noPlaceOfFindingSelected,
       ));
     } else {
       result.add(CustomMarkdownBody(
-        text: "Diese Items gibt es am/im Fundort:",
+        text: S.of(context).followingItemsArePossibleAtPlaceOfFinding,
       ));
 
       List<(RpgItem, int)> itemsWithTheirDcSorted =
@@ -329,14 +330,14 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
       for (var item in itemsWithTheirDcSorted) {
         result.add(CheckboxListTile.adaptive(
           controlAffinity: ListTileControlAffinity.leading,
-          contentPadding: EdgeInsets.all(0),
+          contentPadding: EdgeInsets.zero,
           splashRadius: 0,
           dense: true,
           checkColor: const Color.fromARGB(255, 57, 245, 88),
           activeColor: darkColor,
           visualDensity: VisualDensity(vertical: -2),
           title: Text(
-            "${item.$1.name} (DC: ${item.$2})",
+            "${item.$1.name} (${S.of(context).diceChallengeAbbr}: ${item.$2})",
             style: Theme.of(context)
                 .textTheme
                 .labelMedium!
@@ -393,15 +394,15 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
       RpgConfigurationModel? rpgConfig, ConnectionDetails connectionDetails) {
     if (rpgConfig == null) return "";
 
-    var result = "Zuletzt wurden diese Items verteilt:\n\n";
+    var result = "${S.of(context).lastGrantedItemsMarkdownPrefix}\n\n";
 
     for (var grantForPlayer in (connectionDetails.lastGrantedItems ??
         List<GrantedItemsForPlayer>.empty())) {
       result +=
-          "- Spieler __${grantForPlayer.characterName.isNotEmpty ? grantForPlayer.characterName.trim() : "Player Name"}:__\n";
+          "- ${S.of(context).player} __${grantForPlayer.characterName.isNotEmpty ? grantForPlayer.characterName.trim() : S.of(context).characterNameDefault}:__\n";
 
       if (grantForPlayer.grantedItems.isEmpty) {
-        result += "  - Keine Items in dieser Runde\n";
+        result += "  - ${S.of(context).noItemsGrantedToPlayerThisRound}\n";
       } else {
         for (var grantedItem in grantForPlayer.grantedItems) {
           var item = rpgConfig.allItems

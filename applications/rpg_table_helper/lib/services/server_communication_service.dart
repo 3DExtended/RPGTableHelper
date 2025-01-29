@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:rpg_table_helper/constants.dart';
@@ -68,9 +69,7 @@ class ServerCommunicationService extends IServerCommunicationService {
   ServerCommunicationService({
     required super.widgetRef,
     required super.apiConnectorService,
-  }) : super(isMock: false) {
-    print("New ServerCommunicationService created");
-  }
+  }) : super(isMock: false);
 
   void buildHubConnection() {
     // NOTE: Headers are not working in this current signal r version...
@@ -268,7 +267,9 @@ class ServerCommunicationService extends IServerCommunicationService {
     }
 
     if (hubConnection == null) {
-      print("DID NOT SEND TO SERVER: $functionName");
+      if (kDebugMode) {
+        print("DID NOT SEND TO SERVER: $functionName");
+      }
 
       // dont send something if not connected
       return;

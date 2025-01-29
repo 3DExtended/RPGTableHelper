@@ -9,7 +9,7 @@ import '../test_configuration.dart';
 void main() {
   group('AllCategoryIcons rendering', () {
     testConfigurations(
-      disableLocals: true,
+      disableLocals: false,
       widgetName: 'AllCategoryIconsWrapped',
       useMaterialAppWrapper: true,
       screenFactory: (Locale locale) => Wrap(
@@ -37,7 +37,7 @@ void main() {
     );
 
     testConfigurations(
-      disableLocals: true,
+      disableLocals: false,
       widgetName: 'AllCategoryIconsWrapped_colored',
       useMaterialAppWrapper: true,
       screenFactory: (Locale locale) => Wrap(

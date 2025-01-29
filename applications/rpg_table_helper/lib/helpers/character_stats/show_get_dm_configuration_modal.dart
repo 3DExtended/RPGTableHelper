@@ -9,6 +9,7 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/icons_helper.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
@@ -178,7 +179,8 @@ class _ShowGetDmConfigurationModalContentState
   @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<CharacterStatDefinition>(
-        title: "Eigenschaft bearbeiten",
+        isFullscreen: true,
+        title: S.of(context).configureProperties,
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},
 
@@ -253,7 +255,7 @@ class _ShowGetDmConfigurationModalContentState
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextField(
-              labelText: "Name der Eigenschaft",
+              labelText: S.of(context).nameOfPropertyLabel,
               textEditingController: nameTextEditor,
               keyboardType: TextInputType.text,
             ),
@@ -261,7 +263,7 @@ class _ShowGetDmConfigurationModalContentState
               height: 10,
             ),
             CustomTextField(
-              labelText: "Hilfstext für die Eigenschaft",
+              labelText: S.of(context).descriptionOfProperty,
               textEditingController: helperTextEditor,
               keyboardType: TextInputType.text,
             ),
@@ -285,20 +287,18 @@ class _ShowGetDmConfigurationModalContentState
                     case CharacterStatEditType.oneTap:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Häufig verändert (bspw. jede Session)"), // TODO localize
+                        child: Text(S.of(context).propertyEditTypeOneTap),
                       );
                     case CharacterStatEditType.static:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Selten verändert (bspw. je Level-Up)"), // TODO localize
+                        child: Text(S.of(context).propertyEditTypeStatic),
                       );
                     default:
                       throw NotImplementedException();
                   }
                 }).toList(),
-                label: "Veränderungshäufigkeit"),
+                label: S.of(context).propertyEditTypeLabel),
             SizedBox(
               height: 15,
             ),
@@ -319,70 +319,70 @@ class _ShowGetDmConfigurationModalContentState
                     case CharacterStatValueType.singleImage:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text("Generiertes Bild"), // TODO localize
+                        child: Text(S.of(context).generatedImage),
                       );
 
                     case CharacterStatValueType.multiLineText:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text("Mehrzeiliger Text"), // TODO localize
+                        child: Text(S.of(context).multilineText),
                       );
                     case CharacterStatValueType.singleLineText:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text("Einzeiliger Text"), // TODO localize
+                        child: Text(S.of(context).singleLineText),
                       );
                     case CharacterStatValueType.int:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text("Zahlen-Wert"), // TODO localize
+                        child: Text(S.of(context).integerValue),
                       );
 
                     case CharacterStatValueType.listOfIntsWithIcons:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Liste von Zahlen-Werten mit Icons"), // TODO localize
+                        child: Text(S.of(context).listOfIntegersWithIcons),
                       );
                     case CharacterStatValueType.intWithMaxValue:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Zahlen-Wert mit maximal Wert"), // TODO localize
+                        child: Text(S.of(context).integerValueWithMaxValue),
                       );
                     case CharacterStatValueType.listOfIntWithCalculatedValues:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Gruppe von Zahlen-Werten mit zusätzlicher Zahl"), // TODO localize
+                        child: Text(S
+                            .of(context)
+                            .listOfInterValuesWithCalculatedIntegerValues),
                       );
                     case CharacterStatValueType.intWithCalculatedValue:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Zahlen-Wert mit zusätzlicher Zahl"), // TODO localize
+                        child:
+                            Text(S.of(context).integerValueWithCalculatedValue),
                       );
                     case CharacterStatValueType
                           .characterNameWithLevelAndAdditionalDetails:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text(
-                            "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)"), // TODO localize
+                        child: Text(S
+                            .of(context)
+                            .characterNameWithLevelAndConfigurableDetails),
                       );
 
                     case CharacterStatValueType.multiselect:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text("Mehrfach-Auswahl"), // TODO localize
+                        child: Text(S.of(context).multiselectOption),
                       );
                     case CharacterStatValueType.companionSelector:
                       return DropdownMenuItem<String?>(
                         value: e.name,
-                        child: Text("Begleiter Übersicht"), // TODO localize
+                        child: Text(S.of(context).companionOverview),
                       );
                   }
                 }).toList(),
-                label: "Art der Eigenschaft"),
+                label: S.of(context).kindOfProperty),
             ...getAdvancedConfigurationOptionWidgets(),
             ...getAdditionalDetailsWidgets(),
             SizedBox(
@@ -404,7 +404,7 @@ class _ShowGetDmConfigurationModalContentState
       ThemeConfigurationForApp(
         child: ExpansionTile(
           enableFeedback: false,
-          title: Text('Erweiterte Optionen'),
+          title: Text(S.of(context).additionalSettings),
           textColor: darkTextColor,
           iconColor: darkColor,
           collapsedIconColor: darkColor,
@@ -426,7 +426,9 @@ class _ShowGetDmConfigurationModalContentState
                           });
                         },
                         isSet: multiselectIsAllowedToBeSelectedMultipleTimes,
-                        label: "Optionen können mehrmals ausgewählt werden"),
+                        label: S
+                            .of(context)
+                            .multiselectOptionsAreSelectableMultipleTimes),
                   ),
                 ],
               ),
@@ -442,7 +444,7 @@ class _ShowGetDmConfigurationModalContentState
                         });
                       },
                       isSet: isOptionalForCompanionCharacters,
-                      label: "Optionale Eigenschaft für Begleiter"),
+                      label: S.of(context).optionalPropertyForCompanions),
                 ),
               ],
             ),
@@ -456,7 +458,7 @@ class _ShowGetDmConfigurationModalContentState
                       });
                     },
                     isSet: isOptionalForAlternateForms,
-                    label: "Optionale Eigenschaft für andere Formen"),
+                    label: S.of(context).optionalPropertyForAlternateForms),
               )
             ]),
           ],
@@ -491,7 +493,7 @@ class _ShowGetDmConfigurationModalContentState
           height: 10,
         ),
         Text(
-          "Optionen für Mehrfach-Auswahl",
+          S.of(context).optionsForMultiselect,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: darkTextColor,
                 fontSize: 20,
@@ -510,7 +512,7 @@ class _ShowGetDmConfigurationModalContentState
                   children: [
                     Expanded(
                       child: CustomTextField(
-                        labelText: "Name:",
+                        labelText: S.of(context).multiselectOptionName,
                         textEditingController: tuple.value.$2,
                         keyboardType: TextInputType.text,
                       ),
@@ -520,7 +522,7 @@ class _ShowGetDmConfigurationModalContentState
                     ),
                     Expanded(
                       child: CustomTextField(
-                        labelText: "Beschreibung:",
+                        labelText: S.of(context).multiselectOptionDescription,
                         textEditingController: tuple.value.$3,
                         keyboardType: TextInputType.multiline,
                       ),
@@ -560,7 +562,7 @@ class _ShowGetDmConfigurationModalContentState
                 ));
               });
             },
-            label: "Neues Element",
+            label: S.of(context).additionalElement,
             icon: Theme(
                 data: ThemeData(
                   iconTheme: const IconThemeData(
@@ -598,7 +600,7 @@ class _ShowGetDmConfigurationModalContentState
           height: 10,
         ),
         Text(
-          "Weitere Werte",
+          S.of(context).moreValues,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: darkTextColor,
                 fontSize: 20,
@@ -629,7 +631,7 @@ class _ShowGetDmConfigurationModalContentState
                               alreadySelectedIconColor: darkColor,
                               disableColorSelect: true,
                               titleSuffix:
-                                  "für Zahlen-Wert \"${tuple.value.label.text}\"",
+                                  "${S.of(context).forIntegerValueWithName} \"${tuple.value.label.text}\"",
                             ).then((value) {
                               if (value == null) {
                                 return;
@@ -656,7 +658,7 @@ class _ShowGetDmConfigurationModalContentState
                       ),
                     Expanded(
                       child: CustomTextField(
-                        labelText: "Name:",
+                        labelText: S.of(context).propertyNameLabel,
                         textEditingController: tuple.value.label,
                         keyboardType: TextInputType.text,
                       ),
@@ -698,7 +700,7 @@ class _ShowGetDmConfigurationModalContentState
                 ));
               });
             },
-            label: "Neues Element",
+            label: S.of(context).additionalElement,
             icon: Theme(
                 data: ThemeData(
                   iconTheme: const IconThemeData(

@@ -11,8 +11,9 @@ class CustomTextField extends StatelessWidget {
       required this.textEditingController,
       required this.keyboardType,
       this.password,
-      this.placeholderText});
-
+      this.placeholderText,
+      this.disableMaxLineLimit});
+  final bool? disableMaxLineLimit;
   final TextInputType keyboardType;
   final String labelText;
   final TextEditingController textEditingController;
@@ -31,12 +32,15 @@ class CustomTextField extends StatelessWidget {
               ? 5
               : (password == true ? 1 : null),
           maxLines: keyboardType == TextInputType.multiline
-              ? 5
+              ? (disableMaxLineLimit == true ? null : 5)
               : (password == true ? 1 : null),
           keyboardType: keyboardType,
           textCapitalization: TextCapitalization.sentences,
           obscureText: password ?? false,
           enableSuggestions: true,
+          scrollPhysics: disableMaxLineLimit == true
+              ? NeverScrollableScrollPhysics()
+              : null,
           scribbleEnabled: true,
           decoration: InputDecoration(
             suffixIcon: contraints.maxWidth > 350 &&

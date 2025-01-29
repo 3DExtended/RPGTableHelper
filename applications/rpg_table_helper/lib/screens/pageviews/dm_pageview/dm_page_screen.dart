@@ -4,13 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
+import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_character_overview.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_fight_squence.dart';
 import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_screen_grant_items.dart';
+import 'package:rpg_table_helper/screens/pageviews/lore_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 
 class DmPageScreen extends StatefulWidget {
@@ -42,12 +45,16 @@ class _DmPageScreenState extends State<DmPageScreen> {
 
   List<(String title, Widget child)> getDmScreens(BuildContext context) {
     return [
-      ("Kampagnen Management", DmScreenCampagneManagement()),
-      ("Charakter Übersicht", DmScreenCharacterOverview()),
-      ("Kampf Reihenfolge", DmScreenFightSquence()),
+      (S.of(context).campaignManagement, DmScreenCampagneManagement()),
+      (S.of(context).characterOverview, DmScreenCharacterOverview()),
+      (S.of(context).fightingOrdering, DmScreenFightSquence()),
       (
-        "Items verteilen",
+        S.of(context).grantItems,
         DmScreenGrantItems(),
+      ),
+      (
+        S.of(context).lore,
+        LoreScreen(),
       ),
     ];
   }
@@ -84,7 +91,7 @@ class _DmPageScreenState extends State<DmPageScreen> {
                   _currentStep + 1,
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       await _goToStepId(index);
                     },
@@ -104,23 +111,25 @@ class _DmPageScreenState extends State<DmPageScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                  child: Text(
-                    currentTitle,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: textColor,
-                          fontSize: 24,
-                        ),
+                if (context.isTablet)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                    child: Text(
+                      currentTitle,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
+                    ),
                   ),
-                ),
                 ...List.generate(
                   // TODO what is the correct number of steps
                   dmScreensToSwipe.length - (_currentStep + 1),
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       _goToStepId(index + _currentStep + 1);
                     },

@@ -15,7 +15,6 @@ sleep 6
 # Commit and tag this change.
 version=`grep 'version: ' pubspec.yaml | sed 's/version: //'`
 git commit -m "release: build and release $version" pubspec.yaml
-git tag $version
 
 sleep 6
 
@@ -35,9 +34,13 @@ sleep 6
 
 flutter build appbundle --no-tree-shake-icons --no-shrink --obfuscate --split-debug-info=./obfuscation/$version/appbundle/
 
-git add obfuscation/*
+git add -f obfuscation/*
 git commit -m "chore: Checkin symbols for ${version}"
+git tag $version
+
 git push
+git push origin tag $version
+
 
 end=`date +%s`
 runtime=$((end-start))

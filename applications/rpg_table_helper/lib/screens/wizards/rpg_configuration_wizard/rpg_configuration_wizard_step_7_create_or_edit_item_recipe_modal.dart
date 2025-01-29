@@ -9,8 +9,9 @@ import 'package:rpg_table_helper/components/custom_fa_icon.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -461,14 +462,14 @@ class _CreateOrEditCraftingRecipeModalContentState
                         child: Row(
                           children: [
                             CustomButton(
-                              label: "Abbrechen", // TODO localize
+                              label: S.of(context).cancel,
                               onPressed: () {
                                 navigatorKey.currentState!.pop(null);
                               },
                             ),
                             const Spacer(),
                             CustomButton(
-                              label: "Speichern", // TODO localize
+                              label: S.of(context).save,
                               onPressed: () {
                                 try {
                                   navigatorKey.currentState!.pop(

@@ -15,6 +15,7 @@ import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
 import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
@@ -121,42 +122,33 @@ class _ShowGetPlayerConfigurationModalContentState
 
   int currentlyVisibleVariant = 0;
 
-  Future _goToVariantId(int id) async {
-    if (id == currentlyVisibleVariant) return;
-    setState(() {
-      currentlyVisibleVariant = id;
-      pageController.jumpToPage(id);
-    });
-  }
-
   @override
   void initState() {
+    pageController = PageController(
+      initialPage: widget.characterValue?.variant ?? 0,
+    );
+
+    Future.delayed(Duration.zero, delayedInitState);
+    super.initState();
+  }
+
+  void delayedInitState() {
     if (widget.statConfiguration.valueType ==
         CharacterStatValueType.multiselect) {
       // jsonSerializedAdditionalData = {"options:":[{"uuid": "3a7fd649-2d76-4a93-8513-d5a8e8249b40", "label": "", "description": ""}], "multiselectIsAllowedToBeSelectedMultipleTimes":false}
 
-      var multiselectIsAllowedToBeSelectedMultipleTimes = false;
       List<dynamic> statConfigValues = [];
 
-      // TODO remove migration
       if (widget.statConfiguration.jsonSerializedAdditionalData?.isNotEmpty ==
               true &&
           widget.statConfiguration.jsonSerializedAdditionalData!
               .startsWith("[")) {
-        statConfigValues = jsonDecode(widget
-                .statConfiguration.jsonSerializedAdditionalData
-                ?.replaceAll("},]", "}]")
-                .replaceAll('"}]"}]', '"}]') ??
-            "[]");
+        statConfigValues = jsonDecode(
+            widget.statConfiguration.jsonSerializedAdditionalData ?? "[]");
       } else {
         Map<String, dynamic> json = jsonDecode(widget
                 .statConfiguration.jsonSerializedAdditionalData ??
             '{"options:":[], "multiselectIsAllowedToBeSelectedMultipleTimes":false}');
-
-        multiselectIsAllowedToBeSelectedMultipleTimes =
-            json.containsKey("multiselectIsAllowedToBeSelectedMultipleTimes")
-                ? json["multiselectIsAllowedToBeSelectedMultipleTimes"] as bool
-                : false;
 
         statConfigValues = json["options"] as List<dynamic>;
       }
@@ -268,7 +260,7 @@ class _ShowGetPlayerConfigurationModalContentState
 
       if (widget.statConfiguration.valueType ==
           CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
-        labelDefinitions.add((label: "Level", uuid: ""));
+        labelDefinitions.add((label: S.of(context).level, uuid: ""));
       }
 
       List<({String uuid, String value})> filledListOfValues = [];
@@ -311,9 +303,6 @@ class _ShowGetPlayerConfigurationModalContentState
       ).toList();
     }
 
-    pageController = PageController(
-      initialPage: widget.characterValue?.variant ?? 0,
-    );
     setState(() {
       currentlyVisibleVariant = min(
           widget.characterValue?.variant ?? 0,
@@ -367,15 +356,17 @@ class _ShowGetPlayerConfigurationModalContentState
         }
       }
     }
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<RpgCharacterStatValue>(
-        title:
-            "Eigenschaften konfigurieren${widget.characterName == null ? "" : " (für ${widget.characterName})"}",
+        isFullscreen: true,
+        title: S.of(context).configureProperties +
+            (widget.characterName.isEmpty
+                ? ""
+                : S.of(context).configurePropertiesForCharacterNameSuffix(
+                    widget.characterName)),
         navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
         onCancel: () async {},
         // TODO onSave should be null if this modal is invalid
@@ -459,7 +450,7 @@ class _ShowGetPlayerConfigurationModalContentState
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "Vorschau:",
+                  "${S.of(context).preview}:",
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                         color: darkTextColor,
                         fontSize: 24,
@@ -578,14 +569,11 @@ class _ShowGetPlayerConfigurationModalContentState
             var fullImageUrl = imageUrl == null
                 ? "assets/images/charactercard_placeholder.png"
                 : (imageUrl.startsWith("assets")
-                        ? imageUrl
-                        : (apiBaseUrl +
-                            (imageUrl.startsWith("/")
-                                ? (imageUrl.length > 1
-                                    ? imageUrl.substring(1)
-                                    : '')
-                                : imageUrl))) ??
-                    "assets/images/charactercard_placeholder.png";
+                    ? imageUrl
+                    : (apiBaseUrl +
+                        (imageUrl.startsWith("/")
+                            ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
+                            : imageUrl)));
 
             return BorderedImage(
               lightColor: darkColor,
@@ -650,9 +638,9 @@ class _ShowGetPlayerConfigurationModalContentState
                         campagneId: CampagneIdentifier($value: campagneId),
                       );
 
-                      if (!context.mounted) return;
+                      if (!context.mounted || !mounted) return;
                       await generationResult.possiblyHandleError(context);
-                      if (!context.mounted) return;
+                      if (!context.mounted || !mounted) return;
 
                       if (generationResult.isSuccessful &&
                           generationResult.result != null) {
@@ -667,9 +655,9 @@ class _ShowGetPlayerConfigurationModalContentState
                       });
                     },
               minSize: 0,
-              padding: EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               child: Text(
-                "Neues Bild",
+                S.of(context).newImageBtnLabel,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: isLoading ? middleBgColor : accentColor,
                       decoration: TextDecoration.underline,
@@ -710,7 +698,7 @@ class _ShowGetPlayerConfigurationModalContentState
     return ThemeConfigurationForApp(
       child: ExpansionTile(
         enableFeedback: false,
-        title: Text('Erweiterte Optionen'),
+        title: Text(S.of(context).additionalSettings),
         textColor: darkTextColor,
         iconColor: darkColor,
         collapsedIconColor: darkColor,
@@ -724,14 +712,15 @@ class _ShowGetPlayerConfigurationModalContentState
             children: [
               Expanded(
                 child: SelectableTile(
-                    onValueChange: () {
-                      setState(() {
-                        hideStatFromCharacterScreens =
-                            !hideStatFromCharacterScreens;
-                      });
-                    },
-                    isSet: hideStatFromCharacterScreens,
-                    label: "Verstecke Option für meinen Charakter"),
+                  onValueChange: () {
+                    setState(() {
+                      hideStatFromCharacterScreens =
+                          !hideStatFromCharacterScreens;
+                    });
+                  },
+                  isSet: hideStatFromCharacterScreens,
+                  label: S.of(context).hidePropertyForCharacter,
+                ),
               ),
             ],
           ),
@@ -740,13 +729,14 @@ class _ShowGetPlayerConfigurationModalContentState
             children: [
               Expanded(
                 child: SelectableTile(
-                    onValueChange: () {
-                      setState(() {
-                        hideLabelOfStat = !hideLabelOfStat;
-                      });
-                    },
-                    isSet: hideLabelOfStat,
-                    label: "Verstecke Überschrift"),
+                  onValueChange: () {
+                    setState(() {
+                      hideLabelOfStat = !hideLabelOfStat;
+                    });
+                  },
+                  isSet: hideLabelOfStat,
+                  label: S.of(context).hideHeading,
+                ),
               ),
             ],
           ),
@@ -995,7 +985,7 @@ class _ShowGetPlayerConfigurationModalContentState
               (e) => multiselectIsAllowedToBeSelectedMultipleTimes == false
                   ? CheckboxListTile.adaptive(
                       controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: EdgeInsets.zero,
                       splashRadius: 0,
                       dense: true,
                       checkColor: const Color.fromARGB(255, 57, 245, 88),
@@ -1056,7 +1046,7 @@ class _ShowGetPlayerConfigurationModalContentState
                               multiselectOptions = deepCopy;
                             });
                           },
-                          label: "Anzahl",
+                          label: S.of(context).count,
                           startValue: e.value.$5,
                         ),
                         SizedBox(
@@ -1131,9 +1121,9 @@ class _ShowGetPlayerConfigurationModalContentState
                     ),
                     Expanded(
                       child: CustomTextField(
-                        labelText: "Erster Wert",
+                        labelText: S.of(context).firstValue,
                         textEditingController: e.value.valueTextController,
-                        placeholderText: "Der erste Wert für ${e.value.label}",
+                        placeholderText: S.of(context).firstValuePlaceholder,
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -1142,10 +1132,10 @@ class _ShowGetPlayerConfigurationModalContentState
                     ),
                     Expanded(
                       child: CustomTextField(
-                        labelText: "Zweiter Wert",
+                        labelText: S.of(context).secondValue,
                         textEditingController: e.value.otherValueTextController,
                         keyboardType: TextInputType.number,
-                        placeholderText: "Der zweite Wert für ${e.value.label}",
+                        placeholderText: S.of(context).secondValuePlaceholder,
                       ),
                     ),
                     SizedBox(
@@ -1197,7 +1187,9 @@ class _ShowGetPlayerConfigurationModalContentState
                       child: CustomTextField(
                         labelText: e.value.label,
                         textEditingController: e.value.valueTextController,
-                        placeholderText: "Der Wert von ${e.value.label}",
+                        placeholderText: S
+                            .of(context)
+                            .valueOfPropertyWithName(e.value.label),
                         keyboardType: widget.statConfiguration.valueType ==
                                 CharacterStatValueType.listOfIntsWithIcons
                             ? TextInputType.number
@@ -1225,8 +1217,8 @@ class _ShowGetPlayerConfigurationModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                labelText: "Current Value",
-                placeholderText: "The current value.",
+                labelText: S.of(context).currentValue,
+                placeholderText: S.of(context).currentValuePlaceholder,
                 textEditingController: textEditController,
                 keyboardType: TextInputType.number,
               ),
@@ -1236,8 +1228,8 @@ class _ShowGetPlayerConfigurationModalContentState
             ),
             Expanded(
               child: CustomTextField(
-                labelText: "Max Value",
-                placeholderText: "The maximum value you could get.",
+                labelText: S.of(context).maxValue,
+                placeholderText: S.of(context).maxValuePlaceholder,
                 textEditingController: textEditController2,
                 keyboardType: TextInputType.number,
               ),
@@ -1260,8 +1252,8 @@ class _ShowGetPlayerConfigurationModalContentState
           children: [
             Expanded(
               child: CustomTextField(
-                labelText: "Erster Wert",
-                placeholderText: "The first value.",
+                labelText: S.of(context).firstValue,
+                placeholderText: S.of(context).firstValuePlaceholder,
                 textEditingController: textEditController,
                 keyboardType: TextInputType.number,
               ),
@@ -1271,8 +1263,8 @@ class _ShowGetPlayerConfigurationModalContentState
             ),
             Expanded(
               child: CustomTextField(
-                labelText: "Second Value",
-                placeholderText: "The computed value based on the first value.",
+                labelText: S.of(context).calculatedValue,
+                placeholderText: S.of(context).calculatedValuePlaceholder,
                 textEditingController: textEditController2,
                 keyboardType: TextInputType.number,
               ),
@@ -1305,7 +1297,7 @@ class _ShowGetPlayerConfigurationModalContentState
             .map(
               (e) => CheckboxListTile.adaptive(
                 controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.all(0),
+                contentPadding: EdgeInsets.zero,
                 splashRadius: 0,
                 dense: true,
                 checkColor: const Color.fromARGB(255, 57, 245, 88),
@@ -1355,13 +1347,13 @@ class _ShowGetPlayerConfigurationModalContentState
                   ...(newestCharacter.companionCharacters ?? []),
                   RpgAlternateCharacterConfiguration(
                     characterName:
-                        "Pet #${(newestCharacter.companionCharacters ?? []).length + 1}",
+                        "${S.of(context).petDefaultNamePrefix} #${(newestCharacter.companionCharacters ?? []).length + 1}",
                     uuid: UuidV7().generate(),
                     characterStats: [],
                   )
                 ]));
           },
-          label: "Neuen Begleiter", // TODO localize
+          label: S.of(context).newPetBtnLabel,
           variant: CustomButtonVariant.AccentButton,
         )
       ],

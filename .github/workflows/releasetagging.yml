@@ -16,6 +16,15 @@ jobs:
     # Checkout the repository
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        # Number of commits to fetch. 0 indicates all history for all branches and tags.
+        # Default: 1
+        fetch-depth: 0
+
+        # Whether to fetch tags, even if fetch-depth > 0.
+        # Default: false
+        fetch-tags: true
+
 
     # Capture the username of the tag creator
     - name: Capture tag creator username
@@ -69,40 +78,16 @@ jobs:
     - name: Generate release notes
       id: generate_notes
       run: |
-        conventional-changelog -r 2 > release-notes.md
-        CHANGELOG="$(cat release-notes.md)"
-        CHANGELOG="${CHANGELOG//'%'/'%25'}"
-        CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-        CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+        conventional-changelog -r 2 > ${{ github.workspace }}-CHANGELOG.txt
+        conventional-changelog -r 0 > ${{ github.workspace }}-FULL_CHANGELOG.txt
 
-        echo "Got changelog: $CHANGELOG"
-
-        CHANGELOG="$(cat release-notes.md)"
-        CHANGELOG="${CHANGELOG//'%'/'%25'}"
-        CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-        CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-
-        echo 'changelog<<EOF' >> $GITHUB_ENV
-        echo $CHANGELOG >> $GITHUB_ENV
-        echo 'EOF' >> $GITHUB_ENV
-        echo "Got changelog: $CHANGELOG"
-
-    - name: Create GitHub Release
-      uses: actions/create-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Release2 ${{ github.ref_name }}
-        body:  |
-            ${{ env.GITHUB_ENV.changelog }}
-        draft: false
+        body_path: ${{ github.workspace }}-CHANGELOG.txt
+        token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: ${{ steps.set_prerelease.outputs.prerelease }}
-    - name: Create release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh release create "$tag" \
-            --repo="$GITHUB_REPOSITORY" \
-            --title="Release ${{ github.ref_name }}" \
-            --generate-notes 
+        files: |
+          ${{ github.workspace }}-FULL_CHANGELOG.txt
+

@@ -4,7 +4,6 @@ import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configur
 import 'package:rpg_table_helper/screens/character_screen.dart';
 import 'package:rpg_table_helper/screens/crafting_screen.dart';
 import 'package:rpg_table_helper/screens/inventory_screen.dart';
-import 'package:rpg_table_helper/screens/lore_screen.dart';
 import 'package:rpg_table_helper/screens/search_screen.dart';
 import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
 import 'package:rpg_table_helper/services/dependency_provider.dart';
@@ -32,7 +31,6 @@ class _AuthorizedScreenWrapperState
   Map<String, Widget Function(BuildContext)> _routeBuilders(
       BuildContext context) {
     var result = {
-      LoreScreen.route: (context) => const LoreScreen(),
       CharacterScreen.route: (context) => CharacterScreen(
             key: characterScreenKey,
           ),

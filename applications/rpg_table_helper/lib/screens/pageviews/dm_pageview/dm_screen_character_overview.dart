@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/character_stats/render_characters_as_cards.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
@@ -94,7 +95,7 @@ class _DmScreenCharacterOverviewState
         ),
         Center(
           child: Text(
-            "Aktuell keine Spieler online",
+            S.of(context).noPlayersOnline,
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
@@ -105,6 +106,6 @@ class _DmScreenCharacterOverviewState
     }
 
     return RenderCharactersAsCards.renderCharactersAsCharacterCard(
-        charactersToRender, rpgConfig);
+        context, charactersToRender, rpgConfig);
   }
 }

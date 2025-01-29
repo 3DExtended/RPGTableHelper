@@ -16,8 +16,9 @@ import 'package:rpg_table_helper/components/custom_item_card.dart';
 import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
 import 'package:rpg_table_helper/components/custom_text_field.dart';
 import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:rpg_table_helper/helpers/color_extension.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
@@ -650,10 +651,10 @@ class _CreateOrEditItemModalContentState
                                     CampagneIdentifier($value: campagneId),
                               );
 
-                              if (!context.mounted) return;
+                              if (!context.mounted || !mounted) return;
                               await generationResult
                                   .possiblyHandleError(context);
-                              if (!context.mounted) return;
+                              if (!context.mounted || !mounted) return;
 
                               if (generationResult.isSuccessful &&
                                   generationResult.result != null) {
@@ -669,7 +670,7 @@ class _CreateOrEditItemModalContentState
                               });
                             },
                       minSize: 0,
-                      padding: EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       child: Text(
                         "Neues Bild",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -686,7 +687,7 @@ class _CreateOrEditItemModalContentState
                     ),
                     CupertinoButton(
                         minSize: 0,
-                        padding: EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         child: Text(
                           "Bild auswählen",
                           style:
@@ -718,7 +719,7 @@ class _CreateOrEditItemModalContentState
 
                             if (mimeType == null ||
                                 !(mimeType.startsWith('image/'))) {
-                              if (!context.mounted) return;
+                              if (!context.mounted || !mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(
@@ -737,7 +738,7 @@ class _CreateOrEditItemModalContentState
                               contentType: MediaType.parse(mimeType),
                               filename: fileName,
                             );
-                            if (!context.mounted) return;
+                            if (!context.mounted || !mounted) return;
                             var service = DependencyProvider.of(context)
                                 .getService<IRpgEntityService>();
                             var response =
@@ -746,9 +747,9 @@ class _CreateOrEditItemModalContentState
                                         CampagneIdentifier($value: campagneId),
                                     image: multipartFile);
 
-                            if (!context.mounted) return;
+                            if (!context.mounted || !mounted) return;
                             await response.possiblyHandleError(context);
-                            if (!context.mounted) return;
+                            if (!context.mounted || !mounted) return;
 
                             if (response.isSuccessful &&
                                 response.result != null) {
@@ -762,12 +763,6 @@ class _CreateOrEditItemModalContentState
                               isLoading = false;
                             });
                           } catch (e) {
-                            print("------------------------");
-                            print("------------------------");
-                            print("Image picker exception: ");
-                            print(e);
-                            print("------------------------");
-                            print("------------------------");
                             setState(() {
                               isLoading = false;
                             });
@@ -807,8 +802,7 @@ class _CreateOrEditItemModalContentState
             padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 20),
             child: CustomButton(
               variant: CustomButtonVariant.AccentButton,
-
-              label: "Speichern", // TODO localize
+              label: S.of(context).save,
               onPressed: () {
                 if (selectedItemCategoryId == null ||
                     selectedItemCategoryId!.isEmpty) return;

@@ -5,15 +5,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpg_table_helper/components/colored_rotated_square.dart';
 import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/navbar_new_design.dart';
+import 'package:rpg_table_helper/components/navbar.dart';
 import 'package:rpg_table_helper/constants.dart';
+import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
+import 'package:rpg_table_helper/helpers/context_extension.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:rpg_table_helper/screens/pageviews/lore_screen.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_money.dart';
@@ -44,7 +48,7 @@ class PlayerPageScreenRouteSettings {
       showInventory: true,
       showMoney: true,
       showRecipes: true,
-      showLore: false,
+      showLore: true,
     );
   }
 }
@@ -178,7 +182,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
       result.add((
-        "Währung",
+        S.of(context).navBarHeaderMoney,
         PlayerScreenCharacterMoney(
           rpgConfig: rpgConfig,
           charToRender: charToRender as RpgCharacterConfiguration,
@@ -189,7 +193,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
       result.add((
-        "Inventar",
+        S.of(context).navBarHeaderInventory,
         PlayerScreenCharacterInventory(
           rpgConfig: rpgConfig,
           charToRender: charToRender,
@@ -199,11 +203,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     if (showRecipes &&
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
-      result.add(("Herstellen", PlayerScreenRecepies()));
+      result.add((S.of(context).navBarHeaderCrafting, PlayerScreenRecepies()));
     }
 
-    if (showLore) {
-      result.add(("Weltgeschichte", Container())); // TODO add me
+    var campagneId =
+        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+    if (showLore && campagneId != null) {
+      result.add((S.of(context).navBarHeaderLore, LoreScreen()));
     }
 
     return result;
@@ -228,6 +234,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       }
 
       // check route settings
+      if (!mounted || !context.mounted) return;
+
       final currentRouteSettings = ModalRoute.of(context)!.settings;
 
       var applicableRouteSettings = currentRouteSettings.arguments == null
@@ -273,6 +281,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
       if (connectionDetails.isPlayer) {
         Future.delayed(Duration.zero, () async {
+          if (!mounted || !context.mounted) return;
+
           PlayerPageHelpers.handlePossiblyMissingCharacterStats(
             context: context,
             ref: ref,
@@ -307,44 +317,37 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   _currentStep + 1,
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       await _goToStepId(index);
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: index == _currentStep
-                                ? FontAwesomeIcons.solidSquare
-                                : FontAwesomeIcons.square,
-                            color: index == _currentStep
-                                ? accentColor
-                                : middleBgColor),
-                      ),
+                    child: ColoredRotatedSquare(
+                        isSolidSquare: index == _currentStep,
+                        color: index == _currentStep
+                            ? accentColor
+                            : middleBgColor),
+                  ),
+                ),
+                if (context.isTablet)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                    child: Text(
+                      currentTitle,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                  child: Text(
-                    currentTitle,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: textColor,
-                          fontSize: 24,
-                        ),
-                  ),
-                ),
                 ...List.generate(
                   playerScreensToSwipe.isEmpty
                       ? 0
                       : playerScreensToSwipe.length - (_currentStep + 1),
                   (index) => CupertinoButton(
                     minSize: 0,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       _goToStepId(index + _currentStep + 1);
                     },
@@ -374,6 +377,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                 ? null
                 : () {
                     Future.delayed(Duration.zero, () async {
+                      if (!mounted || !context.mounted) return;
+
                       PlayerPageHelpers.handlePossiblyMissingCharacterStats(
                           ref: ref,
                           context: context,
