@@ -533,6 +533,8 @@ extension on CharacterStatValueType {
     switch (this) {
       case CharacterStatValueType.int:
         return S.of(context).integerValue;
+      case CharacterStatValueType.transformIntoAlternateFormBtn:
+        return S.of(context).transformIntoAlternateForm;
       case CharacterStatValueType.listOfIntsWithIcons:
         return S.of(context).listOfIntegersWithIcons;
       case CharacterStatValueType.intWithMaxValue:

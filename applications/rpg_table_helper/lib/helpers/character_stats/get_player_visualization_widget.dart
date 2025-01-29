@@ -28,6 +28,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
     case CharacterStatValueType.companionSelector:
+    case CharacterStatValueType.transformIntoAlternateFormBtn:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return 1;
@@ -64,6 +65,9 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.companionSelector:
       return renderCompanionSelector(onNewStatValue, characterValue, context,
           characterToRenderStatFor, statConfiguration);
+    case CharacterStatValueType.transformIntoAlternateFormBtn:
+      return renderTransformIntoAlternateFormBtn(onNewStatValue, characterValue,
+          context, characterToRenderStatFor, statConfiguration);
 
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return renderCharacterNameWithLevelAndAdditionalDetailsStat(
@@ -168,6 +172,83 @@ Widget renderCompanionSelector(
                           ));
                     }),
               )),
+        ],
+      )
+    ],
+  );
+}
+
+Widget renderTransformIntoAlternateFormBtn(
+    void Function(String newSerializedValue) onNewStatValue,
+    RpgCharacterStatValue characterValue,
+    BuildContext context,
+    RpgCharacterConfiguration? characterToRenderStatFor,
+    CharacterStatDefinition statConfiguration) {
+  // List<String> selectedCompanionIds =
+  //     (jsonDecode(characterValue.serializedValue)["values"] as List<dynamic>)
+  //         .map((e) => (e as Map<String, dynamic>)["uuid"] as String)
+  //         .toList();
+//
+  // List<
+  //     ({
+  //       String characterName,
+  //       String uuid,
+  //       String? imageUrl,
+  //       RpgAlternateCharacterConfiguration companionConfig
+  //     })> companionDetailsToRender = [];
+  // for (var selectedCompanionId in selectedCompanionIds) {
+  //   var companionOfCharacter =
+  //       (characterToRenderStatFor?.companionCharacters ?? [])
+  //           .firstWhereOrNull((c) => c.uuid == selectedCompanionId);
+  //   if (companionOfCharacter == null) continue;
+  //   // TODO search for image (still missing access to rpgconfig here...)
+  //   // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(context, charactersToRender, rpgConfig)
+  //   companionDetailsToRender.add((
+  //     characterName: companionOfCharacter.characterName,
+  //     uuid: companionOfCharacter.uuid,
+  //     imageUrl: null,
+  //     companionConfig: companionOfCharacter
+  //   ));
+  // }
+  // companionDetailsToRender =
+  //     companionDetailsToRender.sortedBy((k) => k.characterName);
+
+  return Column(
+    children: [
+      getIconForIdentifier(
+        name: "magic-wand-svgrepo-com",
+        color: darkColor,
+        size: 50,
+      ).$2,
+      SizedBox(
+        height: 10,
+      ),
+      Wrap(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(5),
+            child: CustomButton(
+                label: S.of(context).tranformToAlternateForm,
+                onPressed: () {
+                  // TODO make me
+                  // open modal, select alternate form components and save
+                  // now open saved alternate form
+
+                  return;
+
+                  // open companion page
+                  navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,
+                      arguments: PlayerPageScreenRouteSettings(
+                        disableEdit: false,
+                        showMoney: false,
+                        characterConfigurationOverride:
+                            characterToRenderStatFor!.alternateForm!,
+                        showInventory: false,
+                        showLore: false,
+                        showRecipes: false,
+                      ));
+                }),
+          ),
         ],
       )
     ],

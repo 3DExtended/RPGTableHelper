@@ -230,5 +230,9 @@
   "rollForInitiative": "Kampfreihenfolge würfeln",
   "characterName": "Name",
   "nameOfCharacterHelperText": "Wie heißt dein Charakter?",
-  "campaignName": "Kampagnen Name"
+  "campaignName": "Kampagnen Name",
+  "tranformToAlternateForm": "Verwandeln",
+  "transformIntoAlternateForm": "Transform into alternate form",
+  "transformationComponentsHelperText": "The options for transformation are configured on the modal which appears after you click transform on your character!,",
+  "addNewTransformationComponent": "Add new transformation (-component)"
 }

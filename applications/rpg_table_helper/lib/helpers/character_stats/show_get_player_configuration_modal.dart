@@ -22,6 +22,7 @@ import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configurati
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
+import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
 import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
@@ -407,6 +408,8 @@ class _ShowGetPlayerConfigurationModalContentState
 
                 case CharacterStatValueType.companionSelector:
                   return getConfigurationWidgetsForCompanionsSelector();
+                case CharacterStatValueType.transformIntoAlternateFormBtn:
+                  return getConfigurationWidgetsForTransformIntoAlternateFormBtn();
 
                 default:
                   return Container(
@@ -757,6 +760,8 @@ class _ShowGetPlayerConfigurationModalContentState
 
   RpgCharacterStatValue getCurrentStatValueOrDefault() {
     switch (widget.statConfiguration.valueType) {
+      case CharacterStatValueType.transformIntoAlternateFormBtn:
+        return getCurrentStatValueOrDefaultForTransformIntoAlternateFormBtn();
       case CharacterStatValueType.multiLineText:
       case CharacterStatValueType.singleLineText:
         return getCurrentStatValueOrDefaultForTextType();
@@ -779,6 +784,17 @@ class _ShowGetPlayerConfigurationModalContentState
       case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
         return getCurrentStatValueOrDefaultForCharacterNameWithLevelType();
     }
+  }
+
+  RpgCharacterStatValue
+      getCurrentStatValueOrDefaultForTransformIntoAlternateFormBtn() {
+    return RpgCharacterStatValue(
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      hideLabelOfStat: hideLabelOfStat,
+      variant: 0,
+      serializedValue: "{}",
+      statUuid: widget.statConfiguration.statUuid,
+    );
   }
 
   RpgCharacterStatValue
@@ -1275,6 +1291,124 @@ class _ShowGetPlayerConfigurationModalContentState
     );
   }
 
+  Widget getConfigurationWidgetsForTransformIntoAlternateFormBtn() {
+    var statTitle = widget.statConfiguration.name;
+    var statDescription = widget.statConfiguration.helperText;
+
+    var configuredTransformationComponents = ref
+            .watch(rpgCharacterConfigurationProvider)
+            .requireValue
+            .transformationComponents ??
+        [];
+
+    var rpgConfig = ref.watch(rpgConfigurationProvider).requireValue;
+
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PlayerConfigModalNonDefaultTitleAndHelperText(
+              statTitle: statTitle, statDescription: statDescription),
+
+          SizedBox(
+            height: 20,
+          ),
+
+          ...configuredTransformationComponents.map(
+            (e) => Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        e.transformationName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(color: darkTextColor, fontSize: 16),
+                      ),
+                      Text(
+                        e.transformationDescription ?? "",
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(color: darkTextColor, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 70,
+                  clipBehavior: Clip.none,
+                  child: CustomButton(
+                    variant: CustomButtonVariant.FlatButton,
+                    onPressed: () {
+                      // update rpg char config
+                      var newestCharacter = ref
+                          .read(rpgCharacterConfigurationProvider)
+                          .requireValue;
+                      ref
+                          .read(rpgCharacterConfigurationProvider.notifier)
+                          .updateConfiguration(newestCharacter.copyWith(
+                              transformationComponents: newestCharacter
+                                  .transformationComponents
+                                  ?.where((element) =>
+                                      element.transformationUuid !=
+                                      e.transformationUuid)
+                                  .toList()));
+                      setState(() {});
+                    },
+                    icon: const CustomFaIcon(
+                      icon: FontAwesomeIcons.trashCan,
+                      size: 24,
+                      color: darkColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(
+            height: 20,
+          ),
+
+          // Add new transformation component to character
+          CustomButton(
+            onPressed: () {
+              // TODO open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
+              // use this here: rpgConfig
+              var newestCharacter =
+                  ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+              ref
+                  .read(rpgCharacterConfigurationProvider.notifier)
+                  .updateConfiguration(
+                      newestCharacter.copyWith(companionCharacters: [
+                    ...(newestCharacter.companionCharacters ?? []),
+                    RpgAlternateCharacterConfiguration(
+                      alternateForm: null,
+                      isAlternateFormActive: null,
+                      characterName:
+                          "${S.of(context).petDefaultNamePrefix} #${(newestCharacter.companionCharacters ?? []).length + 1}",
+                      uuid: UuidV7().generate(),
+                      transformationComponents: null,
+                      characterStats: [],
+                    )
+                  ]));
+            },
+            label: S.of(context).addNewTransformationComponent,
+            variant: CustomButtonVariant.AccentButton,
+          )
+        ],
+      ),
+    );
+  }
+
   Widget getConfigurationWidgetsForCompanionsSelector() {
     var statTitle = widget.statConfiguration.name;
     var statDescription = widget.statConfiguration.helperText;
@@ -1346,9 +1480,12 @@ class _ShowGetPlayerConfigurationModalContentState
                     newestCharacter.copyWith(companionCharacters: [
                   ...(newestCharacter.companionCharacters ?? []),
                   RpgAlternateCharacterConfiguration(
+                    alternateForm: null,
+                    isAlternateFormActive: null,
                     characterName:
                         "${S.of(context).petDefaultNamePrefix} #${(newestCharacter.companionCharacters ?? []).length + 1}",
                     uuid: UuidV7().generate(),
+                    transformationComponents: null,
                     characterStats: [],
                   )
                 ]));

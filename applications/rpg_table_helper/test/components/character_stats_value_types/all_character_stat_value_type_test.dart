@@ -374,6 +374,27 @@ List<
       serializedValue: '{"value": 1, "maxValue": 10}',
     )
   ),
+  (
+    "transformIntoAlternateFormBtn, fastEdit",
+    CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.transformIntoAlternateFormBtn,
+      editType: CharacterStatEditType.oneTap,
+      name: "Verwandlung",
+      statUuid: "43bf00b8-0c46-4451-a934-b1d3db7841c3",
+      helperText: "Can you transform into something?",
+      jsonSerializedAdditionalData: null,
+    ),
+    RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
+      variant: null,
+      statUuid: "43bf00b8-0c46-4451-a934-b1d3db7841c3",
+      serializedValue: '{}',
+    )
+  ),
 ];
 
 void main() {

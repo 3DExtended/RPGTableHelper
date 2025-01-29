@@ -14,6 +14,15 @@ abstract class _$RpgAlternateCharacterConfigurationCWProxy {
   RpgAlternateCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
 
+  RpgAlternateCharacterConfiguration transformationComponents(
+      List<TransformationComponent>? transformationComponents);
+
+  RpgAlternateCharacterConfiguration alternateForm(
+      RpgAlternateCharacterConfiguration? alternateForm);
+
+  RpgAlternateCharacterConfiguration isAlternateFormActive(
+      bool? isAlternateFormActive);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgAlternateCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -24,6 +33,9 @@ abstract class _$RpgAlternateCharacterConfigurationCWProxy {
     String uuid,
     String characterName,
     List<RpgCharacterStatValue> characterStats,
+    List<TransformationComponent>? transformationComponents,
+    RpgAlternateCharacterConfiguration? alternateForm,
+    bool? isAlternateFormActive,
   });
 }
 
@@ -47,6 +59,21 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
       this(characterStats: characterStats);
 
   @override
+  RpgAlternateCharacterConfiguration transformationComponents(
+          List<TransformationComponent>? transformationComponents) =>
+      this(transformationComponents: transformationComponents);
+
+  @override
+  RpgAlternateCharacterConfiguration alternateForm(
+          RpgAlternateCharacterConfiguration? alternateForm) =>
+      this(alternateForm: alternateForm);
+
+  @override
+  RpgAlternateCharacterConfiguration isAlternateFormActive(
+          bool? isAlternateFormActive) =>
+      this(isAlternateFormActive: isAlternateFormActive);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgAlternateCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -58,6 +85,9 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
     Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
+    Object? transformationComponents = const $CopyWithPlaceholder(),
+    Object? alternateForm = const $CopyWithPlaceholder(),
+    Object? isAlternateFormActive = const $CopyWithPlaceholder(),
   }) {
     return RpgAlternateCharacterConfiguration(
       uuid: uuid == const $CopyWithPlaceholder()
@@ -72,6 +102,20 @@ class _$RpgAlternateCharacterConfigurationCWProxyImpl
           ? _value.characterStats
           // ignore: cast_nullable_to_non_nullable
           : characterStats as List<RpgCharacterStatValue>,
+      transformationComponents:
+          transformationComponents == const $CopyWithPlaceholder()
+              ? _value.transformationComponents
+              // ignore: cast_nullable_to_non_nullable
+              : transformationComponents as List<TransformationComponent>?,
+      alternateForm: alternateForm == const $CopyWithPlaceholder()
+          ? _value.alternateForm
+          // ignore: cast_nullable_to_non_nullable
+          : alternateForm as RpgAlternateCharacterConfiguration?,
+      isAlternateFormActive:
+          isAlternateFormActive == const $CopyWithPlaceholder()
+              ? _value.isAlternateFormActive
+              // ignore: cast_nullable_to_non_nullable
+              : isAlternateFormActive as bool?,
     );
   }
 }
@@ -84,18 +128,116 @@ extension $RpgAlternateCharacterConfigurationCopyWith
       _$RpgAlternateCharacterConfigurationCWProxyImpl(this);
 }
 
+abstract class _$TransformationComponentCWProxy {
+  TransformationComponent transformationUuid(String transformationUuid);
+
+  TransformationComponent transformationName(String transformationName);
+
+  TransformationComponent transformationDescription(
+      String? transformationDescription);
+
+  TransformationComponent transformationStats(
+      List<RpgCharacterStatValue> transformationStats);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `TransformationComponent(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// TransformationComponent(...).copyWith(id: 12, name: "My name")
+  /// ````
+  TransformationComponent call({
+    String transformationUuid,
+    String transformationName,
+    String? transformationDescription,
+    List<RpgCharacterStatValue> transformationStats,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfTransformationComponent.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfTransformationComponent.copyWith.fieldName(...)`
+class _$TransformationComponentCWProxyImpl
+    implements _$TransformationComponentCWProxy {
+  const _$TransformationComponentCWProxyImpl(this._value);
+
+  final TransformationComponent _value;
+
+  @override
+  TransformationComponent transformationUuid(String transformationUuid) =>
+      this(transformationUuid: transformationUuid);
+
+  @override
+  TransformationComponent transformationName(String transformationName) =>
+      this(transformationName: transformationName);
+
+  @override
+  TransformationComponent transformationDescription(
+          String? transformationDescription) =>
+      this(transformationDescription: transformationDescription);
+
+  @override
+  TransformationComponent transformationStats(
+          List<RpgCharacterStatValue> transformationStats) =>
+      this(transformationStats: transformationStats);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `TransformationComponent(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// TransformationComponent(...).copyWith(id: 12, name: "My name")
+  /// ````
+  TransformationComponent call({
+    Object? transformationUuid = const $CopyWithPlaceholder(),
+    Object? transformationName = const $CopyWithPlaceholder(),
+    Object? transformationDescription = const $CopyWithPlaceholder(),
+    Object? transformationStats = const $CopyWithPlaceholder(),
+  }) {
+    return TransformationComponent(
+      transformationUuid: transformationUuid == const $CopyWithPlaceholder()
+          ? _value.transformationUuid
+          // ignore: cast_nullable_to_non_nullable
+          : transformationUuid as String,
+      transformationName: transformationName == const $CopyWithPlaceholder()
+          ? _value.transformationName
+          // ignore: cast_nullable_to_non_nullable
+          : transformationName as String,
+      transformationDescription:
+          transformationDescription == const $CopyWithPlaceholder()
+              ? _value.transformationDescription
+              // ignore: cast_nullable_to_non_nullable
+              : transformationDescription as String?,
+      transformationStats: transformationStats == const $CopyWithPlaceholder()
+          ? _value.transformationStats
+          // ignore: cast_nullable_to_non_nullable
+          : transformationStats as List<RpgCharacterStatValue>,
+    );
+  }
+}
+
+extension $TransformationComponentCopyWith on TransformationComponent {
+  /// Returns a callable class that can be used as follows: `instanceOfTransformationComponent.copyWith(...)` or like so:`instanceOfTransformationComponent.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$TransformationComponentCWProxy get copyWith =>
+      _$TransformationComponentCWProxyImpl(this);
+}
+
 abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration uuid(String uuid);
 
   RpgCharacterConfiguration characterName(String characterName);
+
+  RpgCharacterConfiguration transformationComponents(
+      List<TransformationComponent>? transformationComponents);
 
   RpgCharacterConfiguration alternateForms(
       List<RpgAlternateCharacterConfiguration>? alternateForms);
 
   RpgCharacterConfiguration moneyInBaseType(int? moneyInBaseType);
 
-  RpgCharacterConfiguration activeAlternateFormIndex(
-      int? activeAlternateFormIndex);
+  RpgCharacterConfiguration isAlternateFormActive(bool? isAlternateFormActive);
+
+  RpgCharacterConfiguration alternateForm(
+      RpgAlternateCharacterConfiguration? alternateForm);
 
   RpgCharacterConfiguration characterStats(
       List<RpgCharacterStatValue> characterStats);
@@ -115,9 +257,11 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration call({
     String uuid,
     String characterName,
+    List<TransformationComponent>? transformationComponents,
     List<RpgAlternateCharacterConfiguration>? alternateForms,
     int? moneyInBaseType,
-    int? activeAlternateFormIndex,
+    bool? isAlternateFormActive,
+    RpgAlternateCharacterConfiguration? alternateForm,
     List<RpgCharacterStatValue> characterStats,
     List<RpgCharacterOwnedItemPair> inventory,
     List<RpgAlternateCharacterConfiguration>? companionCharacters,
@@ -139,6 +283,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(characterName: characterName);
 
   @override
+  RpgCharacterConfiguration transformationComponents(
+          List<TransformationComponent>? transformationComponents) =>
+      this(transformationComponents: transformationComponents);
+
+  @override
   RpgCharacterConfiguration alternateForms(
           List<RpgAlternateCharacterConfiguration>? alternateForms) =>
       this(alternateForms: alternateForms);
@@ -148,9 +297,14 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(moneyInBaseType: moneyInBaseType);
 
   @override
-  RpgCharacterConfiguration activeAlternateFormIndex(
-          int? activeAlternateFormIndex) =>
-      this(activeAlternateFormIndex: activeAlternateFormIndex);
+  RpgCharacterConfiguration isAlternateFormActive(
+          bool? isAlternateFormActive) =>
+      this(isAlternateFormActive: isAlternateFormActive);
+
+  @override
+  RpgCharacterConfiguration alternateForm(
+          RpgAlternateCharacterConfiguration? alternateForm) =>
+      this(alternateForm: alternateForm);
 
   @override
   RpgCharacterConfiguration characterStats(
@@ -178,9 +332,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
   RpgCharacterConfiguration call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
+    Object? transformationComponents = const $CopyWithPlaceholder(),
     Object? alternateForms = const $CopyWithPlaceholder(),
     Object? moneyInBaseType = const $CopyWithPlaceholder(),
-    Object? activeAlternateFormIndex = const $CopyWithPlaceholder(),
+    Object? isAlternateFormActive = const $CopyWithPlaceholder(),
+    Object? alternateForm = const $CopyWithPlaceholder(),
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
     Object? companionCharacters = const $CopyWithPlaceholder(),
@@ -194,6 +350,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.characterName
           // ignore: cast_nullable_to_non_nullable
           : characterName as String,
+      transformationComponents:
+          transformationComponents == const $CopyWithPlaceholder()
+              ? _value.transformationComponents
+              // ignore: cast_nullable_to_non_nullable
+              : transformationComponents as List<TransformationComponent>?,
       alternateForms: alternateForms == const $CopyWithPlaceholder()
           ? _value.alternateForms
           // ignore: cast_nullable_to_non_nullable
@@ -202,11 +363,15 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.moneyInBaseType
           // ignore: cast_nullable_to_non_nullable
           : moneyInBaseType as int?,
-      activeAlternateFormIndex:
-          activeAlternateFormIndex == const $CopyWithPlaceholder()
-              ? _value.activeAlternateFormIndex
+      isAlternateFormActive:
+          isAlternateFormActive == const $CopyWithPlaceholder()
+              ? _value.isAlternateFormActive
               // ignore: cast_nullable_to_non_nullable
-              : activeAlternateFormIndex as int?,
+              : isAlternateFormActive as bool?,
+      alternateForm: alternateForm == const $CopyWithPlaceholder()
+          ? _value.alternateForm
+          // ignore: cast_nullable_to_non_nullable
+          : alternateForm as RpgAlternateCharacterConfiguration?,
       characterStats: characterStats == const $CopyWithPlaceholder()
           ? _value.characterStats
           // ignore: cast_nullable_to_non_nullable
@@ -405,6 +570,16 @@ RpgAlternateCharacterConfiguration _$RpgAlternateCharacterConfigurationFromJson(
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
+      transformationComponents:
+          (json['transformationComponents'] as List<dynamic>?)
+              ?.map((e) =>
+                  TransformationComponent.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      alternateForm: json['alternateForm'] == null
+          ? null
+          : RpgAlternateCharacterConfiguration.fromJson(
+              json['alternateForm'] as Map<String, dynamic>),
+      isAlternateFormActive: json['isAlternateFormActive'] as bool?,
     );
 
 Map<String, dynamic> _$RpgAlternateCharacterConfigurationToJson(
@@ -413,6 +588,29 @@ Map<String, dynamic> _$RpgAlternateCharacterConfigurationToJson(
       'uuid': instance.uuid,
       'characterName': instance.characterName,
       'characterStats': instance.characterStats,
+      'alternateForm': instance.alternateForm,
+      'isAlternateFormActive': instance.isAlternateFormActive,
+      'transformationComponents': instance.transformationComponents,
+    };
+
+TransformationComponent _$TransformationComponentFromJson(
+        Map<String, dynamic> json) =>
+    TransformationComponent(
+      transformationUuid: json['transformationUuid'] as String,
+      transformationName: json['transformationName'] as String,
+      transformationDescription: json['transformationDescription'] as String?,
+      transformationStats: (json['transformationStats'] as List<dynamic>)
+          .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$TransformationComponentToJson(
+        TransformationComponent instance) =>
+    <String, dynamic>{
+      'transformationUuid': instance.transformationUuid,
+      'transformationName': instance.transformationName,
+      'transformationDescription': instance.transformationDescription,
+      'transformationStats': instance.transformationStats,
     };
 
 RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
@@ -420,13 +618,21 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
     RpgCharacterConfiguration(
       uuid: json['uuid'] as String,
       characterName: json['characterName'] as String,
+      transformationComponents:
+          (json['transformationComponents'] as List<dynamic>?)
+              ?.map((e) =>
+                  TransformationComponent.fromJson(e as Map<String, dynamic>))
+              .toList(),
       alternateForms: (json['alternateForms'] as List<dynamic>?)
           ?.map((e) => RpgAlternateCharacterConfiguration.fromJson(
               e as Map<String, dynamic>))
           .toList(),
       moneyInBaseType: (json['moneyInBaseType'] as num?)?.toInt(),
-      activeAlternateFormIndex:
-          (json['activeAlternateFormIndex'] as num?)?.toInt(),
+      isAlternateFormActive: json['isAlternateFormActive'] as bool?,
+      alternateForm: json['alternateForm'] == null
+          ? null
+          : RpgAlternateCharacterConfiguration.fromJson(
+              json['alternateForm'] as Map<String, dynamic>),
       characterStats: (json['characterStats'] as List<dynamic>)
           .map((e) => RpgCharacterStatValue.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -446,11 +652,13 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
       'uuid': instance.uuid,
       'characterName': instance.characterName,
       'characterStats': instance.characterStats,
+      'alternateForm': instance.alternateForm,
+      'isAlternateFormActive': instance.isAlternateFormActive,
+      'transformationComponents': instance.transformationComponents,
       'moneyInBaseType': instance.moneyInBaseType,
       'inventory': instance.inventory,
       'companionCharacters': instance.companionCharacters,
       'alternateForms': instance.alternateForms,
-      'activeAlternateFormIndex': instance.activeAlternateFormIndex,
     };
 
 RpgCharacterStatValue _$RpgCharacterStatValueFromJson(

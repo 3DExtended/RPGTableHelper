@@ -1969,6 +1969,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Verwandeln`
+  String get tranformToAlternateForm {
+    return Intl.message(
+      'Verwandeln',
+      name: 'tranformToAlternateForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transform into alternate form`
+  String get transformIntoAlternateForm {
+    return Intl.message(
+      'Transform into alternate form',
+      name: 'transformIntoAlternateForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The options for transformation are configured on the modal which appears after you click transform on your character!,`
+  String get transformationComponentsHelperText {
+    return Intl.message(
+      'The options for transformation are configured on the modal which appears after you click transform on your character!,',
+      name: 'transformationComponentsHelperText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add new transformation (-component)`
+  String get addNewTransformationComponent {
+    return Intl.message(
+      'Add new transformation (-component)',
+      name: 'addNewTransformationComponent',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

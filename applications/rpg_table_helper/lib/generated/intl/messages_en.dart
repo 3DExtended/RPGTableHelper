@@ -42,6 +42,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add character to campaign"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Image"),
         "addItems": MessageLookupByLibrary.simpleMessage("Add items"),
+        "addNewTransformationComponent": MessageLookupByLibrary.simpleMessage(
+            "Add new transformation (-component)"),
         "addParagraphBtnLabel":
             MessageLookupByLibrary.simpleMessage("Paragraph"),
         "additionalElement":
@@ -334,6 +336,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Single line text"),
         "startAsDm": MessageLookupByLibrary.simpleMessage("Play as DM"),
+        "tranformToAlternateForm":
+            MessageLookupByLibrary.simpleMessage("Verwandeln"),
+        "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(
+            "Transform into alternate form"),
+        "transformationComponentsHelperText": MessageLookupByLibrary.simpleMessage(
+            "The options for transformation are configured on the modal which appears after you click transform on your character!,"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m2,

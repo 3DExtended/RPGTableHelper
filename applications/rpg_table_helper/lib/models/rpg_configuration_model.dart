@@ -900,6 +900,8 @@ enum CharacterStatValueType {
 
   // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheCompanionCharacter"}]}
   companionSelector,
+
+  transformIntoAlternateFormBtn,
 }
 
 @JsonSerializable()

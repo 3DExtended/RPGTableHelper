@@ -337,6 +337,11 @@ class _ShowGetDmConfigurationModalContentState
                         value: e.name,
                         child: Text(S.of(context).integerValue),
                       );
+                    case CharacterStatValueType.transformIntoAlternateFormBtn:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(S.of(context).transformIntoAlternateForm),
+                      );
 
                     case CharacterStatValueType.listOfIntsWithIcons:
                       return DropdownMenuItem<String?>(

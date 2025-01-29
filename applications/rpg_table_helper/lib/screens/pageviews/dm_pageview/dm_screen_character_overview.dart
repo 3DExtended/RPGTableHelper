@@ -59,10 +59,8 @@ class _DmScreenCharacterOverviewState
       for (var connectedPlayer in (connectionDetails.connectedPlayers!)) {
         var charConfig = connectedPlayer.configuration;
 
-        if (charConfig.activeAlternateFormIndex == null ||
-            charConfig.alternateForms == null ||
-            charConfig.alternateForms!.length <=
-                charConfig.activeAlternateFormIndex!) {
+        if (charConfig.isAlternateFormActive != true ||
+            charConfig.alternateForm == null) {
           charactersToRender.add((
             characterToRender: charConfig,
             isAlternateForm: false,
@@ -70,8 +68,7 @@ class _DmScreenCharacterOverviewState
           ));
         } else {
           charactersToRender.add((
-            characterToRender: charConfig
-                .alternateForms![charConfig.activeAlternateFormIndex!],
+            characterToRender: charConfig.alternateForm!,
             isAlternateForm: true,
             isCompanion: false
           ));
