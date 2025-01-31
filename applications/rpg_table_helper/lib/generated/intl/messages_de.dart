@@ -45,7 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Bild"),
         "addItems": MessageLookupByLibrary.simpleMessage("Items hinzufügen"),
         "addNewTransformationComponent": MessageLookupByLibrary.simpleMessage(
-            "Add new transformation (-component)"),
+            "Neue Verwandlung (-skomponente) hinzufügen"),
         "addParagraphBtnLabel": MessageLookupByLibrary.simpleMessage("Absatz"),
         "additionalElement":
             MessageLookupByLibrary.simpleMessage("Neues Element"),
@@ -62,6 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden."),
         "authorLabel": MessageLookupByLibrary.simpleMessage("Autor:"),
+        "back": MessageLookupByLibrary.simpleMessage("Zurück"),
         "calculatedValue":
             MessageLookupByLibrary.simpleMessage("Berechneter Wert"),
         "calculatedValuePlaceholder":
@@ -100,6 +101,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Herstellbar"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Neuen Account anlegen"),
+        "createNewTransformationTitle":
+            MessageLookupByLibrary.simpleMessage("Neue Verwandlung erstellen"),
+        "createTransformationHelperText": MessageLookupByLibrary.simpleMessage(
+            "Um eine neue Transformation zu erstellen, musst du die Eigenschaften auswählen, die durch diese Verwandlung verändert werden. (Wenn die Eigenschaft nicht verändert wird, muss sie auch nicht ausgewählt werden.)"),
         "currentBalance":
             MessageLookupByLibrary.simpleMessage("Aktuelles Guthaben"),
         "currentFightOrdering":
@@ -243,6 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("Neue Eigenschaft"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("Neuer Tab"),
+        "next": MessageLookupByLibrary.simpleMessage("Weiter"),
         "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
             "Aktuell kein Kampf gestartet"),
         "noItemsGranted": MessageLookupByLibrary.simpleMessage(
@@ -348,9 +354,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "tranformToAlternateForm":
             MessageLookupByLibrary.simpleMessage("Verwandeln"),
         "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(
-            "Transform into alternate form"),
-        "transformationComponentsHelperText": MessageLookupByLibrary.simpleMessage(
-            "The options for transformation are configured on the modal which appears after you click transform on your character!,"),
+            "Verwandeln in eine andere Form"),
+        "transformationDescription":
+            MessageLookupByLibrary.simpleMessage("Beschreibung"),
+        "transformationName":
+            MessageLookupByLibrary.simpleMessage("Verwandlungsname"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
         "valueOfPropertyWithName": m2,

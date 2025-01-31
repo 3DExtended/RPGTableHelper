@@ -61,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM."),
         "authorLabel": MessageLookupByLibrary.simpleMessage("Author:"),
+        "back": MessageLookupByLibrary.simpleMessage("Back"),
         "calculatedValue":
             MessageLookupByLibrary.simpleMessage("Calculated value"),
         "calculatedValuePlaceholder":
@@ -99,6 +100,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Craftable"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Create new account"),
+        "createNewTransformationTitle":
+            MessageLookupByLibrary.simpleMessage("Create new transformation"),
+        "createTransformationHelperText": MessageLookupByLibrary.simpleMessage(
+            "In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn\'t change this property, you don\'t have to select it.)"),
         "currentBalance":
             MessageLookupByLibrary.simpleMessage("Current balance"),
         "currentFightOrdering":
@@ -235,6 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("New property"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("New tab"),
+        "next": MessageLookupByLibrary.simpleMessage("Next"),
         "noFIghtStarted":
             MessageLookupByLibrary.simpleMessage("No fight started yet"),
         "noItemsGranted":
@@ -340,8 +346,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verwandeln"),
         "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(
             "Transform into alternate form"),
-        "transformationComponentsHelperText": MessageLookupByLibrary.simpleMessage(
-            "The options for transformation are configured on the modal which appears after you click transform on your character!,"),
+        "transformationDescription":
+            MessageLookupByLibrary.simpleMessage("Transformation description"),
+        "transformationName":
+            MessageLookupByLibrary.simpleMessage("Transformation name"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m2,

@@ -588,8 +588,8 @@ Map<String, dynamic> _$RpgAlternateCharacterConfigurationToJson(
       'uuid': instance.uuid,
       'characterName': instance.characterName,
       'characterStats': instance.characterStats,
-      'alternateForm': instance.alternateForm,
       'isAlternateFormActive': instance.isAlternateFormActive,
+      'alternateForm': instance.alternateForm,
       'transformationComponents': instance.transformationComponents,
     };
 
@@ -652,8 +652,8 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
       'uuid': instance.uuid,
       'characterName': instance.characterName,
       'characterStats': instance.characterStats,
-      'alternateForm': instance.alternateForm,
       'isAlternateFormActive': instance.isAlternateFormActive,
+      'alternateForm': instance.alternateForm,
       'transformationComponents': instance.transformationComponents,
       'moneyInBaseType': instance.moneyInBaseType,
       'inventory': instance.inventory,

@@ -149,7 +149,6 @@ class _DmPageScreenState extends State<DmPageScreen> {
               ],
             ),
             menuOpen: () {
-              // TODO maybe open the configuration of the rpg
               Navigator.of(context)
                   .pushNamed(allWizardConfigurations.entries.first.key);
             },

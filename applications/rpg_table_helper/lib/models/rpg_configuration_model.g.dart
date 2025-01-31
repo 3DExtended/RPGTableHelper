@@ -1262,6 +1262,8 @@ const _$CharacterStatValueTypeEnumMap = {
       'characterNameWithLevelAndAdditionalDetails',
   CharacterStatValueType.listOfIntsWithIcons: 'listOfIntsWithIcons',
   CharacterStatValueType.companionSelector: 'companionSelector',
+  CharacterStatValueType.transformIntoAlternateFormBtn:
+      'transformIntoAlternateFormBtn',
 };
 
 const _$CharacterStatEditTypeEnumMap = {

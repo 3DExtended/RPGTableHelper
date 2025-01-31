@@ -1990,21 +1990,71 @@ class S {
     );
   }
 
-  /// `The options for transformation are configured on the modal which appears after you click transform on your character!,`
-  String get transformationComponentsHelperText {
-    return Intl.message(
-      'The options for transformation are configured on the modal which appears after you click transform on your character!,',
-      name: 'transformationComponentsHelperText',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Add new transformation (-component)`
   String get addNewTransformationComponent {
     return Intl.message(
       'Add new transformation (-component)',
       name: 'addNewTransformationComponent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create new transformation`
+  String get createNewTransformationTitle {
+    return Intl.message(
+      'Create new transformation',
+      name: 'createNewTransformationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transformation name`
+  String get transformationName {
+    return Intl.message(
+      'Transformation name',
+      name: 'transformationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transformation description`
+  String get transformationDescription {
+    return Intl.message(
+      'Transformation description',
+      name: 'transformationDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn't change this property, you don't have to select it.)`
+  String get createTransformationHelperText {
+    return Intl.message(
+      'In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn\'t change this property, you don\'t have to select it.)',
+      name: 'createTransformationHelperText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get back {
+    return Intl.message(
+      'Back',
+      name: 'back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get next {
+    return Intl.message(
+      'Next',
+      name: 'next',
       desc: '',
       args: [],
     );
