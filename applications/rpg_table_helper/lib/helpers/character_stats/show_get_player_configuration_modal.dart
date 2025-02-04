@@ -21,6 +21,7 @@ import 'package:rpg_table_helper/helpers/character_stats/get_player_visualizatio
 import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:rpg_table_helper/helpers/modals/show_create_new_character_transformation_wizard.dart';
 import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
@@ -1346,6 +1347,53 @@ class _ShowGetPlayerConfigurationModalContentState
                   clipBehavior: Clip.none,
                   child: CustomButton(
                     variant: CustomButtonVariant.FlatButton,
+                    onPressed: () async {
+                      // open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
+                      TransformationComponent? modifiedTransformationComponent =
+                          await showCreateNewCharacterTransformationWizard(
+                              context,
+                              existingTransformationComponents: e);
+                      if (modifiedTransformationComponent == null) return;
+
+                      // use this here: rpgConfig
+                      var newestCharacter = ref
+                          .read(rpgCharacterConfigurationProvider)
+                          .requireValue;
+                      var listOfTransformations =
+                          (newestCharacter.transformationComponents ?? []);
+
+                      var indexOfElement = listOfTransformations.indexWhere(
+                          (element) =>
+                              element.transformationUuid ==
+                              e.transformationUuid);
+
+                      if (indexOfElement == -1) return;
+
+                      listOfTransformations[indexOfElement] =
+                          modifiedTransformationComponent;
+
+                      ref
+                          .read(rpgCharacterConfigurationProvider.notifier)
+                          .updateConfiguration(newestCharacter
+                              .copyWith(transformationComponents: [
+                            ...listOfTransformations,
+                          ]));
+
+                      setState(() {});
+                    },
+                    icon: const CustomFaIcon(
+                      icon: FontAwesomeIcons.penToSquare,
+                      size: 24,
+                      color: darkColor,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 70,
+                  clipBehavior: Clip.none,
+                  child: CustomButton(
+                    variant: CustomButtonVariant.FlatButton,
                     onPressed: () {
                       // update rpg char config
                       var newestCharacter = ref
@@ -1379,8 +1427,13 @@ class _ShowGetPlayerConfigurationModalContentState
 
           // Add new transformation component to character
           CustomButton(
-            onPressed: () {
-              // TODO open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
+            onPressed: () async {
+              // open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
+              TransformationComponent? newTransformationComponent =
+                  await showCreateNewCharacterTransformationWizard(context,
+                      existingTransformationComponents: null);
+              if (newTransformationComponent == null) return;
+
               // use this here: rpgConfig
               var newestCharacter =
                   ref.read(rpgCharacterConfigurationProvider).requireValue;
@@ -1388,18 +1441,11 @@ class _ShowGetPlayerConfigurationModalContentState
               ref
                   .read(rpgCharacterConfigurationProvider.notifier)
                   .updateConfiguration(
-                      newestCharacter.copyWith(companionCharacters: [
-                    ...(newestCharacter.companionCharacters ?? []),
-                    RpgAlternateCharacterConfiguration(
-                      alternateForm: null,
-                      isAlternateFormActive: null,
-                      characterName:
-                          "${S.of(context).petDefaultNamePrefix} #${(newestCharacter.companionCharacters ?? []).length + 1}",
-                      uuid: UuidV7().generate(),
-                      transformationComponents: null,
-                      characterStats: [],
-                    )
+                      newestCharacter.copyWith(transformationComponents: [
+                    ...(newestCharacter.transformationComponents ?? []),
+                    newTransformationComponent,
                   ]));
+              setState(() {});
             },
             label: S.of(context).addNewTransformationComponent,
             variant: CustomButtonVariant.AccentButton,

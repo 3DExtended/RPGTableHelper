@@ -17,13 +17,17 @@ import 'package:rpg_table_helper/generated/l10n.dart';
 import 'package:rpg_table_helper/helpers/modal_helpers.dart';
 import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
 import 'package:rpg_table_helper/main.dart';
+import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
 import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:uuid/v7.dart';
 
-Future<int?> showCreateNewCharacterTransformationWizard(BuildContext context,
+Future<TransformationComponent?> showCreateNewCharacterTransformationWizard(
+    BuildContext context,
     {GlobalKey<NavigatorState>? overrideNavigatorKey,
-    int? overrideStartScreen}) async {
+    int? overrideStartScreen,
+    TransformationComponent? existingTransformationComponents}) async {
   // show error to user
-  return await customShowCupertinoModalBottomSheet<int>(
+  return await customShowCupertinoModalBottomSheet<TransformationComponent>(
       isDismissible: true,
       expand: true,
       closeProgressThreshold: -50000,
@@ -40,6 +44,7 @@ Future<int?> showCreateNewCharacterTransformationWizard(BuildContext context,
         return CreateNewCharacterTransformationWizardModalContent(
           modalPadding: modalPadding,
           overrideStartScreen: overrideStartScreen,
+          existingTransformationComponents: existingTransformationComponents,
         );
       });
 }
@@ -50,8 +55,10 @@ class CreateNewCharacterTransformationWizardModalContent
     super.key,
     required this.modalPadding,
     this.overrideStartScreen,
+    this.existingTransformationComponents,
   });
 
+  final TransformationComponent? existingTransformationComponents;
   final double modalPadding;
   final int? overrideStartScreen;
 
@@ -81,6 +88,21 @@ class _CreateNewCharacterTransformationWizardModalContentState
   @override
   void initState() {
     _currentStep = widget.overrideStartScreen ?? 0;
+
+    if (widget.existingTransformationComponents != null) {
+      labelEditingController.text =
+          widget.existingTransformationComponents!.transformationName;
+      descriptionEditingController.text =
+          widget.existingTransformationComponents!.transformationDescription ??
+              "";
+      _selectedStats = widget
+          .existingTransformationComponents!.transformationStats
+          .map((e) => (statUuid: e.statUuid))
+          .toList();
+
+      // TODO load stat values and copy them
+    }
+
     super.initState();
   }
 
@@ -120,7 +142,7 @@ class _CreateNewCharacterTransformationWizardModalContentState
     });
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.only(
@@ -135,56 +157,7 @@ class _CreateNewCharacterTransformationWizardModalContentState
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Navbar(
-                    backInsteadOfCloseIcon: false,
-                    closeFunction: () {
-                      navigatorKey.currentState!.pop(null);
-                    },
-                    menuOpen: null,
-                    useTopSafePadding: false,
-                    titleWidget: Text(
-                      S.of(context).createNewTransformationTitle,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: textColor, fontSize: 24),
-                    ),
-                    subTitle: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Spacer(),
-                        ...List.generate(
-                          _stepCount,
-                          (index) => CupertinoButton(
-                            minSize: 0,
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              setState(() {
-                                _currentStep = index;
-                              });
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: Transform.rotate(
-                                alignment: Alignment.center,
-                                angle: math.pi / 4, // 45 deg
-                                child: CustomFaIcon(
-                                    icon: index == _currentStep
-                                        ? FontAwesomeIcons.solidSquare
-                                        : FontAwesomeIcons.square,
-                                    color: index == _currentStep
-                                        ? accentColor
-                                        : middleBgColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                      ],
-                    ),
-                  ),
+                  getNavbarWithStepVisualization(context),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -198,51 +171,112 @@ class _CreateNewCharacterTransformationWizardModalContentState
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                    child: Row(
-                      children: [
-                        const Spacer(flex: 1),
-                        CustomButton(
-                          label: S.of(context).back,
-                          onPressed: () {
-                            if (_currentStep != 0) {
-                              setState(() {
-                                _currentStep--;
-                              });
-                              return;
-                            }
-                          },
-                        ),
-                        Spacer(
-                          flex: 3,
-                        ),
-                        CustomButton(
-                          label: (_currentStep == _stepCount)
-                              ? S.of(context).send
-                              : S.of(context).next,
-                          onPressed: () {
-                            if (_currentStep == _stepCount) {
-                              setState(() {
-                                _currentStep++;
-                              });
-                              return;
-                            } else {
-                              // save transformation
-                              // TODO make me
-                              navigatorKey.currentState!.pop("numberParsed");
-                            }
-                          },
-                        ),
-                        const Spacer(flex: 1),
-                      ],
-                    ),
-                  ),
+                  getNavigationButtons(context),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Padding getNavigationButtons(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+      child: Row(
+        children: [
+          const Spacer(flex: 1),
+          CustomButton(
+            label: S.of(context).back,
+            onPressed: () {
+              if (_currentStep != 0) {
+                setState(() {
+                  _currentStep--;
+                });
+                return;
+              }
+            },
+          ),
+          Spacer(
+            flex: 3,
+          ),
+          CustomButton(
+            label: (_currentStep + 1 == _stepCount)
+                ? S.of(context).send
+                : S.of(context).next,
+            onPressed: () {
+              if (_currentStep + 1 != _stepCount) {
+                setState(() {
+                  _currentStep++;
+                });
+                return;
+              } else {
+                // save transformation
+                navigatorKey.currentState!.pop(TransformationComponent(
+                  transformationUuid: widget.existingTransformationComponents
+                          ?.transformationUuid ??
+                      UuidV7().generate(),
+                  transformationName: labelEditingController.text,
+                  transformationDescription: descriptionEditingController.text,
+                  transformationStats: [], // TODO add stats
+                ));
+              }
+            },
+          ),
+          const Spacer(flex: 1),
+        ],
+      ),
+    );
+  }
+
+  Navbar getNavbarWithStepVisualization(BuildContext context) {
+    return Navbar(
+      backInsteadOfCloseIcon: false,
+      closeFunction: () {
+        navigatorKey.currentState!.pop(null);
+      },
+      menuOpen: null,
+      useTopSafePadding: false,
+      titleWidget: Text(
+        S.of(context).createNewTransformationTitle,
+        textAlign: TextAlign.center,
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: textColor, fontSize: 24),
+      ),
+      subTitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Spacer(),
+          ...List.generate(
+            _stepCount,
+            (index) => CupertinoButton(
+              minSize: 0,
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                setState(() {
+                  _currentStep = index;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Transform.rotate(
+                  alignment: Alignment.center,
+                  angle: math.pi / 4, // 45 deg
+                  child: CustomFaIcon(
+                      icon: index == _currentStep
+                          ? FontAwesomeIcons.solidSquare
+                          : FontAwesomeIcons.square,
+                      color:
+                          index == _currentStep ? accentColor : middleBgColor),
+                ),
+              ),
+            ),
+          ),
+          Spacer(),
+        ],
       ),
     );
   }

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/style.css">
+
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RPG Table Helper</title>
+</head>
+
+<body>
+    <div class="shadow"></div>
+    <div id="app" class="flex flex-col min-h-screen">
+        <main class="flex-1 ">
+            <div class="flex flex-col">
+                <div class="absolute w-full p-4">
+                    <div id="navbar" class=""></div> <!-- Navbar will be injected here -->
+                </div>
+
+                <img style="object-fit: cover; " src="/bg.webp" class="max-h-[343px]" alt="" srcset="">
+            </div>
+
+
+        </main>
+        <div id="footer"></div> <!-- Footer will be injected here -->
+
+    </div>
+
+
+    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/loadComponents.ts"></script>
+
+</body>
+
+</html>

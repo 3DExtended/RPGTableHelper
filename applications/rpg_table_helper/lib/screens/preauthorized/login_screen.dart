@@ -368,6 +368,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(
                         height: 10,
                       ),
+
+                      // CustomButton(
+                      //     label: "Licenses",
+                      //     onPressed: () {
+                      //       navigatorKey.currentState!.push(MaterialPageRoute(
+                      //         builder: (context) => LicensePage(),
+                      //       ));
+                      //     }),
                     ],
                   ),
                 ),
