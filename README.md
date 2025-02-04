@@ -58,6 +58,14 @@ Below are visual examples of the app’s interface:
 
 <img src="/applications/rpg_table_helper/test/goldens/playerpagescreens1-playerstatsscreen/1 - playerpagescreens1-playerstatsscreen (Language de, default).ipad pro 11inch 4th gen.png" width="768">
 
+#### Players Inventory Screen
+
+<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens6-playerinventoryscreen/1 - playerpagescreens6-playerinventoryscreen (Language de, default).ipad pro 12-9 landscape.png" width="768">
+
+#### Players Balance Calculator
+
+<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens5-playermoneyscreen/1 - playerpagescreens5-playermoneyscreen (Language en, default).ipad 6th gen landscape.png" width="768">
+
 ---
 
 ## 🧩 Features Roadmap
