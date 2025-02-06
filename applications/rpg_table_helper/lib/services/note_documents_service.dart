@@ -1,6 +1,6 @@
-import 'package:rpg_table_helper/generated/swaggen/swagger.swagger.dart';
-import 'package:rpg_table_helper/models/humanreadable_response.dart';
-import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.swagger.dart';
+import 'package:quest_keeper/models/humanreadable_response.dart';
+import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:uuid/v7.dart';
 
 abstract class INoteDocumentService {

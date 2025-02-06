@@ -5,21 +5,21 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/bordered_image.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/pentagon_with_label.dart';
-import 'package:rpg_table_helper/components/progress_indicator_for_character_screen.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/icons_helper.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/components/pentagon_with_label.dart';
+import 'package:quest_keeper/components/progress_indicator_for_character_screen.dart';
+import 'package:quest_keeper/components/static_grid.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {

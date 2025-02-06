@@ -3,18 +3,18 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
-import 'package:rpg_table_helper/components/custom_item_card.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/color_extension.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_int_edit_field.dart';
+import 'package:quest_keeper/components/custom_item_card.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/static_grid.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/color_extension.dart';
+import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 /// returns number to adjust the rpg character inventory
 Future<int?> showItemCardDetails(BuildContext context,

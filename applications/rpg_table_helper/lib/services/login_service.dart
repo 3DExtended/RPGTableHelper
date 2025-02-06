@@ -1,4 +1,4 @@
-import 'package:rpg_table_helper/models/humanreadable_response.dart';
+import 'package:quest_keeper/models/humanreadable_response.dart';
 
 abstract class ILoginService {
   final bool isMock;

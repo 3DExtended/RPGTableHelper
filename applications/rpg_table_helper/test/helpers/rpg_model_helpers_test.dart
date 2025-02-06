@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/helpers/rpg_model_helpers.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/helpers/rpg_model_helpers.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 void main() {
   group("getCraftingRecipiesForCharacter", () {

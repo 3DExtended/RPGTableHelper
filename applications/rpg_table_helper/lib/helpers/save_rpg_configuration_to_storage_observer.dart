@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
 
 class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
   SaveRpgConfigurationToStorageObserver();

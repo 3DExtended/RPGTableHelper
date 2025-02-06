@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/border_corner_stone_round.dart';
-import 'package:rpg_table_helper/components/bordered_image.dart';
-import 'package:rpg_table_helper/components/card_border.dart';
-import 'package:rpg_table_helper/components/quarter_circle_cutout.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
+import 'package:quest_keeper/components/border_corner_stone_round.dart';
+import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/card_border.dart';
+import 'package:quest_keeper/components/quarter_circle_cutout.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 
 class CustomRecipeCardItemPair {
   final int amount;

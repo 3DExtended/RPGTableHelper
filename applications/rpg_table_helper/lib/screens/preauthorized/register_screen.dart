@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/validation_helpers.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
-import 'package:rpg_table_helper/services/auth/authentication_service.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/validation_helpers.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/screens/select_game_mode_screen.dart';
+import 'package:quest_keeper/services/auth/authentication_service.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   static const route = 'register';

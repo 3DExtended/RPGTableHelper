@@ -4,15 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_int_edit_field.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_int_edit_field.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 enum MoneyChangeMode {
   addMoney,

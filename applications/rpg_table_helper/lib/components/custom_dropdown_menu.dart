@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/constants.dart';
 
 class CustomDropdownMenu extends StatelessWidget {
   const CustomDropdownMenu({

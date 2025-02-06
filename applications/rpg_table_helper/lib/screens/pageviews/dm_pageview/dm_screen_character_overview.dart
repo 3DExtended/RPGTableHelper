@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/character_stats/render_characters_as_cards.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/components/custom_loading_spinner.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/render_characters_as_cards.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 class DmScreenCharacterOverview extends ConsumerStatefulWidget {
   const DmScreenCharacterOverview({

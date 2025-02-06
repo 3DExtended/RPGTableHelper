@@ -2,16 +2,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
-import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
-import 'package:rpg_table_helper/services/auth/authentication_service.dart';
-import 'package:rpg_table_helper/services/auth/encryption_service.dart';
-import 'package:rpg_table_helper/services/image_generation_service.dart';
-import 'package:rpg_table_helper/services/navigation_service.dart';
-import 'package:rpg_table_helper/services/note_documents_service.dart';
-import 'package:rpg_table_helper/services/rpg_entity_service.dart';
-import 'package:rpg_table_helper/services/server_communication_service.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
-import 'package:rpg_table_helper/services/systemclock_service.dart';
+import 'package:quest_keeper/services/auth/api_connector_service.dart';
+import 'package:quest_keeper/services/auth/authentication_service.dart';
+import 'package:quest_keeper/services/auth/encryption_service.dart';
+import 'package:quest_keeper/services/image_generation_service.dart';
+import 'package:quest_keeper/services/navigation_service.dart';
+import 'package:quest_keeper/services/note_documents_service.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/server_communication_service.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/systemclock_service.dart';
 
 class DependencyProvider extends InheritedWidget {
   static DependencyProvider of(BuildContext context) {

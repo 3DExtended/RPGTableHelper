@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:rpg_table_helper/components/card_border.dart';
-import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
+import 'package:quest_keeper/components/card_border.dart';
+import 'package:quest_keeper/components/custom_loading_spinner.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:themed/themed.dart';
 import 'package:transparent_image/transparent_image.dart';
 

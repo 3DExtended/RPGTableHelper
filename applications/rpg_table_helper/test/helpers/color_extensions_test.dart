@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/helpers/color_extension.dart';
+import 'package:quest_keeper/helpers/color_extension.dart';
 
 void main() {
   group('ColorExtension.parseHexColorRepresentation', () {

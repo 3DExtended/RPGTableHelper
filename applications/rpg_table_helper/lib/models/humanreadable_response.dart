@@ -1,8 +1,8 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:rpg_table_helper/helpers/debugger.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/debugger.dart';
+import 'package:quest_keeper/helpers/modal_helpers.dart';
 
 part 'humanreadable_response.g.dart';
 

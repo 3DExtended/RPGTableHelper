@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/helpers/list_extensions.dart';
+import 'package:quest_keeper/helpers/list_extensions.dart';
 
 class DynamicHeightColumnLayout extends StatefulWidget {
   final List<Widget> children;

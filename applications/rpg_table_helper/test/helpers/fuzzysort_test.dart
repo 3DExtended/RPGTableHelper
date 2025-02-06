@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/helpers/fuzzysort.dart';
+import 'package:quest_keeper/helpers/fuzzysort.dart';
 
 void main() {
   group('FuzzySort', () {

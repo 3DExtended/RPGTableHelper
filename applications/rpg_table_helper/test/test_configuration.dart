@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 
 const testDevices = [
   Device(

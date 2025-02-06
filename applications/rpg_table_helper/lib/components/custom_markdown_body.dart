@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/constants.dart';
 
 class CustomMarkdownBody extends StatelessWidget {
   const CustomMarkdownBody({

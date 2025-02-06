@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/constants.dart';
 
 enum CustomButtonVariant {
   Default,

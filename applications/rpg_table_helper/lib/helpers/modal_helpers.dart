@@ -5,17 +5,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/validation_helpers.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/humanreadable_response.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/static_grid.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/validation_helpers.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/humanreadable_response.dart';
 
 Future<String?> askForCampagneJoinCode(BuildContext context,
     {GlobalKey<NavigatorState>? overrideNavigatorKey}) async {

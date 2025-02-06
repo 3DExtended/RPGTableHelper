@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/border_corner_stone.dart';
-import 'package:rpg_table_helper/components/bordered_image.dart';
-import 'package:rpg_table_helper/components/card_border.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/helpers/icons_helper.dart';
+import 'package:quest_keeper/components/border_corner_stone.dart';
+import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/card_border.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/icons_helper.dart';
 
 class CustomItemCard extends StatelessWidget {
   final String? imageUrl;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/helpers/icons_helper.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../test_configuration.dart';
 

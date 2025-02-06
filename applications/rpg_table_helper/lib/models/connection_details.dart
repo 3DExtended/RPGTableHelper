@@ -1,7 +1,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
 
 part 'connection_details.g.dart';
 

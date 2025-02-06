@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/constants.dart';
 
 class PentagonWithLabel extends StatelessWidget {
   const PentagonWithLabel({

@@ -3,9 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/modals/show_select_icon_with_color_modal.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../test_configuration.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/modal_content_wrapper.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
-import 'package:rpg_table_helper/main.dart';
+import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/modal_content_wrapper.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/main.dart';
 
 Future<({String title, String groupName})?> showEditLorePageTitle(
   BuildContext context, {

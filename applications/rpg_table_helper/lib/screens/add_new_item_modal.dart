@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/components/item_card_rendering_with_filtering.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 Future<List<(String itemId, int amount)>?> showAddNewItemModal(
     BuildContext context,

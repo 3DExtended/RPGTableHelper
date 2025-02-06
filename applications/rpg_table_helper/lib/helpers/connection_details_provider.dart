@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
+import 'package:quest_keeper/models/connection_details.dart';
 
 final connectionDetailsProvider = StateNotifierProvider<
     ConnectionDetailsNotifier, AsyncValue<ConnectionDetails>>((ref) {
