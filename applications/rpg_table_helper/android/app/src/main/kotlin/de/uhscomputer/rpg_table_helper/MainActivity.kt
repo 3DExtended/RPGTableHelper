@@ -1,4 +1,4 @@
-package de.uhscomputer.rpg_table_helper
+package de.uhscomputer.quest_keeper
 
 import io.flutter.embedding.android.FlutterActivity
 
