@@ -402,7 +402,9 @@ class _CreateNewCharacterTransformationWizardModalContentState
               child: PlayerStatsConfigurationVisuals(
                 statConfiguration: asdf.stat,
                 characterName: null,
-                characterToRenderStatFor: null,
+                characterValue: _newestStatValues[e.statUuid],
+                characterToRenderStatFor:
+                    null, // TODO this should get passed the current transformation
                 onNewStatValue: (newValue) {
                   setState(() {
                     _newestStatValues[e.statUuid] = newValue;
