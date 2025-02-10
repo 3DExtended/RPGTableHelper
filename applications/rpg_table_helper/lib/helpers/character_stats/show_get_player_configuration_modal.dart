@@ -70,6 +70,12 @@ class _ShowGetPlayerConfigurationModalContentState
   RpgCharacterStatValue? newestStatValue;
 
   @override
+  void initState() {
+    newestStatValue = widget.characterValue;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ModalContentWrapper<RpgCharacterStatValue>(
       isFullscreen: true,

@@ -100,7 +100,9 @@ class _PlayerStatsConfigurationVisualsState
     super.initState();
   }
 
+  bool isWidgetLoadingComplete = false;
   void onChanged() {
+    if (isWidgetLoadingComplete == false) return;
     var newStatValue = getCurrentStatValueOrDefault();
     newStatValue = newStatValue.copyWith(variant: currentlyVisibleVariant);
     widget.onNewStatValue(newStatValue);
@@ -344,6 +346,10 @@ class _PlayerStatsConfigurationVisualsState
         }
       }
     }
+
+    setState(() {
+      isWidgetLoadingComplete = true;
+    });
   }
 
   @override
