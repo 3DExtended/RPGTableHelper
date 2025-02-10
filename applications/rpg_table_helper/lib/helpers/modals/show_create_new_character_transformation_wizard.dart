@@ -14,6 +14,7 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/player_stats_configuration_visuals.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
@@ -80,10 +81,12 @@ class _CreateNewCharacterTransformationWizardModalContentState
         String statHelperText,
         String statName,
         CharacterStatValueType statType,
-        String statUuid
+        String statUuid,
+        CharacterStatDefinition stat
       })> _statsToBeSelected = [];
 
   List<({String statUuid})> _selectedStats = [];
+  Map<String, RpgCharacterStatValue> _newestStatValues = {};
 
   @override
   void initState() {
@@ -100,7 +103,9 @@ class _CreateNewCharacterTransformationWizardModalContentState
           .map((e) => (statUuid: e.statUuid))
           .toList();
 
-      // TODO load stat values and copy them
+      _newestStatValues = Map.fromEntries(widget
+          .existingTransformationComponents!.transformationStats
+          .map((e) => MapEntry(e.statUuid, e)));
     }
 
     super.initState();
@@ -115,11 +120,18 @@ class _CreateNewCharacterTransformationWizardModalContentState
 
           _statsToBeSelected = data.characterStatTabsDefinition!
               .expand((l) => l.statsInTab)
+
+              // we do not allow the transformed character to have a companion selector or a transform into alternate form button
+              .where((e) =>
+                  e.valueType != CharacterStatValueType.companionSelector &&
+                  e.valueType !=
+                      CharacterStatValueType.transformIntoAlternateFormBtn)
               .map((e) => (
                     statUuid: e.statUuid,
                     statName: e.name,
                     statHelperText: e.helperText,
-                    statType: e.valueType
+                    statType: e.valueType,
+                    stat: e
                   ))
               .toList();
         });
@@ -134,7 +146,8 @@ class _CreateNewCharacterTransformationWizardModalContentState
                     statUuid: e.statUuid,
                     statName: e.name,
                     statHelperText: e.helperText,
-                    statType: e.valueType
+                    statType: e.valueType,
+                    stat: e
                   ))
               .toList());
         });
@@ -219,7 +232,11 @@ class _CreateNewCharacterTransformationWizardModalContentState
                       UuidV7().generate(),
                   transformationName: labelEditingController.text,
                   transformationDescription: descriptionEditingController.text,
-                  transformationStats: [], // TODO add stats
+                  transformationStats: _selectedStats
+                      .map((e) => _newestStatValues[e.statUuid])
+                      .where((e) => e != null)
+                      .map((e) => _newestStatValues[e!.statUuid]!)
+                      .toList(),
                 ));
               }
             },
@@ -362,6 +379,45 @@ class _CreateNewCharacterTransformationWizardModalContentState
   List<Widget> getStep1Content(BuildContext context) {
     return [
       // TODO add step 1 content
+      ..._selectedStats.map((e) {
+        var asdf = _statsToBeSelected.singleWhere(
+            (element) => element.statUuid == e.statUuid,
+            orElse: () => throw Exception("Stat not found"));
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Konfiguration für ${asdf.statName}", // TODO localize
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: darkTextColor,
+                    fontSize: 24,
+                  ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: PlayerStatsConfigurationVisuals(
+                statConfiguration: asdf.stat,
+                characterName: null,
+                characterToRenderStatFor: null,
+                onNewStatValue: (newValue) {
+                  setState(() {
+                    _newestStatValues[e.statUuid] = newValue;
+                  });
+                },
+                hideAdditionalSetting: false,
+                hideVariantSelection: true,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        );
+      })
     ];
   }
 }
