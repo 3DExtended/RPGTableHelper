@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
-import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../test_configuration.dart';

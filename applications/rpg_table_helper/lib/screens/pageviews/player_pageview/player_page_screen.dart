@@ -134,28 +134,20 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                     .indexWhere((e) => e.uuid == charToRender!.uuid);
 
                 if (indexOfSelectedCompChar == -1) {
-                  // check altforms
-                  List<RpgAlternateCharacterConfiguration> altCharactersCopy = [
-                    ...(newestCharacterConfig.alternateForms ?? [])
-                  ];
-                  var indexOfSelectedAltForm = altCharactersCopy
-                      .indexWhere((e) => e.uuid == charToRender!.uuid);
-
-                  if (indexOfSelectedAltForm == -1) {
+                  if (newestCharacterConfig.alternateForm == null) {
                     throw NotImplementedException();
-                  } else {
-                    altCharactersCopy[indexOfSelectedAltForm] =
-                        altCharactersCopy[indexOfSelectedAltForm]
-                            .copyWith(characterStats: mergedStats);
-
-                    charToRender = newestCharacterConfig.copyWith(
-                        alternateForms: altCharactersCopy);
-
-                    ref
-                        .read(rpgCharacterConfigurationProvider.notifier)
-                        .updateConfiguration(newestCharacterConfig.copyWith(
-                            alternateForms: altCharactersCopy));
                   }
+
+                  // check altforms
+                  charToRender = newestCharacterConfig.copyWith(
+                      alternateForm: newestCharacterConfig.alternateForm!
+                          .copyWith(characterStats: mergedStats));
+
+                  ref
+                      .read(rpgCharacterConfigurationProvider.notifier)
+                      .updateConfiguration(newestCharacterConfig.copyWith(
+                          alternateForm: newestCharacterConfig.alternateForm!
+                              .copyWith(characterStats: mergedStats)));
                 } else {
                   companionCharactersCopy[indexOfSelectedCompChar] =
                       companionCharactersCopy[indexOfSelectedCompChar]

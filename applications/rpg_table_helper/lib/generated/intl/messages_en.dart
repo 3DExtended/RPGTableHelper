@@ -343,7 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Single line text"),
         "startAsDm": MessageLookupByLibrary.simpleMessage("Play as DM"),
         "tranformToAlternateForm":
-            MessageLookupByLibrary.simpleMessage("Verwandeln"),
+            MessageLookupByLibrary.simpleMessage("Transform"),
         "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(
             "Transform into alternate form"),
         "transformationDescription":

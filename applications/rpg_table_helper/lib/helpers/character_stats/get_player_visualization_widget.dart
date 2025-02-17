@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/custom_button.dart';
@@ -16,6 +17,9 @@ import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -227,32 +231,89 @@ Widget renderTransformIntoAlternateFormBtn(
         children: [
           Padding(
             padding: EdgeInsets.all(5),
-            child: CustomButton(
-                label: S.of(context).tranformToAlternateForm,
-                onPressed: () {
-                  // TODO make me
-                  // open modal, select alternate form components and save
-                  // now open saved alternate form
-
-                  return;
-
-                  // open companion page
-                  navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,
-                      arguments: PlayerPageScreenRouteSettings(
-                        disableEdit: false,
-                        showMoney: false,
-                        characterConfigurationOverride:
-                            characterToRenderStatFor!.alternateForm!,
-                        showInventory: false,
-                        showLore: false,
-                        showRecipes: false,
-                      ));
-                }),
+            child: CustomButtonTransformToAlternateForm(
+              characterToRenderStatFor: characterToRenderStatFor,
+            ),
           ),
         ],
       )
     ],
   );
+}
+
+class CustomButtonTransformToAlternateForm extends ConsumerStatefulWidget {
+  const CustomButtonTransformToAlternateForm({
+    super.key,
+    this.characterToRenderStatFor,
+  });
+  final RpgCharacterConfiguration? characterToRenderStatFor;
+
+  @override
+  ConsumerState<CustomButtonTransformToAlternateForm> createState() =>
+      _CustomButtonTransformToAlternateFormState();
+}
+
+class _CustomButtonTransformToAlternateFormState
+    extends ConsumerState<CustomButtonTransformToAlternateForm> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomButton(
+        label: S.of(context).tranformToAlternateForm,
+        onPressed: () async {
+          // open modal, select alternate form components and save
+          // now open saved alternate form
+
+          // if there is only one alternate form, just switch to it
+          if (widget.characterToRenderStatFor?.transformationComponents
+                  ?.isNotEmpty ==
+              true) {
+            var rpgConfig = ref.read(rpgConfigurationProvider).requireValue;
+
+            var selectedTransformationCharacter =
+                await showSelectTransformationComponentsForTransformation(
+                    context,
+                    rpgCharConfig: widget.characterToRenderStatFor!,
+                    rpgConfig: rpgConfig);
+
+            if (selectedTransformationCharacter == null) return;
+
+            var charConfigToUpdate =
+                ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+            ref
+                .read(rpgCharacterConfigurationProvider.notifier)
+                .updateConfiguration(
+                  charConfigToUpdate.copyWith(
+                    isAlternateFormActive: true,
+                    alternateForm: selectedTransformationCharacter,
+                  ),
+                );
+
+            // open companion page
+            navigatorKey.currentState!
+                .pushNamed(PlayerPageScreen.route,
+                    arguments: PlayerPageScreenRouteSettings(
+                      disableEdit: false,
+                      showMoney: false,
+                      characterConfigurationOverride:
+                          selectedTransformationCharacter,
+                      showInventory: false,
+                      showLore: false,
+                      showRecipes: false,
+                    ))
+                .then((onValue) {
+              ref
+                  .read(rpgCharacterConfigurationProvider.notifier)
+                  .updateConfiguration(
+                    charConfigToUpdate.copyWith(
+                      isAlternateFormActive: false,
+                      alternateForm: null,
+                    ),
+                  );
+            });
+          }
+        });
+  }
 }
 
 Widget renderMultiselectStat(

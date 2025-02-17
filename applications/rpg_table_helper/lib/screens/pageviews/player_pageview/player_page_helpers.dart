@@ -166,26 +166,21 @@ class PlayerPageHelpers {
 
             if (indexOfSelectedCompChar == -1) {
               // check altforms
-              List<RpgAlternateCharacterConfiguration> altCharactersCopy = [
-                ...(newestCharacterConfig.alternateForms ?? [])
-              ];
-              var indexOfSelectedAltForm = altCharactersCopy
-                  .indexWhere((e) => e.uuid == selectedCharacterId);
-
-              if (indexOfSelectedAltForm == -1) {
+              if (newestCharacterConfig.alternateForm == null) {
                 throw NotImplementedException();
-              } else {
-                altCharactersCopy[indexOfSelectedAltForm] =
-                    altCharactersCopy[indexOfSelectedAltForm].copyWith(
-                  characterStats: mergedStats,
-                  characterName: updatedCharacterName,
-                );
-
-                ref
-                    .read(rpgCharacterConfigurationProvider.notifier)
-                    .updateConfiguration(newestCharacterConfig.copyWith(
-                        alternateForms: altCharactersCopy));
               }
+
+              var altCharactersCopy = (newestCharacterConfig.alternateForm!);
+
+              altCharactersCopy = altCharactersCopy.copyWith(
+                characterStats: mergedStats,
+                characterName: updatedCharacterName,
+              );
+
+              ref
+                  .read(rpgCharacterConfigurationProvider.notifier)
+                  .updateConfiguration(newestCharacterConfig.copyWith(
+                      alternateForm: altCharactersCopy));
             } else {
               companionCharactersCopy[indexOfSelectedCompChar] =
                   companionCharactersCopy[indexOfSelectedCompChar].copyWith(

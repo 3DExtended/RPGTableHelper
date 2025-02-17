@@ -1970,10 +1970,10 @@ class S {
     );
   }
 
-  /// `Verwandeln`
+  /// `Transform`
   String get tranformToAlternateForm {
     return Intl.message(
-      'Verwandeln',
+      'Transform',
       name: 'tranformToAlternateForm',
       desc: '',
       args: [],

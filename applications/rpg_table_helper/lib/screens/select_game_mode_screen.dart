@@ -16,7 +16,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
-import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
