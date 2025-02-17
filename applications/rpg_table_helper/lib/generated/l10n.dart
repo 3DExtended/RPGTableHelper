@@ -1990,10 +1990,10 @@ class S {
     );
   }
 
-  /// `Add new transformation (-component)`
+  /// `Add new transformations`
   String get addNewTransformationComponent {
     return Intl.message(
-      'Add new transformation (-component)',
+      'Add new transformations',
       name: 'addNewTransformationComponent',
       desc: '',
       args: [],

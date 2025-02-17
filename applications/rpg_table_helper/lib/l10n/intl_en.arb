@@ -193,7 +193,7 @@
     "rollForInitiativeBtnLabel": "Roll for initiative",
     "tranformToAlternateForm": "Transform",
     "transformIntoAlternateForm": "Transform into alternate form",
-    "addNewTransformationComponent": "Add new transformation (-component)",
+    "addNewTransformationComponent": "Add new transformations",
     "createNewTransformationTitle": "Create new transformation",
     "transformationName": "Transformation name",
     "transformationDescription": "Transformation description",

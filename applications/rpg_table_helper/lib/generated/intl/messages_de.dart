@@ -45,7 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Bild"),
         "addItems": MessageLookupByLibrary.simpleMessage("Items hinzufügen"),
         "addNewTransformationComponent": MessageLookupByLibrary.simpleMessage(
-            "Neue Verwandlung (-skomponente) hinzufügen"),
+            "Füge neue Verwandlungsformen hinzu"),
         "addParagraphBtnLabel": MessageLookupByLibrary.simpleMessage("Absatz"),
         "additionalElement":
             MessageLookupByLibrary.simpleMessage("Neues Element"),

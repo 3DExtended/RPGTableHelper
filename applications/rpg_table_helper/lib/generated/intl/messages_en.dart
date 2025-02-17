@@ -42,8 +42,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add character to campaign"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Image"),
         "addItems": MessageLookupByLibrary.simpleMessage("Add items"),
-        "addNewTransformationComponent": MessageLookupByLibrary.simpleMessage(
-            "Add new transformation (-component)"),
+        "addNewTransformationComponent":
+            MessageLookupByLibrary.simpleMessage("Add new transformations"),
         "addParagraphBtnLabel":
             MessageLookupByLibrary.simpleMessage("Paragraph"),
         "additionalElement":

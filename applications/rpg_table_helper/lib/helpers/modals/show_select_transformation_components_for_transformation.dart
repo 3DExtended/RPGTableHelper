@@ -80,168 +80,173 @@ class _SelectTransformationComponentsForTransformationModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-            child: Container(
-              color: bgColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  getNavbar(context),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Text(
-                              "Wähle die Komponenten/Verwandlungen aus, die du für die Verwandlung verwenden möchtest.", // TODO localize
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    color: darkTextColor,
-                                    fontSize: 16,
-                                  ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            if (widget.rpgCharConfig.transformationComponents
-                                    ?.isNotEmpty !=
-                                true)
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 800, maxHeight: 500),
+              child: Container(
+                color: bgColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    getNavbar(context),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
                               Text(
-                                  "Keine Komponenten/Verwandlungen vorhanden. Bitte gehe zurück und konfiguriere die Verwandlungen in den Charakter Einstellungen", // TODO localize
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        color: darkTextColor,
-                                        fontSize: 16,
-                                      )),
-                            if (widget.rpgCharConfig.transformationComponents
-                                    ?.isNotEmpty ==
-                                true)
-                              ...widget.rpgCharConfig.transformationComponents
-                                      ?.map(
-                                    (e) => CheckboxListTile.adaptive(
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      contentPadding: EdgeInsets.zero,
-                                      splashRadius: 0,
-                                      dense: true,
-                                      checkColor: const Color.fromARGB(
-                                          255, 57, 245, 88),
-                                      activeColor: darkColor,
-                                      visualDensity:
-                                          VisualDensity(vertical: -2),
-                                      title: Text(
-                                        e.transformationName,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium!
-                                            .copyWith(
-                                                color: darkTextColor,
-                                                fontSize: 16),
-                                      ),
-                                      subtitle: e.transformationDescription
-                                                  ?.isNotEmpty ==
-                                              true
-                                          ? Text(
-                                              e.transformationDescription ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .copyWith(
-                                                      color: darkTextColor,
-                                                      fontSize: 12),
-                                            )
-                                          : null,
-                                      value: _selectedTransformationUuid.any(
-                                          (element) =>
-                                              element.transformationUuid ==
-                                              e.transformationUuid),
-                                      onChanged: (val) {
-                                        if (_selectedTransformationUuid.any(
+                                "Wähle die Komponenten/Verwandlungen aus, die du für die Verwandlung verwenden möchtest.", // TODO localize
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: darkTextColor,
+                                      fontSize: 16,
+                                    ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              if (widget.rpgCharConfig.transformationComponents
+                                      ?.isNotEmpty !=
+                                  true)
+                                Text(
+                                    "Keine Komponenten/Verwandlungen vorhanden. Bitte gehe zurück und konfiguriere die Verwandlungen in den Charakter Einstellungen", // TODO localize
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: darkTextColor,
+                                          fontSize: 16,
+                                        )),
+                              if (widget.rpgCharConfig.transformationComponents
+                                      ?.isNotEmpty ==
+                                  true)
+                                ...widget.rpgCharConfig.transformationComponents
+                                        ?.map(
+                                      (e) => CheckboxListTile.adaptive(
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        contentPadding: EdgeInsets.zero,
+                                        splashRadius: 0,
+                                        dense: true,
+                                        checkColor: const Color.fromARGB(
+                                            255, 57, 245, 88),
+                                        activeColor: darkColor,
+                                        visualDensity:
+                                            VisualDensity(vertical: -2),
+                                        title: Text(
+                                          e.transformationName,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .copyWith(
+                                                  color: darkTextColor,
+                                                  fontSize: 16),
+                                        ),
+                                        subtitle: e.transformationDescription
+                                                    ?.isNotEmpty ==
+                                                true
+                                            ? Text(
+                                                e.transformationDescription ??
+                                                    "",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .copyWith(
+                                                        color: darkTextColor,
+                                                        fontSize: 12),
+                                              )
+                                            : null,
+                                        value: _selectedTransformationUuid.any(
                                             (element) =>
                                                 element.transformationUuid ==
-                                                e.transformationUuid)) {
-                                          setState(() {
-                                            _selectedTransformationUuid
-                                                .removeWhere((element) =>
-                                                    element
-                                                        .transformationUuid ==
-                                                    e.transformationUuid);
-                                          });
-                                        } else {
-                                          setState(() {
-                                            _selectedTransformationUuid.add((
-                                              transformationUuid:
-                                                  e.transformationUuid
-                                            ));
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ) ??
-                                  [],
+                                                e.transformationUuid),
+                                        onChanged: (val) {
+                                          if (_selectedTransformationUuid.any(
+                                              (element) =>
+                                                  element.transformationUuid ==
+                                                  e.transformationUuid)) {
+                                            setState(() {
+                                              _selectedTransformationUuid
+                                                  .removeWhere((element) =>
+                                                      element
+                                                          .transformationUuid ==
+                                                      e.transformationUuid);
+                                            });
+                                          } else {
+                                            setState(() {
+                                              _selectedTransformationUuid.add((
+                                                transformationUuid:
+                                                    e.transformationUuid
+                                              ));
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ) ??
+                                    [],
 
-                            // TODO add additional settings (like "show non overwritten stats")
-                          ],
+                              // TODO add additional settings (like "show non overwritten stats")
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
-                    child: Row(
-                      children: [
-                        const Spacer(flex: 1),
-                        CustomButton(
-                          label: S.of(context).cancel,
-                          onPressed: () {
-                            navigatorKey.currentState!.pop(null);
-                          },
-                        ),
-                        Spacer(
-                          flex: 3,
-                        ),
-                        CustomButton(
-                          label: S.of(context).tranformToAlternateForm,
-                          onPressed: widget
-                                          .rpgCharConfig
-                                          .transformationComponents
-                                          ?.isNotEmpty ==
-                                      true &&
-                                  _selectedTransformationUuid.isNotEmpty
-                              ? () {
-                                  // save transformation
-                                  navigatorKey.currentState!.pop(
-                                      // TODO create result object
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                      child: Row(
+                        children: [
+                          const Spacer(flex: 1),
+                          CustomButton(
+                            label: S.of(context).cancel,
+                            onPressed: () {
+                              navigatorKey.currentState!.pop(null);
+                            },
+                          ),
+                          Spacer(
+                            flex: 3,
+                          ),
+                          CustomButton(
+                            variant: CustomButtonVariant.AccentButton,
+                            label: S.of(context).tranformToAlternateForm,
+                            onPressed: widget
+                                            .rpgCharConfig
+                                            .transformationComponents
+                                            ?.isNotEmpty ==
+                                        true &&
+                                    _selectedTransformationUuid.isNotEmpty
+                                ? () {
+                                    // save transformation
+                                    navigatorKey.currentState!.pop(
+                                        // TODO create result object
 
-                                      // RpgAlternateCharacterConfiguration(
-                                      //   uuid: UuidV7().generate(),
-                                      //   characterName: widget
-                                      //       .characterToRenderStatFor!
-                                      //       .transformationComponents!
-                                      //       .first
-                                      //       .transformationName,
-                                      //   characterStats: widget
-                                      //       .characterToRenderStatFor!
-                                      //       .transformationComponents!
-                                      //       .first
-                                      //       .transformationStats,
-                                      //   transformationComponents: null,
-                                      //   alternateForm: null,
-                                      //   isAlternateFormActive: null,
-                                      // ),
-                                      );
-                                }
-                              : null,
-                        ),
-                        const Spacer(flex: 1),
-                      ],
-                    ),
-                  )
-                ],
+                                        // RpgAlternateCharacterConfiguration(
+                                        //   uuid: UuidV7().generate(),
+                                        //   characterName: widget
+                                        //       .characterToRenderStatFor!
+                                        //       .transformationComponents!
+                                        //       .first
+                                        //       .transformationName,
+                                        //   characterStats: widget
+                                        //       .characterToRenderStatFor!
+                                        //       .transformationComponents!
+                                        //       .first
+                                        //       .transformationStats,
+                                        //   transformationComponents: null,
+                                        //   alternateForm: null,
+                                        //   isAlternateFormActive: null,
+                                        // ),
+                                        );
+                                  }
+                                : null,
+                          ),
+                          const Spacer(flex: 1),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
