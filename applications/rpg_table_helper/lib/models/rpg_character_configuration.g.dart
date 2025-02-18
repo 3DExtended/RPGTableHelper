@@ -406,6 +406,8 @@ abstract class _$RpgCharacterStatValueCWProxy {
 
   RpgCharacterStatValue hideLabelOfStat(bool? hideLabelOfStat);
 
+  RpgCharacterStatValue isCopy(bool? isCopy);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterStatValue(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -418,6 +420,7 @@ abstract class _$RpgCharacterStatValueCWProxy {
     bool? hideFromCharacterScreen,
     int? variant,
     bool? hideLabelOfStat,
+    bool? isCopy,
   });
 }
 
@@ -448,6 +451,9 @@ class _$RpgCharacterStatValueCWProxyImpl
       this(hideLabelOfStat: hideLabelOfStat);
 
   @override
+  RpgCharacterStatValue isCopy(bool? isCopy) => this(isCopy: isCopy);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterStatValue(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -461,6 +467,7 @@ class _$RpgCharacterStatValueCWProxyImpl
     Object? hideFromCharacterScreen = const $CopyWithPlaceholder(),
     Object? variant = const $CopyWithPlaceholder(),
     Object? hideLabelOfStat = const $CopyWithPlaceholder(),
+    Object? isCopy = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterStatValue(
       statUuid: statUuid == const $CopyWithPlaceholder()
@@ -484,6 +491,10 @@ class _$RpgCharacterStatValueCWProxyImpl
           ? _value.hideLabelOfStat
           // ignore: cast_nullable_to_non_nullable
           : hideLabelOfStat as bool?,
+      isCopy: isCopy == const $CopyWithPlaceholder()
+          ? _value.isCopy
+          // ignore: cast_nullable_to_non_nullable
+          : isCopy as bool?,
     );
   }
 }
@@ -669,6 +680,7 @@ RpgCharacterStatValue _$RpgCharacterStatValueFromJson(
       hideFromCharacterScreen: json['hideFromCharacterScreen'] as bool?,
       variant: (json['variant'] as num?)?.toInt(),
       hideLabelOfStat: json['hideLabelOfStat'] as bool?,
+      isCopy: json['isCopy'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$RpgCharacterStatValueToJson(
@@ -679,6 +691,7 @@ Map<String, dynamic> _$RpgCharacterStatValueToJson(
       'hideFromCharacterScreen': instance.hideFromCharacterScreen,
       'hideLabelOfStat': instance.hideLabelOfStat,
       'variant': instance.variant,
+      'isCopy': instance.isCopy,
     };
 
 RpgCharacterOwnedItemPair _$RpgCharacterOwnedItemPairFromJson(

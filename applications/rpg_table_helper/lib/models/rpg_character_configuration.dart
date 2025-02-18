@@ -347,6 +347,7 @@ class RpgCharacterStatValue {
   final bool? hideFromCharacterScreen;
   final bool? hideLabelOfStat;
   final int? variant;
+  final bool? isCopy;
 
   factory RpgCharacterStatValue.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterStatValueFromJson(json);
@@ -357,6 +358,7 @@ class RpgCharacterStatValue {
     required this.hideFromCharacterScreen,
     required this.variant,
     required this.hideLabelOfStat,
+    this.isCopy = false,
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterStatValueToJson(this);

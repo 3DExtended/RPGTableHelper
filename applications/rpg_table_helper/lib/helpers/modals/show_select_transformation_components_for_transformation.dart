@@ -1,6 +1,9 @@
 // cannot figure out how to fix the canLaunch stuff in here...
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_button.dart';
@@ -8,10 +11,12 @@ import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:uuid/v7.dart';
 
 Future<RpgAlternateCharacterConfiguration?>
     showSelectTransformationComponentsForTransformation(
@@ -217,27 +222,95 @@ class _SelectTransformationComponentsForTransformationModalContentState
                                         true &&
                                     _selectedTransformationUuid.isNotEmpty
                                 ? () {
+                                    if (widget.rpgConfig
+                                            .characterStatTabsDefinition ==
+                                        null) return;
+
+                                    var statsForTransformations =
+                                        _selectedTransformationUuid
+                                            .map((e) => widget.rpgCharConfig
+                                                .transformationComponents
+                                                ?.firstWhere((element) =>
+                                                    element
+                                                        .transformationUuid ==
+                                                    e.transformationUuid)
+                                                .transformationStats)
+                                            .expand((element) => element!)
+                                            .toList();
+
+                                    // caluclate the merge of stats by their id
+                                    var groupedByStatId =
+                                        statsForTransformations.groupFoldBy<
+                                                String,
+                                                List<RpgCharacterStatValue>>(
+                                            (element) => element.statUuid,
+                                            (a, b) =>
+                                                a == null ? [b] : [...a, b]);
+
+                                    var groupedByStatIdWithStatDefs =
+                                        groupedByStatId.entries.map((entry) {
+                                      var statDef = widget.rpgConfig
+                                          .characterStatTabsDefinition!
+                                          .expand((e) => e.statsInTab)
+                                          .firstWhere((element) =>
+                                              element.statUuid == entry.key);
+                                      return (
+                                        key: entry.key,
+                                        statDef: statDef,
+                                        values: entry.value,
+                                      );
+                                    }).toList();
+
+                                    print(groupedByStatIdWithStatDefs);
+                                    List<RpgCharacterStatValue> mergedStats =
+                                        [];
+                                    for (var entry
+                                        in groupedByStatIdWithStatDefs) {
+                                      var currentStatToMerge =
+                                          entry.values.first;
+
+                                      var statDef = entry.statDef;
+                                      var otherValuesToMerge =
+                                          entry.values.skip(1).toList();
+
+                                      for (var value in otherValuesToMerge) {
+                                        currentStatToMerge =
+                                            mergeStatIntoOtherStat(
+                                                currentStatToMerge,
+                                                value,
+                                                statDef);
+                                      }
+
+                                      mergedStats.add(currentStatToMerge);
+                                    }
+
+                                    // find missing stats on main character and add them to stats list (maybe marking them as "copy")
+                                    var missingStats = widget
+                                        .rpgCharConfig.characterStats
+                                        .where((element) => !mergedStats.any(
+                                            (e) =>
+                                                e.statUuid == element.statUuid))
+                                        .map((e) => e.copyWith(
+                                            statUuid: e.statUuid,
+                                            serializedValue: e.serializedValue,
+                                            isCopy: true))
+                                        .toList();
+
+                                    mergedStats.addAll(missingStats);
+
                                     // save transformation
                                     navigatorKey.currentState!.pop(
-                                        // TODO create result object
-
-                                        // RpgAlternateCharacterConfiguration(
-                                        //   uuid: UuidV7().generate(),
-                                        //   characterName: widget
-                                        //       .characterToRenderStatFor!
-                                        //       .transformationComponents!
-                                        //       .first
-                                        //       .transformationName,
-                                        //   characterStats: widget
-                                        //       .characterToRenderStatFor!
-                                        //       .transformationComponents!
-                                        //       .first
-                                        //       .transformationStats,
-                                        //   transformationComponents: null,
-                                        //   alternateForm: null,
-                                        //   isAlternateFormActive: null,
-                                        // ),
-                                        );
+                                      // create a new RpgAlternateCharacterConfiguration from those stats
+                                      RpgAlternateCharacterConfiguration(
+                                        uuid: UuidV7().generate(),
+                                        characterName: widget.rpgCharConfig
+                                            .characterName, // TODO this should be configurable through the user while choosing the transformations
+                                        characterStats: mergedStats,
+                                        transformationComponents: null,
+                                        alternateForm: null,
+                                        isAlternateFormActive: null,
+                                      ),
+                                    );
                                   }
                                 : null,
                           ),
@@ -253,6 +326,156 @@ class _SelectTransformationComponentsForTransformationModalContentState
         ),
       ),
     );
+  }
+
+  RpgCharacterStatValue mergeStatIntoOtherStat(
+      RpgCharacterStatValue currentStatToMerge,
+      RpgCharacterStatValue value,
+      CharacterStatDefinition statDef) {
+    var currentStatValueToMergeInto =
+        jsonDecode(currentStatToMerge.serializedValue);
+    var valueToMerge = jsonDecode(value.serializedValue);
+
+    switch (statDef.valueType) {
+      // {"value": "asdf"}
+      case CharacterStatValueType.multiLineText:
+        currentStatValueToMergeInto["value"] =
+            currentStatValueToMergeInto["value"] + "\n" + valueToMerge["value"];
+
+      // {"value": "asdf"}
+      case CharacterStatValueType.singleLineText:
+        currentStatValueToMergeInto["value"] =
+            currentStatValueToMergeInto["value"] + ", " + valueToMerge["value"];
+
+        break;
+
+      // {"value": 17}
+      case CharacterStatValueType.int:
+        currentStatValueToMergeInto["value"] =
+            int.parse(currentStatValueToMergeInto["value"].toString()) +
+                int.parse(valueToMerge["value"].toString());
+
+        break;
+
+      // {"value": 12, "otherValue": 2}
+      case CharacterStatValueType.intWithCalculatedValue:
+        currentStatValueToMergeInto["value"] =
+            int.parse(currentStatValueToMergeInto["value"].toString()) +
+                int.parse(valueToMerge["value"].toString());
+
+        currentStatValueToMergeInto["otherValue"] =
+            int.parse(currentStatValueToMergeInto["otherValue"].toString()) +
+                int.parse(valueToMerge["otherValue"].toString());
+
+        break;
+
+      // {"value": 12, "maxValue": 17}
+      case CharacterStatValueType.intWithMaxValue:
+        currentStatValueToMergeInto["value"] =
+            int.parse(currentStatValueToMergeInto["value"].toString()) +
+                int.parse(valueToMerge["value"].toString());
+
+        currentStatValueToMergeInto["maxValue"] =
+            int.parse(currentStatValueToMergeInto["maxValue"].toString()) +
+                int.parse(valueToMerge["maxValue"].toString());
+
+        break;
+
+      // {"values":[{"uuid":"theCorrespondingUuidOfTheCompanionCharacter"}]}
+      case CharacterStatValueType.companionSelector:
+        currentStatValueToMergeInto["values"] = [
+          ...currentStatValueToMergeInto["values"],
+          ...valueToMerge["values"]
+        ]
+            .distinct<String>(
+                by: (e) => (e as Map<String, dynamic>)["uuid"] as String)
+            .toList();
+        break;
+
+      // {"level": 12, "values":[{"uuid":"5f515750-0456-41e7-a1ee-97acb30c25c0", "value": "asdf"}]}
+      case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+        currentStatValueToMergeInto["level"] =
+            int.parse(currentStatValueToMergeInto["level"].toString()) +
+                int.parse(valueToMerge["level"]);
+
+        // merge "values" array by matching uuids and joining the values
+        var valuesToMerge = valueToMerge["values"];
+        for (var valueToMerge in valuesToMerge) {
+          var matchingValue = currentStatValueToMergeInto["values"]
+              .firstWhereOrNull(
+                  (element) => element["uuid"] == valueToMerge["uuid"]);
+          if (matchingValue != null) {
+            matchingValue["value"] =
+                matchingValue["value"] + ", " + valueToMerge["value"];
+          } else {
+            currentStatValueToMergeInto["values"].add(valueToMerge);
+          }
+        }
+        break;
+
+      // {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12,}]}
+      case CharacterStatValueType.listOfIntsWithIcons:
+        // merge "values" array by matching uuids and joining the values
+        var valuesToMerge = valueToMerge["values"];
+        for (var valueToMerge in valuesToMerge) {
+          var matchingValue =
+              (currentStatValueToMergeInto["values"] as List<dynamic>)
+                  .map((e) => e as Map<String, dynamic>)
+                  .firstWhereOrNull(
+                      (element) => element["uuid"] == valueToMerge["uuid"]);
+          if (matchingValue != null) {
+            matchingValue["value"] =
+                int.parse(matchingValue["value"].toString()) +
+                    int.parse(valueToMerge["value"].toString());
+          } else {
+            currentStatValueToMergeInto["values"].add(valueToMerge);
+          }
+        }
+        break;
+
+      // {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
+      case CharacterStatValueType.listOfIntWithCalculatedValues:
+        // merge "values" array by matching uuids and adding value and othervalue respectively
+        var valuesToMerge = valueToMerge["values"];
+        for (var valueToMerge in valuesToMerge) {
+          var matchingValue = currentStatValueToMergeInto["values"]
+              .firstWhereOrNull(
+                  (element) => element["uuid"] == valueToMerge["uuid"]);
+          if (matchingValue != null) {
+            matchingValue["value"] =
+                int.parse(matchingValue["value"].toString()) +
+                    int.parse(valueToMerge["value"].toString());
+
+            matchingValue["otherValue"] =
+                int.parse(matchingValue["otherValue"].toString()) +
+                    int.parse(valueToMerge["otherValue"].toString());
+          } else {
+            currentStatValueToMergeInto["values"].add(valueToMerge);
+          }
+        }
+        break;
+
+      // {"values": ["3a7fd649-2d76-4a93-8513-d5a8e8249b40", "3a7fd649-2d76-4a93-8513-d5a8e8249b42"]}
+      case CharacterStatValueType.multiselect:
+        currentStatValueToMergeInto["values"] = [
+          ...currentStatValueToMergeInto["values"],
+          ...valueToMerge["values"]
+        ];
+        break;
+
+      case CharacterStatValueType.singleImage:
+        // TODO maybe show an info message to the user (or create a new image by merging the two images)
+        // currently, we dont merge images and just keep the first one
+        break;
+
+      // never merge...
+      case CharacterStatValueType.transformIntoAlternateFormBtn:
+        break;
+    }
+
+    currentStatToMerge = currentStatToMerge.copyWith(
+        serializedValue: jsonEncode(currentStatValueToMergeInto));
+    return currentStatToMerge;
   }
 
   Navbar getNavbar(BuildContext context) {

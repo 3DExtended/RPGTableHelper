@@ -795,8 +795,8 @@ class _PlayerStatsConfigurationVisualsState
                   "value": e.valueTextController.text,
                 })
             .toList();
-    // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
 
+    // => RpgCharacterStatValue.serializedValue == {"level": 12, "values":[{"uuid":"5f515750-0456-41e7-a1ee-97acb30c25c0", "value": 12}]}
     var foundLevel = listOfSingleValueOptions
         .firstWhereOrNull((t) => t.uuid.isEmpty)
         ?.valueTextController
