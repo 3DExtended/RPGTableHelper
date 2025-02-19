@@ -2079,6 +2079,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Transformation is edited`
+  String get transformationIsEditedWarningTitle {
+    return Intl.message(
+      'Transformation is edited',
+      name: 'transformationIsEditedWarningTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Property is copied`
+  String get propertyIsCopied {
+    return Intl.message(
+      'Property is copied',
+      name: 'propertyIsCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are editing a copied property. Changes will not affect the original property.`
+  String get youAreEditingACopiedPropertyChangesWillNotAffect {
+    return Intl.message(
+      'You are editing a copied property. Changes will not affect the original property.',
+      name: 'youAreEditingACopiedPropertyChangesWillNotAffect',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

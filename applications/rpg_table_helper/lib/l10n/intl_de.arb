@@ -241,5 +241,8 @@
     "back": "Zurück",
     "next": "Weiter",
     "warning": "Warnung",
-    "youAreEditingAnAlternateFormWarningText": "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."
+    "youAreEditingAnAlternateFormWarningText": "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
+    "transformationIsEditedWarningTitle": "Verwandlung wird bearbeitet",
+    "propertyIsCopied": "Eigenschaft wurde kopiert",
+    "youAreEditingACopiedPropertyChangesWillNotAffect": "Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf die Basis-Eigenschaft übertragen."
 }

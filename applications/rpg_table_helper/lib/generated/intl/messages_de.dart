@@ -304,6 +304,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Häufig verändert (bspw. jede Session)"),
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Selten verändert (bspw. je Level-Up)"),
+        "propertyIsCopied":
+            MessageLookupByLibrary.simpleMessage("Eigenschaft wurde kopiert"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
         "receivedItemsModalHeader":
             MessageLookupByLibrary.simpleMessage("Neue Items"),
@@ -357,6 +359,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Verwandeln in eine andere Form"),
         "transformationDescription":
             MessageLookupByLibrary.simpleMessage("Beschreibung"),
+        "transformationIsEditedWarningTitle":
+            MessageLookupByLibrary.simpleMessage("Verwandlung wird bearbeitet"),
         "transformationName":
             MessageLookupByLibrary.simpleMessage("Verwandlungsname"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
@@ -364,6 +368,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "valueOfPropertyWithName": m2,
         "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
         "you": MessageLookupByLibrary.simpleMessage("Du"),
+        "youAreEditingACopiedPropertyChangesWillNotAffect":
+            MessageLookupByLibrary.simpleMessage(
+                "Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf die Basis-Eigenschaft übertragen."),
         "youAreEditingAnAlternateFormWarningText":
             MessageLookupByLibrary.simpleMessage(
                 "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."),

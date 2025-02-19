@@ -39,6 +39,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
           hideVariantSelection: hideVariantSelection,
           hideAdditionalSetting: hideAdditionalSetting,
           isEditingAlternateForm: isEditingAlternateForm,
+          isStatCopied: characterValue?.isCopy ?? false,
         );
       });
 }
@@ -50,6 +51,7 @@ class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
     required this.characterName,
     required this.characterToRenderStatFor,
     required this.isEditingAlternateForm,
+    required this.isStatCopied,
     this.characterValue,
     this.overrideNavigatorKey,
     this.hideVariantSelection = false,
@@ -57,6 +59,7 @@ class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
   });
 
   final bool isEditingAlternateForm;
+  final bool isStatCopied;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
   final bool hideVariantSelection;
   final bool hideAdditionalSetting;
@@ -96,48 +99,23 @@ class _ShowGetPlayerConfigurationModalContentState
       },
       child: Column(
         children: [
-          if (widget.isEditingAlternateForm == true)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          FontAwesomeIcons.exclamation,
-                          color: darkTextColor,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          S.of(context).warning,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: darkTextColor,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      S.of(context).youAreEditingAnAlternateFormWarningText,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: darkTextColor,
-                            fontSize: 16,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          if (widget.isStatCopied == true)
+            Builder(builder: (context) {
+              return WarningBox(
+                  warningTitle: S.of(context).propertyIsCopied,
+                  warningText: S
+                      .of(context)
+                      .youAreEditingACopiedPropertyChangesWillNotAffect);
+            }),
+          if (widget.isEditingAlternateForm == true &&
+              widget.isStatCopied == false)
+            Builder(builder: (context) {
+              return WarningBox(
+                  warningTitle:
+                      S.of(context).transformationIsEditedWarningTitle,
+                  warningText:
+                      S.of(context).youAreEditingAnAlternateFormWarningText);
+            }),
           PlayerStatsConfigurationVisuals(
             statConfiguration: widget.statConfiguration,
             characterValue: widget.characterValue,
@@ -150,6 +128,61 @@ class _ShowGetPlayerConfigurationModalContentState
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class WarningBox extends StatelessWidget {
+  const WarningBox({
+    super.key,
+    required this.warningTitle,
+    required this.warningText,
+  });
+
+  final String warningTitle;
+  final String warningText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: accentColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  FontAwesomeIcons.exclamation,
+                  color: darkTextColor,
+                  size: 24,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  warningTitle,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: darkTextColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              warningText,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: darkTextColor,
+                    fontSize: 16,
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }

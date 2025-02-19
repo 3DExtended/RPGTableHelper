@@ -296,6 +296,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Frequently changed (e.g. every session)"),
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Rarely changed (e.g. per level-up)"),
+        "propertyIsCopied":
+            MessageLookupByLibrary.simpleMessage("Property is copied"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
         "receivedItemsModalHeader":
             MessageLookupByLibrary.simpleMessage("Received items"),
@@ -348,6 +350,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Transform into alternate form"),
         "transformationDescription":
             MessageLookupByLibrary.simpleMessage("Transformation description"),
+        "transformationIsEditedWarningTitle":
+            MessageLookupByLibrary.simpleMessage("Transformation is edited"),
         "transformationName":
             MessageLookupByLibrary.simpleMessage("Transformation name"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
@@ -355,6 +359,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "valueOfPropertyWithName": m2,
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "you": MessageLookupByLibrary.simpleMessage("You"),
+        "youAreEditingACopiedPropertyChangesWillNotAffect":
+            MessageLookupByLibrary.simpleMessage(
+                "You are editing a copied property. Changes will not affect the original property."),
         "youAreEditingAnAlternateFormWarningText":
             MessageLookupByLibrary.simpleMessage(
                 "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation."),
