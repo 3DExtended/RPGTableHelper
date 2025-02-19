@@ -352,6 +352,12 @@ class _PlayerStatsConfigurationVisualsState
     });
   }
 
+  bool get showPreview =>
+      (showTransformationConfiguration ||
+          widget.statConfiguration.valueType !=
+              CharacterStatValueType.transformIntoAlternateFormBtn) &&
+      !widget.hideVariantSelection;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -416,89 +422,89 @@ class _PlayerStatsConfigurationVisualsState
         // additional settings
         if (!widget.hideAdditionalSetting) getAdditionalSettingsTile(),
 
-        if (!widget.hideVariantSelection)
-          SizedBox(
-            height: 10,
-          ),
-        if (!widget.hideVariantSelection)
-          HorizontalLine(
-            useDarkColor: true,
-          ),
-        if (!widget.hideVariantSelection)
-          SizedBox(
-            height: 10,
-          ),
-        if (!widget.hideVariantSelection)
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "${S.of(context).preview}:",
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: darkTextColor,
-                    fontSize: 24,
-                  ),
-            ),
-          ),
-        if (!widget.hideVariantSelection)
-          SizedBox(
-            height: 10,
-          ),
-        if (!widget.hideVariantSelection)
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            child: PageViewDotIndicator(
-              currentItem: currentlyVisibleVariant,
-              count: numberOfVariantsForValueTypes(
-                  widget.statConfiguration.valueType),
-              unselectedColor: Colors.black26,
-              selectedColor: Colors.blue,
-              duration: const Duration(milliseconds: 200),
-              boxShape: BoxShape.circle,
-              unselectedSize: Size(6, 6),
-              size: Size(6, 6),
-            ),
-          ),
-        if (!widget.hideVariantSelection)
-          SizedBox(
-            height: 400,
-            child: PageView(
-                controller: pageController,
-                children: List.generate(
-                  numberOfVariantsForValueTypes(
-                      widget.statConfiguration.valueType),
-                  (index) {
-                    var statValue =
-                        getCurrentStatValueOrDefault().copyWith(variant: index);
-                    return Align(
-                      key: ValueKey(statValue),
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        // decoration: BoxDecoration(
-                        //     border: Border.all(color: darkTextColor),
-                        //     borderRadius: BorderRadius.circular(5)),
-                        padding: EdgeInsets.all(10),
-                        child: getPlayerVisualizationWidget(
-                            characterToRenderStatFor:
-                                widget.characterToRenderStatFor,
-                            onNewStatValue: (newSerializedValue) {
-                              // The player should not be allowed to edit their character from the preview and hence we ignore this callback
-                            },
-                            context: context,
-                            statConfiguration: widget.statConfiguration,
-                            characterValue: statValue,
-                            characterName:
-                                widget.characterName ?? "Player Name"),
-                      ),
-                    );
-                  },
+        if (showPreview) getPreviewAndVariantSelector(context),
+      ],
+    );
+  }
+
+  Column getPreviewAndVariantSelector(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 10,
+        ),
+        HorizontalLine(
+          useDarkColor: true,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Text(
+            "${S.of(context).preview}:",
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: darkTextColor,
+                  fontSize: 24,
                 ),
-                onPageChanged: (value) {
-                  setState(() {
-                    currentlyVisibleVariant = value;
-                    onChanged();
-                  });
-                }),
           ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+          child: PageViewDotIndicator(
+            currentItem: currentlyVisibleVariant,
+            count: numberOfVariantsForValueTypes(
+                widget.statConfiguration.valueType),
+            unselectedColor: Colors.black26,
+            selectedColor: Colors.blue,
+            duration: const Duration(milliseconds: 200),
+            boxShape: BoxShape.circle,
+            unselectedSize: Size(6, 6),
+            size: Size(6, 6),
+          ),
+        ),
+        SizedBox(
+          height: 400,
+          child: PageView(
+              controller: pageController,
+              children: List.generate(
+                numberOfVariantsForValueTypes(
+                    widget.statConfiguration.valueType),
+                (index) {
+                  var statValue =
+                      getCurrentStatValueOrDefault().copyWith(variant: index);
+                  return Align(
+                    key: ValueKey(statValue),
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      // decoration: BoxDecoration(
+                      //     border: Border.all(color: darkTextColor),
+                      //     borderRadius: BorderRadius.circular(5)),
+                      padding: EdgeInsets.all(10),
+                      child: getPlayerVisualizationWidget(
+                          characterToRenderStatFor:
+                              widget.characterToRenderStatFor,
+                          onNewStatValue: (newSerializedValue) {
+                            // The player should not be allowed to edit their character from the preview and hence we ignore this callback
+                          },
+                          context: context,
+                          statConfiguration: widget.statConfiguration,
+                          characterValue: statValue,
+                          characterName: widget.characterName ?? "Player Name"),
+                    ),
+                  );
+                },
+              ),
+              onPageChanged: (value) {
+                setState(() {
+                  currentlyVisibleVariant = value;
+                  onChanged();
+                });
+              }),
+        ),
       ],
     );
   }
@@ -1279,6 +1285,7 @@ class _PlayerStatsConfigurationVisualsState
     );
   }
 
+  bool showTransformationConfiguration = false;
   Widget getConfigurationWidgetsForTransformIntoAlternateFormBtn() {
     var statTitle = widget.statConfiguration.name;
     var statDescription = widget.statConfiguration.helperText;
@@ -1301,146 +1308,192 @@ class _PlayerStatsConfigurationVisualsState
             height: 20,
           ),
 
-          ...configuredTransformationComponents.map(
-            (e) => Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        e.transformationName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(color: darkTextColor, fontSize: 16),
-                      ),
-                      Text(
-                        e.transformationDescription ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(color: darkTextColor, fontSize: 12),
-                      ),
-                    ],
-                  ),
+          CupertinoSlidingSegmentedControl<bool>(
+            backgroundColor: middleBgColor,
+            thumbColor: darkColor,
+            // This represents the currently selected segmented control.
+            groupValue: showTransformationConfiguration,
+            // Callback that sets the selected segmented control.
+            onValueChanged: (bool? value) {
+              if (value != null) {
+                setState(() {
+                  showTransformationConfiguration = value;
+                });
+              }
+            },
+            children: <bool, Widget>{
+              false: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text(
+                  S.of(context).no,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 16,
+                      color: showTransformationConfiguration == false
+                          ? textColor
+                          : darkTextColor),
                 ),
-                Container(
-                  height: 50,
-                  width: 70,
-                  clipBehavior: Clip.none,
-                  child: CustomButton(
-                    variant: CustomButtonVariant.FlatButton,
-                    onPressed: () async {
-                      // open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
-                      TransformationComponent? modifiedTransformationComponent =
-                          await showCreateNewCharacterTransformationWizard(
-                              context,
-                              existingTransformationComponents: e);
-                      if (modifiedTransformationComponent == null) return;
-
-                      // use this here: rpgConfig
-                      var newestCharacter = ref
-                          .read(rpgCharacterConfigurationProvider)
-                          .requireValue;
-                      var listOfTransformations =
-                          (newestCharacter.transformationComponents ?? []);
-
-                      var indexOfElement = listOfTransformations.indexWhere(
-                          (element) =>
-                              element.transformationUuid ==
-                              e.transformationUuid);
-
-                      if (indexOfElement == -1) return;
-
-                      listOfTransformations[indexOfElement] =
-                          modifiedTransformationComponent;
-
-                      ref
-                          .read(rpgCharacterConfigurationProvider.notifier)
-                          .updateConfiguration(newestCharacter
-                              .copyWith(transformationComponents: [
-                            ...listOfTransformations,
-                          ]));
-
-                      setState(() {
-                        onChanged();
-                      });
-                    },
-                    icon: const CustomFaIcon(
-                      icon: FontAwesomeIcons.penToSquare,
-                      size: 24,
-                      color: darkColor,
-                    ),
-                  ),
+              ),
+              true: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text(
+                  S.of(context).yes,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 16,
+                      color: showTransformationConfiguration == true
+                          ? textColor
+                          : darkTextColor),
                 ),
-                Container(
-                  height: 50,
-                  width: 70,
-                  clipBehavior: Clip.none,
-                  child: CustomButton(
-                    variant: CustomButtonVariant.FlatButton,
-                    onPressed: () {
-                      // update rpg char config
-                      var newestCharacter = ref
-                          .read(rpgCharacterConfigurationProvider)
-                          .requireValue;
-                      ref
-                          .read(rpgCharacterConfigurationProvider.notifier)
-                          .updateConfiguration(newestCharacter.copyWith(
-                              transformationComponents: newestCharacter
-                                  .transformationComponents
-                                  ?.where((element) =>
-                                      element.transformationUuid !=
-                                      e.transformationUuid)
-                                  .toList()));
-                      setState(() {
-                        onChanged();
-                      });
-                    },
-                    icon: const CustomFaIcon(
-                      icon: FontAwesomeIcons.trashCan,
-                      size: 24,
-                      color: darkColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            },
           ),
 
           SizedBox(
             height: 20,
           ),
 
+          if (showTransformationConfiguration)
+            ...configuredTransformationComponents.map(
+              (e) => Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          e.transformationName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(color: darkTextColor, fontSize: 16),
+                        ),
+                        Text(
+                          e.transformationDescription ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium!
+                              .copyWith(color: darkTextColor, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 70,
+                    clipBehavior: Clip.none,
+                    child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
+                      onPressed: () async {
+                        // open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
+                        TransformationComponent?
+                            modifiedTransformationComponent =
+                            await showCreateNewCharacterTransformationWizard(
+                                context,
+                                existingTransformationComponents: e);
+                        if (modifiedTransformationComponent == null) return;
+
+                        // use this here: rpgConfig
+                        var newestCharacter = ref
+                            .read(rpgCharacterConfigurationProvider)
+                            .requireValue;
+                        var listOfTransformations =
+                            (newestCharacter.transformationComponents ?? []);
+
+                        var indexOfElement = listOfTransformations.indexWhere(
+                            (element) =>
+                                element.transformationUuid ==
+                                e.transformationUuid);
+
+                        if (indexOfElement == -1) return;
+
+                        listOfTransformations[indexOfElement] =
+                            modifiedTransformationComponent;
+
+                        ref
+                            .read(rpgCharacterConfigurationProvider.notifier)
+                            .updateConfiguration(newestCharacter
+                                .copyWith(transformationComponents: [
+                              ...listOfTransformations,
+                            ]));
+
+                        setState(() {
+                          onChanged();
+                        });
+                      },
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.penToSquare,
+                        size: 24,
+                        color: darkColor,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 70,
+                    clipBehavior: Clip.none,
+                    child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
+                      onPressed: () {
+                        // update rpg char config
+                        var newestCharacter = ref
+                            .read(rpgCharacterConfigurationProvider)
+                            .requireValue;
+                        ref
+                            .read(rpgCharacterConfigurationProvider.notifier)
+                            .updateConfiguration(newestCharacter.copyWith(
+                                transformationComponents: newestCharacter
+                                    .transformationComponents
+                                    ?.where((element) =>
+                                        element.transformationUuid !=
+                                        e.transformationUuid)
+                                    .toList()));
+                        setState(() {
+                          onChanged();
+                        });
+                      },
+                      icon: const CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        size: 24,
+                        color: darkColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          if (showTransformationConfiguration)
+            SizedBox(
+              height: 20,
+            ),
+
           // Add new transformation component to character
-          CustomButton(
-            onPressed: () async {
-              // open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
-              TransformationComponent? newTransformationComponent =
-                  await showCreateNewCharacterTransformationWizard(context,
-                      existingTransformationComponents: null);
-              if (newTransformationComponent == null) return;
+          if (showTransformationConfiguration)
+            CustomButton(
+              onPressed: () async {
+                // open modal, ask player which stats are updated/changed through this transformation, add those stats to configuration and add to char config
+                TransformationComponent? newTransformationComponent =
+                    await showCreateNewCharacterTransformationWizard(context,
+                        existingTransformationComponents: null);
+                if (newTransformationComponent == null) return;
 
-              // use this here: rpgConfig
-              var newestCharacter =
-                  ref.read(rpgCharacterConfigurationProvider).requireValue;
+                // use this here: rpgConfig
+                var newestCharacter =
+                    ref.read(rpgCharacterConfigurationProvider).requireValue;
 
-              ref
-                  .read(rpgCharacterConfigurationProvider.notifier)
-                  .updateConfiguration(
-                      newestCharacter.copyWith(transformationComponents: [
-                    ...(newestCharacter.transformationComponents ?? []),
-                    newTransformationComponent,
-                  ]));
-              setState(() {
-                onChanged();
-              });
-            },
-            label: S.of(context).addNewTransformationComponent,
-            variant: CustomButtonVariant.AccentButton,
-          )
+                ref
+                    .read(rpgCharacterConfigurationProvider.notifier)
+                    .updateConfiguration(
+                        newestCharacter.copyWith(transformationComponents: [
+                      ...(newestCharacter.transformationComponents ?? []),
+                      newTransformationComponent,
+                    ]));
+                setState(() {
+                  onChanged();
+                });
+              },
+              label: S.of(context).addNewTransformationComponent,
+              variant: CustomButtonVariant.AccentButton,
+            )
         ],
       ),
     );

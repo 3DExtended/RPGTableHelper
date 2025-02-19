@@ -241,8 +241,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("New property"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("New tab"),
         "newTransformationSelectionBtn":
-            MessageLookupByLibrary.simpleMessage("Neue Gestalt"),
+            MessageLookupByLibrary.simpleMessage("New transformation"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
+        "no": MessageLookupByLibrary.simpleMessage("No"),
         "noFIghtStarted":
             MessageLookupByLibrary.simpleMessage("No fight started yet"),
         "noItemsGranted":
@@ -293,7 +294,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "playerRolls": MessageLookupByLibrary.simpleMessage("Player rolls"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "previousTransformationSelectionBtn":
-            MessageLookupByLibrary.simpleMessage("Alte Gestalt"),
+            MessageLookupByLibrary.simpleMessage("Previous transformation"),
         "propertyEditTypeLabel":
             MessageLookupByLibrary.simpleMessage("Change frequency"),
         "propertyEditTypeOneTap": MessageLookupByLibrary.simpleMessage(
@@ -362,6 +363,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m2,
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "yes": MessageLookupByLibrary.simpleMessage("Yes"),
         "you": MessageLookupByLibrary.simpleMessage("You"),
         "youAreEditingACopiedPropertyChangesWillNotAffect":
             MessageLookupByLibrary.simpleMessage(

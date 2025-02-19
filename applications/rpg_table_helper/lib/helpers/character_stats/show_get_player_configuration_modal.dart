@@ -101,11 +101,15 @@ class _ShowGetPlayerConfigurationModalContentState
         children: [
           if (widget.isStatCopied == true)
             Builder(builder: (context) {
-              return WarningBox(
-                  warningTitle: S.of(context).propertyIsCopied,
-                  warningText: S
-                      .of(context)
-                      .youAreEditingACopiedPropertyChangesWillNotAffect);
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                child: WarningBox(
+                    warningTitle: S.of(context).propertyIsCopied,
+                    warningText: S
+                        .of(context)
+                        .youAreEditingACopiedPropertyChangesWillNotAffect),
+              );
             }),
           if (widget.isEditingAlternateForm == true &&
               widget.isStatCopied == false)
@@ -153,6 +157,7 @@ class WarningBox extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [

@@ -251,6 +251,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newTransformationSelectionBtn":
             MessageLookupByLibrary.simpleMessage("Neue Gestalt"),
         "next": MessageLookupByLibrary.simpleMessage("Weiter"),
+        "no": MessageLookupByLibrary.simpleMessage("Nein"),
         "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
             "Aktuell kein Kampf gestartet"),
         "noItemsGranted": MessageLookupByLibrary.simpleMessage(
@@ -371,6 +372,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
         "valueOfPropertyWithName": m2,
         "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
+        "yes": MessageLookupByLibrary.simpleMessage("Ja"),
         "you": MessageLookupByLibrary.simpleMessage("Du"),
         "youAreEditingACopiedPropertyChangesWillNotAffect":
             MessageLookupByLibrary.simpleMessage(

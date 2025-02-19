@@ -4,9 +4,6 @@ A new Flutter project.
 
 ## TODOs
 
-- [ ] Hinweis (mit möglichkeit "nicht mehr anziegen") für: eigenschaften die nicht überschrieben wurden werden aus main char übernommen, können jedoch aber nicht während einer verwandlung verändert werden
-- [ ] Ja/Nein Knopf einbauen, ob charakter sich überhaupt verwandeln kann
-
 - [ ] DM cant delete items or recipes
 - [ ] Add character screens
 - [ ] Every delete icon should result in an "Are you sure" modal...

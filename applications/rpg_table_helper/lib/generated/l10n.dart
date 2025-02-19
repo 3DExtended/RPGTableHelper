@@ -2110,21 +2110,41 @@ class S {
     );
   }
 
-  /// `Alte Gestalt`
+  /// `Previous transformation`
   String get previousTransformationSelectionBtn {
     return Intl.message(
-      'Alte Gestalt',
+      'Previous transformation',
       name: 'previousTransformationSelectionBtn',
       desc: '',
       args: [],
     );
   }
 
-  /// `Neue Gestalt`
+  /// `New transformation`
   String get newTransformationSelectionBtn {
     return Intl.message(
-      'Neue Gestalt',
+      'New transformation',
       name: 'newTransformationSelectionBtn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
       desc: '',
       args: [],
     );
