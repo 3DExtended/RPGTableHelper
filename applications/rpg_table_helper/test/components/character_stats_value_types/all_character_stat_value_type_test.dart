@@ -503,6 +503,94 @@ void main() {
         disableLocals: false,
         pathPrefix: "../",
         widgetName:
+            'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}_editAlternate',
+        useMaterialAppWrapper: false,
+        testerInteractions: (tester, local) async {
+          await tester.tap(find.byType(ElevatedButton));
+          await tester.pumpAndSettle();
+          await loadAppFonts();
+          await loadAppFonts();
+          await tester.pumpAndSettle();
+          await loadAppFonts();
+          await tester.pumpAndSettle();
+        },
+        screenFactory: (Locale locale) => ProviderScope(
+          overrides: [
+            rpgCharacterConfigurationProvider.overrideWith((ref) {
+              return RpgCharacterConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgCharacterConfiguration.getBaseConfiguration(null),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+            rpgConfigurationProvider.overrideWith((ref) {
+              return RpgConfigurationNotifier(
+                decks: AsyncValue.data(
+                  RpgConfigurationModel.getBaseConfiguration(),
+                ),
+                ref: ref,
+                runningInTests: true,
+              );
+            }),
+          ],
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Roboto',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              home: Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: Builder(builder: (context) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        await showGetPlayerConfigurationModal(
+                            characterToRenderStatFor:
+                                RpgCharacterConfiguration.getBaseConfiguration(
+                                    RpgConfigurationModel
+                                        .getBaseConfiguration()),
+                            context: context,
+                            statConfiguration: testConfiguration.$2,
+                            isEditingAlternateForm: true,
+                            characterValue: testConfiguration.$3,
+                            characterName: "Frodo",
+                            overrideNavigatorKey: navigatorKey);
+                      },
+                      child: const Text("Click me"));
+                }),
+              )),
+        ),
+        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+          MapEntry(
+            'default',
+            DependencyProvider.getMockedDependecyProvider(
+              child: widgetToTest,
+            ),
+          ),
+        ]),
+      );
+
+      testConfigurations(
+        disableAllScreenSizes: true,
+        disableLocals: false,
+        pathPrefix: "../",
+        widgetName:
             'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}',
         useMaterialAppWrapper: false,
         testerInteractions: (tester, local) async {
@@ -567,6 +655,7 @@ void main() {
                                         .getBaseConfiguration()),
                             context: context,
                             statConfiguration: testConfiguration.$2,
+                            isEditingAlternateForm: false,
                             characterValue: testConfiguration.$3,
                             characterName: "Frodo",
                             overrideNavigatorKey: navigatorKey);
@@ -655,6 +744,7 @@ void main() {
                             context: context,
                             statConfiguration: testConfiguration.$2,
                             characterValue: null,
+                            isEditingAlternateForm: false,
                             characterName: "Frodo",
                             overrideNavigatorKey: navigatorKey);
                       },

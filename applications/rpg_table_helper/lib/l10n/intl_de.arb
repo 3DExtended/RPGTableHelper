@@ -239,5 +239,7 @@
     "transformationDescription": "Beschreibung",
     "createTransformationHelperText": "Um eine neue Transformation zu erstellen, musst du die Eigenschaften auswählen, die durch diese Verwandlung verändert werden. (Wenn die Eigenschaft nicht verändert wird, muss sie auch nicht ausgewählt werden.)",
     "back": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "warning": "Warnung",
+    "youAreEditingAnAlternateFormWarningText": "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."
 }

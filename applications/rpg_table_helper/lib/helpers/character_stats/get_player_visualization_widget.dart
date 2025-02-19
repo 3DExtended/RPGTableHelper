@@ -188,34 +188,11 @@ Widget renderTransformIntoAlternateFormBtn(
     BuildContext context,
     RpgCharacterConfiguration? characterToRenderStatFor,
     CharacterStatDefinition statConfiguration) {
-  // List<String> selectedCompanionIds =
-  //     (jsonDecode(characterValue.serializedValue)["values"] as List<dynamic>)
-  //         .map((e) => (e as Map<String, dynamic>)["uuid"] as String)
-  //         .toList();
-//
-  // List<
-  //     ({
-  //       String characterName,
-  //       String uuid,
-  //       String? imageUrl,
-  //       RpgAlternateCharacterConfiguration companionConfig
-  //     })> companionDetailsToRender = [];
-  // for (var selectedCompanionId in selectedCompanionIds) {
-  //   var companionOfCharacter =
-  //       (characterToRenderStatFor?.companionCharacters ?? [])
-  //           .firstWhereOrNull((c) => c.uuid == selectedCompanionId);
-  //   if (companionOfCharacter == null) continue;
-  //   // TODO search for image (still missing access to rpgconfig here...)
-  //   // TODO use this here: RenderCharactersAsCards.renderCharactersAsCharacterCard(context, charactersToRender, rpgConfig)
-  //   companionDetailsToRender.add((
-  //     characterName: companionOfCharacter.characterName,
-  //     uuid: companionOfCharacter.uuid,
-  //     imageUrl: null,
-  //     companionConfig: companionOfCharacter
-  //   ));
-  // }
-  // companionDetailsToRender =
-  //     companionDetailsToRender.sortedBy((k) => k.characterName);
+  if (characterToRenderStatFor == null ||
+      characterToRenderStatFor.transformationComponents == null ||
+      characterToRenderStatFor.transformationComponents!.isEmpty) {
+    return Container();
+  }
 
   return Column(
     children: [
@@ -269,6 +246,8 @@ class _CustomButtonTransformToAlternateFormState
               true) {
             var rpgConfig = ref.read(rpgConfigurationProvider).requireValue;
 
+            // TODO if there is already a alternate for stored, ask the user if they want to switch to it instead of creating a new one
+
             var selectedTransformationCharacter =
                 await showSelectTransformationComponentsForTransformation(
                     context,
@@ -307,7 +286,6 @@ class _CustomButtonTransformToAlternateFormState
                   .updateConfiguration(
                     charConfigToUpdate.copyWith(
                       isAlternateFormActive: false,
-                      alternateForm: null,
                     ),
                   );
             });

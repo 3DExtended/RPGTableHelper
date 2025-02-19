@@ -27,6 +27,7 @@ class DmPageHelpers {
         characterName: S.of(context).newCampaign,
         hideAdditionalSetting: true,
         hideVariantSelection: true,
+        isEditingAlternateForm: false,
         characterValue: currentCampagneName == null
             ? null
             : RpgCharacterStatValue(

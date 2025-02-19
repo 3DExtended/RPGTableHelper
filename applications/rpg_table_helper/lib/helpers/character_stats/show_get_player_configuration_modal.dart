@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
+import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/player_stats_configuration_visuals.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -18,6 +19,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   GlobalKey<NavigatorState>? overrideNavigatorKey,
   bool hideVariantSelection = false,
   bool hideAdditionalSetting = false,
+  required bool isEditingAlternateForm,
 }) async {
   return await customShowCupertinoModalBottomSheet<RpgCharacterStatValue>(
       isDismissible: true,
@@ -36,6 +38,7 @@ Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
           characterToRenderStatFor: characterToRenderStatFor,
           hideVariantSelection: hideVariantSelection,
           hideAdditionalSetting: hideAdditionalSetting,
+          isEditingAlternateForm: isEditingAlternateForm,
         );
       });
 }
@@ -46,12 +49,14 @@ class ShowGetPlayerConfigurationModalContent extends ConsumerStatefulWidget {
     required this.statConfiguration,
     required this.characterName,
     required this.characterToRenderStatFor,
+    required this.isEditingAlternateForm,
     this.characterValue,
     this.overrideNavigatorKey,
     this.hideVariantSelection = false,
     this.hideAdditionalSetting = false,
   });
 
+  final bool isEditingAlternateForm;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
   final bool hideVariantSelection;
   final bool hideAdditionalSetting;
@@ -89,16 +94,62 @@ class _ShowGetPlayerConfigurationModalContentState
       onSave: () {
         return Future.value(newestStatValue);
       },
-      child: PlayerStatsConfigurationVisuals(
-        statConfiguration: widget.statConfiguration,
-        characterValue: widget.characterValue,
-        characterName: widget.characterName,
-        characterToRenderStatFor: widget.characterToRenderStatFor,
-        hideVariantSelection: widget.hideVariantSelection,
-        hideAdditionalSetting: widget.hideAdditionalSetting,
-        onNewStatValue: (newStatValue) {
-          newestStatValue = newStatValue;
-        },
+      child: Column(
+        children: [
+          if (widget.isEditingAlternateForm == true)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          FontAwesomeIcons.exclamation,
+                          color: darkTextColor,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          S.of(context).warning,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: darkTextColor,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      S.of(context).youAreEditingAnAlternateFormWarningText,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: darkTextColor,
+                            fontSize: 16,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          PlayerStatsConfigurationVisuals(
+            statConfiguration: widget.statConfiguration,
+            characterValue: widget.characterValue,
+            characterName: widget.characterName,
+            characterToRenderStatFor: widget.characterToRenderStatFor,
+            hideVariantSelection: widget.hideVariantSelection,
+            hideAdditionalSetting: widget.hideAdditionalSetting,
+            onNewStatValue: (newStatValue) {
+              newestStatValue = newStatValue;
+            },
+          ),
+        ],
       ),
     );
   }

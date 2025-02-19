@@ -30,6 +30,7 @@ class PlayerPageHelpers {
         statConfiguration: characterNameStat,
         hideAdditionalSetting: true,
         hideVariantSelection: true,
+        isEditingAlternateForm: false,
         characterToRenderStatFor: null,
         characterName:
             currentCharacterName ?? S.of(context).characterNameDefault,
@@ -73,6 +74,10 @@ class PlayerPageHelpers {
       var isUpdatingCompanionCharacter =
           (tempLoadedCharacterConfig.companionCharacters ?? [])
               .any((e) => e.uuid == selectedCharacterId);
+
+      var isEditingAlternateForm = tempLoadedCharacterConfig.alternateForm !=
+              null &&
+          tempLoadedCharacterConfig.alternateForm!.uuid == selectedCharacterId;
 
       // find all stat uuids:
       var listOfStats =
@@ -126,6 +131,7 @@ class PlayerPageHelpers {
             statConfiguration: statToFill,
             characterValue: possiblyFilledStat,
             characterName: updatedCharacterName,
+            isEditingAlternateForm: isEditingAlternateForm,
           );
 
           if (modalResult != null) {

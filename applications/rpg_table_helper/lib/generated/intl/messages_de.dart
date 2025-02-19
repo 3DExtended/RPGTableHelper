@@ -362,7 +362,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
         "valueOfPropertyWithName": m2,
+        "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
         "you": MessageLookupByLibrary.simpleMessage("Du"),
+        "youAreEditingAnAlternateFormWarningText":
+            MessageLookupByLibrary.simpleMessage(
+                "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."),
         "youOwnXCampaigns": m3,
         "youOwnXCharacters": m4
       };

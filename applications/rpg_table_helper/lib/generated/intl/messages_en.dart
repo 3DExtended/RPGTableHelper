@@ -353,7 +353,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m2,
+        "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "you": MessageLookupByLibrary.simpleMessage("You"),
+        "youAreEditingAnAlternateFormWarningText":
+            MessageLookupByLibrary.simpleMessage(
+                "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation."),
         "youOwnXCampaigns": m3,
         "youOwnXCharacters": m4
       };
