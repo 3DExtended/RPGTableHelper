@@ -376,7 +376,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "you": MessageLookupByLibrary.simpleMessage("Du"),
         "youAreEditingACopiedPropertyChangesWillNotAffect":
             MessageLookupByLibrary.simpleMessage(
-                "Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf die Basis-Eigenschaft übertragen."),
+                "Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf den Haupt-Charakter übertragen."),
         "youAreEditingAnAlternateFormWarningText":
             MessageLookupByLibrary.simpleMessage(
                 "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."),
