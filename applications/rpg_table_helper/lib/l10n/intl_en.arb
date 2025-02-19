@@ -204,5 +204,7 @@
   "youAreEditingAnAlternateFormWarningText": "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
   "transformationIsEditedWarningTitle": "Transformation is edited",
   "propertyIsCopied": "Property is copied",
-  "youAreEditingACopiedPropertyChangesWillNotAffect": "You are editing a copied property. Changes will not affect the original property."
+  "youAreEditingACopiedPropertyChangesWillNotAffect": "You are editing a copied property. Changes will not affect the original property.",
+  "previousTransformationSelectionBtn": "Alte Gestalt",
+  "newTransformationSelectionBtn": "Neue Gestalt"
 }

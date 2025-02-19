@@ -2109,6 +2109,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Alte Gestalt`
+  String get previousTransformationSelectionBtn {
+    return Intl.message(
+      'Alte Gestalt',
+      name: 'previousTransformationSelectionBtn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Neue Gestalt`
+  String get newTransformationSelectionBtn {
+    return Intl.message(
+      'Neue Gestalt',
+      name: 'newTransformationSelectionBtn',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

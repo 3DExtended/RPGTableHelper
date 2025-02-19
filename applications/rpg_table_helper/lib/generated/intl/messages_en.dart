@@ -240,6 +240,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("New property"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("New tab"),
+        "newTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Neue Gestalt"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "noFIghtStarted":
             MessageLookupByLibrary.simpleMessage("No fight started yet"),
@@ -290,6 +292,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "player": MessageLookupByLibrary.simpleMessage("Player"),
         "playerRolls": MessageLookupByLibrary.simpleMessage("Player rolls"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
+        "previousTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Alte Gestalt"),
         "propertyEditTypeLabel":
             MessageLookupByLibrary.simpleMessage("Change frequency"),
         "propertyEditTypeOneTap": MessageLookupByLibrary.simpleMessage(

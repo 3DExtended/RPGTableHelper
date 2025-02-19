@@ -248,6 +248,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("Neue Eigenschaft"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("Neuer Tab"),
+        "newTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Neue Gestalt"),
         "next": MessageLookupByLibrary.simpleMessage("Weiter"),
         "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
             "Aktuell kein Kampf gestartet"),
@@ -298,6 +300,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "player": MessageLookupByLibrary.simpleMessage("Spieler"),
         "playerRolls": MessageLookupByLibrary.simpleMessage("Spieler Würfe"),
         "preview": MessageLookupByLibrary.simpleMessage("Vorschau"),
+        "previousTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Alte Gestalt"),
         "propertyEditTypeLabel":
             MessageLookupByLibrary.simpleMessage("Veränderungshäufigkeit"),
         "propertyEditTypeOneTap": MessageLookupByLibrary.simpleMessage(

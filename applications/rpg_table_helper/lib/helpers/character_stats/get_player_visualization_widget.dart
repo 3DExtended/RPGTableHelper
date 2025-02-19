@@ -17,6 +17,7 @@ import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/modals/show_reactivate_previous_transformation_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -120,6 +121,10 @@ Widget renderCompanionSelector(
           .map((e) => (e as Map<String, dynamic>)["uuid"] as String)
           .toList();
 
+  if (selectedCompanionIds.isEmpty) {
+    return Container();
+  }
+
   List<
       ({
         String characterName,
@@ -127,6 +132,7 @@ Widget renderCompanionSelector(
         String? imageUrl,
         RpgAlternateCharacterConfiguration companionConfig
       })> companionDetailsToRender = [];
+
   for (var selectedCompanionId in selectedCompanionIds) {
     var companionOfCharacter =
         (characterToRenderStatFor?.companionCharacters ?? [])
@@ -145,6 +151,10 @@ Widget renderCompanionSelector(
   }
   companionDetailsToRender =
       companionDetailsToRender.sortedBy((k) => k.characterName);
+
+  if (companionDetailsToRender.isEmpty) {
+    return Container();
+  }
 
   return Column(
     children: [
@@ -241,20 +251,52 @@ class _CustomButtonTransformToAlternateFormState
           // now open saved alternate form
 
           // if there is only one alternate form, just switch to it
+          var rpgConfig = ref.read(rpgConfigurationProvider).requireValue;
+          var rpgCharConfig =
+              ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+          RpgCharacterConfigurationBase? newestVersionCharacterToRenderStatFor =
+              rpgCharConfig.companionCharacters?.firstWhereOrNull(
+                  (c) => c.uuid == widget.characterToRenderStatFor?.uuid);
+
+          if (newestVersionCharacterToRenderStatFor == null &&
+              rpgCharConfig.uuid == widget.characterToRenderStatFor?.uuid) {
+            newestVersionCharacterToRenderStatFor = rpgCharConfig;
+          }
+          if (newestVersionCharacterToRenderStatFor == null &&
+              rpgCharConfig.alternateForm != null &&
+              rpgCharConfig.alternateForm!.uuid ==
+                  widget.characterToRenderStatFor?.uuid) {
+            newestVersionCharacterToRenderStatFor =
+                rpgCharConfig.alternateForm!;
+          }
+
+          newestVersionCharacterToRenderStatFor ??=
+              widget.characterToRenderStatFor;
+
           if (widget.characterToRenderStatFor?.transformationComponents
                   ?.isNotEmpty ==
               true) {
-            var rpgConfig = ref.read(rpgConfigurationProvider).requireValue;
+            RpgAlternateCharacterConfiguration? transformationToSwitchTo;
+            if (newestVersionCharacterToRenderStatFor!.alternateForm != null) {
+              // if there is already a alternate for stored, ask the user if they want to switch to it instead of creating a new one
+              var showPreviousAlternateForm =
+                  await showReactivatePreviousTransformationModal(context);
+              if (showPreviousAlternateForm == null) return;
 
-            // TODO if there is already a alternate for stored, ask the user if they want to switch to it instead of creating a new one
+              if (showPreviousAlternateForm == true) {
+                transformationToSwitchTo =
+                    widget.characterToRenderStatFor!.alternateForm;
+              }
+            }
 
-            var selectedTransformationCharacter =
+            transformationToSwitchTo ??=
                 await showSelectTransformationComponentsForTransformation(
                     context,
                     rpgCharConfig: widget.characterToRenderStatFor!,
                     rpgConfig: rpgConfig);
 
-            if (selectedTransformationCharacter == null) return;
+            if (transformationToSwitchTo == null) return;
 
             var charConfigToUpdate =
                 ref.read(rpgCharacterConfigurationProvider).requireValue;
@@ -264,7 +306,7 @@ class _CustomButtonTransformToAlternateFormState
                 .updateConfiguration(
                   charConfigToUpdate.copyWith(
                     isAlternateFormActive: true,
-                    alternateForm: selectedTransformationCharacter,
+                    alternateForm: transformationToSwitchTo,
                   ),
                 );
 
@@ -274,13 +316,14 @@ class _CustomButtonTransformToAlternateFormState
                     arguments: PlayerPageScreenRouteSettings(
                       disableEdit: false,
                       showMoney: false,
-                      characterConfigurationOverride:
-                          selectedTransformationCharacter,
+                      characterConfigurationOverride: transformationToSwitchTo,
                       showInventory: false,
                       showLore: false,
                       showRecipes: false,
                     ))
                 .then((onValue) {
+              charConfigToUpdate =
+                  ref.read(rpgCharacterConfigurationProvider).requireValue;
               ref
                   .read(rpgCharacterConfigurationProvider.notifier)
                   .updateConfiguration(

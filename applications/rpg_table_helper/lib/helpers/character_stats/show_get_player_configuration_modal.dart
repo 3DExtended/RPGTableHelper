@@ -109,13 +109,14 @@ class _ShowGetPlayerConfigurationModalContentState
             }),
           if (widget.isEditingAlternateForm == true &&
               widget.isStatCopied == false)
-            Builder(builder: (context) {
-              return WarningBox(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              child: WarningBox(
                   warningTitle:
                       S.of(context).transformationIsEditedWarningTitle,
                   warningText:
-                      S.of(context).youAreEditingAnAlternateFormWarningText);
-            }),
+                      S.of(context).youAreEditingAnAlternateFormWarningText),
+            ),
           PlayerStatsConfigurationVisuals(
             statConfiguration: widget.statConfiguration,
             characterValue: widget.characterValue,
@@ -145,25 +146,24 @@ class WarningBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-      child: Container(
-        decoration: BoxDecoration(
-          color: accentColor.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Icon(
-                  FontAwesomeIcons.exclamation,
-                  color: darkTextColor,
-                  size: 24,
-                ),
-                const SizedBox(width: 5),
-                Text(
+    return Container(
+      decoration: BoxDecoration(
+        color: accentColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Icon(
+                FontAwesomeIcons.exclamation,
+                color: darkTextColor,
+                size: 24,
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Text(
                   warningTitle,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: darkTextColor,
@@ -171,18 +171,18 @@ class WarningBox extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              warningText,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: darkTextColor,
-                    fontSize: 16,
-                  ),
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            warningText,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: darkTextColor,
+                  fontSize: 16,
+                ),
+          ),
+        ],
       ),
     );
   }
