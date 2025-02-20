@@ -69,20 +69,20 @@ class CustomTextField extends StatelessWidget {
             hintStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
-                .copyWith(color: darkTextColor),
+                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
             labelStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
-                .copyWith(color: darkTextColor),
+                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
             helperStyle: Theme.of(context)
                 .textTheme
                 .labelSmall!
-                .copyWith(color: darkTextColor),
+                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
           ),
           style: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: darkTextColor),
+              .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
           controller: textEditingController,
         ),
       );

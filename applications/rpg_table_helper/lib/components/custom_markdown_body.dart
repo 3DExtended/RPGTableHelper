@@ -12,10 +12,11 @@ class CustomMarkdownBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var darkTextStyle = TextStyle(color: darkTextColor);
+    var darkTextStyle = TextStyle(color: darkTextColor, fontFamily: "Ruwudu");
 
     return Theme(
       data: ThemeData(
+        fontFamily: "Ruwudu",
         textTheme: Theme.of(context).textTheme.copyWith(
               headlineLarge: darkTextStyle,
               headlineMedium: darkTextStyle,

@@ -284,6 +284,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                         label: "Weitere Voraussetzung",
                                         icon: Theme(
                                             data: ThemeData(
+                                              fontFamily: "Ruwudu",
                                               iconTheme: const IconThemeData(
                                                 color: Colors.white,
                                                 size: 16,

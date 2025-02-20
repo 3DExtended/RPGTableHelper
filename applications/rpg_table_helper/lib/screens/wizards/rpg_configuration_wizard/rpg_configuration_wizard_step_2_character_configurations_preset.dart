@@ -379,6 +379,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       label: S.of(context).newGroupBtnLabel,
                       icon: Theme(
                           data: ThemeData(
+                            fontFamily: "Ruwudu",
                             iconTheme: const IconThemeData(
                               color: darkTextColor,
                               size: 16,
@@ -424,6 +425,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       label: S.of(context).newPropertyBtnLabel,
                       icon: Theme(
                           data: ThemeData(
+                            fontFamily: "Ruwudu",
                             iconTheme: const IconThemeData(
                               color: darkTextColor,
                               size: 16,
@@ -459,6 +461,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
           label: S.of(context).newTabBtnLabel,
           icon: Theme(
               data: ThemeData(
+                fontFamily: "Ruwudu",
                 iconTheme: const IconThemeData(
                   color: darkColor,
                   size: 16,

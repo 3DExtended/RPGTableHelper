@@ -7,6 +7,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -55,44 +56,48 @@ void main() {
               );
             }),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        await showSelectTransformationComponentsForTransformation(
-                          overrideNavigatorKey: navigatorKey,
-                          context,
-                          rpgCharConfig:
-                              RpgCharacterConfiguration.getBaseConfiguration(
-                                  null),
-                          rpgConfig:
-                              RpgConfigurationModel.getBaseConfiguration(),
-                        );
-                      },
-                      child: const Text("Click me"));
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showSelectTransformationComponentsForTransformation(
+                              overrideNavigatorKey: navigatorKey,
+                              context,
+                              rpgCharConfig: RpgCharacterConfiguration
+                                  .getBaseConfiguration(null),
+                              rpgConfig:
+                                  RpgConfigurationModel.getBaseConfiguration(),
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(

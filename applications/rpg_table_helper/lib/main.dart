@@ -76,7 +76,7 @@ class AppRoutingShell extends ConsumerWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          fontFamily: 'Roboto',
+          fontFamily: 'Ruwudu',
           useMaterial3: true,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
@@ -216,63 +216,65 @@ class _ThemeConfigurationForAppState
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
         textTheme: Theme.of(context).textTheme.copyWith(
-              headlineLarge:
-                  TextStyle(color: darkTextColor, fontFamily: "Roboto"),
+              headlineLarge: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Ruwudu",
+              ),
               headlineMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               headlineSmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               titleLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               titleMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               titleSmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               bodySmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               bodyMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               bodyLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               labelSmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               labelMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               labelLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               displaySmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               displayMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               displayLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
             ),
         iconTheme: const IconThemeData(

@@ -74,7 +74,7 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 400),
+                constraints: BoxConstraints(maxWidth: 500),
                 child: Column(
                   children: [
                     SizedBox(

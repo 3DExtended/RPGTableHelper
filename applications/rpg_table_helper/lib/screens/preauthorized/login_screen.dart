@@ -141,7 +141,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     .textTheme
                                     .labelMedium!
                                     .copyWith(
-                                        color: Colors.white, fontSize: 18),
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: 'Ruwudu'),
                               ),
                             ),
                             variant: CustomButtonVariant.AccentButton,

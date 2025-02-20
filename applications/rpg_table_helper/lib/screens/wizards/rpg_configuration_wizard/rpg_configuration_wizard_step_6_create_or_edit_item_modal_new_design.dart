@@ -484,6 +484,7 @@ class _CreateOrEditItemModalContentState
                 label: "Neuer Fundort",
                 icon: Theme(
                     data: ThemeData(
+                      fontFamily: "Ruwudu",
                       iconTheme: const IconThemeData(
                         color: darkTextColor,
                         size: 16,

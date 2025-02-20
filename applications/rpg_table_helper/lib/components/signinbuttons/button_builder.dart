@@ -114,7 +114,7 @@ class SignInButtonBuilder extends StatelessWidget {
               text,
               style: TextStyle(
                 color: textColor,
-                fontFamily: 'Roboto',
+                fontFamily: 'Ruwudu',
                 fontSize: fontSize,
                 backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
               ),

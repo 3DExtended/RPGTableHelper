@@ -389,35 +389,46 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 3),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        selectedDocument?.title ?? "",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              color: darkTextColor,
-                              fontSize: 24,
+                      Row(
+                        children: [
+                          Text(
+                            selectedDocument?.title ?? "",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge!
+                                .copyWith(
+                                  color: darkTextColor,
+                                  fontSize: 24,
+                                ),
+                          ),
+                          if (_isAllowedToEdit == true)
+                            CustomButton(
+                              onPressed: () async {
+                                await modalBasedEditPageEdit(context);
+                              },
+                              icon: CustomFaIcon(
+                                  noPadding: true,
+                                  icon: FontAwesomeIcons.penToSquare,
+                                  size: 20,
+                                  color: darkColor),
+                              variant: CustomButtonVariant.FlatButton,
                             ),
+                        ],
                       ),
-                      if (_isAllowedToEdit == true)
-                        CustomButton(
-                          onPressed: () async {
-                            await modalBasedEditPageEdit(context);
-                          },
-                          icon: CustomFaIcon(
-                              noPadding: true,
-                              icon: FontAwesomeIcons.penToSquare,
-                              size: 20,
-                              color: darkColor),
-                          variant: CustomButtonVariant.FlatButton,
-                        ),
                     ],
                   ),
+                ],
+              ),
+              Row(
+                children: [
                   Text(
                     "${S.of(context).authorLabel} ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? S.of(context).you : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? S.of(context).dm)}",
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -425,18 +436,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                           fontSize: 12,
                         ),
                   ),
+                  Spacer(),
+                  Text(
+                    selectedDocument!.lastModifiedAt!.format(
+                        S.of(context).hourMinutesDayMonthYearFormatString),
+                    textAlign: TextAlign.end,
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          color: darkTextColor,
+                          fontSize: 12,
+                        ),
+                  ),
                 ],
-              ),
-              Spacer(),
-              Text(
-                selectedDocument!.lastModifiedAt!
-                    .format(S.of(context).hourMinutesDayMonthYearFormatString),
-                textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      color: darkTextColor,
-                      fontSize: 12,
-                    ),
-              ),
+              )
             ],
           ),
         ),

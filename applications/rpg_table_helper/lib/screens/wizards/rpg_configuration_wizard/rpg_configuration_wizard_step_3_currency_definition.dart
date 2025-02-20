@@ -237,6 +237,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           },
           icon: Theme(
               data: ThemeData(
+                fontFamily: "Ruwudu",
                 iconTheme: const IconThemeData(
                   color: darkColor,
                   size: 16,

@@ -32,7 +32,7 @@ Future<void> showGenericErrorModal<T>(
                 Text(
                   S.of(context).genericErrorModalHeader,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontFamily: 'Pangram',
+                        fontFamily: 'Ruwudu',
                         color: Colors.white,
                         fontSize: 32,
                       ),
@@ -58,7 +58,7 @@ Future<void> showGenericErrorModal<T>(
                   Text(
                     S.of(context).genericErrorModalTechnicalDetailsHeader,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontFamily: 'Pangram',
+                          fontFamily: 'Ruwudu',
                           color: Colors.white,
                           fontSize: 24,
                         ),
@@ -260,7 +260,7 @@ Future<T?> customShowCupertinoModalBottomSheet<T>({
               backgroundColor: backgroundColor,
               topRadius: topRadius,
               shadow: shadow,
-              child: child,
+              child: ThemeConfigurationForApp(child: child),
             ),
         secondAnimationController: secondAnimation,
         expanded: expand,

@@ -570,6 +570,7 @@ class _ShowGetDmConfigurationModalContentState
             label: S.of(context).additionalElement,
             icon: Theme(
                 data: ThemeData(
+                  fontFamily: "Ruwudu",
                   iconTheme: const IconThemeData(
                     color: darkTextColor,
                     size: 16,
@@ -708,6 +709,7 @@ class _ShowGetDmConfigurationModalContentState
             label: S.of(context).additionalElement,
             icon: Theme(
                 data: ThemeData(
+                  fontFamily: "Ruwudu",
                   iconTheme: const IconThemeData(
                     color: darkTextColor,
                     size: 16,

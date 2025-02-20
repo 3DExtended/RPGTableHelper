@@ -7,6 +7,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -146,34 +147,39 @@ void main() {
               );
             }),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return DmPageScreen(
-                    startScreenOverride: testcase.$1,
-                  );
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return DmPageScreen(
+                        startScreenOverride: testcase.$1,
+                      );
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(

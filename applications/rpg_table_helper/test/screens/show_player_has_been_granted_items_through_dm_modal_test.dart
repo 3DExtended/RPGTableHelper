@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -32,53 +33,59 @@ void main() {
       },
       screenFactory: (Locale locale) => ProviderScope(
         overrides: [],
-        child: MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
-              ...AppLocalizations.localizationsDelegates,
-              S.delegate
-            ],
-            locale: locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              fontFamily: 'Roboto',
-              useMaterial3: true,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
+        child: ThemeConfigurationForApp(
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Ruwudu',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-            ),
-            home: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () async {
-                      await showPlayerHasBeenGrantedItemsThroughDmModal(
-                        grantedItems: GrantedItemsForPlayer(
-                            characterName: "Player",
-                            playerId: "6e574e88-630e-4728-a113-0f3f96a0f0ed",
-                            grantedItems:
-                                RpgConfigurationModel.getBaseConfiguration()
-                                    .allItems
-                                    .map(
-                                      (e) => RpgCharacterOwnedItemPair(
-                                        amount: 3,
-                                        itemUuid: e.uuid,
-                                      ),
-                                    )
-                                    .toList()),
-                        rpgConfig: RpgConfigurationModel.getBaseConfiguration(),
-                        overrideNavigatorKey: navigatorKey,
-                        context,
-                      );
-                    },
-                    child: const Text("Click me"));
-              }),
-            )),
+              home: ThemeConfigurationForApp(
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  body: Builder(builder: (context) {
+                    return ElevatedButton(
+                        onPressed: () async {
+                          await showPlayerHasBeenGrantedItemsThroughDmModal(
+                            grantedItems: GrantedItemsForPlayer(
+                                characterName: "Player",
+                                playerId:
+                                    "6e574e88-630e-4728-a113-0f3f96a0f0ed",
+                                grantedItems:
+                                    RpgConfigurationModel.getBaseConfiguration()
+                                        .allItems
+                                        .map(
+                                          (e) => RpgCharacterOwnedItemPair(
+                                            amount: 3,
+                                            itemUuid: e.uuid,
+                                          ),
+                                        )
+                                        .toList()),
+                            rpgConfig:
+                                RpgConfigurationModel.getBaseConfiguration(),
+                            overrideNavigatorKey: navigatorKey,
+                            context,
+                          );
+                        },
+                        child: const Text("Click me"));
+                  }),
+                ),
+              )),
+        ),
       ),
       getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
         MapEntry(

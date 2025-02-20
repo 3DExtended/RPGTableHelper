@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/modals/show_ask_player_for_fight_order_roll.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
@@ -29,40 +30,44 @@ void main() {
       },
       screenFactory: (Locale locale) => ProviderScope(
         overrides: [],
-        child: MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
-              ...AppLocalizations.localizationsDelegates,
-              S.delegate
-            ],
-            locale: locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              fontFamily: 'Roboto',
-              useMaterial3: true,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
+        child: ThemeConfigurationForApp(
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Ruwudu',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-            ),
-            home: Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: Builder(builder: (context) {
-                return ElevatedButton(
-                    onPressed: () async {
-                      await showAskPlayerForFightOrderRoll(
-                        characterName: "Frodo",
-                        overrideNavigatorKey: navigatorKey,
-                        context,
-                      );
-                    },
-                    child: const Text("Click me"));
-              }),
-            )),
+              home: ThemeConfigurationForApp(
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  body: Builder(builder: (context) {
+                    return ElevatedButton(
+                        onPressed: () async {
+                          await showAskPlayerForFightOrderRoll(
+                            characterName: "Frodo",
+                            overrideNavigatorKey: navigatorKey,
+                            context,
+                          );
+                        },
+                        child: const Text("Click me"));
+                  }),
+                ),
+              )),
+        ),
       ),
       getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
         MapEntry(

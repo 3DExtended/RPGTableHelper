@@ -10,6 +10,7 @@ import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_m
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -467,25 +468,27 @@ void main() {
               themeMode: ThemeMode.dark,
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
+                fontFamily: 'Ruwudu',
                 useMaterial3: true,
                 iconTheme: const IconThemeData(
                   color: Colors.white,
                   size: 16,
                 ),
               ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        await showGetDmConfigurationModal(
-                            context: context,
-                            predefinedConfiguration: testConfiguration.$2,
-                            overrideNavigatorKey: navigatorKey);
-                      },
-                      child: const Text("Click me"));
-                }),
+              home: ThemeConfigurationForApp(
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  body: Builder(builder: (context) {
+                    return ElevatedButton(
+                        onPressed: () async {
+                          await showGetDmConfigurationModal(
+                              context: context,
+                              predefinedConfiguration: testConfiguration.$2,
+                              overrideNavigatorKey: navigatorKey);
+                        },
+                        child: const Text("Click me"));
+                  }),
+                ),
               )),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
@@ -535,46 +538,52 @@ void main() {
               );
             }),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        await showGetPlayerConfigurationModal(
-                            characterToRenderStatFor:
-                                RpgCharacterConfiguration.getBaseConfiguration(
-                                    RpgConfigurationModel
-                                        .getBaseConfiguration()),
-                            context: context,
-                            statConfiguration: testConfiguration.$2,
-                            isEditingAlternateForm: true,
-                            characterValue: testConfiguration.$3,
-                            characterName: "Frodo",
-                            overrideNavigatorKey: navigatorKey);
-                      },
-                      child: const Text("Click me"));
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showGetPlayerConfigurationModal(
+                                characterToRenderStatFor:
+                                    RpgCharacterConfiguration
+                                        .getBaseConfiguration(
+                                            RpgConfigurationModel
+                                                .getBaseConfiguration()),
+                                context: context,
+                                statConfiguration: testConfiguration.$2,
+                                isEditingAlternateForm: true,
+                                characterValue: testConfiguration.$3,
+                                characterName: "Frodo",
+                                overrideNavigatorKey: navigatorKey);
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
@@ -623,46 +632,52 @@ void main() {
               );
             }),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        await showGetPlayerConfigurationModal(
-                            characterToRenderStatFor:
-                                RpgCharacterConfiguration.getBaseConfiguration(
-                                    RpgConfigurationModel
-                                        .getBaseConfiguration()),
-                            context: context,
-                            statConfiguration: testConfiguration.$2,
-                            isEditingAlternateForm: false,
-                            characterValue: testConfiguration.$3,
-                            characterName: "Frodo",
-                            overrideNavigatorKey: navigatorKey);
-                      },
-                      child: const Text("Click me"));
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showGetPlayerConfigurationModal(
+                                characterToRenderStatFor:
+                                    RpgCharacterConfiguration
+                                        .getBaseConfiguration(
+                                            RpgConfigurationModel
+                                                .getBaseConfiguration()),
+                                context: context,
+                                statConfiguration: testConfiguration.$2,
+                                isEditingAlternateForm: false,
+                                characterValue: testConfiguration.$3,
+                                characterName: "Frodo",
+                                overrideNavigatorKey: navigatorKey);
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
@@ -711,46 +726,52 @@ void main() {
               );
             }),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        await showGetPlayerConfigurationModal(
-                            characterToRenderStatFor:
-                                RpgCharacterConfiguration.getBaseConfiguration(
-                                    RpgConfigurationModel
-                                        .getBaseConfiguration()),
-                            context: context,
-                            statConfiguration: testConfiguration.$2,
-                            characterValue: null,
-                            isEditingAlternateForm: false,
-                            characterName: "Frodo",
-                            overrideNavigatorKey: navigatorKey);
-                      },
-                      child: const Text("Click me"));
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showGetPlayerConfigurationModal(
+                                characterToRenderStatFor:
+                                    RpgCharacterConfiguration
+                                        .getBaseConfiguration(
+                                            RpgConfigurationModel
+                                                .getBaseConfiguration()),
+                                context: context,
+                                statConfiguration: testConfiguration.$2,
+                                characterValue: null,
+                                isEditingAlternateForm: false,
+                                characterName: "Frodo",
+                                overrideNavigatorKey: navigatorKey);
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
