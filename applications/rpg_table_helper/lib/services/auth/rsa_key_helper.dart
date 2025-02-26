@@ -257,7 +257,7 @@ class RsaKeyHelper {
   static AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> getRsaKeyPair(
       SecureRandom secureRandom) {
     if (kDebugMode) {
-      log('Start at rsapars');
+      print('Start at rsapars');
     }
 
     var bitStrength = 2048;
