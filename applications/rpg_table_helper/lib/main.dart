@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -177,107 +178,108 @@ class _ThemeConfigurationForAppState
   void initState() {
     super.initState();
     observer = getObserver();
-    print("new_ThemeConfigurationForAppState");
 
-    // future which runs every 10 seconds
-    Timer.periodic(pingInterval, (timer) {
-      if (kDebugMode) {
-        print("pingInterval");
-      }
+    if (!isInTestEnvironment) {
+      // future which runs every 10 seconds
+      Timer.periodic(pingInterval, (timer) {
+        log("pingInterval");
+        if (kDebugMode) {}
 
-      if (!mounted || !context.mounted) {
-        print("pingInterval ERROR - not mounted");
-        timer.cancel();
+        if (!mounted || !context.mounted) {
+          log("pingInterval ERROR - not mounted");
+          timer.cancel();
 
-        return;
-      }
-
-      var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
-      if (connectionDetails == null || connectionDetails.isInSession == false) {
-        return;
-      }
-      if (connectionDetails.isInSession == false) {
-        return;
-      }
-
-      if (connectionDetails.isPlayer == true) {
-        if (connectionDetails.lastPing == null) {
-          // the player cannot initiate a ping message and has to wait for the DM to send one
           return;
         }
 
-        // check when we received the last ping message from DM
-        // if it is older than 10 seconds, mark the player as disconnected
-        if (connectionDetails.lastPing!.isBefore(DateTime.now().subtract(
-          pingInterval,
-        ))) {
-          var snackBar = SnackBar(
-            showCloseIcon: true,
-            duration: Duration(seconds: 5),
-            content: Text(
-              S.of(context).yourAreDisconnectedBody,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-            ),
-          );
-
-          // Find the ScaffoldMessenger in the widget tree
-          // and use it to show a SnackBar.
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else {
-          ScaffoldMessenger.of(context).clearSnackBars();
+        var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+        if (connectionDetails == null ||
+            connectionDetails.isInSession == false) {
+          return;
         }
-      } else {
-        if (connectionDetails.lastPing != null) {
-          var playersToMarkAsDisconnected = connectionDetails.connectedPlayers
-                  ?.where((element) =>
-                      element.lastPing != null &&
-                      element.lastPing!.isBefore(
-                          DateTime.now().subtract(pingInterval).subtract(
-                                pingInterval,
-                              )))
-                  .toList() ??
-              [];
+        if (connectionDetails.isInSession == false) {
+          return;
+        }
 
-          if (playersToMarkAsDisconnected.isNotEmpty) {
-            // update the connection details
-            ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-                ref.read(connectionDetailsProvider).value?.copyWith(
-                          connectedPlayers: connectionDetails.connectedPlayers
-                              ?.where((e) => !playersToMarkAsDisconnected
-                                  .any((el) => el.userId == e.userId))
-                              .toList(),
-                        ) ??
-                    ConnectionDetails.defaultValue());
+        if (connectionDetails.isPlayer == true) {
+          if (connectionDetails.lastPing == null) {
+            // the player cannot initiate a ping message and has to wait for the DM to send one
+            return;
           }
+
+          // check when we received the last ping message from DM
+          // if it is older than 10 seconds, mark the player as disconnected
+          if (connectionDetails.lastPing!.isBefore(DateTime.now().subtract(
+            pingInterval,
+          ))) {
+            var snackBar = SnackBar(
+              showCloseIcon: true,
+              duration: Duration(seconds: 5),
+              content: Text(
+                S.of(context).yourAreDisconnectedBody,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+              ),
+            );
+
+            // Find the ScaffoldMessenger in the widget tree
+            // and use it to show a SnackBar.
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+          }
+        } else {
+          if (connectionDetails.lastPing != null) {
+            var playersToMarkAsDisconnected = connectionDetails.connectedPlayers
+                    ?.where((element) =>
+                        element.lastPing != null &&
+                        element.lastPing!.isBefore(
+                            DateTime.now().subtract(pingInterval).subtract(
+                                  pingInterval,
+                                )))
+                    .toList() ??
+                [];
+
+            if (playersToMarkAsDisconnected.isNotEmpty) {
+              // update the connection details
+              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+                  ref.read(connectionDetailsProvider).value?.copyWith(
+                            connectedPlayers: connectionDetails.connectedPlayers
+                                ?.where((e) => !playersToMarkAsDisconnected
+                                    .any((el) => el.userId == e.userId))
+                                .toList(),
+                          ) ??
+                      ConnectionDetails.defaultValue());
+            }
+          }
+
+          // send new ping message to all players
+          // mark all players as disconnected if they did not respond since last ping
+          var newPingTimestamp = DateTime.now();
+          ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+              ref.read(connectionDetailsProvider).value?.copyWith(
+                        lastPing: newPingTimestamp,
+                      ) ??
+                  ConnectionDetails.defaultValue());
+
+          var serverMethods =
+              DependencyProvider.getIt!.get<IServerMethodsService>();
+          serverMethods.sendPingToPlayers(
+            campagneId: connectionDetails.campagneId!,
+            timestamp: newPingTimestamp,
+          );
         }
-
-        // send new ping message to all players
-        // mark all players as disconnected if they did not respond since last ping
-        var newPingTimestamp = DateTime.now();
-        ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-            ref.read(connectionDetailsProvider).value?.copyWith(
-                      lastPing: newPingTimestamp,
-                    ) ??
-                ConnectionDetails.defaultValue());
-
-        var serverMethods =
-            DependencyProvider.getIt!.get<IServerMethodsService>();
-        serverMethods.sendPingToPlayers(
-          campagneId: connectionDetails.campagneId!,
-          timestamp: newPingTimestamp,
-        );
-      }
-    });
+      });
+    }
     WidgetsBinding.instance.addObserver(observer!);
   }
 
   LifecycleEventHandler getObserver() {
     return LifecycleEventHandler(resumeCallBack: () async {
-      print("resumeCallBack");
+      log("resumeCallBack");
       var serverMethods =
           DependencyProvider.getIt!.get<IServerMethodsService>();
       var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;

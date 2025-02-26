@@ -521,7 +521,7 @@ class ServerMethodsService extends IServerMethodsService {
   @override
   void pingFromDm(DateTime timestamp) {
     Future.delayed(Duration.zero, () async {
-      print("pingFromDm is called: $timestamp");
+      log("pingFromDm is called: $timestamp");
       // update lastPing on connection details
       var currentConnectionDetails =
           widgetRef.read(connectionDetailsProvider).requireValue;
@@ -539,7 +539,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void pongFromPlayer(DateTime timestamp, String userId) {
-    print("pingFromDm is received");
+    log("pingFromDm is received");
 
     var currentConnectionDetails =
         widgetRef.read(connectionDetailsProvider).requireValue;
@@ -574,7 +574,7 @@ class ServerMethodsService extends IServerMethodsService {
   @override
   Future sendPongToDm(
       {required String campagneId, required DateTime timestamp}) async {
-    print("sendPongToDm is called: $timestamp");
+    log("sendPongToDm is called: $timestamp");
     // SendPongToDm(string campagneId, DateTime timestamp)
     await serverCommunicationService
         .executeServerFunction("SendPongToDm", args: [

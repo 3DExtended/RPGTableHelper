@@ -318,7 +318,7 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     if (hubConnection == null) {
       if (kDebugMode) {
-        print("DID NOT SEND TO SERVER: $functionName");
+        log("DID NOT SEND TO SERVER: $functionName");
       }
 
       // dont send something if not connected
@@ -335,7 +335,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     }
 
     var result = await hubConnection!.invoke(functionName, args: args);
-    print("Result from hubConnection call: $result");
+    log("Result from hubConnection call: $result");
   }
 
   Future tryOpenConnection() async {

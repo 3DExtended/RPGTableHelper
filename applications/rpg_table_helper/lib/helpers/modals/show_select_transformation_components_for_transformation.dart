@@ -261,7 +261,7 @@ class _SelectTransformationComponentsForTransformationModalContentState
                                       );
                                     }).toList();
 
-                                    print(groupedByStatIdWithStatDefs);
+                                    log(groupedByStatIdWithStatDefs);
                                     List<RpgCharacterStatValue> mergedStats =
                                         [];
                                     for (var entry
