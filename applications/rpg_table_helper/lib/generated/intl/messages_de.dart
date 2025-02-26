@@ -381,6 +381,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."),
         "youOwnXCampaigns": m3,
-        "youOwnXCharacters": m4
+        "youOwnXCharacters": m4,
+        "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
+            "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...")
       };
 }

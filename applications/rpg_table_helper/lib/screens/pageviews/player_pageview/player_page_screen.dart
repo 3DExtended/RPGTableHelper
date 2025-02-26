@@ -15,6 +15,7 @@ import 'package:quest_keeper/helpers/context_extension.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/lore_screen.dart';
@@ -299,6 +300,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
           Navbar(
             useTopSafePadding: true,
             closeFunction: () {
+              // close connection
+              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+                  ref.read(connectionDetailsProvider).requireValue.copyWith(
+                        isInSession: false,
+                        isDm: false,
+                      ));
+
               navigatorKey.currentState!.pop();
             },
             titleWidget: Row(

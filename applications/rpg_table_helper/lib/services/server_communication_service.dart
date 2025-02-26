@@ -45,6 +45,16 @@ abstract class IServerCommunicationService {
     required String functionName,
   });
 
+  void registerCallbackSingleDateTime({
+    required void Function(DateTime parameter) function,
+    required String functionName,
+  });
+
+  void registerCallbackSingleDateTimeAndOneString({
+    required void Function(DateTime param1, String param2) function,
+    required String functionName,
+  });
+
   void registerCallbackThreeStrings(
       {required void Function(String param1, String param2, String param3)
           function,
@@ -115,7 +125,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     );
 
     hubConnection!.onreconnecting(({error}) {
-      log("onreconnecting called");
+      log("onreconnecting called, error: $error");
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
                     isConnected: false,
@@ -182,6 +192,46 @@ class ServerCommunicationService extends IServerCommunicationService {
     registrationMethods.add(() {
       hubConnection!.on(functionName, (List<Object?>? parameters) {
         function();
+      });
+    });
+  }
+
+  @override
+  void registerCallbackSingleDateTime(
+      {required void Function(DateTime parameter) function,
+      required String functionName}) {
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
+
+        final String? param =
+            parameters[0] != null ? parameters[0] as String : null;
+
+        if (param == null) return;
+        var parsedDatetime = DateTime.parse(param);
+        function(parsedDatetime);
+      });
+    });
+  }
+
+  @override
+  void registerCallbackSingleDateTimeAndOneString(
+      {required void Function(DateTime parameter1, String parameter2) function,
+      required String functionName}) {
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
+
+        final String? param1 =
+            parameters[0] != null ? parameters[0] as String : null;
+
+        if (param1 == null) return;
+        final String? param2 =
+            parameters[1] != null ? parameters[1] as String : null;
+
+        if (param2 == null) return;
+        var parsedDatetime = DateTime.parse(param1);
+        function(parsedDatetime, param2);
       });
     });
   }
@@ -278,12 +328,14 @@ class ServerCommunicationService extends IServerCommunicationService {
     var retryCounter = 0;
     final maxRetries = 5;
     while (retryCounter < maxRetries &&
-        hubConnection?.state == HubConnectionState.Connecting) {
+        (hubConnection?.state == HubConnectionState.Connecting ||
+            hubConnection?.state == HubConnectionState.Reconnecting)) {
       retryCounter++;
       await Future.delayed(Duration(seconds: retryCounter + 1));
     }
 
-    await hubConnection!.invoke(functionName, args: args);
+    var result = await hubConnection!.invoke(functionName, args: args);
+    print("Result from hubConnection call: $result");
   }
 
   Future tryOpenConnection() async {
@@ -369,6 +421,16 @@ class MockServerCommunicationService extends IServerCommunicationService {
 
   @override
   void completeFunctionRegistration() {}
+
+  @override
+  void registerCallbackSingleDateTime(
+      {required void Function(DateTime parameter) function,
+      required String functionName}) {}
+
+  @override
+  void registerCallbackSingleDateTimeAndOneString(
+      {required void Function(DateTime param1, String param2) function,
+      required String functionName}) {}
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

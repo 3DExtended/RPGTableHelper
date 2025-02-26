@@ -49,11 +49,13 @@ class OpenPlayerConnection {
   final RpgCharacterConfiguration configuration;
   final UserIdentifier userId;
   final PlayerCharacterIdentifier playerCharacterId;
+  final DateTime? lastPing;
 
   OpenPlayerConnection({
     required this.userId,
     required this.playerCharacterId,
     required this.configuration,
+    required this.lastPing,
   });
 
   factory OpenPlayerConnection.fromJson(Map<String, dynamic> json) =>
@@ -90,6 +92,8 @@ class ConnectionDetails {
   final bool isDm;
   final List<GrantedItemsForPlayer>? lastGrantedItems;
 
+  final DateTime? lastPing;
+
   final FightSequence? fightSequence;
 
   final String? campagneId;
@@ -107,21 +111,22 @@ class ConnectionDetails {
     required this.lastGrantedItems,
     required this.campagneId,
     required this.playerCharacterId,
+    required this.lastPing,
   });
 
   static ConnectionDetails defaultValue() => ConnectionDetails(
-        isConnected: false,
-        isConnecting: false,
-        isInSession: false,
-        fightSequence: null,
-        isDm: false,
-        sessionConnectionNumberForPlayers: null,
-        connectedPlayers: [],
-        lastGrantedItems: null,
-        openPlayerRequests: [],
-        campagneId: null,
-        playerCharacterId: null,
-      );
+      isConnected: false,
+      isConnecting: false,
+      isInSession: false,
+      fightSequence: null,
+      isDm: false,
+      sessionConnectionNumberForPlayers: null,
+      connectedPlayers: [],
+      lastGrantedItems: null,
+      openPlayerRequests: [],
+      campagneId: null,
+      playerCharacterId: null,
+      lastPing: null);
 
   bool get isPlayer => !isDm;
 

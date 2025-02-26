@@ -370,6 +370,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         (ref.read(connectionDetailsProvider).valueOrNull ??
                 ConnectionDetails.defaultValue())
             .copyWith(
+                lastPing: null,
                 isDm: true,
                 connectedPlayers: null,
                 fightSequence: null,
@@ -460,6 +461,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   ConnectionDetails.defaultValue())
               .copyWith(
                   isDm: false,
+                  lastPing: null,
                   connectedPlayers: null,
                   fightSequence: null,
                   lastGrantedItems: null,

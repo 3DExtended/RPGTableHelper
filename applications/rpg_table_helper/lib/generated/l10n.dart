@@ -2149,6 +2149,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Your are disconnected... Either you or the DM has lost the connection.`
+  String get yourAreDisconnectedBody {
+    return Intl.message(
+      'Your are disconnected... Either you or the DM has lost the connection.',
+      name: 'yourAreDisconnectedBody',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -248,5 +248,6 @@
     "previousTransformationSelectionBtn": "Alte Gestalt",
     "newTransformationSelectionBtn": "Neue Gestalt",
     "no": "Nein",
-    "yes": "Ja"
+    "yes": "Ja",
+    "yourAreDisconnectedBody": "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline..."
 }

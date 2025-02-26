@@ -2,13 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_character_overview.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_fight_squence.dart';
@@ -16,7 +19,7 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_grant_items
 import 'package:quest_keeper/screens/pageviews/lore_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 
-class DmPageScreen extends StatefulWidget {
+class DmPageScreen extends ConsumerStatefulWidget {
   static const String route = "dmpagescreen";
   final int? startScreenOverride;
 
@@ -26,10 +29,10 @@ class DmPageScreen extends StatefulWidget {
   });
 
   @override
-  State<DmPageScreen> createState() => _DmPageScreenState();
+  ConsumerState<DmPageScreen> createState() => _DmPageScreenState();
 }
 
-class _DmPageScreenState extends State<DmPageScreen> {
+class _DmPageScreenState extends ConsumerState<DmPageScreen> {
   var pageViewController = PageController(
     initialPage: 0,
   );
@@ -81,6 +84,12 @@ class _DmPageScreenState extends State<DmPageScreen> {
           Navbar(
             useTopSafePadding: true,
             closeFunction: () {
+              // close connection
+              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+                  ref.read(connectionDetailsProvider).requireValue.copyWith(
+                        isInSession: false,
+                        isDm: false,
+                      ));
               navigatorKey.currentState!.pop();
             },
             titleWidget: Row(

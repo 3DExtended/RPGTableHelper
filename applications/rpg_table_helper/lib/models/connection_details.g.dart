@@ -178,6 +178,8 @@ abstract class _$OpenPlayerConnectionCWProxy {
 
   OpenPlayerConnection configuration(RpgCharacterConfiguration configuration);
 
+  OpenPlayerConnection lastPing(DateTime? lastPing);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OpenPlayerConnection(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -188,6 +190,7 @@ abstract class _$OpenPlayerConnectionCWProxy {
     UserIdentifier userId,
     PlayerCharacterIdentifier playerCharacterId,
     RpgCharacterConfiguration configuration,
+    DateTime? lastPing,
   });
 }
 
@@ -211,6 +214,9 @@ class _$OpenPlayerConnectionCWProxyImpl
       this(configuration: configuration);
 
   @override
+  OpenPlayerConnection lastPing(DateTime? lastPing) => this(lastPing: lastPing);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OpenPlayerConnection(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -222,6 +228,7 @@ class _$OpenPlayerConnectionCWProxyImpl
     Object? userId = const $CopyWithPlaceholder(),
     Object? playerCharacterId = const $CopyWithPlaceholder(),
     Object? configuration = const $CopyWithPlaceholder(),
+    Object? lastPing = const $CopyWithPlaceholder(),
   }) {
     return OpenPlayerConnection(
       userId: userId == const $CopyWithPlaceholder()
@@ -236,6 +243,10 @@ class _$OpenPlayerConnectionCWProxyImpl
           ? _value.configuration
           // ignore: cast_nullable_to_non_nullable
           : configuration as RpgCharacterConfiguration,
+      lastPing: lastPing == const $CopyWithPlaceholder()
+          ? _value.lastPing
+          // ignore: cast_nullable_to_non_nullable
+          : lastPing as DateTime?,
     );
   }
 }
@@ -335,6 +346,8 @@ abstract class _$ConnectionDetailsCWProxy {
 
   ConnectionDetails playerCharacterId(String? playerCharacterId);
 
+  ConnectionDetails lastPing(DateTime? lastPing);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ConnectionDetails(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -353,6 +366,7 @@ abstract class _$ConnectionDetailsCWProxy {
     List<GrantedItemsForPlayer>? lastGrantedItems,
     String? campagneId,
     String? playerCharacterId,
+    DateTime? lastPing,
   });
 }
 
@@ -411,6 +425,9 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
       this(playerCharacterId: playerCharacterId);
 
   @override
+  ConnectionDetails lastPing(DateTime? lastPing) => this(lastPing: lastPing);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ConnectionDetails(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -430,6 +447,7 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
     Object? lastGrantedItems = const $CopyWithPlaceholder(),
     Object? campagneId = const $CopyWithPlaceholder(),
     Object? playerCharacterId = const $CopyWithPlaceholder(),
+    Object? lastPing = const $CopyWithPlaceholder(),
   }) {
     return ConnectionDetails(
       openPlayerRequests: openPlayerRequests == const $CopyWithPlaceholder()
@@ -477,6 +495,10 @@ class _$ConnectionDetailsCWProxyImpl implements _$ConnectionDetailsCWProxy {
           ? _value.playerCharacterId
           // ignore: cast_nullable_to_non_nullable
           : playerCharacterId as String?,
+      lastPing: lastPing == const $CopyWithPlaceholder()
+          ? _value.lastPing
+          // ignore: cast_nullable_to_non_nullable
+          : lastPing as DateTime?,
     );
   }
 }
@@ -535,6 +557,9 @@ OpenPlayerConnection _$OpenPlayerConnectionFromJson(
           json['playerCharacterId'] as Map<String, dynamic>),
       configuration: RpgCharacterConfiguration.fromJson(
           json['configuration'] as Map<String, dynamic>),
+      lastPing: json['lastPing'] == null
+          ? null
+          : DateTime.parse(json['lastPing'] as String),
     );
 
 Map<String, dynamic> _$OpenPlayerConnectionToJson(
@@ -543,6 +568,7 @@ Map<String, dynamic> _$OpenPlayerConnectionToJson(
       'configuration': instance.configuration,
       'userId': instance.userId,
       'playerCharacterId': instance.playerCharacterId,
+      'lastPing': instance.lastPing?.toIso8601String(),
     };
 
 FightSequence _$FightSequenceFromJson(Map<String, dynamic> json) =>
@@ -602,6 +628,9 @@ ConnectionDetails _$ConnectionDetailsFromJson(Map<String, dynamic> json) =>
           .toList(),
       campagneId: json['campagneId'] as String?,
       playerCharacterId: json['playerCharacterId'] as String?,
+      lastPing: json['lastPing'] == null
+          ? null
+          : DateTime.parse(json['lastPing'] as String),
     );
 
 Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
@@ -615,6 +644,7 @@ Map<String, dynamic> _$ConnectionDetailsToJson(ConnectionDetails instance) =>
       'connectedPlayers': instance.connectedPlayers,
       'isDm': instance.isDm,
       'lastGrantedItems': instance.lastGrantedItems,
+      'lastPing': instance.lastPing?.toIso8601String(),
       'fightSequence': instance.fightSequence,
       'campagneId': instance.campagneId,
       'playerCharacterId': instance.playerCharacterId,

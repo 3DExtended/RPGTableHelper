@@ -130,6 +130,7 @@ void main() {
                     ],
                         connectedPlayers: [
                       OpenPlayerConnection(
+                        lastPing: DateTime(2025, 02, 26, 12, 00),
                         userId: UserIdentifier(
                             $value: "9a709402-5620-479c-85b7-718ae01e0a83"),
                         playerCharacterId: PlayerCharacterIdentifier(
