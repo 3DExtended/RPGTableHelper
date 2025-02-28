@@ -29,6 +29,7 @@ import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_config
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/systemclock_service.dart';
 
 /// This file defines the `LoreScreen` widget, which is responsible for displaying
@@ -797,8 +798,15 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
                     if (mimeType == null || !(mimeType.startsWith('image/'))) {
                       if (!context.mounted || !mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Invalid image file selected.")));
+                      DependencyProvider.of(context)
+                          .getService<ISnackBarService>()
+                          .showSnackBar(
+                            uniqueId:
+                                "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
+                            snack: SnackBar(
+                              content: Text("Invalid image file selected."),
+                            ),
+                          );
                       setState(() {
                         isLoading = false;
                       });

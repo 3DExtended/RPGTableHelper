@@ -11,6 +11,8 @@ abstract class ISnackBarService {
     required SnackBar snack,
     required String uniqueId,
   });
+
+  void hideSnackBar(String uniqueId);
 }
 
 class SnackBarService extends ISnackBarService {
@@ -60,5 +62,14 @@ class SnackBarService extends ISnackBarService {
         _displaySnackBar(nextSnack.snack, nextSnack.uuid);
       }
     });
+  }
+
+  @override
+  void hideSnackBar(String uniqueId) {
+    if (_currentlyShowingSnackUuid == uniqueId) {
+      ScaffoldMessenger.of(_context!).hideCurrentSnackBar();
+    } else {
+      _scheduledSnacks.removeWhere((element) => element.uuid == uniqueId);
+    }
   }
 }

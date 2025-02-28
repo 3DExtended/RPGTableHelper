@@ -24,6 +24,7 @@ import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -214,7 +215,7 @@ class _ThemeConfigurationForAppState
           ))) {
             var snackBar = SnackBar(
               showCloseIcon: true,
-              duration: Duration(seconds: 5),
+              duration: Duration(seconds: 60),
               content: Text(
                 S.of(context).yourAreDisconnectedBody,
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -224,12 +225,15 @@ class _ThemeConfigurationForAppState
               ),
             );
 
-            // Find the ScaffoldMessenger in the widget tree
-            // and use it to show a SnackBar.
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            DependencyProvider.getIt!.get<ISnackBarService>().showSnackBar(
+                  snack: snackBar,
+                  uniqueId:
+                      "disconnectedFromDm-f3fdf3b4-fdfe-4910-9551-00d751020e17",
+                );
           } else {
-            ScaffoldMessenger.of(context).clearSnackBars();
+            DependencyProvider.getIt!.get<ISnackBarService>().hideSnackBar(
+                  "disconnectedFromDm-f3fdf3b4-fdfe-4910-9551-00d751020e17",
+                );
           }
         } else {
           if (connectionDetails.lastPing != null) {

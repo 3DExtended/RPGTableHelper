@@ -11,6 +11,7 @@ import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/systemclock_service.dart';
 
 class DependencyProvider extends InheritedWidget {
@@ -60,6 +61,9 @@ class DependencyProvider extends InheritedWidget {
 
     _registerService<IApiConnectorService>(
         () => ApiConnectorService(), () => MockApiConnectorService());
+
+    _registerService<ISnackBarService>(
+        () => SnackBarService(), () => SnackBarService());
 
     _registerService<IAuthenticationService>(() {
       var encryptionService = getService<IEncryptionService>();

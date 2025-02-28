@@ -29,6 +29,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 import '../../../helpers/modal_helpers.dart';
 
@@ -721,10 +722,17 @@ class _CreateOrEditItemModalContentState
                             if (mimeType == null ||
                                 !(mimeType.startsWith('image/'))) {
                               if (!context.mounted || !mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          "Invalid image file selected.")));
+                              DependencyProvider.of(context)
+                                  .getService<ISnackBarService>()
+                                  .showSnackBar(
+                                    uniqueId:
+                                        "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
+                                    snack: SnackBar(
+                                      content:
+                                          Text("Invalid image file selected."),
+                                    ),
+                                  );
+
                               setState(() {
                                 isLoading = false;
                               });
