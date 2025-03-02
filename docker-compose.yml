@@ -7,9 +7,9 @@ services:
       context: .
       dockerfile: applications/RPGTableHelper.WebApi/Dockerfile
     ports:
-      - "5000:8080"
-      - "5131:5131"
-      - "7172:7172"
+      - "7777:8080"
+      - "7778:5131"
+      - "7779:7172"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
