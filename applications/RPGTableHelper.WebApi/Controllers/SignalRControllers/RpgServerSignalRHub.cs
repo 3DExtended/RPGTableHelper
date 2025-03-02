@@ -384,7 +384,7 @@ public class RpgServerSignalRHub : Hub
         string fileName =
             $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
 
-        string currentDirectory = Directory.GetCurrentDirectory();
+        string currentDirectory = "/app/database/"; // mounting point from docker compose
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 
@@ -446,7 +446,7 @@ public class RpgServerSignalRHub : Hub
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
         string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";
 
-        string currentDirectory = Directory.GetCurrentDirectory();
+        string currentDirectory = "/app/database/";
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 
