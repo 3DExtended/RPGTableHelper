@@ -224,6 +224,9 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        // Apply migrations automatically on startup
+        ApplyMigrations(app);
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -274,6 +277,27 @@ public class Startup
             endpoints.MapHub<RpgServerSignalRHub>("/Chat", (options) => { });
             endpoints.MapControllers();
         });
+    }
+
+    private static void ApplyMigrations(IApplicationBuilder app)
+    {
+        using (var scope = app.ApplicationServices.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<RpgDbContext>();
+
+            // Check and apply pending migrations
+            var pendingMigrations = dbContext.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
+            {
+                Console.WriteLine("Applying pending migrations...");
+                dbContext.Database.Migrate();
+                Console.WriteLine("Migrations applied successfully.");
+            }
+            else
+            {
+                Console.WriteLine("No pending migrations found.");
+            }
+        }
     }
 
     private static void AddCqrs(IServiceCollection services)
