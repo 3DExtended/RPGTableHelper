@@ -25,11 +25,14 @@ import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:uuid/v7.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
   static const route = 'selectgamemode';
@@ -164,8 +167,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                 subsubtitle: S
                                     .of(context)
                                     .youOwnXCharacters(characters?.length ?? 0),
-                                onPressedHandler: () {
-                                  // TODO add new character
+                                onPressedHandler: () async {
+                                  await createNewCharacter();
                                 }),
                             SizedBox(
                               height: 20,
@@ -510,11 +513,100 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
         await createResponse.possiblyHandleError(context);
 
+        setState(() {
+          showLoadingSpinner = false;
+        });
+
+        // TODO show popup that the request was sent to the dm
+        var snackService =
+            DependencyProvider.of(context).getService<ISnackBarService>();
+        snackService.showSnackBar(
+            snack: SnackBar(
+              content: Column(
+                mainAxisSize: MainAxisSize.min, // this property
+
+                children: [
+                  Text(
+                    "Join Request sent",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium!
+                        .copyWith(fontSize: 24, color: textColor),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                      "Join request was sent to the DM. They need to confirm it before you can join the campagne."),
+                ],
+              ),
+              duration: Duration(seconds: 15),
+              showCloseIcon: true,
+            ),
+            uniqueId:
+                "joinRequestWasSent-d0b3e639-f361-49b6-8cd6-68bb9a201b21");
+
         // 3. TODO wait for "joinrequesthandled" signalR method
         // 4. TODO block user from creating more join requsts...
         // 5. TODO reload this screen after "joinrequesthandled" for this player
       });
     }
+  }
+
+  Future createNewCharacter() async {
+    var service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    // first ask user for character name
+    var result =
+        await PlayerPageHelpers.askPlayerForCharacterName(context: context);
+    if (result == null) return;
+
+    setState(() {
+      showLoadingSpinner = true;
+    });
+
+    var createResponse = await service.createNewCharacter(
+      characterName: result,
+      characterConfigJson: jsonEncode(
+        RpgCharacterConfiguration.getBaseConfiguration(null).copyWith(
+          characterName: result,
+          inventory: [],
+          isAlternateFormActive: false,
+          alternateForm: null,
+          alternateForms: null,
+          characterStats: [],
+          moneyInBaseType: 0,
+          uuid: UuidV7().generate(),
+          companionCharacters: [],
+          transformationComponents: [],
+        ),
+      ),
+    );
+
+    if (!mounted) {
+      return;
+    }
+    await createResponse.possiblyHandleError(context);
+    if (!mounted) {
+      return;
+    }
+
+    if (!createResponse.isSuccessful) {
+      setState(() {
+        showLoadingSpinner = false;
+      });
+      return;
+    }
+
+    // reload characters from server
+    var charactersResponse = await service.getPlayerCharacetersForPlayer();
+
+    if (!mounted) return;
+    await charactersResponse.possiblyHandleError(context);
+    setState(() {
+      characters = charactersResponse.result ?? [];
+      showLoadingSpinner = false;
+    });
   }
 
   Future createNewCampagne() async {
@@ -549,7 +641,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       return;
     }
 
-    // load campagne from server
+    // reload campagne from server
     var campagnesResponse = await service.getCampagnesWithPlayerAsDm();
     if (!mounted) {
       return;

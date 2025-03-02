@@ -249,5 +249,7 @@
     "newTransformationSelectionBtn": "Neue Gestalt",
     "no": "Nein",
     "yes": "Ja",
-    "yourAreDisconnectedBody": "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline..."
+    "yourAreDisconnectedBody": "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
+    "characterNameStatTitle": "Charakter-Name",
+    "characterNameStatHelperText": "Wie heißt dein Charakter?"
 }

@@ -2159,6 +2159,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Character Name`
+  String get characterNameStatTitle {
+    return Intl.message(
+      'Character Name',
+      name: 'characterNameStatTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What is the name of your character?`
+  String get characterNameStatHelperText {
+    return Intl.message(
+      'What is the name of your character?',
+      name: 'characterNameStatHelperText',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

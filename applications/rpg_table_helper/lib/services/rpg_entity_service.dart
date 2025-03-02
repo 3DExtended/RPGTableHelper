@@ -50,9 +50,8 @@ abstract class IRpgEntityService {
   Future<HRResponse<List<JoinRequestForCampagneDto>>>
       getOpenJoinRequestsForCampagne({required CampagneIdentifier campagneId});
 
-  Future<HRResponse<PlayerCharacterIdentifier>>
-      savePlayerCharacterAsNewCharacter(
-          {required String characterName, String? characterConfigJson});
+  Future<HRResponse<PlayerCharacterIdentifier>> createNewCharacter(
+      {required String characterName, String? characterConfigJson});
 }
 
 class RpgEntityService extends IRpgEntityService {
@@ -188,9 +187,8 @@ class RpgEntityService extends IRpgEntityService {
   }
 
   @override
-  Future<HRResponse<PlayerCharacterIdentifier>>
-      savePlayerCharacterAsNewCharacter(
-          {required String characterName, String? characterConfigJson}) async {
+  Future<HRResponse<PlayerCharacterIdentifier>> createNewCharacter(
+      {required String characterName, String? characterConfigJson}) async {
     var api = await apiConnectorService.getApiConnector(requiresJwt: true);
     if (api == null) {
       return HRResponse.error('Could not load api connector.',
@@ -398,10 +396,9 @@ class MockRpgEntityService extends IRpgEntityService {
   }
 
   @override
-  Future<HRResponse<PlayerCharacterIdentifier>>
-      savePlayerCharacterAsNewCharacter(
-          {required String characterName, String? characterConfigJson}) {
-    // TODO: implement savePlayerCharacterAsNewCharacter
+  Future<HRResponse<PlayerCharacterIdentifier>> createNewCharacter(
+      {required String characterName, String? characterConfigJson}) {
+    // TODO: implement createNewCharacter
     throw UnimplementedError();
   }
 

@@ -76,6 +76,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "characterNameDefault":
             MessageLookupByLibrary.simpleMessage("Player name"),
         "characterNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+        "characterNameStatHelperText": MessageLookupByLibrary.simpleMessage(
+            "What is the name of your character?"),
+        "characterNameStatTitle":
+            MessageLookupByLibrary.simpleMessage("Character Name"),
         "characterNameWithLevelAndConfigurableDetails":
             MessageLookupByLibrary.simpleMessage(
                 "Character name with level and configurable details"),
