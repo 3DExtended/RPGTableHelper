@@ -44,7 +44,7 @@ dependencies:
   auto_size_text: ^3.0.0
   animated_text_kit: ^4.2.2
   google_fonts: ^6.2.1
-  themed: ^7.0.0
+  themed: ^8.1.0
   page_view_dot_indicator: ^2.3.0
   flutter_cache_manager: ^3.4.1
   pull_to_refresh: ^2.0.0
