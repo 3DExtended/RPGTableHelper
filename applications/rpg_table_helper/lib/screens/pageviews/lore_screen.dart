@@ -430,23 +430,25 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               ),
               Row(
                 children: [
-                  Text(
-                    "${S.of(context).authorLabel} ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? S.of(context).you : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? S.of(context).dm)}",
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: darkTextColor,
-                          fontSize: 12,
-                        ),
-                  ),
+                  if (selectedDocument != null)
+                    Text(
+                      ("${S.of(context).authorLabel} ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? S.of(context).you : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? S.of(context).dm)}"),
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: darkTextColor,
+                            fontSize: 12,
+                          ),
+                    ),
                   Spacer(),
-                  Text(
-                    selectedDocument!.lastModifiedAt!.format(
-                        S.of(context).hourMinutesDayMonthYearFormatString),
-                    textAlign: TextAlign.end,
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: darkTextColor,
-                          fontSize: 12,
-                        ),
-                  ),
+                  if (selectedDocument != null)
+                    Text(
+                      selectedDocument!.lastModifiedAt!.format(
+                          S.of(context).hourMinutesDayMonthYearFormatString),
+                      textAlign: TextAlign.end,
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            color: darkTextColor,
+                            fontSize: 12,
+                          ),
+                    ),
                 ],
               )
             ],

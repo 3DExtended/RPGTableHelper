@@ -177,6 +177,7 @@ class _ThemeConfigurationForAppState
   // This widget is the root of your application.
   @override
   void initState() {
+    log("initState ThemeConfigurationForApp");
     super.initState();
     observer = getObserver();
 
