@@ -22,14 +22,13 @@ services:
       - questkeeper_aspnet_api
     restart: always
     command: tunnel --no-autoupdate run --url http://questkeeper_aspnet_api:8080
-
-  questkeeper_backup_cronjob:
-    container_name: questkeeper_backup_cronjob
-    image: alpine
-    volumes:
-      - questkeeper_sqlitedb:/app/database
-    entrypoint: >
-      sh -c "echo '0 * * * * sqlite3 /app/database/maindb2.db \".backup /app/database/backups/backup-$(date +\%F-\%H%M%S).db\"' | crontab - && crond -f -L /dev/stdout"
+  # questkeeper_backup_cronjob:
+  #   container_name: questkeeper_backup_cronjob
+  #   image: alpine
+  #   volumes:
+  #     - questkeeper_sqlitedb:/app/database
+  #   entrypoint: >
+  #     sh -c "echo '0 * * * * sqlite3 /app/database/maindb2.db \".backup /app/database/backups/backup-$(date +\%F-\%H%M%S).db\"' | crontab - && crond -f -L /dev/stdout"
 
 volumes:
   questkeeper_sqlitedb:
