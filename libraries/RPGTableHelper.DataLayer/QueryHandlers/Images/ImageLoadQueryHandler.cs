@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Queries.Images;
@@ -26,7 +27,7 @@ public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
             "/app/database/userimages/" // mounting point from docker compose
             + query.MetaData.Id.Value.ToString().ToLower();
 
-        if (_hostEnvironment.IsEnvironment("E2ETest"))
+        if (_hostEnvironment.IsEnvironment("E2ETest") || Debugger.IsAttached)
         {
             filepath = "./userimages/" + query.MetaData.Id.Value.ToString().ToLower();
         }

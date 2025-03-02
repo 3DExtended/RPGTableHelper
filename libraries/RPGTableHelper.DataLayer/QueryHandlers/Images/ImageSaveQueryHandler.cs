@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Queries.Images;
@@ -23,7 +24,7 @@ public class ImageSaveQueryHandler : IQueryHandler<ImageSaveQuery, Unit>
         }
 
         var pathPart = "/app/database/userimages/"; // mounting point from docker compose
-        if (_hostEnvironment.IsEnvironment("E2ETest"))
+        if (_hostEnvironment.IsEnvironment("E2ETest") || Debugger.IsAttached)
         {
             pathPart = "./userimages/";
         }

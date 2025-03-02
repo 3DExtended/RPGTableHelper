@@ -1,6 +1,6 @@
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -9,10 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection;
-
 using RPGTableHelper.BusinessLayer;
 using RPGTableHelper.BusinessLayer.Encryption;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
@@ -363,7 +361,14 @@ public class Startup
 
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
-            options.UseSqlite($"Data Source=/app/database/maindb2.db"); // mounting point from docker compose
+            if (Debugger.IsAttached)
+            {
+                options.UseSqlite("Data Source=maindb2.db");
+            }
+            else
+            {
+                options.UseSqlite($"Data Source=/app/database/maindb2.db"); // mounting point from docker compose
+            }
         });
 
         services.AddSingleton<ISystemClock, RealSystemClock>();

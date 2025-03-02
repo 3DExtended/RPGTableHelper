@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -398,6 +399,11 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
+        if (Debugger.IsAttached)
+        {
+            currentDirectory = "./";
+        }
+
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 
@@ -460,6 +466,11 @@ public class RpgServerSignalRHub : Hub
         string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";
 
         string currentDirectory = "/app/database/";
+        if (Debugger.IsAttached)
+        {
+            currentDirectory = "./";
+        }
+
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 
