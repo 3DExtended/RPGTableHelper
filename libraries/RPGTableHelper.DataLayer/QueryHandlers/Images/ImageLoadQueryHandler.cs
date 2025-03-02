@@ -1,5 +1,4 @@
 using Prodot.Patterns.Cqrs;
-
 using RPGTableHelper.DataLayer.Contracts.Queries.Images;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.Images;
@@ -15,7 +14,9 @@ public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
             throw new NotImplementedException();
         }
 
-        var filepath = "./userimages/" + query.MetaData.Id.Value.ToString().ToLower();
+        var filepath =
+            "/app/database/userimages/" // mounting point from docker compose
+            + query.MetaData.Id.Value.ToString().ToLower();
 
         filepath += query.MetaData.ImageType switch
         {
