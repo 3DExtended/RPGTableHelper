@@ -6,8 +6,9 @@ EXPOSE 8080 5131 7172
 # Use the .NET SDK image for building the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY [/applications/RPGTableHelper.WebApi/RPGTableHelper.WebApi.csproj", /applications/RPGTableHelper.WebApi/"]
-RUN dotnet restore /applications/RPGTableHelper.WebApi/RPGTableHelper.WebApi.csproj"
+
+COPY ["/applications/RPGTableHelper.WebApi/RPGTableHelper.WebApi.csproj", "/applications/RPGTableHelper.WebApi/"]
+RUN dotnet restore "/applications/RPGTableHelper.WebApi/RPGTableHelper.WebApi.csproj"
 
 COPY . .
 WORKDIR "/src/applications/RPGTableHelper.WebApi"
