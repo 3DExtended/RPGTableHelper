@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -8,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection;
+
 using RPGTableHelper.BusinessLayer;
 using RPGTableHelper.BusinessLayer.Encryption;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
@@ -39,6 +42,64 @@ public class Startup
     }
 
     public IConfiguration Configuration { get; }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        // Apply migrations automatically on startup
+        ApplyMigrations(app);
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+                    var exception = exceptionHandlerPathFeature?.Error;
+
+                    // Log the exception
+                    context.Response.StatusCode = 500;
+                    Console.WriteLine(exception);
+                    await context.Response.WriteAsync("An internal server error occurred.\n" + exception?.ToString());
+                });
+            });
+        }
+        else
+        {
+            app.UseExceptionHandler("/Error");
+            app.UseHsts();
+        }
+
+        if (env.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Versioned API v1.0");
+            });
+            IdentityModelEventSource.ShowPII = true;
+        }
+
+        app.UseHttpsRedirection();
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
+        app.UseCookiePolicy();
+        app.UseCors("CorsPolicy");
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapHub<RpgServerSignalRHub>("/Chat", (options) => { });
+            endpoints.MapControllers();
+        });
+    }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -221,85 +282,6 @@ public class Startup
         // );
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        // Apply migrations automatically on startup
-        ApplyMigrations(app);
-
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-
-            app.UseExceptionHandler(errorApp =>
-            {
-                errorApp.Run(async context =>
-                {
-                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-
-                    var exception = exceptionHandlerPathFeature?.Error;
-
-                    // Log the exception
-                    context.Response.StatusCode = 500;
-                    Console.WriteLine(exception);
-                    await context.Response.WriteAsync("An internal server error occurred.\n" + exception?.ToString());
-                });
-            });
-        }
-        else
-        {
-            app.UseExceptionHandler("/Error");
-            app.UseHsts();
-        }
-
-        if (env.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Versioned API v1.0");
-            });
-            IdentityModelEventSource.ShowPII = true;
-        }
-
-        app.UseHttpsRedirection();
-        app.UseDefaultFiles();
-        app.UseStaticFiles();
-        app.UseCookiePolicy();
-        app.UseCors("CorsPolicy");
-
-        app.UseRouting();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapHub<RpgServerSignalRHub>("/Chat", (options) => { });
-            endpoints.MapControllers();
-        });
-    }
-
-    private static void ApplyMigrations(IApplicationBuilder app)
-    {
-        using (var scope = app.ApplicationServices.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<RpgDbContext>();
-
-            // Check and apply pending migrations
-            var pendingMigrations = dbContext.Database.GetPendingMigrations();
-            if (pendingMigrations.Any())
-            {
-                Console.WriteLine("Applying pending migrations...");
-                dbContext.Database.Migrate();
-                Console.WriteLine("Migrations applied successfully.");
-            }
-            else
-            {
-                Console.WriteLine("No pending migrations found.");
-            }
-        }
-    }
-
     private static void AddCqrs(IServiceCollection services)
     {
         services.AddProdotPatternsCqrs(options =>
@@ -323,6 +305,34 @@ public class Startup
                         )
                 )
         );
+    }
+
+    private static void ApplyMigrations(IApplicationBuilder app)
+    {
+        var env = app.ApplicationServices.GetRequiredService<IHostEnvironment>();
+        if (env.IsEnvironment("E2ETest"))
+        {
+            return;
+        }
+
+        using (var scope = app.ApplicationServices.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<RpgDbContext>();
+
+            // Check and apply pending migrations
+            var pendingMigrations = dbContext.Database.GetPendingMigrations().ToList();
+
+            if (pendingMigrations != null && pendingMigrations.Any())
+            {
+                Console.WriteLine("Applying pending migrations...");
+                dbContext.Database.Migrate();
+                Console.WriteLine("Migrations applied successfully.");
+            }
+            else
+            {
+                Console.WriteLine("No pending migrations found.");
+            }
+        }
     }
 
     private void AddServiceOptions(IServiceCollection services)

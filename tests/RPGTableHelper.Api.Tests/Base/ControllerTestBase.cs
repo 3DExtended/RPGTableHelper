@@ -1,12 +1,17 @@
 using System.Net;
 using System.Net.Http.Headers;
+
 using AutoMapper;
+
 using FluentAssertions;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
 using Prodot.Patterns.Cqrs;
+
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.EfCore;
@@ -22,18 +27,8 @@ namespace RPGTableHelper.Api.Tests.Base;
 
 public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
-    protected HttpClient Client { get; }
-    protected WebApplicationFactory<Program> Factory { get; }
-
-    protected IServiceProvider ServiceProvider { get; private set; } = default!;
-    protected ISystemClock SystemClock { get; private set; } = default!;
-    protected IQueryProcessor QueryProcessor { get; private set; } = default!;
-    protected IJWTTokenGenerator JwtTokenGenerator { get; private set; } = default!;
-    protected RpgDbContext Context { get; private set; } = default!;
-    protected IMapper Mapper { get; private set; } = default!;
-
-    protected IDbContextFactory<RpgDbContext> ContextFactory { get; private set; } = default!;
     private readonly string _runIdentifier;
+
     private bool _isDisposed;
 
     protected ControllerTestBase(WebApplicationFactory<Program> factory)
@@ -78,27 +73,28 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
         Client = Factory.CreateClient();
     }
 
+    protected HttpClient Client { get; }
+
+    protected RpgDbContext Context { get; private set; } = default!;
+
+    protected IDbContextFactory<RpgDbContext> ContextFactory { get; private set; } = default!;
+
+    protected WebApplicationFactory<Program> Factory { get; }
+
+    protected IJWTTokenGenerator JwtTokenGenerator { get; private set; } = default!;
+
+    protected IMapper Mapper { get; private set; } = default!;
+
+    protected IQueryProcessor QueryProcessor { get; private set; } = default!;
+
+    protected IServiceProvider ServiceProvider { get; private set; } = default!;
+
+    protected ISystemClock SystemClock { get; private set; } = default!;
+
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_isDisposed)
-        {
-            return;
-        }
-
-        if (disposing)
-        {
-            // free managed resources
-            Context?.Database.CloseConnection();
-            Context?.Dispose();
-        }
-
-        _isDisposed = true;
     }
 
     protected async Task<User> ConfigureLoggedInUser()
@@ -126,6 +122,23 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         return user!;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            // free managed resources
+            Context?.Database.CloseConnection();
+            Context?.Dispose();
+        }
+
+        _isDisposed = true;
     }
 
     private static void ReconfigureOptions(IServiceCollection services)
