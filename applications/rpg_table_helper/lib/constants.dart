@@ -53,8 +53,11 @@ const sharedPrefsKeyRpgConfigJson = "rpgconfig";
 const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 
 // The location of the SignalR Server.
-const apiBaseUrl =
-    kDebugMode ? "http://localhost:5012/" : "https://rpghelper.peter-esser.de/";
+// NOTE: Make sure to include the trailing slash.
+const apiBaseUrl = kDebugMode
+    ? "http://localhost:5012/"
+    : "https://questkeeper-prod.peter-esser.de/";
+
 const serverUrl = "${apiBaseUrl}Chat";
 
 const whiteBgTint = Color.fromARGB(33, 210, 191, 221);
