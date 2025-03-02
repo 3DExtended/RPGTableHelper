@@ -5,24 +5,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/colored_rotated_square.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/context_extension.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/lore_screen.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_helpers.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_money.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_screen_recepies.dart';
+import 'package:quest_keeper/components/colored_rotated_square.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/lore_screen.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_money.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_recepies.dart';
 import 'package:signalr_netcore/errors.dart';
 
 class PlayerPageScreenRouteSettings {
@@ -134,28 +135,20 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                     .indexWhere((e) => e.uuid == charToRender!.uuid);
 
                 if (indexOfSelectedCompChar == -1) {
-                  // check altforms
-                  List<RpgAlternateCharacterConfiguration> altCharactersCopy = [
-                    ...(newestCharacterConfig.alternateForms ?? [])
-                  ];
-                  var indexOfSelectedAltForm = altCharactersCopy
-                      .indexWhere((e) => e.uuid == charToRender!.uuid);
-
-                  if (indexOfSelectedAltForm == -1) {
+                  if (newestCharacterConfig.alternateForm == null) {
                     throw NotImplementedException();
-                  } else {
-                    altCharactersCopy[indexOfSelectedAltForm] =
-                        altCharactersCopy[indexOfSelectedAltForm]
-                            .copyWith(characterStats: mergedStats);
-
-                    charToRender = newestCharacterConfig.copyWith(
-                        alternateForms: altCharactersCopy);
-
-                    ref
-                        .read(rpgCharacterConfigurationProvider.notifier)
-                        .updateConfiguration(newestCharacterConfig.copyWith(
-                            alternateForms: altCharactersCopy));
                   }
+
+                  // check altforms
+                  charToRender = newestCharacterConfig.copyWith(
+                      alternateForm: newestCharacterConfig.alternateForm!
+                          .copyWith(characterStats: mergedStats));
+
+                  ref
+                      .read(rpgCharacterConfigurationProvider.notifier)
+                      .updateConfiguration(newestCharacterConfig.copyWith(
+                          alternateForm: newestCharacterConfig.alternateForm!
+                              .copyWith(characterStats: mergedStats)));
                 } else {
                   companionCharactersCopy[indexOfSelectedCompChar] =
                       companionCharactersCopy[indexOfSelectedCompChar]
@@ -307,6 +300,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
           Navbar(
             useTopSafePadding: true,
             closeFunction: () {
+              // close connection
+              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+                  ref.read(connectionDetailsProvider).requireValue.copyWith(
+                        isInSession: false,
+                        isDm: false,
+                      ));
+
               navigatorKey.currentState!.pop();
             },
             titleWidget: Row(

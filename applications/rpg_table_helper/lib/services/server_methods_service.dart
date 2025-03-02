@@ -3,19 +3,19 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/list_extensions.dart';
-import 'package:rpg_table_helper/helpers/modals/show_ask_player_for_fight_order_roll.dart';
-import 'package:rpg_table_helper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/services/navigation_service.dart';
-import 'package:rpg_table_helper/services/server_communication_service.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/list_extensions.dart';
+import 'package:quest_keeper/helpers/modals/show_ask_player_for_fight_order_roll.dart';
+import 'package:quest_keeper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/navigation_service.dart';
+import 'package:quest_keeper/services/server_communication_service.dart';
 
 abstract class IServerMethodsService {
   final bool isMock;
@@ -76,6 +76,15 @@ abstract class IServerMethodsService {
       function: clientDisconnected,
       functionName: "clientDisconnected",
     );
+
+    serverCommunicationService.registerCallbackSingleDateTime(
+      function: pingFromDm,
+      functionName: "pingFromDm",
+    );
+    serverCommunicationService.registerCallbackSingleDateTimeAndOneString(
+      function: pongFromPlayer,
+      functionName: "pongFromPlayer",
+    );
   }
 
   // this should contain every method that is callable by the server
@@ -93,7 +102,15 @@ abstract class IServerMethodsService {
   void requestStatusFromPlayers();
   void clientDisconnected(String userId);
 
+  void pingFromDm(DateTime timestamp);
+  void pongFromPlayer(DateTime timestamp, String userId);
+
   // this should contain every method that call the server
+  Future sendPingToPlayers(
+      {required String campagneId, required DateTime timestamp});
+  Future sendPongToDm(
+      {required String campagneId, required DateTime timestamp});
+
   Future registerGame({required String campagneId});
   Future readdToSignalRGroups();
   Future joinGameSession({required String playerCharacterId});
@@ -296,6 +313,7 @@ class ServerMethodsService extends IServerMethodsService {
       configuration: receivedConfig,
       playerCharacterId: PlayerCharacterIdentifier($value: playerId),
       userId: UserIdentifier($value: userId),
+      lastPing: DateTime.now(),
     );
 
     if (indexOfExistingPlayer == -1) {
@@ -498,5 +516,70 @@ class ServerMethodsService extends IServerMethodsService {
             fightSequence: FightSequence(
                 fightUuid: currentFightSequenceAskedFor.fightUuid,
                 sequence: fightSequenceList)));
+  }
+
+  @override
+  void pingFromDm(DateTime timestamp) {
+    Future.delayed(Duration.zero, () async {
+      log("pingFromDm is called: $timestamp");
+      // update lastPing on connection details
+      var currentConnectionDetails =
+          widgetRef.read(connectionDetailsProvider).requireValue;
+      widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+          currentConnectionDetails.copyWith(lastPing: timestamp));
+
+      await sendPongToDm(
+          campagneId: widgetRef
+              .read(connectionDetailsProvider)
+              .requireValue
+              .campagneId!,
+          timestamp: timestamp);
+    });
+  }
+
+  @override
+  void pongFromPlayer(DateTime timestamp, String userId) {
+    log("pingFromDm is received");
+
+    var currentConnectionDetails =
+        widgetRef.read(connectionDetailsProvider).requireValue;
+
+    var indexOfExistingPlayer = currentConnectionDetails.connectedPlayers
+        ?.indexWhere((p) => p.userId.$value! == userId);
+
+    if (indexOfExistingPlayer == -1 || indexOfExistingPlayer == null) {
+      return;
+    } else {
+      currentConnectionDetails.connectedPlayers![indexOfExistingPlayer] =
+          currentConnectionDetails.connectedPlayers![indexOfExistingPlayer]
+              .copyWith(lastPing: timestamp);
+
+      widgetRef
+          .read(connectionDetailsProvider.notifier)
+          .updateConfiguration(currentConnectionDetails);
+    }
+  }
+
+  @override
+  Future sendPingToPlayers(
+      {required String campagneId, required DateTime timestamp}) async {
+    // SendPingToPlayers(string campagneId, DateTime timestamp)
+    await serverCommunicationService
+        .executeServerFunction("SendPingToPlayers", args: [
+      campagneId,
+      timestamp.toIso8601String(),
+    ]);
+  }
+
+  @override
+  Future sendPongToDm(
+      {required String campagneId, required DateTime timestamp}) async {
+    log("sendPongToDm is called: $timestamp");
+    // SendPongToDm(string campagneId, DateTime timestamp)
+    await serverCommunicationService
+        .executeServerFunction("SendPongToDm", args: [
+      campagneId,
+      timestamp.toIso8601String(),
+    ]);
   }
 }

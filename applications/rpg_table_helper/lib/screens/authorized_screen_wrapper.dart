@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
-import 'package:rpg_table_helper/screens/character_screen.dart';
-import 'package:rpg_table_helper/screens/crafting_screen.dart';
-import 'package:rpg_table_helper/screens/inventory_screen.dart';
-import 'package:rpg_table_helper/screens/search_screen.dart';
-import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/navigation_service.dart';
-import 'package:rpg_table_helper/services/server_communication_service.dart';
+import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:quest_keeper/screens/character_screen.dart';
+import 'package:quest_keeper/screens/crafting_screen.dart';
+import 'package:quest_keeper/screens/inventory_screen.dart';
+import 'package:quest_keeper/screens/search_screen.dart';
+import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/navigation_service.dart';
+import 'package:quest_keeper/services/server_communication_service.dart';
 
 class AuthorizedScreenWrapper extends ConsumerStatefulWidget {
   static const route = '/';

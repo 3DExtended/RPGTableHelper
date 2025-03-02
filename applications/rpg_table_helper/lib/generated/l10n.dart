@@ -1969,6 +1969,196 @@ class S {
       args: [],
     );
   }
+
+  /// `Transform`
+  String get tranformToAlternateForm {
+    return Intl.message(
+      'Transform',
+      name: 'tranformToAlternateForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transform into alternate form`
+  String get transformIntoAlternateForm {
+    return Intl.message(
+      'Transform into alternate form',
+      name: 'transformIntoAlternateForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add new transformations`
+  String get addNewTransformationComponent {
+    return Intl.message(
+      'Add new transformations',
+      name: 'addNewTransformationComponent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create new transformation`
+  String get createNewTransformationTitle {
+    return Intl.message(
+      'Create new transformation',
+      name: 'createNewTransformationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transformation name`
+  String get transformationName {
+    return Intl.message(
+      'Transformation name',
+      name: 'transformationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transformation description`
+  String get transformationDescription {
+    return Intl.message(
+      'Transformation description',
+      name: 'transformationDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn't change this property, you don't have to select it.)`
+  String get createTransformationHelperText {
+    return Intl.message(
+      'In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn\'t change this property, you don\'t have to select it.)',
+      name: 'createTransformationHelperText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get back {
+    return Intl.message(
+      'Back',
+      name: 'back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get next {
+    return Intl.message(
+      'Next',
+      name: 'next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warning`
+  String get warning {
+    return Intl.message(
+      'Warning',
+      name: 'warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.`
+  String get youAreEditingAnAlternateFormWarningText {
+    return Intl.message(
+      'You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.',
+      name: 'youAreEditingAnAlternateFormWarningText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transformation is edited`
+  String get transformationIsEditedWarningTitle {
+    return Intl.message(
+      'Transformation is edited',
+      name: 'transformationIsEditedWarningTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Property is copied`
+  String get propertyIsCopied {
+    return Intl.message(
+      'Property is copied',
+      name: 'propertyIsCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are editing a copied property. Changes will not affect the original property.`
+  String get youAreEditingACopiedPropertyChangesWillNotAffect {
+    return Intl.message(
+      'You are editing a copied property. Changes will not affect the original property.',
+      name: 'youAreEditingACopiedPropertyChangesWillNotAffect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous transformation`
+  String get previousTransformationSelectionBtn {
+    return Intl.message(
+      'Previous transformation',
+      name: 'previousTransformationSelectionBtn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New transformation`
+  String get newTransformationSelectionBtn {
+    return Intl.message(
+      'New transformation',
+      name: 'newTransformationSelectionBtn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your are disconnected... Either you or the DM has lost the connection.`
+  String get yourAreDisconnectedBody {
+    return Intl.message(
+      'Your are disconnected... Either you or the DM has lost the connection.',
+      name: 'yourAreDisconnectedBody',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 
 class RpgConfigurationWizardStep1CampagneName extends WizardStepBase {
   const RpgConfigurationWizardStep1CampagneName({

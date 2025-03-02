@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/constants.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField(
@@ -69,20 +69,20 @@ class CustomTextField extends StatelessWidget {
             hintStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
-                .copyWith(color: darkTextColor),
+                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
             labelStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
-                .copyWith(color: darkTextColor),
+                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
             helperStyle: Theme.of(context)
                 .textTheme
                 .labelSmall!
-                .copyWith(color: darkTextColor),
+                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
           ),
           style: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: darkTextColor),
+              .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
           controller: textEditingController,
         ),
       );

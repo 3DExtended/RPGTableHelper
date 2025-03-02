@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.enums.swagger.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/models/humanreadable_response.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
-import 'package:rpg_table_helper/services/internals/internal_image_upload_service.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.enums.swagger.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/models/humanreadable_response.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/auth/api_connector_service.dart';
+import 'package:quest_keeper/services/internals/internal_image_upload_service.dart';
 
 abstract class IRpgEntityService {
   final bool isMock;

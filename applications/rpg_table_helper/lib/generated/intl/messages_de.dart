@@ -44,6 +44,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Charakter zur Kampagne hinzufügen"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Bild"),
         "addItems": MessageLookupByLibrary.simpleMessage("Items hinzufügen"),
+        "addNewTransformationComponent": MessageLookupByLibrary.simpleMessage(
+            "Füge neue Verwandlungsformen hinzu"),
         "addParagraphBtnLabel": MessageLookupByLibrary.simpleMessage("Absatz"),
         "additionalElement":
             MessageLookupByLibrary.simpleMessage("Neues Element"),
@@ -60,6 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden."),
         "authorLabel": MessageLookupByLibrary.simpleMessage("Autor:"),
+        "back": MessageLookupByLibrary.simpleMessage("Zurück"),
         "calculatedValue":
             MessageLookupByLibrary.simpleMessage("Berechneter Wert"),
         "calculatedValuePlaceholder":
@@ -98,6 +101,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Herstellbar"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Neuen Account anlegen"),
+        "createNewTransformationTitle":
+            MessageLookupByLibrary.simpleMessage("Neue Verwandlung erstellen"),
+        "createTransformationHelperText": MessageLookupByLibrary.simpleMessage(
+            "Um eine neue Transformation zu erstellen, musst du die Eigenschaften auswählen, die durch diese Verwandlung verändert werden. (Wenn die Eigenschaft nicht verändert wird, muss sie auch nicht ausgewählt werden.)"),
         "currentBalance":
             MessageLookupByLibrary.simpleMessage("Aktuelles Guthaben"),
         "currentFightOrdering":
@@ -241,6 +248,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("Neue Eigenschaft"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("Neuer Tab"),
+        "newTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Neue Gestalt"),
+        "next": MessageLookupByLibrary.simpleMessage("Weiter"),
+        "no": MessageLookupByLibrary.simpleMessage("Nein"),
         "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
             "Aktuell kein Kampf gestartet"),
         "noItemsGranted": MessageLookupByLibrary.simpleMessage(
@@ -290,12 +301,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "player": MessageLookupByLibrary.simpleMessage("Spieler"),
         "playerRolls": MessageLookupByLibrary.simpleMessage("Spieler Würfe"),
         "preview": MessageLookupByLibrary.simpleMessage("Vorschau"),
+        "previousTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Alte Gestalt"),
         "propertyEditTypeLabel":
             MessageLookupByLibrary.simpleMessage("Veränderungshäufigkeit"),
         "propertyEditTypeOneTap": MessageLookupByLibrary.simpleMessage(
             "Häufig verändert (bspw. jede Session)"),
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Selten verändert (bspw. je Level-Up)"),
+        "propertyIsCopied":
+            MessageLookupByLibrary.simpleMessage("Eigenschaft wurde kopiert"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
         "receivedItemsModalHeader":
             MessageLookupByLibrary.simpleMessage("Neue Items"),
@@ -343,11 +358,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Einzeiliger Text"),
         "startAsDm": MessageLookupByLibrary.simpleMessage("Als DM spielen"),
+        "tranformToAlternateForm":
+            MessageLookupByLibrary.simpleMessage("Verwandeln"),
+        "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(
+            "Verwandeln in eine andere Form"),
+        "transformationDescription":
+            MessageLookupByLibrary.simpleMessage("Beschreibung"),
+        "transformationIsEditedWarningTitle":
+            MessageLookupByLibrary.simpleMessage("Verwandlung wird bearbeitet"),
+        "transformationName":
+            MessageLookupByLibrary.simpleMessage("Verwandlungsname"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
         "valueOfPropertyWithName": m2,
+        "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
+        "yes": MessageLookupByLibrary.simpleMessage("Ja"),
         "you": MessageLookupByLibrary.simpleMessage("Du"),
+        "youAreEditingACopiedPropertyChangesWillNotAffect":
+            MessageLookupByLibrary.simpleMessage(
+                "Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf den Haupt-Charakter übertragen."),
+        "youAreEditingAnAlternateFormWarningText":
+            MessageLookupByLibrary.simpleMessage(
+                "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst)."),
         "youOwnXCampaigns": m3,
-        "youOwnXCharacters": m4
+        "youOwnXCharacters": m4,
+        "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
+            "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...")
       };
 }

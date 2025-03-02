@@ -329,7 +329,7 @@ public class Startup
 
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
-            options.UseSqlite($"DataSource=file:maindb2.db");
+            options.UseSqlite($"Data Source=/app/database/maindb2.db"); // mounting point from docker compose
         });
 
         services.AddSingleton<ISystemClock, RealSystemClock>();

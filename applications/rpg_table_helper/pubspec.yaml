@@ -1,8 +1,8 @@
-name: rpg_table_helper
+name: quest_keeper
 description: "A tablet app helping with your favorite RPG table top games!"
 publish_to: 'none'
 
-version: 0.5.3+187
+version: 0.6.1+194
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -74,24 +74,16 @@ flutter:
     - assets/extern/logos/
     - assets/
     - assets/fonts/
-    - assets/fonts/Roboto,Ruwudu/Ruwudu/
+    - assets/fonts/Merriweather/
     - assets/icons/
     - assets/icons/inappcategoryicons/
 
-fonts:
-  # - family: Roboto
-  #   fonts:
-  #     - asset: assets/fonts/Roboto-2/Roboto-Regular.ttf
-  #     - asset: assets/fonts/Roboto-2/Roboto-Italic.ttf
-  #       style: italic
-  #     - asset: assets/fonts/Roboto-2/Roboto-Bold.ttf
-  #       style: bold
-
-   - family: Ruwudu
-     fonts:
-       - asset: assets/fonts/Roboto,Ruwudu/Ruwudu/Ruwudu-Regular.ttf
-       - asset: assets/fonts/Roboto,Ruwudu/Ruwudu/Ruwudu-Bold.ttf
-         style: bold
+  fonts:
+    - family: Ruwudu
+      fonts:
+       - asset: assets/fonts/Merriweather/Merriweather-Regular.ttf
+       - asset: assets/fonts/Merriweather/Merriweather-Bold.ttf
+         weight: 700
 
 flutter_intl:
   enabled: true

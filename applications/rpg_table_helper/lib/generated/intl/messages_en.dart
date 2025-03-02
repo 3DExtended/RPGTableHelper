@@ -42,6 +42,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add character to campaign"),
         "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Image"),
         "addItems": MessageLookupByLibrary.simpleMessage("Add items"),
+        "addNewTransformationComponent":
+            MessageLookupByLibrary.simpleMessage("Add new transformations"),
         "addParagraphBtnLabel":
             MessageLookupByLibrary.simpleMessage("Paragraph"),
         "additionalElement":
@@ -59,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM."),
         "authorLabel": MessageLookupByLibrary.simpleMessage("Author:"),
+        "back": MessageLookupByLibrary.simpleMessage("Back"),
         "calculatedValue":
             MessageLookupByLibrary.simpleMessage("Calculated value"),
         "calculatedValuePlaceholder":
@@ -97,6 +100,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Craftable"),
         "createNewAccount":
             MessageLookupByLibrary.simpleMessage("Create new account"),
+        "createNewTransformationTitle":
+            MessageLookupByLibrary.simpleMessage("Create new transformation"),
+        "createTransformationHelperText": MessageLookupByLibrary.simpleMessage(
+            "In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn\'t change this property, you don\'t have to select it.)"),
         "currentBalance":
             MessageLookupByLibrary.simpleMessage("Current balance"),
         "currentFightOrdering":
@@ -233,6 +240,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPropertyBtnLabel":
             MessageLookupByLibrary.simpleMessage("New property"),
         "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("New tab"),
+        "newTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("New transformation"),
+        "next": MessageLookupByLibrary.simpleMessage("Next"),
+        "no": MessageLookupByLibrary.simpleMessage("No"),
         "noFIghtStarted":
             MessageLookupByLibrary.simpleMessage("No fight started yet"),
         "noItemsGranted":
@@ -282,12 +293,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "player": MessageLookupByLibrary.simpleMessage("Player"),
         "playerRolls": MessageLookupByLibrary.simpleMessage("Player rolls"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
+        "previousTransformationSelectionBtn":
+            MessageLookupByLibrary.simpleMessage("Previous transformation"),
         "propertyEditTypeLabel":
             MessageLookupByLibrary.simpleMessage("Change frequency"),
         "propertyEditTypeOneTap": MessageLookupByLibrary.simpleMessage(
             "Frequently changed (e.g. every session)"),
         "propertyEditTypeStatic": MessageLookupByLibrary.simpleMessage(
             "Rarely changed (e.g. per level-up)"),
+        "propertyIsCopied":
+            MessageLookupByLibrary.simpleMessage("Property is copied"),
         "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
         "receivedItemsModalHeader":
             MessageLookupByLibrary.simpleMessage("Received items"),
@@ -334,11 +349,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Single line text"),
         "startAsDm": MessageLookupByLibrary.simpleMessage("Play as DM"),
+        "tranformToAlternateForm":
+            MessageLookupByLibrary.simpleMessage("Transform"),
+        "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(
+            "Transform into alternate form"),
+        "transformationDescription":
+            MessageLookupByLibrary.simpleMessage("Transformation description"),
+        "transformationIsEditedWarningTitle":
+            MessageLookupByLibrary.simpleMessage("Transformation is edited"),
+        "transformationName":
+            MessageLookupByLibrary.simpleMessage("Transformation name"),
         "user": MessageLookupByLibrary.simpleMessage("User:"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "valueOfPropertyWithName": m2,
+        "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "yes": MessageLookupByLibrary.simpleMessage("Yes"),
         "you": MessageLookupByLibrary.simpleMessage("You"),
+        "youAreEditingACopiedPropertyChangesWillNotAffect":
+            MessageLookupByLibrary.simpleMessage(
+                "You are editing a copied property. Changes will not affect the original property."),
+        "youAreEditingAnAlternateFormWarningText":
+            MessageLookupByLibrary.simpleMessage(
+                "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation."),
         "youOwnXCampaigns": m3,
-        "youOwnXCharacters": m4
+        "youOwnXCharacters": m4,
+        "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
+            "Your are disconnected... Either you or the DM has lost the connection.")
       };
 }

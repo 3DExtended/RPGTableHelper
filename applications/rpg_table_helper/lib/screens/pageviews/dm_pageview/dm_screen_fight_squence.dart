@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_loading_spinner.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:uuid/v7.dart';
 
 class DmScreenFightSquence extends ConsumerStatefulWidget {

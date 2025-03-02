@@ -4,22 +4,27 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/bordered_image.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/pentagon_with_label.dart';
-import 'package:rpg_table_helper/components/progress_indicator_for_character_screen.dart';
-import 'package:rpg_table_helper/components/static_grid.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/icons_helper.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/components/pentagon_with_label.dart';
+import 'package:quest_keeper/components/progress_indicator_for_character_screen.dart';
+import 'package:quest_keeper/components/static_grid.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/modals/show_reactivate_previous_transformation_modal.dart';
+import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
@@ -28,6 +33,7 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.int:
     case CharacterStatValueType.companionSelector:
+    case CharacterStatValueType.transformIntoAlternateFormBtn:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return 1;
@@ -64,6 +70,9 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.companionSelector:
       return renderCompanionSelector(onNewStatValue, characterValue, context,
           characterToRenderStatFor, statConfiguration);
+    case CharacterStatValueType.transformIntoAlternateFormBtn:
+      return renderTransformIntoAlternateFormBtn(onNewStatValue, characterValue,
+          context, characterToRenderStatFor, statConfiguration);
 
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
       return renderCharacterNameWithLevelAndAdditionalDetailsStat(
@@ -112,6 +121,10 @@ Widget renderCompanionSelector(
           .map((e) => (e as Map<String, dynamic>)["uuid"] as String)
           .toList();
 
+  if (selectedCompanionIds.isEmpty) {
+    return Container();
+  }
+
   List<
       ({
         String characterName,
@@ -119,6 +132,7 @@ Widget renderCompanionSelector(
         String? imageUrl,
         RpgAlternateCharacterConfiguration companionConfig
       })> companionDetailsToRender = [];
+
   for (var selectedCompanionId in selectedCompanionIds) {
     var companionOfCharacter =
         (characterToRenderStatFor?.companionCharacters ?? [])
@@ -137,6 +151,10 @@ Widget renderCompanionSelector(
   }
   companionDetailsToRender =
       companionDetailsToRender.sortedBy((k) => k.characterName);
+
+  if (companionDetailsToRender.isEmpty) {
+    return Container();
+  }
 
   return Column(
     children: [
@@ -172,6 +190,151 @@ Widget renderCompanionSelector(
       )
     ],
   );
+}
+
+Widget renderTransformIntoAlternateFormBtn(
+    void Function(String newSerializedValue) onNewStatValue,
+    RpgCharacterStatValue characterValue,
+    BuildContext context,
+    RpgCharacterConfiguration? characterToRenderStatFor,
+    CharacterStatDefinition statConfiguration) {
+  if (characterToRenderStatFor == null ||
+      characterToRenderStatFor.transformationComponents == null ||
+      characterToRenderStatFor.transformationComponents!.isEmpty) {
+    return Container();
+  }
+
+  return Column(
+    children: [
+      getIconForIdentifier(
+        name: "magic-wand-svgrepo-com",
+        color: darkColor,
+        size: 50,
+      ).$2,
+      SizedBox(
+        height: 10,
+      ),
+      Wrap(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(5),
+            child: CustomButtonTransformToAlternateForm(
+              characterToRenderStatFor: characterToRenderStatFor,
+            ),
+          ),
+        ],
+      )
+    ],
+  );
+}
+
+class CustomButtonTransformToAlternateForm extends ConsumerStatefulWidget {
+  const CustomButtonTransformToAlternateForm({
+    super.key,
+    this.characterToRenderStatFor,
+  });
+  final RpgCharacterConfiguration? characterToRenderStatFor;
+
+  @override
+  ConsumerState<CustomButtonTransformToAlternateForm> createState() =>
+      _CustomButtonTransformToAlternateFormState();
+}
+
+class _CustomButtonTransformToAlternateFormState
+    extends ConsumerState<CustomButtonTransformToAlternateForm> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomButton(
+        label: S.of(context).tranformToAlternateForm,
+        onPressed: () async {
+          // open modal, select alternate form components and save
+          // now open saved alternate form
+
+          // if there is only one alternate form, just switch to it
+          var rpgConfig = ref.read(rpgConfigurationProvider).requireValue;
+          var rpgCharConfig =
+              ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+          RpgCharacterConfigurationBase? newestVersionCharacterToRenderStatFor =
+              rpgCharConfig.companionCharacters?.firstWhereOrNull(
+                  (c) => c.uuid == widget.characterToRenderStatFor?.uuid);
+
+          if (newestVersionCharacterToRenderStatFor == null &&
+              rpgCharConfig.uuid == widget.characterToRenderStatFor?.uuid) {
+            newestVersionCharacterToRenderStatFor = rpgCharConfig;
+          }
+          if (newestVersionCharacterToRenderStatFor == null &&
+              rpgCharConfig.alternateForm != null &&
+              rpgCharConfig.alternateForm!.uuid ==
+                  widget.characterToRenderStatFor?.uuid) {
+            newestVersionCharacterToRenderStatFor =
+                rpgCharConfig.alternateForm!;
+          }
+
+          newestVersionCharacterToRenderStatFor ??=
+              widget.characterToRenderStatFor;
+
+          if (widget.characterToRenderStatFor?.transformationComponents
+                  ?.isNotEmpty ==
+              true) {
+            RpgAlternateCharacterConfiguration? transformationToSwitchTo;
+            if (newestVersionCharacterToRenderStatFor!.alternateForm != null) {
+              // if there is already a alternate for stored, ask the user if they want to switch to it instead of creating a new one
+              var showPreviousAlternateForm =
+                  await showReactivatePreviousTransformationModal(context);
+              if (showPreviousAlternateForm == null) return;
+
+              if (showPreviousAlternateForm == true) {
+                transformationToSwitchTo =
+                    widget.characterToRenderStatFor!.alternateForm;
+              }
+            }
+
+            transformationToSwitchTo ??=
+                await showSelectTransformationComponentsForTransformation(
+                    context,
+                    rpgCharConfig: widget.characterToRenderStatFor!,
+                    rpgConfig: rpgConfig);
+
+            if (transformationToSwitchTo == null) return;
+
+            var charConfigToUpdate =
+                ref.read(rpgCharacterConfigurationProvider).requireValue;
+
+            ref
+                .read(rpgCharacterConfigurationProvider.notifier)
+                .updateConfiguration(
+                  charConfigToUpdate.copyWith(
+                    isAlternateFormActive: true,
+                    alternateForm: transformationToSwitchTo,
+                  ),
+                );
+
+            // open companion page
+            navigatorKey.currentState!
+                .pushNamed(PlayerPageScreen.route,
+                    arguments: PlayerPageScreenRouteSettings(
+                      disableEdit: false,
+                      showMoney: false,
+                      characterConfigurationOverride: transformationToSwitchTo,
+                      showInventory: false,
+                      showLore: false,
+                      showRecipes: false,
+                    ))
+                .then((onValue) {
+              charConfigToUpdate =
+                  ref.read(rpgCharacterConfigurationProvider).requireValue;
+              ref
+                  .read(rpgCharacterConfigurationProvider.notifier)
+                  .updateConfiguration(
+                    charConfigToUpdate.copyWith(
+                      isAlternateFormActive: false,
+                    ),
+                  );
+            });
+          }
+        });
+  }
 }
 
 Widget renderMultiselectStat(

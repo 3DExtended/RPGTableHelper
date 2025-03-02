@@ -3,13 +3,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../test_configuration.dart';
 
@@ -51,27 +52,29 @@ void main() {
             );
           }),
         ],
-        child: MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
-              ...AppLocalizations.localizationsDelegates,
-              S.delegate
-            ],
-            locale: locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              fontFamily: 'Roboto',
-              useMaterial3: true,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 16,
+        child: ThemeConfigurationForApp(
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Ruwudu',
+                useMaterial3: true,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
-            ),
-            home: RegisterScreen()),
+              home: ThemeConfigurationForApp(child: RegisterScreen())),
+        ),
       ),
       getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
         MapEntry(

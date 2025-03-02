@@ -4,32 +4,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/bordered_image.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
-import 'package:rpg_table_helper/helpers/modal_helpers.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_helpers.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/rpg_entity_service.dart';
-import 'package:rpg_table_helper/services/server_communication_service.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_loading_spinner.dart';
+import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/date_time_extensions.dart';
+import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_helpers.dart';
+import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/server_communication_service.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
   static const route = 'selectgamemode';
@@ -370,6 +370,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         (ref.read(connectionDetailsProvider).valueOrNull ??
                 ConnectionDetails.defaultValue())
             .copyWith(
+                lastPing: null,
                 isDm: true,
                 connectedPlayers: null,
                 fightSequence: null,
@@ -460,6 +461,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   ConnectionDetails.defaultValue())
               .copyWith(
                   isDm: false,
+                  lastPing: null,
                   connectedPlayers: null,
                   fightSequence: null,
                   lastGrantedItems: null,

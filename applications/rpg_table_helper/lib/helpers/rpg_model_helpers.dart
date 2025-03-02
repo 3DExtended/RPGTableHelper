@@ -1,5 +1,5 @@
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 List<(RpgItem item, int amount)> getInventoryOfCharacter(
     RpgConfigurationModel rpgConfig, RpgCharacterConfiguration character) {

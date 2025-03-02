@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_recipe_card.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_create_or_edit_item_recipe_modal.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_recipe_card.dart';
+import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_create_or_edit_item_recipe_modal.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep7CraftingRecipes extends WizardStepBase {

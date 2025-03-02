@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/helpers/rpg_model_helpers.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/helpers/rpg_model_helpers.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 void main() {
   group("getCraftingRecipiesForCharacter", () {
@@ -114,7 +114,9 @@ void main() {
         );
 
         character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "f2d956b6-a739-451a-8213-c60a2337868d",
@@ -294,7 +296,9 @@ void main() {
           placesOfFindings: [],
           rpgName: "asdf");
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "70cafb00-e08a-473c-9d57-10b712c5b9b0",
@@ -381,7 +385,9 @@ void main() {
       var inventoryItem =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid1', amount: 1);
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "b29172ae-c46d-4ac1-9736-8f70d56e53b1",
@@ -482,7 +488,9 @@ void main() {
       var inventoryItem2 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid2', amount: 2);
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "09f070d6-dd4a-4b5b-bb92-9c085fa0b507",
@@ -573,7 +581,9 @@ void main() {
       var inventoryItem1 = RpgCharacterOwnedItemPair(
           itemUuid: 'uuid3', amount: 5); // Not in rpgConfig.allItems
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "e7f433f9-4c48-47b6-bd14-927f7bd1a71a",
@@ -660,7 +670,9 @@ void main() {
       var inventoryItem1 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid1', amount: 0);
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "b3d29e6d-05d1-4aa2-b17a-a8b0b541995f",
@@ -749,7 +761,9 @@ void main() {
       var inventoryItem2 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid2', amount: 3);
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "0398ad10-1469-40e6-9e92-ef1ce483e284",
@@ -840,7 +854,9 @@ void main() {
           placesOfFindings: [],
           rpgName: "asdf");
       var character = RpgCharacterConfiguration(
-          activeAlternateFormIndex: null,
+          transformationComponents: null,
+          alternateForm: null,
+          isAlternateFormActive: null,
           alternateForms: [],
           companionCharacters: [],
           uuid: "cfada5f0-6f72-48d2-a5f6-4ab3d660ba0f",

@@ -1,0 +1,35 @@
+services:
+
+  questkeeper_aspnet_api:
+    container_name: questkeeper_aspnet_api
+    restart: always
+    build:
+      context: .
+      dockerfile: applications/RPGTableHelper.WebApi/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5131:5131"
+      - "7172:7172"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - questkeeper_sqlitedb:/app/database
+
+  questkeeper_cloudflare_tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: questkeeper_cloudflare_tunnel
+    depends_on:
+      - questkeeper_aspnet_api
+    restart: always
+    command: tunnel --no-autoupdate run --url http://questkeeper_aspnet_api:8080
+
+  questkeeper_backup_cronjob:
+    container_name: questkeeper_backup_cronjob
+    image: alpine
+    volumes:
+      - sqlite_data:/app/database
+    entrypoint: >
+      sh -c "echo '0 * * * * sqlite3 /app/database/maindb2.db \".backup /app/database/backups/backup-$(date +\%F-\%H%M%S).db\"' | crontab - && crond -f -L /dev/stdout"
+
+volumes:
+  questkeeper_sqlitedb:

@@ -3,15 +3,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
 
@@ -129,6 +130,7 @@ void main() {
                     ],
                         connectedPlayers: [
                       OpenPlayerConnection(
+                        lastPing: DateTime(2025, 02, 26, 12, 00),
                         userId: UserIdentifier(
                             $value: "9a709402-5620-479c-85b7-718ae01e0a83"),
                         playerCharacterId: PlayerCharacterIdentifier(
@@ -146,34 +148,39 @@ void main() {
               );
             }),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return DmPageScreen(
-                    startScreenOverride: testcase.$1,
-                  );
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return DmPageScreen(
+                        startScreenOverride: testcase.$1,
+                      );
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(

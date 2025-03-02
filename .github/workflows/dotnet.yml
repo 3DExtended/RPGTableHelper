@@ -14,10 +14,26 @@ on:
 jobs:
   build:
     name: Build & Test Solution
+    permissions:
+      actions: none
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      id-token: none
+      issues: none
+      discussions: none
+      packages: none
+      pages: none
+      pull-requests: none
+      repository-projects: read
+      security-events: none
+      statuses: none
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
+        persist-credentials: false
         submodules: recursive
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
@@ -33,12 +49,3 @@ jobs:
       run: dotnet tool install -g dotnet-reportgenerator-globaltool && reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
     - name: COVERAGE_VALUE Calculation
       run:  COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml") && COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc) && echo "TOTAL_COVERAGE:" && echo $COVERAGE && echo "$COVERAGE"
-
-
-
-# dotnet test --collect:"XPlat Code Coverage" --results-directory cobertura
-# reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"." -reporttypes:"cobertura"
-# reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
-# COVERAGE_VALUE=$(grep -oPm 1 'line-rate="\K([0-9.]+)' "./Cobertura.xml")
-# COVERAGE=$(echo "scale=2; $COVERAGE_VALUE * 100" | bc)
-# 'echo "TOTAL_COVERAGE=$COVERAGE%"'

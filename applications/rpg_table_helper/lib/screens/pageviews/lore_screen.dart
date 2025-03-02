@@ -10,26 +10,27 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:rpg_table_helper/components/colored_rotated_square.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_loading_spinner.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/notes/lore_block_rendering_editable.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/context_extension.dart';
-import 'package:rpg_table_helper/helpers/date_time_extensions.dart';
-import 'package:rpg_table_helper/helpers/iterable_extension.dart';
-import 'package:rpg_table_helper/helpers/list_extensions.dart';
-import 'package:rpg_table_helper/helpers/modals/show_edit_lore_page_title.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/note_documents_service.dart';
-import 'package:rpg_table_helper/services/rpg_entity_service.dart';
-import 'package:rpg_table_helper/services/systemclock_service.dart';
+import 'package:quest_keeper/components/colored_rotated_square.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_loading_spinner.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/notes/lore_block_rendering_editable.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/date_time_extensions.dart';
+import 'package:quest_keeper/helpers/iterable_extension.dart';
+import 'package:quest_keeper/helpers/list_extensions.dart';
+import 'package:quest_keeper/helpers/modals/show_edit_lore_page_title.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/note_documents_service.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:quest_keeper/services/systemclock_service.dart';
 
 /// This file defines the `LoreScreen` widget, which is responsible for displaying
 /// a screen with various lore-related documents. The screen includes a navigation
@@ -389,35 +390,46 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 3),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        selectedDocument?.title ?? "",
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              color: darkTextColor,
-                              fontSize: 24,
+                      Row(
+                        children: [
+                          Text(
+                            selectedDocument?.title ?? "",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge!
+                                .copyWith(
+                                  color: darkTextColor,
+                                  fontSize: 24,
+                                ),
+                          ),
+                          if (_isAllowedToEdit == true)
+                            CustomButton(
+                              onPressed: () async {
+                                await modalBasedEditPageEdit(context);
+                              },
+                              icon: CustomFaIcon(
+                                  noPadding: true,
+                                  icon: FontAwesomeIcons.penToSquare,
+                                  size: 20,
+                                  color: darkColor),
+                              variant: CustomButtonVariant.FlatButton,
                             ),
+                        ],
                       ),
-                      if (_isAllowedToEdit == true)
-                        CustomButton(
-                          onPressed: () async {
-                            await modalBasedEditPageEdit(context);
-                          },
-                          icon: CustomFaIcon(
-                              noPadding: true,
-                              icon: FontAwesomeIcons.penToSquare,
-                              size: 20,
-                              color: darkColor),
-                          variant: CustomButtonVariant.FlatButton,
-                        ),
                     ],
                   ),
+                ],
+              ),
+              Row(
+                children: [
                   Text(
                     "${S.of(context).authorLabel} ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? S.of(context).you : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? S.of(context).dm)}",
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -425,18 +437,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                           fontSize: 12,
                         ),
                   ),
+                  Spacer(),
+                  Text(
+                    selectedDocument!.lastModifiedAt!.format(
+                        S.of(context).hourMinutesDayMonthYearFormatString),
+                    textAlign: TextAlign.end,
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          color: darkTextColor,
+                          fontSize: 12,
+                        ),
+                  ),
                 ],
-              ),
-              Spacer(),
-              Text(
-                selectedDocument!.lastModifiedAt!
-                    .format(S.of(context).hourMinutesDayMonthYearFormatString),
-                textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      color: darkTextColor,
-                      fontSize: 12,
-                    ),
-              ),
+              )
             ],
           ),
         ),
@@ -786,8 +798,15 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
                     if (mimeType == null || !(mimeType.startsWith('image/'))) {
                       if (!context.mounted || !mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Invalid image file selected.")));
+                      DependencyProvider.of(context)
+                          .getService<ISnackBarService>()
+                          .showSnackBar(
+                            uniqueId:
+                                "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
+                            snack: SnackBar(
+                              content: Text("Invalid image file selected."),
+                            ),
+                          );
                       setState(() {
                         isLoading = false;
                       });

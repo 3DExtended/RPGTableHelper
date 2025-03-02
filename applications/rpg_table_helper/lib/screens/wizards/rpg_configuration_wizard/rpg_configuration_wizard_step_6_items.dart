@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/components/item_card_rendering_with_filtering.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
+import 'package:quest_keeper/components/item_card_rendering_with_filtering.dart';
+import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep6Items extends WizardStepBase {

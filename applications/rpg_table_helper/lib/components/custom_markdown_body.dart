@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/constants.dart';
 
 class CustomMarkdownBody extends StatelessWidget {
   const CustomMarkdownBody({
@@ -12,10 +12,11 @@ class CustomMarkdownBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var darkTextStyle = TextStyle(color: darkTextColor);
+    var darkTextStyle = TextStyle(color: darkTextColor, fontFamily: "Ruwudu");
 
     return Theme(
       data: ThemeData(
+        fontFamily: "Ruwudu",
         textTheme: Theme.of(context).textTheme.copyWith(
               headlineLarge: darkTextStyle,
               headlineMedium: darkTextStyle,

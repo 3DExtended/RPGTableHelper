@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
 
 class ColoredRotatedSquare extends StatelessWidget {
   const ColoredRotatedSquare({

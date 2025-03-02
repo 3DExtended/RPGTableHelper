@@ -4,10 +4,10 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/constants.dart';
 
 class WizardManager extends StatefulWidget {
   final List<

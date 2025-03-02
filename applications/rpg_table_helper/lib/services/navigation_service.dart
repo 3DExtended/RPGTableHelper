@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:rpg_table_helper/screens/character_screen.dart';
-import 'package:rpg_table_helper/screens/crafting_screen.dart';
-import 'package:rpg_table_helper/screens/inventory_screen.dart';
-import 'package:rpg_table_helper/screens/search_screen.dart';
+import 'package:quest_keeper/screens/character_screen.dart';
+import 'package:quest_keeper/screens/crafting_screen.dart';
+import 'package:quest_keeper/screens/inventory_screen.dart';
+import 'package:quest_keeper/screens/search_screen.dart';
 
 enum TabItem {
   search,

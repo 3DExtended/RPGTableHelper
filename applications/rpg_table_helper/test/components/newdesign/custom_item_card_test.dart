@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/components/custom_item_card.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/components/custom_item_card.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
 

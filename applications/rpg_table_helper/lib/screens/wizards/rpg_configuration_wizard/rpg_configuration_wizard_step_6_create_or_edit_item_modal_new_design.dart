@@ -9,26 +9,27 @@ import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_dropdown_menu.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_item_card.dart';
-import 'package:rpg_table_helper/components/custom_shadow_widget.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/navbar.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/color_extension.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/custom_iterator_extensions.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/image_generation_service.dart';
-import 'package:rpg_table_helper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_dropdown_menu.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_item_card.dart';
+import 'package:quest_keeper/components/custom_shadow_widget.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/color_extension.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/image_generation_service.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 import '../../../helpers/modal_helpers.dart';
 
@@ -484,6 +485,7 @@ class _CreateOrEditItemModalContentState
                 label: "Neuer Fundort",
                 icon: Theme(
                     data: ThemeData(
+                      fontFamily: "Ruwudu",
                       iconTheme: const IconThemeData(
                         color: darkTextColor,
                         size: 16,
@@ -720,10 +722,17 @@ class _CreateOrEditItemModalContentState
                             if (mimeType == null ||
                                 !(mimeType.startsWith('image/'))) {
                               if (!context.mounted || !mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          "Invalid image file selected.")));
+                              DependencyProvider.of(context)
+                                  .getService<ISnackBarService>()
+                                  .showSnackBar(
+                                    uniqueId:
+                                        "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
+                                    snack: SnackBar(
+                                      content:
+                                          Text("Invalid image file selected."),
+                                    ),
+                                  );
+
                               setState(() {
                                 isLoading = false;
                               });

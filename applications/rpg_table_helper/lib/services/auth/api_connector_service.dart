@@ -1,7 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:http/http.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.swagger.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.swagger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IApiConnectorService {

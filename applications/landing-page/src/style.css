@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    font-weight: 700;
+    font-size: large;
+    color: #F96F3D;
+    text-decoration: inherit;
+}
+
+a:hover {
+    color: #fc9772;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+    padding-bottom: 0.2em;
+}
+
+h2 {
+    font-size: 1.8em;
+    line-height: 1.1;
+    padding-bottom: 0.2em;
+}
+
+.logo {
+    filter: drop-shadow(0 0 2em #000000);
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 2em #F96F3Daa);
+}
+
+/* .shadow {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+} */
+
+.shadow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at center, #f96f3d53 0, #f96f3d00, #f96f3d00 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 0.1s ease-out, opacity 0.5s ease-out;
+
+}
+
+body:hover .shadow {
+    transform: translate(var(--cursor-x), var(--cursor-y) - 100px);
+}
+
+body {
+    --cursor-x: 0px;
+    --cursor-y: 0px;
+}

@@ -1,25 +1,30 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_renderer_for_configuration.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/lifecycle_event_handler.dart';
-import 'package:rpg_table_helper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
-import 'package:rpg_table_helper/helpers/save_rpg_configuration_to_storage_observer.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/screens/authorized_screen_wrapper.dart';
-import 'package:rpg_table_helper/screens/pageviews/dm_pageview/dm_page_screen.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
-import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
-import 'package:rpg_table_helper/screens/preauthorized/login_screen.dart';
-import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
-import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
-import 'package:rpg_table_helper/screens/wizards/all_wizard_configurations.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/lifecycle_event_handler.dart';
+import 'package:quest_keeper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
+import 'package:quest_keeper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/screens/authorized_screen_wrapper.dart';
+import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/complete_sso_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
+import 'package:quest_keeper/screens/select_game_mode_screen.dart';
+import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +58,8 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+final globalThemeWrapperKey = GlobalKey(debugLabel: "themeWrapper");
+
 class AppRoutingShell extends ConsumerWidget {
   const AppRoutingShell({
     super.key,
@@ -76,7 +83,7 @@ class AppRoutingShell extends ConsumerWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          fontFamily: 'Roboto',
+          fontFamily: 'Ruwudu',
           useMaterial3: true,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
@@ -86,6 +93,10 @@ class AppRoutingShell extends ConsumerWidget {
             size: 16,
           ),
         ),
+        builder: (context, child) {
+          return ThemeConfigurationForApp(
+              key: globalThemeWrapperKey, child: child!);
+        },
         navigatorKey: navigatorKey,
         initialRoute: widget.initialRoute ?? LoginScreen.route,
         onGenerateRoute: (RouteSettings settings) {
@@ -93,42 +104,37 @@ class AppRoutingShell extends ConsumerWidget {
           switch (settings.name) {
             case AuthorizedScreenWrapper.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) =>
-                    ThemeConfigurationForApp(child: AuthorizedScreenWrapper()),
+                builder: (_) => AuthorizedScreenWrapper(),
                 settings: settings,
               );
             case DmPageScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => ThemeConfigurationForApp(child: DmPageScreen()),
+                builder: (_) => DmPageScreen(),
                 settings: settings,
               );
             case PlayerPageScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) =>
-                    ThemeConfigurationForApp(child: PlayerPageScreen()),
+                builder: (_) => PlayerPageScreen(),
                 settings: settings,
               );
             case LoginScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) => ThemeConfigurationForApp(child: LoginScreen()),
+                builder: (_) => LoginScreen(),
                 settings: settings,
               );
             case RegisterScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) =>
-                    ThemeConfigurationForApp(child: RegisterScreen()),
+                builder: (_) => RegisterScreen(),
                 settings: settings,
               );
             case CompleteSsoScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) =>
-                    ThemeConfigurationForApp(child: CompleteSsoScreen()),
+                builder: (_) => CompleteSsoScreen(),
                 settings: settings,
               );
             case SelectGameModeScreen.route:
               return MaterialWithModalsPageRoute(
-                builder: (_) =>
-                    ThemeConfigurationForApp(child: SelectGameModeScreen()),
+                builder: (_) => SelectGameModeScreen(),
                 settings: settings,
               );
           }
@@ -136,10 +142,8 @@ class AppRoutingShell extends ConsumerWidget {
           for (var config in allWizardConfigurations.entries.toList()) {
             if (settings.name == config.key) {
               return MaterialWithModalsPageRoute(
-                builder: (_) => ThemeConfigurationForApp(
-                  child: WizardRendererForConfiguration(
-                    configuration: config.value,
-                  ),
+                builder: (_) => WizardRendererForConfiguration(
+                  configuration: config.value,
                 ),
                 settings: settings,
               );
@@ -175,11 +179,111 @@ class _ThemeConfigurationForAppState
   void initState() {
     super.initState();
     observer = getObserver();
+
+    if (!isInTestEnvironment) {
+      // future which runs every 10 seconds
+      Timer.periodic(pingInterval, (timer) {
+        log("pingInterval");
+        if (kDebugMode) {}
+
+        if (!mounted || !context.mounted) {
+          log("pingInterval ERROR - not mounted");
+          timer.cancel();
+
+          return;
+        }
+
+        var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+        if (connectionDetails == null ||
+            connectionDetails.isInSession == false) {
+          return;
+        }
+        if (connectionDetails.isInSession == false) {
+          return;
+        }
+
+        if (connectionDetails.isPlayer == true) {
+          if (connectionDetails.lastPing == null) {
+            // the player cannot initiate a ping message and has to wait for the DM to send one
+            return;
+          }
+
+          // check when we received the last ping message from DM
+          // if it is older than 10 seconds, mark the player as disconnected
+          if (connectionDetails.lastPing!.isBefore(DateTime.now().subtract(
+            pingInterval,
+          ))) {
+            var snackBar = SnackBar(
+              showCloseIcon: true,
+              duration: Duration(seconds: 60),
+              content: Text(
+                S.of(context).yourAreDisconnectedBody,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+              ),
+            );
+
+            DependencyProvider.getIt!.get<ISnackBarService>().showSnackBar(
+                  snack: snackBar,
+                  uniqueId:
+                      "disconnectedFromDm-f3fdf3b4-fdfe-4910-9551-00d751020e17",
+                );
+          } else {
+            DependencyProvider.getIt!.get<ISnackBarService>().hideSnackBar(
+                  "disconnectedFromDm-f3fdf3b4-fdfe-4910-9551-00d751020e17",
+                );
+          }
+        } else {
+          if (connectionDetails.lastPing != null) {
+            var playersToMarkAsDisconnected = connectionDetails.connectedPlayers
+                    ?.where((element) =>
+                        element.lastPing != null &&
+                        element.lastPing!.isBefore(
+                            DateTime.now().subtract(pingInterval).subtract(
+                                  pingInterval,
+                                )))
+                    .toList() ??
+                [];
+
+            if (playersToMarkAsDisconnected.isNotEmpty) {
+              // update the connection details
+              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+                  ref.read(connectionDetailsProvider).value?.copyWith(
+                            connectedPlayers: connectionDetails.connectedPlayers
+                                ?.where((e) => !playersToMarkAsDisconnected
+                                    .any((el) => el.userId == e.userId))
+                                .toList(),
+                          ) ??
+                      ConnectionDetails.defaultValue());
+            }
+          }
+
+          // send new ping message to all players
+          // mark all players as disconnected if they did not respond since last ping
+          var newPingTimestamp = DateTime.now();
+          ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+              ref.read(connectionDetailsProvider).value?.copyWith(
+                        lastPing: newPingTimestamp,
+                      ) ??
+                  ConnectionDetails.defaultValue());
+
+          var serverMethods =
+              DependencyProvider.getIt!.get<IServerMethodsService>();
+          serverMethods.sendPingToPlayers(
+            campagneId: connectionDetails.campagneId!,
+            timestamp: newPingTimestamp,
+          );
+        }
+      });
+    }
     WidgetsBinding.instance.addObserver(observer!);
   }
 
   LifecycleEventHandler getObserver() {
     return LifecycleEventHandler(resumeCallBack: () async {
+      log("resumeCallBack");
       var serverMethods =
           DependencyProvider.getIt!.get<IServerMethodsService>();
       var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
@@ -216,63 +320,65 @@ class _ThemeConfigurationForAppState
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
         textTheme: Theme.of(context).textTheme.copyWith(
-              headlineLarge:
-                  TextStyle(color: darkTextColor, fontFamily: "Roboto"),
+              headlineLarge: TextStyle(
+                color: darkTextColor,
+                fontFamily: "Ruwudu",
+              ),
               headlineMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               headlineSmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               titleLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               titleMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               titleSmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               bodySmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               bodyMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               bodyLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               labelSmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               labelMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               labelLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               displaySmall: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               displayMedium: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
               displayLarge: TextStyle(
                 color: darkTextColor,
-                fontFamily: "Roboto",
+                fontFamily: "Ruwudu",
               ),
             ),
         iconTheme: const IconThemeData(

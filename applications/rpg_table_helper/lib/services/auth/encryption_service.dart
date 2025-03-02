@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:pointycastle/pointycastle.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/services/auth/rsa_key_helper.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/auth/rsa_key_helper.dart';
 
 abstract class IEncryptionService {
   final bool isMock;

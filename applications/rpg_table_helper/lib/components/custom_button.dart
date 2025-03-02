@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/constants.dart';
+import 'package:quest_keeper/constants.dart';
 
 enum CustomButtonVariant {
   Default,
@@ -92,9 +92,11 @@ class CustomButton extends StatelessWidget {
                   child: Text(
                     label!,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color:
-                            (useLightTextColor ? Colors.white : darkTextColor),
-                        fontSize: 16),
+                          color: (useLightTextColor
+                              ? Colors.white
+                              : darkTextColor),
+                          fontSize: 16,
+                        ),
                   ),
                 ),
             ],

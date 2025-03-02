@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/character_stats/show_get_player_configuration_modal.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:signalr_netcore/errors.dart';
 
 class PlayerPageHelpers {
@@ -30,6 +30,7 @@ class PlayerPageHelpers {
         statConfiguration: characterNameStat,
         hideAdditionalSetting: true,
         hideVariantSelection: true,
+        isEditingAlternateForm: false,
         characterToRenderStatFor: null,
         characterName:
             currentCharacterName ?? S.of(context).characterNameDefault,
@@ -73,6 +74,10 @@ class PlayerPageHelpers {
       var isUpdatingCompanionCharacter =
           (tempLoadedCharacterConfig.companionCharacters ?? [])
               .any((e) => e.uuid == selectedCharacterId);
+
+      var isEditingAlternateForm = tempLoadedCharacterConfig.alternateForm !=
+              null &&
+          tempLoadedCharacterConfig.alternateForm!.uuid == selectedCharacterId;
 
       // find all stat uuids:
       var listOfStats =
@@ -126,6 +131,7 @@ class PlayerPageHelpers {
             statConfiguration: statToFill,
             characterValue: possiblyFilledStat,
             characterName: updatedCharacterName,
+            isEditingAlternateForm: isEditingAlternateForm,
           );
 
           if (modalResult != null) {
@@ -166,26 +172,21 @@ class PlayerPageHelpers {
 
             if (indexOfSelectedCompChar == -1) {
               // check altforms
-              List<RpgAlternateCharacterConfiguration> altCharactersCopy = [
-                ...(newestCharacterConfig.alternateForms ?? [])
-              ];
-              var indexOfSelectedAltForm = altCharactersCopy
-                  .indexWhere((e) => e.uuid == selectedCharacterId);
-
-              if (indexOfSelectedAltForm == -1) {
+              if (newestCharacterConfig.alternateForm == null) {
                 throw NotImplementedException();
-              } else {
-                altCharactersCopy[indexOfSelectedAltForm] =
-                    altCharactersCopy[indexOfSelectedAltForm].copyWith(
-                  characterStats: mergedStats,
-                  characterName: updatedCharacterName,
-                );
-
-                ref
-                    .read(rpgCharacterConfigurationProvider.notifier)
-                    .updateConfiguration(newestCharacterConfig.copyWith(
-                        alternateForms: altCharactersCopy));
               }
+
+              var altCharactersCopy = (newestCharacterConfig.alternateForm!);
+
+              altCharactersCopy = altCharactersCopy.copyWith(
+                characterStats: mergedStats,
+                characterName: updatedCharacterName,
+              );
+
+              ref
+                  .read(rpgCharacterConfigurationProvider.notifier)
+                  .updateConfiguration(newestCharacterConfig.copyWith(
+                      alternateForm: altCharactersCopy));
             } else {
               companionCharactersCopy[indexOfSelectedCompChar] =
                   companionCharactersCopy[indexOfSelectedCompChar].copyWith(

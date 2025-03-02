@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/signinbuttons/button_list.dart';
-import 'package:rpg_table_helper/components/signinbuttons/button_view.dart';
-import 'package:rpg_table_helper/components/signinbuttons/custom_sign_in_with_apple.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/validation_helpers.dart';
-import 'package:rpg_table_helper/main.dart';
-import 'package:rpg_table_helper/screens/preauthorized/complete_sso_screen.dart';
-import 'package:rpg_table_helper/screens/preauthorized/register_screen.dart';
-import 'package:rpg_table_helper/screens/select_game_mode_screen.dart';
-import 'package:rpg_table_helper/services/auth/authentication_service.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/signinbuttons/button_list.dart';
+import 'package:quest_keeper/components/signinbuttons/button_view.dart';
+import 'package:quest_keeper/components/signinbuttons/custom_sign_in_with_apple.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/validation_helpers.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/screens/preauthorized/complete_sso_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
+import 'package:quest_keeper/screens/select_game_mode_screen.dart';
+import 'package:quest_keeper/services/auth/authentication_service.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -141,7 +141,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     .textTheme
                                     .labelMedium!
                                     .copyWith(
-                                        color: Colors.white, fontSize: 18),
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: 'Ruwudu'),
                               ),
                             ),
                             variant: CustomButtonVariant.AccentButton,
@@ -368,6 +370,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(
                         height: 10,
                       ),
+
+                      // CustomButton(
+                      //     label: "Licenses",
+                      //     onPressed: () {
+                      //       navigatorKey.currentState!.push(MaterialPageRoute(
+                      //         builder: (context) => LicensePage(),
+                      //       ));
+                      //     }),
                     ],
                   ),
                 ),

@@ -1,4 +1,4 @@
-import 'package:rpg_table_helper/services/time_ago_custom_messages.dart';
+import 'package:quest_keeper/services/time_ago_custom_messages.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 abstract class ISystemClockService {
@@ -34,7 +34,7 @@ class MockSystemClockService extends ISystemClockService {
 
 // Empty service
 /**
-  
+
 abstract class ISystemClockService {
   final bool isMock;
   const ISystemClockService({required this.isMock});

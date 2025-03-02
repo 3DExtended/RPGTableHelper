@@ -14,10 +14,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      actions: none
+      attestations: none
+      checks: none
+      contents: read
+      deployments: none
+      id-token: none
+      issues: none
+      discussions: none
+      packages: none
+      pages: none
+      pull-requests: none
+      repository-projects: read
+      security-events: none
+      statuses: none
 
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          persist-credentials: false
       - name: Setup Flutter SDK
         uses: flutter-actions/setup-flutter@v3
         with:
@@ -27,16 +43,5 @@ jobs:
       - name: Install dependencies
         run: cd ./applications/rpg_table_helper && flutter pub get
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
-      # - name: Analyze project source
-      #   run: cd ./applications/rpg_table_helper && dart analyze
-
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
       - name: Run tests
         run: cd ./applications/rpg_table_helper && flutter test --update-goldens

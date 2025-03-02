@@ -3,7 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/main.dart';
 
 const testDevices = [
   Device(
@@ -76,11 +77,11 @@ void testConfigurations({
         theme: ThemeData.dark(useMaterial3: true),
         builder: (BuildContext context, Widget? child) {
           // Set a custom screen size for the test
-          return screenFactory(local);
+          return ThemeConfigurationForApp(child: screenFactory(local));
         },
       );
     } else {
-      widgetToTest = screenFactory(local);
+      widgetToTest = ThemeConfigurationForApp(child: screenFactory(local));
     }
 
     var counter = 1;
@@ -112,7 +113,7 @@ void testConfigurations({
               child: Localizations.override(
                 context: context,
                 locale: local,
-                child: widgetConfig.value,
+                child: ThemeConfigurationForApp(child: widgetConfig.value),
               ),
             );
           }),

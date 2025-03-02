@@ -3,16 +3,17 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_character_configuration_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_character_configuration.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/screens/pageviews/player_pageview/player_page_screen.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
 
@@ -68,31 +69,28 @@ void main() {
                 runningInTests: true,
               );
             }),
-            connectionDetailsProvider.overrideWith((ref) {
-              return ConnectionDetailsNotifier(
-                initState: AsyncValue.data(ConnectionDetails.defaultValue()
-                    .copyWith(
-                        fightSequence: FightSequence(
-                            fightUuid: "f10526be-c69a-46be-8802-df9421e6187b",
-                            sequence: [
-                              (
-                                "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
-                                "Frodo",
-                                17
-                              ),
-                              (
-                                "0eff8827-14f1-46a1-8695-ef7dc5323137",
-                                "Gandalf",
-                                17
-                              ),
-                            ]),
-                        isConnected: true,
-                        isConnecting: true,
-                        isDm: true,
-                        campagneId: "51f263bc-37cf-44d4-90f3-87d656ae29df",
-                        isInSession: true,
-                        sessionConnectionNumberForPlayers: "123-321",
-                        lastGrantedItems: [
+            connectionDetailsProvider.overrideWith(
+              (ref) {
+                return ConnectionDetailsNotifier(
+                  initState:
+                      AsyncValue.data(ConnectionDetails.defaultValue().copyWith(
+                    fightSequence: FightSequence(
+                        fightUuid: "f10526be-c69a-46be-8802-df9421e6187b",
+                        sequence: [
+                          ("575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d", "Frodo", 17),
+                          (
+                            "0eff8827-14f1-46a1-8695-ef7dc5323137",
+                            "Gandalf",
+                            17
+                          ),
+                        ]),
+                    isConnected: true,
+                    isConnecting: true,
+                    isDm: true,
+                    campagneId: "51f263bc-37cf-44d4-90f3-87d656ae29df",
+                    isInSession: true,
+                    sessionConnectionNumberForPlayers: "123-321",
+                    lastGrantedItems: [
                       GrantedItemsForPlayer(
                           characterName: "Frodo",
                           playerId: "fghjkl",
@@ -119,8 +117,9 @@ void main() {
                         ],
                       ),
                     ],
-                        connectedPlayers: [
+                    connectedPlayers: [
                       OpenPlayerConnection(
+                        lastPing: DateTime(2025, 02, 26, 12, 00),
                         userId: UserIdentifier(
                             $value: "9a709402-5620-479c-85b7-718ae01e0a83"),
                         playerCharacterId: PlayerCharacterIdentifier(
@@ -132,47 +131,54 @@ void main() {
                                     variant: 0)
                                 .copyWith(characterName: "Gandalf"),
                       ),
-                    ])),
-                ref: ref,
-                runningInTests: true,
-              );
-            }),
+                    ],
+                  )),
+                  ref: ref,
+                  runningInTests: true,
+                );
+              },
+            ),
           ],
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Roboto',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: Scaffold(
-                resizeToAvoidBottomInset: false,
-                body: Builder(builder: (context) {
-                  return PlayerPageScreen(
-                    startScreenOverride: testcase.$1,
-                    routeSettings: PlayerPageScreenRouteSettings(
-                        characterConfigurationOverride: null,
-                        showInventory: true,
-                        showRecipes: true,
-                        showMoney: true,
-                        showLore: true,
-                        disableEdit: false),
-                  );
-                }),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return PlayerPageScreen(
+                        startScreenOverride: testcase.$1,
+                        routeSettings: PlayerPageScreenRouteSettings(
+                            characterConfigurationOverride: null,
+                            showInventory: true,
+                            showRecipes: true,
+                            showMoney: true,
+                            showLore: true,
+                            disableEdit: false),
+                      );
+                    }),
+                  ),
+                )),
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(

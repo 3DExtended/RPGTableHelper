@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 class RpgConfigurationWizardStep3CurrencyDefinition extends WizardStepBase {
   const RpgConfigurationWizardStep3CurrencyDefinition({
@@ -237,6 +237,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           },
           icon: Theme(
               data: ThemeData(
+                fontFamily: "Ruwudu",
                 iconTheme: const IconThemeData(
                   color: darkColor,
                   size: 16,

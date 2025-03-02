@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 void main() {
   group('RpgConfigurationModel tests', () {

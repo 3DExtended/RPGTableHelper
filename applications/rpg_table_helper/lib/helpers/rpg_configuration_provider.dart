@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 final rpgConfigurationProvider = StateNotifierProvider<RpgConfigurationNotifier,
     AsyncValue<RpgConfigurationModel>>((ref) {

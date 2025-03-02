@@ -1,10 +1,8 @@
 using System.Security.Cryptography;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-
+using MimeDetective.Storage.Xml.v2;
 using Prodot.Patterns.Cqrs;
-
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
@@ -84,10 +82,12 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
-        _logger.LogInformation("A player with the name "
+        _logger.LogInformation(
+            "A player with the name "
                 + playerCharacter.Get().CharacterName
                 + " would like to join the game with code "
-                + campagneOfCharacter.Get().JoinCode);
+                + campagneOfCharacter.Get().JoinCode
+        );
 
         // ask DM for joining permissions:
         await Groups.AddToGroupAsync(
@@ -105,6 +105,43 @@ public class RpgServerSignalRHub : Hub
                 (CancellationToken)default
             );
         }
+    }
+
+    public async Task SendPingToPlayers(string campagneId, string timestamp)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        await Clients.OthersInGroup(campagneId + "_All").SendAsync("pingFromDm", timestamp, (CancellationToken)default);
+    }
+
+    public async Task SendPongToDm(string campagneId, string timestamp)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone)
+        {
+            // TODO how do i handle exceptions in signalr?
+            return;
+        }
+
+        await Clients
+            .Group(campagneId + "_Dms")
+            .SendAsync(
+                "pongFromPlayer",
+                timestamp,
+                _userContext.User.UserIdentifier.Value.ToString(),
+                (CancellationToken)default
+            );
     }
 
     public override async Task OnConnectedAsync()
@@ -347,7 +384,7 @@ public class RpgServerSignalRHub : Hub
         string fileName =
             $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
 
-        string currentDirectory = Directory.GetCurrentDirectory();
+        string currentDirectory = "/app/database/"; // mounting point from docker compose
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 
@@ -409,7 +446,7 @@ public class RpgServerSignalRHub : Hub
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
         string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";
 
-        string currentDirectory = Directory.GetCurrentDirectory();
+        string currentDirectory = "/app/database/";
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 

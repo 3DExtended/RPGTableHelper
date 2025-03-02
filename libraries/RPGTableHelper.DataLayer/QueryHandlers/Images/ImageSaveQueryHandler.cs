@@ -14,7 +14,7 @@ public class ImageSaveQueryHandler : IQueryHandler<ImageSaveQuery, Unit>
             throw new NotImplementedException();
         }
 
-        var pathPart = "./userimages/";
+        var pathPart = "/app/database/userimages/"; // mounting point from docker compose
         var filepath = pathPart + query.MetaData.Id.Value.ToString().ToLower();
 
         filepath += query.MetaData.ImageType switch

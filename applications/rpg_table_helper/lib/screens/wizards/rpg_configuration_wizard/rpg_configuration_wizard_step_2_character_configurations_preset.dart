@@ -3,18 +3,18 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rpg_table_helper/components/custom_button.dart';
-import 'package:rpg_table_helper/components/custom_fa_icon.dart';
-import 'package:rpg_table_helper/components/custom_markdown_body.dart';
-import 'package:rpg_table_helper/components/custom_text_field.dart';
-import 'package:rpg_table_helper/components/horizontal_line.dart';
-import 'package:rpg_table_helper/components/wizards/two_part_wizard_step_body.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/generated/l10n.dart';
-import 'package:rpg_table_helper/helpers/character_stats/show_get_dm_configuration_modal.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/custom_text_field.dart';
+import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep2CharacterConfigurationsPreset
@@ -379,6 +379,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       label: S.of(context).newGroupBtnLabel,
                       icon: Theme(
                           data: ThemeData(
+                            fontFamily: "Ruwudu",
                             iconTheme: const IconThemeData(
                               color: darkTextColor,
                               size: 16,
@@ -424,6 +425,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       label: S.of(context).newPropertyBtnLabel,
                       icon: Theme(
                           data: ThemeData(
+                            fontFamily: "Ruwudu",
                             iconTheme: const IconThemeData(
                               color: darkTextColor,
                               size: 16,
@@ -459,6 +461,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
           label: S.of(context).newTabBtnLabel,
           icon: Theme(
               data: ThemeData(
+                fontFamily: "Ruwudu",
                 iconTheme: const IconThemeData(
                   color: darkColor,
                   size: 16,
@@ -533,6 +536,8 @@ extension on CharacterStatValueType {
     switch (this) {
       case CharacterStatValueType.int:
         return S.of(context).integerValue;
+      case CharacterStatValueType.transformIntoAlternateFormBtn:
+        return S.of(context).transformIntoAlternateForm;
       case CharacterStatValueType.listOfIntsWithIcons:
         return S.of(context).listOfIntegersWithIcons;
       case CharacterStatValueType.intWithMaxValue:

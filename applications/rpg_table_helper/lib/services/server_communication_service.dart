@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/helpers/connection_details_provider.dart';
-import 'package:rpg_table_helper/helpers/rpg_configuration_provider.dart';
-import 'package:rpg_table_helper/models/connection_details.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
-import 'package:rpg_table_helper/services/auth/api_connector_service.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
-import 'package:rpg_table_helper/services/server_methods_service.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/auth/api_connector_service.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -42,6 +42,16 @@ abstract class IServerCommunicationService {
 
   void registerCallbackSingleString({
     required void Function(String parameter) function,
+    required String functionName,
+  });
+
+  void registerCallbackSingleDateTime({
+    required void Function(DateTime parameter) function,
+    required String functionName,
+  });
+
+  void registerCallbackSingleDateTimeAndOneString({
+    required void Function(DateTime param1, String param2) function,
     required String functionName,
   });
 
@@ -115,7 +125,7 @@ class ServerCommunicationService extends IServerCommunicationService {
     );
 
     hubConnection!.onreconnecting(({error}) {
-      log("onreconnecting called");
+      log("onreconnecting called, error: $error");
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
                     isConnected: false,
@@ -182,6 +192,46 @@ class ServerCommunicationService extends IServerCommunicationService {
     registrationMethods.add(() {
       hubConnection!.on(functionName, (List<Object?>? parameters) {
         function();
+      });
+    });
+  }
+
+  @override
+  void registerCallbackSingleDateTime(
+      {required void Function(DateTime parameter) function,
+      required String functionName}) {
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
+
+        final String? param =
+            parameters[0] != null ? parameters[0] as String : null;
+
+        if (param == null) return;
+        var parsedDatetime = DateTime.parse(param);
+        function(parsedDatetime);
+      });
+    });
+  }
+
+  @override
+  void registerCallbackSingleDateTimeAndOneString(
+      {required void Function(DateTime parameter1, String parameter2) function,
+      required String functionName}) {
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) return;
+
+        final String? param1 =
+            parameters[0] != null ? parameters[0] as String : null;
+
+        if (param1 == null) return;
+        final String? param2 =
+            parameters[1] != null ? parameters[1] as String : null;
+
+        if (param2 == null) return;
+        var parsedDatetime = DateTime.parse(param1);
+        function(parsedDatetime, param2);
       });
     });
   }
@@ -268,7 +318,7 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     if (hubConnection == null) {
       if (kDebugMode) {
-        print("DID NOT SEND TO SERVER: $functionName");
+        log("DID NOT SEND TO SERVER: $functionName");
       }
 
       // dont send something if not connected
@@ -278,12 +328,14 @@ class ServerCommunicationService extends IServerCommunicationService {
     var retryCounter = 0;
     final maxRetries = 5;
     while (retryCounter < maxRetries &&
-        hubConnection?.state == HubConnectionState.Connecting) {
+        (hubConnection?.state == HubConnectionState.Connecting ||
+            hubConnection?.state == HubConnectionState.Reconnecting)) {
       retryCounter++;
       await Future.delayed(Duration(seconds: retryCounter + 1));
     }
 
-    await hubConnection!.invoke(functionName, args: args);
+    var result = await hubConnection!.invoke(functionName, args: args);
+    log("Result from hubConnection call: $result");
   }
 
   Future tryOpenConnection() async {
@@ -369,6 +421,16 @@ class MockServerCommunicationService extends IServerCommunicationService {
 
   @override
   void completeFunctionRegistration() {}
+
+  @override
+  void registerCallbackSingleDateTime(
+      {required void Function(DateTime parameter) function,
+      required String functionName}) {}
+
+  @override
+  void registerCallbackSingleDateTimeAndOneString(
+      {required void Function(DateTime param1, String param2) function,
+      required String functionName}) {}
 }
 
 class HttpOverrideCertificateVerificationInDev extends HttpOverrides {

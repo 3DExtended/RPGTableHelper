@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:rpg_table_helper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:signalr_netcore/errors.dart';
 import 'package:uuid/v7.dart';
 
@@ -14,9 +14,16 @@ abstract class RpgCharacterConfigurationBase {
   final String characterName;
   final List<RpgCharacterStatValue> characterStats;
 
+  final bool? isAlternateFormActive;
+  final RpgAlternateCharacterConfiguration? alternateForm;
+  final List<TransformationComponent>? transformationComponents;
+
   RpgCharacterConfigurationBase(
       {required this.uuid,
       required this.characterName,
+      required this.alternateForm,
+      required this.isAlternateFormActive,
+      required this.transformationComponents,
       required this.characterStats});
 
   String getImageUrlWithoutBasePath(RpgConfigurationModel? rpgConfig) {
@@ -84,10 +91,33 @@ class RpgAlternateCharacterConfiguration extends RpgCharacterConfigurationBase {
     required super.uuid,
     required super.characterName,
     required super.characterStats,
+    required super.transformationComponents,
+    required super.alternateForm,
+    required super.isAlternateFormActive,
   });
 
   Map<String, dynamic> toJson() =>
       _$RpgAlternateCharacterConfigurationToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
+class TransformationComponent {
+  final String transformationUuid;
+  final String transformationName;
+  final String? transformationDescription;
+  final List<RpgCharacterStatValue> transformationStats;
+
+  factory TransformationComponent.fromJson(Map<String, dynamic> json) =>
+      _$TransformationComponentFromJson(json);
+  Map<String, dynamic> toJson() => _$TransformationComponentToJson(this);
+
+  TransformationComponent({
+    required this.transformationUuid,
+    required this.transformationName,
+    required this.transformationDescription,
+    required this.transformationStats,
+  });
 }
 
 @JsonSerializable()
@@ -99,9 +129,8 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   final List<RpgAlternateCharacterConfiguration>? companionCharacters;
 
   // this can be used to create pets
+  @Deprecated("alternate Forms are now in companionCharacters")
   final List<RpgAlternateCharacterConfiguration>? alternateForms;
-
-  final int? activeAlternateFormIndex;
 
   factory RpgCharacterConfiguration.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterConfigurationFromJson(json);
@@ -109,9 +138,11 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   RpgCharacterConfiguration({
     required super.uuid,
     required super.characterName,
+    required super.transformationComponents,
     required this.alternateForms,
     required this.moneyInBaseType,
-    required this.activeAlternateFormIndex,
+    required super.isAlternateFormActive,
+    required super.alternateForm,
     required super.characterStats,
     required this.inventory,
     required this.companionCharacters,
@@ -123,9 +154,25 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
           RpgConfigurationModel? rpgConfig,
           {int? variant}) =>
       RpgCharacterConfiguration(
-        activeAlternateFormIndex: null,
+        transformationComponents: [
+          TransformationComponent(
+              transformationUuid: "fb00e3f7-b8b4-4161-b13f-58f8072ce8df",
+              transformationName: "Base",
+              transformationDescription: "The base for all my transformations.",
+              transformationStats: []),
+          TransformationComponent(
+              transformationUuid: "9febaf04-3119-4be4-b99e-ba0f69e91c44",
+              transformationName: "Fire paw",
+              transformationDescription: "One of the two paw types",
+              transformationStats: []),
+        ],
+        alternateForm: null,
+        isAlternateFormActive: null,
         companionCharacters: [
           RpgAlternateCharacterConfiguration(
+            alternateForm: null,
+            isAlternateFormActive: null,
+            transformationComponents: null,
             uuid: "f6af1852-e928-4a4f-8d07-93ce87b879e8",
             characterName: "Lucky",
             characterStats: getDefaultStats(rpgConfig, true, 2),
@@ -300,6 +347,7 @@ class RpgCharacterStatValue {
   final bool? hideFromCharacterScreen;
   final bool? hideLabelOfStat;
   final int? variant;
+  final bool? isCopy;
 
   factory RpgCharacterStatValue.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterStatValueFromJson(json);
@@ -310,6 +358,7 @@ class RpgCharacterStatValue {
     required this.hideFromCharacterScreen,
     required this.variant,
     required this.hideLabelOfStat,
+    this.isCopy = false,
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterStatValueToJson(this);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:rpg_table_helper/constants.dart';
-import 'package:rpg_table_helper/services/dependency_provider.dart';
+import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 
 const loadingSpinnerAlphaValues = [100, 130, 180, 215, 255];
 

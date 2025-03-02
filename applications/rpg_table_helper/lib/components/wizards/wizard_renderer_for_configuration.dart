@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_manager.dart';
-import 'package:rpg_table_helper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_manager.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 
 class WizardConfiguration {
   final List<

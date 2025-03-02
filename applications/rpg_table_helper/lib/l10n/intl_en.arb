@@ -190,6 +190,24 @@
     "characterName": "Name",
     "nameOfCharacterHelperText": "The name of the character",
     "campaignName": "Campaign name",
-    "rollForInitiativeBtnLabel": "Roll for initiative"
-
+    "rollForInitiativeBtnLabel": "Roll for initiative",
+    "tranformToAlternateForm": "Transform",
+    "transformIntoAlternateForm": "Transform into alternate form",
+    "addNewTransformationComponent": "Add new transformations",
+    "createNewTransformationTitle": "Create new transformation",
+    "transformationName": "Transformation name",
+    "transformationDescription": "Transformation description",
+    "createTransformationHelperText": "In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn't change this property, you don't have to select it.)",
+    "back": "Back",
+    "next": "Next",
+    "warning": "Warning",
+    "youAreEditingAnAlternateFormWarningText": "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
+    "transformationIsEditedWarningTitle": "Transformation is edited",
+    "propertyIsCopied": "Property is copied",
+    "youAreEditingACopiedPropertyChangesWillNotAffect": "You are editing a copied property. Changes will not affect the original property.",
+    "previousTransformationSelectionBtn": "Previous transformation",
+    "newTransformationSelectionBtn": "New transformation",
+    "yes": "Yes",
+    "no": "No",
+    "yourAreDisconnectedBody": "Your are disconnected... Either you or the DM has lost the connection."
 }
