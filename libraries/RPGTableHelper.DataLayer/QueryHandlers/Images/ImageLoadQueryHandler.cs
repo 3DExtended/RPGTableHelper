@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Hosting;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Queries.Images;
 
@@ -5,7 +6,14 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.Images;
 
 public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
 {
+    private readonly IHostEnvironment _hostEnvironment;
+
     public IQueryHandler<ImageLoadQuery, Stream> Successor { get; set; } = default!;
+
+    public ImageLoadQueryHandler(IHostEnvironment hostEnvironment)
+    {
+        _hostEnvironment = hostEnvironment;
+    }
 
     public async Task<Option<Stream>> RunQueryAsync(ImageLoadQuery query, CancellationToken cancellationToken)
     {
@@ -17,6 +25,11 @@ public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
         var filepath =
             "/app/database/userimages/" // mounting point from docker compose
             + query.MetaData.Id.Value.ToString().ToLower();
+
+        if (_hostEnvironment.IsEnvironment("E2ETest"))
+        {
+            filepath = "./userimages/" + query.MetaData.Id.Value.ToString().ToLower();
+        }
 
         filepath += query.MetaData.ImageType switch
         {

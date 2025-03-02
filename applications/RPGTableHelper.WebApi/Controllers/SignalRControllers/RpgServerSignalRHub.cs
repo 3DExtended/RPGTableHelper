@@ -14,10 +14,16 @@ namespace RPGTableHelper.WebApi;
 public class RpgServerSignalRHub : Hub
 {
     private readonly ILogger _logger;
+    private readonly IHostEnvironment _hostEnvironment;
     private readonly IQueryProcessor _queryProcessor;
     private readonly IUserContext _userContext;
 
-    public RpgServerSignalRHub(IUserContext userContext, IQueryProcessor queryProcessor, ILogger logger)
+    public RpgServerSignalRHub(
+        IUserContext userContext,
+        IQueryProcessor queryProcessor,
+        ILogger logger,
+        IHostEnvironment hostEnvironment
+    )
     {
         // IMPORTANT NOTE: this is required as all methods in the signalr hub are authorized.
         // However, I wasnt able to configure SignalR to require an bearer token everywhere.
@@ -25,6 +31,7 @@ public class RpgServerSignalRHub : Hub
         _userContext = userContext;
         _queryProcessor = queryProcessor;
         _logger = logger;
+        _hostEnvironment = hostEnvironment;
     }
 
     public async Task AskPlayersForRolls(string campagneId, string fightSequenceSerialized)
@@ -385,6 +392,12 @@ public class RpgServerSignalRHub : Hub
             $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
 
         string currentDirectory = "/app/database/"; // mounting point from docker compose
+
+        if (_hostEnvironment.IsEnvironment("E2ETest"))
+        {
+            return;
+        }
+
         string fileBackupFolders = "configbackups";
         Directory.CreateDirectory(Path.Combine(currentDirectory, fileBackupFolders));
 
