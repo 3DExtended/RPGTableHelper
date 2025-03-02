@@ -867,11 +867,27 @@ class _PlayerStatsConfigurationVisualsState
   }
 
   RpgCharacterStatValue getCurrentStatValueOrDefaultForMultiselectType() {
+    var multiselectIsAllowedToBeSelectedMultipleTimes = widget
+                    .statConfiguration.jsonSerializedAdditionalData ==
+                null ||
+            widget.statConfiguration.jsonSerializedAdditionalData
+                    ?.startsWith("[") ==
+                true
+        ? false
+        : ((jsonDecode(widget.statConfiguration.jsonSerializedAdditionalData!)
+                    as Map<String, dynamic>)[
+                "multiselectIsAllowedToBeSelectedMultipleTimes"] ??
+            false);
+
     List<String> selectedMultiselectOptionsOrDefault = multiselectOptions
-        .where((e) => e.$5 > 0)
-        .map((e) => List.filled(e.$5, e.$4))
+        .where((e) => (multiselectIsAllowedToBeSelectedMultipleTimes == true)
+            ? (e.$5 > 0)
+            : (e.$3 == true))
+        .map((e) => List.filled(
+            multiselectIsAllowedToBeSelectedMultipleTimes ? e.$5 : 1, e.$4))
         .expand((i) => i)
         .toList();
+
     return RpgCharacterStatValue(
       hideLabelOfStat: hideLabelOfStat,
       hideFromCharacterScreen: hideStatFromCharacterScreens,
