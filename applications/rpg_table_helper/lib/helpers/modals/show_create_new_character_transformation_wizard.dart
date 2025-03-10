@@ -1,8 +1,10 @@
 // cannot figure out how to fix the canLaunch stuff in here...
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,14 +128,25 @@ class _CreateNewCharacterTransformationWizardModalContentState
                   e.valueType != CharacterStatValueType.companionSelector &&
                   e.valueType !=
                       CharacterStatValueType.transformIntoAlternateFormBtn)
-              .map((e) => (
-                    statUuid: e.statUuid,
-                    statName: e.name,
-                    statHelperText: e.helperText,
-                    statType: e.valueType,
-                    stat: e
-                  ))
-              .toList();
+              .map((e) {
+            var statName = e.name;
+            if ((statName == "") &&
+                e.valueType == CharacterStatValueType.listOfIntsWithIcons) {
+              statName = (jsonDecode(e.jsonSerializedAdditionalData!)["values"]
+                      as List<dynamic>)
+                  .map((e) => e as Map<String, dynamic>)
+                  .map((e) => e["label"] as String)
+                  .sortedBy((e) => e)
+                  .join(", ");
+            }
+            return (
+              statUuid: e.statUuid,
+              statName: statName,
+              statHelperText: e.helperText,
+              statType: e.valueType,
+              stat: e
+            );
+          }).toList();
         });
       } else {
         setState(() {

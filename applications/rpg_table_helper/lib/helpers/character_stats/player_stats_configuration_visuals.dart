@@ -1179,6 +1179,17 @@ class _PlayerStatsConfigurationVisualsState
     var statTitle = widget.statConfiguration.name;
     var statDescription = widget.statConfiguration.helperText;
 
+    if ((statTitle == "") &&
+        widget.statConfiguration.valueType ==
+            CharacterStatValueType.listOfIntsWithIcons) {
+      statTitle = listOfSingleValueOptions
+          .asMap()
+          .entries
+          .sortedBy((e) => e.value.label)
+          .map((e) => e.value.label)
+          .join(", ");
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -57,6 +57,7 @@ const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 const apiBaseUrl = kDebugMode
     ? "http://localhost:5012/"
     : "https://questkeeper-prod.peter-esser.de/";
+// const apiBaseUrl = "https://questkeeper-prod.peter-esser.de/";
 
 const serverUrl = "${apiBaseUrl}Chat";
 
