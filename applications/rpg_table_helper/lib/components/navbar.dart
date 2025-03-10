@@ -69,10 +69,13 @@ class Navbar extends StatelessWidget {
                 )),
                 Opacity(
                   opacity: menuOpen == null ? 0 : 1,
-                  child: CustomButton(
-                    variant: CustomButtonVariant.FlatButton,
-                    onPressed: menuOpen,
-                    icon: CustomFaIcon(icon: FontAwesomeIcons.bars),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: CustomButton(
+                      variant: CustomButtonVariant.FlatButton,
+                      onPressed: menuOpen,
+                      icon: CustomFaIcon(icon: FontAwesomeIcons.gears),
+                    ),
                   ),
                 ),
               ],

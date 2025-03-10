@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
@@ -293,119 +294,128 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ? ""
         : playerScreensToSwipe[_currentStep].$1;
 
-    return Scaffold(
-      backgroundColor: bgColor,
-      body: Column(
-        children: [
-          Navbar(
-            useTopSafePadding: true,
-            closeFunction: () {
-              // close connection
-              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-                  ref.read(connectionDetailsProvider).requireValue.copyWith(
-                        isInSession: false,
-                        isDm: false,
-                      ));
+    return PreventSwipeNavigation(
+      child: Scaffold(
+        backgroundColor: bgColor,
+        body: Column(
+          children: [
+            Navbar(
+              backInsteadOfCloseIcon: false,
+              useTopSafePadding: true,
+              closeFunction: () {
+                // close connection
+                ref
+                    .read(connectionDetailsProvider.notifier)
+                    .updateConfiguration(ref
+                        .read(connectionDetailsProvider)
+                        .requireValue
+                        .copyWith(
+                          isInSession: false,
+                          isDm: false,
+                        ));
 
-              navigatorKey.currentState!.pop();
-            },
-            titleWidget: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Spacer(),
-                ...List.generate(
-                  _currentStep + 1,
-                  (index) => CupertinoButton(
-                    minSize: 0,
-                    padding: EdgeInsets.zero,
-                    onPressed: () async {
-                      await _goToStepId(index);
-                    },
-                    child: ColoredRotatedSquare(
-                        isSolidSquare: index == _currentStep,
-                        color: index == _currentStep
-                            ? accentColor
-                            : middleBgColor),
-                  ),
-                ),
-                if (context.isTablet)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                    child: Text(
-                      currentTitle,
-                      textAlign: TextAlign.center,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: textColor,
-                                fontSize: 24,
-                              ),
+                navigatorKey.currentState!.pop();
+              },
+              titleWidget: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Spacer(),
+                  ...List.generate(
+                    _currentStep + 1,
+                    (index) => CupertinoButton(
+                      minSize: 0,
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                        await _goToStepId(index);
+                      },
+                      child: ColoredRotatedSquare(
+                          isSolidSquare: index == _currentStep,
+                          color: index == _currentStep
+                              ? accentColor
+                              : middleBgColor),
                     ),
                   ),
-                ...List.generate(
-                  playerScreensToSwipe.isEmpty
-                      ? 0
-                      : playerScreensToSwipe.length - (_currentStep + 1),
-                  (index) => CupertinoButton(
-                    minSize: 0,
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      _goToStepId(index + _currentStep + 1);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: FontAwesomeIcons.square,
-                            color: middleBgColor),
+                  if (context.isTablet)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                      child: Text(
+                        currentTitle,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: textColor,
+                              fontSize: 24,
+                            ),
+                      ),
+                    ),
+                  ...List.generate(
+                    playerScreensToSwipe.isEmpty
+                        ? 0
+                        : playerScreensToSwipe.length - (_currentStep + 1),
+                    (index) => CupertinoButton(
+                      minSize: 0,
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _goToStepId(index + _currentStep + 1);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Transform.rotate(
+                          alignment: Alignment.center,
+                          angle: pi / 4, // 45 deg
+                          child: CustomFaIcon(
+                              icon: FontAwesomeIcons.square,
+                              color: middleBgColor),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Spacer(),
-              ],
-            ),
-            menuOpen: connectionDetails == null ||
-                    connectionDetails.isDm ||
-                    (rpgConfig?.characterStatTabsDefinition ??
-                                List<CharacterStatsTabDefinition>.empty())
-                            .length <=
-                        _currentStep ||
-                    rpgConfig == null ||
-                    charToRender == null
-                ? null
-                : () {
-                    Future.delayed(Duration.zero, () async {
-                      if (!mounted || !context.mounted) return;
+                  Spacer(),
+                ],
+              ),
+              menuOpen: connectionDetails == null ||
+                      connectionDetails.isDm ||
+                      (rpgConfig?.characterStatTabsDefinition ??
+                                  List<CharacterStatsTabDefinition>.empty())
+                              .length <=
+                          _currentStep ||
+                      rpgConfig == null ||
+                      charToRender == null
+                  ? null
+                  : () {
+                      Future.delayed(Duration.zero, () async {
+                        if (!mounted || !context.mounted) return;
 
-                      PlayerPageHelpers.handlePossiblyMissingCharacterStats(
-                          ref: ref,
-                          context: context,
-                          filterTabId: rpgConfig
-                              .characterStatTabsDefinition![_currentStep].uuid,
-                          rpgConfig: rpgConfig,
-                          selectedCharacter: charToRender!);
+                        PlayerPageHelpers.handlePossiblyMissingCharacterStats(
+                            ref: ref,
+                            context: context,
+                            filterTabId: rpgConfig
+                                .characterStatTabsDefinition![_currentStep]
+                                .uuid,
+                            rpgConfig: rpgConfig,
+                            selectedCharacter: charToRender!);
+                      });
+                    },
+            ),
+            Expanded(
+              child: Container(
+                color: bgColor,
+                child: PageView(
+                  controller: pageViewController,
+                  onPageChanged: (value) {
+                    setState(() {
+                      _currentStep = value;
                     });
                   },
-            backInsteadOfCloseIcon: true,
-          ),
-          Expanded(
-            child: Container(
-              color: bgColor,
-              child: PageView(
-                controller: pageViewController,
-                onPageChanged: (value) {
-                  setState(() {
-                    _currentStep = value;
-                  });
-                },
-                scrollDirection: Axis.horizontal,
-                children: playerScreensToSwipe.map((e) => e.$2).toList(),
+                  scrollDirection: Axis.horizontal,
+                  children: playerScreensToSwipe.map((e) => e.$2).toList(),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
@@ -77,108 +78,116 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
     var dmScreensToSwipe = getDmScreens(context);
     var currentTitle = dmScreensToSwipe[_currentStep].$1;
 
-    return Scaffold(
-      backgroundColor: bgColor,
-      body: Column(
-        children: [
-          Navbar(
-            useTopSafePadding: true,
-            closeFunction: () {
-              // close connection
-              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-                  ref.read(connectionDetailsProvider).requireValue.copyWith(
-                        isInSession: false,
-                        isDm: false,
-                      ));
-              navigatorKey.currentState!.pop();
-            },
-            titleWidget: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Spacer(),
-                ...List.generate(
-                  _currentStep + 1,
-                  (index) => CupertinoButton(
-                    minSize: 0,
-                    padding: EdgeInsets.zero,
-                    onPressed: () async {
-                      await _goToStepId(index);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: index == _currentStep
-                                ? FontAwesomeIcons.solidSquare
-                                : FontAwesomeIcons.square,
-                            color: index == _currentStep
-                                ? accentColor
-                                : middleBgColor),
+    return PreventSwipeNavigation(
+      child: Scaffold(
+        backgroundColor: bgColor,
+        body: Column(
+          children: [
+            Navbar(
+              backInsteadOfCloseIcon: false,
+              useTopSafePadding: true,
+              closeFunction: () {
+                // close connection
+                ref
+                    .read(connectionDetailsProvider.notifier)
+                    .updateConfiguration(ref
+                        .read(connectionDetailsProvider)
+                        .requireValue
+                        .copyWith(
+                          isInSession: false,
+                          isDm: false,
+                        ));
+                navigatorKey.currentState!.pop();
+              },
+              titleWidget: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Spacer(),
+                  ...List.generate(
+                    _currentStep + 1,
+                    (index) => CupertinoButton(
+                      minSize: 0,
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                        await _goToStepId(index);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Transform.rotate(
+                          alignment: Alignment.center,
+                          angle: pi / 4, // 45 deg
+                          child: CustomFaIcon(
+                              icon: index == _currentStep
+                                  ? FontAwesomeIcons.solidSquare
+                                  : FontAwesomeIcons.square,
+                              color: index == _currentStep
+                                  ? accentColor
+                                  : middleBgColor),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                if (context.isTablet)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                    child: Text(
-                      currentTitle,
-                      textAlign: TextAlign.center,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: textColor,
-                                fontSize: 24,
-                              ),
+                  if (context.isTablet)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                      child: Text(
+                        currentTitle,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: textColor,
+                              fontSize: 24,
+                            ),
+                      ),
                     ),
-                  ),
-                ...List.generate(
-                  // TODO what is the correct number of steps
-                  dmScreensToSwipe.length - (_currentStep + 1),
-                  (index) => CupertinoButton(
-                    minSize: 0,
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      _goToStepId(index + _currentStep + 1);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: FontAwesomeIcons.square,
-                            color: middleBgColor),
+                  ...List.generate(
+                    // TODO what is the correct number of steps
+                    dmScreensToSwipe.length - (_currentStep + 1),
+                    (index) => CupertinoButton(
+                      minSize: 0,
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _goToStepId(index + _currentStep + 1);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Transform.rotate(
+                          alignment: Alignment.center,
+                          angle: pi / 4, // 45 deg
+                          child: CustomFaIcon(
+                              icon: FontAwesomeIcons.square,
+                              color: middleBgColor),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Spacer(),
-              ],
+                  Spacer(),
+                ],
+              ),
+              menuOpen: () {
+                Navigator.of(context)
+                    .pushNamed(allWizardConfigurations.entries.first.key);
+              },
             ),
-            menuOpen: () {
-              Navigator.of(context)
-                  .pushNamed(allWizardConfigurations.entries.first.key);
-            },
-            backInsteadOfCloseIcon: true,
-          ),
-          Expanded(
-            child: Container(
-              color: bgColor,
-              child: PageView(
-                controller: pageViewController,
-                onPageChanged: (value) {
-                  setState(() {
-                    _currentStep = value;
-                  });
-                },
-                scrollDirection: Axis.horizontal,
-                children: dmScreensToSwipe.map((e) => e.$2).toList(),
+            Expanded(
+              child: Container(
+                color: bgColor,
+                child: PageView(
+                  controller: pageViewController,
+                  onPageChanged: (value) {
+                    setState(() {
+                      _currentStep = value;
+                    });
+                  },
+                  scrollDirection: Axis.horizontal,
+                  children: dmScreensToSwipe.map((e) => e.$2).toList(),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
