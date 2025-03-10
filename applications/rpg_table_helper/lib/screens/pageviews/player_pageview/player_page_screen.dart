@@ -251,7 +251,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     super.initState();
   }
 
-  bool _alreadyCheckedForMissingStats = false;
+  bool? _alreadyCheckedForMissingStats;
 
   @override
   Widget build(BuildContext context) {
