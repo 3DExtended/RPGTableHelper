@@ -1535,38 +1535,70 @@ class _PlayerStatsConfigurationVisualsState
             .entries
             .sortedBy((e) => e.value.characterName)
             .map(
-              (e) => CheckboxListTile.adaptive(
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-                splashRadius: 0,
-                dense: true,
-                checkColor: const Color.fromARGB(255, 57, 245, 88),
-                activeColor: darkColor,
-                visualDensity: VisualDensity(vertical: -2),
-                title: Text(
-                  e.value.characterName,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium!
-                      .copyWith(color: darkTextColor, fontSize: 16),
-                ),
-                value: selectedCompanions.contains(e.value.uuid),
-                onChanged: (newValue) {
-                  if (newValue == null) return;
-                  setState(() {
-                    var deepCopy = [...selectedCompanions];
+              (e) => Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: CheckboxListTile.adaptive(
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: EdgeInsets.zero,
+                      splashRadius: 0,
+                      dense: true,
+                      checkColor: const Color.fromARGB(255, 57, 245, 88),
+                      activeColor: darkColor,
+                      visualDensity: VisualDensity(vertical: -2),
+                      title: Text(
+                        e.value.characterName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(color: darkTextColor, fontSize: 16),
+                      ),
+                      value: selectedCompanions.contains(e.value.uuid),
+                      onChanged: (newValue) {
+                        if (newValue == null) return;
+                        setState(() {
+                          var deepCopy = [...selectedCompanions];
 
-                    if (newValue == true) {
-                      // add to selected companions
-                      deepCopy.add(e.value.uuid);
-                    } else {
-                      deepCopy.remove(e.value.uuid);
-                    }
+                          if (newValue == true) {
+                            // add to selected companions
+                            deepCopy.add(e.value.uuid);
+                          } else {
+                            deepCopy.remove(e.value.uuid);
+                          }
 
-                    selectedCompanions = deepCopy;
-                    onChanged();
-                  });
-                },
+                          selectedCompanions = deepCopy;
+                          onChanged();
+                        });
+                      },
+                    ),
+                  ),
+                  CustomButton(
+                      icon: CustomFaIcon(
+                        icon: FontAwesomeIcons.trashCan,
+                        size: 20,
+                        color: darkColor,
+                      ),
+                      variant: CustomButtonVariant.FlatButton,
+                      onPressed: () {
+                        // make this code delete the current pet
+                        var newestCharacter = ref
+                            .read(rpgCharacterConfigurationProvider)
+                            .requireValue;
+
+                        ref
+                            .read(rpgCharacterConfigurationProvider.notifier)
+                            .updateConfiguration(
+                                newestCharacter.copyWith(companionCharacters: [
+                              ...(newestCharacter.companionCharacters ?? [])
+                                  .where((element) =>
+                                      element.uuid != e.value.uuid),
+                            ]));
+                        setState(() {
+                          onChanged();
+                        });
+                      })
+                ],
               ),
             ),
         SizedBox(
