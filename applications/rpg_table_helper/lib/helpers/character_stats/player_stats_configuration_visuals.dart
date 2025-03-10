@@ -65,6 +65,7 @@ class _PlayerStatsConfigurationVisualsState
 
   bool hideStatFromCharacterScreens = false;
   bool hideLabelOfStat = false;
+  bool showTransformationConfiguration = false;
 
   List<
       (
@@ -223,6 +224,13 @@ class _PlayerStatsConfigurationVisualsState
       }
 
       selectedCompanions = previouslySelectedCompanions;
+    }
+
+    if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.transformIntoAlternateFormBtn) {
+      var charConfig = ref.read(rpgCharacterConfigurationProvider).requireValue;
+      showTransformationConfiguration =
+          charConfig.transformationComponents?.isNotEmpty ?? false;
     }
 
     if (widget.statConfiguration.valueType ==
@@ -1312,7 +1320,6 @@ class _PlayerStatsConfigurationVisualsState
     );
   }
 
-  bool showTransformationConfiguration = false;
   Widget getConfigurationWidgetsForTransformIntoAlternateFormBtn() {
     var statTitle = widget.statConfiguration.name;
     var statDescription = widget.statConfiguration.helperText;
