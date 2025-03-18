@@ -22,6 +22,3 @@ services:
       - questkeeper_aspnet_api
     restart: always
     command: tunnel --no-autoupdate run --url http://questkeeper_aspnet_api:8080
-
-volumes:
-  questkeeper_sqlitedb:
