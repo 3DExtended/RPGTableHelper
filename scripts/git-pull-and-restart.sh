@@ -1,5 +1,5 @@
 # Navigate to the project directory
-cd /mnt/user/appdata/RPGTableHelper || exit
+cd /mnt/user/projects/RPGTableHelper || exit
 
 # Fetch latest changes
 git fetch origin main
