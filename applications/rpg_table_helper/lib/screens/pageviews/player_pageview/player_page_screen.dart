@@ -300,21 +300,32 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         body: Column(
           children: [
             Navbar(
-              backInsteadOfCloseIcon: false,
+              backInsteadOfCloseIcon: rpgConfig?.characterStatTabsDefinition!
+                      .indexWhere((tab) => tab.isDefaultTab == true) !=
+                  _currentStep,
               useTopSafePadding: true,
               closeFunction: () {
-                // close connection
-                ref
-                    .read(connectionDetailsProvider.notifier)
-                    .updateConfiguration(ref
-                        .read(connectionDetailsProvider)
-                        .requireValue
-                        .copyWith(
-                          isInSession: false,
-                          isDm: false,
-                        ));
+                if (rpgConfig?.characterStatTabsDefinition!
+                        .indexWhere((tab) => tab.isDefaultTab == true) !=
+                    _currentStep) {
+                  setState(() {
+                    _goToStepId(rpgConfig!.characterStatTabsDefinition!
+                        .indexWhere((tab) => tab.isDefaultTab == true));
+                  });
+                } else {
+                  // close connection
+                  ref
+                      .read(connectionDetailsProvider.notifier)
+                      .updateConfiguration(ref
+                          .read(connectionDetailsProvider)
+                          .requireValue
+                          .copyWith(
+                            isInSession: false,
+                            isDm: false,
+                          ));
 
-                navigatorKey.currentState!.pop();
+                  navigatorKey.currentState!.pop();
+                }
               },
               titleWidget: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
