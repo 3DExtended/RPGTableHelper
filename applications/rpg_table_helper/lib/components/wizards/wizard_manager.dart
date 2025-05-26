@@ -8,6 +8,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/context_extension.dart';
 
 class WizardManager extends StatefulWidget {
   final List<
@@ -118,26 +119,27 @@ class _WizardManagerState extends State<WizardManager> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                  child: Stack(children: [
-                    AnimatedOpacity(
-                      opacity: _currentTitleOverride != null ? 1 : 0,
-                      duration: Durations.short2,
-                      child: Text(
-                        _currentTitleOverride ?? "",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: textColor,
-                              fontSize: 24,
-                            ),
+                if (context.isTablet)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                    child: Stack(children: [
+                      AnimatedOpacity(
+                        opacity: _currentTitleOverride != null ? 1 : 0,
+                        duration: Durations.short2,
+                        child: Text(
+                          _currentTitleOverride ?? "",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
+                        ),
                       ),
-                    ),
-                  ]),
-                ),
+                    ]),
+                  ),
                 ...List.generate(
                   widget.stepBuilders.length - (_currentStep + 1),
                   (index) => CupertinoButton(
