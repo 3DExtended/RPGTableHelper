@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:quest_keeper/helpers/context_extension.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
 
 class DynamicHeightColumnLayout extends StatefulWidget {
@@ -25,6 +28,8 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
   Map<int, int>? childMapping;
 
   late List<GlobalKey> childrenKeys;
+
+  Map<int, double> childrenPaddingTops = {};
 
   @override
   void initState() {
@@ -65,6 +70,12 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
       }
 
       // Add the child to the target column.
+      if (childrenPaddingTops.containsKey(i) && childrenPaddingTops[i] != 0.0) {
+        columns[targetColumnIndex].add(Container(
+          height: childrenPaddingTops[i],
+          color: Colors.transparent,
+        ));
+      }
       columns[targetColumnIndex].add(Container(
         padding: EdgeInsets.only(bottom: widget.runSpacing),
         key: childrenKeys.length > i ? childrenKeys[i] : null,
@@ -108,15 +119,62 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
       });
     }
 
-    List<double> columnHeights = List.filled(widget.numberOfColumns, 0.0);
-    for (var i = 0; i < widget.children.length; i++) {
-      var childHeight =
-          heightsOfChildren.length > i ? heightsOfChildren[i].value : 0.0;
-      int targetColumnIndex = columnHeights.indexOf(
-        columnHeights.reduce((a, b) => a < b ? a : b),
-      );
-      tempMapping[i] = targetColumnIndex;
-      columnHeights[targetColumnIndex] += childHeight;
+    childrenPaddingTops = {};
+
+    var screensize = MediaQuery.of(context).size;
+
+    // if there are multiple children which exceed the screen height, we return the default mapping from the default configuration
+    var itemsWithExceedingHeight =
+        heightsOfChildren.map((e) => e.value > screensize.height).toList();
+    if (itemsWithExceedingHeight.where((e) => e == true).length >=
+        widget.numberOfColumns) {
+      var indexOfFirstExceedingHeight = itemsWithExceedingHeight.indexOf(true);
+
+      // loop through each child and assign it to the column based on its index
+      var columnIndex = 0;
+      for (var i = 0; i < widget.children.length; i++) {
+        // if the current child is the first one that exceeds the height, we
+        // need to calculate the heights of all columns up to this point and
+        // align all following children to the bottom of the row
+        if (indexOfFirstExceedingHeight == i) {
+          // calculate the heights of all columns up to this point
+          var currentColumnHeights = List.filled(
+            widget.numberOfColumns,
+            0.0,
+          );
+          for (var j = 0; j < widget.numberOfColumns; j++) {
+            currentColumnHeights[j] = heightsOfChildren
+                .where((e) => tempMapping[e.key] == j)
+                .fold(0.0, (sum, e) => sum + e.value);
+          }
+          var maxCurrentColumnHeight =
+              currentColumnHeights.reduce((a, b) => a > b ? a : b);
+
+          for (var j = 0; j < widget.numberOfColumns; j++) {
+            var paddingBottom =
+                max(0.0, maxCurrentColumnHeight - currentColumnHeights[j]);
+            childrenPaddingTops[i + j] = context.isTablet
+                ? paddingBottom
+                : 0; // Adjust padding for tablet vs phone
+          }
+
+          columnIndex = 0;
+        }
+
+        tempMapping[i] = columnIndex % widget.numberOfColumns;
+        columnIndex++;
+      }
+    } else {
+      List<double> columnHeights = List.filled(widget.numberOfColumns, 0.0);
+      for (var i = 0; i < widget.children.length; i++) {
+        var childHeight =
+            heightsOfChildren.length > i ? heightsOfChildren[i].value : 0.0;
+        int targetColumnIndex = columnHeights.indexOf(
+          columnHeights.reduce((a, b) => a < b ? a : b),
+        );
+        tempMapping[i] = targetColumnIndex;
+        columnHeights[targetColumnIndex] += childHeight;
+      }
     }
 
     if (!mounted) return;
