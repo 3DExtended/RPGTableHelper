@@ -142,6 +142,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "The following items are possible at the place of finding:"),
         "forIntegerValueWithName":
             MessageLookupByLibrary.simpleMessage("for number value"),
+        "generateImageBtnLabel":
+            MessageLookupByLibrary.simpleMessage("Generate image"),
+        "generateLoreImageTitle":
+            MessageLookupByLibrary.simpleMessage("Generate an image"),
         "generatedImage":
             MessageLookupByLibrary.simpleMessage("Generated image"),
         "genericErrorModalHeader":

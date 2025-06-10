@@ -25,6 +25,7 @@ import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modals/show_edit_lore_page_title.dart';
+import 'package:quest_keeper/helpers/modals/show_generate_lore_image_modal.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
@@ -88,7 +89,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
   int numberOfDocumentsForThisPlayer = 0;
   UserIdentifier? get _myUser =>
-      usersInCampagne.singleWhereOrNull((u) => u.isYou)?.userId;
+      usersInCampagne.firstWhereOrNull((u) => u.isYou)?.userId;
 
   bool get _isAllowedToEdit =>
       selectedDocument?.creatingUserId?.$value != null &&
@@ -884,6 +885,66 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                   }
                 },
                 label: S.of(context).addImageBtnLabel,
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.plus,
+                  size: iconSizeInlineButtons,
+                  color: textColor,
+                ),
+              ),
+              CustomButton(
+                variant: CustomButtonVariant.AccentButton,
+                onPressed: () async {
+                  var result = await showGenerateLoreImageModal(context);
+                  if (result == null) return;
+
+                  var connectionDetails =
+                      ref.read(connectionDetailsProvider).requireValue;
+                  var campagneId = connectionDetails.campagneId;
+                  if (campagneId == null) return;
+
+                  // TODO: make this a modal dialog
+
+                  // structure: $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
+                  var imageUrl = result.publicUrl;
+
+                  // extract metadata id from url
+                  var urlSplits = imageUrl.split("?metadataid=");
+                  var publicUrl = urlSplits[0];
+                  var metadataId = urlSplits[1];
+                  if (!context.mounted || !mounted) return;
+                  var service = DependencyProvider.of(context)
+                      .getService<INoteDocumentService>();
+                  var createResult =
+                      await service.createNewImageBlockForDocument(
+                          imageBlockToCreate: ImageBlock(
+                            creationDate: DateTime.now(),
+                            lastModifiedAt: DateTime.now(),
+                            creatingUserId: _myUser,
+                            id: NoteBlockModelBaseIdentifier(
+                                $value: "00000000-0000-0000-0000-000000000000"),
+                            isDeleted: false,
+                            permittedUsers: [],
+                            noteDocumentId: selectedDocument!.id,
+                            imageMetaDataId:
+                                ImageMetaDataIdentifier($value: metadataId),
+                            publicImageUrl: publicUrl,
+                          ),
+                          notedocumentid: selectedDocument!.id!);
+
+                  if (!context.mounted || !mounted) return;
+                  await createResult.possiblyHandleError(context);
+                  if (!context.mounted || !mounted) return;
+
+                  if (createResult.isSuccessful) {
+                    setState(() {
+                      selectedDocument!.imageBlocks.add(createResult.result!);
+                    });
+                  }
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                label: S.of(context).generateImageBtnLabel,
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,

@@ -2179,6 +2179,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Generate image`
+  String get generateImageBtnLabel {
+    return Intl.message(
+      'Generate image',
+      name: 'generateImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate an image`
+  String get generateLoreImageTitle {
+    return Intl.message(
+      'Generate an image',
+      name: 'generateLoreImageTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
