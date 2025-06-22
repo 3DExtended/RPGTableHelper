@@ -50,7 +50,7 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
       padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 3),
       child: CustomGridListView(
           itemCount: imagesInCampagne.length,
-          numberOfColumns: 3, // TODO Adjust the number of columns as needed
+          numberOfColumns: (MediaQuery.of(context).size.width / 300).ceil(),
           horizontalSpacing: 20,
           verticalSpacing: 20,
           itemBuilder: (context, index) {
@@ -80,7 +80,7 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
+              constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.8),
               child: BorderedImage(
                 backgroundColor: bgColor,
                 lightColor: darkColor,
@@ -132,6 +132,8 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
   }
 
   String getPublicImageUrl(ImageMetaData image) {
-    return ""; // TODO MAKE ME
+    var urlForImage = "/public/getimage/${image.id!.$value!}/${image.apiKey!}";
+
+    return urlForImage;
   }
 }
