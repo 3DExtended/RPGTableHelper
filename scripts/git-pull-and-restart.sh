@@ -11,6 +11,8 @@ REMOTE=$(git rev-parse origin/main)
 if [ "$LOCAL" != "$REMOTE" ]; then
     echo "Changes detected, pulling new updates..."
     git pull origin main
+    git submodule update --init --recursive
+
 
     # Restart Docker Compose
     docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build
