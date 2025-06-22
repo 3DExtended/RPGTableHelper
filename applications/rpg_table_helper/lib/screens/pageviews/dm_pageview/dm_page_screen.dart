@@ -17,6 +17,7 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_campagne_ma
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_character_overview.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_fight_squence.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_grant_items.dart';
+import 'package:quest_keeper/screens/pageviews/generated_images_screen.dart';
 import 'package:quest_keeper/screens/pageviews/lore_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 
@@ -59,6 +60,10 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
       (
         S.of(context).lore,
         LoreScreen(),
+      ),
+      (
+        S.of(context).generatedImagesTabTitle,
+        GeneratedImagesScreen(),
       ),
     ];
   }

@@ -11,6 +11,9 @@ abstract class IImageGenerationService {
 
   Future<HRResponse<String>> createNewImageAndGetUrl(
       {required String prompt, required CampagneIdentifier campagneId});
+
+  Future<HRResponse<List<ImageMetaData>>> getImagesForCampagne(
+      {required CampagneIdentifier campagneId});
 }
 
 class ImageGenerationService extends IImageGenerationService {
@@ -34,13 +37,33 @@ class ImageGenerationService extends IImageGenerationService {
 
     return imageGenerationResult;
   }
+
+  @override
+  Future<HRResponse<List<ImageMetaData>>> getImagesForCampagne(
+      {required CampagneIdentifier campagneId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<List<ImageMetaData>>(
+          'Could not load api connector.',
+          '798be692-130c-4f1d-ba19-57cb32f2677a');
+    }
+
+    var imagesResult = await HRResponse.fromApiFuture(
+        api.imageGetimagesCampagneIdGet(campagneId: campagneId.$value!),
+        'Could not load images.',
+        'cbdd8cdc-16cd-4a92-aa65-42976752d372');
+
+    return imagesResult;
+  }
 }
 
 class MockImageGenerationService extends IImageGenerationService {
   final HRResponse<String>? createNewImageAndGetUrlOverride;
+  final HRResponse<List<ImageMetaData>>? getImagesForCampagneOverride;
   const MockImageGenerationService({
     required super.apiConnectorService,
     this.createNewImageAndGetUrlOverride,
+    this.getImagesForCampagneOverride,
   }) : super(isMock: true);
 
   @override
@@ -48,6 +71,14 @@ class MockImageGenerationService extends IImageGenerationService {
       {required String prompt, required CampagneIdentifier campagneId}) {
     return Future.value(
       createNewImageAndGetUrlOverride ?? HRResponse.fromResult("asdf"),
+    );
+  }
+
+  @override
+  Future<HRResponse<List<ImageMetaData>>> getImagesForCampagne(
+      {required CampagneIdentifier campagneId}) {
+    return Future.value(
+      getImagesForCampagneOverride ?? HRResponse.fromResult([]),
     );
   }
 }

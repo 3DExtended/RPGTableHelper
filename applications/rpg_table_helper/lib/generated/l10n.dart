@@ -2199,6 +2199,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Generierte Bilder`
+  String get generatedImagesTabTitle {
+    return Intl.message(
+      'Generierte Bilder',
+      name: 'generatedImagesTabTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

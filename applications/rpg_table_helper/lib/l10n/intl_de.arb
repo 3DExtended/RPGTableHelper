@@ -253,5 +253,6 @@
   "characterNameStatTitle": "Charakter-Name",
   "characterNameStatHelperText": "Wie heißt dein Charakter?",
   "generateImageBtnLabel": "Bild generieren",
-  "generateLoreImageTitle": "Generiere ein Bild"
+  "generateLoreImageTitle": "Generiere ein Bild",
+  "generatedImagesTabTitle": "Generierte Bilder"
 }

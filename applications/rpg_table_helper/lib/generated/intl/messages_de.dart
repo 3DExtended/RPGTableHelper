@@ -152,6 +152,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Generiere ein Bild"),
         "generatedImage":
             MessageLookupByLibrary.simpleMessage("Generiertes Bild"),
+        "generatedImagesTabTitle":
+            MessageLookupByLibrary.simpleMessage("Generierte Bilder"),
         "genericErrorModalHeader":
             MessageLookupByLibrary.simpleMessage("Fehler"),
         "genericErrorModalTechnicalDetailsErrorCodeRowLabel":
