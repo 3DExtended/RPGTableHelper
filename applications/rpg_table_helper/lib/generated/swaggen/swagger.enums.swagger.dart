@@ -14,3 +14,19 @@ enum HandleJoinRequestType {
 
   const HandleJoinRequestType(this.value);
 }
+
+enum ImageType {
+  @JsonValue(null)
+  swaggerGeneratedUnknown(null),
+
+  @JsonValue('Undefined')
+  undefined('Undefined'),
+  @JsonValue('PNG')
+  png('PNG'),
+  @JsonValue('JPEG')
+  jpeg('JPEG');
+
+  final String? value;
+
+  const ImageType(this.value);
+}

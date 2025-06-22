@@ -83,7 +83,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -94,7 +95,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -105,7 +107,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -180,7 +183,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -191,7 +195,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -202,7 +207,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -223,15 +229,17 @@
         ],
         "summary": "Returns a single of campagne.",
         "description": "You must be the dm or a player in this campagne",
-        "parameters": [{
-          "name": "campagneid",
-          "in": "path",
-          "description": "The id of the desired campagne",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "campagneid",
+            "in": "path",
+            "description": "The id of the desired campagne",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "The campagne",
@@ -278,7 +286,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -289,7 +298,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -300,7 +310,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -392,7 +403,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -403,7 +415,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -414,7 +427,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -489,7 +503,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -500,7 +515,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -511,7 +527,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -531,15 +548,17 @@
           "CampagneJoinRequest"
         ],
         "summary": "Returns a list of campagneJoinRequests for a campagne this user is the dm of.",
-        "parameters": [{
-          "name": "campagneId",
-          "in": "path",
-          "description": "campagneId",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "campagneId",
+            "in": "path",
+            "description": "campagneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "A list of all campagneJoinRequests for this user as dm",
@@ -595,7 +614,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -606,7 +626,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -617,7 +638,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -636,14 +658,16 @@
         "tags": [
           "Image"
         ],
-        "parameters": [{
-          "name": "campagneid",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "campagneid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "requestBody": {
           "content": {
             "application/json-patch+json": {
@@ -699,14 +723,16 @@
           "Image"
         ],
         "summary": "Streams an image upload directly to the server.",
-        "parameters": [{
-          "name": "campagneId",
-          "in": "query",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "campagneId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -753,7 +779,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -764,7 +791,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -775,7 +803,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -792,6 +821,100 @@
         }
       }
     },
+    "/Image/getimages/{campagneId}": {
+      "get": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.",
+        "parameters": [
+          {
+            "name": "campagneId",
+            "in": "path",
+            "description": "The ID of the campagne to retrieve images for.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImageMetaData"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImageMetaData"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ImageMetaData"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/Notes/getdocuments/{campagneid}": {
       "get": {
         "tags": [
@@ -799,15 +922,17 @@
         ],
         "summary": "Returns a list of documents this user can see for a given campagne.",
         "description": "You must be within the correct campagne",
-        "parameters": [{
-          "name": "campagneid",
-          "in": "path",
-          "description": "The id of the desired campagne",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "campagneid",
+            "in": "path",
+            "description": "The id of the desired campagne",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "The documents for the user",
@@ -863,7 +988,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -874,7 +1000,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -885,7 +1012,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -906,15 +1034,17 @@
         ],
         "summary": "Returns a single document.",
         "description": "You must be within the correct campagne and the document has to be your own or shared with you",
-        "parameters": [{
-          "name": "notedocumentid",
-          "in": "path",
-          "description": "The id of the desired campagne",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "notedocumentid",
+            "in": "path",
+            "description": "The id of the desired campagne",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "The document",
@@ -961,7 +1091,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -972,7 +1103,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -983,7 +1115,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1004,15 +1137,17 @@
         ],
         "summary": "Deletes a single document.",
         "description": "You must be within the correct campagne and the document has to be your own",
-        "parameters": [{
-          "name": "notedocumentid",
-          "in": "path",
-          "description": "The id of the desired campagne",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "notedocumentid",
+            "in": "path",
+            "description": "The id of the desired campagne",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "The document",
@@ -1059,7 +1194,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1070,7 +1206,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1081,7 +1218,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1174,7 +1312,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1185,7 +1324,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1196,7 +1336,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1217,15 +1358,17 @@
         ],
         "summary": "Creates a single text block for a given document.",
         "description": "You must be the owner of the document",
-        "parameters": [{
-          "name": "notedocumentid",
-          "in": "path",
-          "description": "The document id where this block will be assigned",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "notedocumentid",
+            "in": "path",
+            "description": "The document id where this block will be assigned",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "requestBody": {
           "description": "The new textblock",
           "content": {
@@ -1298,7 +1441,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1309,7 +1453,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1320,7 +1465,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1341,15 +1487,17 @@
         ],
         "summary": "Creates a single image block for a given document.",
         "description": "You must be the owner of the document",
-        "parameters": [{
-          "name": "notedocumentid",
-          "in": "path",
-          "description": "The document id where this block will be assigned",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "notedocumentid",
+            "in": "path",
+            "description": "The document id where this block will be assigned",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "requestBody": {
           "description": "The new imageblock",
           "content": {
@@ -1422,7 +1570,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1433,7 +1582,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1444,7 +1594,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1520,7 +1671,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1531,7 +1683,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1542,7 +1695,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1618,7 +1772,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1629,7 +1784,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1640,7 +1796,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1716,7 +1873,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1727,7 +1885,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1738,7 +1897,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1759,14 +1919,16 @@
         ],
         "summary": "Deletes a single note block for a given document.",
         "description": "You must be the owner of the document",
-        "parameters": [{
-          "name": "Value",
-          "in": "query",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
+        "parameters": [
+          {
+            "name": "Value",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "Ok if deleted"
@@ -1796,7 +1958,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1807,7 +1970,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1818,7 +1982,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1910,7 +2075,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1921,7 +2087,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -1932,7 +2099,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2007,7 +2175,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2018,7 +2187,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2029,7 +2199,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2050,15 +2221,17 @@
         ],
         "summary": "Returns a single playerCharacter.",
         "description": "You must be the owner of this playerCharacter",
-        "parameters": [{
-          "name": "playercharacterid",
-          "in": "path",
-          "description": "The id of the desired playerCharacter",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "playercharacterid",
+            "in": "path",
+            "description": "The id of the desired playerCharacter",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "The playerCharacter",
@@ -2105,7 +2278,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2116,7 +2290,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2127,7 +2302,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2148,14 +2324,16 @@
         ],
         "summary": "Returns a list of player characters for a given campagne.",
         "description": "Please note that only the dm is allowed to retrieve the rpg character configs of the players. if you are not the dm, those configs will be empty!",
-        "parameters": [{
-          "name": "Value",
-          "in": "query",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
+        "parameters": [
+          {
+            "name": "Value",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "A list of all playerCharacters for this user",
@@ -2211,7 +2389,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2222,7 +2401,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2233,7 +2413,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2253,14 +2434,16 @@
           "PlayerCharacter"
         ],
         "summary": "Returns a list of all users assigned to the campagne with meta information.",
-        "parameters": [{
-          "name": "Value",
-          "in": "query",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
+        "parameters": [
+          {
+            "name": "Value",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "A list of all playerCharacters for this user",
@@ -2316,7 +2499,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2327,7 +2511,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2338,7 +2523,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2387,7 +2573,8 @@
         "tags": [
           "Public"
         ],
-        "parameters": [{
+        "parameters": [
+          {
             "name": "uuid",
             "in": "path",
             "required": true,
@@ -2470,7 +2657,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2481,7 +2669,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2492,7 +2681,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2565,7 +2755,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2576,7 +2767,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2587,7 +2779,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2603,7 +2796,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2614,7 +2808,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2625,7 +2820,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2697,7 +2893,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2708,7 +2905,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2719,7 +2917,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2735,7 +2934,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2746,7 +2946,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2757,7 +2958,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2773,7 +2975,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2784,7 +2987,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2795,7 +2999,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2816,7 +3021,8 @@
         ],
         "summary": "Lets the user verify their email.",
         "description": "This link is send via email to the user after registration (and only if the user used username and password login).",
-        "parameters": [{
+        "parameters": [
+          {
             "name": "useridbase64",
             "in": "path",
             "description": "The base64 encoded userid",
@@ -2861,7 +3067,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2872,7 +3079,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2883,7 +3091,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2929,7 +3138,8 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2940,7 +3150,8 @@
               },
               "application/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2951,7 +3162,8 @@
               },
               "text/json": {
                 "schema": {
-                  "oneOf": [{
+                  "oneOf": [
+                    {
                       "$ref": "#/components/schemas/ProblemDetails"
                     },
                     {
@@ -2972,15 +3184,17 @@
         ],
         "summary": "Returns the encryption challenge for a given username.",
         "description": "Please note that the client has to provide an RSA public\r\nkey in order to receive the encrypted challenge dictionary.",
-        "parameters": [{
-          "name": "username",
-          "in": "path",
-          "description": "The username of the desired encryption challenge",
-          "required": true,
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The username of the desired encryption challenge",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }],
+        ],
         "requestBody": {
           "description": "The public RSA key of the client",
           "content": {
@@ -3409,7 +3623,8 @@
         "additionalProperties": false
       },
       "Campagne": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/CampagneIdentifierGuidNodeModelBase"
           },
           {
@@ -3481,7 +3696,8 @@
         "additionalProperties": false
       },
       "CampagneJoinRequest": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/CampagneJoinRequestIdentifierGuidNodeModelBase"
           },
           {
@@ -3613,7 +3829,8 @@
         "type": "string"
       },
       "HttpValidationProblemDetails": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/ProblemDetails"
           },
           {
@@ -3635,7 +3852,8 @@
         ]
       },
       "ImageBlock": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/NoteBlockModelBase"
           },
           {
@@ -3661,6 +3879,35 @@
           }
         ]
       },
+      "ImageMetaData": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ImageMetaDataIdentifierGuidNodeModelBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "createdForCampagneId": {
+                "$ref": "#/components/schemas/CampagneIdentifier"
+              },
+              "locallyStored": {
+                "type": "boolean"
+              },
+              "apiKey": {
+                "type": "string",
+                "nullable": true
+              },
+              "creatorId": {
+                "$ref": "#/components/schemas/UserIdentifier"
+              },
+              "imageType": {
+                "$ref": "#/components/schemas/ImageType"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
       "ImageMetaDataIdentifier": {
         "type": "object",
         "properties": {
@@ -3670,6 +3917,31 @@
           }
         },
         "additionalProperties": false
+      },
+      "ImageMetaDataIdentifierGuidNodeModelBase": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ImageMetaDataIdentifier"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ImageType": {
+        "enum": [
+          "Undefined",
+          "PNG",
+          "JPEG"
+        ],
+        "type": "string"
       },
       "JoinRequestForCampagneDto": {
         "required": [
@@ -3714,7 +3986,8 @@
         "description": "Data Transfer Object for user login information."
       },
       "NoteBlockModelBase": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/NoteBlockModelBaseIdentifierGuidNodeModelBase"
           },
           {
@@ -3856,7 +4129,8 @@
         "additionalProperties": false
       },
       "PlayerCharacter": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/PlayerCharacterIdentifierGuidNodeModelBase"
           },
           {
@@ -4066,7 +4340,8 @@
         "description": "Data Transfer Object for password reset requests."
       },
       "TextBlock": {
-        "allOf": [{
+        "allOf": [
+          {
             "$ref": "#/components/schemas/NoteBlockModelBase"
           },
           {
@@ -4101,7 +4376,9 @@
       }
     }
   },
-  "security": [{
-    "Bearer": []
-  }]
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
 }

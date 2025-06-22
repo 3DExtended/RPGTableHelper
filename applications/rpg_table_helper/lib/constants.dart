@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 const darkColor = Color(0xff312D28);
@@ -54,10 +53,10 @@ const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 
 // The location of the SignalR Server.
 // NOTE: Make sure to include the trailing slash.
-const apiBaseUrl = kDebugMode
-    ? "http://localhost:5012/"
-    : "https://questkeeper-prod.peter-esser.de/";
-// const apiBaseUrl = "https://questkeeper-prod.peter-esser.de/";
+// const apiBaseUrl = kDebugMode
+//     ? "http://localhost:5012/"
+//     : "https://questkeeper-prod.peter-esser.de/";
+const apiBaseUrl = "https://questkeeper-prod.peter-esser.de/";
 
 const serverUrl = "${apiBaseUrl}Chat";
 

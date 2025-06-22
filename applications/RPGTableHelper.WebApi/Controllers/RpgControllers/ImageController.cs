@@ -216,6 +216,59 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         /// <summary>
+        /// Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.
+        /// </summary>
+        /// <param name="campagneId">The ID of the campagne to retrieve images for.</param>
+        /// <returns>A list of image metadata URLs.</returns>
+        [HttpGet("getimages/{campagneId}")]
+        [ProducesResponseType(typeof(IEnumerable<ImageMetaData>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetImagesForCampagne(
+            [FromRoute] string campagneId,
+            CancellationToken cancellationToken
+        )
+        {
+            if (!Guid.TryParse(campagneId, out var campagneGuid))
+            {
+                return BadRequest("Invalid campagne ID format.");
+            }
+
+            if (campagneGuid == Guid.Empty)
+            {
+                return BadRequest("Campagne ID cannot be empty.");
+            }
+
+            var isUserInCampagne = await new CampagneIsUserInCampagneQuery
+            {
+                UserIdToCheck = _userContext.User.UserIdentifier,
+                CampagneId = Campagne.CampagneIdentifier.From(campagneGuid),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (isUserInCampagne.IsNone || !isUserInCampagne.Get())
+            {
+                return Unauthorized();
+            }
+
+            var images = await new ImageMetaDatasQuery
+            {
+                CampagneIdentifier = Campagne.CampagneIdentifier.From(campagneGuid),
+                RequestingUserIdentifier = _userContext.User.UserIdentifier,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (images.IsNone)
+            {
+                return BadRequest("No images found for the specified campagne.");
+            }
+
+            return Ok(images.Get());
+        }
+
+        /// <summary>
         /// Reads the header of different image formats
         /// </summary>
         /// <returns>true if valid file signature (magic number/header marker) is found</returns>

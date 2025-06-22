@@ -143,6 +143,18 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<ImageMetaData>>> _imageGetimagesCampagneIdGet(
+      {required String? campagneId}) {
+    final Uri $url = Uri.parse('/Image/getimages/${campagneId}');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<ImageMetaData>, ImageMetaData>($request);
+  }
+
+  @override
   Future<Response<List<NoteDocumentDto>>> _notesGetdocumentsCampagneidGet(
       {required String? campagneid}) {
     final Uri $url = Uri.parse('/Notes/getdocuments/${campagneid}');

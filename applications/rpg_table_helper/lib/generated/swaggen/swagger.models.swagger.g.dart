@@ -293,6 +293,42 @@ Map<String, dynamic> _$ImageBlockToJson(ImageBlock instance) =>
           instance.permittedUsers?.map((e) => e.toJson()).toList(),
     };
 
+ImageMetaData _$ImageMetaDataFromJson(Map<String, dynamic> json) =>
+    ImageMetaData(
+      createdForCampagneId: json['createdForCampagneId'] == null
+          ? null
+          : CampagneIdentifier.fromJson(
+              json['createdForCampagneId'] as Map<String, dynamic>),
+      locallyStored: json['locallyStored'] as bool?,
+      apiKey: json['apiKey'] as String?,
+      creatorId: json['creatorId'] == null
+          ? null
+          : UserIdentifier.fromJson(json['creatorId'] as Map<String, dynamic>),
+      imageType: imageTypeNullableFromJson(json['imageType']),
+      id: json['id'] == null
+          ? null
+          : ImageMetaDataIdentifier.fromJson(
+              json['id'] as Map<String, dynamic>),
+      creationDate: json['creationDate'] == null
+          ? null
+          : DateTime.parse(json['creationDate'] as String),
+      lastModifiedAt: json['lastModifiedAt'] == null
+          ? null
+          : DateTime.parse(json['lastModifiedAt'] as String),
+    );
+
+Map<String, dynamic> _$ImageMetaDataToJson(ImageMetaData instance) =>
+    <String, dynamic>{
+      'createdForCampagneId': instance.createdForCampagneId?.toJson(),
+      'locallyStored': instance.locallyStored,
+      'apiKey': instance.apiKey,
+      'creatorId': instance.creatorId?.toJson(),
+      'imageType': imageTypeNullableToJson(instance.imageType),
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+    };
+
 ImageMetaDataIdentifier _$ImageMetaDataIdentifierFromJson(
         Map<String, dynamic> json) =>
     ImageMetaDataIdentifier(
@@ -303,6 +339,30 @@ Map<String, dynamic> _$ImageMetaDataIdentifierToJson(
         ImageMetaDataIdentifier instance) =>
     <String, dynamic>{
       'value': instance.$value,
+    };
+
+ImageMetaDataIdentifierGuidNodeModelBase
+    _$ImageMetaDataIdentifierGuidNodeModelBaseFromJson(
+            Map<String, dynamic> json) =>
+        ImageMetaDataIdentifierGuidNodeModelBase(
+          id: json['id'] == null
+              ? null
+              : ImageMetaDataIdentifier.fromJson(
+                  json['id'] as Map<String, dynamic>),
+          creationDate: json['creationDate'] == null
+              ? null
+              : DateTime.parse(json['creationDate'] as String),
+          lastModifiedAt: json['lastModifiedAt'] == null
+              ? null
+              : DateTime.parse(json['lastModifiedAt'] as String),
+        );
+
+Map<String, dynamic> _$ImageMetaDataIdentifierGuidNodeModelBaseToJson(
+        ImageMetaDataIdentifierGuidNodeModelBase instance) =>
+    <String, dynamic>{
+      'id': instance.id?.toJson(),
+      'creationDate': instance.creationDate?.toIso8601String(),
+      'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
     };
 
 JoinRequestForCampagneDto _$JoinRequestForCampagneDtoFromJson(

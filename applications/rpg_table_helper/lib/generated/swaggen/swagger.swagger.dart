@@ -186,6 +186,22 @@ abstract class Swagger extends ChopperService {
     @PartFile() List<int>? image,
   });
 
+  ///Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.
+  ///@param campagneId The ID of the campagne to retrieve images for.
+  Future<chopper.Response<List<ImageMetaData>>> imageGetimagesCampagneIdGet(
+      {required String? campagneId}) {
+    generatedMapping.putIfAbsent(
+        ImageMetaData, () => ImageMetaData.fromJsonFactory);
+
+    return _imageGetimagesCampagneIdGet(campagneId: campagneId);
+  }
+
+  ///Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.
+  ///@param campagneId The ID of the campagne to retrieve images for.
+  @Get(path: '/Image/getimages/{campagneId}')
+  Future<chopper.Response<List<ImageMetaData>>> _imageGetimagesCampagneIdGet(
+      {@Path('campagneId') required String? campagneId});
+
   ///Returns a list of documents this user can see for a given campagne.
   ///@param campagneid The id of the desired campagne
   Future<chopper.Response<List<NoteDocumentDto>>>

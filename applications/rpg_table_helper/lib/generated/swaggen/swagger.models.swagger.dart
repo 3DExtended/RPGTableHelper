@@ -1126,6 +1126,139 @@ extension $ImageBlockExtension on ImageBlock {
 }
 
 @JsonSerializable(explicitToJson: true)
+class ImageMetaData {
+  const ImageMetaData({
+    this.createdForCampagneId,
+    this.locallyStored,
+    this.apiKey,
+    this.creatorId,
+    this.imageType,
+    this.id,
+    this.creationDate,
+    this.lastModifiedAt,
+  });
+
+  factory ImageMetaData.fromJson(Map<String, dynamic> json) =>
+      _$ImageMetaDataFromJson(json);
+
+  static const toJsonFactory = _$ImageMetaDataToJson;
+  Map<String, dynamic> toJson() => _$ImageMetaDataToJson(this);
+
+  @JsonKey(name: 'createdForCampagneId')
+  final CampagneIdentifier? createdForCampagneId;
+  @JsonKey(name: 'locallyStored')
+  final bool? locallyStored;
+  @JsonKey(name: 'apiKey')
+  final String? apiKey;
+  @JsonKey(name: 'creatorId')
+  final UserIdentifier? creatorId;
+  @JsonKey(
+    name: 'imageType',
+    toJson: imageTypeNullableToJson,
+    fromJson: imageTypeNullableFromJson,
+  )
+  final enums.ImageType? imageType;
+  @JsonKey(name: 'id')
+  final ImageMetaDataIdentifier? id;
+  @JsonKey(name: 'creationDate')
+  final DateTime? creationDate;
+  @JsonKey(name: 'lastModifiedAt')
+  final DateTime? lastModifiedAt;
+  static const fromJsonFactory = _$ImageMetaDataFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is ImageMetaData &&
+            (identical(other.createdForCampagneId, createdForCampagneId) ||
+                const DeepCollectionEquality().equals(
+                    other.createdForCampagneId, createdForCampagneId)) &&
+            (identical(other.locallyStored, locallyStored) ||
+                const DeepCollectionEquality()
+                    .equals(other.locallyStored, locallyStored)) &&
+            (identical(other.apiKey, apiKey) ||
+                const DeepCollectionEquality().equals(other.apiKey, apiKey)) &&
+            (identical(other.creatorId, creatorId) ||
+                const DeepCollectionEquality()
+                    .equals(other.creatorId, creatorId)) &&
+            (identical(other.imageType, imageType) ||
+                const DeepCollectionEquality()
+                    .equals(other.imageType, imageType)) &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.creationDate, creationDate) ||
+                const DeepCollectionEquality()
+                    .equals(other.creationDate, creationDate)) &&
+            (identical(other.lastModifiedAt, lastModifiedAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.lastModifiedAt, lastModifiedAt)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(createdForCampagneId) ^
+      const DeepCollectionEquality().hash(locallyStored) ^
+      const DeepCollectionEquality().hash(apiKey) ^
+      const DeepCollectionEquality().hash(creatorId) ^
+      const DeepCollectionEquality().hash(imageType) ^
+      const DeepCollectionEquality().hash(id) ^
+      const DeepCollectionEquality().hash(creationDate) ^
+      const DeepCollectionEquality().hash(lastModifiedAt) ^
+      runtimeType.hashCode;
+}
+
+extension $ImageMetaDataExtension on ImageMetaData {
+  ImageMetaData copyWith(
+      {CampagneIdentifier? createdForCampagneId,
+      bool? locallyStored,
+      String? apiKey,
+      UserIdentifier? creatorId,
+      enums.ImageType? imageType,
+      ImageMetaDataIdentifier? id,
+      DateTime? creationDate,
+      DateTime? lastModifiedAt}) {
+    return ImageMetaData(
+        createdForCampagneId: createdForCampagneId ?? this.createdForCampagneId,
+        locallyStored: locallyStored ?? this.locallyStored,
+        apiKey: apiKey ?? this.apiKey,
+        creatorId: creatorId ?? this.creatorId,
+        imageType: imageType ?? this.imageType,
+        id: id ?? this.id,
+        creationDate: creationDate ?? this.creationDate,
+        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+  }
+
+  ImageMetaData copyWithWrapped(
+      {Wrapped<CampagneIdentifier?>? createdForCampagneId,
+      Wrapped<bool?>? locallyStored,
+      Wrapped<String?>? apiKey,
+      Wrapped<UserIdentifier?>? creatorId,
+      Wrapped<enums.ImageType?>? imageType,
+      Wrapped<ImageMetaDataIdentifier?>? id,
+      Wrapped<DateTime?>? creationDate,
+      Wrapped<DateTime?>? lastModifiedAt}) {
+    return ImageMetaData(
+        createdForCampagneId: (createdForCampagneId != null
+            ? createdForCampagneId.value
+            : this.createdForCampagneId),
+        locallyStored:
+            (locallyStored != null ? locallyStored.value : this.locallyStored),
+        apiKey: (apiKey != null ? apiKey.value : this.apiKey),
+        creatorId: (creatorId != null ? creatorId.value : this.creatorId),
+        imageType: (imageType != null ? imageType.value : this.imageType),
+        id: (id != null ? id.value : this.id),
+        creationDate:
+            (creationDate != null ? creationDate.value : this.creationDate),
+        lastModifiedAt: (lastModifiedAt != null
+            ? lastModifiedAt.value
+            : this.lastModifiedAt));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class ImageMetaDataIdentifier {
   const ImageMetaDataIdentifier({
     this.$value,
@@ -1165,6 +1298,82 @@ extension $ImageMetaDataIdentifierExtension on ImageMetaDataIdentifier {
   ImageMetaDataIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return ImageMetaDataIdentifier(
         $value: ($value != null ? $value.value : this.$value));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class ImageMetaDataIdentifierGuidNodeModelBase {
+  const ImageMetaDataIdentifierGuidNodeModelBase({
+    this.id,
+    this.creationDate,
+    this.lastModifiedAt,
+  });
+
+  factory ImageMetaDataIdentifierGuidNodeModelBase.fromJson(
+          Map<String, dynamic> json) =>
+      _$ImageMetaDataIdentifierGuidNodeModelBaseFromJson(json);
+
+  static const toJsonFactory = _$ImageMetaDataIdentifierGuidNodeModelBaseToJson;
+  Map<String, dynamic> toJson() =>
+      _$ImageMetaDataIdentifierGuidNodeModelBaseToJson(this);
+
+  @JsonKey(name: 'id')
+  final ImageMetaDataIdentifier? id;
+  @JsonKey(name: 'creationDate')
+  final DateTime? creationDate;
+  @JsonKey(name: 'lastModifiedAt')
+  final DateTime? lastModifiedAt;
+  static const fromJsonFactory =
+      _$ImageMetaDataIdentifierGuidNodeModelBaseFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is ImageMetaDataIdentifierGuidNodeModelBase &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.creationDate, creationDate) ||
+                const DeepCollectionEquality()
+                    .equals(other.creationDate, creationDate)) &&
+            (identical(other.lastModifiedAt, lastModifiedAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.lastModifiedAt, lastModifiedAt)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(id) ^
+      const DeepCollectionEquality().hash(creationDate) ^
+      const DeepCollectionEquality().hash(lastModifiedAt) ^
+      runtimeType.hashCode;
+}
+
+extension $ImageMetaDataIdentifierGuidNodeModelBaseExtension
+    on ImageMetaDataIdentifierGuidNodeModelBase {
+  ImageMetaDataIdentifierGuidNodeModelBase copyWith(
+      {ImageMetaDataIdentifier? id,
+      DateTime? creationDate,
+      DateTime? lastModifiedAt}) {
+    return ImageMetaDataIdentifierGuidNodeModelBase(
+        id: id ?? this.id,
+        creationDate: creationDate ?? this.creationDate,
+        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+  }
+
+  ImageMetaDataIdentifierGuidNodeModelBase copyWithWrapped(
+      {Wrapped<ImageMetaDataIdentifier?>? id,
+      Wrapped<DateTime?>? creationDate,
+      Wrapped<DateTime?>? lastModifiedAt}) {
+    return ImageMetaDataIdentifierGuidNodeModelBase(
+        id: (id != null ? id.value : this.id),
+        creationDate:
+            (creationDate != null ? creationDate.value : this.creationDate),
+        lastModifiedAt: (lastModifiedAt != null
+            ? lastModifiedAt.value
+            : this.lastModifiedAt));
   }
 }
 
@@ -2808,6 +3017,72 @@ List<enums.HandleJoinRequestType>? handleJoinRequestTypeNullableListFromJson(
   return handleJoinRequestType
       .map((e) => handleJoinRequestTypeFromJson(e.toString()))
       .toList();
+}
+
+String? imageTypeNullableToJson(enums.ImageType? imageType) {
+  return imageType?.value;
+}
+
+String? imageTypeToJson(enums.ImageType imageType) {
+  return imageType.value;
+}
+
+enums.ImageType imageTypeFromJson(
+  Object? imageType, [
+  enums.ImageType? defaultValue,
+]) {
+  return enums.ImageType.values.firstWhereOrNull((e) =>
+          e.value.toString().toLowerCase() ==
+          imageType?.toString().toLowerCase()) ??
+      defaultValue ??
+      enums.ImageType.swaggerGeneratedUnknown;
+}
+
+enums.ImageType? imageTypeNullableFromJson(
+  Object? imageType, [
+  enums.ImageType? defaultValue,
+]) {
+  if (imageType == null) {
+    return null;
+  }
+  return enums.ImageType.values.firstWhereOrNull((e) =>
+          e.value.toString().toLowerCase() ==
+          imageType.toString().toLowerCase()) ??
+      defaultValue;
+}
+
+String imageTypeExplodedListToJson(List<enums.ImageType>? imageType) {
+  return imageType?.map((e) => e.value!).join(',') ?? '';
+}
+
+List<String> imageTypeListToJson(List<enums.ImageType>? imageType) {
+  if (imageType == null) {
+    return [];
+  }
+
+  return imageType.map((e) => e.value!).toList();
+}
+
+List<enums.ImageType> imageTypeListFromJson(
+  List? imageType, [
+  List<enums.ImageType>? defaultValue,
+]) {
+  if (imageType == null) {
+    return defaultValue ?? [];
+  }
+
+  return imageType.map((e) => imageTypeFromJson(e.toString())).toList();
+}
+
+List<enums.ImageType>? imageTypeNullableListFromJson(
+  List? imageType, [
+  List<enums.ImageType>? defaultValue,
+]) {
+  if (imageType == null) {
+    return defaultValue;
+  }
+
+  return imageType.map((e) => imageTypeFromJson(e.toString())).toList();
 }
 
 // ignore: unused_element
