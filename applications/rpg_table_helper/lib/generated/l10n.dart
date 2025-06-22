@@ -2209,6 +2209,16 @@ class S {
       args: [],
     );
   }
+
+  /// `You did not generate any images in this campaign.`
+  String get noImagesInCampagne {
+    return Intl.message(
+      'You did not generate any images in this campaign.',
+      name: 'noImagesInCampagne',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

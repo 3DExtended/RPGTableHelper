@@ -4,6 +4,7 @@ import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/custom_grid_list_view.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -43,6 +44,25 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
             child: CustomLoadingSpinner(),
           )
         ],
+      );
+    }
+
+    if (imagesInCampagne.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  S.of(context).noImagesInCampagne,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: darkColor, fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 

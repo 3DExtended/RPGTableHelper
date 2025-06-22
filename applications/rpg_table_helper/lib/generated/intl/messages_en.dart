@@ -256,6 +256,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "noFIghtStarted":
             MessageLookupByLibrary.simpleMessage("No fight started yet"),
+        "noImagesInCampagne": MessageLookupByLibrary.simpleMessage(
+            "You did not generate any images in this campaign."),
         "noItemsGranted":
             MessageLookupByLibrary.simpleMessage("No items granted yet..."),
         "noItemsGrantedToPlayerThisRound":
