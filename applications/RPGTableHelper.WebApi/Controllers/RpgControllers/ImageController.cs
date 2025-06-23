@@ -265,7 +265,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("No images found for the specified campagne.");
             }
 
-            return Ok(images.Get());
+            return Ok(images.Get().OrderByDescending(img => img.CreationDate).ToList());
         }
 
         /// <summary>
