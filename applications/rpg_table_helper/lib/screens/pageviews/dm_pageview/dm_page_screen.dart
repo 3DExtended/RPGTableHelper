@@ -131,7 +131,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                                       .accentColor
                                   : CustomThemeProvider.of(context)
                                       .theme
-                                      .middleBgColor),
+                                      .textColor),
                         ),
                       ),
                     ),
@@ -171,7 +171,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                               icon: FontAwesomeIcons.square,
                               color: CustomThemeProvider.of(context)
                                   .theme
-                                  .middleBgColor),
+                                  .textColor),
                         ),
                       ),
                     ),

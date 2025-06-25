@@ -10,6 +10,7 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../../test_configuration.dart';
@@ -108,12 +109,16 @@ void main() {
               )),
         ),
       ),
-      getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+      getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+          Map.fromEntries([
         MapEntry(
           'default',
-          DependencyProvider.getMockedDependecyProvider(
-            child: Center(
-              child: widgetToTest,
+          CustomThemeProvider(
+            overrideBrightness: brightness,
+            child: DependencyProvider.getMockedDependecyProvider(
+              child: Center(
+                child: widgetToTest,
+              ),
             ),
           ),
         ),

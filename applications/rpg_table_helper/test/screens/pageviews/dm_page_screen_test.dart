@@ -12,6 +12,7 @@ import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
@@ -183,12 +184,16 @@ void main() {
                 )),
           ),
         ),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
             'default',
-            DependencyProvider.getMockedDependecyProvider(
-              child: Center(
-                child: widgetToTest,
+            CustomThemeProvider(
+              overrideBrightness: brightness,
+              child: DependencyProvider.getMockedDependecyProvider(
+                child: Center(
+                  child: widgetToTest,
+                ),
               ),
             ),
           ),

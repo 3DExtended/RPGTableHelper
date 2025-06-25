@@ -65,12 +65,15 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
                   children: [
                     Text(
                       '$value/$maxValue',
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: Colors.white,
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     SizedBox(
                       height: strokeWidth * 0.5,
@@ -81,12 +84,15 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
                       maxLines: 2,
                       minFontSize: 10,
                       softWrap: true,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: Colors.white,
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),

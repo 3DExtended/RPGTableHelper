@@ -147,7 +147,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             .textTheme
                                             .labelMedium!
                                             .copyWith(
-                                                color: Colors.white,
+                                                color: CustomThemeProvider.of(
+                                                        context)
+                                                    .theme
+                                                    .textColor,
                                                 fontSize: 18,
                                                 fontFamily: 'Ruwudu'),
                                       ),

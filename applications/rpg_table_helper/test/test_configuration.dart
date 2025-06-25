@@ -52,7 +52,8 @@ var brightnessTests = [
 
 void testConfigurations({
   required Widget Function(Locale locale) screenFactory,
-  required Map<String, Widget> Function(Widget widgetToTest)
+  required Map<String, Widget> Function(
+          Widget widgetToTest, Brightness brightness)
       getTestConfigurations,
   required String widgetName,
   bool disableLocals = false,
@@ -97,7 +98,8 @@ void testConfigurations({
 
       var counter = 1;
 
-      for (var widgetConfig in getTestConfigurations(widgetToTest).entries) {
+      for (var widgetConfig
+          in getTestConfigurations(widgetToTest, brightnessToTest).entries) {
         var testName =
             '$counter - $widgetName (Language ${local.languageCode}, ${widgetConfig.key})';
         if (brightnessToTest == Brightness.dark) {
@@ -120,6 +122,7 @@ void testConfigurations({
           await tester.pumpWidgetBuilder(
             Builder(builder: (context) {
               return CustomThemeProvider(
+                overrideBrightness: brightnessToTest,
                 child: Localizations(
                   delegates: const [
                     GlobalMaterialLocalizations.delegate,
@@ -147,8 +150,13 @@ void testConfigurations({
           await multiScreenGolden(
             tester,
             '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
-            devices:
-                disableAllScreenSizes == true ? [testDevices[1]] : testDevices,
+            devices: disableAllScreenSizes == true
+                ? [testDevices[1]]
+                : (brightnessToTest == Brightness.light
+                    ? testDevices
+                    : testDevices.sublist(
+                        0, 1) // Only test dark mode on iPad Pro 12.9
+                ),
           );
         });
       }

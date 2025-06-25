@@ -118,7 +118,7 @@ class _WizardManagerState extends State<WizardManager> {
                                     .accentColor
                                 : CustomThemeProvider.of(context)
                                     .theme
-                                    .middleBgColor),
+                                    .darkTextColor),
                       ),
                     ),
                   ),
@@ -163,7 +163,7 @@ class _WizardManagerState extends State<WizardManager> {
                             icon: FontAwesomeIcons.square,
                             color: CustomThemeProvider.of(context)
                                 .theme
-                                .middleBgColor),
+                                .darkTextColor),
                       ),
                     ),
                   ),

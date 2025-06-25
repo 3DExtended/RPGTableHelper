@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomFaIcon extends StatelessWidget {
   const CustomFaIcon(
@@ -15,12 +16,12 @@ class CustomFaIcon extends StatelessWidget {
     return Theme(
         data: ThemeData(
           iconTheme: IconThemeData(
-            color: color ?? Colors.white,
+            color: color ?? CustomThemeProvider.of(context).theme.textColor,
             size: size ?? 16,
           ),
           textTheme: TextTheme(
             bodyMedium: TextStyle(
-              color: color ?? Colors.white,
+              color: color ?? CustomThemeProvider.of(context).theme.textColor,
             ),
           ),
         ),

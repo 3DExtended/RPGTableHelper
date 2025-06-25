@@ -45,7 +45,8 @@ class PentagonWithLabel extends StatelessWidget {
                       value.toString(),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontSize: 18,
-                            color: Colors.white,
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -53,7 +54,8 @@ class PentagonWithLabel extends StatelessWidget {
                       otherValue.toString(),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontSize: 14,
-                            color: Colors.white,
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
                             fontWeight: FontWeight.bold,
                           ),
                     ),

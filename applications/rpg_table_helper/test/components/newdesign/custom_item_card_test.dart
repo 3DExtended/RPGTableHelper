@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/components/custom_item_card.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
@@ -105,19 +106,23 @@ void main() {
           height: 600,
           child: itemcard,
         ),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
             'default',
             DependencyProvider.getMockedDependecyProvider(
-              child: Center(
-                  child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    itemcard,
-                  ],
-                ),
-              )),
+              child: CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: Center(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      itemcard,
+                    ],
+                  ),
+                )),
+              ),
             ),
           ),
         ]),

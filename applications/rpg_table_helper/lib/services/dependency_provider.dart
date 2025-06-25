@@ -173,6 +173,7 @@ class DependencyProvider extends InheritedWidget {
 class MockedRiverpodDependencyProviderWrapper extends ConsumerWidget {
   final Widget child;
   final Map<Type, dynamic Function()>? mockOverrides;
+
   const MockedRiverpodDependencyProviderWrapper({
     super.key,
     required this.child,

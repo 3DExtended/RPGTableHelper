@@ -9,6 +9,7 @@ import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future<void> showGenericErrorModal<T>(
     HRResponseBase response, BuildContext context) async {
@@ -33,7 +34,7 @@ Future<void> showGenericErrorModal<T>(
                   S.of(context).genericErrorModalHeader,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontFamily: 'Ruwudu',
-                        color: Colors.white,
+                        color: CustomThemeProvider.of(context).theme.textColor,
                         fontSize: 32,
                       ),
                 ),
@@ -45,7 +46,7 @@ Future<void> showGenericErrorModal<T>(
             Text(
               "Error: ${response.humanReadableError ?? 'An unknown error occured...'}",
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
+                    color: CustomThemeProvider.of(context).theme.textColor,
                     fontSize: 14,
                   ),
             ),
@@ -59,7 +60,8 @@ Future<void> showGenericErrorModal<T>(
                     S.of(context).genericErrorModalTechnicalDetailsHeader,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontFamily: 'Ruwudu',
-                          color: Colors.white,
+                          color:
+                              CustomThemeProvider.of(context).theme.textColor,
                           fontSize: 24,
                         ),
                   ),
@@ -77,14 +79,18 @@ Future<void> showGenericErrorModal<T>(
                             .of(context)
                             .genericErrorModalTechnicalDetailsErrorCodeRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
                       Text(
                         response.errorCode ?? '',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
@@ -93,14 +99,18 @@ Future<void> showGenericErrorModal<T>(
                             .of(context)
                             .genericErrorModalTechnicalDetailsExceptionRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
                       Text(
                         response.caughtException?.toString() ?? '',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
@@ -109,14 +119,18 @@ Future<void> showGenericErrorModal<T>(
                             .of(context)
                             .genericErrorModalTechnicalDetailsExceptionRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
                       Text(
                         response.errorFromServer?.toString() ?? '',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
@@ -125,14 +139,18 @@ Future<void> showGenericErrorModal<T>(
                             .of(context)
                             .genericErrorModalTechnicalDetailsErrorCodeRowLabel,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),
                       Text(
                         response.statusCode?.toString() ?? '',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 14,
                             ),
                       ),

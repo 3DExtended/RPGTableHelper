@@ -114,17 +114,21 @@ void main() {
         screenFactory: (Locale locale) => Builder(builder: (context) {
           return itemcard();
         }),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
             'default',
             DependencyProvider.getMockedDependecyProvider(
-              child: Center(
-                  child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [widgetToTest],
-                ),
-              )),
+              child: CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: Center(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [widgetToTest],
+                  ),
+                )),
+              ),
             ),
           ),
         ]),

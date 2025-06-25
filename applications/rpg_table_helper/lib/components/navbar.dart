@@ -50,6 +50,7 @@ class Navbar extends StatelessWidget {
                         icon: backInsteadOfCloseIcon
                             ? FontAwesomeIcons.chevronLeft
                             : FontAwesomeIcons.xmark,
+                        color: CustomThemeProvider.of(context).theme.textColor,
                       ),
                     ),
                   ),

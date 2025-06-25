@@ -97,8 +97,8 @@ class AppRoutingShell extends ConsumerWidget {
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     hoverColor: Colors.transparent,
-                    iconTheme: const IconThemeData(
-                      color: Colors.white,
+                    iconTheme: IconThemeData(
+                      color: CustomThemeProvider.of(context).theme.textColor,
                       size: 16,
                     ),
                   ),
@@ -233,7 +233,7 @@ class _ThemeConfigurationForAppState
               content: Text(
                 S.of(context).yourAreDisconnectedBody,
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Colors.white,
+                      color: CustomThemeProvider.of(context).theme.textColor,
                       fontSize: 16,
                     ),
               ),

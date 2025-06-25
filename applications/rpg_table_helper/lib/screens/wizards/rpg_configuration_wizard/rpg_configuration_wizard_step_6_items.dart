@@ -7,6 +7,7 @@ import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep6Items extends WizardStepBase {
@@ -167,7 +168,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                       child: Text(
                         item.value.name,
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              color: Colors.white,
+                              color: CustomThemeProvider.of(context).theme.textColor,
                               fontSize: 24,
                             ),
                       ),
@@ -284,7 +285,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
                           "Beschreibung:",
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Colors.white,
+                                    color: CustomThemeProvider.of(context).theme.textColor,
                                     fontSize: 16,
                                   ),
                         ),
@@ -437,7 +438,7 @@ class _LabeledRow extends StatelessWidget {
             Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
+                    color: CustomThemeProvider.of(context).theme.textColor,
                     fontSize: 16,
                   ),
             ),
@@ -448,7 +449,7 @@ class _LabeledRow extends StatelessWidget {
               child: Text(
                 text,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
+                      color: CustomThemeProvider.of(context).theme.textColor,
                       fontSize: 16,
                     ),
               ),

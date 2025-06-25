@@ -470,7 +470,7 @@ void main() {
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                 fontFamily: 'Ruwudu',
                 useMaterial3: true,
-                iconTheme: const IconThemeData(
+                iconTheme: IconThemeData(
                   color: Colors.white,
                   size: 16,
                 ),
@@ -491,13 +491,16 @@ void main() {
                 ),
               )),
         ),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
-            'default',
-            DependencyProvider.getMockedDependecyProvider(
-              child: widgetToTest,
-            ),
-          ),
+              'default',
+              CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: DependencyProvider.getMockedDependecyProvider(
+                  child: widgetToTest,
+                ),
+              )),
         ]),
       );
 
@@ -555,7 +558,7 @@ void main() {
                       ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   fontFamily: 'Ruwudu',
                   useMaterial3: true,
-                  iconTheme: const IconThemeData(
+                  iconTheme: IconThemeData(
                     color: Colors.white,
                     size: 16,
                   ),
@@ -585,13 +588,16 @@ void main() {
                 )),
           ),
         ),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
-            'default',
-            DependencyProvider.getMockedDependecyProvider(
-              child: widgetToTest,
-            ),
-          ),
+              'default',
+              CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: DependencyProvider.getMockedDependecyProvider(
+                  child: widgetToTest,
+                ),
+              )),
         ]),
       );
 
@@ -649,7 +655,7 @@ void main() {
                       ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   fontFamily: 'Ruwudu',
                   useMaterial3: true,
-                  iconTheme: const IconThemeData(
+                  iconTheme: IconThemeData(
                     color: Colors.white,
                     size: 16,
                   ),
@@ -679,13 +685,16 @@ void main() {
                 )),
           ),
         ),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
-            'default',
-            DependencyProvider.getMockedDependecyProvider(
-              child: widgetToTest,
-            ),
-          ),
+              'default',
+              CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: DependencyProvider.getMockedDependecyProvider(
+                  child: widgetToTest,
+                ),
+              )),
         ]),
       );
 
@@ -743,7 +752,7 @@ void main() {
                       ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   fontFamily: 'Ruwudu',
                   useMaterial3: true,
-                  iconTheme: const IconThemeData(
+                  iconTheme: IconThemeData(
                     color: Colors.white,
                     size: 16,
                   ),
@@ -773,13 +782,16 @@ void main() {
                 )),
           ),
         ),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
-            'default',
-            DependencyProvider.getMockedDependecyProvider(
-              child: widgetToTest,
-            ),
-          ),
+              'default',
+              CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: DependencyProvider.getMockedDependecyProvider(
+                  child: widgetToTest,
+                ),
+              )),
         ]),
       );
 
@@ -818,13 +830,16 @@ void main() {
             }),
           );
         }),
-        getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+        getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+            Map.fromEntries([
           MapEntry(
-            'default',
-            DependencyProvider.getMockedDependecyProvider(
-              child: widgetToTest,
-            ),
-          ),
+              'default',
+              CustomThemeProvider(
+                overrideBrightness: brightness,
+                child: DependencyProvider.getMockedDependecyProvider(
+                  child: widgetToTest,
+                ),
+              )),
         ]),
       );
     }

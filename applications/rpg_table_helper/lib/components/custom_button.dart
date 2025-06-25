@@ -94,7 +94,7 @@ class CustomButton extends StatelessWidget {
                     label!,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           color: (useLightTextColor
-                              ? Colors.white
+                              ? CustomThemeProvider.of(context).theme.textColor
                               : CustomThemeProvider.of(context)
                                   .theme
                                   .darkTextColor),

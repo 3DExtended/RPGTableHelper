@@ -23,18 +23,22 @@ void main() {
               .toList(),
         );
       }),
-      getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+      getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+          Map.fromEntries([
         MapEntry(
           'default',
-          DependencyProvider.getMockedDependecyProvider(
-            child: Builder(builder: (context) {
-              return Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
-                child: Center(
-                  child: widgetToTest,
-                ),
-              );
-            }),
+          CustomThemeProvider(
+            overrideBrightness: brightness,
+            child: DependencyProvider.getMockedDependecyProvider(
+              child: Builder(builder: (context) {
+                return Container(
+                  color: CustomThemeProvider.of(context).theme.bgColor,
+                  child: Center(
+                    child: widgetToTest,
+                  ),
+                );
+              }),
+            ),
           ),
         ),
       ]),
@@ -66,18 +70,22 @@ void main() {
                 ))
             .toList(),
       ),
-      getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+      getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+          Map.fromEntries([
         MapEntry(
           'default',
-          DependencyProvider.getMockedDependecyProvider(
-            child: Builder(builder: (context) {
-              return Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
-                child: Center(
-                  child: widgetToTest,
-                ),
-              );
-            }),
+          CustomThemeProvider(
+            overrideBrightness: brightness,
+            child: DependencyProvider.getMockedDependecyProvider(
+              child: Builder(builder: (context) {
+                return Container(
+                  color: CustomThemeProvider.of(context).theme.bgColor,
+                  child: Center(
+                    child: widgetToTest,
+                  ),
+                );
+              }),
+            ),
           ),
         ),
       ]),

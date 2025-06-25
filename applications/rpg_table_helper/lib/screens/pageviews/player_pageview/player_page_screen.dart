@@ -347,7 +347,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                                   .accentColor
                               : CustomThemeProvider.of(context)
                                   .theme
-                                  .middleBgColor),
+                                  .textColor),
                     ),
                   ),
                   if (context.isTablet)
@@ -386,7 +386,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                               icon: FontAwesomeIcons.square,
                               color: CustomThemeProvider.of(context)
                                   .theme
-                                  .middleBgColor),
+                                  .textColor),
                         ),
                       ),
                     ),

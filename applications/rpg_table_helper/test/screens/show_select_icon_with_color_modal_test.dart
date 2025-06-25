@@ -6,6 +6,7 @@ import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../test_configuration.dart';
@@ -68,12 +69,16 @@ void main() {
               )),
         ),
       ),
-      getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
+      getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+          Map.fromEntries([
         MapEntry(
           'default',
-          DependencyProvider.getMockedDependecyProvider(
-            child: Center(
-              child: widgetToTest,
+          CustomThemeProvider(
+            overrideBrightness: brightness,
+            child: DependencyProvider.getMockedDependecyProvider(
+              child: Center(
+                child: widgetToTest,
+              ),
             ),
           ),
         ),
