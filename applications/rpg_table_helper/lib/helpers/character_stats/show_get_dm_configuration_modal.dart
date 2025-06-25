@@ -8,13 +8,13 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:signalr_netcore/errors.dart';
 import 'package:uuid/v7.dart';
 
@@ -410,10 +410,11 @@ class _ShowGetDmConfigurationModalContentState
         child: ExpansionTile(
           enableFeedback: false,
           title: Text(S.of(context).additionalSettings),
-          textColor: darkTextColor,
-          iconColor: darkColor,
-          collapsedIconColor: darkColor,
-          collapsedTextColor: darkTextColor,
+          textColor: CustomThemeProvider.of(context).theme.darkTextColor,
+          iconColor: CustomThemeProvider.of(context).theme.darkColor,
+          collapsedIconColor: CustomThemeProvider.of(context).theme.darkColor,
+          collapsedTextColor:
+              CustomThemeProvider.of(context).theme.darkTextColor,
           shape: Border.all(color: Colors.transparent, width: 0),
           collapsedShape: Border.all(color: Colors.transparent, width: 0),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -500,7 +501,7 @@ class _ShowGetDmConfigurationModalContentState
         Text(
           S.of(context).optionsForMultiselect,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontSize: 20,
               ),
         ),
@@ -543,9 +544,10 @@ class _ShowGetDmConfigurationModalContentState
                             multiselectOptions.removeAt(tuple.key);
                           });
                         },
-                        icon: const CustomFaIcon(
+                        icon: CustomFaIcon(
                           icon: FontAwesomeIcons.trashCan,
-                          color: darkColor,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
                         ),
                       ),
                     ),
@@ -571,13 +573,14 @@ class _ShowGetDmConfigurationModalContentState
             icon: Theme(
                 data: ThemeData(
                   fontFamily: "Ruwudu",
-                  iconTheme: const IconThemeData(
-                    color: darkTextColor,
+                  iconTheme: IconThemeData(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                     size: 16,
                   ),
-                  textTheme: const TextTheme(
+                  textTheme: TextTheme(
                     bodyMedium: TextStyle(
-                      color: darkTextColor,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
                     ),
                   ),
                 ),
@@ -608,7 +611,7 @@ class _ShowGetDmConfigurationModalContentState
         Text(
           S.of(context).moreValues,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontSize: 20,
               ),
         ),
@@ -634,7 +637,10 @@ class _ShowGetDmConfigurationModalContentState
                               context,
                               alreadySelectedIcoName:
                                   tuple.value.iconName ?? "shield",
-                              alreadySelectedIconColor: darkColor,
+                              alreadySelectedIconColor:
+                                  CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor,
                               disableColorSelect: true,
                               titleSuffix:
                                   "${S.of(context).forIntegerValueWithName} \"${tuple.value.label.text}\"",
@@ -656,7 +662,9 @@ class _ShowGetDmConfigurationModalContentState
                             padding: const EdgeInsets.all(4.5),
                             child: getIconForIdentifier(
                               name: tuple.value.iconName ?? "shield",
-                              color: darkColor,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkColor,
                               size: 32,
                             ).$2,
                           ),
@@ -680,9 +688,10 @@ class _ShowGetDmConfigurationModalContentState
                             groupOfLabeledValues.removeAt(tuple.key);
                           });
                         },
-                        icon: const CustomFaIcon(
+                        icon: CustomFaIcon(
                           icon: FontAwesomeIcons.trashCan,
-                          color: darkColor,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
                         ),
                       ),
                     ),
@@ -710,13 +719,14 @@ class _ShowGetDmConfigurationModalContentState
             icon: Theme(
                 data: ThemeData(
                   fontFamily: "Ruwudu",
-                  iconTheme: const IconThemeData(
-                    color: darkTextColor,
+                  iconTheme: IconThemeData(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                     size: 16,
                   ),
-                  textTheme: const TextTheme(
+                  textTheme: TextTheme(
                     bodyMedium: TextStyle(
-                      color: darkTextColor,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
                     ),
                   ),
                 ),
@@ -765,7 +775,9 @@ class SelectableTile extends StatelessWidget {
             icon: Container(
               width: 20,
               height: 20,
-              color: isSet ? darkColor : Colors.transparent,
+              color: isSet
+                  ? CustomThemeProvider.of(context).theme.darkColor
+                  : Colors.transparent,
             ),
           ),
           SizedBox(
@@ -773,10 +785,9 @@ class SelectableTile extends StatelessWidget {
           ),
           Text(
             label,
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: darkTextColor, fontSize: 16),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 16),
           ),
           SizedBox(
             width: 10,

@@ -8,6 +8,7 @@ import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomCharacterCard extends StatelessWidget {
   final String characterName;
@@ -45,8 +46,8 @@ class CustomCharacterCard extends StatelessWidget {
                         : imageUrl!))) ??
             "assets/images/charactercard_placeholder.png";
 
-    var backgroundColor = darkColor;
-    var lightColor = bgColor;
+    var backgroundColor = CustomThemeProvider.of(context).theme.darkColor;
+    var lightColor = CustomThemeProvider.of(context).theme.bgColor;
 
     return SizedBox(
       height: 423,
@@ -122,7 +123,10 @@ class CustomCharacterCard extends StatelessWidget {
                                           .copyWith(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
-                                              color: darkColor),
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkColor),
                                       minFontSize: 10,
                                       maxFontSize: 16,
                                       maxLines: 1,
@@ -209,7 +213,9 @@ class CustomCharacterCard extends StatelessWidget {
         Text(
           "$nameOfStat: $currentIntValue/$maxIntValue",
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-              fontSize: 12, fontWeight: FontWeight.bold, color: bgColor),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: CustomThemeProvider.of(context).theme.bgColor),
         ),
         SizedBox(
           height: 4,
@@ -217,7 +223,7 @@ class CustomCharacterCard extends StatelessWidget {
         CardBorder(
             borderRadius: 2,
             borderSize: 2,
-            color: bgColor,
+            color: CustomThemeProvider.of(context).theme.bgColor,
             child: LayoutBuilder(builder: (context, contraints) {
               var maxSize = contraints.maxWidth;
               var sizeBasedOnCurrentIntValue = maxSize *
@@ -225,13 +231,13 @@ class CustomCharacterCard extends StatelessWidget {
               return CardBorder(
                 borderRadius: 1,
                 borderSize: 0,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
                 child: Row(
                   children: [
                     Container(
                       width: sizeBasedOnCurrentIntValue,
                       height: 10,
-                      color: bgColor,
+                      color: CustomThemeProvider.of(context).theme.bgColor,
                     ),
                   ],
                 ),
@@ -248,10 +254,10 @@ class CustomCharacterCard extends StatelessWidget {
 
     return Text(
       "$nameOfStat: $currentIntValue",
-      style: Theme.of(context)
-          .textTheme
-          .headlineMedium!
-          .copyWith(fontSize: 12, fontWeight: FontWeight.bold, color: bgColor),
+      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: CustomThemeProvider.of(context).theme.bgColor),
     );
   }
 }

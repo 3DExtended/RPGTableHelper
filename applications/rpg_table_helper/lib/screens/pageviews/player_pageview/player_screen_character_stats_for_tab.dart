@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/dynamic_height_column_layout.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class PlayerScreenCharacterStatsForTab extends StatelessWidget {
   const PlayerScreenCharacterStatsForTab({
@@ -56,7 +56,7 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
         child: Container(
             padding: EdgeInsets.all(padding),
             clipBehavior: Clip.none,
-            color: bgColor,
+            color: CustomThemeProvider.of(context).theme.bgColor,
             child: DynamicHeightColumnLayout(
               spacing: padding,
               runSpacing: padding,

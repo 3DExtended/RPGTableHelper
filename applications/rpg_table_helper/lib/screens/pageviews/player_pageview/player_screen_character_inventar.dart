@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/item_card_rendering_with_filtering.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/modals/show_item_card_details.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/add_new_item_modal.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class PlayerScreenCharacterInventory extends ConsumerStatefulWidget {
   const PlayerScreenCharacterInventory({
@@ -64,7 +64,7 @@ class _PlayerScreenCharacterInventoryState
 
     return Container(
       clipBehavior: Clip.none,
-      color: bgColor,
+      color: CustomThemeProvider.of(context).theme.bgColor,
       child: ItemCardRenderingWithFiltering(
         isSearchFieldShowingOnStart: false,
         allItemCategories: _allItemCategories,

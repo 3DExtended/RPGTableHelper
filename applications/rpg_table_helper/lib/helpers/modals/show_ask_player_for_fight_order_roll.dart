@@ -6,10 +6,10 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future<int?> showAskPlayerForFightOrderRoll(BuildContext context,
     {required String characterName,
@@ -71,7 +71,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 550, maxHeight: 300),
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -85,10 +85,10 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                       titleWidget: Text(
                         "${S.of(context).initiativeRollForCharacterPrefix} (${widget.characterName})",
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: 24),
                       ),
                     ),
                     Expanded(
@@ -103,7 +103,9 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                                     .textTheme
                                     .bodyMedium!
                                     .copyWith(
-                                      color: darkTextColor,
+                                      color: CustomThemeProvider.of(context)
+                                          .theme
+                                          .darkTextColor,
                                       fontSize: 16,
                                     ),
                               ),

@@ -10,12 +10,12 @@ import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 import '../../../helpers/modal_helpers.dart';
 
@@ -116,7 +116,7 @@ class _CreateOrEditCraftingRecipeModalContentState
             child: Center(
               child: CustomShadowWidget(
                 child: Container(
-                  color: bgColor,
+                  color: CustomThemeProvider.of(context).theme.bgColor,
                   child: Column(
                     children: [
                       Navbar(
@@ -132,7 +132,11 @@ class _CreateOrEditCraftingRecipeModalContentState
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge!
-                              .copyWith(color: textColor, fontSize: 24),
+                              .copyWith(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .textColor,
+                                  fontSize: 24),
                         ),
                       ),
                       Expanded(
@@ -196,7 +200,9 @@ class _CreateOrEditCraftingRecipeModalContentState
                                       .textTheme
                                       .labelMedium!
                                       .copyWith(
-                                        color: darkColor,
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkColor,
                                         fontSize: 16,
                                       ),
                                 ),
@@ -256,9 +262,13 @@ class _CreateOrEditCraftingRecipeModalContentState
                                                         .removeAt(tuple.key);
                                                   });
                                                 },
-                                                icon: const CustomFaIcon(
+                                                icon: CustomFaIcon(
                                                     size: 24,
-                                                    color: darkColor,
+                                                    color:
+                                                        CustomThemeProvider.of(
+                                                                context)
+                                                            .theme
+                                                            .darkColor,
                                                     icon: FontAwesomeIcons
                                                         .trashCan),
                                               ),
@@ -299,8 +309,11 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               padding:
                                                   const EdgeInsets.fromLTRB(
                                                       5, 0, 5, 0),
-                                              child: const CustomFaIcon(
-                                                  color: darkColor,
+                                              child: CustomFaIcon(
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .darkColor,
                                                   size: 16,
                                                   icon: FontAwesomeIcons.plus),
                                             )),
@@ -321,7 +334,9 @@ class _CreateOrEditCraftingRecipeModalContentState
                                       .textTheme
                                       .labelMedium!
                                       .copyWith(
-                                        color: darkColor,
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkColor,
                                         fontSize: 16,
                                       ),
                                 ),
@@ -398,9 +413,13 @@ class _CreateOrEditCraftingRecipeModalContentState
                                                         .removeAt(tuple.key);
                                                   });
                                                 },
-                                                icon: const CustomFaIcon(
+                                                icon: CustomFaIcon(
                                                     size: 24,
-                                                    color: darkColor,
+                                                    color:
+                                                        CustomThemeProvider.of(
+                                                                context)
+                                                            .theme
+                                                            .darkColor,
                                                     icon: FontAwesomeIcons
                                                         .trashCan),
                                               ),
@@ -436,8 +455,11 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               height: 16,
                                               alignment:
                                                   AlignmentDirectional.center,
-                                              child: const CustomFaIcon(
-                                                  color: darkColor,
+                                              child: CustomFaIcon(
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .darkColor,
                                                   size: 16,
                                                   icon: FontAwesomeIcons.plus)),
                                         ),

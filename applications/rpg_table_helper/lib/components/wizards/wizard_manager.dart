@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class WizardManager extends StatefulWidget {
   final List<
@@ -113,8 +113,12 @@ class _WizardManagerState extends State<WizardManager> {
                                 ? FontAwesomeIcons.solidSquare
                                 : FontAwesomeIcons.square,
                             color: index == _currentStep
-                                ? accentColor
-                                : middleBgColor),
+                                ? CustomThemeProvider.of(context)
+                                    .theme
+                                    .accentColor
+                                : CustomThemeProvider.of(context)
+                                    .theme
+                                    .middleBgColor),
                       ),
                     ),
                   ),
@@ -133,7 +137,9 @@ class _WizardManagerState extends State<WizardManager> {
                               .textTheme
                               .headlineMedium!
                               .copyWith(
-                                color: textColor,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .textColor,
                                 fontSize: 24,
                               ),
                         ),
@@ -155,7 +161,9 @@ class _WizardManagerState extends State<WizardManager> {
                         angle: pi / 4, // 45 deg
                         child: CustomFaIcon(
                             icon: FontAwesomeIcons.square,
-                            color: middleBgColor),
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .middleBgColor),
                       ),
                     ),
                   ),
@@ -167,7 +175,7 @@ class _WizardManagerState extends State<WizardManager> {
         }),
         Expanded(
           child: Container(
-            color: bgColor,
+            color: CustomThemeProvider.of(context).theme.bgColor,
             child: widget.stepBuilders[_currentStep](
               _goToPreviousStep,
               _goToNextStep,

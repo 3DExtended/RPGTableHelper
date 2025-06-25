@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class HorizontalLine extends StatelessWidget {
   final bool? useDarkColor;
@@ -13,7 +13,9 @@ class HorizontalLine extends StatelessWidget {
         Expanded(
           child: Container(
             height: 1,
-            color: useDarkColor == true ? darkColor : middleBgColor,
+            color: useDarkColor == true
+                ? CustomThemeProvider.of(context).theme.darkColor
+                : CustomThemeProvider.of(context).theme.middleBgColor,
           ),
         ),
       ],

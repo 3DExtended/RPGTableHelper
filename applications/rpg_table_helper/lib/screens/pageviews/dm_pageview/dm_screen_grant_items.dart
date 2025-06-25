@@ -5,7 +5,6 @@ import 'package:quest_keeper/components/custom_dropdown_menu.dart';
 import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
@@ -13,6 +12,7 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 
@@ -84,7 +84,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
     var placesOfFindings = getAllPlaceOfFindingsWithItemsWithin(rpgConfig);
 
     return Container(
-      color: bgColor,
+      color: CustomThemeProvider.of(context).theme.bgColor,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Row(
@@ -99,7 +99,9 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                     Text(
                       S.of(context).lastGrantedItems,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          color: darkTextColor,
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -140,7 +142,9 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                               .textTheme
                               .labelMedium!
                               .copyWith(
-                                  color: darkTextColor,
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkTextColor,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold),
                         ),
@@ -334,14 +338,13 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
           splashRadius: 0,
           dense: true,
           checkColor: const Color.fromARGB(255, 57, 245, 88),
-          activeColor: darkColor,
+          activeColor: CustomThemeProvider.of(context).theme.darkColor,
           visualDensity: VisualDensity(vertical: -2),
           title: Text(
             "${item.$1.name} (${S.of(context).diceChallengeAbbr}: ${item.$2})",
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: darkTextColor, fontSize: 16),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 16),
           ),
           value: !excludedItems.contains(item.$1.uuid),
           onChanged: (val) {

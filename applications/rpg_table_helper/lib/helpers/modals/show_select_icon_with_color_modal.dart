@@ -6,17 +6,17 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 const List<Color> allIconColors = [
   // -----
   Color.fromARGB(255, 249, 246, 61),
   Color.fromARGB(255, 249, 196, 61),
-  accentColor,
+  Color(0xffF96F3D),
   Color.fromARGB(255, 249, 61, 77),
   Color.fromARGB(255, 249, 61, 227),
   Color.fromARGB(255, 177, 61, 249),
@@ -114,7 +114,7 @@ class _SelectIconWithColorModalContentState
         child: Center(
           child: CustomShadowWidget(
             child: Container(
-              color: bgColor,
+              color: CustomThemeProvider.of(context).theme.bgColor,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -128,10 +128,10 @@ class _SelectIconWithColorModalContentState
                     titleWidget: Text(
                       "${S.of(context).selectIconModalTitle}${(widget.titleSuffix ?? "")}",
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: textColor, fontSize: 24),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color:
+                              CustomThemeProvider.of(context).theme.textColor,
+                          fontSize: 24),
                     ),
                   ),
                   Expanded(
@@ -151,7 +151,10 @@ class _SelectIconWithColorModalContentState
                                           .textTheme
                                           .headlineMedium!
                                           .copyWith(
-                                            color: darkTextColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkTextColor,
                                             fontSize: 24,
                                           ),
                                     ),
@@ -193,7 +196,9 @@ class _SelectIconWithColorModalContentState
                                         .textTheme
                                         .headlineMedium!
                                         .copyWith(
-                                          color: darkTextColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkTextColor,
                                           fontSize: 24,
                                         ),
                                   ),
@@ -217,8 +222,14 @@ class _SelectIconWithColorModalContentState
                                               icon: getIconForIdentifier(
                                                 name: name,
                                                 color: selectedIconName == name
-                                                    ? bgColor
-                                                    : darkTextColor,
+                                                    ? CustomThemeProvider.of(
+                                                            context)
+                                                        .theme
+                                                        .bgColor
+                                                    : CustomThemeProvider.of(
+                                                            context)
+                                                        .theme
+                                                        .darkTextColor,
                                                 size: 32,
                                               ).$2,
                                             ))
@@ -241,7 +252,9 @@ class _SelectIconWithColorModalContentState
                                         .textTheme
                                         .titleLarge!
                                         .copyWith(
-                                          color: darkTextColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkTextColor,
                                           fontSize: 24,
                                         ),
                                   ),

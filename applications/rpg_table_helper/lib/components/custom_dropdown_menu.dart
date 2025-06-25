@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomDropdownMenu extends StatelessWidget {
   const CustomDropdownMenu({
@@ -21,29 +21,27 @@ class CustomDropdownMenu extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              fillColor: darkColor,
+              fillColor: CustomThemeProvider.of(context).theme.darkColor,
               enabledBorder: noBorder == true
                   ? InputBorder.none
                   : OutlineInputBorder(
                       borderSide: BorderSide(
-                      color: darkColor,
+                      color: CustomThemeProvider.of(context).theme.darkColor,
                     )),
             ),
       ),
       child: DropdownButtonFormField<String?>(
-        iconEnabledColor: darkColor,
+        iconEnabledColor: CustomThemeProvider.of(context).theme.darkColor,
         iconDisabledColor: const Color.fromARGB(255, 140, 133, 125),
         borderRadius: BorderRadius.circular(10),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: darkTextColor,
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
               fontSize: noBorder == true ? 24 : null,
               height: noBorder == true ? 1 : null,
             ),
         decoration: InputDecoration(
-          labelStyle: Theme.of(context)
-              .textTheme
-              .labelLarge!
-              .copyWith(color: darkTextColor),
+          labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor),
           filled: true,
           fillColor: const Color.fromARGB(0, 0, 0, 0),
           labelText: label,
@@ -51,10 +49,10 @@ class CustomDropdownMenu extends StatelessWidget {
               ? InputBorder.none
               : OutlineInputBorder(
                   borderSide: BorderSide(
-                  color: darkColor,
+                  color: CustomThemeProvider.of(context).theme.darkColor,
                 )),
         ),
-        dropdownColor: bgColor,
+        dropdownColor: CustomThemeProvider.of(context).theme.bgColor,
         value: selectedValueTemp,
         isDense: true,
         onChanged: setter,

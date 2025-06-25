@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future<bool?> showReactivatePreviousTransformationModal(
   BuildContext context, {
@@ -68,7 +68,7 @@ class _ShowReactivatePreviousTransformationModalContentState
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 600, maxHeight: 400),
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -85,7 +85,9 @@ class _ShowReactivatePreviousTransformationModalContentState
                                     .textTheme
                                     .bodyMedium!
                                     .copyWith(
-                                      color: darkTextColor,
+                                      color: CustomThemeProvider.of(context)
+                                          .theme
+                                          .darkTextColor,
                                       fontSize: 16,
                                     ),
                               ),
@@ -149,10 +151,9 @@ class _ShowReactivatePreviousTransformationModalContentState
       titleWidget: Text(
         "Alte Verwandlung reaktivieren", // TODO localize
         textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(color: textColor, fontSize: 24),
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: CustomThemeProvider.of(context).theme.textColor,
+            fontSize: 24),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/render_characters_as_cards.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
@@ -9,6 +8,7 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class DmScreenCharacterOverview extends ConsumerStatefulWidget {
   const DmScreenCharacterOverview({
@@ -28,7 +28,7 @@ class _DmScreenCharacterOverviewState
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
-        color: bgColor,
+        color: CustomThemeProvider.of(context).theme.bgColor,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -93,10 +93,9 @@ class _DmScreenCharacterOverviewState
         Center(
           child: Text(
             S.of(context).noPlayersOnline,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(color: darkTextColor, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontWeight: FontWeight.bold),
           ),
         )
       ];

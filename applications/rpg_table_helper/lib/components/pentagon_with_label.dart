@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class PentagonWithLabel extends StatelessWidget {
   const PentagonWithLabel({
@@ -31,7 +31,7 @@ class PentagonWithLabel extends StatelessWidget {
                   child: Container(
                     width: 80,
                     height: 80,
-                    color: darkColor,
+                    color: CustomThemeProvider.of(context).theme.darkColor,
                   ),
                 ),
                 // Text inside the pentagon
@@ -67,10 +67,9 @@ class PentagonWithLabel extends StatelessWidget {
           ),
           AutoSizeText(
             label,
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(fontSize: 14, color: darkTextColor),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                fontSize: 14,
+                color: CustomThemeProvider.of(context).theme.darkTextColor),
             textAlign: TextAlign.center,
             maxLines: 1,
             maxFontSize: 14,

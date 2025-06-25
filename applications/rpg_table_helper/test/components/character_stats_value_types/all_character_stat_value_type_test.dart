@@ -3,7 +3,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
@@ -13,6 +12,7 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../test_configuration.dart';
@@ -790,32 +790,34 @@ void main() {
         widgetName:
             'CharacterStatValueType_PlayerStatsScreenWidget_${testConfiguration.$1}',
         useMaterialAppWrapper: true,
-        screenFactory: (Locale locale) => Container(
-          color: bgColor,
-          child: Builder(builder: (context) {
-            return Localizations(
-              locale: locale,
-              delegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              child: Builder(builder: (context) {
-                return Center(
-                  child: getPlayerVisualizationWidget(
-                    characterToRenderStatFor:
-                        RpgCharacterConfiguration.getBaseConfiguration(
-                            RpgConfigurationModel.getBaseConfiguration()),
-                    context: context,
-                    onNewStatValue: (newSerializedValue) {},
-                    statConfiguration: testConfiguration.$2,
-                    characterValue: testConfiguration.$3,
-                    characterName: "Frodo",
-                  ),
-                );
-              }),
-            );
-          }),
-        ),
+        screenFactory: (Locale locale) => Builder(builder: (context) {
+          return Container(
+            color: CustomThemeProvider.of(context).theme.bgColor,
+            child: Builder(builder: (context) {
+              return Localizations(
+                locale: locale,
+                delegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                child: Builder(builder: (context) {
+                  return Center(
+                    child: getPlayerVisualizationWidget(
+                      characterToRenderStatFor:
+                          RpgCharacterConfiguration.getBaseConfiguration(
+                              RpgConfigurationModel.getBaseConfiguration()),
+                      context: context,
+                      onNewStatValue: (newSerializedValue) {},
+                      statConfiguration: testConfiguration.$2,
+                      characterValue: testConfiguration.$3,
+                      characterName: "Frodo",
+                    ),
+                  );
+                }),
+              );
+            }),
+          );
+        }),
         getTestConfigurations: (Widget widgetToTest) => Map.fromEntries([
           MapEntry(
             'default',

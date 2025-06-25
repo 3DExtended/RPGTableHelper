@@ -5,7 +5,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/row_column_flipper.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class TwoPartWizardStepBody extends StatelessWidget {
   const TwoPartWizardStepBody({
@@ -79,14 +79,18 @@ class TwoPartWizardStepBody extends StatelessWidget {
                           children: [
                             CustomButton(
                               icon: CustomFaIcon(
-                                  color: darkColor,
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor,
                                   icon: FontAwesomeIcons.chevronLeft),
                               onPressed: onPreviousBtnPressed,
                             ),
                             Spacer(),
                             CustomButton(
                               icon: CustomFaIcon(
-                                  color: darkColor,
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor,
                                   icon: FontAwesomeIcons.chevronRight),
                               onPressed: onNextBtnPressed,
                             ),

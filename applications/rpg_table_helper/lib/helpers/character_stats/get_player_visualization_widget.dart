@@ -25,6 +25,7 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
@@ -160,7 +161,7 @@ Widget renderCompanionSelector(
     children: [
       getIconForIdentifier(
         name: "paw",
-        color: darkColor,
+        color: CustomThemeProvider.of(context).theme.darkColor,
         size: 50,
       ).$2,
       SizedBox(
@@ -208,7 +209,7 @@ Widget renderTransformIntoAlternateFormBtn(
     children: [
       getIconForIdentifier(
         name: "magic-wand-svgrepo-com",
-        color: darkColor,
+        color: CustomThemeProvider.of(context).theme.darkColor,
         size: 50,
       ).$2,
       SizedBox(
@@ -397,7 +398,7 @@ Widget renderMultiselectStat(
       Text(
         statConfiguration.name,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: darkTextColor,
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
               fontSize: 24,
             ),
       ),
@@ -423,8 +424,13 @@ Widget renderMultiselectStat(
                     height: 15,
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isSelected ? darkColor : bgColor,
-                        border: Border.all(color: darkColor)),
+                        color: isSelected
+                            ? CustomThemeProvider.of(context).theme.darkColor
+                            : CustomThemeProvider.of(context).theme.bgColor,
+                        border: Border.all(
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkColor)),
                   ),
                   if (multiselectIsAllowedToBeSelectedMultipleTimes)
                     ...List.filled(
@@ -434,8 +440,12 @@ Widget renderMultiselectStat(
                         height: 15,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: darkColor,
-                            border: Border.all(color: darkColor)),
+                            color:
+                                CustomThemeProvider.of(context).theme.darkColor,
+                            border: Border.all(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkColor)),
                       ),
                     ),
                   SizedBox(
@@ -443,10 +453,10 @@ Widget renderMultiselectStat(
                   ),
                   Text(
                     e.$2.$2,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: darkTextColor, fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color:
+                            CustomThemeProvider.of(context).theme.darkTextColor,
+                        fontSize: 16),
                   ),
                 ],
               ),
@@ -455,10 +465,10 @@ Widget renderMultiselectStat(
                   padding: const EdgeInsets.only(left: 25.0, bottom: 20),
                   child: Text(
                     e.$2.$3,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: darkTextColor, fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color:
+                            CustomThemeProvider.of(context).theme.darkTextColor,
+                        fontSize: 16),
                   ),
                 ),
             ],
@@ -490,17 +500,15 @@ Widget renderIntWithCalculatedValueStat(
       children: [
         Text(
           "${parsedValue["otherValue"]}",
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(color: darkTextColor, fontSize: 20),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 20),
         ),
         Text(
           statConfiguration.name,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(color: darkTextColor, fontSize: 16),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 16),
         ),
         Text(
           "${parsedValue["value"]}",
@@ -536,8 +544,10 @@ Widget renderIntWithMaxValueStat(
           value == maxValue ? 1.0 : value.toDouble() / maxValue.toDouble();
 
       var percentageBasedColor = fillPercentage > 0.5
-          ? lightGreen
-          : (fillPercentage > 0.15 ? lightYellow : lightRed);
+          ? CustomThemeProvider.of(context).theme.lightGreen
+          : (fillPercentage > 0.15
+              ? CustomThemeProvider.of(context).theme.lightYellow
+              : CustomThemeProvider.of(context).theme.lightRed);
 
       return Stack(
         alignment: Alignment.bottomCenter,
@@ -548,7 +558,7 @@ Widget renderIntWithMaxValueStat(
             maxValue: maxValue,
             title: statConfiguration.name,
             color: characterValue.variant == 1
-                ? accentColor
+                ? CustomThemeProvider.of(context).theme.accentColor
                 : percentageBasedColor,
           ),
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
@@ -566,7 +576,7 @@ Widget renderIntWithMaxValueStat(
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.minus,
                     size: iconSizeInlineButtons,
-                    color: textColor,
+                    color: CustomThemeProvider.of(context).theme.textColor,
                   ),
                 ),
                 Spacer(
@@ -583,7 +593,7 @@ Widget renderIntWithMaxValueStat(
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.plus,
                     size: iconSizeInlineButtons,
-                    color: textColor,
+                    color: CustomThemeProvider.of(context).theme.textColor,
                   ),
                 ),
                 Spacer(),
@@ -610,7 +620,7 @@ Widget renderIntWithMaxValueStat(
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.minus,
                   size: iconSizeInlineButtons,
-                  color: textColor,
+                  color: CustomThemeProvider.of(context).theme.textColor,
                 ),
               ),
             ),
@@ -640,7 +650,7 @@ Widget renderIntWithMaxValueStat(
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,
-                  color: textColor,
+                  color: CustomThemeProvider.of(context).theme.textColor,
                 ),
               ),
             ),
@@ -663,7 +673,7 @@ Widget renderIntWithMaxValueStat(
               icon: CustomFaIcon(
                 icon: FontAwesomeIcons.minus,
                 size: iconSizeInlineButtons,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
@@ -687,8 +697,15 @@ Widget renderIntWithMaxValueStat(
                         height: 15,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: index < value ? darkColor : bgColor,
-                            border: Border.all(color: darkColor)),
+                            color: index < value
+                                ? CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkColor
+                                : CustomThemeProvider.of(context).theme.bgColor,
+                            border: Border.all(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkColor)),
                       ),
                     ),
                   ],
@@ -698,10 +715,10 @@ Widget renderIntWithMaxValueStat(
                 ),
                 Text(
                   statConfiguration.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: darkTextColor, fontSize: 16),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
+                      fontSize: 16),
                 ),
               ],
             ),
@@ -722,7 +739,7 @@ Widget renderIntWithMaxValueStat(
               icon: CustomFaIcon(
                 icon: FontAwesomeIcons.plus,
                 size: iconSizeInlineButtons,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
         ],
@@ -745,7 +762,7 @@ Widget renderIntWithMaxValueStat(
               icon: CustomFaIcon(
                 icon: FontAwesomeIcons.minus,
                 size: iconSizeInlineButtons,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
           if (statConfiguration.editType == CharacterStatEditType.oneTap)
@@ -758,17 +775,15 @@ Widget renderIntWithMaxValueStat(
             children: [
               Text(
                 "$value / $maxValue",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: darkTextColor, fontSize: 20),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 20),
               ),
               Text(
                 statConfiguration.name,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: darkTextColor, fontSize: 16),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 16),
               ),
             ],
           ),
@@ -788,7 +803,7 @@ Widget renderIntWithMaxValueStat(
               icon: CustomFaIcon(
                 icon: FontAwesomeIcons.plus,
                 size: iconSizeInlineButtons,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
         ],
@@ -846,7 +861,10 @@ Widget renderListOfIntsWithIconsStat(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     getIconForIdentifier(
-                            name: t.iconName, color: darkColor, size: 32)
+                            name: t.iconName,
+                            color:
+                                CustomThemeProvider.of(context).theme.darkColor,
+                            size: 32)
                         .$2,
                     SizedBox(
                       height: 5,
@@ -856,7 +874,9 @@ Widget renderListOfIntsWithIconsStat(
                         "${t.label}: ${t.value}",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontSize: 18,
-                              color: darkTextColor,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
                               fontWeight: FontWeight.bold,
                             ),
                       ),
@@ -865,7 +885,9 @@ Widget renderListOfIntsWithIconsStat(
                         "${t.value}",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontSize: 18,
-                              color: darkTextColor,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
                               fontWeight: FontWeight.bold,
                             ),
                       ),
@@ -878,7 +900,9 @@ Widget renderListOfIntsWithIconsStat(
                         t.label,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontSize: 12,
-                              color: darkTextColor,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
                             ),
                       ),
                   ],
@@ -1000,8 +1024,9 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                 return Container(
                   width: constrin.maxWidth,
                   height: constrin.maxWidth,
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: darkColor),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: CustomThemeProvider.of(context).theme.darkColor),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1011,14 +1036,22 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: textColor, fontSize: 28),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .textColor,
+                                fontSize: 28),
                       ),
                       Text(
                         S.of(context).levelAbbr,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: textColor, fontSize: 28),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .textColor,
+                                fontSize: 28),
                       ),
                     ],
                   ),
@@ -1062,7 +1095,9 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                                     .textTheme
                                     .labelMedium!
                                     .copyWith(
-                                        color: darkTextColor,
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkTextColor,
                                         fontSize:
                                             strKVP.key % 2 == 0 ? 16 : 24),
                                 maxFontSize: strKVP.key % 2 == 0 ? 16 : 24,
@@ -1092,17 +1127,15 @@ Column renderIntStat(
     children: [
       Text(
         jsonDecode(characterValue.serializedValue)["value"].toString(),
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium!
-            .copyWith(color: darkTextColor, fontSize: 20),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: CustomThemeProvider.of(context).theme.darkTextColor,
+            fontSize: 20),
       ),
       Text(
         statConfiguration.name,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium!
-            .copyWith(color: darkTextColor, fontSize: 16),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: CustomThemeProvider.of(context).theme.darkTextColor,
+            fontSize: 16),
       ),
     ],
   );
@@ -1128,8 +1161,8 @@ Widget renderImageStat(
           "assets/images/charactercard_placeholder.png";
 
   return BorderedImage(
-    backgroundColor: bgColor,
-    lightColor: darkColor,
+    backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
+    lightColor: CustomThemeProvider.of(context).theme.darkColor,
     isGreyscale: false,
     isLoading: false,
     noPadding: true,
@@ -1150,10 +1183,9 @@ Column renderTextStat(
       if (characterValue.hideLabelOfStat != true)
         Text(
           statConfiguration.name,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(color: darkTextColor, fontSize: 20),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 20),
         ),
       if (characterValue.hideLabelOfStat != true)
         SizedBox(

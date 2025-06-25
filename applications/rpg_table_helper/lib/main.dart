@@ -22,6 +22,7 @@ import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
@@ -70,89 +71,101 @@ class AppRoutingShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DependencyProvider(
-      widgetRef: ref,
-      isMocked: false,
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: [
-          ...AppLocalizations.localizationsDelegates,
-          S.delegate
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          fontFamily: 'Ruwudu',
-          useMaterial3: true,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-            size: 16,
-          ),
-        ),
-        builder: (context, child) {
-          return ThemeConfigurationForApp(
-              key: globalThemeWrapperKey, child: child!);
-        },
-        navigatorKey: navigatorKey,
-        initialRoute: widget.initialRoute ?? LoginScreen.route,
-        onGenerateRoute: (RouteSettings settings) {
-          // add all routes which are accessible without authorization
-          switch (settings.name) {
-            case AuthorizedScreenWrapper.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => AuthorizedScreenWrapper(),
-                settings: settings,
-              );
-            case DmPageScreen.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => DmPageScreen(),
-                settings: settings,
-              );
-            case PlayerPageScreen.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => PlayerPageScreen(),
-                settings: settings,
-              );
-            case LoginScreen.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => LoginScreen(),
-                settings: settings,
-              );
-            case RegisterScreen.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => RegisterScreen(),
-                settings: settings,
-              );
-            case CompleteSsoScreen.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => CompleteSsoScreen(),
-                settings: settings,
-              );
-            case SelectGameModeScreen.route:
-              return MaterialWithModalsPageRoute(
-                builder: (_) => SelectGameModeScreen(),
-                settings: settings,
-              );
-          }
+    return CustomThemeProvider(
+      child: Builder(builder: (context) {
+        final themeProvider = CustomThemeProvider.of(context);
+        return ValueListenableBuilder<Brightness>(
+            valueListenable: themeProvider.brightnessNotifier,
+            builder: (context, brightness, child) {
+              print(brightness);
+              return DependencyProvider(
+                widgetRef: ref,
+                isMocked: false,
+                child: MaterialApp(
+                  title: 'Flutter Demo',
+                  debugShowCheckedModeBanner: false,
+                  localizationsDelegates: [
+                    ...AppLocalizations.localizationsDelegates,
+                    S.delegate
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  theme: ThemeData(
+                    colorScheme:
+                        ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                    fontFamily: 'Ruwudu',
+                    useMaterial3: true,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    iconTheme: const IconThemeData(
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                  builder: (context, child) {
+                    return ThemeConfigurationForApp(
+                        key: globalThemeWrapperKey, child: child!);
+                  },
+                  navigatorKey: navigatorKey,
+                  initialRoute: widget.initialRoute ?? LoginScreen.route,
+                  onGenerateRoute: (RouteSettings settings) {
+                    // add all routes which are accessible without authorization
+                    switch (settings.name) {
+                      case AuthorizedScreenWrapper.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => AuthorizedScreenWrapper(),
+                          settings: settings,
+                        );
+                      case DmPageScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => DmPageScreen(),
+                          settings: settings,
+                        );
+                      case PlayerPageScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => PlayerPageScreen(),
+                          settings: settings,
+                        );
+                      case LoginScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => LoginScreen(),
+                          settings: settings,
+                        );
+                      case RegisterScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => RegisterScreen(),
+                          settings: settings,
+                        );
+                      case CompleteSsoScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => CompleteSsoScreen(),
+                          settings: settings,
+                        );
+                      case SelectGameModeScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => SelectGameModeScreen(),
+                          settings: settings,
+                        );
+                    }
 
-          for (var config in allWizardConfigurations.entries.toList()) {
-            if (settings.name == config.key) {
-              return MaterialWithModalsPageRoute(
-                builder: (_) => WizardRendererForConfiguration(
-                  configuration: config.value,
+                    for (var config
+                        in allWizardConfigurations.entries.toList()) {
+                      if (settings.name == config.key) {
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => WizardRendererForConfiguration(
+                            configuration: config.value,
+                          ),
+                          settings: settings,
+                        );
+                      }
+                    }
+
+                    return null;
+                  },
                 ),
-                settings: settings,
               );
-            }
-          }
-
-          return null;
-        },
-      ),
+            });
+      }),
     );
   }
 }
@@ -322,63 +335,63 @@ class _ThemeConfigurationForAppState
         hoverColor: Colors.transparent,
         textTheme: Theme.of(context).textTheme.copyWith(
               headlineLarge: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               headlineMedium: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               headlineSmall: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               titleLarge: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               titleMedium: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               titleSmall: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               bodySmall: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               bodyMedium: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               bodyLarge: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               labelSmall: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               labelMedium: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               labelLarge: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               displaySmall: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               displayMedium: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
               displayLarge: TextStyle(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontFamily: "Ruwudu",
               ),
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomDropdownMenuWithSearch extends StatelessWidget {
   const CustomDropdownMenuWithSearch({
@@ -16,13 +16,14 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
   final List<DropdownMenuEntry<String?>> items;
   final bool? noBorder;
 
-  InputBorder _getBorder() {
+  InputBorder _getBorder(BuildContext context) {
     if (noBorder == true) {
       return InputBorder.none;
     }
 
     return OutlineInputBorder(
-      borderSide: BorderSide(color: darkColor),
+      borderSide:
+          BorderSide(color: CustomThemeProvider.of(context).theme.darkColor),
     );
   }
 
@@ -31,41 +32,35 @@ class CustomDropdownMenuWithSearch extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              fillColor: darkColor,
-              enabledBorder: _getBorder(),
+              fillColor: CustomThemeProvider.of(context).theme.darkColor,
+              enabledBorder: _getBorder(context),
             ),
       ),
       child: DropdownMenu<String?>(
         trailingIcon: Icon(
           Icons.arrow_drop_down,
-          color: darkColor,
+          color: CustomThemeProvider.of(context).theme.darkColor,
         ),
         selectedTrailingIcon: Icon(
           Icons.arrow_drop_up,
-          color: darkColor,
+          color: CustomThemeProvider.of(context).theme.darkColor,
         ),
-        textStyle: Theme.of(context)
-            .textTheme
-            .bodyLarge!
-            .copyWith(color: darkTextColor),
+        textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: CustomThemeProvider.of(context).theme.darkTextColor),
         expandedInsets: EdgeInsets.zero,
         label: Text(
           label,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(color: darkTextColor),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor),
         ),
         dropdownMenuEntries: items,
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              labelStyle: Theme.of(context)
-                  .textTheme
-                  .labelLarge!
-                  .copyWith(color: darkTextColor),
+              labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: CustomThemeProvider.of(context).theme.darkTextColor),
               filled: true,
-              iconColor: darkTextColor,
+              iconColor: CustomThemeProvider.of(context).theme.darkTextColor,
               fillColor: const Color.fromARGB(0, 0, 0, 0),
-              border: _getBorder(),
+              border: _getBorder(context),
             ),
         initialSelection: selectedValueTemp,
         enableFilter: true,

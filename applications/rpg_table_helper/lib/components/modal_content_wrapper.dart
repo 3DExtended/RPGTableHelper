@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class ModalContentWrapper<T> extends StatelessWidget {
   const ModalContentWrapper({
@@ -49,7 +49,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                 );
               },
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
                   mainAxisSize:
                       isFullscreen ? MainAxisSize.max : MainAxisSize.min,
@@ -64,10 +64,10 @@ class ModalContentWrapper<T> extends StatelessWidget {
                       titleWidget: Text(
                         title,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: 24),
                       ),
                     ),
                     if (isFullscreen)

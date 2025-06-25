@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/validation_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -82,10 +82,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: bgColor,
+      backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
       body: Container(
         decoration: BoxDecoration(
-          color: bgColor,
+          color: CustomThemeProvider.of(context).theme.bgColor,
         ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -103,12 +103,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     Text(
                       S.of(context).register,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: darkColor,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.darkColor,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     SizedBox(
                       height: 40,

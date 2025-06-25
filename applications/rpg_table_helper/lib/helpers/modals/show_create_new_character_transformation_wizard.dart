@@ -14,7 +14,6 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/player_stats_configuration_visuals.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -22,6 +21,7 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
 
 Future<TransformationComponent?> showCreateNewCharacterTransformationWizard(
@@ -179,7 +179,7 @@ class _CreateNewCharacterTransformationWizardModalContentState
         child: Center(
           child: CustomShadowWidget(
             child: Container(
-              color: bgColor,
+              color: CustomThemeProvider.of(context).theme.bgColor,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -271,10 +271,9 @@ class _CreateNewCharacterTransformationWizardModalContentState
       titleWidget: Text(
         S.of(context).createNewTransformationTitle,
         textAlign: TextAlign.center,
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(color: textColor, fontSize: 24),
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: CustomThemeProvider.of(context).theme.textColor,
+            fontSize: 24),
       ),
       subTitle: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -299,8 +298,11 @@ class _CreateNewCharacterTransformationWizardModalContentState
                       icon: index == _currentStep
                           ? FontAwesomeIcons.solidSquare
                           : FontAwesomeIcons.square,
-                      color:
-                          index == _currentStep ? accentColor : middleBgColor),
+                      color: index == _currentStep
+                          ? CustomThemeProvider.of(context).theme.accentColor
+                          : CustomThemeProvider.of(context)
+                              .theme
+                              .middleBgColor),
                 ),
               ),
             ),
@@ -332,7 +334,7 @@ class _CreateNewCharacterTransformationWizardModalContentState
       Text(
         S.of(context).createTransformationHelperText,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: darkTextColor,
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
               fontSize: 16,
             ),
       ),
@@ -346,22 +348,20 @@ class _CreateNewCharacterTransformationWizardModalContentState
           splashRadius: 0,
           dense: true,
           checkColor: const Color.fromARGB(255, 57, 245, 88),
-          activeColor: darkColor,
+          activeColor: CustomThemeProvider.of(context).theme.darkColor,
           visualDensity: VisualDensity(vertical: -2),
           title: Text(
             e.statName,
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: darkTextColor, fontSize: 16),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 16),
           ),
           subtitle: e.statHelperText.isNotEmpty
               ? Text(
                   e.statHelperText,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium!
-                      .copyWith(color: darkTextColor),
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor),
                 )
               : null,
           value: _selectedStats.map((e) => e.statUuid).contains(e.statUuid),
@@ -403,7 +403,7 @@ class _CreateNewCharacterTransformationWizardModalContentState
             Text(
               "Konfiguration für ${asdf.statName}", // TODO localize
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: darkTextColor,
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                     fontSize: 24,
                   ),
             ),

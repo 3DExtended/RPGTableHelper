@@ -27,6 +27,7 @@ import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modals/show_edit_lore_page_title.dart';
 import 'package:quest_keeper/helpers/modals/show_generate_lore_image_modal.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
@@ -147,7 +148,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     return AnimatedContainer(
       duration: duration,
       width: _isNavbarCollapsed ? collapsedWidth : expandedWidth,
-      color: middleBgColor,
+      color: CustomThemeProvider.of(context).theme.middleBgColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -197,7 +198,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                     (context, candidateData, rejectedData) {
                                   return Container(
                                     color: candidateData.isNotEmpty
-                                        ? accentColor.withAlpha(25)
+                                        ? CustomThemeProvider.of(context)
+                                            .theme
+                                            .accentColor
+                                            .withAlpha(25)
                                         : Colors.transparent,
                                     child: Column(
                                       crossAxisAlignment:
@@ -328,7 +332,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                 icon: CustomFaIcon(
                                   icon: FontAwesomeIcons.plus,
                                   size: iconSizeInlineButtons,
-                                  color: textColor,
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .textColor,
                                 ),
                                 label: S.of(context).newItem,
                                 variant: CustomButtonVariant.AccentButton,
@@ -357,7 +363,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           ColoredRotatedSquare(
             key: ValueKey("ColoredRotatedSquare${doc.id!.$value!}"),
             isSolidSquare: selectedDocumentId?.$value == doc.id?.$value,
-            color: accentColor,
+            color: CustomThemeProvider.of(context).theme.accentColor,
           ),
           if (!_isNavbarCollapsed)
             Expanded(
@@ -367,7 +373,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontSize: 16,
-                      color: darkTextColor,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
                     ),
               ),
             ),
@@ -407,7 +414,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                 .textTheme
                                 .labelLarge!
                                 .copyWith(
-                                  color: darkTextColor,
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkTextColor,
                                   fontSize: 24,
                                 ),
                           ),
@@ -420,7 +429,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                   noPadding: true,
                                   icon: FontAwesomeIcons.penToSquare,
                                   size: 20,
-                                  color: darkColor),
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor),
                               variant: CustomButtonVariant.FlatButton,
                             ),
                         ],
@@ -435,7 +446,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     Text(
                       ("${S.of(context).authorLabel} ${_myUser?.$value == selectedDocument!.creatingUserId!.$value! ? S.of(context).you : (usersInCampagne.firstWhereOrNull((u) => u.userId.$value == selectedDocument!.creatingUserId!.$value!)?.playerCharacterName ?? S.of(context).dm)}"),
                       style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: darkTextColor,
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
                             fontSize: 12,
                           ),
                     ),
@@ -446,7 +459,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                           S.of(context).hourMinutesDayMonthYearFormatString),
                       textAlign: TextAlign.end,
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                            color: darkTextColor,
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
                             fontSize: 12,
                           ),
                     ),
@@ -497,16 +512,16 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
-              color: bgColor,
+              color: CustomThemeProvider.of(context).theme.bgColor,
             ),
             padding: EdgeInsets.all(5),
             child: CustomFaIcon(
               icon: !_isNavbarCollapsed
                   ? FontAwesomeIcons.chevronLeft
                   : FontAwesomeIcons.chevronRight,
-              color: darkTextColor,
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
               size: 24,
             ),
           ),
@@ -618,8 +633,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         padding: const EdgeInsets.only(left: 12),
         child: Container(
           width: 40,
-          decoration:
-              BoxDecoration(border: Border(bottom: BorderSide(color: bgColor))),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color: CustomThemeProvider.of(context).theme.bgColor))),
         ),
       );
     }
@@ -633,7 +650,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -775,7 +792,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,
-                  color: textColor,
+                  color: CustomThemeProvider.of(context).theme.textColor,
                 ),
               ),
               CustomButton(
@@ -888,7 +905,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,
-                  color: textColor,
+                  color: CustomThemeProvider.of(context).theme.textColor,
                 ),
               ),
               CustomButton(
@@ -948,7 +965,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.plus,
                   size: iconSizeInlineButtons,
-                  color: textColor,
+                  color: CustomThemeProvider.of(context).theme.textColor,
                 ),
               ),
             ],

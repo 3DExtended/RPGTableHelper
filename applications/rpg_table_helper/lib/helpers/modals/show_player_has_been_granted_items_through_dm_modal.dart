@@ -11,7 +11,6 @@ import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -20,6 +19,7 @@ import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:shadow_widget/shadow_widget.dart';
 
@@ -90,7 +90,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
         child: Center(
           child: CustomShadowWidget(
             child: Container(
-              color: bgColor,
+              color: CustomThemeProvider.of(context).theme.bgColor,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -104,10 +104,10 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                     titleWidget: Text(
                       S.of(context).receivedItemsModalHeader,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: textColor, fontSize: 24),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color:
+                              CustomThemeProvider.of(context).theme.textColor,
+                          fontSize: 24),
                     ),
                   ),
                   Expanded(

@@ -15,6 +15,7 @@ import 'package:quest_keeper/helpers/fuzzysort.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class ItemCardRenderingWithFiltering extends StatefulWidget {
   const ItemCardRenderingWithFiltering({
@@ -193,14 +194,18 @@ class _ItemCardRenderingWithFilteringState
                                 : getIconForIdentifier(
                                         name: e.iconName!,
                                         size: 20,
-                                        color: (widget.selectedItemCategoryId ==
+                                        color: (widget
+                                                        .selectedItemCategoryId ==
                                                     e.uuid ||
                                                 (e.uuid == "" &&
-                                                    widget.selectedItemCategoryId ==
+                                                    widget
+                                                            .selectedItemCategoryId ==
                                                         null))
                                             ? (e.colorCode
                                                 ?.parseHexColorRepresentation())
-                                            : darkColor)
+                                            : CustomThemeProvider.of(context)
+                                                .theme
+                                                .darkColor)
                                     .$2,
                           ),
                         ),
@@ -218,7 +223,9 @@ class _ItemCardRenderingWithFilteringState
                       : CustomButtonVariant.Default,
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.magnifyingGlass,
-                    color: isSearchFieldShowing ? textColor : darkColor,
+                    color: isSearchFieldShowing
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkColor,
                     size: 21,
                     noPadding: true,
                   ),
@@ -243,7 +250,7 @@ class _ItemCardRenderingWithFilteringState
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.plus,
                     size: iconSizeInlineButtons,
-                    color: textColor,
+                    color: CustomThemeProvider.of(context).theme.textColor,
                   ),
                 )
             ],
@@ -298,10 +305,9 @@ class _ItemCardRenderingWithFilteringState
           ),
           Text(
             S.of(context).noItemsInCategoryErrorText,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontSize: 24, color: darkTextColor),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontSize: 24,
+                color: CustomThemeProvider.of(context).theme.darkTextColor),
           ),
         ],
       );
@@ -365,7 +371,9 @@ class _ItemCardRenderingWithFilteringState
                     Text(
                       "${S.of(context).amountHeaderLabel} ${itemToRender.value.amount}",
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            color: darkTextColor,
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
                             fontSize: 16,
                           ),
                     ),

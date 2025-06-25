@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField(
@@ -49,7 +49,7 @@ class CustomTextField extends StatelessWidget {
                     isSubbutton: true,
                     variant: CustomButtonVariant.FlatButton,
                     icon: CustomFaIcon(
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                         size: 16,
                         icon: FontAwesomeIcons.xmark),
                     onPressed: () {
@@ -61,28 +61,28 @@ class CustomTextField extends StatelessWidget {
             labelText: labelText,
             alignLabelWithHint: true,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 1, color: darkColor),
+              borderSide: BorderSide(
+                  width: 1,
+                  color: CustomThemeProvider.of(context).theme.darkColor),
             ),
             border: OutlineInputBorder(
-              borderSide: BorderSide(width: 1, color: darkColor),
+              borderSide: BorderSide(
+                  width: 1,
+                  color: CustomThemeProvider.of(context).theme.darkColor),
             ),
-            hintStyle: Theme.of(context)
-                .textTheme
-                .labelLarge!
-                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
-            labelStyle: Theme.of(context)
-                .textTheme
-                .labelLarge!
-                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
-            helperStyle: Theme.of(context)
-                .textTheme
-                .labelSmall!
-                .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
+            hintStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                fontFamily: "Ruwudu",
+                color: CustomThemeProvider.of(context).theme.darkTextColor),
+            labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
+                fontFamily: "Ruwudu",
+                color: CustomThemeProvider.of(context).theme.darkTextColor),
+            helperStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
+                fontFamily: "Ruwudu",
+                color: CustomThemeProvider.of(context).theme.darkTextColor),
           ),
-          style: Theme.of(context)
-              .textTheme
-              .labelLarge!
-              .copyWith(fontFamily: "Ruwudu", color: darkTextColor),
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+              fontFamily: "Ruwudu",
+              color: CustomThemeProvider.of(context).theme.darkTextColor),
           controller: textEditingController,
         ),
       );

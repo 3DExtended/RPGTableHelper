@@ -10,11 +10,11 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep2CharacterConfigurationsPreset
@@ -147,9 +147,10 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                           tabsToEdit.removeAt(tab.key);
                         });
                       },
-                      icon: const CustomFaIcon(
+                      icon: CustomFaIcon(
                           size: 16,
-                          color: darkColor,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
                           icon: FontAwesomeIcons.trashCan),
                     ),
                   ),
@@ -161,7 +162,10 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: darkTextColor),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor),
                       ),
                       SizedBox(
                         height: 5,
@@ -185,7 +189,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                         icon: Container(
                           width: 20,
                           height: 20,
-                          color: tab.value.$4 ? darkColor : Colors.transparent,
+                          color: tab.value.$4
+                              ? CustomThemeProvider.of(context).theme.darkColor
+                              : Colors.transparent,
                         ),
                       ),
                       SizedBox(
@@ -241,7 +247,13 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                   CustomFaIcon(
                                     icon: FontAwesomeIcons.gripVertical,
                                     color: Color.lerp(
-                                        middleBgColor, darkColor, 0.5),
+                                        CustomThemeProvider.of(context)
+                                            .theme
+                                            .middleBgColor,
+                                        CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkColor,
+                                        0.5),
                                   ),
                                   SizedBox(width: 10),
                                   Expanded(
@@ -264,7 +276,8 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                               ),
                             )
                           : Container(
-                              color: bgColor,
+                              color:
+                                  CustomThemeProvider.of(context).theme.bgColor,
                               key: ValueKey(e.value),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -272,7 +285,13 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                   CustomFaIcon(
                                     icon: FontAwesomeIcons.gripVertical,
                                     color: Color.lerp(
-                                        middleBgColor, darkColor, 0.5),
+                                        CustomThemeProvider.of(context)
+                                            .theme
+                                            .middleBgColor,
+                                        CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkColor,
+                                        0.5),
                                   ),
                                   SizedBox(width: 10),
                                   Expanded(
@@ -282,7 +301,10 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                              color: darkColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkColor,
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(5),
@@ -329,9 +351,11 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                           });
                                         });
                                       },
-                                      icon: const CustomFaIcon(
+                                      icon: CustomFaIcon(
                                           size: 16,
-                                          color: darkColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkColor,
                                           icon: FontAwesomeIcons.penToSquare),
                                     ),
                                   ),
@@ -348,9 +372,11 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                               .removeAt(e.key);
                                         });
                                       },
-                                      icon: const CustomFaIcon(
+                                      icon: CustomFaIcon(
                                           size: 16,
-                                          color: darkColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkColor,
                                           icon: FontAwesomeIcons.trashCan),
                                     ),
                                   ),
@@ -380,13 +406,17 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       icon: Theme(
                           data: ThemeData(
                             fontFamily: "Ruwudu",
-                            iconTheme: const IconThemeData(
-                              color: darkTextColor,
+                            iconTheme: IconThemeData(
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
                               size: 16,
                             ),
-                            textTheme: const TextTheme(
+                            textTheme: TextTheme(
                               bodyMedium: TextStyle(
-                                color: darkTextColor,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
                               ),
                             ),
                           ),
@@ -426,13 +456,17 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       icon: Theme(
                           data: ThemeData(
                             fontFamily: "Ruwudu",
-                            iconTheme: const IconThemeData(
-                              color: darkTextColor,
+                            iconTheme: IconThemeData(
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
                               size: 16,
                             ),
-                            textTheme: const TextTheme(
+                            textTheme: TextTheme(
                               bodyMedium: TextStyle(
-                                color: darkTextColor,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
                               ),
                             ),
                           ),
@@ -462,13 +496,13 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
           icon: Theme(
               data: ThemeData(
                 fontFamily: "Ruwudu",
-                iconTheme: const IconThemeData(
-                  color: darkColor,
+                iconTheme: IconThemeData(
+                  color: CustomThemeProvider.of(context).theme.darkColor,
                   size: 16,
                 ),
-                textTheme: const TextTheme(
+                textTheme: TextTheme(
                   bodyMedium: TextStyle(
-                    color: darkColor,
+                    color: CustomThemeProvider.of(context).theme.darkColor,
                   ),
                 ),
               ),

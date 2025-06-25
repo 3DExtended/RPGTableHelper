@@ -10,6 +10,7 @@ import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class LoreBlockRenderingEditable extends StatefulWidget {
   const LoreBlockRenderingEditable({
@@ -97,7 +98,7 @@ class _LoreBlockRenderingEditableState
               child: CustomFaIcon(
                 icon: FontAwesomeIcons.penToSquare,
                 size: 20,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
           ),
@@ -114,7 +115,7 @@ class _LoreBlockRenderingEditableState
               child: CustomFaIcon(
                 icon: FontAwesomeIcons.trashCan,
                 size: 20,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
           ),
@@ -128,10 +129,11 @@ class _LoreBlockRenderingEditableState
                 children: [
                   Text(
                     S.of(context).noteblockVisibleFor,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(fontSize: 16, color: darkTextColor),
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        fontSize: 16,
+                        color: CustomThemeProvider.of(context)
+                            .theme
+                            .darkTextColor),
                   ),
 
                   SizedBox(
@@ -161,7 +163,7 @@ class _LoreBlockRenderingEditableState
               child: CustomFaIcon(
                 icon: FontAwesomeIcons.users,
                 size: 20,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
             ),
           )
@@ -260,7 +262,7 @@ class _LoreBlockRenderingEditableState
                 height: 32,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: middleBgColor,
+                  color: CustomThemeProvider.of(context).theme.middleBgColor,
                 ),
                 padding: EdgeInsets.all(5),
                 alignment: Alignment.centerLeft,
@@ -269,7 +271,8 @@ class _LoreBlockRenderingEditableState
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: darkTextColor,
+                        color:
+                            CustomThemeProvider.of(context).theme.darkTextColor,
                         fontSize: 16,
                       ),
                 ),
@@ -280,17 +283,19 @@ class _LoreBlockRenderingEditableState
             ),
             Container(
               decoration: BoxDecoration(
-                color: isProhibited ? lightRed : lightGreen,
+                color: isProhibited
+                    ? CustomThemeProvider.of(context).theme.lightRed
+                    : CustomThemeProvider.of(context).theme.lightGreen,
                 borderRadius: BorderRadius.circular(3.0),
                 border: Border.all(
-                  color: darkColor,
+                  color: CustomThemeProvider.of(context).theme.darkColor,
                 ),
               ),
               child: CustomFaIcon(
                 icon: isProhibited
                     ? FontAwesomeIcons.xmark
                     : FontAwesomeIcons.check,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
                 size: 22,
               ),
             ),
@@ -387,8 +392,8 @@ class _LoreBlockRenderingEditableState
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
               child: BorderedImage(
-                backgroundColor: bgColor,
-                lightColor: darkColor,
+                backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
+                lightColor: CustomThemeProvider.of(context).theme.darkColor,
                 hideLoadingImage: true,
                 isGreyscale: false,
                 isClickableForZoom: true,

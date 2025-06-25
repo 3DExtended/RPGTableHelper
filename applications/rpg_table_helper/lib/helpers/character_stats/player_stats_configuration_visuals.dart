@@ -24,6 +24,7 @@ import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:uuid/v7.dart';
@@ -452,7 +453,7 @@ class _PlayerStatsConfigurationVisualsState
           child: Text(
             "${S.of(context).preview}:",
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: darkTextColor,
+                  color: CustomThemeProvider.of(context).theme.darkTextColor,
                   fontSize: 24,
                 ),
           ),
@@ -489,7 +490,7 @@ class _PlayerStatsConfigurationVisualsState
                     alignment: Alignment.topCenter,
                     child: Container(
                       // decoration: BoxDecoration(
-                      //     border: Border.all(color: darkTextColor),
+                      //     border: Border.all(color: CustomThemeProvider.of(context).theme.CustomThemeProvider.of(context).theme.darkTextColor),
                       //     borderRadius: BorderRadius.circular(5)),
                       padding: EdgeInsets.all(10),
                       child: getPlayerVisualizationWidget(
@@ -576,8 +577,8 @@ class _PlayerStatsConfigurationVisualsState
                             : imageUrl)));
 
             return BorderedImage(
-              lightColor: darkColor,
-              backgroundColor: bgColor,
+              lightColor: CustomThemeProvider.of(context).theme.darkColor,
+              backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
               imageUrl: fullImageUrl,
               isGreyscale: false,
               isLoading: isLoading,
@@ -597,8 +598,8 @@ class _PlayerStatsConfigurationVisualsState
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.chevronLeft,
                   color: isShowPreviousGeneratedImageButtonDisabled
-                      ? middleBgColor
-                      : darkColor,
+                      ? CustomThemeProvider.of(context).theme.middleBgColor
+                      : CustomThemeProvider.of(context).theme.darkColor,
                 ),
                 onPressed: isShowPreviousGeneratedImageButtonDisabled
                     ? null
@@ -661,9 +662,13 @@ class _PlayerStatsConfigurationVisualsState
               child: Text(
                 S.of(context).newImageBtnLabel,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: isLoading ? middleBgColor : accentColor,
+                      color: isLoading
+                          ? CustomThemeProvider.of(context).theme.middleBgColor
+                          : CustomThemeProvider.of(context).theme.accentColor,
                       decoration: TextDecoration.underline,
-                      decorationColor: isLoading ? middleBgColor : accentColor,
+                      decorationColor: isLoading
+                          ? CustomThemeProvider.of(context).theme.middleBgColor
+                          : CustomThemeProvider.of(context).theme.accentColor,
                       fontSize: 16,
                     ),
               ),
@@ -674,8 +679,8 @@ class _PlayerStatsConfigurationVisualsState
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.chevronRight,
                   color: isShowNextGeneratedButtonDisabled
-                      ? middleBgColor
-                      : darkColor,
+                      ? CustomThemeProvider.of(context).theme.middleBgColor
+                      : CustomThemeProvider.of(context).theme.darkColor,
                 ),
                 onPressed: isShowNextGeneratedButtonDisabled
                     ? null
@@ -702,10 +707,10 @@ class _PlayerStatsConfigurationVisualsState
       child: ExpansionTile(
         enableFeedback: false,
         title: Text(S.of(context).additionalSettings),
-        textColor: darkTextColor,
-        iconColor: darkColor,
-        collapsedIconColor: darkColor,
-        collapsedTextColor: darkTextColor,
+        textColor: CustomThemeProvider.of(context).theme.darkTextColor,
+        iconColor: CustomThemeProvider.of(context).theme.darkColor,
+        collapsedIconColor: CustomThemeProvider.of(context).theme.darkColor,
+        collapsedTextColor: CustomThemeProvider.of(context).theme.darkTextColor,
         shape: Border.all(color: Colors.transparent, width: 0),
         collapsedShape: Border.all(color: Colors.transparent, width: 0),
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -1021,21 +1026,29 @@ class _PlayerStatsConfigurationVisualsState
                       splashRadius: 0,
                       dense: true,
                       checkColor: const Color.fromARGB(255, 57, 245, 88),
-                      activeColor: darkColor,
+                      activeColor:
+                          CustomThemeProvider.of(context).theme.darkColor,
                       visualDensity: VisualDensity(vertical: -2),
                       title: Text(
                         e.value.$1,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: darkTextColor, fontSize: 16),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
+                                fontSize: 16),
                       ),
                       subtitle: Text(
                         e.value.$2,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: darkTextColor),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor),
                       ),
                       value: e.value.$3,
                       onChanged: (val) {
@@ -1098,14 +1111,20 @@ class _PlayerStatsConfigurationVisualsState
                                     .textTheme
                                     .labelMedium!
                                     .copyWith(
-                                        color: darkTextColor, fontSize: 16),
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkTextColor,
+                                        fontSize: 16),
                               ),
                               Text(
                                 e.value.$2,
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelMedium!
-                                    .copyWith(color: darkTextColor),
+                                    .copyWith(
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkTextColor),
                               ),
                             ],
                           ),
@@ -1144,7 +1163,9 @@ class _PlayerStatsConfigurationVisualsState
                           "${e.value.label}:",
                           style:
                               Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    color: darkTextColor,
+                                    color: CustomThemeProvider.of(context)
+                                        .theme
+                                        .darkTextColor,
                                     fontSize: 16,
                                   ),
                         ),
@@ -1219,7 +1240,9 @@ class _PlayerStatsConfigurationVisualsState
                           "${e.value.label}:",
                           style:
                               Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    color: darkTextColor,
+                                    color: CustomThemeProvider.of(context)
+                                        .theme
+                                        .darkTextColor,
                                     fontSize: 16,
                                   ),
                         ),
@@ -1343,8 +1366,9 @@ class _PlayerStatsConfigurationVisualsState
           ),
 
           CupertinoSlidingSegmentedControl<bool>(
-            backgroundColor: middleBgColor,
-            thumbColor: darkColor,
+            backgroundColor:
+                CustomThemeProvider.of(context).theme.middleBgColor,
+            thumbColor: CustomThemeProvider.of(context).theme.darkColor,
             // This represents the currently selected segmented control.
             groupValue: showTransformationConfiguration,
             // Callback that sets the selected segmented control.
@@ -1363,8 +1387,10 @@ class _PlayerStatsConfigurationVisualsState
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       fontSize: 16,
                       color: showTransformationConfiguration == false
-                          ? textColor
-                          : darkTextColor),
+                          ? CustomThemeProvider.of(context).theme.textColor
+                          : CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor),
                 ),
               ),
               true: Padding(
@@ -1374,8 +1400,10 @@ class _PlayerStatsConfigurationVisualsState
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       fontSize: 16,
                       color: showTransformationConfiguration == true
-                          ? textColor
-                          : darkTextColor),
+                          ? CustomThemeProvider.of(context).theme.textColor
+                          : CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor),
                 ),
               ),
             },
@@ -1399,14 +1427,22 @@ class _PlayerStatsConfigurationVisualsState
                           style: Theme.of(context)
                               .textTheme
                               .labelMedium!
-                              .copyWith(color: darkTextColor, fontSize: 16),
+                              .copyWith(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkTextColor,
+                                  fontSize: 16),
                         ),
                         Text(
                           e.transformationDescription ?? "",
                           style: Theme.of(context)
                               .textTheme
                               .labelMedium!
-                              .copyWith(color: darkTextColor, fontSize: 12),
+                              .copyWith(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkTextColor,
+                                  fontSize: 12),
                         ),
                       ],
                     ),
@@ -1454,10 +1490,10 @@ class _PlayerStatsConfigurationVisualsState
                           onChanged();
                         });
                       },
-                      icon: const CustomFaIcon(
+                      icon: CustomFaIcon(
                         icon: FontAwesomeIcons.penToSquare,
                         size: 24,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                       ),
                     ),
                   ),
@@ -1485,10 +1521,10 @@ class _PlayerStatsConfigurationVisualsState
                           onChanged();
                         });
                       },
-                      icon: const CustomFaIcon(
+                      icon: CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
                         size: 24,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                       ),
                     ),
                   ),
@@ -1563,14 +1599,19 @@ class _PlayerStatsConfigurationVisualsState
                       splashRadius: 0,
                       dense: true,
                       checkColor: const Color.fromARGB(255, 57, 245, 88),
-                      activeColor: darkColor,
+                      activeColor:
+                          CustomThemeProvider.of(context).theme.darkColor,
                       visualDensity: VisualDensity(vertical: -2),
                       title: Text(
                         e.value.characterName,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: darkTextColor, fontSize: 16),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
+                                fontSize: 16),
                       ),
                       value: selectedCompanions.contains(e.value.uuid),
                       onChanged: (newValue) {
@@ -1595,7 +1636,7 @@ class _PlayerStatsConfigurationVisualsState
                       icon: CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
                         size: 20,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                       ),
                       variant: CustomButtonVariant.FlatButton,
                       onPressed: () {
@@ -1675,7 +1716,7 @@ class _PlayerConfigModalNonDefaultTitleAndHelperText extends StatelessWidget {
         Text(
           statTitle,
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontSize: 16,
               ),
         ),
@@ -1685,7 +1726,7 @@ class _PlayerConfigModalNonDefaultTitleAndHelperText extends StatelessWidget {
         Text(
           statDescription,
           style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontSize: 12,
               ),
         ),

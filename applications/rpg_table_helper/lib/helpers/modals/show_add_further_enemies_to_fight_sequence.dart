@@ -6,13 +6,13 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future showAddFurtherEnemiesToFightSequence(
     {required BuildContext context,
@@ -66,7 +66,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
         child: Center(
           child: CustomShadowWidget(
               child: Container(
-            color: bgColor,
+            color: CustomThemeProvider.of(context).theme.bgColor,
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -80,10 +80,9 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                   titleWidget: Text(
                     S.of(context).addAdditionalEnemy,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(color: textColor, fontSize: 24),
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: CustomThemeProvider.of(context).theme.textColor,
+                        fontSize: 24),
                   ),
                 ),
                 Expanded(
@@ -100,7 +99,10 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              color: middleBgColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .middleBgColor,
                                               borderRadius:
                                                   BorderRadius.circular(5)),
                                           padding: EdgeInsets.all(10),
@@ -144,10 +146,13 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                               enemiesToAdd.removeAt(en.key);
                                             });
                                           },
-                                          icon: const CustomFaIcon(
+                                          icon: CustomFaIcon(
                                             icon: FontAwesomeIcons.trashCan,
                                             size: 24,
-                                            color: darkColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkColor,
                                           ),
                                         ),
                                       ),

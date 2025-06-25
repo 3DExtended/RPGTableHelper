@@ -8,7 +8,6 @@ import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/signinbuttons/button_list.dart';
 import 'package:quest_keeper/components/signinbuttons/button_view.dart';
 import 'package:quest_keeper/components/signinbuttons/custom_sign_in_with_apple.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/validation_helpers.dart';
 import 'package:quest_keeper/main.dart';
@@ -16,6 +15,7 @@ import 'package:quest_keeper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -80,11 +80,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgColor,
+      backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: BoxDecoration(
-          color: bgColor,
+          color: CustomThemeProvider.of(context).theme.bgColor,
         ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -201,7 +201,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: darkColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkColor,
                                         ),
                                         borderRadius: BorderRadius.circular(
                                           7,
@@ -303,7 +305,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: darkColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkColor,
                                           ),
                                           borderRadius: BorderRadius.circular(
                                             7,

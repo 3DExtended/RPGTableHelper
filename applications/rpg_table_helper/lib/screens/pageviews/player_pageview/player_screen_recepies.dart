@@ -6,7 +6,6 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_recipe_card.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
@@ -18,6 +17,7 @@ import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class PlayerScreenRecepies extends ConsumerStatefulWidget {
   const PlayerScreenRecepies({
@@ -204,7 +204,7 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                       Container(
                         height: 24,
                         width: 1,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                       ),
                       ...[
                         ItemCategory(
@@ -241,7 +241,9 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                       : CustomButtonVariant.Default,
                   icon: CustomFaIcon(
                     icon: FontAwesomeIcons.magnifyingGlass,
-                    color: isSearchFieldShowing ? textColor : darkColor,
+                    color: isSearchFieldShowing
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkColor,
                     size: 21,
                     noPadding: true,
                   ),
@@ -288,10 +290,11 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                       showOnlyCraftableItems
                           ? S.of(context).noItemsInCategoryCraftable
                           : S.of(context).noItemsInCategory,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(fontSize: 24, color: darkTextColor),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          fontSize: 24,
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor),
                     ),
                   ],
                 );
@@ -391,7 +394,9 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                                       .textTheme
                                       .labelMedium!
                                       .copyWith(
-                                        color: darkTextColor,
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkTextColor,
                                         fontSize: 16,
                                       ),
                                 ),
@@ -551,7 +556,7 @@ class CategoryFilterButton extends StatelessWidget {
                     color: isSelected
                         ? (categoryForFilter.colorCode
                             ?.parseHexColorRepresentation())
-                        : darkColor)
+                        : CustomThemeProvider.of(context).theme.darkColor)
                 .$2,
       ),
     );

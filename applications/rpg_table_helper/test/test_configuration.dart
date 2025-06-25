@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 const testDevices = [
   Device(
@@ -44,6 +45,11 @@ const testDevices = [
   ),
 ];
 
+var brightnessTests = [
+  Brightness.light,
+  Brightness.dark,
+];
+
 void testConfigurations({
   required Widget Function(Locale locale) screenFactory,
   required Map<String, Widget> Function(Widget widgetToTest)
@@ -60,77 +66,92 @@ void testConfigurations({
   if (disableLocals) {
     supportedLocales = [supportedLocales[0]];
   }
-  for (var local in supportedLocales) {
-    if (useMaterialAppWrapper) {
-      widgetToTest = MaterialApp(
-        localizationsDelegates: [
-          ...AppLocalizations.localizationsDelegates,
-          S.delegate,
-        ],
-        locale: local,
-        supportedLocales: AppLocalizations.supportedLocales,
-        debugShowCheckedModeBanner: false,
-        debugShowMaterialGrid: false,
-        themeMode: ThemeMode.dark,
-        title: 'TriviaCrusher',
-        color: Colors.black,
-        theme: ThemeData.dark(useMaterial3: true),
-        builder: (BuildContext context, Widget? child) {
-          // Set a custom screen size for the test
-          return ThemeConfigurationForApp(child: screenFactory(local));
-        },
-      );
-    } else {
-      widgetToTest = ThemeConfigurationForApp(child: screenFactory(local));
-    }
+  for (var i = 0; i < brightnessTests.length; i++) {
+    var brightnessToTest = brightnessTests[i];
 
-    var counter = 1;
-
-    for (var widgetConfig in getTestConfigurations(widgetToTest).entries) {
-      var testName =
-          '$counter - $widgetName (Language ${local.languageCode}, ${widgetConfig.key})';
-      counter++;
-
-      testGoldens(testName, (WidgetTester tester) async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        await loadAppFonts();
-        await loadAppFonts();
-        await tester.pumpAndSettle();
-        await loadAppFonts();
-        await tester.pumpAndSettle();
-
-        await tester.pumpWidgetBuilder(
-          Builder(builder: (context) {
-            return Localizations(
-              delegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate,
-              ],
-              locale: local,
-              child: Localizations.override(
-                context: context,
-                locale: local,
-                child: ThemeConfigurationForApp(child: widgetConfig.value),
-              ),
-            );
-          }),
+    for (var local in supportedLocales) {
+      if (useMaterialAppWrapper) {
+        widgetToTest = MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            S.delegate,
+          ],
+          locale: local,
+          supportedLocales: AppLocalizations.supportedLocales,
+          debugShowCheckedModeBanner: false,
+          debugShowMaterialGrid: false,
+          themeMode: brightnessToTest == Brightness.light
+              ? ThemeMode.light
+              : ThemeMode.dark,
+          title: 'TriviaCrusher',
+          color: Colors.black,
+          theme: ThemeData.dark(useMaterial3: true),
+          builder: (BuildContext context, Widget? child) {
+            // Set a custom screen size for the test
+            return ThemeConfigurationForApp(child: screenFactory(local));
+          },
         );
+      } else {
+        widgetToTest = ThemeConfigurationForApp(child: screenFactory(local));
+      }
 
-        if (testerInteractions != null) {
-          await testerInteractions(tester, local);
+      var counter = 1;
+
+      for (var widgetConfig in getTestConfigurations(widgetToTest).entries) {
+        var testName =
+            '$counter - $widgetName (Language ${local.languageCode}, ${widgetConfig.key})';
+        if (brightnessToTest == Brightness.dark) {
+          testName += ' - Darkmode';
         }
-        await loadAppFonts();
+        counter++;
 
-        await multiScreenGolden(
-          tester,
-          '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
-          devices:
-              disableAllScreenSizes == true ? [testDevices[1]] : testDevices,
-        );
-      });
+        testGoldens(testName, (WidgetTester tester) async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          await loadAppFonts();
+          await loadAppFonts();
+          await tester.pumpAndSettle();
+          await loadAppFonts();
+          await tester.pumpAndSettle();
+
+          tester.view.platformDispatcher.platformBrightnessTestValue =
+              brightnessToTest;
+          await tester.pumpAndSettle();
+
+          await tester.pumpWidgetBuilder(
+            Builder(builder: (context) {
+              return CustomThemeProvider(
+                child: Localizations(
+                  delegates: const [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    ...AppLocalizations.localizationsDelegates,
+                    S.delegate,
+                  ],
+                  locale: local,
+                  child: Localizations.override(
+                    context: context,
+                    locale: local,
+                    child: ThemeConfigurationForApp(child: widgetConfig.value),
+                  ),
+                ),
+              );
+            }),
+          );
+
+          if (testerInteractions != null) {
+            await testerInteractions(tester, local);
+          }
+          await loadAppFonts();
+
+          await multiScreenGolden(
+            tester,
+            '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
+            devices:
+                disableAllScreenSizes == true ? [testDevices[1]] : testDevices,
+          );
+        });
+      }
     }
   }
 }

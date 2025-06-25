@@ -7,12 +7,12 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
 
 part 'rpg_configuration_wizard_step_5_item_categories.g.dart';
@@ -196,7 +196,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         padding: const EdgeInsets.all(4.5),
                         child: getIconForIdentifier(
                           name: e.value.iconName ?? "leaf",
-                          color: darkColor,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
                           size: 32,
                         ).$2,
                       ),
@@ -228,9 +229,9 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                           categories.removeAt(e.key);
                         });
                       },
-                      icon: const CustomFaIcon(
+                      icon: CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                         size: 22,
                       ),
                     ),
@@ -274,9 +275,11 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                       .removeAt(subCat.key);
                                 });
                               },
-                              icon: const CustomFaIcon(
+                              icon: CustomFaIcon(
                                 icon: FontAwesomeIcons.trashCan,
-                                color: darkColor,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkColor,
                                 size: 22,
                               ),
                             ),
@@ -310,9 +313,10 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         width: 16,
                         height: 16,
                         alignment: AlignmentDirectional.center,
-                        child: const CustomFaIcon(
+                        child: CustomFaIcon(
                           icon: FontAwesomeIcons.plus,
-                          color: darkColor,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
                         )),
                   ),
                 ),
@@ -345,10 +349,10 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
               width: 24,
               height: 24,
               alignment: AlignmentDirectional.center,
-              child: const CustomFaIcon(
+              child: CustomFaIcon(
                 icon: FontAwesomeIcons.plus,
                 size: 16,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               )),
         ),
         const SizedBox(

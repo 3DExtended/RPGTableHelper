@@ -4,13 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:uuid/v7.dart';
@@ -34,7 +34,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
     var _ = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
-      color: bgColor,
+      color: CustomThemeProvider.of(context).theme.bgColor,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -47,7 +47,9 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                       decoration: BoxDecoration(
                         border: Border(
                           right: BorderSide(
-                            color: middleBgColor,
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .middleBgColor,
                           ),
                         ),
                       ),
@@ -62,7 +64,9 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                 .textTheme
                                 .labelMedium!
                                 .copyWith(
-                                    color: darkTextColor,
+                                    color: CustomThemeProvider.of(context)
+                                        .theme
+                                        .darkTextColor,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                           ),
@@ -80,7 +84,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                               .textTheme
                                               .labelMedium!
                                               .copyWith(
-                                                  color: darkTextColor,
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .darkTextColor,
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold),
                                         ),
@@ -108,8 +115,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           5),
-                                                              color:
-                                                                  middleBgColor,
+                                                              color: CustomThemeProvider
+                                                                      .of(context)
+                                                                  .theme
+                                                                  .middleBgColor,
                                                             ),
                                                             padding:
                                                                 EdgeInsets.all(
@@ -118,14 +127,14 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                               children: [
                                                                 Text(
                                                                   e.value.$2,
-                                                                  style: Theme
-                                                                          .of(
-                                                                              context)
+                                                                  style: Theme.of(
+                                                                          context)
                                                                       .textTheme
                                                                       .labelMedium!
                                                                       .copyWith(
-                                                                          color:
-                                                                              darkTextColor,
+                                                                          color: CustomThemeProvider.of(context)
+                                                                              .theme
+                                                                              .darkTextColor,
                                                                           fontSize:
                                                                               16,
                                                                           fontWeight:
@@ -136,8 +145,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                   icon:
                                                                       FontAwesomeIcons
                                                                           .dice,
-                                                                  color:
-                                                                      darkColor,
+                                                                  color: CustomThemeProvider.of(
+                                                                          context)
+                                                                      .theme
+                                                                      .darkColor,
                                                                   size: 24,
                                                                 ),
                                                                 SizedBox(
@@ -146,14 +157,14 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                 Text(
                                                                   e.value.$3
                                                                       .toString(),
-                                                                  style: Theme
-                                                                          .of(
-                                                                              context)
+                                                                  style: Theme.of(
+                                                                          context)
                                                                       .textTheme
                                                                       .labelMedium!
                                                                       .copyWith(
-                                                                          color:
-                                                                              darkTextColor,
+                                                                          color: CustomThemeProvider.of(context)
+                                                                              .theme
+                                                                              .darkTextColor,
                                                                           fontSize:
                                                                               24,
                                                                           fontWeight:
@@ -168,8 +179,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                         ),
                                                         CustomButton(
                                                             icon: CustomFaIcon(
-                                                                color:
-                                                                    darkColor,
+                                                                color: CustomThemeProvider.of(
+                                                                        context)
+                                                                    .theme
+                                                                    .darkColor,
                                                                 icon: FontAwesomeIcons
                                                                     .chevronDown),
                                                             onPressed: () {
@@ -214,8 +227,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                         ),
                                                         CustomButton(
                                                             icon: CustomFaIcon(
-                                                                color:
-                                                                    darkColor,
+                                                                color: CustomThemeProvider.of(
+                                                                        context)
+                                                                    .theme
+                                                                    .darkColor,
                                                                 icon: FontAwesomeIcons
                                                                     .chevronUp),
                                                             onPressed: () {
@@ -256,8 +271,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                         ),
                                                         CustomButton(
                                                             icon: CustomFaIcon(
-                                                                color:
-                                                                    darkColor,
+                                                                color: CustomThemeProvider.of(
+                                                                        context)
+                                                                    .theme
+                                                                    .darkColor,
                                                                 icon:
                                                                     FontAwesomeIcons
                                                                         .trash),
@@ -301,7 +318,9 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                 .textTheme
                                 .labelMedium!
                                 .copyWith(
-                                    color: darkTextColor,
+                                    color: CustomThemeProvider.of(context)
+                                        .theme
+                                        .darkTextColor,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                           ),
@@ -321,7 +340,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                               .textTheme
                                               .labelMedium!
                                               .copyWith(
-                                                  color: darkTextColor,
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .darkTextColor,
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold),
                                         ),
@@ -345,8 +367,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         5),
-                                                            color:
-                                                                middleBgColor,
+                                                            color: CustomThemeProvider
+                                                                    .of(context)
+                                                                .theme
+                                                                .middleBgColor,
                                                           ),
                                                           padding:
                                                               EdgeInsets.all(
@@ -380,7 +404,10 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                   color: !excludedPlayerCharacterIds
                                                                           .contains(char
                                                                               .uuid)
-                                                                      ? darkColor
+                                                                      ? CustomThemeProvider.of(
+                                                                              context)
+                                                                          .theme
+                                                                          .darkColor
                                                                       : Colors
                                                                           .transparent,
                                                                 ),
@@ -395,8 +422,9 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                     .textTheme
                                                                     .labelMedium!
                                                                     .copyWith(
-                                                                        color:
-                                                                            darkTextColor,
+                                                                        color: CustomThemeProvider.of(context)
+                                                                            .theme
+                                                                            .darkTextColor,
                                                                         fontSize:
                                                                             16),
                                                               ),

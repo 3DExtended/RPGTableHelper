@@ -27,6 +27,7 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_helpers.dart'
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
@@ -94,7 +95,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: bgColor,
+        color: CustomThemeProvider.of(context).theme.bgColor,
         child: Column(
           children: [
             Navbar(
@@ -105,10 +106,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               titleWidget: Text(
                 S.of(context).selectGameMode,
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(color: textColor, fontSize: 24),
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.textColor,
+                    fontSize: 24),
               ),
             ),
             Expanded(
@@ -207,7 +207,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 padding: EdgeInsets.zero,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: darkColor),
+                    border: Border.all(
+                        color: CustomThemeProvider.of(context).theme.darkColor),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Padding(
@@ -219,7 +220,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                           child: CustomFaIcon(
                             icon: FontAwesomeIcons.peopleGroup,
                             size: 32,
-                            color: darkColor,
+                            color:
+                                CustomThemeProvider.of(context).theme.darkColor,
                           ),
                         ),
                         Expanded(
@@ -262,7 +264,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: darkColor),
+                    border: Border.all(
+                        color: CustomThemeProvider.of(context).theme.darkColor),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -277,7 +280,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                               child: CustomFaIcon(
                                 icon: FontAwesomeIcons.solidUser,
                                 size: 32,
-                                color: darkColor,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkColor,
                               ),
                             ),
                             Expanded(
@@ -324,8 +329,14 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                       width: 150,
                                       child: BorderedImage(
                                         noPadding: true,
-                                        backgroundColor: bgColor,
-                                        lightColor: darkColor,
+                                        backgroundColor:
+                                            CustomThemeProvider.of(context)
+                                                .theme
+                                                .bgColor,
+                                        lightColor:
+                                            CustomThemeProvider.of(context)
+                                                .theme
+                                                .darkColor,
                                         imageUrl: fullImageUrl,
                                         isLoading: false,
                                         isGreyscale: false,
@@ -528,10 +539,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 children: [
                   Text(
                     "Join Request sent",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium!
-                        .copyWith(fontSize: 24, color: textColor),
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        fontSize: 24,
+                        color: CustomThemeProvider.of(context).theme.textColor),
                   ),
                   SizedBox(
                     height: 10,
@@ -697,24 +707,21 @@ class AddableColumnHeader extends StatelessWidget {
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: darkTextColor,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
               ),
               Text(
                 subtitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: darkTextColor),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor),
               ),
               Text(
                 subsubtitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: darkTextColor),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor),
               ),
             ],
           ),
@@ -726,7 +733,7 @@ class AddableColumnHeader extends StatelessWidget {
             icon: CustomFaIcon(
               size: 16,
               icon: FontAwesomeIcons.plus,
-              color: darkColor,
+              color: CustomThemeProvider.of(context).theme.darkColor,
             ),
           ),
         )

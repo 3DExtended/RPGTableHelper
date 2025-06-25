@@ -7,6 +7,7 @@ import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 
@@ -57,7 +58,9 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
                 child: Text(
                   S.of(context).noImagesInCampagne,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: darkColor, fontSize: 16),
+                  style: TextStyle(
+                      color: CustomThemeProvider.of(context).theme.darkColor,
+                      fontSize: 16),
                 ),
               ),
             ),
@@ -76,7 +79,7 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
           itemBuilder: (context, index) {
             var image = imagesInCampagne[index];
             return _getRenderingForImageBlock(
-                pubicImageUrl: getPublicImageUrl(image) ?? '');
+                pubicImageUrl: getPublicImageUrl(image));
           }),
     );
   }
@@ -102,8 +105,8 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.8),
               child: BorderedImage(
-                backgroundColor: bgColor,
-                lightColor: darkColor,
+                backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
+                lightColor: CustomThemeProvider.of(context).theme.darkColor,
                 hideLoadingImage: true,
                 isGreyscale: false,
                 isClickableForZoom: true,

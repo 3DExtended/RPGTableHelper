@@ -16,6 +16,7 @@ import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 
@@ -125,8 +126,9 @@ class _ShowGenerateLoreImageModalModalContentState
                                 : imageUrl)));
 
                 return BorderedImage(
-                  lightColor: darkColor,
-                  backgroundColor: bgColor,
+                  lightColor: CustomThemeProvider.of(context).theme.darkColor,
+                  backgroundColor:
+                      CustomThemeProvider.of(context).theme.bgColor,
                   imageUrl: fullImageUrl,
                   isGreyscale: false,
                   isLoading: isLoading,
@@ -144,8 +146,8 @@ class _ShowGenerateLoreImageModalModalContentState
                     icon: CustomFaIcon(
                       icon: FontAwesomeIcons.chevronLeft,
                       color: isShowPreviousGeneratedImageButtonDisabled
-                          ? middleBgColor
-                          : darkColor,
+                          ? CustomThemeProvider.of(context).theme.middleBgColor
+                          : CustomThemeProvider.of(context).theme.darkColor,
                     ),
                     onPressed: isShowPreviousGeneratedImageButtonDisabled
                         ? null
@@ -213,8 +215,8 @@ class _ShowGenerateLoreImageModalModalContentState
                     icon: CustomFaIcon(
                       icon: FontAwesomeIcons.chevronRight,
                       color: isShowNextGeneratedButtonDisabled
-                          ? middleBgColor
-                          : darkColor,
+                          ? CustomThemeProvider.of(context).theme.middleBgColor
+                          : CustomThemeProvider.of(context).theme.darkColor,
                     ),
                     onPressed: isShowNextGeneratedButtonDisabled
                         ? null

@@ -9,12 +9,12 @@ import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/static_grid.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 /// returns number to adjust the rpg character inventory
 Future<int?> showItemCardDetails(BuildContext context,
@@ -101,7 +101,7 @@ class _ItemCardDetailsModalContentState
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 1000, maxHeight: 700),
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -115,10 +115,10 @@ class _ItemCardDetailsModalContentState
                       titleWidget: Text(
                         "${S.of(context).itemDetailsForPrefix} ${widget.item.name}",
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: 24),
                       ),
                     ),
                     Expanded(
@@ -162,7 +162,10 @@ class _ItemCardDetailsModalContentState
                                           .textTheme
                                           .bodyMedium!
                                           .copyWith(
-                                            color: darkTextColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkTextColor,
                                             fontSize: 16,
                                           ),
                                     ),
@@ -172,7 +175,10 @@ class _ItemCardDetailsModalContentState
                                           .textTheme
                                           .bodyMedium!
                                           .copyWith(
-                                            color: darkTextColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkTextColor,
                                             fontSize: 16,
                                           ),
                                     ),
@@ -182,7 +188,10 @@ class _ItemCardDetailsModalContentState
                                           .textTheme
                                           .bodyMedium!
                                           .copyWith(
-                                            color: darkTextColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkTextColor,
                                             fontSize: 16,
                                           ),
                                     ),
@@ -194,7 +203,10 @@ class _ItemCardDetailsModalContentState
                                           .textTheme
                                           .bodyMedium!
                                           .copyWith(
-                                            color: darkTextColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkTextColor,
                                             fontSize: 16,
                                           ),
                                     ),

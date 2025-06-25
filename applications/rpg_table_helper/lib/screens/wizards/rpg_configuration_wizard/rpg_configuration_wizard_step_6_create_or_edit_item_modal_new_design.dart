@@ -17,7 +17,6 @@ import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/navbar.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
@@ -26,6 +25,7 @@ import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
@@ -195,7 +195,7 @@ class _CreateOrEditItemModalContentState
           child: Center(
             child: CustomShadowWidget(
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
                   children: [
                     Navbar(
@@ -208,10 +208,10 @@ class _CreateOrEditItemModalContentState
                       titleWidget: Text(
                         "Item bearbeiten", // TODO localize/ switch text between add and edit
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 24),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: 24),
                       ),
                     ),
                     Expanded(
@@ -225,7 +225,9 @@ class _CreateOrEditItemModalContentState
                                 decoration: BoxDecoration(
                                   border: Border(
                                     right: BorderSide(
-                                      color: darkColor,
+                                      color: CustomThemeProvider.of(context)
+                                          .theme
+                                          .darkColor,
                                       width: 1,
                                     ),
                                   ),
@@ -305,7 +307,10 @@ class _CreateOrEditItemModalContentState
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!
-                            .copyWith(color: darkTextColor),
+                            .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor),
                       ),
                     );
                   }).toList()),
@@ -396,10 +401,9 @@ class _CreateOrEditItemModalContentState
         ),
         Text(
           "Fundorte:",
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge!
-              .copyWith(color: darkTextColor, fontSize: 16),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 16),
         ),
         const SizedBox(
           height: 10,
@@ -453,9 +457,10 @@ class _CreateOrEditItemModalContentState
                             _placesOfFinding.removeAt(tuple.key);
                           });
                         },
-                        icon: const CustomFaIcon(
+                        icon: CustomFaIcon(
                           icon: FontAwesomeIcons.trashCan,
-                          color: darkColor,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
                         ),
                       ),
                     ),
@@ -486,13 +491,16 @@ class _CreateOrEditItemModalContentState
                 icon: Theme(
                     data: ThemeData(
                       fontFamily: "Ruwudu",
-                      iconTheme: const IconThemeData(
-                        color: darkTextColor,
+                      iconTheme: IconThemeData(
+                        color:
+                            CustomThemeProvider.of(context).theme.darkTextColor,
                         size: 16,
                       ),
-                      textTheme: const TextTheme(
+                      textTheme: TextTheme(
                         bodyMedium: TextStyle(
-                          color: darkTextColor,
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor,
                         ),
                       ),
                     ),
@@ -574,7 +582,7 @@ class _CreateOrEditItemModalContentState
             Text(
               "Vorschau:",
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: darkTextColor,
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                     fontSize: 24,
                   ),
             ),
@@ -607,8 +615,8 @@ class _CreateOrEditItemModalContentState
                     icon: CustomFaIcon(
                       icon: FontAwesomeIcons.chevronLeft,
                       color: isShowPreviousGeneratedImageButtonDisabled
-                          ? middleBgColor
-                          : darkColor,
+                          ? CustomThemeProvider.of(context).theme.middleBgColor
+                          : CustomThemeProvider.of(context).theme.darkColor,
                     ),
                     onPressed: isShowPreviousGeneratedImageButtonDisabled
                         ? null
@@ -676,10 +684,21 @@ class _CreateOrEditItemModalContentState
                       child: Text(
                         "Neues Bild",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              color: isLoading ? middleBgColor : accentColor,
+                              color: isLoading
+                                  ? CustomThemeProvider.of(context)
+                                      .theme
+                                      .middleBgColor
+                                  : CustomThemeProvider.of(context)
+                                      .theme
+                                      .accentColor,
                               decoration: TextDecoration.underline,
-                              decorationColor:
-                                  isLoading ? middleBgColor : accentColor,
+                              decorationColor: isLoading
+                                  ? CustomThemeProvider.of(context)
+                                      .theme
+                                      .middleBgColor
+                                  : CustomThemeProvider.of(context)
+                                      .theme
+                                      .accentColor,
                               fontSize: 16,
                             ),
                       ),
@@ -692,13 +711,19 @@ class _CreateOrEditItemModalContentState
                         padding: EdgeInsets.zero,
                         child: Text(
                           "Bild auswählen",
-                          style:
-                              Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    color: accentColor,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: accentColor,
-                                    fontSize: 16,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .accentColor,
+                                decoration: TextDecoration.underline,
+                                decorationColor: CustomThemeProvider.of(context)
+                                    .theme
+                                    .accentColor,
+                                fontSize: 16,
+                              ),
                         ),
                         onPressed: () async {
                           var connectionDetails =
@@ -785,8 +810,8 @@ class _CreateOrEditItemModalContentState
                     icon: CustomFaIcon(
                       icon: FontAwesomeIcons.chevronRight,
                       color: isShowNextGeneratedButtonDisabled
-                          ? middleBgColor
-                          : darkColor,
+                          ? CustomThemeProvider.of(context).theme.middleBgColor
+                          : CustomThemeProvider.of(context).theme.darkColor,
                     ),
                     onPressed: isShowNextGeneratedButtonDisabled
                         ? null

@@ -7,6 +7,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomIntEditField extends StatefulWidget {
   final void Function(int newValue) onValueChange;
@@ -84,7 +85,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           icon: CustomFaIcon(
             icon: FontAwesomeIcons.minus,
             size: iconSizeInlineButtons,
-            color: textColor,
+            color: CustomThemeProvider.of(context).theme.textColor,
           ),
         ),
         Padding(
@@ -117,7 +118,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
           icon: CustomFaIcon(
             icon: FontAwesomeIcons.plus,
             size: iconSizeInlineButtons,
-            color: textColor,
+            color: CustomThemeProvider.of(context).theme.textColor,
           ),
         ),
       ],

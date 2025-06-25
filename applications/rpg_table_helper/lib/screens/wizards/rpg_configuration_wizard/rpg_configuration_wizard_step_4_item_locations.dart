@@ -7,9 +7,9 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
 
 class RpgConfigurationWizardStep4ItemLocations extends WizardStepBase {
@@ -141,10 +141,10 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                         });
                         _updateStateForFormValidation();
                       },
-                      icon: const CustomFaIcon(
+                      icon: CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
                         size: 22,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                       ),
                     ),
                   ),
@@ -172,9 +172,9 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
               width: 24,
               height: 24,
               alignment: AlignmentDirectional.center,
-              child: const FaIcon(
+              child: FaIcon(
                 FontAwesomeIcons.plus,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               )),
         ),
         const SizedBox(

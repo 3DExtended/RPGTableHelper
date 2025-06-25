@@ -8,11 +8,11 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_int_edit_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 enum MoneyChangeMode {
   addMoney,
@@ -61,14 +61,14 @@ class _PlayerScreenCharacterMoneyState
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-          color: bgColor,
+          color: CustomThemeProvider.of(context).theme.bgColor,
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
               CustomFaIcon(
                 icon: FontAwesomeIcons.sackDollar,
                 size: 48,
-                color: darkColor,
+                color: CustomThemeProvider.of(context).theme.darkColor,
               ),
               SizedBox(
                 height: 10,
@@ -78,17 +78,15 @@ class _PlayerScreenCharacterMoneyState
                     ? S.of(context).noMoneyDefaultText
                     : buildTextForCurrencyComparison(
                         widget.rpgConfig, charToRender!.moneyInBaseType ?? 0),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium!
-                    .copyWith(color: darkTextColor, fontSize: 24),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 24),
               ),
               Text(
                 S.of(context).currentBalance,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium!
-                    .copyWith(color: darkTextColor, fontSize: 16),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 16),
               ),
               SizedBox(
                 height: 20,
@@ -98,8 +96,9 @@ class _PlayerScreenCharacterMoneyState
                 height: 20,
               ),
               CupertinoSlidingSegmentedControl<MoneyChangeMode>(
-                backgroundColor: middleBgColor,
-                thumbColor: darkColor,
+                backgroundColor:
+                    CustomThemeProvider.of(context).theme.middleBgColor,
+                thumbColor: CustomThemeProvider.of(context).theme.darkColor,
                 // This represents the currently selected segmented control.
                 groupValue: _selectedMoneyChangeMode,
                 // Callback that sets the selected segmented control.
@@ -119,8 +118,10 @@ class _PlayerScreenCharacterMoneyState
                           fontSize: 16,
                           color: _selectedMoneyChangeMode ==
                                   MoneyChangeMode.addMoney
-                              ? textColor
-                              : darkTextColor),
+                              ? CustomThemeProvider.of(context).theme.textColor
+                              : CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor),
                     ),
                   ),
                   MoneyChangeMode.spendMoney: Padding(
@@ -131,8 +132,10 @@ class _PlayerScreenCharacterMoneyState
                           fontSize: 16,
                           color: _selectedMoneyChangeMode ==
                                   MoneyChangeMode.spendMoney
-                              ? textColor
-                              : darkTextColor),
+                              ? CustomThemeProvider.of(context).theme.textColor
+                              : CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor),
                     ),
                   ),
                 },
@@ -200,17 +203,15 @@ class _PlayerScreenCharacterMoneyState
                     ? S.of(context).noMoneyDefaultText
                     : buildTextForCurrencyComparisonAfterAdjustment(
                         widget.rpgConfig, charToRender!),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium!
-                    .copyWith(color: darkTextColor, fontSize: 24),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 24),
               ),
               Text(
                 S.of(context).newBalance,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium!
-                    .copyWith(color: darkTextColor, fontSize: 16),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 16),
               ),
               SizedBox(
                 height: 40,

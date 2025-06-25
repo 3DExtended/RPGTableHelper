@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 const loadingSpinnerAlphaValues = [100, 130, 180, 215, 255];
@@ -23,8 +23,11 @@ class CustomLoadingSpinner extends StatelessWidget {
 
                 /// Required, The loading type of the widget
                 colors: [
-                  ...loadingSpinnerAlphaValues
-                      .map((alpha) => accentColor.withAlpha(alpha)),
+                  ...loadingSpinnerAlphaValues.map((alpha) =>
+                      CustomThemeProvider.of(context)
+                          .theme
+                          .accentColor
+                          .withAlpha(alpha)),
                 ],
 
                 /// Optional, The color collections

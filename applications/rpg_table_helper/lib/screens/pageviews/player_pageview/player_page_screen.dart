@@ -9,7 +9,6 @@ import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
@@ -25,6 +24,7 @@ import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_cha
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_money.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_recepies.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:signalr_netcore/errors.dart';
 
 class PlayerPageScreenRouteSettings {
@@ -296,7 +296,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
     return PreventSwipeNavigation(
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
         body: Column(
           children: [
             Navbar(
@@ -342,8 +342,12 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                       child: ColoredRotatedSquare(
                           isSolidSquare: index == _currentStep,
                           color: index == _currentStep
-                              ? accentColor
-                              : middleBgColor),
+                              ? CustomThemeProvider.of(context)
+                                  .theme
+                                  .accentColor
+                              : CustomThemeProvider.of(context)
+                                  .theme
+                                  .middleBgColor),
                     ),
                   ),
                   if (context.isTablet)
@@ -356,7 +360,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                             .textTheme
                             .headlineMedium!
                             .copyWith(
-                              color: textColor,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 24,
                             ),
                       ),
@@ -378,7 +384,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                           angle: pi / 4, // 45 deg
                           child: CustomFaIcon(
                               icon: FontAwesomeIcons.square,
-                              color: middleBgColor),
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .middleBgColor),
                         ),
                       ),
                     ),
@@ -412,7 +420,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             ),
             Expanded(
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: PageView(
                   controller: pageViewController,
                   onPageChanged: (value) {

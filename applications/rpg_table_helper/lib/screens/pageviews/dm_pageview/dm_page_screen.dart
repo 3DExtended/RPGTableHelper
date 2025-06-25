@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
@@ -20,6 +19,7 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_grant_items
 import 'package:quest_keeper/screens/pageviews/generated_images_screen.dart';
 import 'package:quest_keeper/screens/pageviews/lore_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class DmPageScreen extends ConsumerStatefulWidget {
   static const String route = "dmpagescreen";
@@ -85,7 +85,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
 
     return PreventSwipeNavigation(
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
         body: Column(
           children: [
             Navbar(
@@ -126,8 +126,12 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                                   ? FontAwesomeIcons.solidSquare
                                   : FontAwesomeIcons.square,
                               color: index == _currentStep
-                                  ? accentColor
-                                  : middleBgColor),
+                                  ? CustomThemeProvider.of(context)
+                                      .theme
+                                      .accentColor
+                                  : CustomThemeProvider.of(context)
+                                      .theme
+                                      .middleBgColor),
                         ),
                       ),
                     ),
@@ -142,7 +146,9 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                             .textTheme
                             .headlineMedium!
                             .copyWith(
-                              color: textColor,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .textColor,
                               fontSize: 24,
                             ),
                       ),
@@ -163,7 +169,9 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                           angle: pi / 4, // 45 deg
                           child: CustomFaIcon(
                               icon: FontAwesomeIcons.square,
-                              color: middleBgColor),
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .middleBgColor),
                         ),
                       ),
                     ),
@@ -178,7 +186,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
             ),
             Expanded(
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: PageView(
                   controller: pageViewController,
                   onPageChanged: (value) {

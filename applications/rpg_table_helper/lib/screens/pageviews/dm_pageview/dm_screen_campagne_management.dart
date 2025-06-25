@@ -20,6 +20,7 @@ import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 
@@ -73,7 +74,7 @@ class _DmScreenCampagneManagementState
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
-      color: bgColor,
+      color: CustomThemeProvider.of(context).theme.bgColor,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -83,7 +84,7 @@ class _DmScreenCampagneManagementState
               Text(
                 S.of(context).allPlayers,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: darkTextColor,
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
@@ -109,7 +110,7 @@ class _DmScreenCampagneManagementState
               Text(
                 S.of(context).openJoinRequests,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                    color: darkTextColor,
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
@@ -118,7 +119,8 @@ class _DmScreenCampagneManagementState
                 Text(
                   "${S.of(context).joinCodeForNewPlayers}${connectionDetails!.sessionConnectionNumberForPlayers!}",
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: darkTextColor,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
@@ -130,10 +132,10 @@ class _DmScreenCampagneManagementState
               if ((connectionDetails?.openPlayerRequests ?? []).isEmpty)
                 Text(
                   S.of(context).noOpenJoinRequests,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontSize: 16, color: darkTextColor),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor),
                 ),
 
               if ((connectionDetails?.openPlayerRequests ?? []).isNotEmpty)
@@ -150,7 +152,9 @@ class _DmScreenCampagneManagementState
                             width: 350,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: middleBgColor,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .middleBgColor,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -168,7 +172,10 @@ class _DmScreenCampagneManagementState
                                               .labelMedium!
                                               .copyWith(
                                                 fontSize: 20,
-                                                color: darkColor,
+                                                color: CustomThemeProvider.of(
+                                                        context)
+                                                    .theme
+                                                    .darkColor,
                                               ),
                                         ),
                                         Text(
@@ -178,7 +185,10 @@ class _DmScreenCampagneManagementState
                                               .labelMedium!
                                               .copyWith(
                                                 fontSize: 16,
-                                                color: darkColor,
+                                                color: CustomThemeProvider.of(
+                                                        context)
+                                                    .theme
+                                                    .darkColor,
                                               ),
                                         )
                                       ],
@@ -192,16 +202,25 @@ class _DmScreenCampagneManagementState
                                         padding: EdgeInsets.zero,
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: lightGreen,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .lightGreen,
                                             borderRadius:
                                                 BorderRadius.circular(3.0),
                                             border: Border.all(
-                                              color: darkColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkColor,
                                             ),
                                           ),
                                           child: CustomFaIcon(
                                             icon: FontAwesomeIcons.check,
-                                            color: darkColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .darkColor,
                                             size: 24,
                                           ),
                                         ),
@@ -238,16 +257,25 @@ class _DmScreenCampagneManagementState
                                         padding: EdgeInsets.zero,
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: lightRed,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .lightRed,
                                             borderRadius:
                                                 BorderRadius.circular(3.0),
                                             border: Border.all(
-                                              color: darkColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkColor,
                                             ),
                                           ),
                                           child: CustomFaIcon(
                                             icon: FontAwesomeIcons.xmark,
-                                            color: textColor,
+                                            color:
+                                                CustomThemeProvider.of(context)
+                                                    .theme
+                                                    .textColor,
                                             size: 24,
                                           ),
                                         ),
@@ -398,8 +426,8 @@ class _DmScreenCampagneManagementState
             width: 260,
             child: BorderedImage(
               noPadding: true,
-              backgroundColor: bgColor,
-              lightColor: darkColor,
+              backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
+              lightColor: CustomThemeProvider.of(context).theme.darkColor,
               imageUrl: fullImageUrl,
               isLoading: false,
               isGreyscale: !isOnline,
@@ -416,13 +444,15 @@ class _DmScreenCampagneManagementState
                 height: 24,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: darkColor,
+                  color: CustomThemeProvider.of(context).theme.darkColor,
                 ),
                 padding: EdgeInsets.all(1),
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isOnline ? lightGreen : lightRed,
+                    color: isOnline
+                        ? CustomThemeProvider.of(context).theme.lightGreen
+                        : CustomThemeProvider.of(context).theme.lightRed,
                   ),
                   padding: EdgeInsets.all(1),
                 ),
@@ -436,7 +466,9 @@ class _DmScreenCampagneManagementState
                   Text(
                     playerCharacterName,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          color: darkTextColor,
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -444,7 +476,9 @@ class _DmScreenCampagneManagementState
                   Text(
                     isOnline ? S.of(context).online : S.of(context).offline,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          color: darkTextColor,
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor,
                           fontSize: 12,
                         ),
                   ),

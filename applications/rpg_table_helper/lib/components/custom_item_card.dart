@@ -5,6 +5,7 @@ import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/card_border.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomItemCard extends StatelessWidget {
   final String? imageUrl;
@@ -43,12 +44,13 @@ class CustomItemCard extends StatelessWidget {
                     ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                     : imageUrl!)));
 
-    var backgroundColor = cardBgColorOverride ?? darkColor;
-    var lightColor = bgColor;
+    var backgroundColor =
+        cardBgColorOverride ?? CustomThemeProvider.of(context).theme.darkColor;
+    var lightColor = CustomThemeProvider.of(context).theme.bgColor;
 
     var icon = getIconForIdentifier(
       name: categoryIconName ?? "flask-laboratory-svgrepo-com",
-      color: categoryIconColor ?? bgColor,
+      color: categoryIconColor ?? CustomThemeProvider.of(context).theme.bgColor,
     ).$2;
 
     var scalar = scalarOverride ?? 1.25;
@@ -135,7 +137,11 @@ class CustomItemCard extends StatelessWidget {
                                                           fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: darkColor),
+                                                          color:
+                                                              CustomThemeProvider
+                                                                      .of(context)
+                                                                  .theme
+                                                                  .darkColor),
                                                   minFontSize: 10,
                                                   maxFontSize: 12,
                                                   maxLines: 4,
@@ -213,7 +219,9 @@ class _CardTitleWithIcon extends StatelessWidget {
                                 .copyWith(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
-                                    color: darkColor),
+                                    color: CustomThemeProvider.of(context)
+                                        .theme
+                                        .darkColor),
                             minFontSize: 10,
                             maxFontSize: 32,
                             maxLines: 1,

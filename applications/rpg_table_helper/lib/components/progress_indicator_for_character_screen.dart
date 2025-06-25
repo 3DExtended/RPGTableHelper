@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class ProgressIndicatorForCharacterScreen extends StatelessWidget {
   const ProgressIndicatorForCharacterScreen({
@@ -41,7 +41,7 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
                 width: width, // Adjust the size as needed
                 height: width,
                 decoration: BoxDecoration(
-                  color: darkColor,
+                  color: CustomThemeProvider.of(context).theme.darkColor,
                   shape: BoxShape.circle,
                 ),
               ),

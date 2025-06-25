@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/player_stats_configuration_visuals.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future<RpgCharacterStatValue?> showGetPlayerConfigurationModal({
   required BuildContext context,
@@ -152,7 +152,8 @@ class WarningBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: accentColor.withOpacity(0.2),
+        color:
+            CustomThemeProvider.of(context).theme.accentColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(20),
@@ -161,9 +162,9 @@ class WarningBox extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 FontAwesomeIcons.exclamation,
-                color: darkTextColor,
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
                 size: 24,
               ),
               const SizedBox(width: 5),
@@ -171,7 +172,8 @@ class WarningBox extends StatelessWidget {
                 child: Text(
                   warningTitle,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: darkTextColor,
+                        color:
+                            CustomThemeProvider.of(context).theme.darkTextColor,
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
                       ),
@@ -183,7 +185,7 @@ class WarningBox extends StatelessWidget {
           Text(
             warningText,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: darkTextColor,
+                  color: CustomThemeProvider.of(context).theme.darkTextColor,
                   fontSize: 16,
                 ),
           ),

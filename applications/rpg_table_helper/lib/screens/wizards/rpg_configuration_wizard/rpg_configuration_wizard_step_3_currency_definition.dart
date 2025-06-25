@@ -8,9 +8,9 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class RpgConfigurationWizardStep3CurrencyDefinition extends WizardStepBase {
   const RpgConfigurationWizardStep3CurrencyDefinition({
@@ -119,13 +119,13 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
       contentFlex: 2,
       footerWidget: Column(
         children: [
-          const HorizontalLine(),
+          HorizontalLine(),
           Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 30),
+            padding: EdgeInsets.only(top: 20, bottom: 30),
             child: Text(
               buildTextForCurrencyComparison(),
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: darkTextColor,
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
                   ),
             ),
           ),
@@ -142,20 +142,20 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                     smallestCurrencyNameTextEditingController,
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 50,
               width: 50,
             ),
-            const SizedBox(
+            SizedBox(
               width: 20,
             ),
           ],
         ),
-        const SizedBox(
+        SizedBox(
           height: 20,
         ),
-        const HorizontalLine(),
-        const SizedBox(
+        HorizontalLine(),
+        SizedBox(
           height: 20,
         ),
         ...currencyControllerPairs.asMap().entries.map((e) {
@@ -186,21 +186,21 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                           currencyControllerPairs.removeAt(e.key);
                         });
                       },
-                      icon: const CustomFaIcon(
+                      icon: CustomFaIcon(
                         icon: FontAwesomeIcons.trashCan,
-                        color: darkColor,
+                        color: CustomThemeProvider.of(context).theme.darkColor,
                         size: 22,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
+              SizedBox(
                 height: 20,
               ),
               Row(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     width: 30,
                   ),
                   Expanded(
@@ -211,17 +211,17 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                       textEditingController: e.value.$2,
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 50,
                     width: 40,
                   ),
                 ],
               ),
-              const SizedBox(
+              SizedBox(
                 height: 20,
               ),
-              const HorizontalLine(),
-              const SizedBox(
+              HorizontalLine(),
+              SizedBox(
                 height: 20,
               ),
             ],
@@ -238,13 +238,13 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           icon: Theme(
               data: ThemeData(
                 fontFamily: "Ruwudu",
-                iconTheme: const IconThemeData(
-                  color: darkColor,
+                iconTheme: IconThemeData(
+                  color: CustomThemeProvider.of(context).theme.darkColor,
                   size: 16,
                 ),
-                textTheme: const TextTheme(
+                textTheme: TextTheme(
                   bodyMedium: TextStyle(
-                    color: darkColor,
+                    color: CustomThemeProvider.of(context).theme.darkColor,
                   ),
                 ),
               ),
@@ -252,7 +252,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   width: 24,
                   height: 24,
                   alignment: AlignmentDirectional.center,
-                  child: const FaIcon(FontAwesomeIcons.plus))),
+                  child: FaIcon(FontAwesomeIcons.plus))),
         ),
         const SizedBox(
           height: 20,

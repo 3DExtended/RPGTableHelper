@@ -6,6 +6,7 @@ import 'package:quest_keeper/components/card_border.dart';
 import 'package:quest_keeper/components/quarter_circle_cutout.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomRecipeCardItemPair {
   final int amount;
@@ -41,8 +42,9 @@ class CustomRecipeCard extends StatelessWidget {
                 (imageUrl!.startsWith("/")
                     ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                     : imageUrl!)));
-    var backgroundColor = cardBgColorOverride ?? darkColor;
-    var lightColor = bgColor;
+    var backgroundColor =
+        cardBgColorOverride ?? CustomThemeProvider.of(context).theme.darkColor;
+    var lightColor = CustomThemeProvider.of(context).theme.bgColor;
     var borderSize = 3.5;
 
     return Builder(builder: (context) {
@@ -119,7 +121,11 @@ class CustomRecipeCard extends StatelessWidget {
                                                         fontSize: 24,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: darkColor),
+                                                        color:
+                                                            CustomThemeProvider
+                                                                    .of(context)
+                                                                .theme
+                                                                .darkColor),
                                                 minFontSize: 10,
                                                 maxFontSize: 24,
                                                 maxLines: 1,
@@ -182,7 +188,11 @@ class CustomRecipeCard extends StatelessWidget {
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: darkColor),
+                                                          color:
+                                                              CustomThemeProvider
+                                                                      .of(context)
+                                                                  .theme
+                                                                  .darkColor),
                                                   minFontSize: 10,
                                                   maxFontSize: 16,
                                                   textAlign: TextAlign.left,

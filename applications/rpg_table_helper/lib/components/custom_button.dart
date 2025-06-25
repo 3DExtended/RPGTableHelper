@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 enum CustomButtonVariant {
   Default,
@@ -32,22 +32,23 @@ class CustomButton extends StatelessWidget {
     this.boderRadiusOverride,
   });
 
-  Color _getBackgroundColor(CustomButtonVariant variant, bool isEnabled) {
+  Color _getBackgroundColor(
+      CustomButtonVariant variant, bool isEnabled, BuildContext context) {
     if (!isEnabled) {
       return variant == CustomButtonVariant.FlatButton
           ? Colors.transparent
-          : middleBgColor;
+          : CustomThemeProvider.of(context).theme.middleBgColor;
     }
 
     switch (variant) {
       case CustomButtonVariant.FlatButton:
         return Colors.transparent;
       case CustomButtonVariant.AccentButton:
-        return accentColor;
+        return CustomThemeProvider.of(context).theme.accentColor;
       case CustomButtonVariant.DarkButton:
-        return darkColor;
+        return CustomThemeProvider.of(context).theme.darkColor;
       default:
-        return bgColor;
+        return CustomThemeProvider.of(context).theme.bgColor;
     }
   }
 
@@ -67,17 +68,17 @@ class CustomButton extends StatelessWidget {
         width: width,
         alignment: height != null || width != null ? Alignment.center : null,
         decoration: BoxDecoration(
-          color: _getBackgroundColor(variantToUse, onPressed != null),
+          color: _getBackgroundColor(variantToUse, onPressed != null, context),
           borderRadius:
               BorderRadius.all(Radius.circular(boderRadiusOverride ?? 5)),
           border: variantToUse == CustomButtonVariant.FlatButton
               ? null
               : Border.all(
                   color: onPressed == null
-                      ? middleBgColor
+                      ? CustomThemeProvider.of(context).theme.middleBgColor
                       : (variantToUse == CustomButtonVariant.AccentButton
-                          ? accentColor
-                          : darkColor),
+                          ? CustomThemeProvider.of(context).theme.accentColor
+                          : CustomThemeProvider.of(context).theme.darkColor),
                 ),
         ),
         child: Padding(
@@ -94,7 +95,9 @@ class CustomButton extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           color: (useLightTextColor
                               ? Colors.white
-                              : darkTextColor),
+                              : CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor),
                           fontSize: 16,
                         ),
                   ),

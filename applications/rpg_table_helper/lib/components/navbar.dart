@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
-import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class Navbar extends StatelessWidget {
   const Navbar({
@@ -29,12 +29,12 @@ class Navbar extends StatelessWidget {
         if (useTopSafePadding)
           Container(
             height: MediaQuery.of(context).padding.top,
-            color: darkColor,
+            color: CustomThemeProvider.of(context).theme.darkColor,
           ),
         ConstrainedBox(
           constraints: BoxConstraints(minHeight: 50),
           child: Container(
-            color: darkColor,
+            color: CustomThemeProvider.of(context).theme.darkColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,21 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
-const darkColor = Color(0xff312D28);
-const middleBgColor = Color(0xffE4D5C5);
-const bgColor = Color(0xfffdf0e3);
-const textColor = Color(0xffffffff);
-const accentColor = Color(0xffF96F3D);
-
-const lightGreen = Color(0xff3ED22B);
-const lightYellow = Color.fromARGB(255, 244, 194, 12);
-const lightRed = Color(0xffD22B2E);
-
-const darkGreen = Color.fromARGB(255, 34, 157, 59);
-const darkRed = Color.fromARGB(255, 209, 26, 26);
-
-const darkTextColor = darkColor;
 const iconSizeInlineButtons = 16.0;
 
 const pingInterval = Duration(seconds: 3);
@@ -24,25 +8,6 @@ bool get isInTestEnvironment =>
     Platform.environment.containsKey('FLUTTER_TEST');
 
 // -----------
-
-const borderGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xff9FA3A4),
-      Color(0xff2F333E),
-      Color.fromARGB(255, 89, 115, 144),
-    ]);
-
-const navbarBackground = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xff2A2E37),
-      Color(0xff272B36),
-      Color(0xff2A374A),
-    ]);
-const secondaryNavbarColor = Color(0xff3E4148);
 
 const paddingBeforeAndAfterNavbarButtons = 5.0;
 
@@ -59,8 +24,6 @@ const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 const apiBaseUrl = "https://questkeeper-prod.peter-esser.de/";
 
 const serverUrl = "${apiBaseUrl}Chat";
-
-const whiteBgTint = Color.fromARGB(33, 210, 191, 221);
 
 const rpgtablehelperPublicCertificate = '''-----BEGIN PUBLIC KEY-----
 MIICLjANBgkqhkiG9w0BAQEFAAOCAhsAMIICFgKCAg0LBlhtjPsdRKW8xNSSfqAr

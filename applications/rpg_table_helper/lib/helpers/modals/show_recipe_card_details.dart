@@ -11,13 +11,13 @@ import 'package:quest_keeper/components/custom_recipe_card.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/static_grid.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_recepies.dart';
+import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future<
         ({
@@ -101,7 +101,7 @@ class _RecipeCardDetailsModalContentState
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 1000, maxHeight: 700),
               child: Container(
-                color: bgColor,
+                color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -115,10 +115,10 @@ class _RecipeCardDetailsModalContentState
                       titleWidget: Text(
                         "${S.of(context).recipeForTitlePrefix} ${creatableItem.name}",
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: textColor, fontSize: 16),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color:
+                                CustomThemeProvider.of(context).theme.textColor,
+                            fontSize: 16),
                       ),
                     ),
                     Expanded(
@@ -174,7 +174,9 @@ class _RecipeCardDetailsModalContentState
                                         .textTheme
                                         .bodyMedium!
                                         .copyWith(
-                                          color: darkTextColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkTextColor,
                                           fontSize: 16,
                                         ),
                                   ),
@@ -184,7 +186,9 @@ class _RecipeCardDetailsModalContentState
                                         .textTheme
                                         .bodyMedium!
                                         .copyWith(
-                                          color: darkTextColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkTextColor,
                                           fontSize: 16,
                                         ),
                                   ),
@@ -194,7 +198,9 @@ class _RecipeCardDetailsModalContentState
                                         .textTheme
                                         .bodyMedium!
                                         .copyWith(
-                                          color: darkTextColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkTextColor,
                                           fontSize: 16,
                                         ),
                                   ),
@@ -203,12 +209,18 @@ class _RecipeCardDetailsModalContentState
                                       areRecipeRequirementsMet()
                                           ? CustomFaIcon(
                                               icon: FontAwesomeIcons.check,
-                                              color: darkGreen,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkGreen,
                                               size: 18,
                                             )
                                           : CustomFaIcon(
                                               icon: FontAwesomeIcons.xmark,
-                                              color: darkRed,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkRed,
                                               size: 18,
                                             ),
                                       Text(
@@ -219,7 +231,10 @@ class _RecipeCardDetailsModalContentState
                                             .textTheme
                                             .bodyMedium!
                                             .copyWith(
-                                              color: darkTextColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkTextColor,
                                               fontSize: 16,
                                             ),
                                       ),
@@ -231,7 +246,9 @@ class _RecipeCardDetailsModalContentState
                                         .textTheme
                                         .bodyMedium!
                                         .copyWith(
-                                          color: darkTextColor,
+                                          color: CustomThemeProvider.of(context)
+                                              .theme
+                                              .darkTextColor,
                                           fontSize: 16,
                                         ),
                                   ),
@@ -246,13 +263,21 @@ class _RecipeCardDetailsModalContentState
                                                     ? CustomFaIcon(
                                                         icon: FontAwesomeIcons
                                                             .check,
-                                                        color: darkGreen,
+                                                        color:
+                                                            CustomThemeProvider
+                                                                    .of(context)
+                                                                .theme
+                                                                .darkGreen,
                                                         size: 18,
                                                       )
                                                     : CustomFaIcon(
                                                         icon: FontAwesomeIcons
                                                             .xmark,
-                                                        color: darkRed,
+                                                        color:
+                                                            CustomThemeProvider
+                                                                    .of(context)
+                                                                .theme
+                                                                .darkRed,
                                                         size: 18,
                                                       ),
                                                 Expanded(
@@ -264,7 +289,10 @@ class _RecipeCardDetailsModalContentState
                                                         .textTheme
                                                         .bodyMedium!
                                                         .copyWith(
-                                                          color: darkTextColor,
+                                                          color: CustomThemeProvider
+                                                                  .of(context)
+                                                              .theme
+                                                              .darkTextColor,
                                                           fontSize: 16,
                                                         ),
                                                   ),
@@ -281,7 +309,11 @@ class _RecipeCardDetailsModalContentState
                                                   .textTheme
                                                   .bodyMedium!
                                                   .copyWith(
-                                                    color: darkTextColor,
+                                                    color:
+                                                        CustomThemeProvider.of(
+                                                                context)
+                                                            .theme
+                                                            .darkTextColor,
                                                     fontSize: 16,
                                                   ),
                                             ),
