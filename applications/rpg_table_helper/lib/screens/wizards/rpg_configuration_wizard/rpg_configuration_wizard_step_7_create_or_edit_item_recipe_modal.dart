@@ -134,8 +134,15 @@ class _CreateOrEditCraftingRecipeModalContentState
                               .titleLarge!
                               .copyWith(
                                   color: CustomThemeProvider.of(context)
-                                      .theme
-                                      .textColor,
+                                              .brightnessNotifier
+                                              .value ==
+                                          Brightness.light
+                                      ? CustomThemeProvider.of(context)
+                                          .theme
+                                          .textColor
+                                      : CustomThemeProvider.of(context)
+                                          .theme
+                                          .darkTextColor,
                                   fontSize: 24),
                         ),
                       ),

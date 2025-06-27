@@ -23,6 +23,7 @@ import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_scree
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:themed/themed.dart';
 
 class DmScreenCampagneManagement extends ConsumerStatefulWidget {
   const DmScreenCampagneManagement({
@@ -153,8 +154,16 @@ class _DmScreenCampagneManagementState
                             child: Container(
                               decoration: BoxDecoration(
                                 color: CustomThemeProvider.of(context)
-                                    .theme
-                                    .middleBgColor,
+                                            .brightnessNotifier
+                                            .value ==
+                                        Brightness.light
+                                    ? CustomThemeProvider.of(context)
+                                        .theme
+                                        .middleBgColor
+                                    : CustomThemeProvider.of(context)
+                                        .theme
+                                        .bgColor
+                                        .lighter(0.1),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),

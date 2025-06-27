@@ -13,6 +13,7 @@ import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:themed/themed.dart';
 import 'package:uuid/v7.dart';
 
 class DmScreenFightSquence extends ConsumerStatefulWidget {
@@ -115,10 +116,22 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           5),
-                                                              color: CustomThemeProvider
-                                                                      .of(context)
-                                                                  .theme
-                                                                  .middleBgColor,
+                                                              color: CustomThemeProvider.of(
+                                                                              context)
+                                                                          .brightnessNotifier
+                                                                          .value ==
+                                                                      Brightness
+                                                                          .light
+                                                                  ? CustomThemeProvider.of(
+                                                                          context)
+                                                                      .theme
+                                                                      .middleBgColor
+                                                                  : CustomThemeProvider.of(
+                                                                          context)
+                                                                      .theme
+                                                                      .bgColor
+                                                                      .lighter(
+                                                                          0.1),
                                                             ),
                                                             padding:
                                                                 EdgeInsets.all(
@@ -367,10 +380,22 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         5),
-                                                            color: CustomThemeProvider
-                                                                    .of(context)
-                                                                .theme
-                                                                .middleBgColor,
+                                                            color: CustomThemeProvider.of(
+                                                                            context)
+                                                                        .brightnessNotifier
+                                                                        .value ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? CustomThemeProvider.of(
+                                                                        context)
+                                                                    .theme
+                                                                    .middleBgColor
+                                                                : CustomThemeProvider.of(
+                                                                        context)
+                                                                    .theme
+                                                                    .bgColor
+                                                                    .lighter(
+                                                                        0.1),
                                                           ),
                                                           padding:
                                                               EdgeInsets.all(

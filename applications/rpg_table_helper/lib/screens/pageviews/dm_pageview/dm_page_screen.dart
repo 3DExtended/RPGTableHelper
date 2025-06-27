@@ -104,81 +104,87 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                         ));
                 navigatorKey.currentState!.pop();
               },
-              titleWidget: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  ...List.generate(
-                    _currentStep + 1,
-                    (index) => CupertinoButton(
-                      minSize: 0,
-                      padding: EdgeInsets.zero,
-                      onPressed: () async {
-                        await _goToStepId(index);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Transform.rotate(
-                          alignment: Alignment.center,
-                          angle: pi / 4, // 45 deg
-                          child: CustomFaIcon(
-                              icon: index == _currentStep
-                                  ? FontAwesomeIcons.solidSquare
-                                  : FontAwesomeIcons.square,
-                              color: index == _currentStep
-                                  ? CustomThemeProvider.of(context)
-                                      .theme
-                                      .accentColor
-                                  : CustomThemeProvider.of(context)
-                                      .theme
-                                      .textColor),
+              titleWidget: Builder(builder: (context) {
+                var selectedIconColor =
+                    CustomThemeProvider.of(context).theme.accentColor;
+                var unselectedIconColor =
+                    CustomThemeProvider.of(context).brightnessNotifier.value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkTextColor;
+                var textColor =
+                    CustomThemeProvider.of(context).brightnessNotifier.value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkTextColor;
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Spacer(),
+                    ...List.generate(
+                      _currentStep + 1,
+                      (index) => CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          await _goToStepId(index);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Transform.rotate(
+                            alignment: Alignment.center,
+                            angle: pi / 4, // 45 deg
+                            child: CustomFaIcon(
+                                icon: index == _currentStep
+                                    ? FontAwesomeIcons.solidSquare
+                                    : FontAwesomeIcons.square,
+                                color: index == _currentStep
+                                    ? selectedIconColor
+                                    : unselectedIconColor),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  if (context.isTablet)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                      child: Text(
-                        currentTitle,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 24,
-                            ),
+                    if (context.isTablet)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                        child: Text(
+                          currentTitle,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
+                        ),
                       ),
-                    ),
-                  ...List.generate(
-                    // TODO what is the correct number of steps
-                    dmScreensToSwipe.length - (_currentStep + 1),
-                    (index) => CupertinoButton(
-                      minSize: 0,
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        _goToStepId(index + _currentStep + 1);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Transform.rotate(
-                          alignment: Alignment.center,
-                          angle: pi / 4, // 45 deg
-                          child: CustomFaIcon(
-                              icon: FontAwesomeIcons.square,
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor),
+                    ...List.generate(
+                      dmScreensToSwipe.length - (_currentStep + 1),
+                      (index) => CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          _goToStepId(index + _currentStep + 1);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Transform.rotate(
+                            alignment: Alignment.center,
+                            angle: pi / 4, // 45 deg
+                            child: CustomFaIcon(
+                                icon: FontAwesomeIcons.square,
+                                color: unselectedIconColor),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Spacer(),
-                ],
-              ),
+                    Spacer(),
+                  ],
+                );
+              }),
               menuOpen: () {
                 Navigator.of(context)
                     .pushNamed(allWizardConfigurations.entries.first.key);

@@ -86,8 +86,16 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                         "${S.of(context).initiativeRollForCharacterPrefix} (${widget.characterName})",
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color:
-                                CustomThemeProvider.of(context).theme.textColor,
+                            color: CustomThemeProvider.of(context)
+                                        .brightnessNotifier
+                                        .value ==
+                                    Brightness.light
+                                ? CustomThemeProvider.of(context)
+                                    .theme
+                                    .textColor
+                                : CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
                             fontSize: 24),
                       ),
                     ),

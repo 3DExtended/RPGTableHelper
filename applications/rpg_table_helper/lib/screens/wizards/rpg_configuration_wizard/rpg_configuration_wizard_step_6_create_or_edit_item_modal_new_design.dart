@@ -209,8 +209,16 @@ class _CreateOrEditItemModalContentState
                         "Item bearbeiten", // TODO localize/ switch text between add and edit
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color:
-                                CustomThemeProvider.of(context).theme.textColor,
+                            color: CustomThemeProvider.of(context)
+                                        .brightnessNotifier
+                                        .value ==
+                                    Brightness.light
+                                ? CustomThemeProvider.of(context)
+                                    .theme
+                                    .textColor
+                                : CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
                             fontSize: 24),
                       ),
                     ),

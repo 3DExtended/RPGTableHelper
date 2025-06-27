@@ -327,73 +327,80 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   navigatorKey.currentState!.pop();
                 }
               },
-              titleWidget: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  ...List.generate(
-                    _currentStep + 1,
-                    (index) => CupertinoButton(
-                      minSize: 0,
-                      padding: EdgeInsets.zero,
-                      onPressed: () async {
-                        await _goToStepId(index);
-                      },
-                      child: ColoredRotatedSquare(
-                          isSolidSquare: index == _currentStep,
-                          color: index == _currentStep
-                              ? CustomThemeProvider.of(context)
-                                  .theme
-                                  .accentColor
-                              : CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor),
-                    ),
-                  ),
-                  if (context.isTablet)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                      child: Text(
-                        currentTitle,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 24,
-                            ),
+              titleWidget: Builder(builder: (context) {
+                var selectedIconColor =
+                    CustomThemeProvider.of(context).theme.accentColor;
+                var unselectedIconColor =
+                    CustomThemeProvider.of(context).brightnessNotifier.value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkTextColor;
+                var textColor =
+                    CustomThemeProvider.of(context).brightnessNotifier.value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkTextColor;
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Spacer(),
+                    ...List.generate(
+                      _currentStep + 1,
+                      (index) => CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          await _goToStepId(index);
+                        },
+                        child: ColoredRotatedSquare(
+                            isSolidSquare: index == _currentStep,
+                            color: index == _currentStep
+                                ? selectedIconColor
+                                : unselectedIconColor),
                       ),
                     ),
-                  ...List.generate(
-                    playerScreensToSwipe.isEmpty
-                        ? 0
-                        : playerScreensToSwipe.length - (_currentStep + 1),
-                    (index) => CupertinoButton(
-                      minSize: 0,
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        _goToStepId(index + _currentStep + 1);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Transform.rotate(
-                          alignment: Alignment.center,
-                          angle: pi / 4, // 45 deg
-                          child: CustomFaIcon(
-                              icon: FontAwesomeIcons.square,
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor),
+                    if (context.isTablet)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                        child: Text(
+                          currentTitle,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color: textColor,
+                                fontSize: 24,
+                              ),
+                        ),
+                      ),
+                    ...List.generate(
+                      playerScreensToSwipe.isEmpty
+                          ? 0
+                          : playerScreensToSwipe.length - (_currentStep + 1),
+                      (index) => CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          _goToStepId(index + _currentStep + 1);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Transform.rotate(
+                            alignment: Alignment.center,
+                            angle: pi / 4, // 45 deg
+                            child: CustomFaIcon(
+                                icon: FontAwesomeIcons.square,
+                                color: unselectedIconColor),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Spacer(),
-                ],
-              ),
+                    Spacer(),
+                  ],
+                );
+              }),
               menuOpen: connectionDetails == null ||
                       connectionDetails.isDm ||
                       (rpgConfig?.characterStatTabsDefinition ??

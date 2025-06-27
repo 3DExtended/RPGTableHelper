@@ -44,9 +44,15 @@ class CustomItemCard extends StatelessWidget {
                     ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                     : imageUrl!)));
 
-    var backgroundColor =
-        cardBgColorOverride ?? CustomThemeProvider.of(context).theme.darkColor;
-    var lightColor = CustomThemeProvider.of(context).theme.bgColor;
+    var backgroundColor = cardBgColorOverride ??
+        (CustomThemeProvider.of(context).brightnessNotifier.value ==
+                Brightness.light
+            ? CustomThemeProvider.of(context).theme.darkColor
+            : CustomThemeProvider.of(context).theme.bgColor);
+    var lightColor = CustomThemeProvider.of(context).brightnessNotifier.value ==
+            Brightness.light
+        ? CustomThemeProvider.of(context).theme.bgColor
+        : CustomThemeProvider.of(context).theme.darkColor;
 
     var icon = getIconForIdentifier(
       name: categoryIconName ?? "flask-laboratory-svgrepo-com",
@@ -137,11 +143,21 @@ class CustomItemCard extends StatelessWidget {
                                                           fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color:
-                                                              CustomThemeProvider
+                                                          color: CustomThemeProvider.of(
+                                                                          context)
+                                                                      .brightnessNotifier
+                                                                      .value ==
+                                                                  Brightness
+                                                                      .light
+                                                              ? CustomThemeProvider
+                                                                      .of(
+                                                                          context)
+                                                                  .theme
+                                                                  .darkColor
+                                                              : CustomThemeProvider
                                                                       .of(context)
                                                                   .theme
-                                                                  .darkColor),
+                                                                  .bgColor),
                                                   minFontSize: 10,
                                                   maxFontSize: 12,
                                                   maxLines: 4,
@@ -220,8 +236,15 @@ class _CardTitleWithIcon extends StatelessWidget {
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
                                     color: CustomThemeProvider.of(context)
-                                        .theme
-                                        .darkColor),
+                                                .brightnessNotifier
+                                                .value ==
+                                            Brightness.light
+                                        ? CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkColor
+                                        : CustomThemeProvider.of(context)
+                                            .theme
+                                            .bgColor),
                             minFontSize: 10,
                             maxFontSize: 32,
                             maxLines: 1,

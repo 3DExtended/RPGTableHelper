@@ -13,6 +13,7 @@ import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:themed/themed.dart';
 
 enum MoneyChangeMode {
   addMoney,
@@ -97,7 +98,13 @@ class _PlayerScreenCharacterMoneyState
               ),
               CupertinoSlidingSegmentedControl<MoneyChangeMode>(
                 backgroundColor:
-                    CustomThemeProvider.of(context).theme.middleBgColor,
+                    CustomThemeProvider.of(context).brightnessNotifier.value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.middleBgColor
+                        : CustomThemeProvider.of(context)
+                            .theme
+                            .middleBgColor
+                            .darker(0.4),
                 thumbColor: CustomThemeProvider.of(context).theme.darkColor,
                 // This represents the currently selected segmented control.
                 groupValue: _selectedMoneyChangeMode,

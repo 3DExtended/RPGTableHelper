@@ -33,6 +33,7 @@ import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/systemclock_service.dart';
+import 'package:themed/themed.dart';
 
 /// This file defines the `LoreScreen` widget, which is responsible for displaying
 /// a screen with various lore-related documents. The screen includes a navigation
@@ -148,7 +149,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     return AnimatedContainer(
       duration: duration,
       width: _isNavbarCollapsed ? collapsedWidth : expandedWidth,
-      color: CustomThemeProvider.of(context).theme.middleBgColor,
+      color: CustomThemeProvider.of(context).brightnessNotifier.value ==
+              Brightness.light
+          ? CustomThemeProvider.of(context).theme.middleBgColor
+          : CustomThemeProvider.of(context).theme.bgColor.darker(0.2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

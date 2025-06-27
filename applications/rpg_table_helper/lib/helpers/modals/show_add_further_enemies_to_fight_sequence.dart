@@ -13,6 +13,7 @@ import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:themed/themed.dart';
 
 Future showAddFurtherEnemiesToFightSequence(
     {required BuildContext context,
@@ -81,7 +82,14 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                     S.of(context).addAdditionalEnemy,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: CustomThemeProvider.of(context).theme.textColor,
+                        color: CustomThemeProvider.of(context)
+                                    .brightnessNotifier
+                                    .value ==
+                                Brightness.light
+                            ? CustomThemeProvider.of(context).theme.textColor
+                            : CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
                         fontSize: 24),
                   ),
                 ),
@@ -100,9 +108,19 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                         child: Container(
                                           decoration: BoxDecoration(
                                               color: CustomThemeProvider.of(
-                                                      context)
-                                                  .theme
-                                                  .middleBgColor,
+                                                              context)
+                                                          .brightnessNotifier
+                                                          .value ==
+                                                      Brightness.light
+                                                  ? CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .middleBgColor
+                                                  : CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .bgColor
+                                                      .lighter(0.1),
                                               borderRadius:
                                                   BorderRadius.circular(5)),
                                           padding: EdgeInsets.all(10),

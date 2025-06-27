@@ -91,86 +91,93 @@ class _WizardManagerState extends State<WizardManager> {
             menuOpen: () {
               // TODO make me
             },
-            titleWidget: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Spacer(),
-                ...List.generate(
-                  _currentStep + 1,
-                  (index) => CupertinoButton(
-                    minSize: 0,
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      _goToStepId(index);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: math.pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: index == _currentStep
-                                ? FontAwesomeIcons.solidSquare
-                                : FontAwesomeIcons.square,
-                            color: index == _currentStep
-                                ? CustomThemeProvider.of(context)
-                                    .theme
-                                    .accentColor
-                                : CustomThemeProvider.of(context)
-                                    .theme
-                                    .darkTextColor),
-                      ),
-                    ),
-                  ),
-                ),
-                if (context.isTablet)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                    child: Stack(children: [
-                      AnimatedOpacity(
-                        opacity: _currentTitleOverride != null ? 1 : 0,
-                        duration: Durations.short2,
-                        child: Text(
-                          _currentTitleOverride ?? "",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: CustomThemeProvider.of(context)
-                                    .theme
-                                    .textColor,
-                                fontSize: 24,
-                              ),
+            titleWidget: Builder(builder: (context) {
+              var selectedIconColor =
+                  CustomThemeProvider.of(context).theme.accentColor;
+              var unselectedIconColor =
+                  CustomThemeProvider.of(context).brightnessNotifier.value ==
+                          Brightness.light
+                      ? CustomThemeProvider.of(context).theme.textColor
+                      : CustomThemeProvider.of(context).theme.darkTextColor;
+              var textColor =
+                  CustomThemeProvider.of(context).brightnessNotifier.value ==
+                          Brightness.light
+                      ? CustomThemeProvider.of(context).theme.textColor
+                      : CustomThemeProvider.of(context).theme.darkTextColor;
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Spacer(),
+                  ...List.generate(
+                    _currentStep + 1,
+                    (index) => CupertinoButton(
+                      minSize: 0,
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _goToStepId(index);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Transform.rotate(
+                          alignment: Alignment.center,
+                          angle: math.pi / 4, // 45 deg
+                          child: CustomFaIcon(
+                              icon: index == _currentStep
+                                  ? FontAwesomeIcons.solidSquare
+                                  : FontAwesomeIcons.square,
+                              color: index == _currentStep
+                                  ? selectedIconColor
+                                  : unselectedIconColor),
                         ),
                       ),
-                    ]),
+                    ),
                   ),
-                ...List.generate(
-                  widget.stepBuilders.length - (_currentStep + 1),
-                  (index) => CupertinoButton(
-                    minSize: 0,
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      _goToStepId(index + _currentStep + 1);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Transform.rotate(
-                        alignment: Alignment.center,
-                        angle: pi / 4, // 45 deg
-                        child: CustomFaIcon(
-                            icon: FontAwesomeIcons.square,
-                            color: CustomThemeProvider.of(context)
-                                .theme
-                                .darkTextColor),
+                  if (context.isTablet)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, right: 20.0),
+                      child: Stack(children: [
+                        AnimatedOpacity(
+                          opacity: _currentTitleOverride != null ? 1 : 0,
+                          duration: Durations.short2,
+                          child: Text(
+                            _currentTitleOverride ?? "",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium!
+                                .copyWith(
+                                  color: textColor,
+                                  fontSize: 24,
+                                ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ...List.generate(
+                    widget.stepBuilders.length - (_currentStep + 1),
+                    (index) => CupertinoButton(
+                      minSize: 0,
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _goToStepId(index + _currentStep + 1);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Transform.rotate(
+                          alignment: Alignment.center,
+                          angle: pi / 4, // 45 deg
+                          child: CustomFaIcon(
+                              icon: FontAwesomeIcons.square,
+                              color: unselectedIconColor),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Spacer(),
-              ],
-            ),
+                  Spacer(),
+                ],
+              );
+            }),
           );
         }),
         Expanded(

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:themed/themed.dart';
 
 class Navbar extends StatelessWidget {
   const Navbar({
@@ -24,17 +25,28 @@ class Navbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var backgroundColor =
+        CustomThemeProvider.of(context).brightnessNotifier.value ==
+                Brightness.light
+            ? CustomThemeProvider.of(context).theme.darkColor
+            : CustomThemeProvider.of(context).theme.bgColor.darker(0.4);
+
+    var textColor = CustomThemeProvider.of(context).brightnessNotifier.value ==
+            Brightness.light
+        ? CustomThemeProvider.of(context).theme.textColor
+        : CustomThemeProvider.of(context).theme.darkTextColor;
+
     return Column(
       children: [
         if (useTopSafePadding)
           Container(
             height: MediaQuery.of(context).padding.top,
-            color: CustomThemeProvider.of(context).theme.darkColor,
+            color: backgroundColor,
           ),
         ConstrainedBox(
           constraints: BoxConstraints(minHeight: 50),
           child: Container(
-            color: CustomThemeProvider.of(context).theme.darkColor,
+            color: backgroundColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -50,7 +62,7 @@ class Navbar extends StatelessWidget {
                         icon: backInsteadOfCloseIcon
                             ? FontAwesomeIcons.chevronLeft
                             : FontAwesomeIcons.xmark,
-                        color: CustomThemeProvider.of(context).theme.textColor,
+                        color: textColor,
                       ),
                     ),
                   ),
@@ -76,8 +88,11 @@ class Navbar extends StatelessWidget {
                     child: CustomButton(
                       variant: CustomButtonVariant.FlatButton,
                       onPressed: menuOpen,
-                      icon:
-                          CustomFaIcon(icon: FontAwesomeIcons.gears, size: 20),
+                      icon: CustomFaIcon(
+                        icon: FontAwesomeIcons.gears,
+                        size: 20,
+                        color: textColor,
+                      ),
                     ),
                   ),
                 ),
