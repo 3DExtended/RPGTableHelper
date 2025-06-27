@@ -467,8 +467,12 @@ class _PlayerStatsConfigurationVisualsState
             currentItem: currentlyVisibleVariant,
             count: numberOfVariantsForValueTypes(
                 widget.statConfiguration.valueType),
-            unselectedColor: Colors.black26,
-            selectedColor: Colors.blue,
+            unselectedColor:
+                CustomThemeProvider.of(context).brightnessNotifier.value ==
+                        Brightness.light
+                    ? CustomThemeProvider.of(context).theme.middleBgColor
+                    : CustomThemeProvider.of(context).theme.middleBgColor,
+            selectedColor: CustomThemeProvider.of(context).theme.accentColor,
             duration: const Duration(milliseconds: 200),
             boxShape: BoxShape.circle,
             unselectedSize: Size(6, 6),

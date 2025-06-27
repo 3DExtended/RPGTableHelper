@@ -588,7 +588,7 @@ class _CreateOrEditItemModalContentState
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "Vorschau:",
+              S.of(context).preview,
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: CustomThemeProvider.of(context).theme.darkTextColor,
                     fontSize: 24,
