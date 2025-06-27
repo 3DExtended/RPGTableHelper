@@ -11,6 +11,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:themed/themed.dart';
 
 class LoreBlockRenderingEditable extends StatefulWidget {
   const LoreBlockRenderingEditable({
@@ -262,7 +263,15 @@ class _LoreBlockRenderingEditableState
                 height: 32,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: CustomThemeProvider.of(context).theme.middleBgColor,
+                  color: CustomThemeProvider.of(context)
+                              .brightnessNotifier
+                              .value ==
+                          Brightness.light
+                      ? CustomThemeProvider.of(context).theme.middleBgColor
+                      : CustomThemeProvider.of(context)
+                          .theme
+                          .bgColor
+                          .darker(0.2),
                 ),
                 padding: EdgeInsets.all(5),
                 alignment: Alignment.centerLeft,

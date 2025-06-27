@@ -53,18 +53,17 @@ class CustomTheme {
         ]);
 
   static CustomTheme darkTheme = CustomTheme()
-    ..bgColor = Color.fromARGB(255, 48, 46, 43) // TODO update me
-    ..darkTextColor = Color.fromARGB(255, 255, 255, 255) // TODO update me
-    ..textColor = Color.fromARGB(255, 0, 0, 0) // TODO update me
-    ..darkColor = Color.fromARGB(255, 222, 207, 188) // TODO update me
-    ..middleBgColor = Color.fromARGB(255, 194, 183, 166) // TODO update me
-    ..accentColor = Color(0xffF96F3D) // TODO update me
-
-    ..lightGreen = Color(0xff3ED22B) // TODO update me
-    ..lightYellow = Color.fromARGB(255, 244, 194, 12) // TODO update me
-    ..lightRed = Color(0xffD22B2E) // TODO update me
-    ..darkGreen = Color.fromARGB(255, 34, 157, 59) // TODO update me
-    ..darkRed = Color.fromARGB(255, 209, 26, 26) // TODO update me
+    ..bgColor = Color.fromARGB(255, 48, 46, 43)
+    ..darkTextColor = Color.fromARGB(255, 255, 255, 255)
+    ..textColor = Color.fromARGB(255, 0, 0, 0)
+    ..darkColor = Color.fromARGB(255, 222, 207, 188)
+    ..middleBgColor = Color.fromARGB(255, 194, 183, 166)
+    ..accentColor = Color(0xffF96F3D)
+    ..lightGreen = Color.fromARGB(255, 44, 169, 28)
+    ..lightYellow = Color.fromARGB(255, 244, 182, 12)
+    ..lightRed = Color(0xffD22B2E)
+    ..darkGreen = Color.fromARGB(255, 34, 157, 59)
+    ..darkRed = Color.fromARGB(255, 209, 26, 26)
     ..secondaryNavbarColor = Color(0xff3E4148) // TODO update me
     ..whiteBgTint = Color.fromARGB(33, 210, 191, 221) // TODO update me
     ..borderGradient = LinearGradient(
