@@ -338,7 +338,11 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
           splashRadius: 0,
           dense: true,
           checkColor: const Color.fromARGB(255, 57, 245, 88),
-          activeColor: CustomThemeProvider.of(context).theme.darkColor,
+          activeColor:
+              CustomThemeProvider.of(context).brightnessNotifier.value ==
+                      Brightness.light
+                  ? CustomThemeProvider.of(context).theme.darkColor
+                  : Colors.transparent,
           visualDensity: VisualDensity(vertical: -2),
           title: Text(
             "${item.$1.name} (${S.of(context).diceChallengeAbbr}: ${item.$2})",

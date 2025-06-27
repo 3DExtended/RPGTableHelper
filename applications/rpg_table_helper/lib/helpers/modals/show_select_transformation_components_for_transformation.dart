@@ -141,10 +141,15 @@ class _SelectTransformationComponentsForTransformationModalContentState
                                         dense: true,
                                         checkColor: const Color.fromARGB(
                                             255, 57, 245, 88),
-                                        activeColor:
-                                            CustomThemeProvider.of(context)
+                                        activeColor: CustomThemeProvider.of(
+                                                        context)
+                                                    .brightnessNotifier
+                                                    .value ==
+                                                Brightness.light
+                                            ? CustomThemeProvider.of(context)
                                                 .theme
-                                                .darkColor,
+                                                .darkColor
+                                            : Colors.transparent,
                                         visualDensity:
                                             VisualDensity(vertical: -2),
                                         title: Text(
