@@ -600,10 +600,10 @@ class _CreateOrEditItemModalContentState
             CustomItemCard(
               scalarOverride: 1,
               title: nameController.text.isEmpty
-                  ? "Enter a name"
+                  ? S.of(context).enterANameDefaultLabel
                   : nameController.text,
               description: descriptionController.text.isEmpty
-                  ? "Enter some description on the left"
+                  ? S.of(context).enterSomeDescriptionOnTheLeft
                   : descriptionController.text,
               imageUrl: _urlsOfGeneratedImages.isEmpty
                   ? null

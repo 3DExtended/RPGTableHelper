@@ -133,6 +133,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
         "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
         "enemyName": MessageLookupByLibrary.simpleMessage("Enemy name"),
+        "enterANameDefaultLabel":
+            MessageLookupByLibrary.simpleMessage("Enter a name"),
+        "enterSomeDescriptionOnTheLeft": MessageLookupByLibrary.simpleMessage(
+            "Enter some description on the left"),
         "fightingOrdering": MessageLookupByLibrary.simpleMessage("Fight order"),
         "firstValue": MessageLookupByLibrary.simpleMessage("First value"),
         "firstValuePlaceholder":

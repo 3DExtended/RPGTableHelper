@@ -2219,6 +2219,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Enter a name`
+  String get enterANameDefaultLabel {
+    return Intl.message(
+      'Enter a name',
+      name: 'enterANameDefaultLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter some description on the left`
+  String get enterSomeDescriptionOnTheLeft {
+    return Intl.message(
+      'Enter some description on the left',
+      name: 'enterSomeDescriptionOnTheLeft',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

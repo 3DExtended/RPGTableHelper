@@ -255,5 +255,7 @@
     "generateImageBtnLabel": "Bild generieren",
     "generateLoreImageTitle": "Generiere ein Bild",
     "generatedImagesTabTitle": "Generierte Bilder",
-    "noImagesInCampagne": "In dieser Kampagne sind noch keine Bilder von dir generiert worden."
+    "noImagesInCampagne": "In dieser Kampagne sind noch keine Bilder von dir generiert worden.",
+    "enterANameDefaultLabel": "Gebe Namen ein",
+    "enterSomeDescriptionOnTheLeft": "Gebe eine Beschreibung auf der linken Seite ein."
 }
