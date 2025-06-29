@@ -27,6 +27,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
+import 'package:themed/themed.dart';
 import 'package:uuid/v7.dart';
 
 class PlayerStatsConfigurationVisuals extends ConsumerStatefulWidget {
@@ -1375,7 +1376,13 @@ class _PlayerStatsConfigurationVisualsState
 
           CupertinoSlidingSegmentedControl<bool>(
             backgroundColor:
-                CustomThemeProvider.of(context).theme.middleBgColor,
+                CustomThemeProvider.of(context).brightnessNotifier.value ==
+                        Brightness.light
+                    ? CustomThemeProvider.of(context).theme.middleBgColor
+                    : CustomThemeProvider.of(context)
+                        .theme
+                        .middleBgColor
+                        .darker(0.4),
             thumbColor: CustomThemeProvider.of(context).theme.darkColor,
             // This represents the currently selected segmented control.
             groupValue: showTransformationConfiguration,
