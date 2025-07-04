@@ -60,6 +60,7 @@ class _PlayerScreenCharacterInventoryState
                   _items.firstWhere((it) => it.uuid == inventoryPair.itemUuid),
               amount: inventoryPair.amount
             ))
+        .where((e) => e.amount > 0)
         .toList();
 
     return Container(
