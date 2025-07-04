@@ -2239,6 +2239,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Tab Icons`
+  String get tabIconsConfigurationTitle {
+    return Intl.message(
+      'Tab Icons',
+      name: 'tabIconsConfigurationTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

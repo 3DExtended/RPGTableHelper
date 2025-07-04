@@ -1,17 +1,21 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/modals/show_tab_icon_configuration.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
@@ -92,11 +96,11 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     pageViewController.jumpToPage(id);
   }
 
-  List<(String title, Widget child)> getPlayerScreens(
+  List<(String title, Widget child, String uuid)> getPlayerScreens(
       BuildContext context,
       RpgCharacterConfigurationBase? charToRender,
       RpgConfigurationModel rpgConfig) {
-    List<(String title, Widget child)> result = [];
+    List<(String title, Widget child, String uuid)> result = [];
 
     for (var tabDef in (rpgConfig.characterStatTabsDefinition ??
         List<CharacterStatsTabDefinition>.empty())) {
@@ -168,7 +172,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             },
             tabDef: tabDef,
             rpgConfig: rpgConfig,
-            charToRender: charToRender)
+            charToRender: charToRender),
+        tabDef.uuid
       ));
     }
 
@@ -180,7 +185,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         PlayerScreenCharacterMoney(
           rpgConfig: rpgConfig,
           charToRender: charToRender as RpgCharacterConfiguration,
-        )
+        ),
+        "money_tab_uuid"
       ));
     }
     if (showInventory &&
@@ -191,19 +197,25 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         PlayerScreenCharacterInventory(
           rpgConfig: rpgConfig,
           charToRender: charToRender,
-        )
+        ),
+        "inventory_tab_uuid"
       ));
     }
     if (showRecipes &&
         charToRender != null &&
         charToRender is RpgCharacterConfiguration) {
-      result.add((S.of(context).navBarHeaderCrafting, PlayerScreenRecepies()));
+      result.add((
+        S.of(context).navBarHeaderCrafting,
+        PlayerScreenRecepies(),
+        "recipes_tab_uuid"
+      ));
     }
 
     var campagneId =
         ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
     if (showLore && campagneId != null) {
-      result.add((S.of(context).navBarHeaderLore, LoreScreen()));
+      result
+          .add((S.of(context).navBarHeaderLore, LoreScreen(), "lore_tab_uuid"));
     }
 
     return result;
@@ -288,7 +300,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     }
 
     var playerScreensToSwipe = rpgConfig == null || charToRender == null
-        ? List<(String, Widget)>.empty()
+        ? List<(String tabName, Widget child, String uuid)>.empty()
         : getPlayerScreens(context, charToRender, rpgConfig);
     var currentTitle = playerScreensToSwipe.isEmpty
         ? ""
@@ -347,17 +359,56 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                     Spacer(),
                     ...List.generate(
                       _currentStep + 1,
-                      (index) => CupertinoButton(
-                        minSize: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: () async {
-                          await _goToStepId(index);
+                      (index) => LongPressScaleWidget(
+                        onLongPress: () {
+                          // if dm, return early
+                          if (connectionDetails == null ||
+                              connectionDetails.isDm ||
+                              rpgConfig == null ||
+                              tempLoadedRpgCharacter == null) {
+                            return;
+                          }
+
+                          openTabIconConfigurationDialog(
+                              context, rpgConfig, tempLoadedRpgCharacter);
                         },
-                        child: ColoredRotatedSquare(
-                            isSolidSquare: index == _currentStep,
-                            color: index == _currentStep
-                                ? selectedIconColor
-                                : unselectedIconColor),
+                        child: CupertinoButton(
+                          minSize: 0,
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            await _goToStepId(index);
+                          },
+                          child: Builder(builder: (context) {
+                            // if tempLoadedRpgCharacter has tab icon configuration, use it
+                            var tabIcon2 = tempLoadedRpgCharacter
+                                ?.tabConfigurations
+                                ?.firstWhereOrNull((e) =>
+                                    e.tabUuid == playerScreensToSwipe[index].$3)
+                                ?.tabIcon;
+
+                            return tabIcon2 != null && tabIcon2 != "square"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: getIconForIdentifier(
+                                      name: tempLoadedRpgCharacter!
+                                          .tabConfigurations!
+                                          .firstWhereOrNull((e) =>
+                                              e.tabUuid ==
+                                              playerScreensToSwipe[index].$3)!
+                                          .tabIcon,
+                                      color: index == _currentStep
+                                          ? selectedIconColor
+                                          : unselectedIconColor,
+                                      size: 24,
+                                    ).$2,
+                                  )
+                                : ColoredRotatedSquare(
+                                    isSolidSquare: index == _currentStep,
+                                    color: index == _currentStep
+                                        ? selectedIconColor
+                                        : unselectedIconColor);
+                          }),
+                        ),
                       ),
                     ),
                     if (context.isTablet)
@@ -379,22 +430,64 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                       playerScreensToSwipe.isEmpty
                           ? 0
                           : playerScreensToSwipe.length - (_currentStep + 1),
-                      (index) => CupertinoButton(
-                        minSize: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          _goToStepId(index + _currentStep + 1);
+                      (index) => LongPressScaleWidget(
+                        onLongPress: () {
+                          // if dm, return early
+                          if (connectionDetails == null ||
+                              connectionDetails.isDm ||
+                              rpgConfig == null ||
+                              tempLoadedRpgCharacter == null) {
+                            return;
+                          }
+
+                          openTabIconConfigurationDialog(
+                              context, rpgConfig, tempLoadedRpgCharacter);
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Transform.rotate(
-                            alignment: Alignment.center,
-                            angle: pi / 4, // 45 deg
-                            child: CustomFaIcon(
-                                icon: FontAwesomeIcons.square,
-                                color: unselectedIconColor),
-                          ),
-                        ),
+                        child: CupertinoButton(
+                            minSize: 0,
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              _goToStepId(index + _currentStep + 1);
+                            },
+                            child: Builder(builder: (context) {
+                              var tabIcon2 = tempLoadedRpgCharacter
+                                  ?.tabConfigurations
+                                  ?.firstWhereOrNull((e) =>
+                                      e.tabUuid ==
+                                      playerScreensToSwipe[
+                                              index + _currentStep + 1]
+                                          .$3)
+                                  ?.tabIcon;
+                              return // if tempLoadedRpgCharacter has tab icon configuration, use it
+                                  tabIcon2 != null && tabIcon2 != "square"
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: getIconForIdentifier(
+                                            name: tempLoadedRpgCharacter!
+                                                .tabConfigurations!
+                                                .firstWhereOrNull((e) =>
+                                                    e.tabUuid ==
+                                                    playerScreensToSwipe[index +
+                                                            _currentStep +
+                                                            1]
+                                                        .$3)!
+                                                .tabIcon,
+                                            color: unselectedIconColor,
+                                            size: 24,
+                                          ).$2,
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          child: Transform.rotate(
+                                            alignment: Alignment.center,
+                                            angle: pi / 4, // 45 deg
+                                            child: CustomFaIcon(
+                                                icon: FontAwesomeIcons.square,
+                                                color: unselectedIconColor),
+                                          ),
+                                        );
+                            })),
                       ),
                     ),
                     Spacer(),
@@ -444,5 +537,26 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ),
       ),
     );
+  }
+
+  void openTabIconConfigurationDialog(BuildContext context,
+      RpgConfigurationModel rpgConfig, RpgCharacterConfiguration charToRender) {
+    Future.delayed(Duration.zero, () async {
+      if (!mounted || !context.mounted) return;
+
+      var tabIconConfiguration = await showTabIconConfiguration(
+        context: context,
+        rpgConfig: rpgConfig,
+        rpgCharacterToRender: charToRender,
+      );
+
+      if (tabIconConfiguration == null) return;
+
+      ref
+          .read(rpgCharacterConfigurationProvider.notifier)
+          .updateConfiguration(charToRender.copyWith(
+            tabConfigurations: tabIconConfiguration,
+          ));
+    });
   }
 }

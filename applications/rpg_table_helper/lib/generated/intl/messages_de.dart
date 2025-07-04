@@ -374,6 +374,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "singleLineText":
             MessageLookupByLibrary.simpleMessage("Einzeiliger Text"),
         "startAsDm": MessageLookupByLibrary.simpleMessage("Als DM spielen"),
+        "tabIconsConfigurationTitle":
+            MessageLookupByLibrary.simpleMessage("Tab Icons"),
         "tranformToAlternateForm":
             MessageLookupByLibrary.simpleMessage("Verwandeln"),
         "transformIntoAlternateForm": MessageLookupByLibrary.simpleMessage(

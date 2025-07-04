@@ -33,7 +33,8 @@ Future<(String iconName, Color iconColor)?> showSelectIconWithColorModal(
     String? alreadySelectedIcoName,
     String? titleSuffix,
     Color? alreadySelectedIconColor,
-    bool? disableColorSelect}) async {
+    bool? disableColorSelect,
+    bool? hideItemCard}) async {
   // show error to user
   return await customShowCupertinoModalBottomSheet<
           (String iconName, Color iconColor)>(
@@ -56,6 +57,7 @@ Future<(String iconName, Color iconColor)?> showSelectIconWithColorModal(
           alreadySelectedIconColor: alreadySelectedIconColor,
           titleSuffix: titleSuffix,
           disableColorSelect: disableColorSelect,
+          hideItemCard: hideItemCard,
         );
       });
 }
@@ -68,7 +70,9 @@ class SelectIconWithColorModalContent extends StatefulWidget {
     this.alreadySelectedIconColor,
     this.titleSuffix,
     this.disableColorSelect,
+    this.hideItemCard,
   });
+  final bool? hideItemCard;
 
   final double modalPadding;
   final Color? alreadySelectedIconColor;
@@ -267,14 +271,27 @@ class _SelectIconWithColorModalContentState
                                   SizedBox(
                                     height: 12,
                                   ),
-                                  CustomItemCard(
-                                    scalarOverride: 1,
-                                    title: S.of(context).item,
-                                    description:
-                                        S.of(context).itemExampleDescription,
-                                    categoryIconColor: selectedIconColor,
-                                    categoryIconName: selectedIconName,
-                                  ),
+                                  if (widget.hideItemCard != true)
+                                    CustomItemCard(
+                                      scalarOverride: 1,
+                                      title: S.of(context).item,
+                                      description:
+                                          S.of(context).itemExampleDescription,
+                                      categoryIconColor: selectedIconColor,
+                                      categoryIconName: selectedIconName,
+                                    ),
+                                  if (widget.hideItemCard == true)
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: getIconForIdentifier(
+                                        name:
+                                            selectedIconName ?? allIconNames[0],
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkTextColor,
+                                        size: 48,
+                                      ).$2,
+                                    ),
                                   SizedBox(
                                     height: 12,
                                   ),

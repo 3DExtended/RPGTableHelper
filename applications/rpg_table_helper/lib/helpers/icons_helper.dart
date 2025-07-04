@@ -1,10 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 
 const allIconNames = [
+  "square",
   "anchor",
+  "pen",
+  "suitcase",
+  "vault",
+  "sack-dollar",
+  "face-smile",
   "biohazard",
   "bolt",
   "bolt-lightning",
@@ -709,6 +717,15 @@ const allIconNames = [
             color: color,
             icon: FontAwesomeIcons.boltLightning)
       ); // ?f=classic&s=solid
+    case "pen":
+      return (
+        "pen",
+        CustomFaIcon(
+            noPadding: true,
+            size: size,
+            color: color,
+            icon: FontAwesomeIcons.pen)
+      ); // ?f=classic&s=solid
     case "bomb":
       return (
         "bomb",
@@ -762,6 +779,15 @@ const allIconNames = [
             size: size,
             color: color,
             icon: FontAwesomeIcons.burst)
+      ); // ?f=classic&s=solid
+    case "suitcase":
+      return (
+        "suitcase",
+        CustomFaIcon(
+            noPadding: true,
+            size: size,
+            color: color,
+            icon: FontAwesomeIcons.suitcase)
       ); // ?f=classic&s=solid
     case "campground":
       return (
@@ -870,6 +896,15 @@ const allIconNames = [
             size: size,
             color: color,
             icon: FontAwesomeIcons.cloudShowersHeavy)
+      ); // ?f=classic&s=solid
+    case "vault":
+      return (
+        "vault",
+        CustomFaIcon(
+            noPadding: true,
+            size: size,
+            color: color,
+            icon: FontAwesomeIcons.vault)
       ); // ?f=classic&s=solid
     case "cloud-sun":
       return (
@@ -1861,6 +1896,15 @@ const allIconNames = [
             color: color,
             icon: FontAwesomeIcons.rocket)
       ); // ?f=classic&s=solid
+    case "sack-dollar":
+      return (
+        "sack-dollar",
+        CustomFaIcon(
+            noPadding: true,
+            size: size,
+            color: color,
+            icon: FontAwesomeIcons.sackDollar)
+      ); // ?f=classic&s=solid
     case "sailboat":
       return (
         "sailboat",
@@ -1915,6 +1959,17 @@ const allIconNames = [
             color: color,
             icon: FontAwesomeIcons.shieldHalved)
       ); // ?f=classic&s=solid
+
+    case "face-smile":
+      return (
+        "face-smile",
+        CustomFaIcon(
+            noPadding: true,
+            size: size,
+            color: color,
+            icon: FontAwesomeIcons.faceSmile)
+      ); // ?f=classic&s=solid
+
     case "shield-heart":
       return (
         "shield-heart",
@@ -2112,6 +2167,19 @@ const allIconNames = [
             size: size,
             color: color,
             icon: FontAwesomeIcons.yinYang)
+      ); // ?f=classic&s=solid
+    case "square":
+      return (
+        "square",
+        Transform.rotate(
+          alignment: Alignment.center,
+          angle: pi / 4, // 45 deg
+          child: CustomFaIcon(
+            size: (size ?? 16) / sqrt2,
+            color: color,
+            icon: FontAwesomeIcons.square,
+          ),
+        ),
       ); // ?f=classic&s=solid
 
     default:
