@@ -101,10 +101,14 @@ void main() {
         widgetName: 'CustomItemCard$i',
         pathPrefix: "../",
         useMaterialAppWrapper: true,
-        screenFactory: (Locale locale) => SizedBox(
-          width: 300,
-          height: 600,
-          child: itemcard,
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            CustomThemeProvider(
+          overrideBrightness: brightnessToTest,
+          child: SizedBox(
+            width: 300,
+            height: 600,
+            child: itemcard,
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
             Map.fromEntries([

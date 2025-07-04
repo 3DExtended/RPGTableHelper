@@ -33,7 +33,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [
           rpgCharacterConfigurationProvider.overrideWith((ref) {
             return RpgCharacterConfigurationNotifier(
@@ -76,21 +77,24 @@ void main() {
                 ),
               ),
               home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await showEditLorePageTitle(
-                            overrideNavigatorKey: navigatorKey,
-                            allGroupTitles: ["Test", "Test2"],
-                            currentGroupTitle: "Testgroup",
-                            currentTitle: "Testtitle",
-                            context,
-                          );
-                        },
-                        child: const Text("Click me"));
-                  }),
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showEditLorePageTitle(
+                              overrideNavigatorKey: navigatorKey,
+                              allGroupTitles: ["Test", "Test2"],
+                              currentGroupTitle: "Testgroup",
+                              currentTitle: "Testtitle",
+                              context,
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
                 ),
               )),
         ),

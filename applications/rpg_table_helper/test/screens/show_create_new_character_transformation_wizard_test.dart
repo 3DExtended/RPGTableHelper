@@ -36,7 +36,8 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => ProviderScope(
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            ProviderScope(
           overrides: [
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
@@ -80,19 +81,22 @@ void main() {
                   ),
                 ),
                 home: ThemeConfigurationForApp(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    body: Builder(builder: (context) {
-                      return ElevatedButton(
-                          onPressed: () async {
-                            await showCreateNewCharacterTransformationWizard(
-                              overrideNavigatorKey: navigatorKey,
-                              overrideStartScreen: sc,
-                              context,
-                            );
-                          },
-                          child: const Text("Click me"));
-                    }),
+                  child: CustomThemeProvider(
+                    overrideBrightness: brightnessToTest,
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      body: Builder(builder: (context) {
+                        return ElevatedButton(
+                            onPressed: () async {
+                              await showCreateNewCharacterTransformationWizard(
+                                overrideNavigatorKey: navigatorKey,
+                                overrideStartScreen: sc,
+                                context,
+                              );
+                            },
+                            child: const Text("Click me"));
+                      }),
+                    ),
                   ),
                 )),
           ),

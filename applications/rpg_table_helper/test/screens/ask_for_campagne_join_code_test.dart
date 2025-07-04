@@ -29,7 +29,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [],
         child: ThemeConfigurationForApp(
           child: MaterialApp(
@@ -53,18 +54,21 @@ void main() {
                 ),
               ),
               home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await askForCampagneJoinCode(
-                            overrideNavigatorKey: navigatorKey,
-                            context,
-                          );
-                        },
-                        child: const Text("Click me"));
-                  }),
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await askForCampagneJoinCode(
+                              overrideNavigatorKey: navigatorKey,
+                              context,
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
                 ),
               )),
         ),

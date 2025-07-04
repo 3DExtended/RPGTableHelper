@@ -23,7 +23,8 @@ void main() {
           pathPrefix: "../",
           widgetName: '$routeNameWithoutSlashes-step-${i + 1}',
           useMaterialAppWrapper: true,
-          screenFactory: (Locale locale) => ProviderScope(
+          screenFactory: (Locale locale, Brightness brightnessToTest) =>
+              ProviderScope(
             overrides: [
               rpgCharacterConfigurationProvider.overrideWith((ref) {
                 return RpgCharacterConfigurationNotifier(

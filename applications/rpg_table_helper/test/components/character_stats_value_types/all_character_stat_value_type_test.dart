@@ -434,7 +434,8 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => ProviderScope(
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            ProviderScope(
           overrides: [
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
@@ -476,18 +477,21 @@ void main() {
                 ),
               ),
               home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await showGetDmConfigurationModal(
-                              context: context,
-                              predefinedConfiguration: testConfiguration.$2,
-                              overrideNavigatorKey: navigatorKey);
-                        },
-                        child: const Text("Click me"));
-                  }),
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showGetDmConfigurationModal(
+                                context: context,
+                                predefinedConfiguration: testConfiguration.$2,
+                                overrideNavigatorKey: navigatorKey);
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
                 ),
               )),
         ),
@@ -520,7 +524,8 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => ProviderScope(
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            ProviderScope(
           overrides: [
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
@@ -564,26 +569,29 @@ void main() {
                   ),
                 ),
                 home: ThemeConfigurationForApp(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    body: Builder(builder: (context) {
-                      return ElevatedButton(
-                          onPressed: () async {
-                            await showGetPlayerConfigurationModal(
-                                characterToRenderStatFor:
-                                    RpgCharacterConfiguration
-                                        .getBaseConfiguration(
-                                            RpgConfigurationModel
-                                                .getBaseConfiguration()),
-                                context: context,
-                                statConfiguration: testConfiguration.$2,
-                                isEditingAlternateForm: true,
-                                characterValue: testConfiguration.$3,
-                                characterName: "Frodo",
-                                overrideNavigatorKey: navigatorKey);
-                          },
-                          child: const Text("Click me"));
-                    }),
+                  child: CustomThemeProvider(
+                    overrideBrightness: brightnessToTest,
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      body: Builder(builder: (context) {
+                        return ElevatedButton(
+                            onPressed: () async {
+                              await showGetPlayerConfigurationModal(
+                                  characterToRenderStatFor:
+                                      RpgCharacterConfiguration
+                                          .getBaseConfiguration(
+                                              RpgConfigurationModel
+                                                  .getBaseConfiguration()),
+                                  context: context,
+                                  statConfiguration: testConfiguration.$2,
+                                  isEditingAlternateForm: true,
+                                  characterValue: testConfiguration.$3,
+                                  characterName: "Frodo",
+                                  overrideNavigatorKey: navigatorKey);
+                            },
+                            child: const Text("Click me"));
+                      }),
+                    ),
                   ),
                 )),
           ),
@@ -617,7 +625,8 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => ProviderScope(
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            ProviderScope(
           overrides: [
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
@@ -661,26 +670,29 @@ void main() {
                   ),
                 ),
                 home: ThemeConfigurationForApp(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    body: Builder(builder: (context) {
-                      return ElevatedButton(
-                          onPressed: () async {
-                            await showGetPlayerConfigurationModal(
-                                characterToRenderStatFor:
-                                    RpgCharacterConfiguration
-                                        .getBaseConfiguration(
-                                            RpgConfigurationModel
-                                                .getBaseConfiguration()),
-                                context: context,
-                                statConfiguration: testConfiguration.$2,
-                                isEditingAlternateForm: false,
-                                characterValue: testConfiguration.$3,
-                                characterName: "Frodo",
-                                overrideNavigatorKey: navigatorKey);
-                          },
-                          child: const Text("Click me"));
-                    }),
+                  child: CustomThemeProvider(
+                    overrideBrightness: brightnessToTest,
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      body: Builder(builder: (context) {
+                        return ElevatedButton(
+                            onPressed: () async {
+                              await showGetPlayerConfigurationModal(
+                                  characterToRenderStatFor:
+                                      RpgCharacterConfiguration
+                                          .getBaseConfiguration(
+                                              RpgConfigurationModel
+                                                  .getBaseConfiguration()),
+                                  context: context,
+                                  statConfiguration: testConfiguration.$2,
+                                  isEditingAlternateForm: false,
+                                  characterValue: testConfiguration.$3,
+                                  characterName: "Frodo",
+                                  overrideNavigatorKey: navigatorKey);
+                            },
+                            child: const Text("Click me"));
+                      }),
+                    ),
                   ),
                 )),
           ),
@@ -714,7 +726,8 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => ProviderScope(
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            ProviderScope(
           overrides: [
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
@@ -758,26 +771,29 @@ void main() {
                   ),
                 ),
                 home: ThemeConfigurationForApp(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    body: Builder(builder: (context) {
-                      return ElevatedButton(
-                          onPressed: () async {
-                            await showGetPlayerConfigurationModal(
-                                characterToRenderStatFor:
-                                    RpgCharacterConfiguration
-                                        .getBaseConfiguration(
-                                            RpgConfigurationModel
-                                                .getBaseConfiguration()),
-                                context: context,
-                                statConfiguration: testConfiguration.$2,
-                                characterValue: null,
-                                isEditingAlternateForm: false,
-                                characterName: "Frodo",
-                                overrideNavigatorKey: navigatorKey);
-                          },
-                          child: const Text("Click me"));
-                    }),
+                  child: CustomThemeProvider(
+                    overrideBrightness: brightnessToTest,
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      body: Builder(builder: (context) {
+                        return ElevatedButton(
+                            onPressed: () async {
+                              await showGetPlayerConfigurationModal(
+                                  characterToRenderStatFor:
+                                      RpgCharacterConfiguration
+                                          .getBaseConfiguration(
+                                              RpgConfigurationModel
+                                                  .getBaseConfiguration()),
+                                  context: context,
+                                  statConfiguration: testConfiguration.$2,
+                                  characterValue: null,
+                                  isEditingAlternateForm: false,
+                                  characterName: "Frodo",
+                                  overrideNavigatorKey: navigatorKey);
+                            },
+                            child: const Text("Click me"));
+                      }),
+                    ),
                   ),
                 )),
           ),
@@ -802,7 +818,8 @@ void main() {
         widgetName:
             'CharacterStatValueType_PlayerStatsScreenWidget_${testConfiguration.$1}',
         useMaterialAppWrapper: true,
-        screenFactory: (Locale locale) => Builder(builder: (context) {
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            Builder(builder: (context) {
           return Container(
             color: CustomThemeProvider.of(context).theme.bgColor,
             child: Builder(builder: (context) {

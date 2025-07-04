@@ -33,7 +33,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [
           rpgCharacterConfigurationProvider.overrideWith((ref) {
             return RpgCharacterConfigurationNotifier(
@@ -76,24 +77,27 @@ void main() {
                 ),
               ),
               home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await showItemCardDetails(
-                            overrideNavigatorKey: navigatorKey,
-                            currentlyOwned: 2,
-                            item: RpgConfigurationModel.getBaseConfiguration()
-                                .allItems
-                                .first,
-                            rpgConfig:
-                                RpgConfigurationModel.getBaseConfiguration(),
-                            context,
-                          );
-                        },
-                        child: const Text("Click me"));
-                  }),
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showItemCardDetails(
+                              overrideNavigatorKey: navigatorKey,
+                              currentlyOwned: 2,
+                              item: RpgConfigurationModel.getBaseConfiguration()
+                                  .allItems
+                                  .first,
+                              rpgConfig:
+                                  RpgConfigurationModel.getBaseConfiguration(),
+                              context,
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
                 ),
               )),
         ),

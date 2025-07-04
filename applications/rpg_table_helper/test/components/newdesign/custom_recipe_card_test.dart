@@ -111,9 +111,13 @@ void main() {
         widgetName: 'CustomRecipeCard$i',
         pathPrefix: "../",
         useMaterialAppWrapper: true,
-        screenFactory: (Locale locale) => Builder(builder: (context) {
-          return itemcard();
-        }),
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            CustomThemeProvider(
+          overrideBrightness: brightnessToTest,
+          child: Builder(builder: (context) {
+            return itemcard();
+          }),
+        ),
         getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
             Map.fromEntries([
           MapEntry(

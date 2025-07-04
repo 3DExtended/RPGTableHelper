@@ -12,12 +12,16 @@ void main() {
       disableLocals: true,
       widgetName: 'CustomIntEditField',
       useMaterialAppWrapper: true,
-      screenFactory: (Locale locale) => CustomIntEditField(
-        minValue: -10,
-        maxValue: 10,
-        label: "Some Number Field",
-        onValueChange: (newValue) {},
-        startValue: 17,
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          CustomThemeProvider(
+        overrideBrightness: brightnessToTest,
+        child: CustomIntEditField(
+          minValue: -10,
+          maxValue: 10,
+          label: "Some Number Field",
+          onValueChange: (newValue) {},
+          startValue: 17,
+        ),
       ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
           Map.fromEntries([

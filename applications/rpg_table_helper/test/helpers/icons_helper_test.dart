@@ -12,17 +12,21 @@ void main() {
       disableLocals: false,
       widgetName: 'AllCategoryIconsWrapped',
       useMaterialAppWrapper: true,
-      screenFactory: (Locale locale) => Builder(builder: (context) {
-        return Wrap(
-          children: allIconNames
-              .map((name) => getIconForIdentifier(
-                    name: name,
-                    color: CustomThemeProvider.of(context).theme.darkColor,
-                    size: 32,
-                  ).$2)
-              .toList(),
-        );
-      }),
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          CustomThemeProvider(
+        overrideBrightness: brightnessToTest,
+        child: Builder(builder: (context) {
+          return Wrap(
+            children: allIconNames
+                .map((name) => getIconForIdentifier(
+                      name: name,
+                      color: CustomThemeProvider.of(context).theme.darkColor,
+                      size: 32,
+                    ).$2)
+                .toList(),
+          );
+        }),
+      ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
           Map.fromEntries([
         MapEntry(
@@ -48,27 +52,32 @@ void main() {
       disableLocals: false,
       widgetName: 'AllCategoryIconsWrapped_colored',
       useMaterialAppWrapper: true,
-      screenFactory: (Locale locale) => Wrap(
-        children: allIconNames
-            .map((name) => Container(
-                  color: Colors.red,
-                  padding: EdgeInsets.all(2),
-                  width: 4 + 32,
-                  height: 4 + 32,
-                  child: Builder(builder: (context) {
-                    return Container(
-                      color: Colors.orange,
-                      width: 32,
-                      height: 32,
-                      child: getIconForIdentifier(
-                        name: name,
-                        color: CustomThemeProvider.of(context).theme.darkColor,
-                        size: 32,
-                      ).$2,
-                    );
-                  }),
-                ))
-            .toList(),
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          CustomThemeProvider(
+        overrideBrightness: brightnessToTest,
+        child: Wrap(
+          children: allIconNames
+              .map((name) => Container(
+                    color: Colors.red,
+                    padding: EdgeInsets.all(2),
+                    width: 4 + 32,
+                    height: 4 + 32,
+                    child: Builder(builder: (context) {
+                      return Container(
+                        color: Colors.orange,
+                        width: 32,
+                        height: 32,
+                        child: getIconForIdentifier(
+                          name: name,
+                          color:
+                              CustomThemeProvider.of(context).theme.darkColor,
+                          size: 32,
+                        ).$2,
+                      );
+                    }),
+                  ))
+              .toList(),
+        ),
       ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
           Map.fromEntries([

@@ -51,7 +51,7 @@ var brightnessTests = [
 ];
 
 void testConfigurations({
-  required Widget Function(Locale locale) screenFactory,
+  required Widget Function(Locale locale, Brightness brightness) screenFactory,
   required Map<String, Widget> Function(
           Widget widgetToTest, Brightness brightness)
       getTestConfigurations,
@@ -89,11 +89,13 @@ void testConfigurations({
           theme: ThemeData.dark(useMaterial3: true),
           builder: (BuildContext context, Widget? child) {
             // Set a custom screen size for the test
-            return ThemeConfigurationForApp(child: screenFactory(local));
+            return ThemeConfigurationForApp(
+                child: screenFactory(local, brightnessToTest));
           },
         );
       } else {
-        widgetToTest = ThemeConfigurationForApp(child: screenFactory(local));
+        widgetToTest = ThemeConfigurationForApp(
+            child: screenFactory(local, brightnessToTest));
       }
 
       var counter = 1;

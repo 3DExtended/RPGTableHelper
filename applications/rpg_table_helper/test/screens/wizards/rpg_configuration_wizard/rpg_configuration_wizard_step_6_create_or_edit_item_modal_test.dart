@@ -33,7 +33,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [
           rpgCharacterConfigurationProvider.overrideWith((ref) {
             return RpgCharacterConfigurationNotifier(
@@ -76,35 +77,38 @@ void main() {
                 ),
               ),
               home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await showCreateOrEditItemModal(
-                            overrideNavigatorKey: navigatorKey,
-                            context,
-                            RpgItem(
-                                imageDescription: null,
-                                imageUrlWithoutBasePath: null,
-                                uuid: "asdf",
-                                name: "Test",
-                                categoryId: "",
-                                description: "Ich bin ein text",
-                                patchSize: DiceRoll(
-                                    numDice: 22, diceSides: 6, modifier: 1),
-                                baseCurrencyPrice: 1000,
-                                placeOfFindings: [
-                                  RpgItemRarity(
-                                    placeOfFindingId:
-                                        "5b9690c1-afc9-436d-8912-d223c440eb6a",
-                                    diceChallenge: 5,
-                                  )
-                                ]),
-                          );
-                        },
-                        child: const Text("Click me"));
-                  }),
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showCreateOrEditItemModal(
+                              overrideNavigatorKey: navigatorKey,
+                              context,
+                              RpgItem(
+                                  imageDescription: null,
+                                  imageUrlWithoutBasePath: null,
+                                  uuid: "asdf",
+                                  name: "Test",
+                                  categoryId: "",
+                                  description: "Ich bin ein text",
+                                  patchSize: DiceRoll(
+                                      numDice: 22, diceSides: 6, modifier: 1),
+                                  baseCurrencyPrice: 1000,
+                                  placeOfFindings: [
+                                    RpgItemRarity(
+                                      placeOfFindingId:
+                                          "5b9690c1-afc9-436d-8912-d223c440eb6a",
+                                      diceChallenge: 5,
+                                    )
+                                  ]),
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
                 ),
               )),
         ),

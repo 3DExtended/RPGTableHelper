@@ -32,7 +32,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [],
         child: ThemeConfigurationForApp(
           child: MaterialApp(
@@ -56,34 +57,37 @@ void main() {
                 ),
               ),
               home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await showPlayerHasBeenGrantedItemsThroughDmModal(
-                            grantedItems: GrantedItemsForPlayer(
-                                characterName: "Player",
-                                playerId:
-                                    "6e574e88-630e-4728-a113-0f3f96a0f0ed",
-                                grantedItems:
-                                    RpgConfigurationModel.getBaseConfiguration()
-                                        .allItems
-                                        .map(
-                                          (e) => RpgCharacterOwnedItemPair(
-                                            amount: 3,
-                                            itemUuid: e.uuid,
-                                          ),
-                                        )
-                                        .toList()),
-                            rpgConfig:
-                                RpgConfigurationModel.getBaseConfiguration(),
-                            overrideNavigatorKey: navigatorKey,
-                            context,
-                          );
-                        },
-                        child: const Text("Click me"));
-                  }),
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showPlayerHasBeenGrantedItemsThroughDmModal(
+                              grantedItems: GrantedItemsForPlayer(
+                                  characterName: "Player",
+                                  playerId:
+                                      "6e574e88-630e-4728-a113-0f3f96a0f0ed",
+                                  grantedItems: RpgConfigurationModel
+                                          .getBaseConfiguration()
+                                      .allItems
+                                      .map(
+                                        (e) => RpgCharacterOwnedItemPair(
+                                          amount: 3,
+                                          itemUuid: e.uuid,
+                                        ),
+                                      )
+                                      .toList()),
+                              rpgConfig:
+                                  RpgConfigurationModel.getBaseConfiguration(),
+                              overrideNavigatorKey: navigatorKey,
+                              context,
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
                 ),
               )),
         ),

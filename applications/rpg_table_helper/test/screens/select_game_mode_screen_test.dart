@@ -32,7 +32,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [
           rpgCharacterConfigurationProvider.overrideWith((ref) {
             return RpgCharacterConfigurationNotifier(
@@ -74,7 +75,10 @@ void main() {
                   size: 16,
                 ),
               ),
-              home: ThemeConfigurationForApp(child: SelectGameModeScreen())),
+              home: ThemeConfigurationForApp(
+                  child: CustomThemeProvider(
+                      overrideBrightness: brightnessToTest,
+                      child: SelectGameModeScreen()))),
         ),
       ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>

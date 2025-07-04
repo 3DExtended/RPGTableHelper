@@ -21,41 +21,45 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => SingleChildScrollView(
-        child: DynamicHeightColumnLayout(
-          numberOfColumns: 3,
-          children: [
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.red,
-            ),
-            Container(
-              height: 90,
-              width: 100,
-              color: Colors.green,
-            ),
-            Container(
-              height: 80,
-              width: 100,
-              color: Colors.orange,
-            ),
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.black,
-            ),
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.blue,
-            ),
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.pink,
-            ),
-          ],
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          CustomThemeProvider(
+        overrideBrightness: brightnessToTest,
+        child: SingleChildScrollView(
+          child: DynamicHeightColumnLayout(
+            numberOfColumns: 3,
+            children: [
+              Container(
+                height: 100,
+                width: 100,
+                color: Colors.red,
+              ),
+              Container(
+                height: 90,
+                width: 100,
+                color: Colors.green,
+              ),
+              Container(
+                height: 80,
+                width: 100,
+                color: Colors.orange,
+              ),
+              Container(
+                height: 100,
+                width: 100,
+                color: Colors.black,
+              ),
+              Container(
+                height: 100,
+                width: 100,
+                color: Colors.blue,
+              ),
+              Container(
+                height: 100,
+                width: 100,
+                color: Colors.pink,
+              ),
+            ],
+          ),
         ),
       ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>

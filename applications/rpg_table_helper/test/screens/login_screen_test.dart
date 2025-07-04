@@ -32,7 +32,8 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
         overrides: [
           rpgCharacterConfigurationProvider.overrideWith((ref) {
             return RpgCharacterConfigurationNotifier(
@@ -55,26 +56,32 @@ void main() {
         ],
         child: ThemeConfigurationForApp(
           child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Ruwudu',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
-                ),
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              ...AppLocalizations.localizationsDelegates,
+              S.delegate
+            ],
+            locale: locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.dark,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              fontFamily: 'Ruwudu',
+              useMaterial3: true,
+              iconTheme: const IconThemeData(
+                color: Colors.white,
+                size: 16,
               ),
-              home: ThemeConfigurationForApp(child: LoginScreen())),
+            ),
+            home: ThemeConfigurationForApp(
+              child: CustomThemeProvider(
+                overrideBrightness: brightnessToTest,
+                child: LoginScreen(),
+              ),
+            ),
+          ),
         ),
       ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>

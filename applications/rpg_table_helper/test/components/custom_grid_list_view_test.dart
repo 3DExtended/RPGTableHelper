@@ -15,19 +15,23 @@ void main() {
         disableLocals: true,
         widgetName: 'CustomGridListView$test',
         useMaterialAppWrapper: true,
-        screenFactory: (Locale locale) => CustomGridListView(
-          itemCount: test,
-          numberOfColumns: 3,
-          horizontalSpacing: 20,
-          verticalSpacing: 20,
-          itemBuilder: (context, index) {
-            assert(index < test);
-            return Container(
-              width: 100,
-              height: 100,
-              color: Colors.red,
-            );
-          },
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            CustomThemeProvider(
+          overrideBrightness: brightnessToTest,
+          child: CustomGridListView(
+            itemCount: test,
+            numberOfColumns: 3,
+            horizontalSpacing: 20,
+            verticalSpacing: 20,
+            itemBuilder: (context, index) {
+              assert(index < test);
+              return Container(
+                width: 100,
+                height: 100,
+                color: Colors.red,
+              );
+            },
+          ),
         ),
         getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
             Map.fromEntries([

@@ -48,7 +48,8 @@ void main() {
           await loadAppFonts();
           await tester.pumpAndSettle();
         },
-        screenFactory: (Locale locale) => ProviderScope(
+        screenFactory: (Locale locale, Brightness brightnessToTest) =>
+            ProviderScope(
           overrides: [
             rpgConfigurationProvider.overrideWith((ref) {
               return RpgConfigurationNotifier(
@@ -163,20 +164,23 @@ void main() {
                   ),
                 ),
                 home: ThemeConfigurationForApp(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    body: Builder(builder: (context) {
-                      return PlayerPageScreen(
-                        startScreenOverride: testcase.$1,
-                        routeSettings: PlayerPageScreenRouteSettings(
-                            characterConfigurationOverride: null,
-                            showInventory: true,
-                            showRecipes: true,
-                            showMoney: true,
-                            showLore: true,
-                            disableEdit: false),
-                      );
-                    }),
+                  child: CustomThemeProvider(
+                    overrideBrightness: brightnessToTest,
+                    child: Scaffold(
+                      resizeToAvoidBottomInset: false,
+                      body: Builder(builder: (context) {
+                        return PlayerPageScreen(
+                          startScreenOverride: testcase.$1,
+                          routeSettings: PlayerPageScreenRouteSettings(
+                              characterConfigurationOverride: null,
+                              showInventory: true,
+                              showRecipes: true,
+                              showMoney: true,
+                              showLore: true,
+                              disableEdit: false),
+                        );
+                      }),
+                    ),
                   ),
                 )),
           ),

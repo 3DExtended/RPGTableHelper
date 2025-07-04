@@ -29,45 +29,50 @@ void main() {
         await loadAppFonts();
         await tester.pumpAndSettle();
       },
-      screenFactory: (Locale locale) => ProviderScope(
-        overrides: [],
-        child: ThemeConfigurationForApp(
-          child: MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: [
-                ...AppLocalizations.localizationsDelegates,
-                S.delegate
-              ],
-              locale: locale,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.dark,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                fontFamily: 'Ruwudu',
-                useMaterial3: true,
-                iconTheme: const IconThemeData(
-                  color: Colors.white,
-                  size: 16,
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          CustomThemeProvider(
+        overrideBrightness: brightnessToTest,
+        child: ProviderScope(
+          overrides: [],
+          child: ThemeConfigurationForApp(
+            child: MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate
+                ],
+                locale: locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                darkTheme: ThemeData.dark(),
+                themeMode: ThemeMode.dark,
+                theme: ThemeData(
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  fontFamily: 'Ruwudu',
+                  useMaterial3: true,
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-              home: ThemeConfigurationForApp(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: Builder(builder: (context) {
-                    return ElevatedButton(
-                        onPressed: () async {
-                          await showAskPlayerForFightOrderRoll(
-                            characterName: "Frodo",
-                            overrideNavigatorKey: navigatorKey,
-                            context,
-                          );
-                        },
-                        child: const Text("Click me"));
-                  }),
-                ),
-              )),
+                home: ThemeConfigurationForApp(
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showAskPlayerForFightOrderRoll(
+                              characterName: "Frodo",
+                              overrideNavigatorKey: navigatorKey,
+                              context,
+                            );
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
+                )),
+          ),
         ),
       ),
       getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
