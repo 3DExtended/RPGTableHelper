@@ -63,7 +63,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
 
       for (var playerId in playerIds) {
         if (playerRolls.every((pr) => pr.$1 != playerId.$1)) {
-          var newTextEditContoller = TextEditingController();
+          var newTextEditContoller = TextEditingController(text: "0");
           newTextEditContoller.addListener(_updateStateForFormValidation);
           playerRolls.add((playerId.$1, playerId.$2, newTextEditContoller));
         }
