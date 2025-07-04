@@ -4,6 +4,7 @@ import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/render_characters_as_cards.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
@@ -99,6 +100,18 @@ class _DmScreenCharacterOverviewState
           ),
         )
       ];
+    } else {
+      // sort charactersToRender by ordering in initiative tracker
+      var initiativeTracker = connectionDetails.fightSequence?.sequence;
+
+      if (initiativeTracker != null) {
+        charactersToRender = charactersToRender
+            .sortBy((d) => initiativeTracker
+                .firstWhere((element) => element.$1 == d.characterToRender.uuid,
+                    orElse: () => (null, '', 0))
+                .$3 as num)
+            .toList();
+      }
     }
 
     return RenderCharactersAsCards.renderCharactersAsCharacterCard(
