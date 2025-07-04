@@ -2,14 +2,17 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/dynamic_height_column_layout.dart';
+import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
-class PlayerScreenCharacterStatsForTab extends StatelessWidget {
+class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
   const PlayerScreenCharacterStatsForTab({
     super.key,
     required this.tabDef,
@@ -24,7 +27,7 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
   final RpgCharacterConfigurationBase? charToRender;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return LayoutBuilder(builder: (context, constraints) {
       // we need to define the width of each widget for the upcoming columnized view
       var numberOfColumns = 1;
@@ -61,14 +64,14 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
               spacing: padding,
               runSpacing: padding,
               numberOfColumns: numberOfColumns,
-              children: getStatWidgetsForCurrentTab(context,
+              children: getStatWidgetsForCurrentTab(context, ref,
                   columnWidth: columnWidth),
             )),
       );
     });
   }
 
-  List<Widget> getStatWidgetsForCurrentTab(BuildContext context,
+  List<Widget> getStatWidgetsForCurrentTab(BuildContext context, WidgetRef ref,
       {required double columnWidth}) {
     List<Widget> result = [];
 
@@ -88,23 +91,38 @@ class PlayerScreenCharacterStatsForTab extends StatelessWidget {
 
       if (matchingPlayerCharacterStat == null) continue;
 
-      result.add(SizedBox(
-          width: columnWidth,
-          child: getPlayerVisualizationWidget(
-              characterToRenderStatFor: charToRender != null &&
-                      charToRender is RpgCharacterConfiguration
-                  ? charToRender as RpgCharacterConfiguration
-                  : null,
-              onNewStatValue: (newSerializedValue) {
-                var updatedStatValue = matchingPlayerCharacterStat.copyWith(
-                    serializedValue: newSerializedValue);
-                onStatValueChanged(updatedStatValue);
-              },
-              context: context,
-              characterName: charToRender?.characterName ??
-                  S.of(context).characterNameDefault,
-              statConfiguration: statToRender,
-              characterValue: matchingPlayerCharacterStat)));
+      result.add(LongPressScaleWidget(
+        onLongPress: () {
+          // i want to edit only this stat value
+          Future.delayed(Duration.zero, () async {
+            if (!context.mounted) return;
+
+            PlayerPageHelpers.handlePossiblyMissingCharacterStats(
+                ref: ref,
+                context: context,
+                filterStatUuid: statToRender.statUuid,
+                rpgConfig: rpgConfig,
+                selectedCharacter: charToRender!);
+          });
+        },
+        child: SizedBox(
+            width: columnWidth,
+            child: getPlayerVisualizationWidget(
+                characterToRenderStatFor: charToRender != null &&
+                        charToRender is RpgCharacterConfiguration
+                    ? charToRender as RpgCharacterConfiguration
+                    : null,
+                onNewStatValue: (newSerializedValue) {
+                  var updatedStatValue = matchingPlayerCharacterStat.copyWith(
+                      serializedValue: newSerializedValue);
+                  onStatValueChanged(updatedStatValue);
+                },
+                context: context,
+                characterName: charToRender?.characterName ??
+                    S.of(context).characterNameDefault,
+                statConfiguration: statToRender,
+                characterValue: matchingPlayerCharacterStat)),
+      ));
     }
 
     return result;

@@ -56,6 +56,7 @@ class PlayerPageHelpers {
     required RpgConfigurationModel rpgConfig,
     required RpgCharacterConfigurationBase selectedCharacter,
     String? filterTabId,
+    String? filterStatUuid,
   }) {
     if (DependencyProvider.of(context).isMocked) {
       return;
@@ -80,9 +81,13 @@ class PlayerPageHelpers {
           tempLoadedCharacterConfig.alternateForm!.uuid == selectedCharacterId;
 
       // find all stat uuids:
-      var listOfStats =
-          tabsToValidate?.map((t) => t.statsInTab).expand((i) => i).toList() ??
-              [];
+      var listOfStats = tabsToValidate
+              ?.map((t) => t.statsInTab)
+              .expand((i) => i)
+              .where(
+                  (s) => s.statUuid == filterStatUuid || filterStatUuid == null)
+              .toList() ??
+          [];
 
       var selectedCharacterStats = selectedCharacter.characterStats;
 
@@ -93,7 +98,7 @@ class PlayerPageHelpers {
                       CharacterStatValueType
                           .companionSelector // we are not allowing the companionSelector stat on companions
               ) &&
-              (filterTabId != null ||
+              ((filterTabId != null || filterStatUuid != null) ||
                   !(selectedCharacterStats
                       .map((charstat) => charstat.statUuid)
                       .contains(st.statUuid))))

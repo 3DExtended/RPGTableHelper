@@ -122,8 +122,27 @@ class TransformationComponent {
 
 @JsonSerializable()
 @CopyWith()
+class RpgTabConfiguration {
+  final String tabUuid;
+  final String tabIcon;
+
+  factory RpgTabConfiguration.fromJson(Map<String, dynamic> json) =>
+      _$RpgTabConfigurationFromJson(json);
+
+  RpgTabConfiguration({
+    required this.tabUuid,
+    required this.tabIcon,
+  });
+
+  Map<String, dynamic> toJson() => _$RpgTabConfigurationToJson(this);
+}
+
+@JsonSerializable()
+@CopyWith()
 class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   final int? moneyInBaseType;
+  final List<RpgTabConfiguration>? tabConfigurations;
+
   final List<RpgCharacterOwnedItemPair> inventory;
   // this can be used to create pets
   final List<RpgAlternateCharacterConfiguration>? companionCharacters;
@@ -138,6 +157,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   RpgCharacterConfiguration({
     required super.uuid,
     required super.characterName,
+    required this.tabConfigurations,
     required super.transformationComponents,
     required this.alternateForms,
     required this.moneyInBaseType,
@@ -154,6 +174,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
           RpgConfigurationModel? rpgConfig,
           {int? variant}) =>
       RpgCharacterConfiguration(
+        tabConfigurations: null,
         transformationComponents: [
           TransformationComponent(
               transformationUuid: "fb00e3f7-b8b4-4161-b13f-58f8072ce8df",

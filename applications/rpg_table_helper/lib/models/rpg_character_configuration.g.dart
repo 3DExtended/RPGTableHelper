@@ -221,10 +221,74 @@ extension $TransformationComponentCopyWith on TransformationComponent {
       _$TransformationComponentCWProxyImpl(this);
 }
 
+abstract class _$RpgTabConfigurationCWProxy {
+  RpgTabConfiguration tabUuid(String tabUuid);
+
+  RpgTabConfiguration tabIcon(String tabIcon);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgTabConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// RpgTabConfiguration(...).copyWith(id: 12, name: "My name")
+  /// ````
+  RpgTabConfiguration call({
+    String tabUuid,
+    String tabIcon,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfRpgTabConfiguration.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfRpgTabConfiguration.copyWith.fieldName(...)`
+class _$RpgTabConfigurationCWProxyImpl implements _$RpgTabConfigurationCWProxy {
+  const _$RpgTabConfigurationCWProxyImpl(this._value);
+
+  final RpgTabConfiguration _value;
+
+  @override
+  RpgTabConfiguration tabUuid(String tabUuid) => this(tabUuid: tabUuid);
+
+  @override
+  RpgTabConfiguration tabIcon(String tabIcon) => this(tabIcon: tabIcon);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgTabConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// RpgTabConfiguration(...).copyWith(id: 12, name: "My name")
+  /// ````
+  RpgTabConfiguration call({
+    Object? tabUuid = const $CopyWithPlaceholder(),
+    Object? tabIcon = const $CopyWithPlaceholder(),
+  }) {
+    return RpgTabConfiguration(
+      tabUuid: tabUuid == const $CopyWithPlaceholder()
+          ? _value.tabUuid
+          // ignore: cast_nullable_to_non_nullable
+          : tabUuid as String,
+      tabIcon: tabIcon == const $CopyWithPlaceholder()
+          ? _value.tabIcon
+          // ignore: cast_nullable_to_non_nullable
+          : tabIcon as String,
+    );
+  }
+}
+
+extension $RpgTabConfigurationCopyWith on RpgTabConfiguration {
+  /// Returns a callable class that can be used as follows: `instanceOfRpgTabConfiguration.copyWith(...)` or like so:`instanceOfRpgTabConfiguration.copyWith.fieldName(...)`.
+  // ignore: library_private_types_in_public_api
+  _$RpgTabConfigurationCWProxy get copyWith =>
+      _$RpgTabConfigurationCWProxyImpl(this);
+}
+
 abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration uuid(String uuid);
 
   RpgCharacterConfiguration characterName(String characterName);
+
+  RpgCharacterConfiguration tabConfigurations(
+      List<RpgTabConfiguration>? tabConfigurations);
 
   RpgCharacterConfiguration transformationComponents(
       List<TransformationComponent>? transformationComponents);
@@ -257,6 +321,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration call({
     String uuid,
     String characterName,
+    List<RpgTabConfiguration>? tabConfigurations,
     List<TransformationComponent>? transformationComponents,
     List<RpgAlternateCharacterConfiguration>? alternateForms,
     int? moneyInBaseType,
@@ -281,6 +346,11 @@ class _$RpgCharacterConfigurationCWProxyImpl
   @override
   RpgCharacterConfiguration characterName(String characterName) =>
       this(characterName: characterName);
+
+  @override
+  RpgCharacterConfiguration tabConfigurations(
+          List<RpgTabConfiguration>? tabConfigurations) =>
+      this(tabConfigurations: tabConfigurations);
 
   @override
   RpgCharacterConfiguration transformationComponents(
@@ -332,6 +402,7 @@ class _$RpgCharacterConfigurationCWProxyImpl
   RpgCharacterConfiguration call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? characterName = const $CopyWithPlaceholder(),
+    Object? tabConfigurations = const $CopyWithPlaceholder(),
     Object? transformationComponents = const $CopyWithPlaceholder(),
     Object? alternateForms = const $CopyWithPlaceholder(),
     Object? moneyInBaseType = const $CopyWithPlaceholder(),
@@ -350,6 +421,10 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.characterName
           // ignore: cast_nullable_to_non_nullable
           : characterName as String,
+      tabConfigurations: tabConfigurations == const $CopyWithPlaceholder()
+          ? _value.tabConfigurations
+          // ignore: cast_nullable_to_non_nullable
+          : tabConfigurations as List<RpgTabConfiguration>?,
       transformationComponents:
           transformationComponents == const $CopyWithPlaceholder()
               ? _value.transformationComponents
@@ -624,11 +699,27 @@ Map<String, dynamic> _$TransformationComponentToJson(
       'transformationStats': instance.transformationStats,
     };
 
+RpgTabConfiguration _$RpgTabConfigurationFromJson(Map<String, dynamic> json) =>
+    RpgTabConfiguration(
+      tabUuid: json['tabUuid'] as String,
+      tabIcon: json['tabIcon'] as String,
+    );
+
+Map<String, dynamic> _$RpgTabConfigurationToJson(
+        RpgTabConfiguration instance) =>
+    <String, dynamic>{
+      'tabUuid': instance.tabUuid,
+      'tabIcon': instance.tabIcon,
+    };
+
 RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
         Map<String, dynamic> json) =>
     RpgCharacterConfiguration(
       uuid: json['uuid'] as String,
       characterName: json['characterName'] as String,
+      tabConfigurations: (json['tabConfigurations'] as List<dynamic>?)
+          ?.map((e) => RpgTabConfiguration.fromJson(e as Map<String, dynamic>))
+          .toList(),
       transformationComponents:
           (json['transformationComponents'] as List<dynamic>?)
               ?.map((e) =>
@@ -667,6 +758,7 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
       'alternateForm': instance.alternateForm,
       'transformationComponents': instance.transformationComponents,
       'moneyInBaseType': instance.moneyInBaseType,
+      'tabConfigurations': instance.tabConfigurations,
       'inventory': instance.inventory,
       'companionCharacters': instance.companionCharacters,
       'alternateForms': instance.alternateForms,

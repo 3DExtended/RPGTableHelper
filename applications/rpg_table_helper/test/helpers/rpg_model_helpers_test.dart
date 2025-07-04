@@ -114,6 +114,7 @@ void main() {
         );
 
         character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -296,6 +297,7 @@ void main() {
           placesOfFindings: [],
           rpgName: "asdf");
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -385,6 +387,7 @@ void main() {
       var inventoryItem =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid1', amount: 1);
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -488,6 +491,7 @@ void main() {
       var inventoryItem2 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid2', amount: 2);
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -581,6 +585,7 @@ void main() {
       var inventoryItem1 = RpgCharacterOwnedItemPair(
           itemUuid: 'uuid3', amount: 5); // Not in rpgConfig.allItems
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -670,6 +675,7 @@ void main() {
       var inventoryItem1 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid1', amount: 0);
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -761,6 +767,7 @@ void main() {
       var inventoryItem2 =
           RpgCharacterOwnedItemPair(itemUuid: 'uuid2', amount: 3);
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
@@ -854,6 +861,7 @@ void main() {
           placesOfFindings: [],
           rpgName: "asdf");
       var character = RpgCharacterConfiguration(
+          tabConfigurations: null,
           transformationComponents: null,
           alternateForm: null,
           isAlternateFormActive: null,
