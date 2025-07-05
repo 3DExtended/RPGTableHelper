@@ -20,7 +20,15 @@ class _LongPressScaleWidgetState extends State<LongPressScaleWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: widget.onLongPress,
+      onLongPressCancel: () {
+        setState(() => _pressed = false);
+      },
+      onLongPress: () {
+        Future.delayed(Duration(milliseconds: 150), () {
+          widget.onLongPress();
+          setState(() => _pressed = false);
+        });
+      },
       onLongPressStart: (_) => setState(() => _pressed = true),
       onLongPressEnd: (_) => setState(() => _pressed = false),
       child: AnimatedScale(
