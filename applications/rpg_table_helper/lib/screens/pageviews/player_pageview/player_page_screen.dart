@@ -353,6 +353,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                         ? CustomThemeProvider.of(context).theme.textColor
                         : CustomThemeProvider.of(context).theme.darkTextColor;
 
+                var isDarkMode =
+                    CustomThemeProvider.of(context).brightnessNotifier.value ==
+                        Brightness.dark;
+
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -421,7 +425,11 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                               .textTheme
                               .headlineMedium!
                               .copyWith(
-                                color: textColor,
+                                color: isDarkMode
+                                    ? CustomThemeProvider.of(context)
+                                        .theme
+                                        .accentColor
+                                    : textColor,
                                 fontSize: 24,
                               ),
                         ),
