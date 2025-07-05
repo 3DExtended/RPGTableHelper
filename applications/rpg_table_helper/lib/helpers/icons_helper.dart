@@ -174,6 +174,7 @@ const allIconNames = [
   "yin-yang",
 
   // -------
+  "chess-6-svgrepo-com",
   "backpack-svgrepo-com-2",
   "armoury-body-svgrepo-com",
   "axe-svgrepo-com",
@@ -511,6 +512,18 @@ const allIconNames = [
             width: size,
             height: size)
       );
+
+    case "chess-6-svgrepo-com":
+      return (
+        "chess-6-svgrepo-com",
+        SvgPicture.asset(
+            "assets/icons/inappcategoryicons/chess-6-svgrepo-com.svg",
+            colorFilter:
+                color == null ? null : ColorFilter.mode(color, BlendMode.srcIn),
+            width: size,
+            height: size)
+      );
+
     case "rum-svgrepo-com":
       return (
         "rum-svgrepo-com",
