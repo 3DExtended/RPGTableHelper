@@ -32,11 +32,15 @@ class AppleLoginDetails {
     return identical(this, other) ||
         (other is AppleLoginDetails &&
             (identical(other.authorizationCode, authorizationCode) ||
-                const DeepCollectionEquality()
-                    .equals(other.authorizationCode, authorizationCode)) &&
+                const DeepCollectionEquality().equals(
+                  other.authorizationCode,
+                  authorizationCode,
+                )) &&
             (identical(other.identityToken, identityToken) ||
-                const DeepCollectionEquality()
-                    .equals(other.identityToken, identityToken)));
+                const DeepCollectionEquality().equals(
+                  other.identityToken,
+                  identityToken,
+                )));
   }
 
   @override
@@ -50,21 +54,28 @@ class AppleLoginDetails {
 }
 
 extension $AppleLoginDetailsExtension on AppleLoginDetails {
-  AppleLoginDetails copyWith(
-      {String? authorizationCode, String? identityToken}) {
+  AppleLoginDetails copyWith({
+    String? authorizationCode,
+    String? identityToken,
+  }) {
     return AppleLoginDetails(
-        authorizationCode: authorizationCode ?? this.authorizationCode,
-        identityToken: identityToken ?? this.identityToken);
+      authorizationCode: authorizationCode ?? this.authorizationCode,
+      identityToken: identityToken ?? this.identityToken,
+    );
   }
 
-  AppleLoginDetails copyWithWrapped(
-      {Wrapped<String>? authorizationCode, Wrapped<String>? identityToken}) {
+  AppleLoginDetails copyWithWrapped({
+    Wrapped<String>? authorizationCode,
+    Wrapped<String>? identityToken,
+  }) {
     return AppleLoginDetails(
-        authorizationCode: (authorizationCode != null
-            ? authorizationCode.value
-            : this.authorizationCode),
-        identityToken:
-            (identityToken != null ? identityToken.value : this.identityToken));
+      authorizationCode: (authorizationCode != null
+          ? authorizationCode.value
+          : this.authorizationCode),
+      identityToken: (identityToken != null
+          ? identityToken.value
+          : this.identityToken),
+    );
   }
 }
 
@@ -107,25 +118,37 @@ class Campagne {
     return identical(this, other) ||
         (other is Campagne &&
             (identical(other.rpgConfiguration, rpgConfiguration) ||
-                const DeepCollectionEquality()
-                    .equals(other.rpgConfiguration, rpgConfiguration)) &&
+                const DeepCollectionEquality().equals(
+                  other.rpgConfiguration,
+                  rpgConfiguration,
+                )) &&
             (identical(other.campagneName, campagneName) ||
-                const DeepCollectionEquality()
-                    .equals(other.campagneName, campagneName)) &&
+                const DeepCollectionEquality().equals(
+                  other.campagneName,
+                  campagneName,
+                )) &&
             (identical(other.joinCode, joinCode) ||
-                const DeepCollectionEquality()
-                    .equals(other.joinCode, joinCode)) &&
+                const DeepCollectionEquality().equals(
+                  other.joinCode,
+                  joinCode,
+                )) &&
             (identical(other.dmUserId, dmUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.dmUserId, dmUserId)) &&
+                const DeepCollectionEquality().equals(
+                  other.dmUserId,
+                  dmUserId,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -144,55 +167,58 @@ class Campagne {
 }
 
 extension $CampagneExtension on Campagne {
-  Campagne copyWith(
-      {String? rpgConfiguration,
-      String? campagneName,
-      String? joinCode,
-      UserIdentifier? dmUserId,
-      CampagneIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  Campagne copyWith({
+    String? rpgConfiguration,
+    String? campagneName,
+    String? joinCode,
+    UserIdentifier? dmUserId,
+    CampagneIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return Campagne(
-        rpgConfiguration: rpgConfiguration ?? this.rpgConfiguration,
-        campagneName: campagneName ?? this.campagneName,
-        joinCode: joinCode ?? this.joinCode,
-        dmUserId: dmUserId ?? this.dmUserId,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      rpgConfiguration: rpgConfiguration ?? this.rpgConfiguration,
+      campagneName: campagneName ?? this.campagneName,
+      joinCode: joinCode ?? this.joinCode,
+      dmUserId: dmUserId ?? this.dmUserId,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  Campagne copyWithWrapped(
-      {Wrapped<String?>? rpgConfiguration,
-      Wrapped<String?>? campagneName,
-      Wrapped<String?>? joinCode,
-      Wrapped<UserIdentifier?>? dmUserId,
-      Wrapped<CampagneIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  Campagne copyWithWrapped({
+    Wrapped<String?>? rpgConfiguration,
+    Wrapped<String?>? campagneName,
+    Wrapped<String?>? joinCode,
+    Wrapped<UserIdentifier?>? dmUserId,
+    Wrapped<CampagneIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return Campagne(
-        rpgConfiguration: (rpgConfiguration != null
-            ? rpgConfiguration.value
-            : this.rpgConfiguration),
-        campagneName:
-            (campagneName != null ? campagneName.value : this.campagneName),
-        joinCode: (joinCode != null ? joinCode.value : this.joinCode),
-        dmUserId: (dmUserId != null ? dmUserId.value : this.dmUserId),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      rpgConfiguration: (rpgConfiguration != null
+          ? rpgConfiguration.value
+          : this.rpgConfiguration),
+      campagneName: (campagneName != null
+          ? campagneName.value
+          : this.campagneName),
+      joinCode: (joinCode != null ? joinCode.value : this.joinCode),
+      dmUserId: (dmUserId != null ? dmUserId.value : this.dmUserId),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class CampagneCreateDto {
-  const CampagneCreateDto({
-    this.rpgConfiguration,
-    required this.campagneName,
-  });
+  const CampagneCreateDto({this.rpgConfiguration, required this.campagneName});
 
   factory CampagneCreateDto.fromJson(Map<String, dynamic> json) =>
       _$CampagneCreateDtoFromJson(json);
@@ -211,11 +237,15 @@ class CampagneCreateDto {
     return identical(this, other) ||
         (other is CampagneCreateDto &&
             (identical(other.rpgConfiguration, rpgConfiguration) ||
-                const DeepCollectionEquality()
-                    .equals(other.rpgConfiguration, rpgConfiguration)) &&
+                const DeepCollectionEquality().equals(
+                  other.rpgConfiguration,
+                  rpgConfiguration,
+                )) &&
             (identical(other.campagneName, campagneName) ||
-                const DeepCollectionEquality()
-                    .equals(other.campagneName, campagneName)));
+                const DeepCollectionEquality().equals(
+                  other.campagneName,
+                  campagneName,
+                )));
   }
 
   @override
@@ -231,26 +261,29 @@ class CampagneCreateDto {
 extension $CampagneCreateDtoExtension on CampagneCreateDto {
   CampagneCreateDto copyWith({String? rpgConfiguration, String? campagneName}) {
     return CampagneCreateDto(
-        rpgConfiguration: rpgConfiguration ?? this.rpgConfiguration,
-        campagneName: campagneName ?? this.campagneName);
+      rpgConfiguration: rpgConfiguration ?? this.rpgConfiguration,
+      campagneName: campagneName ?? this.campagneName,
+    );
   }
 
-  CampagneCreateDto copyWithWrapped(
-      {Wrapped<String?>? rpgConfiguration, Wrapped<String>? campagneName}) {
+  CampagneCreateDto copyWithWrapped({
+    Wrapped<String?>? rpgConfiguration,
+    Wrapped<String>? campagneName,
+  }) {
     return CampagneCreateDto(
-        rpgConfiguration: (rpgConfiguration != null
-            ? rpgConfiguration.value
-            : this.rpgConfiguration),
-        campagneName:
-            (campagneName != null ? campagneName.value : this.campagneName));
+      rpgConfiguration: (rpgConfiguration != null
+          ? rpgConfiguration.value
+          : this.rpgConfiguration),
+      campagneName: (campagneName != null
+          ? campagneName.value
+          : this.campagneName),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class CampagneIdentifier {
-  const CampagneIdentifier({
-    this.$value,
-  });
+  const CampagneIdentifier({this.$value});
 
   factory CampagneIdentifier.fromJson(Map<String, dynamic> json) =>
       _$CampagneIdentifierFromJson(json);
@@ -285,7 +318,8 @@ extension $CampagneIdentifierExtension on CampagneIdentifier {
 
   CampagneIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return CampagneIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -298,8 +332,8 @@ class CampagneIdentifierGuidNodeModelBase {
   });
 
   factory CampagneIdentifierGuidNodeModelBase.fromJson(
-          Map<String, dynamic> json) =>
-      _$CampagneIdentifierGuidNodeModelBaseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$CampagneIdentifierGuidNodeModelBaseFromJson(json);
 
   static const toJsonFactory = _$CampagneIdentifierGuidNodeModelBaseToJson;
   Map<String, dynamic> toJson() =>
@@ -320,11 +354,15 @@ class CampagneIdentifierGuidNodeModelBase {
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -340,27 +378,32 @@ class CampagneIdentifierGuidNodeModelBase {
 
 extension $CampagneIdentifierGuidNodeModelBaseExtension
     on CampagneIdentifierGuidNodeModelBase {
-  CampagneIdentifierGuidNodeModelBase copyWith(
-      {CampagneIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  CampagneIdentifierGuidNodeModelBase copyWith({
+    CampagneIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return CampagneIdentifierGuidNodeModelBase(
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  CampagneIdentifierGuidNodeModelBase copyWithWrapped(
-      {Wrapped<CampagneIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  CampagneIdentifierGuidNodeModelBase copyWithWrapped({
+    Wrapped<CampagneIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return CampagneIdentifierGuidNodeModelBase(
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
@@ -402,19 +445,27 @@ class CampagneJoinRequest {
             (identical(other.userId, userId) ||
                 const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.playerId, playerId) ||
-                const DeepCollectionEquality()
-                    .equals(other.playerId, playerId)) &&
+                const DeepCollectionEquality().equals(
+                  other.playerId,
+                  playerId,
+                )) &&
             (identical(other.campagneId, campagneId) ||
-                const DeepCollectionEquality()
-                    .equals(other.campagneId, campagneId)) &&
+                const DeepCollectionEquality().equals(
+                  other.campagneId,
+                  campagneId,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -432,39 +483,44 @@ class CampagneJoinRequest {
 }
 
 extension $CampagneJoinRequestExtension on CampagneJoinRequest {
-  CampagneJoinRequest copyWith(
-      {UserIdentifier? userId,
-      PlayerCharacterIdentifier? playerId,
-      CampagneIdentifier? campagneId,
-      CampagneJoinRequestIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  CampagneJoinRequest copyWith({
+    UserIdentifier? userId,
+    PlayerCharacterIdentifier? playerId,
+    CampagneIdentifier? campagneId,
+    CampagneJoinRequestIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return CampagneJoinRequest(
-        userId: userId ?? this.userId,
-        playerId: playerId ?? this.playerId,
-        campagneId: campagneId ?? this.campagneId,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      userId: userId ?? this.userId,
+      playerId: playerId ?? this.playerId,
+      campagneId: campagneId ?? this.campagneId,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  CampagneJoinRequest copyWithWrapped(
-      {Wrapped<UserIdentifier?>? userId,
-      Wrapped<PlayerCharacterIdentifier?>? playerId,
-      Wrapped<CampagneIdentifier?>? campagneId,
-      Wrapped<CampagneJoinRequestIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  CampagneJoinRequest copyWithWrapped({
+    Wrapped<UserIdentifier?>? userId,
+    Wrapped<PlayerCharacterIdentifier?>? playerId,
+    Wrapped<CampagneIdentifier?>? campagneId,
+    Wrapped<CampagneJoinRequestIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return CampagneJoinRequest(
-        userId: (userId != null ? userId.value : this.userId),
-        playerId: (playerId != null ? playerId.value : this.playerId),
-        campagneId: (campagneId != null ? campagneId.value : this.campagneId),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      userId: (userId != null ? userId.value : this.userId),
+      playerId: (playerId != null ? playerId.value : this.playerId),
+      campagneId: (campagneId != null ? campagneId.value : this.campagneId),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
@@ -492,11 +548,15 @@ class CampagneJoinRequestCreateDto {
     return identical(this, other) ||
         (other is CampagneJoinRequestCreateDto &&
             (identical(other.campagneJoinCode, campagneJoinCode) ||
-                const DeepCollectionEquality()
-                    .equals(other.campagneJoinCode, campagneJoinCode)) &&
+                const DeepCollectionEquality().equals(
+                  other.campagneJoinCode,
+                  campagneJoinCode,
+                )) &&
             (identical(other.playerCharacterId, playerCharacterId) ||
-                const DeepCollectionEquality()
-                    .equals(other.playerCharacterId, playerCharacterId)));
+                const DeepCollectionEquality().equals(
+                  other.playerCharacterId,
+                  playerCharacterId,
+                )));
   }
 
   @override
@@ -511,30 +571,34 @@ class CampagneJoinRequestCreateDto {
 
 extension $CampagneJoinRequestCreateDtoExtension
     on CampagneJoinRequestCreateDto {
-  CampagneJoinRequestCreateDto copyWith(
-      {String? campagneJoinCode, String? playerCharacterId}) {
+  CampagneJoinRequestCreateDto copyWith({
+    String? campagneJoinCode,
+    String? playerCharacterId,
+  }) {
     return CampagneJoinRequestCreateDto(
-        campagneJoinCode: campagneJoinCode ?? this.campagneJoinCode,
-        playerCharacterId: playerCharacterId ?? this.playerCharacterId);
+      campagneJoinCode: campagneJoinCode ?? this.campagneJoinCode,
+      playerCharacterId: playerCharacterId ?? this.playerCharacterId,
+    );
   }
 
-  CampagneJoinRequestCreateDto copyWithWrapped(
-      {Wrapped<String>? campagneJoinCode, Wrapped<String>? playerCharacterId}) {
+  CampagneJoinRequestCreateDto copyWithWrapped({
+    Wrapped<String>? campagneJoinCode,
+    Wrapped<String>? playerCharacterId,
+  }) {
     return CampagneJoinRequestCreateDto(
-        campagneJoinCode: (campagneJoinCode != null
-            ? campagneJoinCode.value
-            : this.campagneJoinCode),
-        playerCharacterId: (playerCharacterId != null
-            ? playerCharacterId.value
-            : this.playerCharacterId));
+      campagneJoinCode: (campagneJoinCode != null
+          ? campagneJoinCode.value
+          : this.campagneJoinCode),
+      playerCharacterId: (playerCharacterId != null
+          ? playerCharacterId.value
+          : this.playerCharacterId),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class CampagneJoinRequestIdentifier {
-  const CampagneJoinRequestIdentifier({
-    this.$value,
-  });
+  const CampagneJoinRequestIdentifier({this.$value});
 
   factory CampagneJoinRequestIdentifier.fromJson(Map<String, dynamic> json) =>
       _$CampagneJoinRequestIdentifierFromJson(json);
@@ -570,7 +634,8 @@ extension $CampagneJoinRequestIdentifierExtension
 
   CampagneJoinRequestIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return CampagneJoinRequestIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -583,8 +648,8 @@ class CampagneJoinRequestIdentifierGuidNodeModelBase {
   });
 
   factory CampagneJoinRequestIdentifierGuidNodeModelBase.fromJson(
-          Map<String, dynamic> json) =>
-      _$CampagneJoinRequestIdentifierGuidNodeModelBaseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$CampagneJoinRequestIdentifierGuidNodeModelBaseFromJson(json);
 
   static const toJsonFactory =
       _$CampagneJoinRequestIdentifierGuidNodeModelBaseToJson;
@@ -607,11 +672,15 @@ class CampagneJoinRequestIdentifierGuidNodeModelBase {
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -627,35 +696,38 @@ class CampagneJoinRequestIdentifierGuidNodeModelBase {
 
 extension $CampagneJoinRequestIdentifierGuidNodeModelBaseExtension
     on CampagneJoinRequestIdentifierGuidNodeModelBase {
-  CampagneJoinRequestIdentifierGuidNodeModelBase copyWith(
-      {CampagneJoinRequestIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  CampagneJoinRequestIdentifierGuidNodeModelBase copyWith({
+    CampagneJoinRequestIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return CampagneJoinRequestIdentifierGuidNodeModelBase(
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  CampagneJoinRequestIdentifierGuidNodeModelBase copyWithWrapped(
-      {Wrapped<CampagneJoinRequestIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  CampagneJoinRequestIdentifierGuidNodeModelBase copyWithWrapped({
+    Wrapped<CampagneJoinRequestIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return CampagneJoinRequestIdentifierGuidNodeModelBase(
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class EncryptedMessageWrapperDto {
-  const EncryptedMessageWrapperDto({
-    this.encryptedMessage,
-  });
+  const EncryptedMessageWrapperDto({this.encryptedMessage});
 
   factory EncryptedMessageWrapperDto.fromJson(Map<String, dynamic> json) =>
       _$EncryptedMessageWrapperDtoFromJson(json);
@@ -672,8 +744,10 @@ class EncryptedMessageWrapperDto {
     return identical(this, other) ||
         (other is EncryptedMessageWrapperDto &&
             (identical(other.encryptedMessage, encryptedMessage) ||
-                const DeepCollectionEquality()
-                    .equals(other.encryptedMessage, encryptedMessage)));
+                const DeepCollectionEquality().equals(
+                  other.encryptedMessage,
+                  encryptedMessage,
+                )));
   }
 
   @override
@@ -688,23 +762,24 @@ class EncryptedMessageWrapperDto {
 extension $EncryptedMessageWrapperDtoExtension on EncryptedMessageWrapperDto {
   EncryptedMessageWrapperDto copyWith({String? encryptedMessage}) {
     return EncryptedMessageWrapperDto(
-        encryptedMessage: encryptedMessage ?? this.encryptedMessage);
+      encryptedMessage: encryptedMessage ?? this.encryptedMessage,
+    );
   }
 
-  EncryptedMessageWrapperDto copyWithWrapped(
-      {Wrapped<String?>? encryptedMessage}) {
+  EncryptedMessageWrapperDto copyWithWrapped({
+    Wrapped<String?>? encryptedMessage,
+  }) {
     return EncryptedMessageWrapperDto(
-        encryptedMessage: (encryptedMessage != null
-            ? encryptedMessage.value
-            : this.encryptedMessage));
+      encryptedMessage: (encryptedMessage != null
+          ? encryptedMessage.value
+          : this.encryptedMessage),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class EncryptionChallengeIdentifier {
-  const EncryptionChallengeIdentifier({
-    this.$value,
-  });
+  const EncryptionChallengeIdentifier({this.$value});
 
   factory EncryptionChallengeIdentifier.fromJson(Map<String, dynamic> json) =>
       _$EncryptionChallengeIdentifierFromJson(json);
@@ -740,7 +815,8 @@ extension $EncryptionChallengeIdentifierExtension
 
   EncryptionChallengeIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return EncryptionChallengeIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -768,11 +844,15 @@ class GoogleLoginDto {
     return identical(this, other) ||
         (other is GoogleLoginDto &&
             (identical(other.accessToken, accessToken) ||
-                const DeepCollectionEquality()
-                    .equals(other.accessToken, accessToken)) &&
+                const DeepCollectionEquality().equals(
+                  other.accessToken,
+                  accessToken,
+                )) &&
             (identical(other.identityToken, identityToken) ||
-                const DeepCollectionEquality()
-                    .equals(other.identityToken, identityToken)));
+                const DeepCollectionEquality().equals(
+                  other.identityToken,
+                  identityToken,
+                )));
   }
 
   @override
@@ -788,17 +868,21 @@ class GoogleLoginDto {
 extension $GoogleLoginDtoExtension on GoogleLoginDto {
   GoogleLoginDto copyWith({String? accessToken, String? identityToken}) {
     return GoogleLoginDto(
-        accessToken: accessToken ?? this.accessToken,
-        identityToken: identityToken ?? this.identityToken);
+      accessToken: accessToken ?? this.accessToken,
+      identityToken: identityToken ?? this.identityToken,
+    );
   }
 
-  GoogleLoginDto copyWithWrapped(
-      {Wrapped<String>? accessToken, Wrapped<String>? identityToken}) {
+  GoogleLoginDto copyWithWrapped({
+    Wrapped<String>? accessToken,
+    Wrapped<String>? identityToken,
+  }) {
     return GoogleLoginDto(
-        accessToken:
-            (accessToken != null ? accessToken.value : this.accessToken),
-        identityToken:
-            (identityToken != null ? identityToken.value : this.identityToken));
+      accessToken: (accessToken != null ? accessToken.value : this.accessToken),
+      identityToken: (identityToken != null
+          ? identityToken.value
+          : this.identityToken),
+    );
   }
 }
 
@@ -831,7 +915,9 @@ class HandleJoinRequestDto {
         (other is HandleJoinRequestDto &&
             (identical(other.campagneJoinRequestId, campagneJoinRequestId) ||
                 const DeepCollectionEquality().equals(
-                    other.campagneJoinRequestId, campagneJoinRequestId)) &&
+                  other.campagneJoinRequestId,
+                  campagneJoinRequestId,
+                )) &&
             (identical(other.type, type) ||
                 const DeepCollectionEquality().equals(other.type, type)));
   }
@@ -847,22 +933,27 @@ class HandleJoinRequestDto {
 }
 
 extension $HandleJoinRequestDtoExtension on HandleJoinRequestDto {
-  HandleJoinRequestDto copyWith(
-      {String? campagneJoinRequestId, enums.HandleJoinRequestType? type}) {
+  HandleJoinRequestDto copyWith({
+    String? campagneJoinRequestId,
+    enums.HandleJoinRequestType? type,
+  }) {
     return HandleJoinRequestDto(
-        campagneJoinRequestId:
-            campagneJoinRequestId ?? this.campagneJoinRequestId,
-        type: type ?? this.type);
+      campagneJoinRequestId:
+          campagneJoinRequestId ?? this.campagneJoinRequestId,
+      type: type ?? this.type,
+    );
   }
 
-  HandleJoinRequestDto copyWithWrapped(
-      {Wrapped<String>? campagneJoinRequestId,
-      Wrapped<enums.HandleJoinRequestType>? type}) {
+  HandleJoinRequestDto copyWithWrapped({
+    Wrapped<String>? campagneJoinRequestId,
+    Wrapped<enums.HandleJoinRequestType>? type,
+  }) {
     return HandleJoinRequestDto(
-        campagneJoinRequestId: (campagneJoinRequestId != null
-            ? campagneJoinRequestId.value
-            : this.campagneJoinRequestId),
-        type: (type != null ? type.value : this.type));
+      campagneJoinRequestId: (campagneJoinRequestId != null
+          ? campagneJoinRequestId.value
+          : this.campagneJoinRequestId),
+      type: (type != null ? type.value : this.type),
+    );
   }
 }
 
@@ -912,8 +1003,10 @@ class HttpValidationProblemDetails {
             (identical(other.detail, detail) ||
                 const DeepCollectionEquality().equals(other.detail, detail)) &&
             (identical(other.instance, instance) ||
-                const DeepCollectionEquality()
-                    .equals(other.instance, instance)));
+                const DeepCollectionEquality().equals(
+                  other.instance,
+                  instance,
+                )));
   }
 
   @override
@@ -932,36 +1025,40 @@ class HttpValidationProblemDetails {
 
 extension $HttpValidationProblemDetailsExtension
     on HttpValidationProblemDetails {
-  HttpValidationProblemDetails copyWith(
-      {Map<String, dynamic>? errors,
-      String? type,
-      String? title,
-      int? status,
-      String? detail,
-      String? instance}) {
+  HttpValidationProblemDetails copyWith({
+    Map<String, dynamic>? errors,
+    String? type,
+    String? title,
+    int? status,
+    String? detail,
+    String? instance,
+  }) {
     return HttpValidationProblemDetails(
-        errors: errors ?? this.errors,
-        type: type ?? this.type,
-        title: title ?? this.title,
-        status: status ?? this.status,
-        detail: detail ?? this.detail,
-        instance: instance ?? this.instance);
+      errors: errors ?? this.errors,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      status: status ?? this.status,
+      detail: detail ?? this.detail,
+      instance: instance ?? this.instance,
+    );
   }
 
-  HttpValidationProblemDetails copyWithWrapped(
-      {Wrapped<Map<String, dynamic>?>? errors,
-      Wrapped<String?>? type,
-      Wrapped<String?>? title,
-      Wrapped<int?>? status,
-      Wrapped<String?>? detail,
-      Wrapped<String?>? instance}) {
+  HttpValidationProblemDetails copyWithWrapped({
+    Wrapped<Map<String, dynamic>?>? errors,
+    Wrapped<String?>? type,
+    Wrapped<String?>? title,
+    Wrapped<int?>? status,
+    Wrapped<String?>? detail,
+    Wrapped<String?>? instance,
+  }) {
     return HttpValidationProblemDetails(
-        errors: (errors != null ? errors.value : this.errors),
-        type: (type != null ? type.value : this.type),
-        title: (title != null ? title.value : this.title),
-        status: (status != null ? status.value : this.status),
-        detail: (detail != null ? detail.value : this.detail),
-        instance: (instance != null ? instance.value : this.instance));
+      errors: (errors != null ? errors.value : this.errors),
+      type: (type != null ? type.value : this.type),
+      title: (title != null ? title.value : this.title),
+      status: (status != null ? status.value : this.status),
+      detail: (detail != null ? detail.value : this.detail),
+      instance: (instance != null ? instance.value : this.instance),
+    );
   }
 }
 
@@ -1013,34 +1110,52 @@ class ImageBlock {
     return identical(this, other) ||
         (other is ImageBlock &&
             (identical(other.imageMetaDataId, imageMetaDataId) ||
-                const DeepCollectionEquality()
-                    .equals(other.imageMetaDataId, imageMetaDataId)) &&
+                const DeepCollectionEquality().equals(
+                  other.imageMetaDataId,
+                  imageMetaDataId,
+                )) &&
             (identical(other.publicImageUrl, publicImageUrl) ||
-                const DeepCollectionEquality()
-                    .equals(other.publicImageUrl, publicImageUrl)) &&
+                const DeepCollectionEquality().equals(
+                  other.publicImageUrl,
+                  publicImageUrl,
+                )) &&
             (identical(other.markdownText, markdownText) ||
-                const DeepCollectionEquality()
-                    .equals(other.markdownText, markdownText)) &&
+                const DeepCollectionEquality().equals(
+                  other.markdownText,
+                  markdownText,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)) &&
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )) &&
             (identical(other.isDeleted, isDeleted) ||
-                const DeepCollectionEquality()
-                    .equals(other.isDeleted, isDeleted)) &&
+                const DeepCollectionEquality().equals(
+                  other.isDeleted,
+                  isDeleted,
+                )) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
-                const DeepCollectionEquality()
-                    .equals(other.noteDocumentId, noteDocumentId)) &&
+                const DeepCollectionEquality().equals(
+                  other.noteDocumentId,
+                  noteDocumentId,
+                )) &&
             (identical(other.creatingUserId, creatingUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.creatingUserId, creatingUserId)) &&
+                const DeepCollectionEquality().equals(
+                  other.creatingUserId,
+                  creatingUserId,
+                )) &&
             (identical(other.permittedUsers, permittedUsers) ||
-                const DeepCollectionEquality()
-                    .equals(other.permittedUsers, permittedUsers)));
+                const DeepCollectionEquality().equals(
+                  other.permittedUsers,
+                  permittedUsers,
+                )));
   }
 
   @override
@@ -1062,66 +1177,72 @@ class ImageBlock {
 }
 
 extension $ImageBlockExtension on ImageBlock {
-  ImageBlock copyWith(
-      {ImageMetaDataIdentifier? imageMetaDataId,
-      String? publicImageUrl,
-      String? markdownText,
-      NoteBlockModelBaseIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt,
-      bool? isDeleted,
-      NoteDocumentIdentifier? noteDocumentId,
-      UserIdentifier? creatingUserId,
-      List<UserIdentifier>? permittedUsers}) {
+  ImageBlock copyWith({
+    ImageMetaDataIdentifier? imageMetaDataId,
+    String? publicImageUrl,
+    String? markdownText,
+    NoteBlockModelBaseIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+    bool? isDeleted,
+    NoteDocumentIdentifier? noteDocumentId,
+    UserIdentifier? creatingUserId,
+    List<UserIdentifier>? permittedUsers,
+  }) {
     return ImageBlock(
-        imageMetaDataId: imageMetaDataId ?? this.imageMetaDataId,
-        publicImageUrl: publicImageUrl ?? this.publicImageUrl,
-        markdownText: markdownText ?? this.markdownText,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
-        isDeleted: isDeleted ?? this.isDeleted,
-        noteDocumentId: noteDocumentId ?? this.noteDocumentId,
-        creatingUserId: creatingUserId ?? this.creatingUserId,
-        permittedUsers: permittedUsers ?? this.permittedUsers);
+      imageMetaDataId: imageMetaDataId ?? this.imageMetaDataId,
+      publicImageUrl: publicImageUrl ?? this.publicImageUrl,
+      markdownText: markdownText ?? this.markdownText,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      isDeleted: isDeleted ?? this.isDeleted,
+      noteDocumentId: noteDocumentId ?? this.noteDocumentId,
+      creatingUserId: creatingUserId ?? this.creatingUserId,
+      permittedUsers: permittedUsers ?? this.permittedUsers,
+    );
   }
 
-  ImageBlock copyWithWrapped(
-      {Wrapped<ImageMetaDataIdentifier>? imageMetaDataId,
-      Wrapped<String>? publicImageUrl,
-      Wrapped<String?>? markdownText,
-      Wrapped<NoteBlockModelBaseIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt,
-      Wrapped<bool?>? isDeleted,
-      Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
-      Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<List<UserIdentifier>?>? permittedUsers}) {
+  ImageBlock copyWithWrapped({
+    Wrapped<ImageMetaDataIdentifier>? imageMetaDataId,
+    Wrapped<String>? publicImageUrl,
+    Wrapped<String?>? markdownText,
+    Wrapped<NoteBlockModelBaseIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+    Wrapped<bool?>? isDeleted,
+    Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
+    Wrapped<UserIdentifier?>? creatingUserId,
+    Wrapped<List<UserIdentifier>?>? permittedUsers,
+  }) {
     return ImageBlock(
-        imageMetaDataId: (imageMetaDataId != null
-            ? imageMetaDataId.value
-            : this.imageMetaDataId),
-        publicImageUrl: (publicImageUrl != null
-            ? publicImageUrl.value
-            : this.publicImageUrl),
-        markdownText:
-            (markdownText != null ? markdownText.value : this.markdownText),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt),
-        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
-        noteDocumentId: (noteDocumentId != null
-            ? noteDocumentId.value
-            : this.noteDocumentId),
-        creatingUserId: (creatingUserId != null
-            ? creatingUserId.value
-            : this.creatingUserId),
-        permittedUsers: (permittedUsers != null
-            ? permittedUsers.value
-            : this.permittedUsers));
+      imageMetaDataId: (imageMetaDataId != null
+          ? imageMetaDataId.value
+          : this.imageMetaDataId),
+      publicImageUrl: (publicImageUrl != null
+          ? publicImageUrl.value
+          : this.publicImageUrl),
+      markdownText: (markdownText != null
+          ? markdownText.value
+          : this.markdownText),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+      isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      noteDocumentId: (noteDocumentId != null
+          ? noteDocumentId.value
+          : this.noteDocumentId),
+      creatingUserId: (creatingUserId != null
+          ? creatingUserId.value
+          : this.creatingUserId),
+      permittedUsers: (permittedUsers != null
+          ? permittedUsers.value
+          : this.permittedUsers),
+    );
   }
 }
 
@@ -1172,26 +1293,38 @@ class ImageMetaData {
         (other is ImageMetaData &&
             (identical(other.createdForCampagneId, createdForCampagneId) ||
                 const DeepCollectionEquality().equals(
-                    other.createdForCampagneId, createdForCampagneId)) &&
+                  other.createdForCampagneId,
+                  createdForCampagneId,
+                )) &&
             (identical(other.locallyStored, locallyStored) ||
-                const DeepCollectionEquality()
-                    .equals(other.locallyStored, locallyStored)) &&
+                const DeepCollectionEquality().equals(
+                  other.locallyStored,
+                  locallyStored,
+                )) &&
             (identical(other.apiKey, apiKey) ||
                 const DeepCollectionEquality().equals(other.apiKey, apiKey)) &&
             (identical(other.creatorId, creatorId) ||
-                const DeepCollectionEquality()
-                    .equals(other.creatorId, creatorId)) &&
+                const DeepCollectionEquality().equals(
+                  other.creatorId,
+                  creatorId,
+                )) &&
             (identical(other.imageType, imageType) ||
-                const DeepCollectionEquality()
-                    .equals(other.imageType, imageType)) &&
+                const DeepCollectionEquality().equals(
+                  other.imageType,
+                  imageType,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -1211,58 +1344,62 @@ class ImageMetaData {
 }
 
 extension $ImageMetaDataExtension on ImageMetaData {
-  ImageMetaData copyWith(
-      {CampagneIdentifier? createdForCampagneId,
-      bool? locallyStored,
-      String? apiKey,
-      UserIdentifier? creatorId,
-      enums.ImageType? imageType,
-      ImageMetaDataIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  ImageMetaData copyWith({
+    CampagneIdentifier? createdForCampagneId,
+    bool? locallyStored,
+    String? apiKey,
+    UserIdentifier? creatorId,
+    enums.ImageType? imageType,
+    ImageMetaDataIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return ImageMetaData(
-        createdForCampagneId: createdForCampagneId ?? this.createdForCampagneId,
-        locallyStored: locallyStored ?? this.locallyStored,
-        apiKey: apiKey ?? this.apiKey,
-        creatorId: creatorId ?? this.creatorId,
-        imageType: imageType ?? this.imageType,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      createdForCampagneId: createdForCampagneId ?? this.createdForCampagneId,
+      locallyStored: locallyStored ?? this.locallyStored,
+      apiKey: apiKey ?? this.apiKey,
+      creatorId: creatorId ?? this.creatorId,
+      imageType: imageType ?? this.imageType,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  ImageMetaData copyWithWrapped(
-      {Wrapped<CampagneIdentifier?>? createdForCampagneId,
-      Wrapped<bool?>? locallyStored,
-      Wrapped<String?>? apiKey,
-      Wrapped<UserIdentifier?>? creatorId,
-      Wrapped<enums.ImageType?>? imageType,
-      Wrapped<ImageMetaDataIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  ImageMetaData copyWithWrapped({
+    Wrapped<CampagneIdentifier?>? createdForCampagneId,
+    Wrapped<bool?>? locallyStored,
+    Wrapped<String?>? apiKey,
+    Wrapped<UserIdentifier?>? creatorId,
+    Wrapped<enums.ImageType?>? imageType,
+    Wrapped<ImageMetaDataIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return ImageMetaData(
-        createdForCampagneId: (createdForCampagneId != null
-            ? createdForCampagneId.value
-            : this.createdForCampagneId),
-        locallyStored:
-            (locallyStored != null ? locallyStored.value : this.locallyStored),
-        apiKey: (apiKey != null ? apiKey.value : this.apiKey),
-        creatorId: (creatorId != null ? creatorId.value : this.creatorId),
-        imageType: (imageType != null ? imageType.value : this.imageType),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      createdForCampagneId: (createdForCampagneId != null
+          ? createdForCampagneId.value
+          : this.createdForCampagneId),
+      locallyStored: (locallyStored != null
+          ? locallyStored.value
+          : this.locallyStored),
+      apiKey: (apiKey != null ? apiKey.value : this.apiKey),
+      creatorId: (creatorId != null ? creatorId.value : this.creatorId),
+      imageType: (imageType != null ? imageType.value : this.imageType),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class ImageMetaDataIdentifier {
-  const ImageMetaDataIdentifier({
-    this.$value,
-  });
+  const ImageMetaDataIdentifier({this.$value});
 
   factory ImageMetaDataIdentifier.fromJson(Map<String, dynamic> json) =>
       _$ImageMetaDataIdentifierFromJson(json);
@@ -1297,7 +1434,8 @@ extension $ImageMetaDataIdentifierExtension on ImageMetaDataIdentifier {
 
   ImageMetaDataIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return ImageMetaDataIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -1310,8 +1448,8 @@ class ImageMetaDataIdentifierGuidNodeModelBase {
   });
 
   factory ImageMetaDataIdentifierGuidNodeModelBase.fromJson(
-          Map<String, dynamic> json) =>
-      _$ImageMetaDataIdentifierGuidNodeModelBaseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$ImageMetaDataIdentifierGuidNodeModelBaseFromJson(json);
 
   static const toJsonFactory = _$ImageMetaDataIdentifierGuidNodeModelBaseToJson;
   Map<String, dynamic> toJson() =>
@@ -1333,11 +1471,15 @@ class ImageMetaDataIdentifierGuidNodeModelBase {
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -1353,27 +1495,32 @@ class ImageMetaDataIdentifierGuidNodeModelBase {
 
 extension $ImageMetaDataIdentifierGuidNodeModelBaseExtension
     on ImageMetaDataIdentifierGuidNodeModelBase {
-  ImageMetaDataIdentifierGuidNodeModelBase copyWith(
-      {ImageMetaDataIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  ImageMetaDataIdentifierGuidNodeModelBase copyWith({
+    ImageMetaDataIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return ImageMetaDataIdentifierGuidNodeModelBase(
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  ImageMetaDataIdentifierGuidNodeModelBase copyWithWrapped(
-      {Wrapped<ImageMetaDataIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  ImageMetaDataIdentifierGuidNodeModelBase copyWithWrapped({
+    Wrapped<ImageMetaDataIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return ImageMetaDataIdentifierGuidNodeModelBase(
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
@@ -1404,14 +1551,20 @@ class JoinRequestForCampagneDto {
     return identical(this, other) ||
         (other is JoinRequestForCampagneDto &&
             (identical(other.request, request) ||
-                const DeepCollectionEquality()
-                    .equals(other.request, request)) &&
+                const DeepCollectionEquality().equals(
+                  other.request,
+                  request,
+                )) &&
             (identical(other.playerCharacter, playerCharacter) ||
-                const DeepCollectionEquality()
-                    .equals(other.playerCharacter, playerCharacter)) &&
+                const DeepCollectionEquality().equals(
+                  other.playerCharacter,
+                  playerCharacter,
+                )) &&
             (identical(other.username, username) ||
-                const DeepCollectionEquality()
-                    .equals(other.username, username)));
+                const DeepCollectionEquality().equals(
+                  other.username,
+                  username,
+                )));
   }
 
   @override
@@ -1426,26 +1579,30 @@ class JoinRequestForCampagneDto {
 }
 
 extension $JoinRequestForCampagneDtoExtension on JoinRequestForCampagneDto {
-  JoinRequestForCampagneDto copyWith(
-      {CampagneJoinRequest? request,
-      PlayerCharacter? playerCharacter,
-      String? username}) {
+  JoinRequestForCampagneDto copyWith({
+    CampagneJoinRequest? request,
+    PlayerCharacter? playerCharacter,
+    String? username,
+  }) {
     return JoinRequestForCampagneDto(
-        request: request ?? this.request,
-        playerCharacter: playerCharacter ?? this.playerCharacter,
-        username: username ?? this.username);
+      request: request ?? this.request,
+      playerCharacter: playerCharacter ?? this.playerCharacter,
+      username: username ?? this.username,
+    );
   }
 
-  JoinRequestForCampagneDto copyWithWrapped(
-      {Wrapped<CampagneJoinRequest>? request,
-      Wrapped<PlayerCharacter>? playerCharacter,
-      Wrapped<String>? username}) {
+  JoinRequestForCampagneDto copyWithWrapped({
+    Wrapped<CampagneJoinRequest>? request,
+    Wrapped<PlayerCharacter>? playerCharacter,
+    Wrapped<String>? username,
+  }) {
     return JoinRequestForCampagneDto(
-        request: (request != null ? request.value : this.request),
-        playerCharacter: (playerCharacter != null
-            ? playerCharacter.value
-            : this.playerCharacter),
-        username: (username != null ? username.value : this.username));
+      request: (request != null ? request.value : this.request),
+      playerCharacter: (playerCharacter != null
+          ? playerCharacter.value
+          : this.playerCharacter),
+      username: (username != null ? username.value : this.username),
+    );
   }
 }
 
@@ -1474,13 +1631,18 @@ class LoginWithUsernameAndPasswordDto {
     return identical(this, other) ||
         (other is LoginWithUsernameAndPasswordDto &&
             (identical(other.username, username) ||
-                const DeepCollectionEquality()
-                    .equals(other.username, username)) &&
-            (identical(other.userSecretByEncryptionChallenge,
-                    userSecretByEncryptionChallenge) ||
                 const DeepCollectionEquality().equals(
-                    other.userSecretByEncryptionChallenge,
-                    userSecretByEncryptionChallenge)));
+                  other.username,
+                  username,
+                )) &&
+            (identical(
+                  other.userSecretByEncryptionChallenge,
+                  userSecretByEncryptionChallenge,
+                ) ||
+                const DeepCollectionEquality().equals(
+                  other.userSecretByEncryptionChallenge,
+                  userSecretByEncryptionChallenge,
+                )));
   }
 
   @override
@@ -1495,23 +1657,28 @@ class LoginWithUsernameAndPasswordDto {
 
 extension $LoginWithUsernameAndPasswordDtoExtension
     on LoginWithUsernameAndPasswordDto {
-  LoginWithUsernameAndPasswordDto copyWith(
-      {String? username, String? userSecretByEncryptionChallenge}) {
+  LoginWithUsernameAndPasswordDto copyWith({
+    String? username,
+    String? userSecretByEncryptionChallenge,
+  }) {
     return LoginWithUsernameAndPasswordDto(
-        username: username ?? this.username,
-        userSecretByEncryptionChallenge: userSecretByEncryptionChallenge ??
-            this.userSecretByEncryptionChallenge);
+      username: username ?? this.username,
+      userSecretByEncryptionChallenge:
+          userSecretByEncryptionChallenge ??
+          this.userSecretByEncryptionChallenge,
+    );
   }
 
-  LoginWithUsernameAndPasswordDto copyWithWrapped(
-      {Wrapped<String>? username,
-      Wrapped<String>? userSecretByEncryptionChallenge}) {
+  LoginWithUsernameAndPasswordDto copyWithWrapped({
+    Wrapped<String>? username,
+    Wrapped<String>? userSecretByEncryptionChallenge,
+  }) {
     return LoginWithUsernameAndPasswordDto(
-        username: (username != null ? username.value : this.username),
-        userSecretByEncryptionChallenge:
-            (userSecretByEncryptionChallenge != null
-                ? userSecretByEncryptionChallenge.value
-                : this.userSecretByEncryptionChallenge));
+      username: (username != null ? username.value : this.username),
+      userSecretByEncryptionChallenge: (userSecretByEncryptionChallenge != null
+          ? userSecretByEncryptionChallenge.value
+          : this.userSecretByEncryptionChallenge),
+    );
   }
 }
 
@@ -1554,25 +1721,37 @@ class NoteBlockModelBase {
     return identical(this, other) ||
         (other is NoteBlockModelBase &&
             (identical(other.isDeleted, isDeleted) ||
-                const DeepCollectionEquality()
-                    .equals(other.isDeleted, isDeleted)) &&
+                const DeepCollectionEquality().equals(
+                  other.isDeleted,
+                  isDeleted,
+                )) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
-                const DeepCollectionEquality()
-                    .equals(other.noteDocumentId, noteDocumentId)) &&
+                const DeepCollectionEquality().equals(
+                  other.noteDocumentId,
+                  noteDocumentId,
+                )) &&
             (identical(other.creatingUserId, creatingUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.creatingUserId, creatingUserId)) &&
+                const DeepCollectionEquality().equals(
+                  other.creatingUserId,
+                  creatingUserId,
+                )) &&
             (identical(other.permittedUsers, permittedUsers) ||
-                const DeepCollectionEquality()
-                    .equals(other.permittedUsers, permittedUsers)) &&
+                const DeepCollectionEquality().equals(
+                  other.permittedUsers,
+                  permittedUsers,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -1591,57 +1770,60 @@ class NoteBlockModelBase {
 }
 
 extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
-  NoteBlockModelBase copyWith(
-      {bool? isDeleted,
-      NoteDocumentIdentifier? noteDocumentId,
-      UserIdentifier? creatingUserId,
-      List<UserIdentifier>? permittedUsers,
-      NoteBlockModelBaseIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  NoteBlockModelBase copyWith({
+    bool? isDeleted,
+    NoteDocumentIdentifier? noteDocumentId,
+    UserIdentifier? creatingUserId,
+    List<UserIdentifier>? permittedUsers,
+    NoteBlockModelBaseIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return NoteBlockModelBase(
-        isDeleted: isDeleted ?? this.isDeleted,
-        noteDocumentId: noteDocumentId ?? this.noteDocumentId,
-        creatingUserId: creatingUserId ?? this.creatingUserId,
-        permittedUsers: permittedUsers ?? this.permittedUsers,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      isDeleted: isDeleted ?? this.isDeleted,
+      noteDocumentId: noteDocumentId ?? this.noteDocumentId,
+      creatingUserId: creatingUserId ?? this.creatingUserId,
+      permittedUsers: permittedUsers ?? this.permittedUsers,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  NoteBlockModelBase copyWithWrapped(
-      {Wrapped<bool?>? isDeleted,
-      Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
-      Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<List<UserIdentifier>?>? permittedUsers,
-      Wrapped<NoteBlockModelBaseIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  NoteBlockModelBase copyWithWrapped({
+    Wrapped<bool?>? isDeleted,
+    Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
+    Wrapped<UserIdentifier?>? creatingUserId,
+    Wrapped<List<UserIdentifier>?>? permittedUsers,
+    Wrapped<NoteBlockModelBaseIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return NoteBlockModelBase(
-        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
-        noteDocumentId: (noteDocumentId != null
-            ? noteDocumentId.value
-            : this.noteDocumentId),
-        creatingUserId: (creatingUserId != null
-            ? creatingUserId.value
-            : this.creatingUserId),
-        permittedUsers: (permittedUsers != null
-            ? permittedUsers.value
-            : this.permittedUsers),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      noteDocumentId: (noteDocumentId != null
+          ? noteDocumentId.value
+          : this.noteDocumentId),
+      creatingUserId: (creatingUserId != null
+          ? creatingUserId.value
+          : this.creatingUserId),
+      permittedUsers: (permittedUsers != null
+          ? permittedUsers.value
+          : this.permittedUsers),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class NoteBlockModelBaseIdentifier {
-  const NoteBlockModelBaseIdentifier({
-    this.$value,
-  });
+  const NoteBlockModelBaseIdentifier({this.$value});
 
   factory NoteBlockModelBaseIdentifier.fromJson(Map<String, dynamic> json) =>
       _$NoteBlockModelBaseIdentifierFromJson(json);
@@ -1677,7 +1859,8 @@ extension $NoteBlockModelBaseIdentifierExtension
 
   NoteBlockModelBaseIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return NoteBlockModelBaseIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -1690,8 +1873,8 @@ class NoteBlockModelBaseIdentifierGuidNodeModelBase {
   });
 
   factory NoteBlockModelBaseIdentifierGuidNodeModelBase.fromJson(
-          Map<String, dynamic> json) =>
-      _$NoteBlockModelBaseIdentifierGuidNodeModelBaseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$NoteBlockModelBaseIdentifierGuidNodeModelBaseFromJson(json);
 
   static const toJsonFactory =
       _$NoteBlockModelBaseIdentifierGuidNodeModelBaseToJson;
@@ -1714,11 +1897,15 @@ class NoteBlockModelBaseIdentifierGuidNodeModelBase {
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -1734,27 +1921,32 @@ class NoteBlockModelBaseIdentifierGuidNodeModelBase {
 
 extension $NoteBlockModelBaseIdentifierGuidNodeModelBaseExtension
     on NoteBlockModelBaseIdentifierGuidNodeModelBase {
-  NoteBlockModelBaseIdentifierGuidNodeModelBase copyWith(
-      {NoteBlockModelBaseIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  NoteBlockModelBaseIdentifierGuidNodeModelBase copyWith({
+    NoteBlockModelBaseIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return NoteBlockModelBaseIdentifierGuidNodeModelBase(
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  NoteBlockModelBaseIdentifierGuidNodeModelBase copyWithWrapped(
-      {Wrapped<NoteBlockModelBaseIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  NoteBlockModelBaseIdentifierGuidNodeModelBase copyWithWrapped({
+    Wrapped<NoteBlockModelBaseIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return NoteBlockModelBaseIdentifierGuidNodeModelBase(
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
@@ -1806,33 +1998,49 @@ class NoteDocumentDto {
     return identical(this, other) ||
         (other is NoteDocumentDto &&
             (identical(other.isDeleted, isDeleted) ||
-                const DeepCollectionEquality()
-                    .equals(other.isDeleted, isDeleted)) &&
+                const DeepCollectionEquality().equals(
+                  other.isDeleted,
+                  isDeleted,
+                )) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)) &&
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.groupName, groupName) ||
-                const DeepCollectionEquality()
-                    .equals(other.groupName, groupName)) &&
+                const DeepCollectionEquality().equals(
+                  other.groupName,
+                  groupName,
+                )) &&
             (identical(other.creatingUserId, creatingUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.creatingUserId, creatingUserId)) &&
+                const DeepCollectionEquality().equals(
+                  other.creatingUserId,
+                  creatingUserId,
+                )) &&
             (identical(other.title, title) ||
                 const DeepCollectionEquality().equals(other.title, title)) &&
             (identical(other.createdForCampagneId, createdForCampagneId) ||
                 const DeepCollectionEquality().equals(
-                    other.createdForCampagneId, createdForCampagneId)) &&
+                  other.createdForCampagneId,
+                  createdForCampagneId,
+                )) &&
             (identical(other.imageBlocks, imageBlocks) ||
-                const DeepCollectionEquality()
-                    .equals(other.imageBlocks, imageBlocks)) &&
+                const DeepCollectionEquality().equals(
+                  other.imageBlocks,
+                  imageBlocks,
+                )) &&
             (identical(other.textBlocks, textBlocks) ||
-                const DeepCollectionEquality()
-                    .equals(other.textBlocks, textBlocks)));
+                const DeepCollectionEquality().equals(
+                  other.textBlocks,
+                  textBlocks,
+                )));
   }
 
   @override
@@ -1854,68 +2062,70 @@ class NoteDocumentDto {
 }
 
 extension $NoteDocumentDtoExtension on NoteDocumentDto {
-  NoteDocumentDto copyWith(
-      {bool? isDeleted,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt,
-      NoteDocumentIdentifier? id,
-      String? groupName,
-      UserIdentifier? creatingUserId,
-      String? title,
-      CampagneIdentifier? createdForCampagneId,
-      List<ImageBlock>? imageBlocks,
-      List<TextBlock>? textBlocks}) {
+  NoteDocumentDto copyWith({
+    bool? isDeleted,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+    NoteDocumentIdentifier? id,
+    String? groupName,
+    UserIdentifier? creatingUserId,
+    String? title,
+    CampagneIdentifier? createdForCampagneId,
+    List<ImageBlock>? imageBlocks,
+    List<TextBlock>? textBlocks,
+  }) {
     return NoteDocumentDto(
-        isDeleted: isDeleted ?? this.isDeleted,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
-        id: id ?? this.id,
-        groupName: groupName ?? this.groupName,
-        creatingUserId: creatingUserId ?? this.creatingUserId,
-        title: title ?? this.title,
-        createdForCampagneId: createdForCampagneId ?? this.createdForCampagneId,
-        imageBlocks: imageBlocks ?? this.imageBlocks,
-        textBlocks: textBlocks ?? this.textBlocks);
+      isDeleted: isDeleted ?? this.isDeleted,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      id: id ?? this.id,
+      groupName: groupName ?? this.groupName,
+      creatingUserId: creatingUserId ?? this.creatingUserId,
+      title: title ?? this.title,
+      createdForCampagneId: createdForCampagneId ?? this.createdForCampagneId,
+      imageBlocks: imageBlocks ?? this.imageBlocks,
+      textBlocks: textBlocks ?? this.textBlocks,
+    );
   }
 
-  NoteDocumentDto copyWithWrapped(
-      {Wrapped<bool?>? isDeleted,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt,
-      Wrapped<NoteDocumentIdentifier?>? id,
-      Wrapped<String>? groupName,
-      Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<String>? title,
-      Wrapped<CampagneIdentifier>? createdForCampagneId,
-      Wrapped<List<ImageBlock>>? imageBlocks,
-      Wrapped<List<TextBlock>>? textBlocks}) {
+  NoteDocumentDto copyWithWrapped({
+    Wrapped<bool?>? isDeleted,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+    Wrapped<NoteDocumentIdentifier?>? id,
+    Wrapped<String>? groupName,
+    Wrapped<UserIdentifier?>? creatingUserId,
+    Wrapped<String>? title,
+    Wrapped<CampagneIdentifier>? createdForCampagneId,
+    Wrapped<List<ImageBlock>>? imageBlocks,
+    Wrapped<List<TextBlock>>? textBlocks,
+  }) {
     return NoteDocumentDto(
-        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt),
-        id: (id != null ? id.value : this.id),
-        groupName: (groupName != null ? groupName.value : this.groupName),
-        creatingUserId: (creatingUserId != null
-            ? creatingUserId.value
-            : this.creatingUserId),
-        title: (title != null ? title.value : this.title),
-        createdForCampagneId: (createdForCampagneId != null
-            ? createdForCampagneId.value
-            : this.createdForCampagneId),
-        imageBlocks:
-            (imageBlocks != null ? imageBlocks.value : this.imageBlocks),
-        textBlocks: (textBlocks != null ? textBlocks.value : this.textBlocks));
+      isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+      id: (id != null ? id.value : this.id),
+      groupName: (groupName != null ? groupName.value : this.groupName),
+      creatingUserId: (creatingUserId != null
+          ? creatingUserId.value
+          : this.creatingUserId),
+      title: (title != null ? title.value : this.title),
+      createdForCampagneId: (createdForCampagneId != null
+          ? createdForCampagneId.value
+          : this.createdForCampagneId),
+      imageBlocks: (imageBlocks != null ? imageBlocks.value : this.imageBlocks),
+      textBlocks: (textBlocks != null ? textBlocks.value : this.textBlocks),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class NoteDocumentIdentifier {
-  const NoteDocumentIdentifier({
-    this.$value,
-  });
+  const NoteDocumentIdentifier({this.$value});
 
   factory NoteDocumentIdentifier.fromJson(Map<String, dynamic> json) =>
       _$NoteDocumentIdentifierFromJson(json);
@@ -1950,7 +2160,8 @@ extension $NoteDocumentIdentifierExtension on NoteDocumentIdentifier {
 
   NoteDocumentIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return NoteDocumentIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -1987,8 +2198,10 @@ class NoteDocumentPlayerDescriptorDto {
             (identical(other.userId, userId) ||
                 const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.playerCharacterName, playerCharacterName) ||
-                const DeepCollectionEquality()
-                    .equals(other.playerCharacterName, playerCharacterName)) &&
+                const DeepCollectionEquality().equals(
+                  other.playerCharacterName,
+                  playerCharacterName,
+                )) &&
             (identical(other.isDm, isDm) ||
                 const DeepCollectionEquality().equals(other.isDm, isDm)) &&
             (identical(other.isYou, isYou) ||
@@ -2009,30 +2222,34 @@ class NoteDocumentPlayerDescriptorDto {
 
 extension $NoteDocumentPlayerDescriptorDtoExtension
     on NoteDocumentPlayerDescriptorDto {
-  NoteDocumentPlayerDescriptorDto copyWith(
-      {UserIdentifier? userId,
-      String? playerCharacterName,
-      bool? isDm,
-      bool? isYou}) {
+  NoteDocumentPlayerDescriptorDto copyWith({
+    UserIdentifier? userId,
+    String? playerCharacterName,
+    bool? isDm,
+    bool? isYou,
+  }) {
     return NoteDocumentPlayerDescriptorDto(
-        userId: userId ?? this.userId,
-        playerCharacterName: playerCharacterName ?? this.playerCharacterName,
-        isDm: isDm ?? this.isDm,
-        isYou: isYou ?? this.isYou);
+      userId: userId ?? this.userId,
+      playerCharacterName: playerCharacterName ?? this.playerCharacterName,
+      isDm: isDm ?? this.isDm,
+      isYou: isYou ?? this.isYou,
+    );
   }
 
-  NoteDocumentPlayerDescriptorDto copyWithWrapped(
-      {Wrapped<UserIdentifier>? userId,
-      Wrapped<String?>? playerCharacterName,
-      Wrapped<bool>? isDm,
-      Wrapped<bool>? isYou}) {
+  NoteDocumentPlayerDescriptorDto copyWithWrapped({
+    Wrapped<UserIdentifier>? userId,
+    Wrapped<String?>? playerCharacterName,
+    Wrapped<bool>? isDm,
+    Wrapped<bool>? isYou,
+  }) {
     return NoteDocumentPlayerDescriptorDto(
-        userId: (userId != null ? userId.value : this.userId),
-        playerCharacterName: (playerCharacterName != null
-            ? playerCharacterName.value
-            : this.playerCharacterName),
-        isDm: (isDm != null ? isDm.value : this.isDm),
-        isYou: (isYou != null ? isYou.value : this.isYou));
+      userId: (userId != null ? userId.value : this.userId),
+      playerCharacterName: (playerCharacterName != null
+          ? playerCharacterName.value
+          : this.playerCharacterName),
+      isDm: (isDm != null ? isDm.value : this.isDm),
+      isYou: (isYou != null ? isYou.value : this.isYou),
+    );
   }
 }
 
@@ -2074,28 +2291,41 @@ class PlayerCharacter {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is PlayerCharacter &&
-            (identical(other.rpgCharacterConfiguration,
-                    rpgCharacterConfiguration) ||
+            (identical(
+                  other.rpgCharacterConfiguration,
+                  rpgCharacterConfiguration,
+                ) ||
                 const DeepCollectionEquality().equals(
-                    other.rpgCharacterConfiguration,
-                    rpgCharacterConfiguration)) &&
+                  other.rpgCharacterConfiguration,
+                  rpgCharacterConfiguration,
+                )) &&
             (identical(other.characterName, characterName) ||
-                const DeepCollectionEquality()
-                    .equals(other.characterName, characterName)) &&
+                const DeepCollectionEquality().equals(
+                  other.characterName,
+                  characterName,
+                )) &&
             (identical(other.playerUserId, playerUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.playerUserId, playerUserId)) &&
+                const DeepCollectionEquality().equals(
+                  other.playerUserId,
+                  playerUserId,
+                )) &&
             (identical(other.campagneId, campagneId) ||
-                const DeepCollectionEquality()
-                    .equals(other.campagneId, campagneId)) &&
+                const DeepCollectionEquality().equals(
+                  other.campagneId,
+                  campagneId,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -2114,48 +2344,55 @@ class PlayerCharacter {
 }
 
 extension $PlayerCharacterExtension on PlayerCharacter {
-  PlayerCharacter copyWith(
-      {String? rpgCharacterConfiguration,
-      String? characterName,
-      UserIdentifier? playerUserId,
-      CampagneIdentifier? campagneId,
-      PlayerCharacterIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  PlayerCharacter copyWith({
+    String? rpgCharacterConfiguration,
+    String? characterName,
+    UserIdentifier? playerUserId,
+    CampagneIdentifier? campagneId,
+    PlayerCharacterIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return PlayerCharacter(
-        rpgCharacterConfiguration:
-            rpgCharacterConfiguration ?? this.rpgCharacterConfiguration,
-        characterName: characterName ?? this.characterName,
-        playerUserId: playerUserId ?? this.playerUserId,
-        campagneId: campagneId ?? this.campagneId,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      rpgCharacterConfiguration:
+          rpgCharacterConfiguration ?? this.rpgCharacterConfiguration,
+      characterName: characterName ?? this.characterName,
+      playerUserId: playerUserId ?? this.playerUserId,
+      campagneId: campagneId ?? this.campagneId,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  PlayerCharacter copyWithWrapped(
-      {Wrapped<String?>? rpgCharacterConfiguration,
-      Wrapped<String?>? characterName,
-      Wrapped<UserIdentifier?>? playerUserId,
-      Wrapped<CampagneIdentifier?>? campagneId,
-      Wrapped<PlayerCharacterIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  PlayerCharacter copyWithWrapped({
+    Wrapped<String?>? rpgCharacterConfiguration,
+    Wrapped<String?>? characterName,
+    Wrapped<UserIdentifier?>? playerUserId,
+    Wrapped<CampagneIdentifier?>? campagneId,
+    Wrapped<PlayerCharacterIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return PlayerCharacter(
-        rpgCharacterConfiguration: (rpgCharacterConfiguration != null
-            ? rpgCharacterConfiguration.value
-            : this.rpgCharacterConfiguration),
-        characterName:
-            (characterName != null ? characterName.value : this.characterName),
-        playerUserId:
-            (playerUserId != null ? playerUserId.value : this.playerUserId),
-        campagneId: (campagneId != null ? campagneId.value : this.campagneId),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      rpgCharacterConfiguration: (rpgCharacterConfiguration != null
+          ? rpgCharacterConfiguration.value
+          : this.rpgCharacterConfiguration),
+      characterName: (characterName != null
+          ? characterName.value
+          : this.characterName),
+      playerUserId: (playerUserId != null
+          ? playerUserId.value
+          : this.playerUserId),
+      campagneId: (campagneId != null ? campagneId.value : this.campagneId),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
@@ -2185,17 +2422,24 @@ class PlayerCharacterCreateDto {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is PlayerCharacterCreateDto &&
-            (identical(other.rpgCharacterConfiguration,
-                    rpgCharacterConfiguration) ||
+            (identical(
+                  other.rpgCharacterConfiguration,
+                  rpgCharacterConfiguration,
+                ) ||
                 const DeepCollectionEquality().equals(
-                    other.rpgCharacterConfiguration,
-                    rpgCharacterConfiguration)) &&
+                  other.rpgCharacterConfiguration,
+                  rpgCharacterConfiguration,
+                )) &&
             (identical(other.characterName, characterName) ||
-                const DeepCollectionEquality()
-                    .equals(other.characterName, characterName)) &&
+                const DeepCollectionEquality().equals(
+                  other.characterName,
+                  characterName,
+                )) &&
             (identical(other.campagneId, campagneId) ||
-                const DeepCollectionEquality()
-                    .equals(other.campagneId, campagneId)));
+                const DeepCollectionEquality().equals(
+                  other.campagneId,
+                  campagneId,
+                )));
   }
 
   @override
@@ -2210,36 +2454,39 @@ class PlayerCharacterCreateDto {
 }
 
 extension $PlayerCharacterCreateDtoExtension on PlayerCharacterCreateDto {
-  PlayerCharacterCreateDto copyWith(
-      {String? rpgCharacterConfiguration,
-      String? characterName,
-      String? campagneId}) {
+  PlayerCharacterCreateDto copyWith({
+    String? rpgCharacterConfiguration,
+    String? characterName,
+    String? campagneId,
+  }) {
     return PlayerCharacterCreateDto(
-        rpgCharacterConfiguration:
-            rpgCharacterConfiguration ?? this.rpgCharacterConfiguration,
-        characterName: characterName ?? this.characterName,
-        campagneId: campagneId ?? this.campagneId);
+      rpgCharacterConfiguration:
+          rpgCharacterConfiguration ?? this.rpgCharacterConfiguration,
+      characterName: characterName ?? this.characterName,
+      campagneId: campagneId ?? this.campagneId,
+    );
   }
 
-  PlayerCharacterCreateDto copyWithWrapped(
-      {Wrapped<String?>? rpgCharacterConfiguration,
-      Wrapped<String>? characterName,
-      Wrapped<String?>? campagneId}) {
+  PlayerCharacterCreateDto copyWithWrapped({
+    Wrapped<String?>? rpgCharacterConfiguration,
+    Wrapped<String>? characterName,
+    Wrapped<String?>? campagneId,
+  }) {
     return PlayerCharacterCreateDto(
-        rpgCharacterConfiguration: (rpgCharacterConfiguration != null
-            ? rpgCharacterConfiguration.value
-            : this.rpgCharacterConfiguration),
-        characterName:
-            (characterName != null ? characterName.value : this.characterName),
-        campagneId: (campagneId != null ? campagneId.value : this.campagneId));
+      rpgCharacterConfiguration: (rpgCharacterConfiguration != null
+          ? rpgCharacterConfiguration.value
+          : this.rpgCharacterConfiguration),
+      characterName: (characterName != null
+          ? characterName.value
+          : this.characterName),
+      campagneId: (campagneId != null ? campagneId.value : this.campagneId),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class PlayerCharacterIdentifier {
-  const PlayerCharacterIdentifier({
-    this.$value,
-  });
+  const PlayerCharacterIdentifier({this.$value});
 
   factory PlayerCharacterIdentifier.fromJson(Map<String, dynamic> json) =>
       _$PlayerCharacterIdentifierFromJson(json);
@@ -2274,7 +2521,8 @@ extension $PlayerCharacterIdentifierExtension on PlayerCharacterIdentifier {
 
   PlayerCharacterIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return PlayerCharacterIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
@@ -2287,8 +2535,8 @@ class PlayerCharacterIdentifierGuidNodeModelBase {
   });
 
   factory PlayerCharacterIdentifierGuidNodeModelBase.fromJson(
-          Map<String, dynamic> json) =>
-      _$PlayerCharacterIdentifierGuidNodeModelBaseFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$PlayerCharacterIdentifierGuidNodeModelBaseFromJson(json);
 
   static const toJsonFactory =
       _$PlayerCharacterIdentifierGuidNodeModelBaseToJson;
@@ -2311,11 +2559,15 @@ class PlayerCharacterIdentifierGuidNodeModelBase {
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)));
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )));
   }
 
   @override
@@ -2331,27 +2583,32 @@ class PlayerCharacterIdentifierGuidNodeModelBase {
 
 extension $PlayerCharacterIdentifierGuidNodeModelBaseExtension
     on PlayerCharacterIdentifierGuidNodeModelBase {
-  PlayerCharacterIdentifierGuidNodeModelBase copyWith(
-      {PlayerCharacterIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt}) {
+  PlayerCharacterIdentifierGuidNodeModelBase copyWith({
+    PlayerCharacterIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+  }) {
     return PlayerCharacterIdentifierGuidNodeModelBase(
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt);
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+    );
   }
 
-  PlayerCharacterIdentifierGuidNodeModelBase copyWithWrapped(
-      {Wrapped<PlayerCharacterIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt}) {
+  PlayerCharacterIdentifierGuidNodeModelBase copyWithWrapped({
+    Wrapped<PlayerCharacterIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+  }) {
     return PlayerCharacterIdentifierGuidNodeModelBase(
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt));
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+    );
   }
 }
 
@@ -2396,8 +2653,10 @@ class ProblemDetails {
             (identical(other.detail, detail) ||
                 const DeepCollectionEquality().equals(other.detail, detail)) &&
             (identical(other.instance, instance) ||
-                const DeepCollectionEquality()
-                    .equals(other.instance, instance)));
+                const DeepCollectionEquality().equals(
+                  other.instance,
+                  instance,
+                )));
   }
 
   @override
@@ -2414,41 +2673,42 @@ class ProblemDetails {
 }
 
 extension $ProblemDetailsExtension on ProblemDetails {
-  ProblemDetails copyWith(
-      {String? type,
-      String? title,
-      int? status,
-      String? detail,
-      String? instance}) {
+  ProblemDetails copyWith({
+    String? type,
+    String? title,
+    int? status,
+    String? detail,
+    String? instance,
+  }) {
     return ProblemDetails(
-        type: type ?? this.type,
-        title: title ?? this.title,
-        status: status ?? this.status,
-        detail: detail ?? this.detail,
-        instance: instance ?? this.instance);
+      type: type ?? this.type,
+      title: title ?? this.title,
+      status: status ?? this.status,
+      detail: detail ?? this.detail,
+      instance: instance ?? this.instance,
+    );
   }
 
-  ProblemDetails copyWithWrapped(
-      {Wrapped<String?>? type,
-      Wrapped<String?>? title,
-      Wrapped<int?>? status,
-      Wrapped<String?>? detail,
-      Wrapped<String?>? instance}) {
+  ProblemDetails copyWithWrapped({
+    Wrapped<String?>? type,
+    Wrapped<String?>? title,
+    Wrapped<int?>? status,
+    Wrapped<String?>? detail,
+    Wrapped<String?>? instance,
+  }) {
     return ProblemDetails(
-        type: (type != null ? type.value : this.type),
-        title: (title != null ? title.value : this.title),
-        status: (status != null ? status.value : this.status),
-        detail: (detail != null ? detail.value : this.detail),
-        instance: (instance != null ? instance.value : this.instance));
+      type: (type != null ? type.value : this.type),
+      title: (title != null ? title.value : this.title),
+      status: (status != null ? status.value : this.status),
+      detail: (detail != null ? detail.value : this.detail),
+      instance: (instance != null ? instance.value : this.instance),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class RegisterWithApiKeyDto {
-  const RegisterWithApiKeyDto({
-    required this.apiKey,
-    required this.username,
-  });
+  const RegisterWithApiKeyDto({required this.apiKey, required this.username});
 
   factory RegisterWithApiKeyDto.fromJson(Map<String, dynamic> json) =>
       _$RegisterWithApiKeyDtoFromJson(json);
@@ -2469,8 +2729,10 @@ class RegisterWithApiKeyDto {
             (identical(other.apiKey, apiKey) ||
                 const DeepCollectionEquality().equals(other.apiKey, apiKey)) &&
             (identical(other.username, username) ||
-                const DeepCollectionEquality()
-                    .equals(other.username, username)));
+                const DeepCollectionEquality().equals(
+                  other.username,
+                  username,
+                )));
   }
 
   @override
@@ -2486,14 +2748,19 @@ class RegisterWithApiKeyDto {
 extension $RegisterWithApiKeyDtoExtension on RegisterWithApiKeyDto {
   RegisterWithApiKeyDto copyWith({String? apiKey, String? username}) {
     return RegisterWithApiKeyDto(
-        apiKey: apiKey ?? this.apiKey, username: username ?? this.username);
+      apiKey: apiKey ?? this.apiKey,
+      username: username ?? this.username,
+    );
   }
 
-  RegisterWithApiKeyDto copyWithWrapped(
-      {Wrapped<String>? apiKey, Wrapped<String>? username}) {
+  RegisterWithApiKeyDto copyWithWrapped({
+    Wrapped<String>? apiKey,
+    Wrapped<String>? username,
+  }) {
     return RegisterWithApiKeyDto(
-        apiKey: (apiKey != null ? apiKey.value : this.apiKey),
-        username: (username != null ? username.value : this.username));
+      apiKey: (apiKey != null ? apiKey.value : this.apiKey),
+      username: (username != null ? username.value : this.username),
+    );
   }
 }
 
@@ -2529,17 +2796,24 @@ class RegisterWithUsernamePasswordDto {
         (other is RegisterWithUsernamePasswordDto &&
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
-            (identical(other.encryptionChallengeIdentifier,
-                    encryptionChallengeIdentifier) ||
+            (identical(
+                  other.encryptionChallengeIdentifier,
+                  encryptionChallengeIdentifier,
+                ) ||
                 const DeepCollectionEquality().equals(
-                    other.encryptionChallengeIdentifier,
-                    encryptionChallengeIdentifier)) &&
+                  other.encryptionChallengeIdentifier,
+                  encryptionChallengeIdentifier,
+                )) &&
             (identical(other.username, username) ||
-                const DeepCollectionEquality()
-                    .equals(other.username, username)) &&
+                const DeepCollectionEquality().equals(
+                  other.username,
+                  username,
+                )) &&
             (identical(other.userSecret, userSecret) ||
-                const DeepCollectionEquality()
-                    .equals(other.userSecret, userSecret)));
+                const DeepCollectionEquality().equals(
+                  other.userSecret,
+                  userSecret,
+                )));
   }
 
   @override
@@ -2556,31 +2830,35 @@ class RegisterWithUsernamePasswordDto {
 
 extension $RegisterWithUsernamePasswordDtoExtension
     on RegisterWithUsernamePasswordDto {
-  RegisterWithUsernamePasswordDto copyWith(
-      {String? email,
-      EncryptionChallengeIdentifier? encryptionChallengeIdentifier,
-      String? username,
-      String? userSecret}) {
+  RegisterWithUsernamePasswordDto copyWith({
+    String? email,
+    EncryptionChallengeIdentifier? encryptionChallengeIdentifier,
+    String? username,
+    String? userSecret,
+  }) {
     return RegisterWithUsernamePasswordDto(
-        email: email ?? this.email,
-        encryptionChallengeIdentifier:
-            encryptionChallengeIdentifier ?? this.encryptionChallengeIdentifier,
-        username: username ?? this.username,
-        userSecret: userSecret ?? this.userSecret);
+      email: email ?? this.email,
+      encryptionChallengeIdentifier:
+          encryptionChallengeIdentifier ?? this.encryptionChallengeIdentifier,
+      username: username ?? this.username,
+      userSecret: userSecret ?? this.userSecret,
+    );
   }
 
-  RegisterWithUsernamePasswordDto copyWithWrapped(
-      {Wrapped<String>? email,
-      Wrapped<EncryptionChallengeIdentifier>? encryptionChallengeIdentifier,
-      Wrapped<String>? username,
-      Wrapped<String>? userSecret}) {
+  RegisterWithUsernamePasswordDto copyWithWrapped({
+    Wrapped<String>? email,
+    Wrapped<EncryptionChallengeIdentifier>? encryptionChallengeIdentifier,
+    Wrapped<String>? username,
+    Wrapped<String>? userSecret,
+  }) {
     return RegisterWithUsernamePasswordDto(
-        email: (email != null ? email.value : this.email),
-        encryptionChallengeIdentifier: (encryptionChallengeIdentifier != null
-            ? encryptionChallengeIdentifier.value
-            : this.encryptionChallengeIdentifier),
-        username: (username != null ? username.value : this.username),
-        userSecret: (userSecret != null ? userSecret.value : this.userSecret));
+      email: (email != null ? email.value : this.email),
+      encryptionChallengeIdentifier: (encryptionChallengeIdentifier != null
+          ? encryptionChallengeIdentifier.value
+          : this.encryptionChallengeIdentifier),
+      username: (username != null ? username.value : this.username),
+      userSecret: (userSecret != null ? userSecret.value : this.userSecret),
+    );
   }
 }
 
@@ -2616,14 +2894,20 @@ class ResetPasswordDto {
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
             (identical(other.newHashedPassword, newHashedPassword) ||
-                const DeepCollectionEquality()
-                    .equals(other.newHashedPassword, newHashedPassword)) &&
+                const DeepCollectionEquality().equals(
+                  other.newHashedPassword,
+                  newHashedPassword,
+                )) &&
             (identical(other.resetCode, resetCode) ||
-                const DeepCollectionEquality()
-                    .equals(other.resetCode, resetCode)) &&
+                const DeepCollectionEquality().equals(
+                  other.resetCode,
+                  resetCode,
+                )) &&
             (identical(other.username, username) ||
-                const DeepCollectionEquality()
-                    .equals(other.username, username)));
+                const DeepCollectionEquality().equals(
+                  other.username,
+                  username,
+                )));
   }
 
   @override
@@ -2639,39 +2923,40 @@ class ResetPasswordDto {
 }
 
 extension $ResetPasswordDtoExtension on ResetPasswordDto {
-  ResetPasswordDto copyWith(
-      {String? email,
-      String? newHashedPassword,
-      String? resetCode,
-      String? username}) {
+  ResetPasswordDto copyWith({
+    String? email,
+    String? newHashedPassword,
+    String? resetCode,
+    String? username,
+  }) {
     return ResetPasswordDto(
-        email: email ?? this.email,
-        newHashedPassword: newHashedPassword ?? this.newHashedPassword,
-        resetCode: resetCode ?? this.resetCode,
-        username: username ?? this.username);
+      email: email ?? this.email,
+      newHashedPassword: newHashedPassword ?? this.newHashedPassword,
+      resetCode: resetCode ?? this.resetCode,
+      username: username ?? this.username,
+    );
   }
 
-  ResetPasswordDto copyWithWrapped(
-      {Wrapped<String>? email,
-      Wrapped<String>? newHashedPassword,
-      Wrapped<String>? resetCode,
-      Wrapped<String>? username}) {
+  ResetPasswordDto copyWithWrapped({
+    Wrapped<String>? email,
+    Wrapped<String>? newHashedPassword,
+    Wrapped<String>? resetCode,
+    Wrapped<String>? username,
+  }) {
     return ResetPasswordDto(
-        email: (email != null ? email.value : this.email),
-        newHashedPassword: (newHashedPassword != null
-            ? newHashedPassword.value
-            : this.newHashedPassword),
-        resetCode: (resetCode != null ? resetCode.value : this.resetCode),
-        username: (username != null ? username.value : this.username));
+      email: (email != null ? email.value : this.email),
+      newHashedPassword: (newHashedPassword != null
+          ? newHashedPassword.value
+          : this.newHashedPassword),
+      resetCode: (resetCode != null ? resetCode.value : this.resetCode),
+      username: (username != null ? username.value : this.username),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class ResetPasswordRequestDto {
-  const ResetPasswordRequestDto({
-    required this.email,
-    required this.username,
-  });
+  const ResetPasswordRequestDto({required this.email, required this.username});
 
   factory ResetPasswordRequestDto.fromJson(Map<String, dynamic> json) =>
       _$ResetPasswordRequestDtoFromJson(json);
@@ -2692,8 +2977,10 @@ class ResetPasswordRequestDto {
             (identical(other.email, email) ||
                 const DeepCollectionEquality().equals(other.email, email)) &&
             (identical(other.username, username) ||
-                const DeepCollectionEquality()
-                    .equals(other.username, username)));
+                const DeepCollectionEquality().equals(
+                  other.username,
+                  username,
+                )));
   }
 
   @override
@@ -2709,14 +2996,19 @@ class ResetPasswordRequestDto {
 extension $ResetPasswordRequestDtoExtension on ResetPasswordRequestDto {
   ResetPasswordRequestDto copyWith({String? email, String? username}) {
     return ResetPasswordRequestDto(
-        email: email ?? this.email, username: username ?? this.username);
+      email: email ?? this.email,
+      username: username ?? this.username,
+    );
   }
 
-  ResetPasswordRequestDto copyWithWrapped(
-      {Wrapped<String>? email, Wrapped<String>? username}) {
+  ResetPasswordRequestDto copyWithWrapped({
+    Wrapped<String>? email,
+    Wrapped<String>? username,
+  }) {
     return ResetPasswordRequestDto(
-        email: (email != null ? email.value : this.email),
-        username: (username != null ? username.value : this.username));
+      email: (email != null ? email.value : this.email),
+      username: (username != null ? username.value : this.username),
+    );
   }
 }
 
@@ -2762,28 +3054,42 @@ class TextBlock {
     return identical(this, other) ||
         (other is TextBlock &&
             (identical(other.markdownText, markdownText) ||
-                const DeepCollectionEquality()
-                    .equals(other.markdownText, markdownText)) &&
+                const DeepCollectionEquality().equals(
+                  other.markdownText,
+                  markdownText,
+                )) &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.creationDate, creationDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.creationDate, creationDate)) &&
+                const DeepCollectionEquality().equals(
+                  other.creationDate,
+                  creationDate,
+                )) &&
             (identical(other.lastModifiedAt, lastModifiedAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastModifiedAt, lastModifiedAt)) &&
+                const DeepCollectionEquality().equals(
+                  other.lastModifiedAt,
+                  lastModifiedAt,
+                )) &&
             (identical(other.isDeleted, isDeleted) ||
-                const DeepCollectionEquality()
-                    .equals(other.isDeleted, isDeleted)) &&
+                const DeepCollectionEquality().equals(
+                  other.isDeleted,
+                  isDeleted,
+                )) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
-                const DeepCollectionEquality()
-                    .equals(other.noteDocumentId, noteDocumentId)) &&
+                const DeepCollectionEquality().equals(
+                  other.noteDocumentId,
+                  noteDocumentId,
+                )) &&
             (identical(other.creatingUserId, creatingUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.creatingUserId, creatingUserId)) &&
+                const DeepCollectionEquality().equals(
+                  other.creatingUserId,
+                  creatingUserId,
+                )) &&
             (identical(other.permittedUsers, permittedUsers) ||
-                const DeepCollectionEquality()
-                    .equals(other.permittedUsers, permittedUsers)));
+                const DeepCollectionEquality().equals(
+                  other.permittedUsers,
+                  permittedUsers,
+                )));
   }
 
   @override
@@ -2803,62 +3109,66 @@ class TextBlock {
 }
 
 extension $TextBlockExtension on TextBlock {
-  TextBlock copyWith(
-      {String? markdownText,
-      NoteBlockModelBaseIdentifier? id,
-      DateTime? creationDate,
-      DateTime? lastModifiedAt,
-      bool? isDeleted,
-      NoteDocumentIdentifier? noteDocumentId,
-      UserIdentifier? creatingUserId,
-      List<UserIdentifier>? permittedUsers}) {
+  TextBlock copyWith({
+    String? markdownText,
+    NoteBlockModelBaseIdentifier? id,
+    DateTime? creationDate,
+    DateTime? lastModifiedAt,
+    bool? isDeleted,
+    NoteDocumentIdentifier? noteDocumentId,
+    UserIdentifier? creatingUserId,
+    List<UserIdentifier>? permittedUsers,
+  }) {
     return TextBlock(
-        markdownText: markdownText ?? this.markdownText,
-        id: id ?? this.id,
-        creationDate: creationDate ?? this.creationDate,
-        lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
-        isDeleted: isDeleted ?? this.isDeleted,
-        noteDocumentId: noteDocumentId ?? this.noteDocumentId,
-        creatingUserId: creatingUserId ?? this.creatingUserId,
-        permittedUsers: permittedUsers ?? this.permittedUsers);
+      markdownText: markdownText ?? this.markdownText,
+      id: id ?? this.id,
+      creationDate: creationDate ?? this.creationDate,
+      lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      isDeleted: isDeleted ?? this.isDeleted,
+      noteDocumentId: noteDocumentId ?? this.noteDocumentId,
+      creatingUserId: creatingUserId ?? this.creatingUserId,
+      permittedUsers: permittedUsers ?? this.permittedUsers,
+    );
   }
 
-  TextBlock copyWithWrapped(
-      {Wrapped<String?>? markdownText,
-      Wrapped<NoteBlockModelBaseIdentifier?>? id,
-      Wrapped<DateTime?>? creationDate,
-      Wrapped<DateTime?>? lastModifiedAt,
-      Wrapped<bool?>? isDeleted,
-      Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
-      Wrapped<UserIdentifier?>? creatingUserId,
-      Wrapped<List<UserIdentifier>?>? permittedUsers}) {
+  TextBlock copyWithWrapped({
+    Wrapped<String?>? markdownText,
+    Wrapped<NoteBlockModelBaseIdentifier?>? id,
+    Wrapped<DateTime?>? creationDate,
+    Wrapped<DateTime?>? lastModifiedAt,
+    Wrapped<bool?>? isDeleted,
+    Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
+    Wrapped<UserIdentifier?>? creatingUserId,
+    Wrapped<List<UserIdentifier>?>? permittedUsers,
+  }) {
     return TextBlock(
-        markdownText:
-            (markdownText != null ? markdownText.value : this.markdownText),
-        id: (id != null ? id.value : this.id),
-        creationDate:
-            (creationDate != null ? creationDate.value : this.creationDate),
-        lastModifiedAt: (lastModifiedAt != null
-            ? lastModifiedAt.value
-            : this.lastModifiedAt),
-        isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
-        noteDocumentId: (noteDocumentId != null
-            ? noteDocumentId.value
-            : this.noteDocumentId),
-        creatingUserId: (creatingUserId != null
-            ? creatingUserId.value
-            : this.creatingUserId),
-        permittedUsers: (permittedUsers != null
-            ? permittedUsers.value
-            : this.permittedUsers));
+      markdownText: (markdownText != null
+          ? markdownText.value
+          : this.markdownText),
+      id: (id != null ? id.value : this.id),
+      creationDate: (creationDate != null
+          ? creationDate.value
+          : this.creationDate),
+      lastModifiedAt: (lastModifiedAt != null
+          ? lastModifiedAt.value
+          : this.lastModifiedAt),
+      isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      noteDocumentId: (noteDocumentId != null
+          ? noteDocumentId.value
+          : this.noteDocumentId),
+      creatingUserId: (creatingUserId != null
+          ? creatingUserId.value
+          : this.creatingUserId),
+      permittedUsers: (permittedUsers != null
+          ? permittedUsers.value
+          : this.permittedUsers),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class UserIdentifier {
-  const UserIdentifier({
-    this.$value,
-  });
+  const UserIdentifier({this.$value});
 
   factory UserIdentifier.fromJson(Map<String, dynamic> json) =>
       _$UserIdentifierFromJson(json);
@@ -2893,19 +3203,18 @@ extension $UserIdentifierExtension on UserIdentifier {
 
   UserIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
     return UserIdentifier(
-        $value: ($value != null ? $value.value : this.$value));
+      $value: ($value != null ? $value.value : this.$value),
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class ImageStreamimageuploadPost$RequestBody {
-  const ImageStreamimageuploadPost$RequestBody({
-    this.image,
-  });
+  const ImageStreamimageuploadPost$RequestBody({this.image});
 
   factory ImageStreamimageuploadPost$RequestBody.fromJson(
-          Map<String, dynamic> json) =>
-      _$ImageStreamimageuploadPost$RequestBodyFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$ImageStreamimageuploadPost$RequestBodyFromJson(json);
 
   static const toJsonFactory = _$ImageStreamimageuploadPost$RequestBodyToJson;
   Map<String, dynamic> toJson() =>
@@ -2938,20 +3247,24 @@ extension $ImageStreamimageuploadPost$RequestBodyExtension
     return ImageStreamimageuploadPost$RequestBody(image: image ?? this.image);
   }
 
-  ImageStreamimageuploadPost$RequestBody copyWithWrapped(
-      {Wrapped<String?>? image}) {
+  ImageStreamimageuploadPost$RequestBody copyWithWrapped({
+    Wrapped<String?>? image,
+  }) {
     return ImageStreamimageuploadPost$RequestBody(
-        image: (image != null ? image.value : this.image));
+      image: (image != null ? image.value : this.image),
+    );
   }
 }
 
 String? handleJoinRequestTypeNullableToJson(
-    enums.HandleJoinRequestType? handleJoinRequestType) {
+  enums.HandleJoinRequestType? handleJoinRequestType,
+) {
   return handleJoinRequestType?.value;
 }
 
 String? handleJoinRequestTypeToJson(
-    enums.HandleJoinRequestType handleJoinRequestType) {
+  enums.HandleJoinRequestType handleJoinRequestType,
+) {
   return handleJoinRequestType.value;
 }
 
@@ -2959,9 +3272,11 @@ enums.HandleJoinRequestType handleJoinRequestTypeFromJson(
   Object? handleJoinRequestType, [
   enums.HandleJoinRequestType? defaultValue,
 ]) {
-  return enums.HandleJoinRequestType.values.firstWhereOrNull((e) =>
-          e.value.toString().toLowerCase() ==
-          handleJoinRequestType?.toString().toLowerCase()) ??
+  return enums.HandleJoinRequestType.values.firstWhereOrNull(
+        (e) =>
+            e.value.toString().toLowerCase() ==
+            handleJoinRequestType?.toString().toLowerCase(),
+      ) ??
       defaultValue ??
       enums.HandleJoinRequestType.swaggerGeneratedUnknown;
 }
@@ -2973,19 +3288,23 @@ enums.HandleJoinRequestType? handleJoinRequestTypeNullableFromJson(
   if (handleJoinRequestType == null) {
     return null;
   }
-  return enums.HandleJoinRequestType.values.firstWhereOrNull((e) =>
-          e.value.toString().toLowerCase() ==
-          handleJoinRequestType.toString().toLowerCase()) ??
+  return enums.HandleJoinRequestType.values.firstWhereOrNull(
+        (e) =>
+            e.value.toString().toLowerCase() ==
+            handleJoinRequestType.toString().toLowerCase(),
+      ) ??
       defaultValue;
 }
 
 String handleJoinRequestTypeExplodedListToJson(
-    List<enums.HandleJoinRequestType>? handleJoinRequestType) {
+  List<enums.HandleJoinRequestType>? handleJoinRequestType,
+) {
   return handleJoinRequestType?.map((e) => e.value!).join(',') ?? '';
 }
 
 List<String> handleJoinRequestTypeListToJson(
-    List<enums.HandleJoinRequestType>? handleJoinRequestType) {
+  List<enums.HandleJoinRequestType>? handleJoinRequestType,
+) {
   if (handleJoinRequestType == null) {
     return [];
   }
@@ -3031,9 +3350,11 @@ enums.ImageType imageTypeFromJson(
   Object? imageType, [
   enums.ImageType? defaultValue,
 ]) {
-  return enums.ImageType.values.firstWhereOrNull((e) =>
-          e.value.toString().toLowerCase() ==
-          imageType?.toString().toLowerCase()) ??
+  return enums.ImageType.values.firstWhereOrNull(
+        (e) =>
+            e.value.toString().toLowerCase() ==
+            imageType?.toString().toLowerCase(),
+      ) ??
       defaultValue ??
       enums.ImageType.swaggerGeneratedUnknown;
 }
@@ -3045,9 +3366,11 @@ enums.ImageType? imageTypeNullableFromJson(
   if (imageType == null) {
     return null;
   }
-  return enums.ImageType.values.firstWhereOrNull((e) =>
-          e.value.toString().toLowerCase() ==
-          imageType.toString().toLowerCase()) ??
+  return enums.ImageType.values.firstWhereOrNull(
+        (e) =>
+            e.value.toString().toLowerCase() ==
+            imageType.toString().toLowerCase(),
+      ) ??
       defaultValue;
 }
 

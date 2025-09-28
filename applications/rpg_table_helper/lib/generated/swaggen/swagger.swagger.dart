@@ -39,32 +39,34 @@ abstract class Swagger extends ChopperService {
     }
 
     final newClient = ChopperClient(
-        services: [_$Swagger()],
-        converter: converter ?? $JsonSerializableConverter(),
-        interceptors: interceptors ?? [],
-        client: httpClient,
-        authenticator: authenticator,
-        errorConverter: errorConverter,
-        baseUrl: baseUrl ?? Uri.parse('http://'));
+      services: [_$Swagger()],
+      converter: converter ?? $JsonSerializableConverter(),
+      interceptors: interceptors ?? [],
+      client: httpClient,
+      authenticator: authenticator,
+      errorConverter: errorConverter,
+      baseUrl: baseUrl ?? Uri.parse('http://'),
+    );
     return _$Swagger(newClient);
   }
 
   ///Creates a new campagne with the calling user as dm.
-  Future<chopper.Response<CampagneIdentifier>> campagneCreatecampagnePost(
-      {required CampagneCreateDto? body}) {
+  Future<chopper.Response<CampagneIdentifier>> campagneCreatecampagnePost({
+    required CampagneCreateDto? body,
+  }) {
     generatedMapping.putIfAbsent(
-        CampagneIdentifier, () => CampagneIdentifier.fromJsonFactory);
+      CampagneIdentifier,
+      () => CampagneIdentifier.fromJsonFactory,
+    );
 
     return _campagneCreatecampagnePost(body: body);
   }
 
   ///Creates a new campagne with the calling user as dm.
-  @Post(
-    path: '/Campagne/createcampagne',
-    optionalBody: true,
-  )
-  Future<chopper.Response<CampagneIdentifier>> _campagneCreatecampagnePost(
-      {@Body() required CampagneCreateDto? body});
+  @POST(path: '/Campagne/createcampagne', optionalBody: true)
+  Future<chopper.Response<CampagneIdentifier>> _campagneCreatecampagnePost({
+    @Body() required CampagneCreateDto? body,
+  });
 
   ///Returns a list of campagnes this user is the dm of.
   Future<chopper.Response<List<Campagne>>> campagneGetcampagnesGet() {
@@ -74,13 +76,14 @@ abstract class Swagger extends ChopperService {
   }
 
   ///Returns a list of campagnes this user is the dm of.
-  @Get(path: '/Campagne/getcampagnes')
+  @GET(path: '/Campagne/getcampagnes')
   Future<chopper.Response<List<Campagne>>> _campagneGetcampagnesGet();
 
   ///Returns a single of campagne.
   ///@param campagneid The id of the desired campagne
-  Future<chopper.Response<Campagne>> campagneGetcampagneCampagneidGet(
-      {required String? campagneid}) {
+  Future<chopper.Response<Campagne>> campagneGetcampagneCampagneidGet({
+    required String? campagneid,
+  }) {
     generatedMapping.putIfAbsent(Campagne, () => Campagne.fromJsonFactory);
 
     return _campagneGetcampagneCampagneidGet(campagneid: campagneid);
@@ -88,61 +91,70 @@ abstract class Swagger extends ChopperService {
 
   ///Returns a single of campagne.
   ///@param campagneid The id of the desired campagne
-  @Get(path: '/Campagne/getcampagne/{campagneid}')
-  Future<chopper.Response<Campagne>> _campagneGetcampagneCampagneidGet(
-      {@Path('campagneid') required String? campagneid});
+  @GET(path: '/Campagne/getcampagne/{campagneid}')
+  Future<chopper.Response<Campagne>> _campagneGetcampagneCampagneidGet({
+    @Path('campagneid') required String? campagneid,
+  });
 
   ///Creates a new campagneJoinRequest with the calling user as dm.
   Future<chopper.Response<CampagneJoinRequestIdentifier>>
-      campagneJoinRequestCreatecampagneJoinRequestPost(
-          {required CampagneJoinRequestCreateDto? body}) {
-    generatedMapping.putIfAbsent(CampagneJoinRequestIdentifier,
-        () => CampagneJoinRequestIdentifier.fromJsonFactory);
+  campagneJoinRequestCreatecampagneJoinRequestPost({
+    required CampagneJoinRequestCreateDto? body,
+  }) {
+    generatedMapping.putIfAbsent(
+      CampagneJoinRequestIdentifier,
+      () => CampagneJoinRequestIdentifier.fromJsonFactory,
+    );
 
     return _campagneJoinRequestCreatecampagneJoinRequestPost(body: body);
   }
 
   ///Creates a new campagneJoinRequest with the calling user as dm.
-  @Post(
+  @POST(
     path: '/CampagneJoinRequest/createcampagneJoinRequest',
     optionalBody: true,
   )
   Future<chopper.Response<CampagneJoinRequestIdentifier>>
-      _campagneJoinRequestCreatecampagneJoinRequestPost(
-          {@Body() required CampagneJoinRequestCreateDto? body});
+  _campagneJoinRequestCreatecampagneJoinRequestPost({
+    @Body() required CampagneJoinRequestCreateDto? body,
+  });
 
   ///Accepts or denies a campagneJoinRequest with the calling user as dm.
-  Future<chopper.Response> campagneJoinRequestHandlejoinrequestPost(
-      {required HandleJoinRequestDto? body}) {
+  Future<chopper.Response> campagneJoinRequestHandlejoinrequestPost({
+    required HandleJoinRequestDto? body,
+  }) {
     return _campagneJoinRequestHandlejoinrequestPost(body: body);
   }
 
   ///Accepts or denies a campagneJoinRequest with the calling user as dm.
-  @Post(
-    path: '/CampagneJoinRequest/handlejoinrequest',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _campagneJoinRequestHandlejoinrequestPost(
-      {@Body() required HandleJoinRequestDto? body});
+  @POST(path: '/CampagneJoinRequest/handlejoinrequest', optionalBody: true)
+  Future<chopper.Response> _campagneJoinRequestHandlejoinrequestPost({
+    @Body() required HandleJoinRequestDto? body,
+  });
 
   ///Returns a list of campagneJoinRequests for a campagne this user is the dm of.
   ///@param campagneId campagneId
   Future<chopper.Response<List<JoinRequestForCampagneDto>>>
-      campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
-          {required String? campagneId}) {
-    generatedMapping.putIfAbsent(JoinRequestForCampagneDto,
-        () => JoinRequestForCampagneDto.fromJsonFactory);
+  campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet({
+    required String? campagneId,
+  }) {
+    generatedMapping.putIfAbsent(
+      JoinRequestForCampagneDto,
+      () => JoinRequestForCampagneDto.fromJsonFactory,
+    );
 
     return _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
-        campagneId: campagneId);
+      campagneId: campagneId,
+    );
   }
 
   ///Returns a list of campagneJoinRequests for a campagne this user is the dm of.
   ///@param campagneId campagneId
-  @Get(path: '/CampagneJoinRequest/getcampagneJoinRequests/{campagneId}')
+  @GET(path: '/CampagneJoinRequest/getcampagneJoinRequests/{campagneId}')
   Future<chopper.Response<List<JoinRequestForCampagneDto>>>
-      _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet(
-          {@Path('campagneId') required String? campagneId});
+  _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet({
+    @Path('campagneId') required String? campagneId,
+  });
 
   ///
   ///@param campagneid
@@ -151,15 +163,14 @@ abstract class Swagger extends ChopperService {
     required String? body,
   }) {
     return _imageGenerateimageCampagneidPost(
-        campagneid: campagneid, body: body);
+      campagneid: campagneid,
+      body: body,
+    );
   }
 
   ///
   ///@param campagneid
-  @Post(
-    path: '/Image/generateimage/{campagneid}',
-    optionalBody: true,
-  )
+  @POST(path: '/Image/generateimage/{campagneid}', optionalBody: true)
   Future<chopper.Response<String>> _imageGenerateimageCampagneidPost({
     @Path('campagneid') required String? campagneid,
     @Body() required String? body,
@@ -176,10 +187,7 @@ abstract class Swagger extends ChopperService {
 
   ///Streams an image upload directly to the server.
   ///@param campagneId
-  @Post(
-    path: '/Image/streamimageupload',
-    optionalBody: true,
-  )
+  @POST(path: '/Image/streamimageupload', optionalBody: true)
   @Multipart()
   Future<chopper.Response<String>> _imageStreamimageuploadPost({
     @Query('campagneId') required String? campagneId,
@@ -188,88 +196,103 @@ abstract class Swagger extends ChopperService {
 
   ///Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.
   ///@param campagneId The ID of the campagne to retrieve images for.
-  Future<chopper.Response<List<ImageMetaData>>> imageGetimagesCampagneIdGet(
-      {required String? campagneId}) {
+  Future<chopper.Response<List<ImageMetaData>>> imageGetimagesCampagneIdGet({
+    required String? campagneId,
+  }) {
     generatedMapping.putIfAbsent(
-        ImageMetaData, () => ImageMetaData.fromJsonFactory);
+      ImageMetaData,
+      () => ImageMetaData.fromJsonFactory,
+    );
 
     return _imageGetimagesCampagneIdGet(campagneId: campagneId);
   }
 
   ///Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.
   ///@param campagneId The ID of the campagne to retrieve images for.
-  @Get(path: '/Image/getimages/{campagneId}')
-  Future<chopper.Response<List<ImageMetaData>>> _imageGetimagesCampagneIdGet(
-      {@Path('campagneId') required String? campagneId});
+  @GET(path: '/Image/getimages/{campagneId}')
+  Future<chopper.Response<List<ImageMetaData>>> _imageGetimagesCampagneIdGet({
+    @Path('campagneId') required String? campagneId,
+  });
 
   ///Returns a list of documents this user can see for a given campagne.
   ///@param campagneid The id of the desired campagne
   Future<chopper.Response<List<NoteDocumentDto>>>
-      notesGetdocumentsCampagneidGet({required String? campagneid}) {
+  notesGetdocumentsCampagneidGet({required String? campagneid}) {
     generatedMapping.putIfAbsent(
-        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+      NoteDocumentDto,
+      () => NoteDocumentDto.fromJsonFactory,
+    );
 
     return _notesGetdocumentsCampagneidGet(campagneid: campagneid);
   }
 
   ///Returns a list of documents this user can see for a given campagne.
   ///@param campagneid The id of the desired campagne
-  @Get(path: '/Notes/getdocuments/{campagneid}')
+  @GET(path: '/Notes/getdocuments/{campagneid}')
   Future<chopper.Response<List<NoteDocumentDto>>>
-      _notesGetdocumentsCampagneidGet(
-          {@Path('campagneid') required String? campagneid});
+  _notesGetdocumentsCampagneidGet({
+    @Path('campagneid') required String? campagneid,
+  });
 
   ///Returns a single document.
   ///@param notedocumentid The id of the desired campagne
-  Future<chopper.Response<NoteDocumentDto>> notesGetdocumentNotedocumentidGet(
-      {required String? notedocumentid}) {
+  Future<chopper.Response<NoteDocumentDto>> notesGetdocumentNotedocumentidGet({
+    required String? notedocumentid,
+  }) {
     generatedMapping.putIfAbsent(
-        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+      NoteDocumentDto,
+      () => NoteDocumentDto.fromJsonFactory,
+    );
 
     return _notesGetdocumentNotedocumentidGet(notedocumentid: notedocumentid);
   }
 
   ///Returns a single document.
   ///@param notedocumentid The id of the desired campagne
-  @Get(path: '/Notes/getdocument/{notedocumentid}')
-  Future<chopper.Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet(
-      {@Path('notedocumentid') required String? notedocumentid});
+  @GET(path: '/Notes/getdocument/{notedocumentid}')
+  Future<chopper.Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet({
+    @Path('notedocumentid') required String? notedocumentid,
+  });
 
   ///Deletes a single document.
   ///@param notedocumentid The id of the desired campagne
   Future<chopper.Response<NoteDocumentDto>>
-      notesDeletedocumentNotedocumentidDelete(
-          {required String? notedocumentid}) {
+  notesDeletedocumentNotedocumentidDelete({required String? notedocumentid}) {
     generatedMapping.putIfAbsent(
-        NoteDocumentDto, () => NoteDocumentDto.fromJsonFactory);
+      NoteDocumentDto,
+      () => NoteDocumentDto.fromJsonFactory,
+    );
 
     return _notesDeletedocumentNotedocumentidDelete(
-        notedocumentid: notedocumentid);
+      notedocumentid: notedocumentid,
+    );
   }
 
   ///Deletes a single document.
   ///@param notedocumentid The id of the desired campagne
-  @Delete(path: '/Notes/deletedocument/{notedocumentid}')
+  @DELETE(path: '/Notes/deletedocument/{notedocumentid}')
   Future<chopper.Response<NoteDocumentDto>>
-      _notesDeletedocumentNotedocumentidDelete(
-          {@Path('notedocumentid') required String? notedocumentid});
+  _notesDeletedocumentNotedocumentidDelete({
+    @Path('notedocumentid') required String? notedocumentid,
+  });
 
   ///Creates a single document.
-  Future<chopper.Response<NoteDocumentIdentifier>> notesCreatedocumentPost(
-      {required NoteDocumentDto? body}) {
+  Future<chopper.Response<NoteDocumentIdentifier>> notesCreatedocumentPost({
+    required NoteDocumentDto? body,
+  }) {
     generatedMapping.putIfAbsent(
-        NoteDocumentIdentifier, () => NoteDocumentIdentifier.fromJsonFactory);
+      NoteDocumentIdentifier,
+      () => NoteDocumentIdentifier.fromJsonFactory,
+    );
 
     return _notesCreatedocumentPost(body: body);
   }
 
   ///Creates a single document.
-  @Post(
-    path: '/Notes/createdocument',
-    optionalBody: true,
-  )
-  Future<chopper.Response<NoteDocumentIdentifier>> _notesCreatedocumentPost(
-      {@Body() required NoteDocumentDto? body});
+  @POST(path: '/Notes/createdocument', optionalBody: true)
+  Future<chopper.Response<NoteDocumentIdentifier>> _notesCreatedocumentPost({
+    @Body() required NoteDocumentDto? body,
+  });
 
   ///Creates a single text block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
@@ -280,15 +303,14 @@ abstract class Swagger extends ChopperService {
     generatedMapping.putIfAbsent(TextBlock, () => TextBlock.fromJsonFactory);
 
     return _notesCreatetextblockNotedocumentidPost(
-        notedocumentid: notedocumentid, body: body);
+      notedocumentid: notedocumentid,
+      body: body,
+    );
   }
 
   ///Creates a single text block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
-  @Post(
-    path: '/Notes/createtextblock/{notedocumentid}',
-    optionalBody: true,
-  )
+  @POST(path: '/Notes/createtextblock/{notedocumentid}', optionalBody: true)
   Future<chopper.Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required TextBlock? body,
@@ -303,17 +325,16 @@ abstract class Swagger extends ChopperService {
     generatedMapping.putIfAbsent(ImageBlock, () => ImageBlock.fromJsonFactory);
 
     return _notesCreateimageblockNotedocumentidPost(
-        notedocumentid: notedocumentid, body: body);
+      notedocumentid: notedocumentid,
+      body: body,
+    );
   }
 
   ///Creates a single image block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
-  @Post(
-    path: '/Notes/createimageblock/{notedocumentid}',
-    optionalBody: true,
-  )
+  @POST(path: '/Notes/createimageblock/{notedocumentid}', optionalBody: true)
   Future<chopper.Response<ImageBlock>>
-      _notesCreateimageblockNotedocumentidPost({
+  _notesCreateimageblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required ImageBlock? body,
   });
@@ -324,40 +345,36 @@ abstract class Swagger extends ChopperService {
   }
 
   ///Updates a single text block for a given document.
-  @Put(
-    path: '/Notes/updatetextblock',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _notesUpdatetextblockPut(
-      {@Body() required TextBlock? body});
+  @PUT(path: '/Notes/updatetextblock', optionalBody: true)
+  Future<chopper.Response> _notesUpdatetextblockPut({
+    @Body() required TextBlock? body,
+  });
 
   ///Updates a single image block for a given document.
-  Future<chopper.Response> notesUpdateimageblockPut(
-      {required ImageBlock? body}) {
+  Future<chopper.Response> notesUpdateimageblockPut({
+    required ImageBlock? body,
+  }) {
     return _notesUpdateimageblockPut(body: body);
   }
 
   ///Updates a single image block for a given document.
-  @Put(
-    path: '/Notes/updateimageblock',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _notesUpdateimageblockPut(
-      {@Body() required ImageBlock? body});
+  @PUT(path: '/Notes/updateimageblock', optionalBody: true)
+  Future<chopper.Response> _notesUpdateimageblockPut({
+    @Body() required ImageBlock? body,
+  });
 
   ///Updates a document.
-  Future<chopper.Response> notesUpdatenotePut(
-      {required NoteDocumentDto? body}) {
+  Future<chopper.Response> notesUpdatenotePut({
+    required NoteDocumentDto? body,
+  }) {
     return _notesUpdatenotePut(body: body);
   }
 
   ///Updates a document.
-  @Put(
-    path: '/Notes/updatenote',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _notesUpdatenotePut(
-      {@Body() required NoteDocumentDto? body});
+  @PUT(path: '/Notes/updatenote', optionalBody: true)
+  Future<chopper.Response> _notesUpdatenotePut({
+    @Body() required NoteDocumentDto? body,
+  });
 
   ///Deletes a single note block for a given document.
   ///@param Value
@@ -367,97 +384,114 @@ abstract class Swagger extends ChopperService {
 
   ///Deletes a single note block for a given document.
   ///@param Value
-  @Delete(path: '/Notes/deleteblock')
-  Future<chopper.Response> _notesDeleteblockDelete(
-      {@Query('Value') String? $Value});
+  @DELETE(path: '/Notes/deleteblock')
+  Future<chopper.Response> _notesDeleteblockDelete({
+    @Query('Value') String? $Value,
+  });
 
   ///Creates a new player character with the calling user as owner.
   Future<chopper.Response<PlayerCharacterIdentifier>>
-      playerCharacterCreatecharacterPost(
-          {required PlayerCharacterCreateDto? body}) {
-    generatedMapping.putIfAbsent(PlayerCharacterIdentifier,
-        () => PlayerCharacterIdentifier.fromJsonFactory);
+  playerCharacterCreatecharacterPost({
+    required PlayerCharacterCreateDto? body,
+  }) {
+    generatedMapping.putIfAbsent(
+      PlayerCharacterIdentifier,
+      () => PlayerCharacterIdentifier.fromJsonFactory,
+    );
 
     return _playerCharacterCreatecharacterPost(body: body);
   }
 
   ///Creates a new player character with the calling user as owner.
-  @Post(
-    path: '/PlayerCharacter/createcharacter',
-    optionalBody: true,
-  )
+  @POST(path: '/PlayerCharacter/createcharacter', optionalBody: true)
   Future<chopper.Response<PlayerCharacterIdentifier>>
-      _playerCharacterCreatecharacterPost(
-          {@Body() required PlayerCharacterCreateDto? body});
+  _playerCharacterCreatecharacterPost({
+    @Body() required PlayerCharacterCreateDto? body,
+  });
 
   ///Returns a list of player characters for the calling user.
   Future<chopper.Response<List<PlayerCharacter>>>
-      playerCharacterGetplayercharactersGet() {
+  playerCharacterGetplayercharactersGet() {
     generatedMapping.putIfAbsent(
-        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+      PlayerCharacter,
+      () => PlayerCharacter.fromJsonFactory,
+    );
 
     return _playerCharacterGetplayercharactersGet();
   }
 
   ///Returns a list of player characters for the calling user.
-  @Get(path: '/PlayerCharacter/getplayercharacters')
+  @GET(path: '/PlayerCharacter/getplayercharacters')
   Future<chopper.Response<List<PlayerCharacter>>>
-      _playerCharacterGetplayercharactersGet();
+  _playerCharacterGetplayercharactersGet();
 
   ///Returns a single playerCharacter.
   ///@param playercharacterid The id of the desired playerCharacter
   Future<chopper.Response<PlayerCharacter>>
-      playerCharacterGetplayercharacterPlayercharacteridGet(
-          {required String? playercharacterid}) {
+  playerCharacterGetplayercharacterPlayercharacteridGet({
+    required String? playercharacterid,
+  }) {
     generatedMapping.putIfAbsent(
-        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+      PlayerCharacter,
+      () => PlayerCharacter.fromJsonFactory,
+    );
 
     return _playerCharacterGetplayercharacterPlayercharacteridGet(
-        playercharacterid: playercharacterid);
+      playercharacterid: playercharacterid,
+    );
   }
 
   ///Returns a single playerCharacter.
   ///@param playercharacterid The id of the desired playerCharacter
-  @Get(path: '/PlayerCharacter/getplayercharacter/{playercharacterid}')
+  @GET(path: '/PlayerCharacter/getplayercharacter/{playercharacterid}')
   Future<chopper.Response<PlayerCharacter>>
-      _playerCharacterGetplayercharacterPlayercharacteridGet(
-          {@Path('playercharacterid') required String? playercharacterid});
+  _playerCharacterGetplayercharacterPlayercharacteridGet({
+    @Path('playercharacterid') required String? playercharacterid,
+  });
 
   ///Returns a list of player characters for a given campagne.
   ///@param Value
   Future<chopper.Response<List<PlayerCharacter>>>
-      playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
+  playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
     generatedMapping.putIfAbsent(
-        PlayerCharacter, () => PlayerCharacter.fromJsonFactory);
+      PlayerCharacter,
+      () => PlayerCharacter.fromJsonFactory,
+    );
 
     return _playerCharacterGetplayercharactersincampagneGet($Value: $Value);
   }
 
   ///Returns a list of player characters for a given campagne.
   ///@param Value
-  @Get(path: '/PlayerCharacter/getplayercharactersincampagne')
+  @GET(path: '/PlayerCharacter/getplayercharactersincampagne')
   Future<chopper.Response<List<PlayerCharacter>>>
-      _playerCharacterGetplayercharactersincampagneGet(
-          {@Query('Value') String? $Value});
+  _playerCharacterGetplayercharactersincampagneGet({
+    @Query('Value') String? $Value,
+  });
 
   ///Returns a list of all users assigned to the campagne with meta information.
   ///@param Value
   Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
-      playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
-          {String? $Value}) {
-    generatedMapping.putIfAbsent(NoteDocumentPlayerDescriptorDto,
-        () => NoteDocumentPlayerDescriptorDto.fromJsonFactory);
+  playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet({
+    String? $Value,
+  }) {
+    generatedMapping.putIfAbsent(
+      NoteDocumentPlayerDescriptorDto,
+      () => NoteDocumentPlayerDescriptorDto.fromJsonFactory,
+    );
 
     return _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
-        $Value: $Value);
+      $Value: $Value,
+    );
   }
 
   ///Returns a list of all users assigned to the campagne with meta information.
   ///@param Value
-  @Get(path: '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne')
+  @GET(path: '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne')
   Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
-      _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
-          {@Query('Value') String? $Value});
+  _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet({
+    @Query('Value') String? $Value,
+  });
 
   ///Returns the minimal app version supported by this api.
   Future<chopper.Response<String>> publicGetminimalversionGet() {
@@ -465,7 +499,7 @@ abstract class Swagger extends ChopperService {
   }
 
   ///Returns the minimal app version supported by this api.
-  @Get(path: '/Public/getminimalversion')
+  @GET(path: '/Public/getminimalversion')
   Future<chopper.Response<String>> _publicGetminimalversionGet();
 
   ///
@@ -481,7 +515,7 @@ abstract class Swagger extends ChopperService {
   ///
   ///@param uuid
   ///@param apikey
-  @Get(path: '/Public/getimage/{uuid}/{apikey}')
+  @GET(path: '/Public/getimage/{uuid}/{apikey}')
   Future<chopper.Response> _publicGetimageUuidApikeyGet({
     @Path('uuid') required String? uuid,
     @Path('apikey') required String? apikey,
@@ -489,66 +523,65 @@ abstract class Swagger extends ChopperService {
 
   ///This method generates a new encryptionChallenge and stores it in the db.
   ///Use this method as first start point for a register operation.
-  Future<chopper.Response<String>> registerCreateencryptionchallengePost(
-      {required String? body}) {
+  Future<chopper.Response<String>> registerCreateencryptionchallengePost({
+    required String? body,
+  }) {
     return _registerCreateencryptionchallengePost(body: body);
   }
 
   ///This method generates a new encryptionChallenge and stores it in the db.
   ///Use this method as first start point for a register operation.
-  @Post(
-    path: '/Register/createencryptionchallenge',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _registerCreateencryptionchallengePost(
-      {@Body() required String? body});
+  @POST(path: '/Register/createencryptionchallenge', optionalBody: true)
+  Future<chopper.Response<String>> _registerCreateencryptionchallengePost({
+    @Body() required String? body,
+  });
 
   ///Creates a new user with "username and password" sign in.
-  Future<chopper.Response<String>> registerRegisterPost(
-      {required String? body}) {
+  Future<chopper.Response<String>> registerRegisterPost({
+    required String? body,
+  }) {
     return _registerRegisterPost(body: body);
   }
 
   ///Creates a new user with "username and password" sign in.
-  @Post(
-    path: '/Register/register',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _registerRegisterPost(
-      {@Body() required String? body});
+  @POST(path: '/Register/register', optionalBody: true)
+  Future<chopper.Response<String>> _registerRegisterPost({
+    @Body() required String? body,
+  });
 
   ///Creates a new user for an open sign OpenSignInProviderRegisterRequest.
-  Future<chopper.Response<String>> registerRegisterwithapikeyPost(
-      {required RegisterWithApiKeyDto? body}) {
+  Future<chopper.Response<String>> registerRegisterwithapikeyPost({
+    required RegisterWithApiKeyDto? body,
+  }) {
     return _registerRegisterwithapikeyPost(body: body);
   }
 
   ///Creates a new user for an open sign OpenSignInProviderRegisterRequest.
-  @Post(
-    path: '/Register/registerwithapikey',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _registerRegisterwithapikeyPost(
-      {@Body() required RegisterWithApiKeyDto? body});
+  @POST(path: '/Register/registerwithapikey', optionalBody: true)
+  Future<chopper.Response<String>> _registerRegisterwithapikeyPost({
+    @Body() required RegisterWithApiKeyDto? body,
+  });
 
   ///Lets the user verify their email.
   ///@param useridbase64 The base64 encoded userid
   ///@param signaturebase64 The server generated signature for the userid
   Future<chopper.Response<String>>
-      registerVerifyemailUseridbase64Signaturebase64Get({
+  registerVerifyemailUseridbase64Signaturebase64Get({
     required String? useridbase64,
     required String? signaturebase64,
   }) {
     return _registerVerifyemailUseridbase64Signaturebase64Get(
-        useridbase64: useridbase64, signaturebase64: signaturebase64);
+      useridbase64: useridbase64,
+      signaturebase64: signaturebase64,
+    );
   }
 
   ///Lets the user verify their email.
   ///@param useridbase64 The base64 encoded userid
   ///@param signaturebase64 The server generated signature for the userid
-  @Get(path: '/Register/verifyemail/{useridbase64}/{signaturebase64}')
+  @GET(path: '/Register/verifyemail/{useridbase64}/{signaturebase64}')
   Future<chopper.Response<String>>
-      _registerVerifyemailUseridbase64Signaturebase64Get({
+  _registerVerifyemailUseridbase64Signaturebase64Get({
     @Path('useridbase64') required String? useridbase64,
     @Path('signaturebase64') required String? signaturebase64,
   });
@@ -559,101 +592,98 @@ abstract class Swagger extends ChopperService {
   }
 
   ///This method returns "Welcome" when the provided JWT is valid.
-  @Get(path: '/SignIn/testlogin')
+  @GET(path: '/SignIn/testlogin')
   Future<chopper.Response<String>> _signInTestloginGet();
 
   ///Returns the encryption challenge for a given username.
   ///@param username The username of the desired encryption challenge
   Future<chopper.Response<String>>
-      signInGetloginchallengeforusernameUsernamePost({
+  signInGetloginchallengeforusernameUsernamePost({
     required String? username,
     required EncryptedMessageWrapperDto? body,
   }) {
     return _signInGetloginchallengeforusernameUsernamePost(
-        username: username, body: body);
+      username: username,
+      body: body,
+    );
   }
 
   ///Returns the encryption challenge for a given username.
   ///@param username The username of the desired encryption challenge
-  @Post(
+  @POST(
     path: '/SignIn/getloginchallengeforusername/{username}',
     optionalBody: true,
   )
   Future<chopper.Response<String>>
-      _signInGetloginchallengeforusernameUsernamePost({
+  _signInGetloginchallengeforusernameUsernamePost({
     @Path('username') required String? username,
     @Body() required EncryptedMessageWrapperDto? body,
   });
 
   ///Performs the login with username and password.
-  Future<chopper.Response<String>> signInLoginPost(
-      {required LoginWithUsernameAndPasswordDto? body}) {
+  Future<chopper.Response<String>> signInLoginPost({
+    required LoginWithUsernameAndPasswordDto? body,
+  }) {
     return _signInLoginPost(body: body);
   }
 
   ///Performs the login with username and password.
-  @Post(
-    path: '/SignIn/login',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _signInLoginPost(
-      {@Body() required LoginWithUsernameAndPasswordDto? body});
+  @POST(path: '/SignIn/login', optionalBody: true)
+  Future<chopper.Response<String>> _signInLoginPost({
+    @Body() required LoginWithUsernameAndPasswordDto? body,
+  });
 
   ///
-  Future<chopper.Response<String>> signInLoginwithapplePost(
-      {required AppleLoginDetails? body}) {
+  Future<chopper.Response<String>> signInLoginwithapplePost({
+    required AppleLoginDetails? body,
+  }) {
     return _signInLoginwithapplePost(body: body);
   }
 
   ///
-  @Post(
-    path: '/SignIn/loginwithapple',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _signInLoginwithapplePost(
-      {@Body() required AppleLoginDetails? body});
+  @POST(path: '/SignIn/loginwithapple', optionalBody: true)
+  Future<chopper.Response<String>> _signInLoginwithapplePost({
+    @Body() required AppleLoginDetails? body,
+  });
 
   ///
-  Future<chopper.Response<String>> signInLoginwithgooglePost(
-      {required GoogleLoginDto? body}) {
+  Future<chopper.Response<String>> signInLoginwithgooglePost({
+    required GoogleLoginDto? body,
+  }) {
     return _signInLoginwithgooglePost(body: body);
   }
 
   ///
-  @Post(
-    path: '/SignIn/loginwithgoogle',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _signInLoginwithgooglePost(
-      {@Body() required GoogleLoginDto? body});
+  @POST(path: '/SignIn/loginwithgoogle', optionalBody: true)
+  Future<chopper.Response<String>> _signInLoginwithgooglePost({
+    @Body() required GoogleLoginDto? body,
+  });
 
   ///Requests an reset password email for the user.
-  Future<chopper.Response<String>> signInRequestresetpasswordPost(
-      {required ResetPasswordRequestDto? body}) {
+  Future<chopper.Response<String>> signInRequestresetpasswordPost({
+    required ResetPasswordRequestDto? body,
+  }) {
     return _signInRequestresetpasswordPost(body: body);
   }
 
   ///Requests an reset password email for the user.
-  @Post(
-    path: '/SignIn/requestresetpassword',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _signInRequestresetpasswordPost(
-      {@Body() required ResetPasswordRequestDto? body});
+  @POST(path: '/SignIn/requestresetpassword', optionalBody: true)
+  Future<chopper.Response<String>> _signInRequestresetpasswordPost({
+    @Body() required ResetPasswordRequestDto? body,
+  });
 
   ///Completes the password reset requests by providing the reset code from the email.
-  Future<chopper.Response<String>> signInResetpasswordPost(
-      {required ResetPasswordDto? body}) {
+  Future<chopper.Response<String>> signInResetpasswordPost({
+    required ResetPasswordDto? body,
+  }) {
     return _signInResetpasswordPost(body: body);
   }
 
   ///Completes the password reset requests by providing the reset code from the email.
-  @Post(
-    path: '/SignIn/resetpassword',
-    optionalBody: true,
-  )
-  Future<chopper.Response<String>> _signInResetpasswordPost(
-      {@Body() required ResetPasswordDto? body});
+  @POST(path: '/SignIn/resetpassword', optionalBody: true)
+  Future<chopper.Response<String>> _signInResetpasswordPost({
+    @Body() required ResetPasswordDto? body,
+  });
 }
 
 typedef $JsonFactory<T> = T Function(Map<String, dynamic> json);
@@ -703,7 +733,8 @@ class $CustomJsonDecoder {
 class $JsonSerializableConverter extends chopper.JsonConverter {
   @override
   FutureOr<chopper.Response<ResultType>> convertResponse<ResultType, Item>(
-      chopper.Response response) async {
+    chopper.Response response,
+  ) async {
     if (response.bodyString.isEmpty) {
       // In rare cases, when let's say 204 (no content) is returned -
       // we cannot decode the missing json with the result type specified
@@ -716,13 +747,16 @@ class $JsonSerializableConverter extends chopper.JsonConverter {
 
     if (ResultType == DateTime) {
       return response.copyWith(
-          body: DateTime.parse((response.body as String).replaceAll('"', ''))
-              as ResultType);
+        body:
+            DateTime.parse((response.body as String).replaceAll('"', ''))
+                as ResultType,
+      );
     }
 
     final jsonRes = await super.convertResponse(response);
     return jsonRes.copyWith<ResultType>(
-        body: $jsonDecoder.decode<Item>(jsonRes.body) as ResultType);
+      body: $jsonDecoder.decode<Item>(jsonRes.body) as ResultType,
+    );
   }
 }
 
