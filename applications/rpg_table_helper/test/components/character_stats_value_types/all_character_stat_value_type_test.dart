@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
@@ -15,6 +14,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
+import '../../custom_font_loader.dart';
 import '../../test_configuration.dart';
 
 List<
@@ -424,14 +424,14 @@ void main() {
         disableLocals: false,
         pathPrefix: "../",
         widgetName: 'CharacterStatValueType_DMConfig_${testConfiguration.$1}',
-        useMaterialAppWrapper: false,
+        useMaterialAppWrapper: true,
         testerInteractions: (tester, local) async {
           await tester.tap(find.byType(ElevatedButton));
           await tester.pumpAndSettle();
-          await loadAppFonts();
-          await loadAppFonts();
+          await customLoadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
-          await loadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
         },
         screenFactory: (Locale locale, Brightness brightnessToTest) =>
@@ -514,14 +514,14 @@ void main() {
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}_editAlternate',
-        useMaterialAppWrapper: false,
+        useMaterialAppWrapper: true,
         testerInteractions: (tester, local) async {
           await tester.tap(find.byType(ElevatedButton));
           await tester.pumpAndSettle();
-          await loadAppFonts();
-          await loadAppFonts();
+          await customLoadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
-          await loadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
         },
         screenFactory: (Locale locale, Brightness brightnessToTest) =>
@@ -615,14 +615,14 @@ void main() {
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}',
-        useMaterialAppWrapper: false,
+        useMaterialAppWrapper: true,
         testerInteractions: (tester, local) async {
           await tester.tap(find.byType(ElevatedButton));
           await tester.pumpAndSettle();
-          await loadAppFonts();
-          await loadAppFonts();
+          await customLoadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
-          await loadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
         },
         screenFactory: (Locale locale, Brightness brightnessToTest) =>
@@ -716,14 +716,14 @@ void main() {
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfigEmpty_${testConfiguration.$1}',
-        useMaterialAppWrapper: false,
+        useMaterialAppWrapper: true,
         testerInteractions: (tester, local) async {
           await tester.tap(find.byType(ElevatedButton));
           await tester.pumpAndSettle();
-          await loadAppFonts();
-          await loadAppFonts();
+          await customLoadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
-          await loadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
         },
         screenFactory: (Locale locale, Brightness brightnessToTest) =>

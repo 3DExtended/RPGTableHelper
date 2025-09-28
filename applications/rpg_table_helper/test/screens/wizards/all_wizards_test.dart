@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
@@ -24,30 +27,62 @@ void main() {
           widgetName: '$routeNameWithoutSlashes-step-${i + 1}',
           useMaterialAppWrapper: true,
           screenFactory: (Locale locale, Brightness brightnessToTest) =>
-              ProviderScope(
-            overrides: [
-              rpgCharacterConfigurationProvider.overrideWith((ref) {
-                return RpgCharacterConfigurationNotifier(
-                  decks: AsyncValue.data(
-                    RpgCharacterConfiguration.getBaseConfiguration(null),
-                  ),
-                  ref: ref,
-                  runningInTests: true,
-                );
-              }),
-              rpgConfigurationProvider.overrideWith((ref) {
-                return RpgConfigurationNotifier(
-                  decks: AsyncValue.data(
-                    RpgConfigurationModel.getBaseConfiguration(),
-                  ),
-                  ref: ref,
-                  runningInTests: true,
-                );
-              }),
+              MaterialApp(
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              ...AppLocalizations.localizationsDelegates,
+              S.delegate
             ],
-            child: WizardRendererForConfiguration(
-              configuration: config.value,
-              startStepIndex: i,
+            locale: locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.dark,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              fontFamily: 'Ruwudu',
+              useMaterial3: true,
+              iconTheme: IconThemeData(
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
+            home: ThemeConfigurationForApp(
+              child: CustomThemeProvider(
+                overrideBrightness: brightnessToTest,
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  body: Builder(builder: (context) {
+                    return ProviderScope(
+                      overrides: [
+                        rpgCharacterConfigurationProvider.overrideWith((ref) {
+                          return RpgCharacterConfigurationNotifier(
+                            decks: AsyncValue.data(
+                              RpgCharacterConfiguration.getBaseConfiguration(
+                                  null),
+                            ),
+                            ref: ref,
+                            runningInTests: true,
+                          );
+                        }),
+                        rpgConfigurationProvider.overrideWith((ref) {
+                          return RpgConfigurationNotifier(
+                            decks: AsyncValue.data(
+                              RpgConfigurationModel.getBaseConfiguration(),
+                            ),
+                            ref: ref,
+                            runningInTests: true,
+                          );
+                        }),
+                      ],
+                      child: WizardRendererForConfiguration(
+                        configuration: config.value,
+                        startStepIndex: i,
+                      ),
+                    );
+                  }),
+                ),
+              ),
             ),
           ),
           getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>

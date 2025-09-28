@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
@@ -16,6 +15,7 @@ import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_scree
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
+import '../../custom_font_loader.dart';
 import '../../test_configuration.dart';
 
 void main() {
@@ -42,10 +42,10 @@ void main() {
         useMaterialAppWrapper: true,
         testerInteractions: (tester, local) async {
           await tester.pumpAndSettle();
-          await loadAppFonts();
-          await loadAppFonts();
+          await customLoadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
-          await loadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
         },
         screenFactory: (Locale locale, Brightness brightnessToTest) =>

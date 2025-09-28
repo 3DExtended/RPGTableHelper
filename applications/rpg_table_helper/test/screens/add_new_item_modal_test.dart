@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -13,6 +12,7 @@ import 'package:quest_keeper/screens/add_new_item_modal.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
+import '../custom_font_loader.dart';
 import '../test_configuration.dart';
 
 void main() {
@@ -27,10 +27,10 @@ void main() {
       testerInteractions: (tester, local) async {
         await tester.tap(find.byType(ElevatedButton));
         await tester.pumpAndSettle();
-        await loadAppFonts();
-        await loadAppFonts();
+        await customLoadAppFonts();
+        await customLoadAppFonts();
         await tester.pumpAndSettle();
-        await loadAppFonts();
+        await customLoadAppFonts();
         await tester.pumpAndSettle();
       },
       screenFactory: (Locale locale, Brightness brightnessToTest) =>

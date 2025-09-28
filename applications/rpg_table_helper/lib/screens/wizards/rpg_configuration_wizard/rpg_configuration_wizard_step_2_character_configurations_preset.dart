@@ -121,6 +121,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
       contentChildren: [
         ...tabsToEdit.asMap().entries.map((tab) {
           return Column(
+            mainAxisSize: MainAxisSize.max,
             children: [
               // Tab title textfield
               Row(
@@ -203,188 +204,201 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
               ),
 
               // stats beneath
-              ReorderableListView(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                onReorder: (int oldIndex, int newIndex) {
-                  setState(() {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    var item = statsUnderTab[tab.value.$1]!.removeAt(oldIndex);
-                    statsUnderTab[tab.value.$1]!.insert(newIndex, item);
-                  });
-                },
-                proxyDecorator:
-                    (Widget child, int index, Animation<double> animation) {
-                  return AnimatedBuilder(
-                    animation: animation,
-                    builder: (BuildContext context, Widget? child) {
-                      final double animValue =
-                          Curves.easeInOut.transform(animation.value);
-                      final double elevation = lerpDouble(0, 6, animValue)!;
-                      return Material(
-                        elevation: elevation,
-                        color: Colors.transparent,
-                        shadowColor: Colors.black.withOpacity(0.3),
+              Builder(
+                builder: (context) {
+                  return ReorderableListView(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    onReorder: (int oldIndex, int newIndex) {
+                      setState(() {
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        var item =
+                            statsUnderTab[tab.value.$1]!.removeAt(oldIndex);
+                        statsUnderTab[tab.value.$1]!.insert(newIndex, item);
+                      });
+                    },
+                    proxyDecorator:
+                        (Widget child, int index, Animation<double> animation) {
+                      return AnimatedBuilder(
+                        animation: animation,
+                        builder: (BuildContext context, Widget? child) {
+                          final double animValue =
+                              Curves.easeInOut.transform(animation.value);
+                          final double elevation = lerpDouble(0, 6, animValue)!;
+                          return Material(
+                            elevation: elevation,
+                            color: Colors.transparent,
+                            shadowColor: Colors.black.withOpacity(0.3),
+                            child: child,
+                          );
+                        },
                         child: child,
                       );
                     },
-                    child: child,
-                  );
-                },
-                children: (statsUnderTab[tab.value.$1] ?? [])
-                    .asMap()
-                    .entries
-                    .map(
-                      (e) => e.value.groupHandleId != null
-                          ? Padding(
-                              key: ValueKey(e.value),
-                              padding:
-                                  const EdgeInsets.only(left: 3, right: 95),
-                              child: Row(
-                                children: [
-                                  CustomFaIcon(
-                                    icon: FontAwesomeIcons.gripVertical,
-                                    color: Color.lerp(
-                                        CustomThemeProvider.of(context)
-                                            .theme
-                                            .middleBgColor,
-                                        CustomThemeProvider.of(context)
-                                            .theme
-                                            .darkColor,
-                                        0.5),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.fromLTRB(0, 12, 0, 12),
-                                      child: Column(
-                                        children: [
-                                          HorizontalLine(
-                                            useDarkColor: true,
-                                          ),
-                                          Center(
-                                            child: Text(S.of(context).newGroup),
-                                          ),
-                                        ],
+                    children: (statsUnderTab[tab.value.$1] ?? [])
+                        .asMap()
+                        .entries
+                        .map(
+                          (e) => e.value.groupHandleId != null
+                              ? Padding(
+                                  key: ValueKey(e.value),
+                                  padding:
+                                      const EdgeInsets.only(left: 3, right: 95),
+                                  child: Row(
+                                    children: [
+                                      CustomFaIcon(
+                                        icon: FontAwesomeIcons.gripVertical,
+                                        color: Color.lerp(
+                                            CustomThemeProvider.of(context)
+                                                .theme
+                                                .middleBgColor,
+                                            CustomThemeProvider.of(context)
+                                                .theme
+                                                .darkColor,
+                                            0.5),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Container(
-                              color:
-                                  CustomThemeProvider.of(context).theme.bgColor,
-                              key: ValueKey(e.value),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CustomFaIcon(
-                                    icon: FontAwesomeIcons.gripVertical,
-                                    color: Color.lerp(
-                                        CustomThemeProvider.of(context)
-                                            .theme
-                                            .middleBgColor,
-                                        CustomThemeProvider.of(context)
-                                            .theme
-                                            .darkColor,
-                                        0.5),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 5, 0, 5),
+                                      SizedBox(width: 10),
+                                      Expanded(
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 12, 0, 12),
+                                          child: Column(
+                                            children: [
+                                              HorizontalLine(
+                                                useDarkColor: true,
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                    S.of(context).newGroup),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .bgColor,
+                                  key: ValueKey(e.value),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CustomFaIcon(
+                                        icon: FontAwesomeIcons.gripVertical,
+                                        color: Color.lerp(
+                                            CustomThemeProvider.of(context)
+                                                .theme
+                                                .middleBgColor,
+                                            CustomThemeProvider.of(context)
+                                                .theme
+                                                .darkColor,
+                                            0.5),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 5, 0, 5),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .darkColor,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomMarkdownBody(
+                                                      text:
+                                                          "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString(context)})",
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      // Edit Button
+                                      Container(
+                                        height: 50,
+                                        width: 40,
+                                        clipBehavior: Clip.none,
+                                        child: CustomButton(
+                                          variant:
+                                              CustomButtonVariant.FlatButton,
+                                          isSubbutton: true,
+                                          onPressed: () async {
+                                            await showGetDmConfigurationModal(
+                                                    context: context,
+                                                    predefinedConfiguration:
+                                                        e.value.stat)
+                                                .then((value) {
+                                              if (value == null) {
+                                                return;
+                                              }
+                                              setState(() {
+                                                statsUnderTab[tab.value.$1]![
+                                                        e.key] =
+                                                    StatOrGroupIndicator(
+                                                        stat: value,
+                                                        groupHandleId: null);
+                                              });
+                                            });
+                                          },
+                                          icon: CustomFaIcon(
+                                              size: 16,
                                               color: CustomThemeProvider.of(
                                                       context)
                                                   .theme
                                                   .darkColor,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          padding: EdgeInsets.all(10),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: CustomMarkdownBody(
-                                                  text:
-                                                      "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString(context)})",
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
+                                              icon:
+                                                  FontAwesomeIcons.penToSquare),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 50,
+                                        width: 40,
+                                        clipBehavior: Clip.none,
+                                        child: CustomButton(
+                                          isSubbutton: true,
+                                          variant:
+                                              CustomButtonVariant.FlatButton,
+                                          onPressed: () {
+                                            setState(() {
+                                              statsUnderTab[tab.value.$1]!
+                                                  .removeAt(e.key);
+                                            });
+                                          },
+                                          icon: CustomFaIcon(
+                                              size: 16,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkColor,
+                                              icon: FontAwesomeIcons.trashCan),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  // Edit Button
-                                  Container(
-                                    height: 50,
-                                    width: 40,
-                                    clipBehavior: Clip.none,
-                                    child: CustomButton(
-                                      variant: CustomButtonVariant.FlatButton,
-                                      isSubbutton: true,
-                                      onPressed: () async {
-                                        await showGetDmConfigurationModal(
-                                                context: context,
-                                                predefinedConfiguration:
-                                                    e.value.stat)
-                                            .then((value) {
-                                          if (value == null) {
-                                            return;
-                                          }
-                                          setState(() {
-                                            statsUnderTab[tab.value.$1]![
-                                                    e.key] =
-                                                StatOrGroupIndicator(
-                                                    stat: value,
-                                                    groupHandleId: null);
-                                          });
-                                        });
-                                      },
-                                      icon: CustomFaIcon(
-                                          size: 16,
-                                          color: CustomThemeProvider.of(context)
-                                              .theme
-                                              .darkColor,
-                                          icon: FontAwesomeIcons.penToSquare),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    width: 40,
-                                    clipBehavior: Clip.none,
-                                    child: CustomButton(
-                                      isSubbutton: true,
-                                      variant: CustomButtonVariant.FlatButton,
-                                      onPressed: () {
-                                        setState(() {
-                                          statsUnderTab[tab.value.$1]!
-                                              .removeAt(e.key);
-                                        });
-                                      },
-                                      icon: CustomFaIcon(
-                                          size: 16,
-                                          color: CustomThemeProvider.of(context)
-                                              .theme
-                                              .darkColor,
-                                          icon: FontAwesomeIcons.trashCan),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                    )
-                    .toList(),
+                                ),
+                        )
+                        .toList(),
+                  );
+                },
               ),
 
               // add new stat beneath

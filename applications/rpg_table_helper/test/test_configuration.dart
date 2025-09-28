@@ -7,6 +7,8 @@ import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
+import 'custom_font_loader.dart';
+
 const testDevices = [
   Device(
     name: 'ipad pro 12-9 landscape',
@@ -111,10 +113,10 @@ void testConfigurations({
 
         testGoldens(testName, (WidgetTester tester) async {
           TestWidgetsFlutterBinding.ensureInitialized();
-          await loadAppFonts();
-          await loadAppFonts();
+          await customLoadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
-          await loadAppFonts();
+          await customLoadAppFonts();
           await tester.pumpAndSettle();
 
           tester.view.platformDispatcher.platformBrightnessTestValue =
@@ -122,32 +124,30 @@ void testConfigurations({
           await tester.pumpAndSettle();
 
           await tester.pumpWidgetBuilder(
-            Builder(builder: (context) {
+            wrapper: (w) => Builder(builder: (context) {
               return CustomThemeProvider(
-                overrideBrightness: brightnessToTest,
-                child: Localizations(
-                  delegates: const [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    ...AppLocalizations.localizationsDelegates,
-                    S.delegate,
-                  ],
-                  locale: local,
-                  child: Localizations.override(
-                    context: context,
+                  overrideBrightness: brightnessToTest,
+                  child: Localizations(
+                    delegates: const [
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                      ...AppLocalizations.localizationsDelegates,
+                      S.delegate,
+                    ],
                     locale: local,
-                    child: ThemeConfigurationForApp(child: widgetConfig.value),
-                  ),
-                ),
-              );
+                    child: w,
+                  ));
+            }),
+            Builder(builder: (context) {
+              return ThemeConfigurationForApp(child: widgetConfig.value);
             }),
           );
 
           if (testerInteractions != null) {
             await testerInteractions(tester, local);
           }
-          await loadAppFonts();
+          await customLoadAppFonts();
 
           await multiScreenGolden(
             tester,
