@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
@@ -13,6 +12,7 @@ import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/lifecycle_event_handler.dart';
 import 'package:quest_keeper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:quest_keeper/helpers/save_rpg_configuration_to_storage_observer.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/screens/authorized_screen_wrapper.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
