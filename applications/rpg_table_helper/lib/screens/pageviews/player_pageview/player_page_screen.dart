@@ -306,6 +306,20 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ? ""
         : playerScreensToSwipe[_currentStep].$1;
 
+    var selectedIconColor = CustomThemeProvider.of(context).theme.accentColor;
+    var unselectedIconColor =
+        CustomThemeProvider.of(context).brightnessNotifier.value ==
+                Brightness.light
+            ? CustomThemeProvider.of(context).theme.textColor
+            : CustomThemeProvider.of(context).theme.darkTextColor;
+    var textColor = CustomThemeProvider.of(context).brightnessNotifier.value ==
+            Brightness.light
+        ? CustomThemeProvider.of(context).theme.textColor
+        : CustomThemeProvider.of(context).theme.darkTextColor;
+
+    var isDarkMode = CustomThemeProvider.of(context).brightnessNotifier.value ==
+        Brightness.dark;
+
     return PreventSwipeNavigation(
       child: Scaffold(
         backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
@@ -339,28 +353,12 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   navigatorKey.currentState!.pop();
                 }
               },
-              titleWidget: Builder(builder: (context) {
-                var selectedIconColor =
-                    CustomThemeProvider.of(context).theme.accentColor;
-                var unselectedIconColor =
-                    CustomThemeProvider.of(context).brightnessNotifier.value ==
-                            Brightness.light
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkTextColor;
-                var textColor =
-                    CustomThemeProvider.of(context).brightnessNotifier.value ==
-                            Brightness.light
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkTextColor;
-
-                var isDarkMode =
-                    CustomThemeProvider.of(context).brightnessNotifier.value ==
-                        Brightness.dark;
-
-                return Row(
+              titleWidget: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Spacer(),
                     ...List.generate(
                       _currentStep + 1,
                       (index) => LongPressScaleWidget(
@@ -377,11 +375,11 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                               context, rpgConfig, tempLoadedRpgCharacter);
                         },
                         child: CupertinoButton(
-                          minSize: 0,
                           padding: EdgeInsets.zero,
                           onPressed: () async {
                             await _goToStepId(index);
                           },
+                          minimumSize: Size(0, 0),
                           child: Builder(builder: (context) {
                             // if tempLoadedRpgCharacter has tab icon configuration, use it
                             var tabIcon2 = tempLoadedRpgCharacter
@@ -452,11 +450,11 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                               context, rpgConfig, tempLoadedRpgCharacter);
                         },
                         child: CupertinoButton(
-                            minSize: 0,
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               _goToStepId(index + _currentStep + 1);
                             },
+                            minimumSize: Size(0, 0),
                             child: Builder(builder: (context) {
                               var tabIcon2 = tempLoadedRpgCharacter
                                   ?.tabConfigurations
@@ -498,10 +496,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                             })),
                       ),
                     ),
-                    Spacer(),
                   ],
-                );
-              }),
+                ),
+              ),
               menuOpen: connectionDetails == null ||
                       connectionDetails.isDm ||
                       (rpgConfig?.characterStatTabsDefinition ??
