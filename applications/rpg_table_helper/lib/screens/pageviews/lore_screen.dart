@@ -224,7 +224,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                             final doc =
                                                 groupedDocuments[group]![index];
                                             return CupertinoButton(
-                                              minSize: 0,
                                               padding: EdgeInsets.zero,
                                               onPressed: () {
                                                 setState(() {
@@ -232,6 +231,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                                   selectedDocumentId = doc.id;
                                                 });
                                               },
+                                              minimumSize: Size(0, 0),
                                               child: LongPressDraggable<
                                                   NoteDocumentDto>(
                                                 hapticFeedbackOnStart: true,
@@ -254,95 +254,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                 },
                               );
                             }),
-                            if (!_isNavbarCollapsed)
-                              SizedBox(
-                                height: 20,
-                              ),
-                            if (!_isNavbarCollapsed)
-                              CustomButton(
-                                onPressed: () async {
-                                  var campagneId = ref
-                                      .read(connectionDetailsProvider)
-                                      .valueOrNull
-                                      ?.campagneId;
-                                  if (campagneId == null) {
-                                    return;
-                                  }
-
-                                  var systemClock =
-                                      DependencyProvider.of(context)
-                                          .getService<ISystemClockService>();
-
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-
-                                  var newDocument = NoteDocumentDto(
-                                    // if some document is selected, add it to the same group
-                                    groupName: selectedDocument?.groupName ??
-                                        S
-                                            .of(context)
-                                            .defaultGroupNameForDocuments,
-                                    title:
-                                        "${S.of(context).documentDefaultNamePrefix} #${numberOfDocumentsForThisPlayer + 1}",
-                                    createdForCampagneId:
-                                        CampagneIdentifier($value: campagneId),
-                                    lastModifiedAt: systemClock.now(),
-                                    creationDate: systemClock.now(),
-                                    creatingUserId: _myUser,
-                                    isDeleted: false,
-                                    imageBlocks: [],
-                                    textBlocks: [],
-                                    id: NoteDocumentIdentifier(
-                                        $value:
-                                            "00000000-0000-0000-0000-000000000000"),
-                                  );
-
-                                  var service = DependencyProvider.of(context)
-                                      .getService<INoteDocumentService>();
-                                  var createResult = await service
-                                      .createNewDocumentForCampagne(
-                                    dto: newDocument,
-                                  );
-
-                                  if (!mounted || !context.mounted) return;
-                                  await createResult
-                                      .possiblyHandleError(context);
-                                  if (!mounted || !context.mounted) return;
-
-                                  setState(() {
-                                    isLoading = false;
-                                    if (createResult.isSuccessful) {
-                                      newDocument = newDocument.copyWith(
-                                          id: createResult.result!);
-
-                                      if (!groupedDocuments
-                                          .containsKey(newDocument.groupName)) {
-                                        groupedDocuments[
-                                            newDocument.groupName] = [];
-                                      }
-                                      groupedDocuments[newDocument.groupName]!
-                                          .add(newDocument);
-
-                                      groupedDocuments[newDocument.groupName]!
-                                          .sortBy((e) => e.title);
-
-                                      // select new document
-                                      selectedDocument = newDocument;
-                                      selectedDocumentId = newDocument.id;
-                                    }
-                                  });
-                                },
-                                icon: CustomFaIcon(
-                                  icon: FontAwesomeIcons.plus,
-                                  size: iconSizeInlineButtons,
-                                  color: CustomThemeProvider.of(context)
-                                      .theme
-                                      .textColor,
-                                ),
-                                label: S.of(context).newItem,
-                                variant: CustomButtonVariant.AccentButton,
-                              ),
                           ],
                         ),
                       ),
@@ -352,7 +263,98 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               ),
             ),
           ),
-          _getCollapseButton(duration),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: HorizontalLine(
+              useDarkColor: true,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (!_isNavbarCollapsed)
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, bottom: 10),
+                  child: CustomButton(
+                    onPressed: () async {
+                      var campagneId = ref
+                          .read(connectionDetailsProvider)
+                          .valueOrNull
+                          ?.campagneId;
+                      if (campagneId == null) {
+                        return;
+                      }
+
+                      var systemClock = DependencyProvider.of(context)
+                          .getService<ISystemClockService>();
+
+                      setState(() {
+                        isLoading = true;
+                      });
+
+                      var newDocument = NoteDocumentDto(
+                        // if some document is selected, add it to the same group
+                        groupName: selectedDocument?.groupName ??
+                            S.of(context).defaultGroupNameForDocuments,
+                        title:
+                            "${S.of(context).documentDefaultNamePrefix} #${numberOfDocumentsForThisPlayer + 1}",
+                        createdForCampagneId:
+                            CampagneIdentifier($value: campagneId),
+                        lastModifiedAt: systemClock.now(),
+                        creationDate: systemClock.now(),
+                        creatingUserId: _myUser,
+                        isDeleted: false,
+                        imageBlocks: [],
+                        textBlocks: [],
+                        id: NoteDocumentIdentifier(
+                            $value: "00000000-0000-0000-0000-000000000000"),
+                      );
+
+                      var service = DependencyProvider.of(context)
+                          .getService<INoteDocumentService>();
+                      var createResult =
+                          await service.createNewDocumentForCampagne(
+                        dto: newDocument,
+                      );
+
+                      if (!mounted || !context.mounted) return;
+                      await createResult.possiblyHandleError(context);
+                      if (!mounted || !context.mounted) return;
+
+                      setState(() {
+                        isLoading = false;
+                        if (createResult.isSuccessful) {
+                          newDocument =
+                              newDocument.copyWith(id: createResult.result!);
+
+                          if (!groupedDocuments
+                              .containsKey(newDocument.groupName)) {
+                            groupedDocuments[newDocument.groupName] = [];
+                          }
+                          groupedDocuments[newDocument.groupName]!
+                              .add(newDocument);
+
+                          groupedDocuments[newDocument.groupName]!
+                              .sortBy((e) => e.title);
+
+                          // select new document
+                          selectedDocument = newDocument;
+                          selectedDocumentId = newDocument.id;
+                        }
+                      });
+                    },
+                    icon: CustomFaIcon(
+                      icon: FontAwesomeIcons.plus,
+                      size: iconSizeInlineButtons,
+                      color: CustomThemeProvider.of(context).theme.textColor,
+                    ),
+                    label: S.of(context).newItem,
+                    variant: CustomButtonVariant.AccentButton,
+                  ),
+                ),
+              _getCollapseButton(duration),
+            ],
+          ),
         ],
       ),
     );
@@ -499,19 +501,19 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   Widget _getCollapseButton(Duration duration) {
     return AnimatedPadding(
       duration: duration,
-      padding: EdgeInsets.fromLTRB(0, 0, _isNavbarCollapsed ? 0 : 20, 20),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
       child: AnimatedAlign(
         duration: duration,
         alignment:
             _isNavbarCollapsed ? Alignment.center : Alignment.centerRight,
         child: CupertinoButton(
-          minSize: 0,
           padding: EdgeInsets.zero,
           onPressed: () {
             setState(() {
               _isNavbarCollapsed = !_isNavbarCollapsed;
             });
           },
+          minimumSize: Size(0, 0),
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
