@@ -1,7 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 class CustomTheme {
   late Color darkColor;
@@ -20,6 +20,17 @@ class CustomTheme {
 
   late LinearGradient borderGradient;
   late LinearGradient navbarBackground;
+
+  // Get the appropriate SystemUiOverlayStyle for status bar
+  SystemUiOverlayStyle get statusBarStyle {
+    // Since the app has dark headers/navbar, we need light status bar content
+    return SystemUiOverlayStyle.light.copyWith(
+      statusBarColor: Colors.transparent, // Make status bar transparent
+      statusBarIconBrightness:
+          Brightness.light, // Light icons for dark background
+      statusBarBrightness: Brightness.dark, // For iOS - dark background
+    );
+  }
 
   static CustomTheme lightTheme = CustomTheme()
     ..darkColor = Color(0xff312D28)

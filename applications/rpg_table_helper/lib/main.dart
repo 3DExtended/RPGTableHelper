@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
@@ -327,6 +328,11 @@ class _ThemeConfigurationForAppState
 
   @override
   Widget build(BuildContext context) {
+    // Apply the status bar style for light text on dark background
+    SystemChrome.setSystemUIOverlayStyle(
+      CustomThemeProvider.of(context).theme.statusBarStyle,
+    );
+
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
