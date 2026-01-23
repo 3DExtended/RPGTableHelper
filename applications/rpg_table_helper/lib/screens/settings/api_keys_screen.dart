@@ -634,18 +634,6 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                   ),
                                             ),
                                             const SizedBox(height: 4),
-                                            Text(
-                                              'Created: ${key.createdAt!.toLocal().toString().split('.')[0]}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: CustomThemeProvider
-                                                            .of(context)
-                                                        .theme
-                                                        .darkTextColor,
-                                                  ),
-                                            ),
                                             if (isRevoked) ...[
                                               const SizedBox(height: 4),
                                               Text(

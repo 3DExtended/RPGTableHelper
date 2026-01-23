@@ -241,6 +241,7 @@ public class Startup
             {
                 c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
             }
+
             c.SwaggerDoc("external", new OpenApiInfo { Title = "External API", Version = "v1" });
 
             // Separate endpoints by group
