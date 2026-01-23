@@ -36,12 +36,14 @@ namespace RPGTableHelper.WebApi;
 
 public class Startup
 {
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
         Configuration = configuration;
+        Environment = environment;
     }
 
     public IConfiguration Configuration { get; }
+    public IWebHostEnvironment Environment { get; }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -234,7 +236,11 @@ public class Startup
 
             c.SchemaFilter<EnumSchemaFilter>();
 
-            c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
+            // In production, only generate External API documentation
+            if (Environment.IsDevelopment())
+            {
+                c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
+            }
             c.SwaggerDoc("external", new OpenApiInfo { Title = "External API", Version = "v1" });
 
             // Separate endpoints by group
