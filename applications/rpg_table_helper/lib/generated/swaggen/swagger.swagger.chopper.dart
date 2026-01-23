@@ -19,6 +19,42 @@ final class _$Swagger extends Swagger {
   final Type definitionType = Swagger;
 
   @override
+  Future<Response<CreateApiKeyResponse>> _apiApiKeysPost(
+      {required CreateApiKeyRequestDto? body}) {
+    final Uri $url = Uri.parse('/api/ApiKeys');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<CreateApiKeyResponse, CreateApiKeyResponse>($request);
+  }
+
+  @override
+  Future<Response<List<ApiKeyDto>>> _apiApiKeysGet() {
+    final Uri $url = Uri.parse('/api/ApiKeys');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<ApiKeyDto>, ApiKeyDto>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiApiKeysIdDelete({required String? id}) {
+    final Uri $url = Uri.parse('/api/ApiKeys/${id}');
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<CampagneIdentifier>> _campagneCreatecampagnePost(
       {required CampagneCreateDto? body}) {
     final Uri $url = Uri.parse('/Campagne/createcampagne');

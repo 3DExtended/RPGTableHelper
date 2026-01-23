@@ -18,8 +18,10 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
@@ -41,8 +43,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,22 +56,12 @@ class S {
 
   /// `Username`
   String get username {
-    return Intl.message(
-      'Username',
-      name: 'username',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Username', name: 'username', desc: '', args: []);
   }
 
   /// `Password`
   String get password {
-    return Intl.message(
-      'Password',
-      name: 'password',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Password', name: 'password', desc: '', args: []);
   }
 
   /// `Player name`
@@ -82,22 +76,12 @@ class S {
 
   /// `Save`
   String get save {
-    return Intl.message(
-      'Save',
-      name: 'save',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Save', name: 'save', desc: '', args: []);
   }
 
   /// `Cancel`
   String get cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
   }
 
   /// `Configure properties`
@@ -122,12 +106,7 @@ class S {
 
   /// `First value`
   String get firstValue {
-    return Intl.message(
-      'First value',
-      name: 'firstValue',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('First value', name: 'firstValue', desc: '', args: []);
   }
 
   /// `Second value`
@@ -142,12 +121,7 @@ class S {
 
   /// `Other value`
   String get otherValue {
-    return Intl.message(
-      'Other value',
-      name: 'otherValue',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Other value', name: 'otherValue', desc: '', args: []);
   }
 
   /// `Calculated value`
@@ -232,12 +206,7 @@ class S {
 
   /// `Max value`
   String get maxValue {
-    return Intl.message(
-      'Max value',
-      name: 'maxValue',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Max value', name: 'maxValue', desc: '', args: []);
   }
 
   /// `The max value for this property`
@@ -252,12 +221,7 @@ class S {
 
   /// `New pet`
   String get newPetBtnLabel {
-    return Intl.message(
-      'New pet',
-      name: 'newPetBtnLabel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('New pet', name: 'newPetBtnLabel', desc: '', args: []);
   }
 
   /// `Pet`
@@ -272,12 +236,7 @@ class S {
 
   /// `Preview`
   String get preview {
-    return Intl.message(
-      'Preview',
-      name: 'preview',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Preview', name: 'preview', desc: '', args: []);
   }
 
   /// `New image`
@@ -342,12 +301,7 @@ class S {
 
   /// `Join Code:`
   String get joinCode {
-    return Intl.message(
-      'Join Code:',
-      name: 'joinCode',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Join Code:', name: 'joinCode', desc: '', args: []);
   }
 
   /// `Error`
@@ -632,12 +586,7 @@ class S {
 
   /// `More values`
   String get moreValues {
-    return Intl.message(
-      'More values',
-      name: 'moreValues',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('More values', name: 'moreValues', desc: '', args: []);
   }
 
   /// `for number value`
@@ -652,12 +601,7 @@ class S {
 
   /// `Name:`
   String get propertyNameLabel {
-    return Intl.message(
-      'Name:',
-      name: 'propertyNameLabel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Name:', name: 'propertyNameLabel', desc: '', args: []);
   }
 
   /// `Complete registration`
@@ -702,12 +646,7 @@ class S {
 
   /// `Item`
   String get item {
-    return Intl.message(
-      'Item',
-      name: 'item',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Item', name: 'item', desc: '', args: []);
   }
 
   /// `Some item description`
@@ -722,12 +661,7 @@ class S {
 
   /// `Select`
   String get select {
-    return Intl.message(
-      'Select',
-      name: 'select',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Select', name: 'select', desc: '', args: []);
   }
 
   /// `Campaign management`
@@ -762,52 +696,27 @@ class S {
 
   /// `Grant items`
   String get grantItems {
-    return Intl.message(
-      'Grant items',
-      name: 'grantItems',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Grant items', name: 'grantItems', desc: '', args: []);
   }
 
   /// `Lore`
   String get lore {
-    return Intl.message(
-      'Lore',
-      name: 'lore',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Lore', name: 'lore', desc: '', args: []);
   }
 
   /// `Online`
   String get online {
-    return Intl.message(
-      'Online',
-      name: 'online',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Online', name: 'online', desc: '', args: []);
   }
 
   /// `Offline`
   String get offline {
-    return Intl.message(
-      'Offline',
-      name: 'offline',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Offline', name: 'offline', desc: '', args: []);
   }
 
   /// `All players:`
   String get allPlayers {
-    return Intl.message(
-      'All players:',
-      name: 'allPlayers',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('All players:', name: 'allPlayers', desc: '', args: []);
   }
 
   /// `Join requests:`
@@ -842,22 +751,12 @@ class S {
 
   /// `User:`
   String get user {
-    return Intl.message(
-      'User:',
-      name: 'user',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('User:', name: 'user', desc: '', args: []);
   }
 
   /// `Character:`
   String get character {
-    return Intl.message(
-      'Character:',
-      name: 'character',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Character:', name: 'character', desc: '', args: []);
   }
 
   /// `Last granted items`
@@ -902,32 +801,17 @@ class S {
 
   /// `Dice roll`
   String get diceRoll {
-    return Intl.message(
-      'Dice roll',
-      name: 'diceRoll',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Dice roll', name: 'diceRoll', desc: '', args: []);
   }
 
   /// `Player`
   String get player {
-    return Intl.message(
-      'Player',
-      name: 'player',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Player', name: 'player', desc: '', args: []);
   }
 
   /// `Send items`
   String get sendItems {
-    return Intl.message(
-      'Send items',
-      name: 'sendItems',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Send items', name: 'sendItems', desc: '', args: []);
   }
 
   /// `## Items to be found in place:`
@@ -962,12 +846,7 @@ class S {
 
   /// `DC`
   String get diceChallengeAbbr {
-    return Intl.message(
-      'DC',
-      name: 'diceChallengeAbbr',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('DC', name: 'diceChallengeAbbr', desc: '', args: []);
   }
 
   /// `Last granted items:`
@@ -992,12 +871,7 @@ class S {
 
   /// `Login`
   String get login {
-    return Intl.message(
-      'Login',
-      name: 'login',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Login', name: 'login', desc: '', args: []);
   }
 
   /// `Sign in with Apple`
@@ -1032,22 +906,12 @@ class S {
 
   /// `E-Mail`
   String get email {
-    return Intl.message(
-      'E-Mail',
-      name: 'email',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('E-Mail', name: 'email', desc: '', args: []);
   }
 
   /// `Register`
   String get register {
-    return Intl.message(
-      'Register',
-      name: 'register',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Register', name: 'register', desc: '', args: []);
   }
 
   /// `Item details for`
@@ -1082,12 +946,7 @@ class S {
 
   /// `Amount`
   String get amount {
-    return Intl.message(
-      'Amount',
-      name: 'amount',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Amount', name: 'amount', desc: '', args: []);
   }
 
   /// `Received items`
@@ -1142,12 +1001,7 @@ class S {
 
   /// `Ok`
   String get ok {
-    return Intl.message(
-      'Ok',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Ok', name: 'ok', desc: '', args: []);
   }
 
   /// `Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character's backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:`
@@ -1162,12 +1016,7 @@ class S {
 
   /// `LVL`
   String get levelAbbr {
-    return Intl.message(
-      'LVL',
-      name: 'levelAbbr',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('LVL', name: 'levelAbbr', desc: '', args: []);
   }
 
   /// `Add additional enemy`
@@ -1182,12 +1031,7 @@ class S {
 
   /// `Enemy name`
   String get enemyName {
-    return Intl.message(
-      'Enemy name',
-      name: 'enemyName',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Enemy name', name: 'enemyName', desc: '', args: []);
   }
 
   /// `Roll of initiative`
@@ -1212,22 +1056,12 @@ class S {
 
   /// `Enemy`
   String get enemy {
-    return Intl.message(
-      'Enemy',
-      name: 'enemy',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Enemy', name: 'enemy', desc: '', args: []);
   }
 
   /// `Add`
   String get add {
-    return Intl.message(
-      'Add',
-      name: 'add',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add', name: 'add', desc: '', args: []);
   }
 
   /// `Initiative roll`
@@ -1262,12 +1096,7 @@ class S {
 
   /// `Absenden`
   String get send {
-    return Intl.message(
-      'Absenden',
-      name: 'send',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Absenden', name: 'send', desc: '', args: []);
   }
 
   /// `Edit document`
@@ -1372,22 +1201,12 @@ class S {
 
   /// `Craft`
   String get craft {
-    return Intl.message(
-      'Craft',
-      name: 'craft',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Craft', name: 'craft', desc: '', args: []);
   }
 
   /// `New`
   String get newItem {
-    return Intl.message(
-      'New',
-      name: 'newItem',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('New', name: 'newItem', desc: '', args: []);
   }
 
   /// `Other`
@@ -1412,32 +1231,17 @@ class S {
 
   /// `Author:`
   String get authorLabel {
-    return Intl.message(
-      'Author:',
-      name: 'authorLabel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Author:', name: 'authorLabel', desc: '', args: []);
   }
 
   /// `You`
   String get you {
-    return Intl.message(
-      'You',
-      name: 'you',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('You', name: 'you', desc: '', args: []);
   }
 
   /// `DM`
   String get dm {
-    return Intl.message(
-      'DM',
-      name: 'dm',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('DM', name: 'dm', desc: '', args: []);
   }
 
   /// `%H:%M %m-%d-%Y`
@@ -1462,22 +1266,12 @@ class S {
 
   /// `Image`
   String get addImageBtnLabel {
-    return Intl.message(
-      'Image',
-      name: 'addImageBtnLabel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Image', name: 'addImageBtnLabel', desc: '', args: []);
   }
 
   /// `New grouping:`
   String get newGroup {
-    return Intl.message(
-      'New grouping:',
-      name: 'newGroup',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('New grouping:', name: 'newGroup', desc: '', args: []);
   }
 
   /// `New grouping`
@@ -1502,12 +1296,7 @@ class S {
 
   /// `New tab`
   String get newTabBtnLabel {
-    return Intl.message(
-      'New tab',
-      name: 'newTabBtnLabel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('New tab', name: 'newTabBtnLabel', desc: '', args: []);
   }
 
   /// `Requires:`
@@ -1522,12 +1311,7 @@ class S {
 
   /// `Default tab`
   String get defaultTab {
-    return Intl.message(
-      'Default tab',
-      name: 'defaultTab',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Default tab', name: 'defaultTab', desc: '', args: []);
   }
 
   /// `Amount:`
@@ -1552,12 +1336,7 @@ class S {
 
   /// `Search`
   String get searchLabel {
-    return Intl.message(
-      'Search',
-      name: 'searchLabel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Search', name: 'searchLabel', desc: '', args: []);
   }
 
   /// `All`
@@ -1622,12 +1401,7 @@ class S {
 
   /// `Lore`
   String get navBarHeaderLore {
-    return Intl.message(
-      'Lore',
-      name: 'navBarHeaderLore',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Lore', name: 'navBarHeaderLore', desc: '', args: []);
   }
 
   /// `Inventory`
@@ -1672,12 +1446,7 @@ class S {
 
   /// `Add balance`
   String get addBalance {
-    return Intl.message(
-      'Add balance',
-      name: 'addBalance',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add balance', name: 'addBalance', desc: '', args: []);
   }
 
   /// `Reduce balance`
@@ -1692,12 +1461,7 @@ class S {
 
   /// `New balance`
   String get newBalance {
-    return Intl.message(
-      'New balance',
-      name: 'newBalance',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('New balance', name: 'newBalance', desc: '', args: []);
   }
 
   /// `Not enough balance for this transaction`
@@ -1742,32 +1506,17 @@ class S {
 
   /// `Level`
   String get level {
-    return Intl.message(
-      'Level',
-      name: 'level',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Level', name: 'level', desc: '', args: []);
   }
 
   /// `Count`
   String get count {
-    return Intl.message(
-      'Count',
-      name: 'count',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Count', name: 'count', desc: '', args: []);
   }
 
   /// `Add items`
   String get addItems {
-    return Intl.message(
-      'Add items',
-      name: 'addItems',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Add items', name: 'addItems', desc: '', args: []);
   }
 
   /// `Select Game Mode`
@@ -1792,12 +1541,7 @@ class S {
 
   /// `Play as DM`
   String get startAsDm {
-    return Intl.message(
-      'Play as DM',
-      name: 'startAsDm',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Play as DM', name: 'startAsDm', desc: '', args: []);
   }
 
   /// `You own {count} campaigns`
@@ -1842,12 +1586,7 @@ class S {
 
   /// `Name`
   String get campaigneName {
-    return Intl.message(
-      'Name',
-      name: 'campaigneName',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Name', name: 'campaigneName', desc: '', args: []);
   }
 
   /// `The name of the campaign`
@@ -1932,12 +1671,7 @@ class S {
 
   /// `Name`
   String get characterName {
-    return Intl.message(
-      'Name',
-      name: 'characterName',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Name', name: 'characterName', desc: '', args: []);
   }
 
   /// `The name of the character`
@@ -2042,32 +1776,17 @@ class S {
 
   /// `Back`
   String get back {
-    return Intl.message(
-      'Back',
-      name: 'back',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Back', name: 'back', desc: '', args: []);
   }
 
   /// `Next`
   String get next {
-    return Intl.message(
-      'Next',
-      name: 'next',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Next', name: 'next', desc: '', args: []);
   }
 
   /// `Warning`
   String get warning {
-    return Intl.message(
-      'Warning',
-      name: 'warning',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Warning', name: 'warning', desc: '', args: []);
   }
 
   /// `You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.`
@@ -2132,22 +1851,12 @@ class S {
 
   /// `Yes`
   String get yes {
-    return Intl.message(
-      'Yes',
-      name: 'yes',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Yes', name: 'yes', desc: '', args: []);
   }
 
   /// `No`
   String get no {
-    return Intl.message(
-      'No',
-      name: 'no',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('No', name: 'no', desc: '', args: []);
   }
 
   /// `Your are disconnected... Either you or the DM has lost the connection.`

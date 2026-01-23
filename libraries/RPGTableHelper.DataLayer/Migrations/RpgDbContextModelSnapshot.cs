@@ -15,7 +15,44 @@ namespace RPGTableHelper.DataLayer.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.ApiKeyEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KeyHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ApiKeys");
+                });
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.EncryptionChallengeEntity", b =>
                 {
@@ -444,6 +481,17 @@ namespace RPGTableHelper.DataLayer.Migrations
                         });
 
                     b.HasDiscriminator().HasValue(1);
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.ApiKeyEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.EncryptionChallengeEntity", b =>

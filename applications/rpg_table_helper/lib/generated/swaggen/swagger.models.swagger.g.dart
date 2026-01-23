@@ -6,6 +6,26 @@ part of 'swagger.models.swagger.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+ApiKeyDto _$ApiKeyDtoFromJson(Map<String, dynamic> json) => ApiKeyDto(
+      id: json['id'] as String?,
+      name: json['name'] as String?,
+      prefix: json['prefix'] as String?,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      revokedAt: json['revokedAt'] == null
+          ? null
+          : DateTime.parse(json['revokedAt'] as String),
+    );
+
+Map<String, dynamic> _$ApiKeyDtoToJson(ApiKeyDto instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'prefix': instance.prefix,
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'revokedAt': instance.revokedAt?.toIso8601String(),
+    };
+
 AppleLoginDetails _$AppleLoginDetailsFromJson(Map<String, dynamic> json) =>
     AppleLoginDetails(
       authorizationCode: json['authorizationCode'] as String,
@@ -174,6 +194,34 @@ Map<String, dynamic> _$CampagneJoinRequestIdentifierGuidNodeModelBaseToJson(
       'id': instance.id?.toJson(),
       'creationDate': instance.creationDate?.toIso8601String(),
       'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
+    };
+
+CreateApiKeyRequestDto _$CreateApiKeyRequestDtoFromJson(
+        Map<String, dynamic> json) =>
+    CreateApiKeyRequestDto(
+      name: json['name'] as String?,
+    );
+
+Map<String, dynamic> _$CreateApiKeyRequestDtoToJson(
+        CreateApiKeyRequestDto instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+    };
+
+CreateApiKeyResponse _$CreateApiKeyResponseFromJson(
+        Map<String, dynamic> json) =>
+    CreateApiKeyResponse(
+      apiKey: json['apiKey'] == null
+          ? null
+          : ApiKeyDto.fromJson(json['apiKey'] as Map<String, dynamic>),
+      plainKey: json['plainKey'] as String?,
+    );
+
+Map<String, dynamic> _$CreateApiKeyResponseToJson(
+        CreateApiKeyResponse instance) =>
+    <String, dynamic>{
+      'apiKey': instance.apiKey?.toJson(),
+      'plainKey': instance.plainKey,
     };
 
 EncryptedMessageWrapperDto _$EncryptedMessageWrapperDtoFromJson(

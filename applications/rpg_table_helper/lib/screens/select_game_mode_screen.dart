@@ -27,6 +27,7 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_helpers.dart'
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
@@ -101,7 +102,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
             Navbar(
               backInsteadOfCloseIcon: false,
               closeFunction: null,
-              menuOpen: null,
+              menuOpen: () =>
+                  Navigator.of(context).pushNamed(UserSettingsScreen.route),
               useTopSafePadding: true,
               titleWidget: Text(
                 S.of(context).selectGameMode,

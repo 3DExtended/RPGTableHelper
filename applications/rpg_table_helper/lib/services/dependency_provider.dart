@@ -13,6 +13,7 @@ import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/systemclock_service.dart';
+import 'package:quest_keeper/services/api_key_service.dart';
 
 class DependencyProvider extends InheritedWidget {
   static DependencyProvider of(BuildContext context) {
@@ -116,6 +117,13 @@ class DependencyProvider extends InheritedWidget {
       return MockImageGenerationService(
         apiConnectorService: apiConnectorService,
       );
+    });
+
+    _registerService<IApiKeyService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return ApiKeyService(apiConnectorService);
+    }, () {
+      return MockApiKeyService();
     });
 
     _registerService<INavigationService>(

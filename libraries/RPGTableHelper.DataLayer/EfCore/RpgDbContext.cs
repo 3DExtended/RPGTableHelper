@@ -61,6 +61,7 @@ public class RpgDbContext : DbContext
     public DbSet<ImageMetaDataEntity> imageMetaDatas { get; set; } = default!;
     public DbSet<CampagneJoinRequestEntity> CampagneJoinRequests { get; set; } = default!;
     public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } = default!;
+    public DbSet<ApiKeyEntity> ApiKeys { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

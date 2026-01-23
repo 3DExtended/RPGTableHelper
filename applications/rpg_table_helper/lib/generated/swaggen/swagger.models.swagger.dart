@@ -9,6 +9,103 @@ import 'swagger.enums.swagger.dart' as enums;
 part 'swagger.models.swagger.g.dart';
 
 @JsonSerializable(explicitToJson: true)
+class ApiKeyDto {
+  const ApiKeyDto({
+    this.id,
+    this.name,
+    this.prefix,
+    this.createdAt,
+    this.revokedAt,
+  });
+
+  factory ApiKeyDto.fromJson(Map<String, dynamic> json) =>
+      _$ApiKeyDtoFromJson(json);
+
+  static const toJsonFactory = _$ApiKeyDtoToJson;
+  Map<String, dynamic> toJson() => _$ApiKeyDtoToJson(this);
+
+  @JsonKey(name: 'id')
+  final String? id;
+  @JsonKey(name: 'name')
+  final String? name;
+  @JsonKey(name: 'prefix')
+  final String? prefix;
+  @JsonKey(name: 'createdAt')
+  final DateTime? createdAt;
+  @JsonKey(name: 'revokedAt')
+  final DateTime? revokedAt;
+  static const fromJsonFactory = _$ApiKeyDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is ApiKeyDto &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.prefix, prefix) ||
+                const DeepCollectionEquality().equals(other.prefix, prefix)) &&
+            (identical(other.createdAt, createdAt) ||
+                const DeepCollectionEquality().equals(
+                  other.createdAt,
+                  createdAt,
+                )) &&
+            (identical(other.revokedAt, revokedAt) ||
+                const DeepCollectionEquality().equals(
+                  other.revokedAt,
+                  revokedAt,
+                )));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(id) ^
+      const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(prefix) ^
+      const DeepCollectionEquality().hash(createdAt) ^
+      const DeepCollectionEquality().hash(revokedAt) ^
+      runtimeType.hashCode;
+}
+
+extension $ApiKeyDtoExtension on ApiKeyDto {
+  ApiKeyDto copyWith({
+    String? id,
+    String? name,
+    String? prefix,
+    DateTime? createdAt,
+    DateTime? revokedAt,
+  }) {
+    return ApiKeyDto(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      prefix: prefix ?? this.prefix,
+      createdAt: createdAt ?? this.createdAt,
+      revokedAt: revokedAt ?? this.revokedAt,
+    );
+  }
+
+  ApiKeyDto copyWithWrapped({
+    Wrapped<String?>? id,
+    Wrapped<String?>? name,
+    Wrapped<String?>? prefix,
+    Wrapped<DateTime?>? createdAt,
+    Wrapped<DateTime?>? revokedAt,
+  }) {
+    return ApiKeyDto(
+      id: (id != null ? id.value : this.id),
+      name: (name != null ? name.value : this.name),
+      prefix: (prefix != null ? prefix.value : this.prefix),
+      createdAt: (createdAt != null ? createdAt.value : this.createdAt),
+      revokedAt: (revokedAt != null ? revokedAt.value : this.revokedAt),
+    );
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class AppleLoginDetails {
   const AppleLoginDetails({
     required this.authorizationCode,
@@ -721,6 +818,106 @@ extension $CampagneJoinRequestIdentifierGuidNodeModelBaseExtension
       lastModifiedAt: (lastModifiedAt != null
           ? lastModifiedAt.value
           : this.lastModifiedAt),
+    );
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateApiKeyRequestDto {
+  const CreateApiKeyRequestDto({this.name});
+
+  factory CreateApiKeyRequestDto.fromJson(Map<String, dynamic> json) =>
+      _$CreateApiKeyRequestDtoFromJson(json);
+
+  static const toJsonFactory = _$CreateApiKeyRequestDtoToJson;
+  Map<String, dynamic> toJson() => _$CreateApiKeyRequestDtoToJson(this);
+
+  @JsonKey(name: 'name')
+  final String? name;
+  static const fromJsonFactory = _$CreateApiKeyRequestDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is CreateApiKeyRequestDto &&
+            (identical(other.name, name) ||
+                const DeepCollectionEquality().equals(other.name, name)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(name) ^ runtimeType.hashCode;
+}
+
+extension $CreateApiKeyRequestDtoExtension on CreateApiKeyRequestDto {
+  CreateApiKeyRequestDto copyWith({String? name}) {
+    return CreateApiKeyRequestDto(name: name ?? this.name);
+  }
+
+  CreateApiKeyRequestDto copyWithWrapped({Wrapped<String?>? name}) {
+    return CreateApiKeyRequestDto(
+      name: (name != null ? name.value : this.name),
+    );
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateApiKeyResponse {
+  const CreateApiKeyResponse({this.apiKey, this.plainKey});
+
+  factory CreateApiKeyResponse.fromJson(Map<String, dynamic> json) =>
+      _$CreateApiKeyResponseFromJson(json);
+
+  static const toJsonFactory = _$CreateApiKeyResponseToJson;
+  Map<String, dynamic> toJson() => _$CreateApiKeyResponseToJson(this);
+
+  @JsonKey(name: 'apiKey')
+  final ApiKeyDto? apiKey;
+  @JsonKey(name: 'plainKey')
+  final String? plainKey;
+  static const fromJsonFactory = _$CreateApiKeyResponseFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is CreateApiKeyResponse &&
+            (identical(other.apiKey, apiKey) ||
+                const DeepCollectionEquality().equals(other.apiKey, apiKey)) &&
+            (identical(other.plainKey, plainKey) ||
+                const DeepCollectionEquality().equals(
+                  other.plainKey,
+                  plainKey,
+                )));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(apiKey) ^
+      const DeepCollectionEquality().hash(plainKey) ^
+      runtimeType.hashCode;
+}
+
+extension $CreateApiKeyResponseExtension on CreateApiKeyResponse {
+  CreateApiKeyResponse copyWith({ApiKeyDto? apiKey, String? plainKey}) {
+    return CreateApiKeyResponse(
+      apiKey: apiKey ?? this.apiKey,
+      plainKey: plainKey ?? this.plainKey,
+    );
+  }
+
+  CreateApiKeyResponse copyWithWrapped({
+    Wrapped<ApiKeyDto?>? apiKey,
+    Wrapped<String?>? plainKey,
+  }) {
+    return CreateApiKeyResponse(
+      apiKey: (apiKey != null ? apiKey.value : this.apiKey),
+      plainKey: (plainKey != null ? plainKey.value : this.plainKey),
     );
   }
 }

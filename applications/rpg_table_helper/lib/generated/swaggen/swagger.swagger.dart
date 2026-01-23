@@ -50,6 +50,48 @@ abstract class Swagger extends ChopperService {
     return _$Swagger(newClient);
   }
 
+  ///Creates a new API key.
+  Future<chopper.Response<CreateApiKeyResponse>> apiApiKeysPost({
+    required CreateApiKeyRequestDto? body,
+  }) {
+    generatedMapping.putIfAbsent(
+      CreateApiKeyResponse,
+      () => CreateApiKeyResponse.fromJsonFactory,
+    );
+
+    return _apiApiKeysPost(body: body);
+  }
+
+  ///Creates a new API key.
+  @POST(path: '/api/ApiKeys', optionalBody: true)
+  Future<chopper.Response<CreateApiKeyResponse>> _apiApiKeysPost({
+    @Body() required CreateApiKeyRequestDto? body,
+  });
+
+  ///Gets all API keys for the current user.
+  Future<chopper.Response<List<ApiKeyDto>>> apiApiKeysGet() {
+    generatedMapping.putIfAbsent(ApiKeyDto, () => ApiKeyDto.fromJsonFactory);
+
+    return _apiApiKeysGet();
+  }
+
+  ///Gets all API keys for the current user.
+  @GET(path: '/api/ApiKeys')
+  Future<chopper.Response<List<ApiKeyDto>>> _apiApiKeysGet();
+
+  ///Revokes an API key.
+  ///@param id
+  Future<chopper.Response> apiApiKeysIdDelete({required String? id}) {
+    return _apiApiKeysIdDelete(id: id);
+  }
+
+  ///Revokes an API key.
+  ///@param id
+  @DELETE(path: '/api/ApiKeys/{id}')
+  Future<chopper.Response> _apiApiKeysIdDelete({
+    @Path('id') required String? id,
+  });
+
   ///Creates a new campagne with the calling user as dm.
   Future<chopper.Response<CampagneIdentifier>> campagneCreatecampagnePost({
     required CampagneCreateDto? body,

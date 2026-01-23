@@ -2,6 +2,7 @@ using System.Reflection.Emit;
 using AutoMapper;
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.EfCore;
+using RPGTableHelper.DataLayer.Contracts.Models.ApiKeys;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.Images;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
@@ -131,13 +132,14 @@ namespace RPGTableHelper.DataLayer
                 )
                 .ForMember(
                     dest => dest.EncryptionChallengeId,
-                    opt =>
-                        opt.MapFrom(src =>
+                    opt => opt.MapFrom(src =>
                             src.EncryptionChallengeId.ToOptionMapped(
                                 (guid) => new EncryptionChallenge.EncryptionChallengeIdentifier { Value = guid }
                             )
                         )
                 );
+
+            CreateMap<ApiKeyEntity, ApiKeyDto>().ReverseMap();
         }
 
         private void CreateOptionMapForType<T>()
