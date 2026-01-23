@@ -1,0 +1,166 @@
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Prodot.Patterns.Cqrs;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
+using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
+using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.WebApi.Services;
+
+namespace RPGTableHelper.WebApi.Controllers
+{
+    [ApiController]
+    [Route("api/external")]
+    [Authorize(AuthenticationSchemes = "ApiKey")]
+    [ApiExplorerSettings(GroupName = "external")]
+    public class ExternalDataController : ControllerBase
+    {
+        private readonly IQueryProcessor _queryProcessor;
+        private readonly IUserContext _userContext;
+
+        public ExternalDataController(IQueryProcessor queryProcessor, IUserContext userContext)
+        {
+            _queryProcessor = queryProcessor;
+            _userContext = userContext;
+        }
+
+        /// <summary>
+        /// Retrieves all characters for the authenticated user (where they are the player).
+        /// </summary>
+        [HttpGet("characters")]
+        public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetCharacters()
+        {
+            var userId = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(Guid.Parse(_userContext.User.IdentityProviderId));
+
+            var charactersOption = await new PlayerCharactersForUserAsPlayerQuery { UserId = userId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            var characters = charactersOption.IsNone
+                ? new List<PlayerCharacter>()
+                : charactersOption.Get();
+
+            return Ok(characters);
+        }
+
+        /// <summary>
+        /// Retrieves a specific character by ID, if the user is authorized to view it.
+        /// </summary>
+        [HttpGet("characters/{id}")]
+        public async Task<ActionResult<PlayerCharacter>> GetCharacter(Guid id)
+        {
+            var userId = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(Guid.Parse(_userContext.User.IdentityProviderId));
+            var characterId = PlayerCharacter.PlayerCharacterIdentifier.From(id);
+
+            var characterOption = await new PlayerCharacterQuery { ModelId = characterId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            if (characterOption.IsNone)
+            {
+                return NotFound();
+            }
+
+            var character = characterOption.Get();
+
+            if (character.PlayerUserId != userId)
+            {
+                return Forbid();
+            }
+
+            return Ok(character);
+        }
+
+        /// <summary>
+        /// Retrieves all campaigns accessible to the authenticated user (as DM or Player).
+        /// </summary>
+        [HttpGet("campaigns")]
+        public async Task<ActionResult<IEnumerable<Campagne>>> GetCampaigns()
+        {
+            var userId = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(Guid.Parse(_userContext.User.IdentityProviderId));
+
+            // 1. Get campaigns where user is DM
+            var dmCampaignsOption = await new CampagnesForUserAsDmQuery { UserId = userId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            var dmCampaigns = dmCampaignsOption.IsNone
+                ? new List<Campagne>()
+                : dmCampaignsOption.Get();
+
+            var allCampaigns = dmCampaigns.ToList();
+            var knownCampaignIds = allCampaigns.Select(c => c.Id).ToHashSet();
+
+            // 2. Get characters to find campaigns where user is Player
+            var charactersOption = await new PlayerCharactersForUserAsPlayerQuery { UserId = userId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            var characters = charactersOption.IsNone
+                ? new List<PlayerCharacter>()
+                : charactersOption.Get();
+
+            var playerCampaignIds = characters
+                .Where(c => c.CampagneId != null)
+                .Select(c => c.CampagneId!)
+                .Distinct();
+
+            foreach (var campaignId in playerCampaignIds)
+            {
+                if (knownCampaignIds.Contains(campaignId))
+                {
+                    continue;
+                }
+
+                var campaignOption = await new CampagneQuery { ModelId = campaignId }
+                    .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+                if (!campaignOption.IsNone)
+                {
+                    var campaign = campaignOption.Get();
+                    allCampaigns.Add(campaign);
+                    knownCampaignIds.Add(campaign.Id);
+                }
+            }
+
+            return Ok(allCampaigns);
+        }
+
+        /// <summary>
+        /// Retrieves a specific campaign by ID, if the user is authorized to view it (as DM or Player).
+        /// </summary>
+        [HttpGet("campaigns/{id}")]
+        public async Task<ActionResult<Campagne>> GetCampaign(Guid id)
+        {
+            var userId = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(Guid.Parse(_userContext.User.IdentityProviderId));
+            var campaignId = Campagne.CampagneIdentifier.From(id);
+
+            var campaignOption = await new CampagneQuery { ModelId = campaignId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            if (campaignOption.IsNone)
+            {
+                return NotFound();
+            }
+
+            var campaign = campaignOption.Get();
+
+            if (campaign.DmUserId == userId)
+            {
+                return Ok(campaign);
+            }
+
+            var isPlayerOption = await new CampagneIsUserInCampagneQuery
+            {
+                UserIdToCheck = userId,
+                CampagneId = campaignId
+            }.RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+             if (isPlayerOption.IsNone || !isPlayerOption.Get())
+            {
+                return Forbid();
+            }
+
+            return Ok(campaign);
+        }
+    }
+}

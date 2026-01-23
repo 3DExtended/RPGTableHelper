@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -28,6 +29,7 @@ using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
+using RPGTableHelper.WebApi.Services.Auth;
 using RPGTableHelper.WebApi.Swagger;
 
 namespace RPGTableHelper.WebApi;
@@ -78,8 +80,17 @@ public class Startup
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Versioned API v1.0");
+                c.SwaggerEndpoint("/swagger/external/swagger.json", "External API");
             });
             IdentityModelEventSource.ShowPII = true;
+        }
+        else
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/external/swagger.json", "External API");
+            });
         }
 
         app.UseHttpsRedirection();
@@ -195,13 +206,14 @@ public class Startup
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                 };
-            });
+            })
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
 
         services.AddAuthorization(options =>
         {
             options.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes("Bearer")
+                .AddAuthenticationSchemes("Bearer", "ApiKey")
                 .Build();
         });
 
@@ -223,6 +235,23 @@ public class Startup
             c.SchemaFilter<EnumSchemaFilter>();
 
             c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
+            c.SwaggerDoc("external", new OpenApiInfo { Title = "External API", Version = "v1" });
+
+            // Separate endpoints by group
+            c.DocInclusionPredicate((docName, apiDesc) =>
+            {
+                var groupName = apiDesc.GroupName;
+                if (docName == "external")
+                {
+                    return groupName == "external";
+                }
+                else if (docName == "v1.0")
+                {
+                    return groupName != "external";
+                }
+
+                return false;
+            });
 
             // Set the comments path for the Swagger JSON and UI.
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -242,6 +271,17 @@ public class Startup
                         "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
                 }
             );
+            c.AddSecurityDefinition(
+                "ApiKey",
+                new OpenApiSecurityScheme
+                {
+                    Name = "X-Api-Key",
+                    Type = SecuritySchemeType.ApiKey,
+                    In = ParameterLocation.Header,
+                    Description = "API Key authentication using X-Api-Key header.",
+                }
+            );
+
             c.AddSecurityRequirement(
                 new OpenApiSecurityRequirement
                 {
@@ -371,7 +411,7 @@ public class Startup
             }
         });
 
-        services.AddSingleton<ISystemClock, RealSystemClock>();
+        services.AddSingleton<RPGTableHelper.Shared.Services.ISystemClock, RealSystemClock>();
 
         var appleOptions = Configuration.GetSection("Apple").Get<AppleAuthOptions>();
         if (appleOptions != null)
