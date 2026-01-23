@@ -33,6 +33,11 @@ migrate_working_dir/
 .pub/
 /build/
 
+# App Store Connect API keys (keep private)
+/private_keys/
+AuthKey_*.p8
+ApiKey_*.p8
+
 # Symbolication related
 app.*.symbols
 
