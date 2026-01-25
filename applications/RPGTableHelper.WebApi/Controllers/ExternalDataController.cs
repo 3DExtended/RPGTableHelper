@@ -162,5 +162,41 @@ namespace RPGTableHelper.WebApi.Controllers
 
             return Ok(campaign);
         }
+
+        /// <summary>
+        /// Retrieves all characters assigned to a specific campaign, if the user is the DM of that campaign.
+        /// </summary>
+        [HttpGet("campaigns/{id}/characters")]
+        public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetCampaignCharacters(Guid id)
+        {
+            var userId = DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(Guid.Parse(_userContext.User.IdentityProviderId));
+            var campaignId = Campagne.CampagneIdentifier.From(id);
+
+            // 1. Check if campaign exists and user is DM
+            var campaignOption = await new CampagneQuery { ModelId = campaignId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            if (campaignOption.IsNone)
+            {
+                return NotFound();
+            }
+
+            var campaign = campaignOption.Get();
+
+            if (campaign.DmUserId != userId)
+            {
+                return Forbid();
+            }
+
+            // 2. Get characters for the campaign
+            var charactersOption = await new PlayerCharactersForCampagneQuery { CampagneId = campaignId }
+                .RunAsync(_queryProcessor, HttpContext.RequestAborted);
+
+            var characters = charactersOption.IsNone
+                ? new List<PlayerCharacter>()
+                : charactersOption.Get();
+
+            return Ok(characters);
+        }
     }
 }
