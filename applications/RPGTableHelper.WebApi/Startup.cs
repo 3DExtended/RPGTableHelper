@@ -388,6 +388,7 @@ public class Startup
             services.AddSingleton(sendGridOptions);
         }
 
+        services.AddTransient<INoteService, NoteService>();
         var openAiOptions = Configuration.GetSection("OpenAi").Get<OpenAIOptions>();
         if (openAiOptions != null)
         {

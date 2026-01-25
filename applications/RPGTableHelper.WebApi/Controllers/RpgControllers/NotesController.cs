@@ -14,6 +14,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.NoteDocuments;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.NoteEntities;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
+using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -25,12 +26,19 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         private readonly IQueryProcessor _queryProcessor;
         private readonly IUserContext _userContext;
         private readonly IMapper _mapper;
+        private readonly INoteService _noteService;
 
-        public NotesController(IQueryProcessor queryProcessor, IUserContext userContext, IMapper mapper)
+        public NotesController(
+            IQueryProcessor queryProcessor,
+            IUserContext userContext,
+            IMapper mapper,
+            INoteService noteService
+        )
         {
             _queryProcessor = queryProcessor;
             _userContext = userContext;
             _mapper = mapper;
+            _noteService = noteService;
         }
 
         /// <summary>
@@ -62,36 +70,15 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("No valid campagneid passed");
             }
 
-            // check if user is allowed to see document
-            var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
-            {
-                CampagneId = Campagne.CampagneIdentifier.From(campagneidparsed),
-                UserIdToCheck = _userContext.User.UserIdentifier,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (isUserInCampagneResult.IsNone)
-            {
-                return BadRequest("Could not retrieve info.");
-            }
-
-            if (!isUserInCampagneResult.Get())
-            {
-                return Unauthorized();
-            }
-
-            var noteDocuments = await new NoteDocumentsForUserAndCampagneQuery
-            {
-                CampagneId = Campagne.CampagneIdentifier.From(campagneidparsed),
-                UserId = _userContext.User.UserIdentifier,
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
+            var noteDocuments = await _noteService.GetNoteDocumentsForUserAsync(
+                campagneidparsed,
+                Guid.Parse(_userContext.User.UserIdentifier.Value.ToString()), // Assuming Value is Guid, or passing IdentityProviderId
+                cancellationToken
+            );
 
             if (noteDocuments.IsNone)
             {
-                return BadRequest("Could not retrieve NoteDocument");
+                return BadRequest("Could not retrieve info.");
             }
 
             var mappedDtos = noteDocuments.Get().Select(_mapper.Map<NoteDocumentDto>).ToList();
@@ -127,47 +114,15 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("No valid notedocumentid passed");
             }
 
-            var noteDocument = await new NoteDocumentQuery
-            {
-                ModelId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed),
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
+            var noteDocument = await _noteService.GetNoteDocumentByIdAsync(
+                notedocumentidparsed,
+                Guid.Parse(_userContext.User.UserIdentifier.Value.ToString()),
+                cancellationToken
+            );
 
             if (noteDocument.IsNone)
             {
                 return BadRequest("Could not retrieve NoteDocument");
-            }
-
-            var campagneId = noteDocument.Get().CreatedForCampagneId;
-            if (_userContext.User.UserIdentifier != noteDocument.Get().CreatingUserId)
-            {
-                // check if user is allowed to see document
-                var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
-                {
-                    CampagneId = campagneId,
-                    UserIdToCheck = _userContext.User.UserIdentifier,
-                }
-                    .RunAsync(_queryProcessor, cancellationToken)
-                    .ConfigureAwait(false);
-
-                if (isUserInCampagneResult.IsNone)
-                {
-                    return BadRequest("Could not retrieve info.");
-                }
-
-                if (!isUserInCampagneResult.Get())
-                {
-                    return Unauthorized();
-                }
-
-                // there is nothing to see in this document for user
-                if (
-                    !noteDocument.Get().NoteBlocks.Any(b => b.PermittedUsers.Contains(_userContext.User.UserIdentifier))
-                )
-                {
-                    return Unauthorized();
-                }
             }
 
             var mappedDto = _mapper.Map<NoteDocumentDto>(noteDocument.Get());
