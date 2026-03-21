@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection;
@@ -38,8 +39,13 @@ namespace RPGTableHelper.DataLayer.Tests.QueryHandlers.Base
                 .AddDbContextFactory<RpgDbContext>(o =>
                     o.UseSqlite($"DataSource=file:memdb{_runIdentifier}?mode=memory&cache=shared")
                 )
-                .AddAutoMapper(typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile))
+                .AddAutoMapper(cfg => { }, typeof(DataLayerEntitiesMapperProfile), typeof(SharedMapperProfile))
                 .AddSingleton<ISystemClock>(SystemClock)
+                .AddLogging(logging =>
+                {
+                    logging.AddConsole();
+                    logging.SetMinimumLevel(LogLevel.Information);
+                })
                 .AddProdotPatternsCqrs(options =>
                     options
                         .WithQueryHandlersFrom(typeof(DataLayerPipelineProfile).Assembly)

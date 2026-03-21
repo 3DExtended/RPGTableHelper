@@ -2,6 +2,7 @@ namespace RPGTableHelper.DataLayer.Tests;
 
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
@@ -14,11 +15,22 @@ public class DataLayerEntitiesMapperProfileTests
 
     public DataLayerEntitiesMapperProfileTests()
     {
-        var config = new MapperConfiguration(cfg =>
+        using var loggerFactory = LoggerFactory.Create(static builder =>
         {
-            cfg.AddProfile<DataLayerEntitiesMapperProfile>();
-            cfg.AddProfile<SharedMapperProfile>();
+            builder
+                .AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug);
         });
+
+        var config = new MapperConfiguration(
+            cfg =>
+            {
+                cfg.AddProfile<DataLayerEntitiesMapperProfile>();
+                cfg.AddProfile<SharedMapperProfile>();
+            },
+            loggerFactory
+        );
 
         _mapper = config.CreateMapper();
     }

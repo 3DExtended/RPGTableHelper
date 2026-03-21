@@ -9,7 +9,7 @@ start=`date +%s`
 
 dart run build_runner build
 
-# flutter test --coverage
+flutter test --coverage
 
 python3 versionmanager.py
 

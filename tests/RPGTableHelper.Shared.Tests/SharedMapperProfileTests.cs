@@ -2,6 +2,7 @@ namespace RPGTableHelper.Shared.Tests;
 
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer;
 
@@ -11,10 +12,21 @@ public class SharedMapperProfileTests
 
     public SharedMapperProfileTests()
     {
-        var config = new MapperConfiguration(cfg =>
+        using var loggerFactory = LoggerFactory.Create(static builder =>
         {
-            cfg.AddProfile<SharedMapperProfile>();
+            builder
+                .AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug);
         });
+
+        var config = new MapperConfiguration(
+            cfg =>
+            {
+                cfg.AddProfile<SharedMapperProfile>();
+            },
+            loggerFactory
+        );
 
         _mapper = config.CreateMapper();
     }
@@ -145,11 +157,7 @@ public class SharedMapperProfileTests
     [InlineData(2024, 10, 10)]
     [InlineData(2024, 10, 12)]
     [InlineData(2000, 10, 12)]
-    public void DateOnlyToOptionDateOnly_ShouldMapSuccessfully(
-        int valueToTest1,
-        int valueToTest2,
-        int valueToTest3
-    )
+    public void DateOnlyToOptionDateOnly_ShouldMapSuccessfully(int valueToTest1, int valueToTest2, int valueToTest3)
     {
         // Arrange
         var value = new DateOnly(valueToTest1, valueToTest2, valueToTest3);

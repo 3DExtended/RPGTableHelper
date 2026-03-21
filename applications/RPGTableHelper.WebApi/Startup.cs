@@ -245,20 +245,22 @@ public class Startup
             c.SwaggerDoc("external", new OpenApiInfo { Title = "External API", Version = "v1" });
 
             // Separate endpoints by group
-            c.DocInclusionPredicate((docName, apiDesc) =>
-            {
-                var groupName = apiDesc.GroupName;
-                if (docName == "external")
+            c.DocInclusionPredicate(
+                (docName, apiDesc) =>
                 {
-                    return groupName == "external";
-                }
-                else if (docName == "v1.0")
-                {
-                    return groupName != "external";
-                }
+                    var groupName = apiDesc.GroupName;
+                    if (docName == "external")
+                    {
+                        return groupName == "external";
+                    }
+                    else if (docName == "v1.0")
+                    {
+                        return groupName != "external";
+                    }
 
-                return false;
-            });
+                    return false;
+                }
+            );
 
             // Set the comments path for the Swagger JSON and UI.
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -317,6 +319,7 @@ public class Startup
         services.AddHttpClient();
 
         services.AddAutoMapper(
+            cfg => { },
             typeof(DataLayerEntitiesMapperProfile),
             typeof(SharedMapperProfile),
             typeof(ApiDtoMapperProfile)

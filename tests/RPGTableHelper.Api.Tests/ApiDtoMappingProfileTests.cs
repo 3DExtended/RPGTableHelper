@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
@@ -16,10 +17,21 @@ namespace RPGTableHelper.Api.Tests
 
         public ApiDtoMapperProfileTests()
         {
-            var config = new MapperConfiguration(cfg =>
+            using var loggerFactory = LoggerFactory.Create(static builder =>
             {
-                cfg.AddProfile<ApiDtoMapperProfile>();
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug);
             });
+
+            var config = new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.AddProfile<ApiDtoMapperProfile>();
+                },
+                loggerFactory
+            );
 
             _mapper = config.CreateMapper();
         }
@@ -286,11 +298,22 @@ namespace RPGTableHelper.Api.Tests
         [Fact]
         public void Should_Throw_Exception_For_Invalid_Configuration()
         {
-            // This test ensures that the mapping configuration is valid
-            var config = new MapperConfiguration(cfg =>
+            using var loggerFactory = LoggerFactory.Create(static builder =>
             {
-                cfg.AddProfile<ApiDtoMapperProfile>();
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug);
             });
+
+            // This test ensures that the mapping configuration is valid
+            var config = new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.AddProfile<ApiDtoMapperProfile>();
+                },
+                loggerFactory
+            );
 
             config.AssertConfigurationIsValid();
         }
