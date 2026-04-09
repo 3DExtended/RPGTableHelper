@@ -26,36 +26,36 @@ namespace RPGTableHelper.Shared.Encryption
                 .Take(cipherTextBytesWithSaltAndIv.Length - (Keysize / 8 * 2))
                 .ToArray();
 
-#pragma warning disable SYSLIB0041 // Type or member is obsolete. Disabled as there are no good translations...
 #pragma warning disable S5344 // Passwords should not be stored in plaintext or with a fast hashing algorithm
-            using (var password = new Rfc2898DeriveBytes(passPhrase, saltStringBytes, 100002))
-            {
-                var keyBytes = password.GetBytes(Keysize / 8);
+            var keyBytes = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(passPhrase),
+                saltStringBytes,
+                100002,
+                HashAlgorithmName.SHA1,
+                Keysize / 8);
 #pragma warning disable SYSLIB0022 // Type or member is obsolete. Disabled as there are no good translations...
-                using (var symmetricKey = new RijndaelManaged())
+            using (var symmetricKey = new RijndaelManaged())
+            {
+                symmetricKey.BlockSize = 256;
+                symmetricKey.Mode = CipherMode.CBC;
+                symmetricKey.Padding = PaddingMode.PKCS7;
+                using (var decryptor = symmetricKey.CreateDecryptor(keyBytes, ivStringBytes))
                 {
-                    symmetricKey.BlockSize = 256;
-                    symmetricKey.Mode = CipherMode.CBC;
-                    symmetricKey.Padding = PaddingMode.PKCS7;
-                    using (var decryptor = symmetricKey.CreateDecryptor(keyBytes, ivStringBytes))
+                    using (var memoryStream = new MemoryStream(cipherTextBytes))
                     {
-                        using (var memoryStream = new MemoryStream(cipherTextBytes))
+                        using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                         {
-                            using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                            {
-                                var plainTextBytes = new byte[cipherTextBytes.Length];
-                                var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-                                memoryStream.Close();
-                                cryptoStream.Close();
-                                return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
-                            }
+                            var plainTextBytes = new byte[cipherTextBytes.Length];
+                            var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                            memoryStream.Close();
+                            cryptoStream.Close();
+                            return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
                         }
                     }
                 }
-#pragma warning restore SYSLIB0022 // Type or member is obsolete
             }
+#pragma warning restore SYSLIB0022 // Type or member is obsolete
 #pragma warning restore S5344 // Passwords should not be stored in plaintext or with a fast hashing algorithm
-#pragma warning restore SYSLIB0041 // Type or member is obsolete
         }
 
         public static string Encrypt(string plainText, string passPhrase)
@@ -67,40 +67,40 @@ namespace RPGTableHelper.Shared.Encryption
             var ivStringBytes = Generate256BitsOfRandomEntropy();
 #pragma warning restore SA1305 // Field names should not use Hungarian notation
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-#pragma warning disable SYSLIB0041 // Type or member is obsolete
 #pragma warning disable S5344 // Passwords should not be stored in plaintext or with a fast hashing algorithm
-            using (var password = new Rfc2898DeriveBytes(passPhrase, saltStringBytes, 100002))
-            {
-                var keyBytes = password.GetBytes(Keysize / 8);
+            var keyBytes = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(passPhrase),
+                saltStringBytes,
+                100002,
+                HashAlgorithmName.SHA1,
+                Keysize / 8);
 #pragma warning disable SYSLIB0022 // Type or member is obsolete
-                using (var symmetricKey = new RijndaelManaged())
+            using (var symmetricKey = new RijndaelManaged())
+            {
+                symmetricKey.BlockSize = 256;
+                symmetricKey.Mode = CipherMode.CBC;
+                symmetricKey.Padding = PaddingMode.PKCS7;
+                using (var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
                 {
-                    symmetricKey.BlockSize = 256;
-                    symmetricKey.Mode = CipherMode.CBC;
-                    symmetricKey.Padding = PaddingMode.PKCS7;
-                    using (var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
+                    using (var memoryStream = new MemoryStream())
                     {
-                        using (var memoryStream = new MemoryStream())
+                        using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                         {
-                            using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                            {
-                                cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
-                                cryptoStream.FlushFinalBlock();
-                                // Create the final bytes as a concatenation of the random salt bytes, the random iv bytes and the cipher bytes.
-                                var cipherTextBytes = saltStringBytes;
-                                cipherTextBytes = cipherTextBytes.Concat(ivStringBytes).ToArray();
-                                cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
-                                memoryStream.Close();
-                                cryptoStream.Close();
-                                return Convert.ToBase64String(cipherTextBytes);
-                            }
+                            cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            // Create the final bytes as a concatenation of the random salt bytes, the random iv bytes and the cipher bytes.
+                            var cipherTextBytes = saltStringBytes;
+                            cipherTextBytes = cipherTextBytes.Concat(ivStringBytes).ToArray();
+                            cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
+                            memoryStream.Close();
+                            cryptoStream.Close();
+                            return Convert.ToBase64String(cipherTextBytes);
                         }
                     }
                 }
-#pragma warning restore SYSLIB0022 // Type or member is obsolete
             }
+#pragma warning restore SYSLIB0022 // Type or member is obsolete
 #pragma warning restore S5344 // Passwords should not be stored in plaintext or with a fast hashing algorithm
-#pragma warning restore SYSLIB0041 // Type or member is obsolete
         }
 
         private static byte[] Generate256BitsOfRandomEntropy()

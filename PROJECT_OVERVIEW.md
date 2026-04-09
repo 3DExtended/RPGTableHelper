@@ -11,9 +11,9 @@
 
 ### Backend (`applications/RPGTableHelper.WebApi`)
 
-- **Framework**: .NET 9 (ASP.NET Core).
+- **Framework**: .NET 10 (ASP.NET Core).
 - **Communication**: REST API (Controllers) & SignalR (Real-time).
-- **Database**: SQLite (Dev/Docker Containers), Entity Framework Core (EF Core) 9.0.
+- **Database**: SQLite (Dev/Docker Containers), Entity Framework Core (EF Core) 10.0.
 - **Patterns**:
   - **CQRS**: Uses `Prodot.Patterns.Cqrs` library.
   - **Dependency Injection**: Heavy use of DI for Services, Repositories, and CQRS handlers.
