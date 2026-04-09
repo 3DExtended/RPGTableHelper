@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:quest_keeper/constants.dart';
@@ -66,7 +65,15 @@ abstract class IServerCommunicationService {
           function,
       required String functionName});
 
-  Future executeServerFunction(String functionName, {List<Object>? args});
+  /// [maxInvokeRetries] is the number of invoke attempts (minimum 1).
+  Future executeServerFunction(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 1});
+
+  /// Current hub state for diagnostics and resume handling; null in mocks.
+  HubConnectionState? get hubConnectionState;
+
+  /// Ensures the hub is started when disconnected; safe to call on app resume.
+  Future<void> ensureConnectionReadyForSession();
 }
 
 class ServerCommunicationService extends IServerCommunicationService {
@@ -75,6 +82,18 @@ class ServerCommunicationService extends IServerCommunicationService {
   bool get connectionIsOpen =>
       hubConnection != null &&
       (hubConnection!.state == HubConnectionState.Connected);
+
+  @override
+  HubConnectionState? get hubConnectionState => hubConnection?.state;
+
+  @override
+  Future<void> ensureConnectionReadyForSession() async {
+    if (hubConnection == null ||
+        hubConnection!.state == HubConnectionState.Disconnected ||
+        hubConnection!.state == HubConnectionState.Disconnecting) {
+      await tryOpenConnection();
+    }
+  }
 
   ServerCommunicationService({
     required super.widgetRef,
@@ -114,7 +133,11 @@ class ServerCommunicationService extends IServerCommunicationService {
     // When the connection is closed, print out a message to the console.
     hubConnection!.onclose(
       ({error}) {
-        log("Connection Closed");
+        final state = hubConnection?.state;
+        log(
+          "SignalR onclose: state=$state error=$error",
+          name: "SignalR",
+        );
         widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
             widgetRef.read(connectionDetailsProvider).value?.copyWith(
                       isConnected: false,
@@ -125,7 +148,11 @@ class ServerCommunicationService extends IServerCommunicationService {
     );
 
     hubConnection!.onreconnecting(({error}) {
-      log("onreconnecting called, error: $error");
+      final state = hubConnection?.state;
+      log(
+        "SignalR onreconnecting: state=$state error=$error",
+        name: "SignalR",
+      );
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
                     isConnected: false,
@@ -135,7 +162,11 @@ class ServerCommunicationService extends IServerCommunicationService {
     });
 
     hubConnection!.onreconnected(({connectionId}) async {
-      log("onreconnected called");
+      final state = hubConnection?.state;
+      log(
+        "SignalR onreconnected: state=$state connectionId=$connectionId",
+        name: "SignalR",
+      );
 
       // users cannot be assigned to signalR groups (see here: https://github.com/dotnet/aspnetcore/issues/26133)
       // hence, everytime a user is reconnected, we must ensure we add them to the appropiate groups
@@ -168,7 +199,10 @@ class ServerCommunicationService extends IServerCommunicationService {
                 ) ??
             ConnectionDetails.defaultValue());
 
-    await tryOpenConnection();
+    final opened = await tryOpenConnection();
+    if (!opened) {
+      return;
+    }
 
     var serverMethods = DependencyProvider.getIt!.get<IServerMethodsService>();
     await serverMethods.readdToSignalRGroups();
@@ -311,38 +345,80 @@ class ServerCommunicationService extends IServerCommunicationService {
 
   @override
   Future executeServerFunction(String functionName,
-      {List<Object>? args}) async {
+      {List<Object>? args, int maxInvokeRetries = 1}) async {
     if (!connectionIsOpen) {
       await tryOpenConnection();
     }
 
     if (hubConnection == null) {
-      if (kDebugMode) {
-        log("DID NOT SEND TO SERVER: $functionName");
-      }
-
-      // dont send something if not connected
+      log(
+        "SignalR executeServerFunction skipped (no hub): $functionName",
+        name: "SignalR",
+      );
       return;
     }
 
-    var retryCounter = 0;
-    final maxRetries = 5;
-    while (retryCounter < maxRetries &&
+    var waitCounter = 0;
+    const maxWaitIterations = 5;
+    while (waitCounter < maxWaitIterations &&
         (hubConnection?.state == HubConnectionState.Connecting ||
             hubConnection?.state == HubConnectionState.Reconnecting)) {
-      retryCounter++;
-      await Future.delayed(Duration(seconds: retryCounter + 1));
+      waitCounter++;
+      await Future.delayed(Duration(seconds: waitCounter + 1));
     }
 
-    var result = await hubConnection!.invoke(functionName, args: args);
-    log("Result from hubConnection call: $result");
+    final attempts = maxInvokeRetries < 1 ? 1 : maxInvokeRetries;
+    Object? lastError;
+    StackTrace? lastStack;
+    for (var attempt = 0; attempt < attempts; attempt++) {
+      if (hubConnection == null ||
+          hubConnection!.state != HubConnectionState.Connected) {
+        log(
+          "SignalR invoke not connected (attempt ${attempt + 1}/$attempts): $functionName state=${hubConnection?.state}",
+          name: "SignalR",
+        );
+        if (attempt < attempts - 1) {
+          await Future.delayed(Duration(milliseconds: 500 * (attempt + 1)));
+          await tryOpenConnection();
+        }
+        continue;
+      }
+      try {
+        final result = await hubConnection!.invoke(functionName, args: args);
+        log(
+          "SignalR invoke ok: $functionName result=$result",
+          name: "SignalR",
+        );
+        return;
+      } catch (e, st) {
+        lastError = e;
+        lastStack = st;
+        log(
+          "SignalR invoke failed (attempt ${attempt + 1}/$attempts): $functionName — $e",
+          name: "SignalR",
+          error: e,
+          stackTrace: st,
+        );
+        if (attempt < attempts - 1) {
+          await Future.delayed(Duration(milliseconds: 500 * (attempt + 1)));
+          await tryOpenConnection();
+        }
+      }
+    }
+    if (lastError != null) {
+      log(
+        "SignalR invoke gave up after $attempts attempts: $functionName",
+        name: "SignalR",
+        error: lastError,
+        stackTrace: lastStack,
+      );
+    }
   }
 
-  Future tryOpenConnection() async {
+  Future<bool> tryOpenConnection() async {
     if (hubConnection == null ||
         hubConnection?.state == HubConnectionState.Disconnected ||
         hubConnection?.state == HubConnectionState.Disconnecting) {
-      // restart connection here!
       completeFunctionRegistration();
     }
 
@@ -355,8 +431,25 @@ class ServerCommunicationService extends IServerCommunicationService {
                     isConnecting: false,
                   ) ??
               ConnectionDetails.defaultValue());
-    } catch (e) {
-      log(e.toString());
+      log(
+        "SignalR tryOpenConnection: connected state=${hubConnection?.state}",
+        name: "SignalR",
+      );
+      return true;
+    } catch (e, st) {
+      log(
+        "SignalR tryOpenConnection failed: $e",
+        name: "SignalR",
+        error: e,
+        stackTrace: st,
+      );
+      widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+          widgetRef.read(connectionDetailsProvider).value?.copyWith(
+                    isConnected: false,
+                    isConnecting: false,
+                  ) ??
+              ConnectionDetails.defaultValue());
+      return false;
     }
   }
 
@@ -388,7 +481,14 @@ class MockServerCommunicationService extends IServerCommunicationService {
   }) {}
 
   @override
-  Future executeServerFunction(String functionName, {List<Object>? args}) {
+  HubConnectionState? get hubConnectionState => null;
+
+  @override
+  Future<void> ensureConnectionReadyForSession() async {}
+
+  @override
+  Future executeServerFunction(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 1}) {
     throw UnimplementedError();
   }
 

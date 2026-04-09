@@ -169,11 +169,26 @@ public class RpgServerSignalRHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        await Clients
-            .Group("AllCampagnes_Dms")
-            .SendAsync("clientDisconnected", _userContext.User.UserIdentifier.Value.ToString());
+        var userId = _userContext.User.UserIdentifier.Value.ToString();
+        if (exception != null)
+        {
+            _logger.LogWarning(
+                exception,
+                "SignalR OnDisconnectedAsync: ConnectionId={ConnectionId} UserId={UserId}",
+                Context.ConnectionId,
+                userId
+            );
+        }
+        else
+        {
+            _logger.LogInformation(
+                "SignalR OnDisconnectedAsync (no exception): ConnectionId={ConnectionId} UserId={UserId}",
+                Context.ConnectionId,
+                userId
+            );
+        }
 
-        _logger.LogInformation("Disconnected: Context.Username:" + Context.UserIdentifier); // This one is the only one filled...
+        await Clients.Group("AllCampagnes_Dms").SendAsync("clientDisconnected", userId);
 
         await base.OnDisconnectedAsync(exception);
     }
@@ -190,6 +205,10 @@ public class RpgServerSignalRHub : Hub
 
         if (campagneId == null && characterId == null)
         {
+            _logger.LogInformation(
+                "SignalR ReaddToSignalRGroups skipped (both null): ConnectionId={ConnectionId}",
+                Context.ConnectionId
+            );
             return;
         }
 
@@ -207,6 +226,11 @@ public class RpgServerSignalRHub : Hub
 
             if (campagne.IsNone)
             {
+                _logger.LogWarning(
+                    "SignalR ReaddToSignalRGroups: campagne not found for CampagneId={CampagneId} ConnectionId={ConnectionId}",
+                    campagneId,
+                    Context.ConnectionId
+                );
                 return;
             }
 
@@ -224,6 +248,11 @@ public class RpgServerSignalRHub : Hub
                 .ConfigureAwait(false);
             if (playerCharacter.IsNone)
             {
+                _logger.LogWarning(
+                    "SignalR ReaddToSignalRGroups: player character not found for CharacterId={CharacterId} ConnectionId={ConnectionId}",
+                    characterId,
+                    Context.ConnectionId
+                );
                 return;
             }
 
@@ -254,6 +283,14 @@ public class RpgServerSignalRHub : Hub
                     .OthersInGroup(campagneIdParsed.Value + "_All")
                     .SendAsync("requestStatusFromPlayers", (CancellationToken)default);
             }
+
+            _logger.LogInformation(
+                "SignalR ReaddToSignalRGroups succeeded: ConnectionId={ConnectionId} UserId={UserId} CampagneId={CampagneId} IsDm={IsDm}",
+                Context.ConnectionId,
+                _userContext.User.UserIdentifier.Value,
+                campagneIdParsed.Value,
+                isDm
+            );
         }
     }
 

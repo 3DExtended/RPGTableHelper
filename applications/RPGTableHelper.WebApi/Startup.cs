@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -132,6 +133,11 @@ public class Startup
             .AddSignalR(signalR =>
             {
                 signalR.MaximumReceiveMessageSize = long.MaxValue;
+                // Align with long-lived WebSocket connections through reverse proxies / Cloudflare tunnel:
+                // server sends keep-alive pings; client must respond within ClientTimeoutInterval.
+                signalR.KeepAliveInterval = TimeSpan.FromSeconds(15);
+                signalR.ClientTimeoutInterval = TimeSpan.FromSeconds(120);
+                signalR.EnableDetailedErrors = Environment.IsDevelopment();
             })
             .AddMessagePackProtocol();
 

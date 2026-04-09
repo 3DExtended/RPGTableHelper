@@ -2,7 +2,20 @@ import 'dart:io';
 
 const iconSizeInlineButtons = 16.0;
 
-const pingInterval = Duration(seconds: 3);
+/// How often the DM app sends SignalR pings and runs presence checks.
+const pingInterval = Duration(seconds: 5);
+
+/// Player UI: warn if no DM ping received for this long (less aggressive than one missed tick).
+const playerDisconnectedFromDmAfter = Duration(seconds: 12);
+
+/// DM list: consider a player's `lastPing` stale only after this age before counting toward removal.
+const dmPlayerPingStaleThreshold = Duration(seconds: 15);
+
+/// DM list: require this many consecutive periodic checks with a stale ping before removing the player.
+const dmConsecutiveStaleChecksBeforeRemove = 3;
+
+/// DM: delay removing a player after SignalR `clientDisconnected` so brief reconnects do not flash offline.
+const clientDisconnectedDebounce = Duration(seconds: 4);
 
 bool get isInTestEnvironment =>
     Platform.environment.containsKey('FLUTTER_TEST');

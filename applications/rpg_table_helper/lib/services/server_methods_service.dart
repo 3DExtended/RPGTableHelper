@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -10,6 +11,7 @@ import 'package:quest_keeper/helpers/modals/show_ask_player_for_fight_order_roll
 import 'package:quest_keeper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
@@ -139,6 +141,14 @@ class ServerMethodsService extends IServerMethodsService {
       required super.navigationService,
       required super.widgetRef})
       : super(isMock: false);
+
+  /// Brief SignalR reconnects should not drop the player from the DM list immediately.
+  final Map<String, Timer> _pendingDisconnectByUserId = {};
+
+  void _cancelPendingDisconnect(String userId) {
+    _pendingDisconnectByUserId[userId]?.cancel();
+    _pendingDisconnectByUserId.remove(userId);
+  }
 
   @override
   Future registerGame({required String campagneId}) async {
@@ -309,6 +319,8 @@ class ServerMethodsService extends IServerMethodsService {
     var indexOfExistingPlayer = updatedPlayerProfiles
         .indexWhere((p) => p.playerCharacterId.$value! == playerId);
 
+    _cancelPendingDisconnect(userId);
+
     var connectionObject = OpenPlayerConnection(
       configuration: receivedConfig,
       playerCharacterId: PlayerCharacterIdentifier($value: playerId),
@@ -454,16 +466,18 @@ class ServerMethodsService extends IServerMethodsService {
         widgetRef.read(connectionDetailsProvider).requireValue;
 
     // ReaddToSignalRGroups(string? campagneId, string? characterId)
-    await serverCommunicationService
-        .executeServerFunction("ReaddToSignalRGroups", args: [
-      connectionDetails.campagneId ?? "NULL",
-      connectionDetails.playerCharacterId ?? "NULL"
-    ]);
+    await serverCommunicationService.executeServerFunction(
+      "ReaddToSignalRGroups",
+      args: [
+        connectionDetails.campagneId ?? "NULL",
+        connectionDetails.playerCharacterId ?? "NULL"
+      ],
+      maxInvokeRetries: 3,
+    );
   }
 
-  @override
-  void clientDisconnected(String userId) {
-    // we should update the connection info with this player data
+  void _applyClientDisconnectedRemoval(String userId) {
+    _pendingDisconnectByUserId.remove(userId);
     var currentConnectionDetails =
         widgetRef.read(connectionDetailsProvider).valueOrNull;
     if (currentConnectionDetails == null) {
@@ -486,6 +500,15 @@ class ServerMethodsService extends IServerMethodsService {
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         currentConnectionDetails.copyWith(
             connectedPlayers: updatedPlayerProfiles));
+  }
+
+  @override
+  void clientDisconnected(String userId) {
+    _cancelPendingDisconnect(userId);
+    _pendingDisconnectByUserId[userId] =
+        Timer(clientDisconnectedDebounce, () {
+      _applyClientDisconnectedRemoval(userId);
+    });
   }
 
   @override
@@ -540,6 +563,7 @@ class ServerMethodsService extends IServerMethodsService {
   @override
   void pongFromPlayer(DateTime timestamp, String userId) {
     log("pingFromDm is received");
+    _cancelPendingDisconnect(userId);
 
     var currentConnectionDetails =
         widgetRef.read(connectionDetailsProvider).requireValue;

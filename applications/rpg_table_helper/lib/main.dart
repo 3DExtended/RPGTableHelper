@@ -27,8 +27,10 @@ import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -200,6 +202,9 @@ class _ThemeConfigurationForAppState
     extends ConsumerState<ThemeConfigurationForApp> {
   LifecycleEventHandler? observer;
 
+  /// DM: consecutive periodic checks where a player's `lastPing` stayed stale (see constants).
+  final Map<String, int> _dmConsecutiveStalePingCounts = {};
+
   // This widget is the root of your application.
   @override
   void initState() {
@@ -236,10 +241,8 @@ class _ThemeConfigurationForAppState
           }
 
           // check when we received the last ping message from DM
-          // if it is older than 10 seconds, mark the player as disconnected
-          if (connectionDetails.lastPing!.isBefore(DateTime.now().subtract(
-            pingInterval,
-          ))) {
+          if (connectionDetails.lastPing!.isBefore(DateTime.now()
+              .subtract(playerDisconnectedFromDmAfter))) {
             var snackBar = SnackBar(
               showCloseIcon: true,
               duration: Duration(seconds: 60),
@@ -264,23 +267,34 @@ class _ThemeConfigurationForAppState
           }
         } else {
           if (connectionDetails.lastPing != null) {
-            var playersToMarkAsDisconnected = connectionDetails.connectedPlayers
-                    ?.where((element) =>
-                        element.lastPing != null &&
-                        element.lastPing!.isBefore(
-                            DateTime.now().subtract(pingInterval).subtract(
-                                  pingInterval,
-                                )))
-                    .toList() ??
-                [];
+            final now = DateTime.now();
+            final staleBefore = now.subtract(dmPlayerPingStaleThreshold);
+            final nextStaleCounts = <String, int>{};
+            final userIdsToRemove = <String>[];
 
-            if (playersToMarkAsDisconnected.isNotEmpty) {
-              // update the connection details
+            for (final element in connectionDetails.connectedPlayers ?? []) {
+              final uid = element.userId.$value!;
+              final last = element.lastPing;
+              if (last != null && last.isBefore(staleBefore)) {
+                final c =
+                    (_dmConsecutiveStalePingCounts[uid] ?? 0) + 1;
+                nextStaleCounts[uid] = c;
+                if (c >= dmConsecutiveStaleChecksBeforeRemove) {
+                  userIdsToRemove.add(uid);
+                }
+              }
+            }
+
+            _dmConsecutiveStalePingCounts
+              ..clear()
+              ..addAll(nextStaleCounts);
+
+            if (userIdsToRemove.isNotEmpty) {
               ref.read(connectionDetailsProvider.notifier).updateConfiguration(
                   ref.read(connectionDetailsProvider).value?.copyWith(
                             connectedPlayers: connectionDetails.connectedPlayers
-                                ?.where((e) => !playersToMarkAsDisconnected
-                                    .any((el) => el.userId == e.userId))
+                                ?.where((e) => !userIdsToRemove
+                                    .contains(e.userId.$value))
                                 .toList(),
                           ) ??
                       ConnectionDetails.defaultValue());
@@ -310,9 +324,11 @@ class _ThemeConfigurationForAppState
 
   LifecycleEventHandler getObserver() {
     return LifecycleEventHandler(resumeCallBack: () async {
-      log("resumeCallBack");
+      log("resumeCallBack", name: "SignalR");
       var serverMethods =
           DependencyProvider.getIt!.get<IServerMethodsService>();
+      final comm =
+          DependencyProvider.getIt!.get<IServerCommunicationService>();
       var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
 
       // should return early in the case the use is not in the session.
@@ -320,15 +336,21 @@ class _ThemeConfigurationForAppState
         return;
       }
 
-      // readd to groups if the connection had to be reastablished
+      await comm.ensureConnectionReadyForSession();
       await serverMethods.readdToSignalRGroups();
 
+      final hubState = comm.hubConnectionState;
+      final connected = hubState == HubConnectionState.Connected;
       ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-          ref.read(connectionDetailsProvider).value?.copyWith(
-                    isConnected: true,
-                    isConnecting: false,
-                  ) ??
-              ConnectionDetails.defaultValue());
+            ref.read(connectionDetailsProvider).value?.copyWith(
+                  isConnected: connected,
+                  isConnecting: !connected &&
+                      hubState != null &&
+                      (hubState == HubConnectionState.Connecting ||
+                          hubState == HubConnectionState.Reconnecting),
+                ) ??
+                ConnectionDetails.defaultValue(),
+          );
     });
   }
 
