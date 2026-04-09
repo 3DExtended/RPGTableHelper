@@ -58,7 +58,8 @@ public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, S
                     new ImageGenerationOptions()
                     {
                         Size = GeneratedImageSize.W1024xH1024,
-                        Quality = GeneratedImageQuality.High,
+                        // Do not set Quality to GeneratedImageQuality.High: it serializes as "hd" (DALL-E),
+                        // which gpt-image rejects. Omit to let the API use a valid default (low|medium|high|auto).
                     },
                     cancellationToken
                 )
