@@ -1,25 +1,26 @@
-﻿using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+﻿using System.Text.Json.Nodes;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RPGTableHelper.WebApi.Swagger
 {
     public class EnumSchemaFilter : ISchemaFilter
     {
-        public void Apply(OpenApiSchema model, SchemaFilterContext context)
+        public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
         {
-            if (context.Type.IsEnum)
+            if (!context.Type.IsEnum || schema is not OpenApiSchema openApiSchema)
             {
-                model.Enum.Clear();
-                Enum.GetNames(context.Type)
-                    .ToList()
-                    .ForEach(n =>
-                    {
-                        model.Enum.Add(new OpenApiString(n));
-                        model.Type = "string";
-                        model.Format = null;
-                    });
+                return;
             }
+
+            openApiSchema.Enum?.Clear();
+            foreach (var n in Enum.GetNames(context.Type))
+            {
+                openApiSchema.Enum?.Add(JsonValue.Create(n));
+            }
+
+            openApiSchema.Type = JsonSchemaType.String;
+            openApiSchema.Format = null;
         }
     }
 }

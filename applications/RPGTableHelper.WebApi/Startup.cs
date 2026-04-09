@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Prodot.Patterns.Cqrs;
 using Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection;
 using RPGTableHelper.BusinessLayer;
@@ -291,19 +291,11 @@ public class Startup
                 }
             );
 
-            c.AddSecurityRequirement(
-                new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
-                        },
-                        new string[] { }
-                    },
-                }
-            );
-            c.GeneratePolymorphicSchemas();
+            c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+            {
+                [new OpenApiSecuritySchemeReference("Bearer", document, externalResource: null)] = [],
+            });
+            c.UseOneOfForPolymorphism();
         });
 
         services.AddCors(options =>
