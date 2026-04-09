@@ -218,5 +218,7 @@
   "noImagesInCampagne": "You did not generate any images in this campaign.",
   "enterANameDefaultLabel": "Enter a name",
   "enterSomeDescriptionOnTheLeft": "Enter some description on the left",
-  "tabIconsConfigurationTitle": "Tab Icons"
+  "tabIconsConfigurationTitle": "Tab Icons",
+  "realtimeSessionIosHint": "On iPad or iPhone, live updates work best while this app is open in the foreground.",
+  "pendingHubSyncBanner": "Some changes are still syncing to the session…"
 }

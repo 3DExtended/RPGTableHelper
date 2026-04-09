@@ -10,6 +10,7 @@ import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/hub_invoke_queue.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
@@ -74,10 +75,24 @@ abstract class IServerCommunicationService {
 
   /// Ensures the hub is started when disconnected; safe to call on app resume.
   Future<void> ensureConnectionReadyForSession();
+
+  /// Like [executeServerFunction], but on total failure the invoke is stored in an in-memory queue for later [drainHubInvokeQueue].
+  Future<void> executeCriticalServerFunction(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 3});
+
+  /// Retries queued critical invokes; safe to call after reconnect or resume.
+  Future<void> drainHubInvokeQueue();
+
+  int get pendingHubInvokeCount;
 }
 
 class ServerCommunicationService extends IServerCommunicationService {
   HubConnection? hubConnection; // initalized within buildHubConnection()
+
+  final HubInvokeQueue _hubInvokeQueue = HubInvokeQueue();
+
+  @override
+  int get pendingHubInvokeCount => _hubInvokeQueue.length;
 
   bool get connectionIsOpen =>
       hubConnection != null &&
@@ -106,10 +121,11 @@ class ServerCommunicationService extends IServerCommunicationService {
     // defaultHeaders.setHeaderValue("HEADER_MOCK_1", "HEADER_VALUE_1");
     // defaultHeaders.setHeaderValue("HEADER_MOCK_2", "HEADER_VALUE_2");
 
+    // transport left unset (null): negotiate and try server-listed transports in order
+    // (typically WebSockets, then Server-Sent Events, then long polling). See signalr_netcore HttpConnection._createTransport.
     final httpConnectionOptions = HttpConnectionOptions(
       httpClient: WebSupportingHttpClient(null,
           httpClientCreateCallback: httpClientCreateCallback),
-      // transport: HttpTransportType.ServerSentEvents,
       accessTokenFactory: () async {
         var apiConnectorService = this.apiConnectorService;
         var jwt = await apiConnectorService.getJwt();
@@ -129,6 +145,12 @@ class ServerCommunicationService extends IServerCommunicationService {
       10000,
       ...List.generate(5000, (i) => 20000)
     ]).build();
+
+    log(
+      "SignalR: HttpConnectionOptions.transport unset — negotiate and try "
+      "WebSockets, then SSE, then long polling (server order).",
+      name: "SignalR",
+    );
 
     // When the connection is closed, print out a message to the console.
     hubConnection!.onclose(
@@ -176,6 +198,7 @@ class ServerCommunicationService extends IServerCommunicationService {
       var serverMethods =
           DependencyProvider.getIt!.get<IServerMethodsService>();
       await serverMethods.readdToSignalRGroups();
+      await drainHubInvokeQueue();
 
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
           widgetRef.read(connectionDetailsProvider).value?.copyWith(
@@ -206,6 +229,7 @@ class ServerCommunicationService extends IServerCommunicationService {
 
     var serverMethods = DependencyProvider.getIt!.get<IServerMethodsService>();
     await serverMethods.readdToSignalRGroups();
+    await drainHubInvokeQueue();
   }
 
   @override
@@ -346,6 +370,53 @@ class ServerCommunicationService extends IServerCommunicationService {
   @override
   Future executeServerFunction(String functionName,
       {List<Object>? args, int maxInvokeRetries = 1}) async {
+    await _invokeWithRetries(functionName, args: args, maxInvokeRetries: maxInvokeRetries);
+  }
+
+  @override
+  Future<void> executeCriticalServerFunction(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 3}) async {
+    final ok = await _invokeWithRetries(functionName,
+        args: args, maxInvokeRetries: maxInvokeRetries);
+    if (!ok) {
+      _hubInvokeQueue.enqueue(functionName, args);
+      log(
+        "SignalR: enqueued critical invoke $functionName (queue length ${_hubInvokeQueue.length})",
+        name: "SignalR",
+      );
+    }
+  }
+
+  @override
+  Future<void> drainHubInvokeQueue() async {
+    if (!connectionIsOpen) {
+      return;
+    }
+    var guard = 0;
+    while (connectionIsOpen &&
+        _hubInvokeQueue.length > 0 &&
+        guard < hubInvokeQueueMaxItems * 2) {
+      guard++;
+      final next = _hubInvokeQueue.dequeue();
+      if (next == null) {
+        break;
+      }
+      final ok = await _invokeWithRetries(next.functionName,
+          args: next.args, maxInvokeRetries: 1);
+      if (!ok) {
+        _hubInvokeQueue.unshift(next);
+        log(
+          "SignalR: drain paused on failure for ${next.functionName}",
+          name: "SignalR",
+        );
+        break;
+      }
+    }
+  }
+
+  /// Returns true if at least one invoke attempt succeeded.
+  Future<bool> _invokeWithRetries(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 1}) async {
     if (!connectionIsOpen) {
       await tryOpenConnection();
     }
@@ -355,7 +426,7 @@ class ServerCommunicationService extends IServerCommunicationService {
         "SignalR executeServerFunction skipped (no hub): $functionName",
         name: "SignalR",
       );
-      return;
+      return false;
     }
 
     var waitCounter = 0;
@@ -389,7 +460,7 @@ class ServerCommunicationService extends IServerCommunicationService {
           "SignalR invoke ok: $functionName result=$result",
           name: "SignalR",
         );
-        return;
+        return true;
       } catch (e, st) {
         lastError = e;
         lastStack = st;
@@ -413,6 +484,7 @@ class ServerCommunicationService extends IServerCommunicationService {
         stackTrace: lastStack,
       );
     }
+    return false;
   }
 
   Future<bool> tryOpenConnection() async {
@@ -485,6 +557,18 @@ class MockServerCommunicationService extends IServerCommunicationService {
 
   @override
   Future<void> ensureConnectionReadyForSession() async {}
+
+  @override
+  int get pendingHubInvokeCount => 0;
+
+  @override
+  Future<void> drainHubInvokeQueue() async {}
+
+  @override
+  Future<void> executeCriticalServerFunction(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 3}) {
+    throw UnimplementedError();
+  }
 
   @override
   Future executeServerFunction(String functionName,

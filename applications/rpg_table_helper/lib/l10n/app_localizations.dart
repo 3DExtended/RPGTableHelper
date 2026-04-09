@@ -1417,6 +1417,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Tab Icons'**
   String get tabIconsConfigurationTitle;
+
+  /// No description provided for @realtimeSessionIosHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Auf dem iPad oder iPhone funktionieren Live-Updates am zuverlässigsten, wenn die App im Vordergrund geöffnet ist.'**
+  String get realtimeSessionIosHint;
+
+  /// No description provided for @pendingHubSyncBanner.
+  ///
+  /// In de, this message translates to:
+  /// **'Einige Änderungen werden noch mit der Sitzung synchronisiert…'**
+  String get pendingHubSyncBanner;
 }
 
 class _AppLocalizationsDelegate

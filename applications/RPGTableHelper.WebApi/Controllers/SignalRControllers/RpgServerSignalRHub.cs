@@ -284,6 +284,13 @@ public class RpgServerSignalRHub : Hub
                     .SendAsync("requestStatusFromPlayers", (CancellationToken)default);
             }
 
+            // Confirms server→client delivery after groups are applied (helps validate the connection is not half-dead).
+            await Clients.Caller.SendAsync(
+                "signalRGroupsRejoined",
+                campagneIdParsed.Value.ToString(),
+                (CancellationToken)default
+            );
+
             _logger.LogInformation(
                 "SignalR ReaddToSignalRGroups succeeded: ConnectionId={ConnectionId} UserId={UserId} CampagneId={CampagneId} IsDm={IsDm}",
                 Context.ConnectionId,

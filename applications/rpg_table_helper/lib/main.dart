@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -205,12 +205,57 @@ class _ThemeConfigurationForAppState
   /// DM: consecutive periodic checks where a player's `lastPing` stayed stale (see constants).
   final Map<String, int> _dmConsecutiveStalePingCounts = {};
 
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
+  Timer? _hubDrainTimer;
+  List<ConnectivityResult> _lastConnectivity = const [ConnectivityResult.none];
+
   // This widget is the root of your application.
   @override
   void initState() {
     log("initState ThemeConfigurationForApp");
     super.initState();
     observer = getObserver();
+
+    if (!isInTestEnvironment) {
+      Connectivity().checkConnectivity().then((r) {
+        if (mounted) {
+          setState(() => _lastConnectivity = r);
+        }
+      });
+      _connectivitySub =
+          Connectivity().onConnectivityChanged.listen((results) async {
+        final hadNone = _lastConnectivity.contains(ConnectivityResult.none);
+        _lastConnectivity = results;
+        final hasNetwork = !results.contains(ConnectivityResult.none);
+        if (!hadNone || !hasNetwork || !mounted) {
+          return;
+        }
+        final connectionDetails =
+            ref.read(connectionDetailsProvider).valueOrNull;
+        if (connectionDetails?.isInSession != true) {
+          return;
+        }
+        await recoverSignalRSession();
+      });
+
+      _hubDrainTimer =
+          Timer.periodic(hubInvokeQueueDrainPeriodicInterval, (_) async {
+        if (!mounted) {
+          return;
+        }
+        final connectionDetails =
+            ref.read(connectionDetailsProvider).valueOrNull;
+        if (connectionDetails?.isInSession != true) {
+          return;
+        }
+        final comm =
+            DependencyProvider.getIt!.get<IServerCommunicationService>();
+        if (comm.pendingHubInvokeCount > 0) {
+          await comm.ensureConnectionReadyForSession();
+          await comm.drainHubInvokeQueue();
+        }
+      });
+    }
 
     if (!isInTestEnvironment) {
       // future which runs every 10 seconds
@@ -322,40 +367,55 @@ class _ThemeConfigurationForAppState
     WidgetsBinding.instance.addObserver(observer!);
   }
 
+  /// Reconnect SignalR, re-join groups, drain queued critical invokes, refresh UI flags.
+  Future<void> recoverSignalRSession() async {
+    final serverMethods =
+        DependencyProvider.getIt!.get<IServerMethodsService>();
+    final comm = DependencyProvider.getIt!.get<IServerCommunicationService>();
+    var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+
+    if (connectionDetails == null || connectionDetails.isInSession == false) {
+      return;
+    }
+
+    await comm.ensureConnectionReadyForSession();
+    await serverMethods.readdToSignalRGroups();
+    await comm.drainHubInvokeQueue();
+
+    final hubState = comm.hubConnectionState;
+    final connected = hubState == HubConnectionState.Connected;
+    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+          ref.read(connectionDetailsProvider).value?.copyWith(
+                isConnected: connected,
+                isConnecting: !connected &&
+                    hubState != null &&
+                    (hubState == HubConnectionState.Connecting ||
+                        hubState == HubConnectionState.Reconnecting),
+              ) ??
+              ConnectionDetails.defaultValue(),
+        );
+  }
+
   LifecycleEventHandler getObserver() {
-    return LifecycleEventHandler(resumeCallBack: () async {
-      log("resumeCallBack", name: "SignalR");
-      var serverMethods =
-          DependencyProvider.getIt!.get<IServerMethodsService>();
-      final comm =
-          DependencyProvider.getIt!.get<IServerCommunicationService>();
-      var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
-
-      // should return early in the case the use is not in the session.
-      if (connectionDetails == null || connectionDetails.isInSession == false) {
-        return;
-      }
-
-      await comm.ensureConnectionReadyForSession();
-      await serverMethods.readdToSignalRGroups();
-
-      final hubState = comm.hubConnectionState;
-      final connected = hubState == HubConnectionState.Connected;
-      ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-            ref.read(connectionDetailsProvider).value?.copyWith(
-                  isConnected: connected,
-                  isConnecting: !connected &&
-                      hubState != null &&
-                      (hubState == HubConnectionState.Connecting ||
-                          hubState == HubConnectionState.Reconnecting),
-                ) ??
-                ConnectionDetails.defaultValue(),
-          );
-    });
+    return LifecycleEventHandler(
+      resumeCallBack: () async {
+        log("resumeCallBack", name: "SignalR");
+        await recoverSignalRSession();
+      },
+      suspendingCallBack: () async {
+        log(
+          "App lifecycle: inactive/paused/hidden — iOS may suspend sockets; "
+          "hub left connected (not stopped) to reduce churn.",
+          name: "SignalR",
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
+    _connectivitySub?.cancel();
+    _hubDrainTimer?.cancel();
     if (observer != null) WidgetsBinding.instance.removeObserver(observer!);
     super.dispose();
   }

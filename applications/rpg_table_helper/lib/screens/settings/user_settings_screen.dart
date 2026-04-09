@@ -1,15 +1,29 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class UserSettingsScreen extends StatelessWidget {
   static const route = '/settings';
 
-  const UserSettingsScreen({super.key});
+  /// When null, the iOS realtime hint uses [Platform.isIOS]. Set in tests/goldens.
+  final bool? showRealtimeSessionHint;
+
+  const UserSettingsScreen({super.key, this.showRealtimeSessionHint});
+
+  bool get _showIosRealtimeSessionHint {
+    if (showRealtimeSessionHint != null) {
+      return showRealtimeSessionHint!;
+    }
+    return !kIsWeb && Platform.isIOS;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +58,23 @@ class UserSettingsScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      if (_showIosRealtimeSessionHint)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.realtimeSessionIosHint,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkTextColor,
+                                ),
+                          ),
+                        ),
                       _buildSettingsCard(
                         context,
                         icon: FontAwesomeIcons.key,

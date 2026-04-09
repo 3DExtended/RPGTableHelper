@@ -17,6 +17,12 @@ const dmConsecutiveStaleChecksBeforeRemove = 3;
 /// DM: delay removing a player after SignalR `clientDisconnected` so brief reconnects do not flash offline.
 const clientDisconnectedDebounce = Duration(seconds: 4);
 
+/// Max pending critical hub invokes when offline (oldest dropped when exceeded).
+const hubInvokeQueueMaxItems = 20;
+
+/// Drain queued invokes on this interval while in session and queue non-empty.
+const hubInvokeQueueDrainPeriodicInterval = Duration(seconds: 30);
+
 bool get isInTestEnvironment =>
     Platform.environment.containsKey('FLUTTER_TEST');
 

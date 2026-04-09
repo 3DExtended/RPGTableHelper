@@ -258,5 +258,7 @@
   "noImagesInCampagne": "In dieser Kampagne sind noch keine Bilder von dir generiert worden.",
   "enterANameDefaultLabel": "Gebe Namen ein",
   "enterSomeDescriptionOnTheLeft": "Gebe eine Beschreibung auf der linken Seite ein.",
-  "tabIconsConfigurationTitle": "Tab Icons"
+  "tabIconsConfigurationTitle": "Tab Icons",
+  "realtimeSessionIosHint": "Auf dem iPad oder iPhone funktionieren Live-Updates am zuverlässigsten, wenn die App im Vordergrund geöffnet ist.",
+  "pendingHubSyncBanner": "Einige Änderungen werden noch mit der Sitzung synchronisiert…"
 }

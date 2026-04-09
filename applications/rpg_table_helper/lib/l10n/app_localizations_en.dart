@@ -699,4 +699,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabIconsConfigurationTitle => 'Tab Icons';
+
+  @override
+  String get realtimeSessionIosHint =>
+      'On iPad or iPhone, live updates work best while this app is open in the foreground.';
+
+  @override
+  String get pendingHubSyncBanner =>
+      'Some changes are still syncing to the session…';
 }

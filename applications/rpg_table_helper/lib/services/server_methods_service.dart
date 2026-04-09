@@ -87,6 +87,11 @@ abstract class IServerMethodsService {
       function: pongFromPlayer,
       functionName: "pongFromPlayer",
     );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: signalRGroupsRejoined,
+      functionName: "signalRGroupsRejoined",
+    );
   }
 
   // this should contain every method that is callable by the server
@@ -106,6 +111,9 @@ abstract class IServerMethodsService {
 
   void pingFromDm(DateTime timestamp);
   void pongFromPlayer(DateTime timestamp, String userId);
+
+  /// Server confirmation after [ReaddToSignalRGroups] applied groups for this connection.
+  void signalRGroupsRejoined(String campagneId);
 
   // this should contain every method that call the server
   Future sendPingToPlayers(
@@ -160,8 +168,9 @@ class ServerMethodsService extends IServerMethodsService {
                 isConnecting: true,
                 campagneId: campagneId));
 
-    await serverCommunicationService
-        .executeServerFunction("RegisterGame", args: [campagneId]);
+    await serverCommunicationService.executeCriticalServerFunction(
+        "RegisterGame",
+        args: [campagneId]);
   }
 
   @override
@@ -174,8 +183,9 @@ class ServerMethodsService extends IServerMethodsService {
                 isConnecting: false,
                 playerCharacterId: playerCharacterId));
 
-    await serverCommunicationService
-        .executeServerFunction("JoinGame", args: [playerCharacterId]);
+    await serverCommunicationService.executeCriticalServerFunction(
+        "JoinGame",
+        args: [playerCharacterId]);
   }
 
   @override
@@ -252,7 +262,7 @@ class ServerMethodsService extends IServerMethodsService {
       required String campagneId}) async {
     var serializedConfig = jsonEncode(rpgConfig);
 
-    await serverCommunicationService.executeServerFunction(
+    await serverCommunicationService.executeCriticalServerFunction(
         "SendUpdatedRpgConfig",
         args: [campagneId, serializedConfig]);
   }
@@ -264,7 +274,8 @@ class ServerMethodsService extends IServerMethodsService {
     var strippedFightSequence = fightSequence.copyWith(
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
-    await serverCommunicationService.executeServerFunction("AskPlayersForRolls",
+    await serverCommunicationService.executeCriticalServerFunction(
+        "AskPlayersForRolls",
         args: [campagneId, jsonEncode(strippedFightSequence)]);
   }
 
@@ -274,7 +285,7 @@ class ServerMethodsService extends IServerMethodsService {
     var strippedFightSequence = fightSequence.copyWith(
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
-    await serverCommunicationService.executeServerFunction(
+    await serverCommunicationService.executeCriticalServerFunction(
         "SendFightSequenceRollsToDm",
         args: [playerId, jsonEncode(strippedFightSequence)]);
   }
@@ -283,7 +294,7 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
       required String playercharacterid}) async {
-    await serverCommunicationService.executeServerFunction(
+    await serverCommunicationService.executeCriticalServerFunction(
         "SendUpdatedRpgCharacterConfigToDm",
         args: [playercharacterid, jsonEncode(charConfig)]);
   }
@@ -292,7 +303,7 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendGrantedItemsToPlayers(
       {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems}) async {
-    await serverCommunicationService.executeServerFunction(
+    await serverCommunicationService.executeCriticalServerFunction(
         "SendGrantedItemsToPlayers",
         args: [campagneId, jsonEncode(grantedItems)]);
   }
@@ -582,6 +593,19 @@ class ServerMethodsService extends IServerMethodsService {
           .read(connectionDetailsProvider.notifier)
           .updateConfiguration(currentConnectionDetails);
     }
+  }
+
+  @override
+  void signalRGroupsRejoined(String campagneId) {
+    if (kDebugMode) {
+      log('signalRGroupsRejoined: $campagneId', name: 'SignalR');
+    }
+    final d = widgetRef.read(connectionDetailsProvider).valueOrNull;
+    if (d == null || !d.isInSession) {
+      return;
+    }
+    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
+        d.copyWith(isConnected: true, isConnecting: false));
   }
 
   @override
