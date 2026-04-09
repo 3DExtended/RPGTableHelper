@@ -40,6 +40,10 @@
 
     <ProjectReference
       Include="..\..\libraries\RPGTableHelper.DataLayer\RPGTableHelper.DataLayer.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer.OpenAI\RPGTableHelper.DataLayer.OpenAI.csproj" />
+    <ProjectReference
+      Include="..\..\libraries\RPGTableHelper.DataLayer.OpenAI.Contracts\RPGTableHelper.DataLayer.OpenAI.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
