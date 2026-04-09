@@ -392,11 +392,8 @@ public class Startup
         }
 
         services.AddTransient<INoteService, NoteService>();
-        var openAiOptions = Configuration.GetSection("OpenAi").Get<OpenAIOptions>();
-        if (openAiOptions != null)
-        {
-            services.AddSingleton(openAiOptions);
-        }
+        var openAiOptions = Configuration.GetSection("OpenAi").Get<OpenAIOptions>() ?? new OpenAIOptions();
+        services.AddSingleton(openAiOptions);
 
         var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
         if (jwtOptions != null)

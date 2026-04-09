@@ -1,8 +1,4 @@
-using System;
 using System.ClientModel;
-
-using Azure;
-using Azure.AI.OpenAI;
 
 using Microsoft.Extensions.Logging;
 
@@ -18,11 +14,17 @@ namespace RPGTableHelper.DataLayer.OpenAI.QueryHandlers;
 
 public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, Stream>
 {
+    private const string DefaultImageModel = "gpt-image-1";
+
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger _logger;
+    private readonly ILogger<AiGenerateImageQueryHandler> _logger;
     private readonly OpenAIOptions _options;
 
-    public AiGenerateImageQueryHandler(OpenAIOptions options, IHttpClientFactory httpClientFactory, ILogger logger)
+    public AiGenerateImageQueryHandler(
+        OpenAIOptions options,
+        IHttpClientFactory httpClientFactory,
+        ILogger<AiGenerateImageQueryHandler> logger
+    )
     {
         _options = options;
         _httpClientFactory = httpClientFactory;
@@ -33,56 +35,71 @@ public class AiGenerateImageQueryHandler : IQueryHandler<AiGenerateImageQuery, S
 
     public async Task<Option<Stream>> RunQueryAsync(AiGenerateImageQuery query, CancellationToken cancellationToken)
     {
-        if (_options.ApiKey == null || _options.OpenAIUrl == null)
+        if (string.IsNullOrWhiteSpace(_options.ApiKey))
         {
             return Option.None;
         }
 
-        var endpoint = _options.OpenAIUrl;
-        var key = _options.ApiKey;
+        var credential = new ApiKeyCredential(_options.ApiKey);
+        OpenAIClient client = string.IsNullOrWhiteSpace(_options.OpenAIUrl)
+            ? new OpenAIClient(credential)
+            : new OpenAIClient(credential, new OpenAIClientOptions { Endpoint = new Uri(_options.OpenAIUrl) });
 
-        var azureClient = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key));
-
-        // This must match the custom deployment name you chose for your model
-        ImageClient chatClient = azureClient.GetImageClient("dall-e-3");
+        var model = string.IsNullOrWhiteSpace(_options.ImageModel)
+            ? DefaultImageModel
+            : _options.ImageModel.Trim();
+        var imageClient = client.GetImageClient(model);
 
         try
         {
-            var imageGeneration = await chatClient.GenerateImageAsync(
-                query.ImagePrompt,
-                new ImageGenerationOptions()
-                {
-                    Size = GeneratedImageSize.W1024xH1024,
-                    Style = GeneratedImageStyle.Vivid,
-                    Quality = GeneratedImageQuality.Standard,
-                    ResponseFormat = GeneratedImageFormat.Uri,
-                }
-            );
+            var imageGeneration = await imageClient
+                .GenerateImageAsync(
+                    query.ImagePrompt,
+                    new ImageGenerationOptions()
+                    {
+                        Size = GeneratedImageSize.W1024xH1024,
+                        Quality = GeneratedImageQuality.High,
+                    },
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
 
-            _logger.LogInformation(imageGeneration.Value.ImageUri.ToString());
-            _logger.LogInformation(imageGeneration.Value.RevisedPrompt);
+            var generated = imageGeneration.Value;
 
-            try
+            if (!string.IsNullOrEmpty(generated.RevisedPrompt))
             {
-                using (var client = _httpClientFactory.CreateClient())
-                {
-                    // Get the file content as a stream
-                    Stream stream = await client.GetStreamAsync(imageGeneration.Value.ImageUri);
-                    return stream;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(exception: ex, message: "An error occured");
+                _logger.LogInformation("{RevisedPrompt}", generated.RevisedPrompt);
             }
 
-            // return imageGeneration.Value.ImageUri.ToString();
+            var imageBytes = generated.ImageBytes;
+            if (imageBytes != null && imageBytes.ToMemory().Length > 0)
+            {
+                var bytes = imageBytes.ToArray();
+                return Option.From<Stream>(new MemoryStream(bytes, writable: false));
+            }
+
+            if (generated.ImageUri != null)
+            {
+                _logger.LogInformation("{ImageUri}", generated.ImageUri);
+                try
+                {
+                    var http = _httpClientFactory.CreateClient();
+                    var stream = await http.GetStreamAsync(generated.ImageUri, cancellationToken).ConfigureAwait(false);
+                    return Option.From(stream);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to download generated image from URL.");
+                    return Option.None;
+                }
+            }
+
+            return Option.None;
         }
-        catch (Exception ex1)
+        catch (Exception ex)
         {
-            _logger.LogError(exception: ex1, message: "An error occured");
+            _logger.LogError(ex, "OpenAI image generation failed.");
+            return Option.None;
         }
-
-        return Option.None;
     }
 }
