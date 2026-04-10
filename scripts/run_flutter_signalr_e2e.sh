@@ -181,8 +181,9 @@ cd "${FLUTTER_DIR}"
 
 ensure_ios_simulator
 
+# Single-file run: do not glob `integration_test/` (multi-sim tests need E2E_ROLE).
 FLUTTER_TEST_ARGS=(
-  test integration_test
+  test integration_test/signalr_e2e_test.dart
   --dart-define=API_BASE_URL="${API_URL}"
   --timeout="${FLUTTER_TEST_TIMEOUT}"
 )
