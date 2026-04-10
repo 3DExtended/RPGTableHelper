@@ -15,7 +15,7 @@ public class Program
                 (context, config) =>
                 {
                     var env = context.HostingEnvironment;
-                    // Use user secrets only if not in test environment
+                    // Use user secrets only if not in xUnit WebApplicationFactory (E2ETest)
                     if (env.IsEnvironment("E2ETest"))
                     {
                         var indexOfUserSecretsSource = config

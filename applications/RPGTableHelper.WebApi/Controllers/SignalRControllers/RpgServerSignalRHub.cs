@@ -438,7 +438,8 @@ public class RpgServerSignalRHub : Hub
 
         string currentDirectory = "/app/database/"; // mounting point from docker compose
 
-        if (_hostEnvironment.IsEnvironment("E2ETest"))
+        if (_hostEnvironment.IsEnvironment("E2ETest")
+            || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
         {
             return;
         }

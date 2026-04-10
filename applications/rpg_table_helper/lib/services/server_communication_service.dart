@@ -11,6 +11,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/hub_invoke_queue.dart';
+import 'package:quest_keeper/services/hub_invoke_retry.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
@@ -421,70 +422,25 @@ class ServerCommunicationService extends IServerCommunicationService {
       await tryOpenConnection();
     }
 
-    if (hubConnection == null) {
-      log(
-        "SignalR executeServerFunction skipped (no hub): $functionName",
-        name: "SignalR",
-      );
-      return false;
-    }
-
-    var waitCounter = 0;
-    const maxWaitIterations = 5;
-    while (waitCounter < maxWaitIterations &&
-        (hubConnection?.state == HubConnectionState.Connecting ||
-            hubConnection?.state == HubConnectionState.Reconnecting)) {
-      waitCounter++;
-      await Future.delayed(Duration(seconds: waitCounter + 1));
-    }
-
-    final attempts = maxInvokeRetries < 1 ? 1 : maxInvokeRetries;
-    Object? lastError;
-    StackTrace? lastStack;
-    for (var attempt = 0; attempt < attempts; attempt++) {
-      if (hubConnection == null ||
-          hubConnection!.state != HubConnectionState.Connected) {
-        log(
-          "SignalR invoke not connected (attempt ${attempt + 1}/$attempts): $functionName state=${hubConnection?.state}",
-          name: "SignalR",
-        );
-        if (attempt < attempts - 1) {
-          await Future.delayed(Duration(milliseconds: 500 * (attempt + 1)));
-          await tryOpenConnection();
+    return runHubInvokeWithRetries(
+      hubMissing: hubConnection == null,
+      hubState: () => hubConnection?.state,
+      invoke: (name, {args}) => hubConnection!.invoke(name, args: args),
+      tryOpenConnection: tryOpenConnection,
+      functionName: functionName,
+      args: args,
+      maxInvokeRetries: maxInvokeRetries,
+      logSkippedNoHub: (m) => log(m, name: "SignalR"),
+      logNotConnected: (m) => log(m, name: "SignalR"),
+      logInvokeOk: (m) => log(m, name: "SignalR"),
+      logInvokeFailed: (m, e, st) =>
+          log(m, name: "SignalR", error: e, stackTrace: st),
+      logGaveUp: (m, e, st) {
+        if (e != null) {
+          log(m, name: "SignalR", error: e, stackTrace: st);
         }
-        continue;
-      }
-      try {
-        final result = await hubConnection!.invoke(functionName, args: args);
-        log(
-          "SignalR invoke ok: $functionName result=$result",
-          name: "SignalR",
-        );
-        return true;
-      } catch (e, st) {
-        lastError = e;
-        lastStack = st;
-        log(
-          "SignalR invoke failed (attempt ${attempt + 1}/$attempts): $functionName — $e",
-          name: "SignalR",
-          error: e,
-          stackTrace: st,
-        );
-        if (attempt < attempts - 1) {
-          await Future.delayed(Duration(milliseconds: 500 * (attempt + 1)));
-          await tryOpenConnection();
-        }
-      }
-    }
-    if (lastError != null) {
-      log(
-        "SignalR invoke gave up after $attempts attempts: $functionName",
-        name: "SignalR",
-        error: lastError,
-        stackTrace: lastStack,
-      );
-    }
-    return false;
+      },
+    );
   }
 
   Future<bool> tryOpenConnection() async {

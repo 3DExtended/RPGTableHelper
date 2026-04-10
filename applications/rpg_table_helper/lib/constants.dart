@@ -35,14 +35,22 @@ const outerPadding = 20.0;
 const sharedPrefsKeyRpgConfigJson = "rpgconfig";
 const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 
-// The location of the SignalR Server.
-// NOTE: Make sure to include the trailing slash.
-// const apiBaseUrl = kDebugMode
-//     ? "http://localhost:5012/"
-//     : "https://questkeeper-prod.peter-esser.de/";
-const apiBaseUrl = "https://questkeeper-prod.peter-esser.de/";
+// The location of the REST API and SignalR server.
+// NOTE: Include the trailing slash. Override for local E2E:
+// `--dart-define=API_BASE_URL=http://127.0.0.1:5012/`
+String get apiBaseUrl {
+  const fromDefine = String.fromEnvironment('API_BASE_URL', defaultValue: '');
+  if (fromDefine.isNotEmpty) {
+    var u = fromDefine;
+    if (!u.endsWith('/')) {
+      u = '$u/';
+    }
+    return u;
+  }
+  return 'https://questkeeper-prod.peter-esser.de/';
+}
 
-const serverUrl = "${apiBaseUrl}Chat";
+String get serverUrl => '${apiBaseUrl}Chat';
 
 const rpgtablehelperPublicCertificate = '''-----BEGIN PUBLIC KEY-----
 MIICLjANBgkqhkiG9w0BAQEFAAOCAhsAMIICFgKCAg0LBlhtjPsdRKW8xNSSfqAr

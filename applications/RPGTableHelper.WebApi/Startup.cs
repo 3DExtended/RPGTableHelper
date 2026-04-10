@@ -356,6 +356,7 @@ public class Startup
     private static void ApplyMigrations(IApplicationBuilder app)
     {
         var env = app.ApplicationServices.GetRequiredService<IHostEnvironment>();
+        // xUnit WebApplicationFactory uses E2ETest + replaces the database; skip Migrate there.
         if (env.IsEnvironment("E2ETest"))
         {
             return;
@@ -394,6 +395,18 @@ public class Startup
         services.AddSingleton(openAiOptions);
 
         var jwtOptions = Configuration.GetSection("Jwt").Get<JwtOptions>();
+        // LocalSignalRE2E (Flutter integration_test script) has no user secrets; use same dev key as API integration tests.
+        if (jwtOptions == null && Environment.IsEnvironment("LocalSignalRE2E"))
+        {
+            jwtOptions = new JwtOptions
+            {
+                Issuer = "api",
+                Audience = "api",
+                Key = string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200)),
+                NumberOfSecondsToExpire = 12000,
+            };
+        }
+
         if (jwtOptions != null)
         {
             services.AddSingleton(jwtOptions);
@@ -407,13 +420,17 @@ public class Startup
 
         services.AddDbContextFactory<RpgDbContext>(options =>
         {
-            if (Debugger.IsAttached)
+            // Local file: debugger, xUnit (E2ETest), or Flutter E2E script (LocalSignalRE2E).
+            // Docker / production uses the mounted path under /app/database.
+            if (Debugger.IsAttached
+                || Environment.IsEnvironment("E2ETest")
+                || Environment.IsEnvironment("LocalSignalRE2E"))
             {
                 options.UseSqlite("Data Source=maindb2.db");
             }
             else
             {
-                options.UseSqlite($"Data Source=/app/database/maindb2.db"); // mounting point from docker compose
+                options.UseSqlite("Data Source=/app/database/maindb2.db"); // mounting point from docker compose
             }
         });
 

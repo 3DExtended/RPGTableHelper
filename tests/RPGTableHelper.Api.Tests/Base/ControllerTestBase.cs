@@ -49,8 +49,8 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
                 Mapper = ServiceProvider.GetRequiredService<IMapper>();
 
                 QueryProcessor = ServiceProvider.GetRequiredService<IQueryProcessor>();
-                JwtTokenGenerator = ServiceProvider.GetRequiredService<IJWTTokenGenerator>();
                 SystemClock = ServiceProvider.GetRequiredService<ISystemClock>();
+                JwtTokenGenerator = ServiceProvider.GetRequiredService<IJWTTokenGenerator>();
                 ContextFactory = ServiceProvider.GetRequiredService<IDbContextFactory<RpgDbContext>>();
                 Context = ContextFactory.CreateDbContext();
                 Context.Database.OpenConnection();
@@ -123,6 +123,12 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
 
         return user!;
     }
+
+    /// <summary>
+    /// JWT for API / SignalR, aligned with <see cref="ConfigureLoggedInUser"/> token claims.
+    /// </summary>
+    protected string CreateJwtForUser(User user) =>
+        JwtTokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString())!;
 
     protected virtual void Dispose(bool disposing)
     {
