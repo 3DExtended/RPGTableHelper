@@ -173,12 +173,32 @@ public class E2ETestController : ControllerBase
         };
 
         var token = _jwt.GetJWTToken(user.Username, user.Id.ToString());
+
+        if (role == "dm")
+        {
+            return Ok(
+                new
+                {
+                    jwt = token,
+                    campagneId = campagneId.ToString(),
+                    role,
+                    userId = dm.Id.ToString(),
+                    playerCharacterId = (string?)null,
+                    player1UserId = p1.Id.ToString(),
+                    player2UserId = p2.Id.ToString(),
+                    player1CharacterId = char1.ToString(),
+                    player2CharacterId = char2.ToString(),
+                }
+            );
+        }
+
         return Ok(
             new
             {
                 jwt = token,
                 campagneId = campagneId.ToString(),
                 role,
+                userId = user.Id.ToString(),
                 playerCharacterId = characterId?.ToString(),
             }
         );

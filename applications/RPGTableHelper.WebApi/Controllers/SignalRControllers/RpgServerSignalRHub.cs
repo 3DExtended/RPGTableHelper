@@ -432,17 +432,27 @@ public class RpgServerSignalRHub : Hub
 
         _logger.LogInformation("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
+        await Clients
+            .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
+            .SendAsync(
+                "updateRpgCharacterConfigOnDmSide",
+                characterConfig,
+                updatedPlayerCharacter.Id.Value.ToString(),
+                updatedPlayerCharacter.PlayerUserId.Value.ToString(),
+                (CancellationToken)default
+            );
+
+        // File backup only outside local/E2E test hosts (avoids /app/database and keeps tests deterministic).
+        if (_hostEnvironment.IsEnvironment("E2ETest") || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
+        {
+            return;
+        }
+
         string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
         string fileName =
             $"{updatedPlayerCharacter.CharacterName}-{updatedPlayerCharacter.Id.Value.ToString()}-{timestamp}-rpgbackup.json";
 
         string currentDirectory = "/app/database/"; // mounting point from docker compose
-
-        if (_hostEnvironment.IsEnvironment("E2ETest")
-            || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
-        {
-            return;
-        }
 
         if (Debugger.IsAttached)
         {
@@ -455,7 +465,6 @@ public class RpgServerSignalRHub : Hub
         string filePath = Path.Combine(currentDirectory, fileBackupFolders, fileName);
         try
         {
-            // Write the long string to the file
             await File.WriteAllTextAsync(filePath, characterConfig, (CancellationToken)default);
             _logger.LogInformation($"File saved to {filePath}");
         }
@@ -463,17 +472,6 @@ public class RpgServerSignalRHub : Hub
         {
             _logger.LogInformation($"An error occurred: {ex.Message}");
         }
-
-        // ask DM for joining permissions:
-        await Clients
-            .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
-            .SendAsync(
-                "updateRpgCharacterConfigOnDmSide",
-                characterConfig,
-                updatedPlayerCharacter.Id.Value.ToString(),
-                updatedPlayerCharacter.PlayerUserId.Value.ToString(),
-                (CancellationToken)default
-            );
     }
 
     /// <summary>
@@ -506,6 +504,12 @@ public class RpgServerSignalRHub : Hub
         await Clients
             .OthersInGroup(campagneId + "_All")
             .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
+
+        // File backup only outside local/E2E test hosts (avoids /app/database and keeps tests deterministic).
+        if (_hostEnvironment.IsEnvironment("E2ETest") || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
+        {
+            return;
+        }
 
         string timestamp = DateTime.Now.ToString("yyyyMMdd");
         string fileName = $"{campagneId}-{timestamp}-rpgbackup.json";

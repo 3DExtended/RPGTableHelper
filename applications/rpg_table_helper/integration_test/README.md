@@ -20,6 +20,8 @@ Optional: `IOS_DEVICE` passes `-d` to Flutter (see `flutter devices`).
 
 Runs **three** `flutter test` processes (one per booted **iPad** simulator), each with `E2E_ROLE=dm|player1|player2`. Uses `/e2e/multi-client/*` to seed users/campaign and coordinate barriers so the DM registers the game before players rejoin groups, then asserts both players receive `pingFromDm`.
 
+The script **`POST`s `/e2e/multi-client/reset` once** before Flutter starts. The Dart test **must not** call that reset in every process: if a player resets after the DM set `dmGameRegistered`, the in-memory coordinator clears and everyone deadlocks (DM waits for two players; players wait forever for the DM flag).
+
 **Build ordering:** Xcode builds are **serialized** (DM → player1 → player2). Running three `flutter test` builds at once hits “concurrent builds” and can embed the **wrong** `E2E_ROLE` in a shared artifact, so every client acts like a player and the DM never registers. After each build finishes, all three tests run **concurrently** (DM waits on the server barrier while players catch up).
 
 ```bash
@@ -27,6 +29,8 @@ bash ./scripts/run_flutter_multi_sim_e2e.sh
 ```
 
 Prefer `bash` or `./scripts/run_flutter_multi_sim_e2e.sh` over `sh`, which can enable POSIX mode and break bash features.
+
+**Manual multi-sim (no script):** with the API up, run `curl -s -X POST http://127.0.0.1:5012/e2e/multi-client/reset` **once**, then start three `flutter test integration_test/signalr_multi_client_e2e_test.dart` processes with `E2E_ROLE` and `--dart-define=API_BASE_URL=…` (do not repeat `reset` per process).
 
 Optional: `SIM_UDID_DM`, `SIM_UDID_PLAYER1`, `SIM_UDID_PLAYER2` to pin devices; `XCODE_WAIT_MAX_SEC` (default 600) caps how long we wait for each “Xcode build done” line in the logs.
 

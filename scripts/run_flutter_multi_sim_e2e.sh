@@ -35,6 +35,13 @@ MULTI_SIM_FOLLOW="${MULTI_SIM_FOLLOW:-1}"
 # 1 = show API logs on the terminal (noisy).
 MULTI_SIM_API_LOG_TO_STDOUT="${MULTI_SIM_API_LOG_TO_STDOUT:-0}"
 
+# While waiting on long steps (especially the three parallel flutter tests), print this often.
+MULTI_SIM_WAIT_HEARTBEAT_SEC="${MULTI_SIM_WAIT_HEARTBEAT_SEC:-25}"
+
+log_ts() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+}
+
 section() {
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -174,6 +181,9 @@ wait_for_flutter_device() {
       ok=1
       break
     fi
+    if (( i % 10 == 0 )); then
+      log_ts "  still waiting for Flutter to list simulator ${udid} (${i}s / ${SIMULATOR_WAIT_SEC}s)"
+    fi
     sleep 1
   done
   if [[ "${ok}" -ne 1 ]]; then
@@ -218,6 +228,10 @@ API_PID=$!
 popd > /dev/null
 
 cleanup() {
+  if [[ -n "${MULTI_SIM_HEARTBEAT_PID:-}" ]] && kill -0 "${MULTI_SIM_HEARTBEAT_PID}" 2>/dev/null; then
+    kill "${MULTI_SIM_HEARTBEAT_PID}" 2>/dev/null || true
+    wait "${MULTI_SIM_HEARTBEAT_PID}" 2>/dev/null || true
+  fi
   if kill -0 "${API_PID}" 2>/dev/null; then
     echo "Stopping API (pid ${API_PID})..."
     kill "${API_PID}" 2>/dev/null || true
@@ -226,7 +240,7 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-echo "Waiting for TCP ${PORT} (max ${API_START_TIMEOUT_SEC}s)..."
+log_ts "Waiting for TCP ${PORT} (max ${API_START_TIMEOUT_SEC}s)..."
 up=0
 for ((i = 1; i <= API_START_TIMEOUT_SEC; i++)); do
   if ! kill -0 "${API_PID}" 2>/dev/null; then
@@ -236,6 +250,9 @@ for ((i = 1; i <= API_START_TIMEOUT_SEC; i++)); do
   if nc -z 127.0.0.1 "${PORT}" 2>/dev/null; then
     up=1
     break
+  fi
+  if (( i % 5 == 0 )); then
+    log_ts "  port ${PORT} not open yet (${i}s / ${API_START_TIMEOUT_SEC}s), API pid=${API_PID}"
   fi
   sleep 1
 done
@@ -308,17 +325,20 @@ wait_for_xcode_build_done() {
         return 1
       fi
     fi
+    if (( i % 20 == 0 )); then
+      _last="$(tail -n 1 "${logfile}" 2>/dev/null | head -c 140)"
+      log_ts "  Xcode [${label}] ${i}s elapsed — tail: ${_last}"
+    fi
     sleep 1
   done
   echo "Timeout waiting for 'Xcode build done' in ${logfile}" >&2
   return 1
 }
 
-section "Scenario: DM + 2 players (SignalR)"
-echo "  1) DM:   RegisterGame → POST …/sync/dm-game-registered (server sets dmGameRegistered)."
-echo "  2) P1/P2: poll until step (1), then hub ReaddToSignalRGroups → POST …/sync/player-readded."
-echo "  3) DM:   waits until playersReaddedCount == 2, then SendPingToPlayers."
-echo "  4) P1/P2: must receive pingFromDm with payload multi-sim-ping-1."
+section "Scenario: DM + 2 players (SignalR, signalr_multi_client_e2e_test.dart)"
+echo "  One integration test per device (single POST …/reset — no per-scenario reset; avoids hang when runners desync)."
+echo "  After barrier: ping → large updateRpgConfig → character→DM → pong → empty ping."
+echo "  Barrier once: DM RegisterGame → POST …/sync/dm-game-registered; players wait, ReaddToSignalRGroups → POST …/sync/player-readded; DM waits for count 2."
 echo "Flutter output uses tags [dm] [p1] [p2]. Full files: ${MULTI_LOG_DIR}/dm.log etc."
 if [[ "${MULTI_SIM_FOLLOW}" == "1" ]]; then
   echo "Live stream: ON (MULTI_SIM_FOLLOW=0 to disable)."
@@ -345,15 +365,74 @@ PID_P2="${LAST_FLUTTER_JOB_PID}"
 wait_for_xcode_build_done "${MULTI_LOG_DIR}/player2.log" "player2" || exit 1
 
 section "Waiting for all three flutter test processes to exit"
-echo "Processes: dm pid=${PID_DM}, player1 pid=${PID_P1}, player2 pid=${PID_P2}"
-echo "(DM may wait minutes here until both players finish re-adding to SignalR groups.)"
+log_ts "PIDs: dm=${PID_DM} player1=${PID_P1} player2=${PID_P2}"
+echo "Heartbeat every ${MULTI_SIM_WAIT_HEARTBEAT_SEC}s: RUNNING + line/byte count + last ~400 bytes of log (CR→newline, each line capped ~132 chars). Bytes growing = output still flowing."
+echo "DM often blocks here until both players hit the server barrier — that is normal."
+
+MULTI_SIM_HEARTBEAT_PID=""
+_flutter_heartbeat_tick() {
+  echo ""
+  log_ts "── flutter status ──"
+  for _tuple in "dm:${PID_DM}:${MULTI_LOG_DIR}/dm.log" "p1:${PID_P1}:${MULTI_LOG_DIR}/player1.log" "p2:${PID_P2}:${MULTI_LOG_DIR}/player2.log"; do
+    _tag="${_tuple%%:*}"
+    _rest="${_tuple#*:}"
+    _pid="${_rest%%:*}"
+    _log="${_rest#*:}"
+    if kill -0 "${_pid}" 2>/dev/null; then
+      _lines="0"
+      _bytes="0"
+      if [[ -f "${_log}" ]]; then
+        _lines="$(wc -l < "${_log}" 2>/dev/null | tr -d ' ')"
+        _bytes="$(wc -c < "${_log}" 2>/dev/null | tr -d ' ')"
+      fi
+      echo "  [${_tag}] RUNNING pid=${_pid}  lines=${_lines}  bytes=${_bytes}"
+      if [[ -f "${_log}" ]] && [[ "${_bytes}" -gt 0 ]]; then
+        # Flutter often writes progress on one physical line with \r — tail -n 3 explodes width. Use tail -c + CR→LF + truncate.
+        tail -c 450 "${_log}" 2>/dev/null | tr '\r' '\n' | grep -v '^[[:space:]]*$' | tail -n 6 | while IFS= read -r _ln || [[ -n "${_ln}" ]]; do
+          if [[ -z "${_ln}" ]]; then
+            continue
+          fi
+          if [[ "${#_ln}" -gt 132 ]]; then
+            _ln="${_ln:0:129}..."
+          fi
+          printf '  [%s] | %s\n' "${_tag}" "${_ln}"
+        done
+      fi
+    else
+      echo "  [${_tag}] process exited (pid ${_pid} not running)"
+    fi
+  done
+}
+
+if [[ "${MULTI_SIM_WAIT_HEARTBEAT_SEC}" =~ ^[0-9]+$ ]] && [[ "${MULTI_SIM_WAIT_HEARTBEAT_SEC}" -gt 0 ]]; then
+  _flutter_heartbeat_tick
+  (
+    while sleep "${MULTI_SIM_WAIT_HEARTBEAT_SEC}"; do
+      log_ts "── repeat every ${MULTI_SIM_WAIT_HEARTBEAT_SEC}s ──"
+      _flutter_heartbeat_tick
+    done
+  ) &
+  MULTI_SIM_HEARTBEAT_PID=$!
+else
+  log_ts "Flutter wait heartbeats disabled (set MULTI_SIM_WAIT_HEARTBEAT_SEC to a positive integer to enable)."
+fi
 
 EC_DM=0
 EC_P1=0
 EC_P2=0
+log_ts "waiting on DM flutter (pid ${PID_DM})…"
 wait "${PID_DM}" || EC_DM=$?
+log_ts "DM flutter finished (exit ${EC_DM}). Waiting player1 (pid ${PID_P1})…"
 wait "${PID_P1}" || EC_P1=$?
+log_ts "Player1 finished (exit ${EC_P1}). Waiting player2 (pid ${PID_P2})…"
 wait "${PID_P2}" || EC_P2=$?
+log_ts "All three flutter processes exited."
+
+if [[ -n "${MULTI_SIM_HEARTBEAT_PID}" ]] && kill -0 "${MULTI_SIM_HEARTBEAT_PID}" 2>/dev/null; then
+  kill "${MULTI_SIM_HEARTBEAT_PID}" 2>/dev/null || true
+  wait "${MULTI_SIM_HEARTBEAT_PID}" 2>/dev/null || true
+fi
+MULTI_SIM_HEARTBEAT_PID=""
 
 section "Outcome (parsed from flutter logs)"
 echo "Process exit codes: dm=${EC_DM} player1=${EC_P1} player2=${EC_P2}"
