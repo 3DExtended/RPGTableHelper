@@ -516,6 +516,9 @@ $RECYCLE.BIN/
 applications/rpg_table_helper/coverage/lcov.info
 
 **/*-rpgbackup.json
+# Regression JSON fixtures for RPGTableHelper.Api.Tests (must be in repo for CI)
+!/liveBackups/
+!/liveBackups/*-rpgbackup.json
 coveragereport/
 Cobertura.xml
 tools/
