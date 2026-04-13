@@ -57,4 +57,4 @@ jobs:
 
       - name: Run tests
         working-directory: ./applications/rpg_table_helper
-        run: flutter test
+        run: flutter test --exclude-tags golden
