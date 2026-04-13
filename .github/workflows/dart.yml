@@ -40,8 +40,15 @@ jobs:
           channel: stable
           version: 3.24.0
 
+      - name: Prepare Flutter workspace
+        working-directory: ./applications/rpg_table_helper
+        run: |
+          mkdir -p build
+
       - name: Install dependencies
-        run: cd ./applications/rpg_table_helper && flutter pub get
+        working-directory: ./applications/rpg_table_helper
+        run: flutter pub get
 
       - name: Run tests
-        run: cd ./applications/rpg_table_helper && flutter test
+        working-directory: ./applications/rpg_table_helper
+        run: flutter test
