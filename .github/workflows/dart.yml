@@ -41,9 +41,15 @@ jobs:
           version: 3.24.0
 
       - name: Prepare Flutter workspace
-        working-directory: ./applications/rpg_table_helper
+        shell: bash
         run: |
-          mkdir -p build || true
+          set -euxo pipefail
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          ls -la "$GITHUB_WORKSPACE"
+          ls -la "$GITHUB_WORKSPACE/applications"
+          ls -la "$GITHUB_WORKSPACE/applications/rpg_table_helper"
+          mkdir -p "$GITHUB_WORKSPACE/applications/rpg_table_helper/build"
+          ls -ld "$GITHUB_WORKSPACE/applications/rpg_table_helper/build"
 
       - name: Install dependencies
         working-directory: ./applications/rpg_table_helper
