@@ -18,11 +18,11 @@ import 'package:signalr_netcore/signalr_client.dart';
 /// `--dart-define=E2E_ROLE=...` is still passed as a fallback.
 /// (see scripts/run_flutter_multi_sim_e2e.sh).
 ///
-/// **One** [testWidgets] run. Do **not** call `POST /e2e/multi-client/reset` from each
-/// parallel runner: if player B resets after DM posted `dm-game-registered`, the
-/// coordinator clears and players wait forever on `dmGameRegistered` while DM waits on
-/// `playersReaddedCount`. Use the shell script (it resets once before Flutter) or
-/// `curl -X POST …/e2e/multi-client/reset` once manually before starting all three.
+/// **One** [testWidgets] run. Do **not** call `POST /e2e/multi-client/reset` ad hoc mid
+/// scenario: if one runner resets while others are still in phase 1, barriers break.
+/// The shell script resets once before Flutter (or `curl …/reset` once manually).
+/// Phase 2 uses `POST …/sync/phase1-ready` + poll until `phase1ReadyCount >= 3`, then
+/// each runner calls `reset` before reconnect — safe across three parallel simulators.
 ///
 /// Never call [WidgetTester.pump] from [HubConnection] handlers — only from the test
 /// body — or `LiveTestWidgetsFlutterBinding` fails in `postTest`.
@@ -51,8 +51,13 @@ String _jsonObjectWithMinimumLength(int minChars) {
 }
 
 Future<void> _postEmpty(String apiBase, String relativePath) async {
-  final r = await http.post(Uri.parse('$apiBase$relativePath'));
-  expect(r.statusCode, 200, reason: r.body);
+  final uri = Uri.parse('$apiBase$relativePath');
+  final r = await http.post(uri);
+  expect(
+    r.statusCode,
+    200,
+    reason: '$uri → ${r.statusCode} ${r.body}',
+  );
 }
 
 Future<Map<String, dynamic>> _getSync(String apiBase) async {
@@ -152,6 +157,38 @@ Future<void> _waitForTwoPlayersReaddedWithUi(
   fail('Timeout waiting for playersReaddedCount >= 2');
 }
 
+Future<void> _waitForPhase1BarrierWithUi(
+  String apiBase,
+  WidgetTester tester,
+  ValueNotifier<String> log,
+) async {
+  await _e2eAppend(
+    tester,
+    log,
+    'Barrier: phase1ReadyCount >= 3 (all roles finished phase 1)…',
+  );
+  final until = DateTime.now().add(_barrierTimeout);
+  var lastUi = DateTime.now();
+  while (DateTime.now().isBefore(until)) {
+    final j = await _getSync(apiBase);
+    final n = j['phase1ReadyCount'];
+    if (n is int && n >= 3) {
+      await _e2eAppend(tester, log, 'Barrier OK: phase1ReadyCount=$n ✓');
+      return;
+    }
+    if (DateTime.now().difference(lastUi) > const Duration(seconds: 5)) {
+      lastUi = DateTime.now();
+      await _e2eAppend(
+        tester,
+        log,
+        '…still waiting (phase1ReadyCount=${n is int ? n : '?'})',
+      );
+    }
+    await Future<void>.delayed(_poll);
+  }
+  fail('Timeout waiting for phase1ReadyCount >= 3');
+}
+
 /// On-screen log so each simulator shows progress (identify hangs vs slow barrier).
 Future<void> _pumpE2eDashboard(
   WidgetTester tester,
@@ -237,7 +274,7 @@ void main() {
   final skipUnlessRole = role.isEmpty;
 
   testWidgets(
-    'Multi-client: full SignalR scenario — ping, campagne config, character→DM, pong, empty ping (MessagePack)',
+    'Multi-client: ping, config, character→DM, pong, empty ping; phase1 barrier + reconnect + ping (MessagePack)',
     (tester) async {
       expect(
         const String.fromEnvironment('API_BASE_URL', defaultValue: ''),
@@ -256,6 +293,7 @@ void main() {
       );
 
       const pingPayload1 = 'multi-sim-ping-1';
+      const reconnectPingPayload = 'multi-sim-reconnect-ping';
       final expectedConfig = '${_jsonObjectWithMinimumLength(6000)}üñ🎲';
       const payloadP1 = '{"multiE2E":"p1","hp":12}';
       final payloadP2 = _jsonObjectWithMinimumLength(2500);
@@ -367,6 +405,32 @@ void main() {
           args: <Object>[campagneId, ''],
         );
 
+        await _e2eAppend(
+          tester,
+          log,
+          'Phase 1 done — sync before reconnect (phase1-ready + barrier + reset)',
+        );
+        await _postEmpty(apiBase, 'e2e/multi-client/sync/phase1-ready');
+        await _waitForPhase1BarrierWithUi(apiBase, tester, log);
+        await _postEmpty(apiBase, 'e2e/multi-client/sync/reset-phase2');
+        await _e2eAppend(tester, log, 'Disconnect hub (before Phase 2 reconnect)');
+        await hub.stop();
+
+        await _e2eAppend(
+          tester,
+          log,
+          'Phase 2: reconnect — RegisterGame, barrier, SendPingToPlayers',
+        );
+        await hub.start();
+        expect(hub.state, HubConnectionState.Connected);
+        await hub.invoke('RegisterGame', args: <Object>[campagneId]);
+        await _postEmpty(apiBase, 'e2e/multi-client/sync/dm-game-registered');
+        await _waitForTwoPlayersReaddedWithUi(apiBase, tester, log);
+        await hub.invoke(
+          'SendPingToPlayers',
+          args: <Object>[campagneId, reconnectPingPayload],
+        );
+
         await _e2eAppend(tester, log, 'All DM steps OK — stop hub');
         await hub.stop();
         await _e2eAppend(tester, log, 'DONE ✓');
@@ -383,6 +447,7 @@ void main() {
 
       final ping1Done = Completer<String>();
       final pingEmptyDone = Completer<String>();
+      final reconnectPingDone = Completer<String>();
       final gotConfig = Completer<String>();
 
       final hub = _buildHub(jwt);
@@ -397,6 +462,9 @@ void main() {
         } else if (s.isEmpty && !pingEmptyDone.isCompleted) {
           pingEmptyDone.complete(s);
           _e2eLogLine(log, 'Received empty ping');
+        } else if (s == reconnectPingPayload && !reconnectPingDone.isCompleted) {
+          reconnectPingDone.complete(s);
+          _e2eLogLine(log, 'Received reconnect ping');
         }
       });
       hub.on('updateRpgConfig', (List<Object?>? args) {
@@ -456,6 +524,39 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 16));
       expect(tsEmpty, '');
+
+      await _e2eAppend(
+        tester,
+        log,
+        'Phase 1 done — sync before reconnect (phase1-ready + barrier + reset)',
+      );
+      await _postEmpty(apiBase, 'e2e/multi-client/sync/phase1-ready');
+      await _waitForPhase1BarrierWithUi(apiBase, tester, log);
+      await _postEmpty(apiBase, 'e2e/multi-client/sync/reset-phase2');
+      await _e2eAppend(tester, log, 'Disconnect hub (before Phase 2 reconnect)');
+      await hub.stop();
+
+      await _e2eAppend(tester, log, 'Phase 2: reconnect — wait for DM RegisterGame');
+      await _waitForDmRegisteredWithUi(apiBase, tester, log);
+      await hub.start();
+      expect(hub.state, HubConnectionState.Connected);
+      await hub.invoke(
+        'ReaddToSignalRGroups',
+        args: <Object>['NULL', characterId],
+      );
+      await _postEmpty(apiBase, 'e2e/multi-client/sync/player-readded');
+      await _e2eAppend(
+        tester,
+        log,
+        'Phase 2: ReaddToSignalRGroups + player-readded posted',
+      );
+
+      final tsReconnect = await reconnectPingDone.future.timeout(
+        _pingTimeout,
+        onTimeout: () => '',
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(tsReconnect, reconnectPingPayload);
 
       await _e2eAppend(tester, log, 'All player steps OK — stop hub');
       await hub.stop();

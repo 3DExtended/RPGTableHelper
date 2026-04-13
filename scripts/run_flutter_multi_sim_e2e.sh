@@ -42,6 +42,22 @@ log_ts() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
 }
 
+free_port_if_needed() {
+  local port="${1:?port}"
+  if ! command -v lsof >/dev/null 2>&1; then
+    return 0
+  fi
+  local pids=""
+  pids="$(lsof -ti "tcp:${port}" 2>/dev/null || true)"
+  if [[ -z "${pids}" ]]; then
+    return 0
+  fi
+  log_ts "Port ${port} already in use; killing listener PID(s): ${pids}"
+  # Kill (best effort). This is a local-dev script; lingering dotnet hosts are a common cause of false 404s.
+  kill ${pids} 2>/dev/null || true
+  sleep 1
+}
+
 section() {
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -204,13 +220,15 @@ if [[ "${MULTI_SIM_API_LOG_TO_STDOUT}" == "1" ]]; then
 else
   echo "API process: stdout/stderr → ${MULTI_LOG_DIR}/api.log (set MULTI_SIM_API_LOG_TO_STDOUT=1 to stream here)."
 fi
+# Ensure we don't accidentally talk to an older server instance.
+free_port_if_needed "${PORT}"
+# Do not use dotnet run --no-build: the API must pick up E2E controller changes or new routes return 404.
 pushd "${WEBAPI_DIR}" > /dev/null
 if [[ "${MULTI_SIM_API_LOG_TO_STDOUT}" == "1" ]]; then
   env ASPNETCORE_ENVIRONMENT=LocalSignalRE2E \
     ASPNETCORE_URLS="http://127.0.0.1:${PORT}" \
     dotnet run \
     --project "$(basename "${WEBAPI_PROJ}")" \
-    --no-build \
     --no-launch-profile \
     --environment LocalSignalRE2E \
     &
@@ -219,7 +237,6 @@ else
     ASPNETCORE_URLS="http://127.0.0.1:${PORT}" \
     dotnet run \
     --project "$(basename "${WEBAPI_PROJ}")" \
-    --no-build \
     --no-launch-profile \
     --environment LocalSignalRE2E \
     > "${MULTI_LOG_DIR}/api.log" 2>&1 &

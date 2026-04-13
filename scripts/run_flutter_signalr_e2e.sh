@@ -15,6 +15,21 @@ SIMULATOR_WAIT_SEC="${SIMULATOR_WAIT_SEC:-120}"
 
 # LocalSignalRE2E: local maindb2.db + migrations + dev Jwt fallback (see Startup.cs). E2ETest is reserved for xUnit WebApplicationFactory.
 
+free_port_if_needed() {
+  local port="${1:?port}"
+  if ! command -v lsof >/dev/null 2>&1; then
+    return 0
+  fi
+  local pids=""
+  pids="$(lsof -ti "tcp:${port}" 2>/dev/null || true)"
+  if [[ -z "${pids}" ]]; then
+    return 0
+  fi
+  echo "Port ${port} already in use; killing listener PID(s): ${pids}"
+  kill ${pids} 2>/dev/null || true
+  sleep 1
+}
+
 # Boot an iPad Simulator and set IOS_DEVICE so Flutter does not pick a wireless physical device or iPhone (not fully supported for this app).
 ensure_ios_simulator() {
   if [[ -n "${IOS_DEVICE:-}" ]]; then
@@ -128,12 +143,13 @@ echo "  SQLite: ${WEBAPI_DIR}/maindb2.db"
 # Run from WebApi directory so SQLite path maindb2.db resolves next to the project.
 # --no-launch-profile: do NOT use launchSettings.json (it forces Development + wrong URLs).
 # --environment: belt-and-suspenders so the hosting environment is never wrong.
+# Do not pass --no-build: dotnet run must compile E2E controller changes or new routes 404.
+free_port_if_needed "${PORT}"
 pushd "${WEBAPI_DIR}" > /dev/null
 env ASPNETCORE_ENVIRONMENT=LocalSignalRE2E \
   ASPNETCORE_URLS="http://127.0.0.1:${PORT}" \
   dotnet run \
   --project "$(basename "${WEBAPI_PROJ}")" \
-  --no-build \
   --no-launch-profile \
   --environment LocalSignalRE2E \
   &
@@ -181,9 +197,10 @@ cd "${FLUTTER_DIR}"
 
 ensure_ios_simulator
 
-# Single-file run: do not glob `integration_test/` (multi-sim tests need E2E_ROLE).
+# Do not glob `integration_test/` (multi-sim tests need E2E_ROLE).
+# Echo smoke first, then reconnect + hub-invoke-queue E2E (same API / simulator).
 FLUTTER_TEST_ARGS=(
-  test integration_test/signalr_e2e_test.dart
+  test integration_test/signalr_e2e_test.dart integration_test/signalr_reconnect_and_queue_e2e_test.dart
   --dart-define=API_BASE_URL="${API_URL}"
   --timeout="${FLUTTER_TEST_TIMEOUT}"
 )

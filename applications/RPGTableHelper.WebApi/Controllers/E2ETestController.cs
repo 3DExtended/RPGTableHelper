@@ -101,8 +101,39 @@ public class E2ETestController : ControllerBase
             {
                 dmGameRegistered = E2EMultiClientCoordinator.DmGameRegistered,
                 playersReaddedCount = E2EMultiClientCoordinator.PlayersReaddedCount,
+                phase1ReadyCount = E2EMultiClientCoordinator.Phase1ReadyCount,
             }
         );
+    }
+
+    [HttpPost("multi-client/sync/phase1-ready")]
+    [AllowAnonymous]
+    public IActionResult PostPhase1Ready()
+    {
+        if (!_env.IsEnvironment("E2ETest") && !_env.IsEnvironment("LocalSignalRE2E"))
+        {
+            return NotFound();
+        }
+
+        E2EMultiClientCoordinator.MarkPhase1Ready();
+        return Ok();
+    }
+
+    /// <summary>
+    /// Clears only the phase 2 barrier counters. Safe to call from all three parallel runners after they
+    /// passed the phase 1 barrier, because it does not reset <c>phase1ReadyCount</c>.
+    /// </summary>
+    [HttpPost("multi-client/sync/reset-phase2")]
+    [AllowAnonymous]
+    public IActionResult ResetMultiClientPhase2Barriers()
+    {
+        if (!_env.IsEnvironment("E2ETest") && !_env.IsEnvironment("LocalSignalRE2E"))
+        {
+            return NotFound();
+        }
+
+        E2EMultiClientCoordinator.ResetPhase2Barriers();
+        return Ok();
     }
 
     [HttpPost("multi-client/sync/dm-game-registered")]
