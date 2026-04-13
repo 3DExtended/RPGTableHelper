@@ -43,7 +43,7 @@ jobs:
       - name: Prepare Flutter workspace
         working-directory: ./applications/rpg_table_helper
         run: |
-          mkdir -p build
+          mkdir -p build || true
 
       - name: Install dependencies
         working-directory: ./applications/rpg_table_helper
