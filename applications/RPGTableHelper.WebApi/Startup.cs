@@ -379,7 +379,46 @@ public class Startup
             {
                 Console.WriteLine("No pending migrations found.");
             }
+
+            BackfillRpgConfigColdHot(dbContext);
         }
+    }
+
+    private static void BackfillRpgConfigColdHot(RpgDbContext dbContext)
+    {
+        // One-time-ish migration for legacy rows: keep it idempotent and cheap.
+        // We do this here (instead of SQL) because we need to parse/reshape JSON.
+        var legacyCampagnes = dbContext.Campagnes
+            .Where(c =>
+                c.RpgConfiguration != null
+                && (c.RpgConfigurationCold == null
+                    || c.RpgConfigurationHot == null
+                    || c.RpgConfigurationSchemaVersion == null))
+            .ToList();
+
+        if (legacyCampagnes.Count == 0)
+        {
+            return;
+        }
+
+        Console.WriteLine($"Backfilling cold/hot RPG config slices for {legacyCampagnes.Count} campagnes...");
+        foreach (var c in legacyCampagnes)
+        {
+            try
+            {
+                var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(c.RpgConfiguration!);
+                c.RpgConfigurationCold = slices.ColdJson;
+                c.RpgConfigurationHot = slices.HotJson;
+                c.RpgConfigurationSchemaVersion = slices.SchemaVersion;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Backfill failed for campagne {c.Id}: {ex.Message}");
+            }
+        }
+
+        dbContext.SaveChanges();
+        Console.WriteLine("Backfill completed.");
     }
 
     private void AddServiceOptions(IServiceCollection services)

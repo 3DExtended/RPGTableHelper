@@ -65,6 +65,16 @@ abstract class IServerMethodsService {
       functionName: "updateRpgConfig",
     );
 
+    serverCommunicationService.registerCallbackSingleString(
+      function: updateRpgConfigCold,
+      functionName: "updateRpgConfigCold",
+    );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: updateRpgConfigHot,
+      functionName: "updateRpgConfigHot",
+    );
+
     serverCommunicationService.registerCallbackThreeStrings(
       function: updateRpgCharacterConfigOnDmSide,
       functionName: "updateRpgCharacterConfigOnDmSide",
@@ -103,6 +113,8 @@ abstract class IServerMethodsService {
       String playerCharacterId, String campagneJoinRequestId);
   void joinRequestAccepted();
   void updateRpgConfig(String parameter);
+  void updateRpgConfigCold(String parameter);
+  void updateRpgConfigHot(String parameter);
   void updateRpgCharacterConfigOnDmSide(
       String config, String playerId, String userId);
   void grantPlayerItems(String grantedItemsJson);
@@ -152,6 +164,131 @@ class ServerMethodsService extends IServerMethodsService {
 
   /// Brief SignalR reconnects should not drop the player from the DM list immediately.
   final Map<String, Timer> _pendingDisconnectByUserId = {};
+
+  String? _latestRpgConfigColdJson;
+  String? _latestRpgConfigHotJson;
+
+  // Debounce outgoing config sync to prevent spamming SignalR on rapid provider updates.
+  static const Duration _outgoingConfigDebounce = Duration(milliseconds: 800);
+  final Map<String, Timer> _pendingCampagneConfigSendTimers = {};
+  final Map<String, String> _pendingCampagneColdJsonById = {};
+  final Map<String, String> _pendingCampagneHotJsonById = {};
+  final Map<String, int> _lastSentCampagneColdHashById = {};
+  final Map<String, int> _lastSentCampagneHotHashById = {};
+
+  final Map<String, Timer> _pendingCharacterConfigSendTimers = {};
+  final Map<String, String> _pendingCharacterJsonById = {};
+  final Map<String, int> _lastSentCharacterHashById = {};
+
+  static const Set<String> _rpgConfigColdKeys = {
+    "allItems",
+    "placesOfFindings",
+    "itemCategories",
+    "characterStatTabsDefinition",
+    "craftingRecipes",
+    "currencyDefinition",
+  };
+
+  void _applyRpgConfigFromSlicesIfPossible() {
+    if (_latestRpgConfigColdJson == null || _latestRpgConfigHotJson == null) {
+      return;
+    }
+
+    try {
+      final coldMap =
+          (jsonDecode(_latestRpgConfigColdJson!) as Map).cast<String, dynamic>();
+      final hotMap =
+          (jsonDecode(_latestRpgConfigHotJson!) as Map).cast<String, dynamic>();
+
+      // Hot overwrites cold on conflict.
+      final merged = <String, dynamic>{...coldMap, ...hotMap};
+
+      final receivedConfig = RpgConfigurationModel.fromJson(merged);
+      serverCommunicationService.updateRpgConfiguration(receivedConfig);
+    } catch (e, st) {
+      if (kDebugMode == true) {
+        log("Failed to merge rpg config slices: $e", stackTrace: st);
+      }
+    }
+  }
+
+  Future<void> _flushCampagneConfigIfPending(String campagneId) async {
+    final coldJson = _pendingCampagneColdJsonById[campagneId];
+    final hotJson = _pendingCampagneHotJsonById[campagneId];
+
+    if (coldJson == null || hotJson == null) {
+      return;
+    }
+
+    final coldHash = coldJson.hashCode;
+    final hotHash = hotJson.hashCode;
+
+    final lastColdHash = _lastSentCampagneColdHashById[campagneId];
+    final lastHotHash = _lastSentCampagneHotHashById[campagneId];
+
+    // Skip sending unchanged payloads.
+    if (lastColdHash == coldHash && lastHotHash == hotHash) {
+      return;
+    }
+
+    // Send cold first (big) then hot (small), server recombines for legacy clients.
+    if (lastColdHash != coldHash) {
+      await serverCommunicationService.executeCriticalServerFunction(
+          "SendUpdatedRpgConfigCold",
+          args: [campagneId, coldJson]);
+      _lastSentCampagneColdHashById[campagneId] = coldHash;
+    }
+
+    if (lastHotHash != hotHash) {
+      await serverCommunicationService.executeCriticalServerFunction(
+          "SendUpdatedRpgConfigHot",
+          args: [campagneId, hotJson]);
+      _lastSentCampagneHotHashById[campagneId] = hotHash;
+    }
+  }
+
+  void _debounceCampagneConfigSend({
+    required String campagneId,
+    required String coldJson,
+    required String hotJson,
+  }) {
+    _pendingCampagneColdJsonById[campagneId] = coldJson;
+    _pendingCampagneHotJsonById[campagneId] = hotJson;
+
+    _pendingCampagneConfigSendTimers[campagneId]?.cancel();
+    _pendingCampagneConfigSendTimers[campagneId] = Timer(
+      _outgoingConfigDebounce,
+      () => _flushCampagneConfigIfPending(campagneId),
+    );
+  }
+
+  Future<void> _flushCharacterConfigIfPending(String playerCharacterId) async {
+    final json = _pendingCharacterJsonById[playerCharacterId];
+    if (json == null) return;
+
+    final hash = json.hashCode;
+    final lastHash = _lastSentCharacterHashById[playerCharacterId];
+    if (lastHash == hash) {
+      return;
+    }
+
+    await serverCommunicationService.executeCriticalServerFunction(
+        "SendUpdatedRpgCharacterConfigToDm",
+        args: [playerCharacterId, json]);
+    _lastSentCharacterHashById[playerCharacterId] = hash;
+  }
+
+  void _debounceCharacterConfigSend({
+    required String playerCharacterId,
+    required String json,
+  }) {
+    _pendingCharacterJsonById[playerCharacterId] = json;
+    _pendingCharacterConfigSendTimers[playerCharacterId]?.cancel();
+    _pendingCharacterConfigSendTimers[playerCharacterId] = Timer(
+      _outgoingConfigDebounce,
+      () => _flushCharacterConfigIfPending(playerCharacterId),
+    );
+  }
 
   void _cancelPendingDisconnect(String userId) {
     _pendingDisconnectByUserId[userId]?.cancel();
@@ -254,17 +391,62 @@ class ServerMethodsService extends IServerMethodsService {
 
     var receivedConfig = RpgConfigurationModel.fromJson(map);
     serverCommunicationService.updateRpgConfiguration(receivedConfig);
+
+    // Keep slice cache in sync for follow-up hot/cold updates in the same session.
+    final full = receivedConfig.toJson();
+    final cold = <String, dynamic>{};
+    final hot = <String, dynamic>{};
+    for (final entry in full.entries) {
+      if (_rpgConfigColdKeys.contains(entry.key)) {
+        cold[entry.key] = entry.value;
+      } else {
+        hot[entry.key] = entry.value;
+      }
+    }
+    _latestRpgConfigColdJson = jsonEncode(cold);
+    _latestRpgConfigHotJson = jsonEncode(hot);
+  }
+
+  @override
+  void updateRpgConfigCold(String parameter) {
+    if (kDebugMode == true) {
+      log("Received rpg config cold slice");
+    }
+    _latestRpgConfigColdJson = parameter;
+    _applyRpgConfigFromSlicesIfPossible();
+  }
+
+  @override
+  void updateRpgConfigHot(String parameter) {
+    if (kDebugMode == true) {
+      log("Received rpg config hot slice");
+    }
+    _latestRpgConfigHotJson = parameter;
+    _applyRpgConfigFromSlicesIfPossible();
   }
 
   @override
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig,
       required String campagneId}) async {
-    var serializedConfig = jsonEncode(rpgConfig);
+    final full = rpgConfig.toJson();
+    final cold = <String, dynamic>{};
+    final hot = <String, dynamic>{};
 
-    await serverCommunicationService.executeCriticalServerFunction(
-        "SendUpdatedRpgConfig",
-        args: [campagneId, serializedConfig]);
+    for (final entry in full.entries) {
+      if (_rpgConfigColdKeys.contains(entry.key)) {
+        cold[entry.key] = entry.value;
+      } else {
+        hot[entry.key] = entry.value;
+      }
+    }
+
+    // v2 protocol: debounce + last-sent equality; server recombines for legacy clients.
+    _debounceCampagneConfigSend(
+      campagneId: campagneId,
+      coldJson: jsonEncode(cold),
+      hotJson: jsonEncode(hot),
+    );
   }
 
   @override
@@ -294,9 +476,10 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
       required String playercharacterid}) async {
-    await serverCommunicationService.executeCriticalServerFunction(
-        "SendUpdatedRpgCharacterConfigToDm",
-        args: [playercharacterid, jsonEncode(charConfig)]);
+    _debounceCharacterConfigSend(
+      playerCharacterId: playercharacterid,
+      json: jsonEncode(charConfig),
+    );
   }
 
   @override

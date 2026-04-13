@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,6 +57,15 @@ class RpgCharacterConfigurationNotifier
   }
 
   void updateConfiguration(RpgCharacterConfiguration config) {
+    if (state.hasValue) {
+      final jsonEncodingOfNewConfig = jsonEncode(config);
+      final jsonEncodingOfState = jsonEncode(state.requireValue);
+
+      if (jsonEncodingOfState == jsonEncodingOfNewConfig) {
+        return;
+      }
+    }
+
     state = AsyncValue.data(config);
   }
 

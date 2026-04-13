@@ -89,10 +89,11 @@ launch_flutter_multi_job() {
   local udid="${2:?udid}"
   local tag="${3:?tag}"
   local logfile="${4:?log}"
+  local testfile="${5:-integration_test/signalr_multi_client_e2e_test.dart}"
   if [[ "${MULTI_SIM_FOLLOW}" == "1" ]]; then
     (
       cd "${FLUTTER_DIR}" && env "E2E_ROLE=${role}" \
-        flutter test integration_test/signalr_multi_client_e2e_test.dart \
+        flutter test "${testfile}" \
         -d "${udid}" \
         --dart-define=API_BASE_URL="${API_URL}" \
         --dart-define="E2E_ROLE=${role}" \
@@ -101,7 +102,7 @@ launch_flutter_multi_job() {
   else
     (
       cd "${FLUTTER_DIR}" && env "E2E_ROLE=${role}" \
-        flutter test integration_test/signalr_multi_client_e2e_test.dart \
+        flutter test "${testfile}" \
         -d "${udid}" \
         --dart-define=API_BASE_URL="${API_URL}" \
         --dart-define="E2E_ROLE=${role}" \
@@ -469,6 +470,57 @@ if [[ "${EC_DM}" -ne 0 || "${EC_P1}" -ne 0 || "${EC_P2}" -ne 0 ]]; then
   tail -n 18 "${MULTI_LOG_DIR}/player1.log" 2>/dev/null | sed 's/^/[p1]    /' || true
   tail -n 18 "${MULTI_LOG_DIR}/player2.log" 2>/dev/null | sed 's/^/[p2]    /' || true
   echo "One or more runs failed. Exit codes: dm=${EC_DM} player1=${EC_P1} player2=${EC_P2}" >&2
+  exit 1
+fi
+
+section "Scenario: Mixed old/new clients (SignalR, signalr_multi_client_mixed_protocol_e2e_test.dart)"
+echo "  Validates mixed protocol v1/v2 in same session:"
+echo "  - player1 (legacy, no RegisterClientProtocol) must receive updateRpgConfig (full)"
+echo "  - player2 (v2) must receive updateRpgConfigCold + updateRpgConfigHot"
+
+section "Reset in-memory multi-client barriers (scenario 2)"
+if ! curl -sf --max-time 15 -X POST "http://127.0.0.1:${PORT}/e2e/multi-client/reset"; then
+  echo "POST /e2e/multi-client/reset failed." >&2
+  exit 1
+fi
+
+section "Step A2 — DM runner (mixed protocol)"
+launch_flutter_multi_job dm "${UDIDS[0]}" dm "${MULTI_LOG_DIR}/dm.mixed.log" "integration_test/signalr_multi_client_mixed_protocol_e2e_test.dart"
+PID_DM="${LAST_FLUTTER_JOB_PID}"
+wait_for_xcode_build_done "${MULTI_LOG_DIR}/dm.mixed.log" "dm-mixed" || exit 1
+
+section "Step B2 — Player 1 runner (mixed protocol)"
+launch_flutter_multi_job player1 "${UDIDS[1]}" p1 "${MULTI_LOG_DIR}/player1.mixed.log" "integration_test/signalr_multi_client_mixed_protocol_e2e_test.dart"
+PID_P1="${LAST_FLUTTER_JOB_PID}"
+wait_for_xcode_build_done "${MULTI_LOG_DIR}/player1.mixed.log" "player1-mixed" || exit 1
+
+section "Step C2 — Player 2 runner (mixed protocol)"
+launch_flutter_multi_job player2 "${UDIDS[2]}" p2 "${MULTI_LOG_DIR}/player2.mixed.log" "integration_test/signalr_multi_client_mixed_protocol_e2e_test.dart"
+PID_P2="${LAST_FLUTTER_JOB_PID}"
+wait_for_xcode_build_done "${MULTI_LOG_DIR}/player2.mixed.log" "player2-mixed" || exit 1
+
+section "Waiting for all three flutter test processes to exit (scenario 2)"
+log_ts "PIDs: dm=${PID_DM} player1=${PID_P1} player2=${PID_P2}"
+
+EC_DM=0
+EC_P1=0
+EC_P2=0
+log_ts "waiting on DM flutter (pid ${PID_DM})…"
+wait "${PID_DM}" || EC_DM=$?
+log_ts "DM flutter finished (exit ${EC_DM}). Waiting player1 (pid ${PID_P1})…"
+wait "${PID_P1}" || EC_P1=$?
+log_ts "Player1 finished (exit ${EC_P1}). Waiting player2 (pid ${PID_P2})…"
+wait "${PID_P2}" || EC_P2=$?
+log_ts "All three flutter processes exited (scenario 2)."
+
+section "Outcome (scenario 2)"
+echo "Process exit codes: dm=${EC_DM} player1=${EC_P1} player2=${EC_P2}"
+summarize_flutter_log "DM" "${MULTI_LOG_DIR}/dm.mixed.log"
+summarize_flutter_log "Player 1" "${MULTI_LOG_DIR}/player1.mixed.log"
+summarize_flutter_log "Player 2" "${MULTI_LOG_DIR}/player2.mixed.log"
+
+if [[ "${EC_DM}" -ne 0 || "${EC_P1}" -ne 0 || "${EC_P2}" -ne 0 ]]; then
+  echo "Scenario 2 failed. See logs in ${MULTI_LOG_DIR}." >&2
   exit 1
 fi
 

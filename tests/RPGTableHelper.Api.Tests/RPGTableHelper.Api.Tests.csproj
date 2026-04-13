@@ -37,6 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\liveBackups\*.json" Link="liveBackups\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference
       Include="..\..\applications\RPGTableHelper.WebApi\RPGTableHelper.WebApi.csproj" />
     <ProjectReference

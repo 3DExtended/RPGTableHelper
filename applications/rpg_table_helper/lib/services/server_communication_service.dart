@@ -199,6 +199,9 @@ class ServerCommunicationService extends IServerCommunicationService {
       var serverMethods =
           DependencyProvider.getIt!.get<IServerMethodsService>();
       await serverMethods.readdToSignalRGroups();
+      // Re-declare client capabilities on every reconnect.
+      await executeServerFunction("RegisterClientProtocol",
+          args: [signalRProtocolVersion], maxInvokeRetries: 1);
       await drainHubInvokeQueue();
 
       widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
@@ -229,6 +232,9 @@ class ServerCommunicationService extends IServerCommunicationService {
     }
 
     var serverMethods = DependencyProvider.getIt!.get<IServerMethodsService>();
+    // Declare supported SignalR protocol features for this connection.
+    await executeServerFunction("RegisterClientProtocol",
+        args: [signalRProtocolVersion], maxInvokeRetries: 1);
     await serverMethods.readdToSignalRGroups();
     await drainHubInvokeQueue();
   }

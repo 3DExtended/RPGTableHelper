@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
@@ -8,12 +9,22 @@ using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.WebApi.Services;
 
 namespace RPGTableHelper.WebApi;
 
 [Authorize] // NOTE this does not work. I am using the IUserContext to ensure authorization!
 public class RpgServerSignalRHub : Hub
 {
+    private sealed record ClientCaps(int protocolVersion);
+
+    // In-memory capabilities registry; old clients never register => treated as protocol v1.
+    private static readonly ConcurrentDictionary<string, ClientCaps> CapsByConnectionId = new();
+
+    // Track group membership ourselves (SignalR doesn't expose group connection lists).
+    private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> ConnectionIdsByGroupKey = new();
+    private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> GroupKeysByConnectionId = new();
+
     private readonly ILogger _logger;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly IQueryProcessor _queryProcessor;
@@ -33,6 +44,18 @@ public class RpgServerSignalRHub : Hub
         _queryProcessor = queryProcessor;
         _logger = logger;
         _hostEnvironment = hostEnvironment;
+    }
+
+    /// <summary>
+    /// New clients call this once per connection to declare supported protocol features.
+    /// Old clients simply won't call it and are treated as v1.
+    /// </summary>
+    public Task RegisterClientProtocol(int protocolVersion)
+    {
+        // Clamp to supported range.
+        var v = protocolVersion < 1 ? 1 : protocolVersion;
+        CapsByConnectionId[Context.ConnectionId] = new ClientCaps(v);
+        return Task.CompletedTask;
     }
 
     public async Task AskPlayersForRolls(string campagneId, string fightSequenceSerialized)
@@ -98,20 +121,47 @@ public class RpgServerSignalRHub : Hub
         );
 
         // ask DM for joining permissions:
+        var allGroupKey = campagneOfCharacter.Get().Id.Value + "_All";
         await Groups.AddToGroupAsync(
             Context.ConnectionId,
-            campagneOfCharacter.Get().Id.Value + "_All",
+            allGroupKey,
             (CancellationToken)default
         );
+        TrackAddToGroup(Context.ConnectionId, allGroupKey);
         await Clients.Caller.SendAsync("joinRequestAccepted", (CancellationToken)default);
 
-        if (campagneOfCharacter.Get().RpgConfiguration != null)
+        var campagneModel = campagneOfCharacter.Get();
+        if (campagneModel.RpgConfiguration != null)
         {
             await Clients.Caller.SendAsync(
                 "updateRpgConfig",
-                campagneOfCharacter.Get().RpgConfiguration,
+                campagneModel.RpgConfiguration,
                 (CancellationToken)default
             );
+        }
+
+        // Protocol v2+: send cold/hot slices (client merges locally).
+        if (GetClientProtocolVersion() >= 2)
+        {
+            var cold = campagneModel.RpgConfigurationCold;
+            var hot = campagneModel.RpgConfigurationHot;
+            if (string.IsNullOrWhiteSpace(cold) && string.IsNullOrWhiteSpace(hot) && campagneModel.RpgConfiguration != null)
+            {
+                // Legacy row not yet migrated: derive slices on the fly for this join.
+                var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(campagneModel.RpgConfiguration);
+                cold = slices.ColdJson;
+                hot = slices.HotJson;
+            }
+
+            if (!string.IsNullOrWhiteSpace(cold))
+            {
+                await Clients.Caller.SendAsync("updateRpgConfigCold", cold, (CancellationToken)default);
+            }
+
+            if (!string.IsNullOrWhiteSpace(hot))
+            {
+                await Clients.Caller.SendAsync("updateRpgConfigHot", hot, (CancellationToken)default);
+            }
         }
     }
 
@@ -188,6 +238,8 @@ public class RpgServerSignalRHub : Hub
             );
         }
 
+        CapsByConnectionId.TryRemove(Context.ConnectionId, out _);
+        TrackRemoveConnection(Context.ConnectionId);
         await Clients.Group("AllCampagnes_Dms").SendAsync("clientDisconnected", userId);
 
         await base.OnDisconnectedAsync(exception);
@@ -262,21 +314,26 @@ public class RpgServerSignalRHub : Hub
 
         if (campagneIdParsed != null)
         {
+            var allGroupKey = campagneIdParsed.Value + "_All";
             await Groups.AddToGroupAsync(
                 Context.ConnectionId,
-                campagneIdParsed.Value + "_All",
+                allGroupKey,
                 (CancellationToken)default
             );
+            TrackAddToGroup(Context.ConnectionId, allGroupKey);
 
             if (isDm)
             {
+                var dmsGroupKey = campagneIdParsed.Value + "_Dms";
                 await Groups.AddToGroupAsync(
                     Context.ConnectionId,
-                    campagneIdParsed.Value + "_Dms",
+                    dmsGroupKey,
                     (CancellationToken)default
                 );
+                TrackAddToGroup(Context.ConnectionId, dmsGroupKey);
 
                 await Groups.AddToGroupAsync(Context.ConnectionId, "AllCampagnes_Dms", (CancellationToken)default);
+                TrackAddToGroup(Context.ConnectionId, "AllCampagnes_Dms");
 
                 // in this case we want to request an update from each client...
                 await Clients
@@ -320,8 +377,11 @@ public class RpgServerSignalRHub : Hub
         _logger.LogInformation("New game initiated for campagne: " + campagneId);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_All", (CancellationToken)default);
+        TrackAddToGroup(Context.ConnectionId, campagneId + "_All");
         await Groups.AddToGroupAsync(Context.ConnectionId, campagneId + "_Dms", (CancellationToken)default);
+        TrackAddToGroup(Context.ConnectionId, campagneId + "_Dms");
         await Groups.AddToGroupAsync(Context.ConnectionId, "AllCampagnes_Dms", (CancellationToken)default);
+        TrackAddToGroup(Context.ConnectionId, "AllCampagnes_Dms");
 
         await Clients.Caller.SendAsync("registerGameResponse", campagne.Get().JoinCode, (CancellationToken)default);
 
@@ -421,6 +481,13 @@ public class RpgServerSignalRHub : Hub
         }
 
         var updatedPlayerCharacter = playerCharacter.Get();
+
+        // Server-side dedupe: skip DB + broadcast if nothing changed.
+        if (updatedPlayerCharacter.RpgCharacterConfiguration == characterConfig)
+        {
+            return;
+        }
+
         updatedPlayerCharacter.RpgCharacterConfiguration = characterConfig;
         var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updatedPlayerCharacter }
             .RunAsync(_queryProcessor, default)
@@ -490,7 +557,20 @@ public class RpgServerSignalRHub : Hub
         }
 
         var updateCampagne = campagne.Get();
+
+        // Server-side dedupe: skip DB + broadcast if nothing changed.
+        if (updateCampagne.RpgConfiguration == rpgConfig)
+        {
+            return;
+        }
+
         updateCampagne.RpgConfiguration = rpgConfig;
+
+        // Keep cold/hot columns in sync even for legacy clients.
+        var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(rpgConfig);
+        updateCampagne.RpgConfigurationCold = slices.ColdJson;
+        updateCampagne.RpgConfigurationHot = slices.HotJson;
+        updateCampagne.RpgConfigurationSchemaVersion = slices.SchemaVersion;
 
         var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
             .RunAsync(_queryProcessor, default)
@@ -501,9 +581,26 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
-        await Clients
-            .OthersInGroup(campagneId + "_All")
-            .SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
+        // Broadcast legacy full config to protocol v1 clients.
+        // IMPORTANT: exclude the sender connection to preserve legacy OthersInGroup semantics
+        // (the DM should not receive their own update).
+        var allConnectionIds = GetTrackedConnectionsForGroup(campagneId + "_All")
+            .Where(id => id != Context.ConnectionId)
+            .ToList();
+        var v2ConnectionIds = FilterConnectionIdsByProtocol(allConnectionIds, minProtocolVersion: 2);
+        var v1ConnectionIds = allConnectionIds.Except(v2ConnectionIds).ToList();
+
+        if (v1ConnectionIds.Count > 0)
+        {
+            await Clients.Clients(v1ConnectionIds).SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
+        }
+
+        // Broadcast slices to protocol v2+ clients.
+        if (v2ConnectionIds.Count > 0)
+        {
+            await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigCold", slices.ColdJson, (CancellationToken)default);
+            await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigHot", slices.HotJson, (CancellationToken)default);
+        }
 
         // File backup only outside local/E2E test hosts (avoids /app/database and keeps tests deterministic).
         if (_hostEnvironment.IsEnvironment("E2ETest") || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
@@ -534,5 +631,196 @@ public class RpgServerSignalRHub : Hub
         {
             _logger.LogInformation($"An error occurred: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Protocol v2+ DM method: update cold slice only (big/rarely changing).
+    /// Server recombines and also serves protocol v1 clients.
+    /// </summary>
+    public async Task SendUpdatedRpgConfigCold(string campagneId, string rpgConfigCold)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            return;
+        }
+
+        var updateCampagne = campagne.Get();
+        if (
+            updateCampagne.RpgConfiguration != null
+            && (updateCampagne.RpgConfigurationCold == null || updateCampagne.RpgConfigurationHot == null)
+        )
+        {
+            var existingSlices = RpgConfigColdHotSlicer.SliceFromLegacyFull(updateCampagne.RpgConfiguration);
+            updateCampagne.RpgConfigurationCold ??= existingSlices.ColdJson;
+            updateCampagne.RpgConfigurationHot ??= existingSlices.HotJson;
+            updateCampagne.RpgConfigurationSchemaVersion ??= existingSlices.SchemaVersion;
+        }
+
+        // Server-side dedupe: skip DB + broadcast if nothing changed.
+        if (updateCampagne.RpgConfigurationCold == rpgConfigCold)
+        {
+            return;
+        }
+
+        updateCampagne.RpgConfigurationCold = rpgConfigCold;
+        updateCampagne.RpgConfigurationSchemaVersion = RpgConfigColdHotSlicer.SchemaVersion;
+        updateCampagne.RpgConfiguration = RpgConfigColdHotSlicer.MergeToLegacyFull(
+            updateCampagne.RpgConfigurationCold,
+            updateCampagne.RpgConfigurationHot
+        );
+
+        var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (updateResult.IsNone)
+        {
+            return;
+        }
+
+        var allConnectionIds = GetTrackedConnectionsForGroup(campagneId + "_All").ToList();
+        var v2ConnectionIds = FilterConnectionIdsByProtocol(allConnectionIds, minProtocolVersion: 2);
+        var v1ConnectionIds = allConnectionIds.Except(v2ConnectionIds).ToList();
+
+        if (v2ConnectionIds.Count > 0)
+        {
+            await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigCold", rpgConfigCold, (CancellationToken)default);
+        }
+
+        if (v1ConnectionIds.Count > 0)
+        {
+            await Clients.Clients(v1ConnectionIds)
+                .SendAsync("updateRpgConfig", updateCampagne.RpgConfiguration, (CancellationToken)default);
+        }
+    }
+
+    /// <summary>
+    /// Protocol v2+ DM method: update hot slice only (small/frequently changing).
+    /// Server recombines and also serves protocol v1 clients.
+    /// </summary>
+    public async Task SendUpdatedRpgConfigHot(string campagneId, string rpgConfigHot)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            return;
+        }
+
+        var updateCampagne = campagne.Get();
+        if (
+            updateCampagne.RpgConfiguration != null
+            && (updateCampagne.RpgConfigurationCold == null || updateCampagne.RpgConfigurationHot == null)
+        )
+        {
+            var existingSlices = RpgConfigColdHotSlicer.SliceFromLegacyFull(updateCampagne.RpgConfiguration);
+            updateCampagne.RpgConfigurationCold ??= existingSlices.ColdJson;
+            updateCampagne.RpgConfigurationHot ??= existingSlices.HotJson;
+            updateCampagne.RpgConfigurationSchemaVersion ??= existingSlices.SchemaVersion;
+        }
+
+        // Server-side dedupe: skip DB + broadcast if nothing changed.
+        if (updateCampagne.RpgConfigurationHot == rpgConfigHot)
+        {
+            return;
+        }
+
+        updateCampagne.RpgConfigurationHot = rpgConfigHot;
+        updateCampagne.RpgConfigurationSchemaVersion = RpgConfigColdHotSlicer.SchemaVersion;
+        updateCampagne.RpgConfiguration = RpgConfigColdHotSlicer.MergeToLegacyFull(
+            updateCampagne.RpgConfigurationCold,
+            updateCampagne.RpgConfigurationHot
+        );
+
+        var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (updateResult.IsNone)
+        {
+            return;
+        }
+
+        var allConnectionIds = GetTrackedConnectionsForGroup(campagneId + "_All").ToList();
+        var v2ConnectionIds = FilterConnectionIdsByProtocol(allConnectionIds, minProtocolVersion: 2);
+        var v1ConnectionIds = allConnectionIds.Except(v2ConnectionIds).ToList();
+
+        if (v2ConnectionIds.Count > 0)
+        {
+            await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigHot", rpgConfigHot, (CancellationToken)default);
+        }
+
+        if (v1ConnectionIds.Count > 0)
+        {
+            await Clients.Clients(v1ConnectionIds)
+                .SendAsync("updateRpgConfig", updateCampagne.RpgConfiguration, (CancellationToken)default);
+        }
+    }
+
+    private static IReadOnlyList<string> FilterConnectionIdsByProtocol(
+        IReadOnlyList<string> connectionIds,
+        int minProtocolVersion
+    )
+    {
+        if (connectionIds.Count == 0)
+        {
+            return Array.Empty<string>();
+        }
+
+        var list = new List<string>(connectionIds.Count);
+        foreach (var id in connectionIds)
+        {
+            if (CapsByConnectionId.TryGetValue(id, out var caps) && caps.protocolVersion >= minProtocolVersion)
+            {
+                list.Add(id);
+            }
+        }
+
+        return list;
+    }
+
+    private static void TrackAddToGroup(string connectionId, string groupKey)
+    {
+        var set = ConnectionIdsByGroupKey.GetOrAdd(groupKey, _ => new ConcurrentDictionary<string, byte>());
+        set[connectionId] = 0;
+
+        var groups = GroupKeysByConnectionId.GetOrAdd(connectionId, _ => new ConcurrentDictionary<string, byte>());
+        groups[groupKey] = 0;
+    }
+
+    private static IReadOnlyList<string> GetTrackedConnectionsForGroup(string groupKey)
+    {
+        return ConnectionIdsByGroupKey.TryGetValue(groupKey, out var set) ? set.Keys.ToList() : Array.Empty<string>();
+    }
+
+    private static void TrackRemoveConnection(string connectionId)
+    {
+        if (!GroupKeysByConnectionId.TryRemove(connectionId, out var groups))
+        {
+            return;
+        }
+
+        foreach (var groupKey in groups.Keys)
+        {
+            if (ConnectionIdsByGroupKey.TryGetValue(groupKey, out var set))
+            {
+                set.TryRemove(connectionId, out _);
+                if (set.IsEmpty)
+                {
+                    ConnectionIdsByGroupKey.TryRemove(groupKey, out _);
+                }
+            }
+        }
+    }
+
+    private int GetClientProtocolVersion()
+    {
+        return CapsByConnectionId.TryGetValue(Context.ConnectionId, out var caps) ? caps.protocolVersion : 1;
     }
 }

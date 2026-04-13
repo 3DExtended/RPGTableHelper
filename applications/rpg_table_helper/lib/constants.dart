@@ -23,6 +23,11 @@ const hubInvokeQueueMaxItems = 20;
 /// Drain queued invokes on this interval while in session and queue non-empty.
 const hubInvokeQueueDrainPeriodicInterval = Duration(seconds: 30);
 
+/// SignalR protocol capabilities version for this app build.
+/// v1 = legacy `updateRpgConfig` full snapshots.
+/// v2 = cold/hot slices via `updateRpgConfigCold` + `updateRpgConfigHot`.
+const signalRProtocolVersion = 2;
+
 bool get isInTestEnvironment =>
     Platform.environment.containsKey('FLUTTER_TEST');
 
