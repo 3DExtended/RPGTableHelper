@@ -44,4 +44,4 @@ jobs:
         run: cd ./applications/rpg_table_helper && flutter pub get
 
       - name: Run tests
-        run: cd ./applications/rpg_table_helper && flutter test --update-goldens
+        run: cd ./applications/rpg_table_helper && flutter test

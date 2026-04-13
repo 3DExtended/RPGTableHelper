@@ -518,6 +518,7 @@ applications/rpg_table_helper/coverage/lcov.info
 **/*-rpgbackup.json
 coveragereport/
 Cobertura.xml
+tools/
 applications/RPGTableHelper.WebApi/maindb1
 applications/RPGTableHelper.WebApi/maindb2.db
 applications/RPGTableHelper.WebApi/userimages/**
