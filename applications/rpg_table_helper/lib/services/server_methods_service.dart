@@ -16,7 +16,9 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:json_patch/json_patch.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
+import 'package:quest_keeper/services/rpg_config_upstream_envelope.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 
 abstract class IServerMethodsService {
@@ -75,9 +77,29 @@ abstract class IServerMethodsService {
       functionName: "updateRpgConfigHot",
     );
 
+    serverCommunicationService.registerCallbackSingleString(
+      function: updateRpgConfigColdV3,
+      functionName: "updateRpgConfigColdV3",
+    );
+
+    serverCommunicationService.registerCallbackSingleString(
+      function: updateRpgConfigHotV3,
+      functionName: "updateRpgConfigHotV3",
+    );
+
     serverCommunicationService.registerCallbackThreeStrings(
       function: updateRpgCharacterConfigOnDmSide,
       functionName: "updateRpgCharacterConfigOnDmSide",
+    );
+
+    serverCommunicationService.registerCallbackThreeStrings(
+      function: updateRpgCharacterConfigOnDmSideV3,
+      functionName: "updateRpgCharacterConfigOnDmSideV3",
+    );
+
+    serverCommunicationService.registerCallbackTwoStrings(
+      function: updateMyRpgCharacterConfigV3,
+      functionName: "updateMyRpgCharacterConfigV3",
     );
 
     serverCommunicationService.registerCallbackSingleString(
@@ -115,8 +137,13 @@ abstract class IServerMethodsService {
   void updateRpgConfig(String parameter);
   void updateRpgConfigCold(String parameter);
   void updateRpgConfigHot(String parameter);
+  void updateRpgConfigColdV3(String envelopeJson);
+  void updateRpgConfigHotV3(String envelopeJson);
   void updateRpgCharacterConfigOnDmSide(
       String config, String playerId, String userId);
+  void updateRpgCharacterConfigOnDmSideV3(
+      String envelopeJson, String playerId, String userId);
+  void updateMyRpgCharacterConfigV3(String envelopeJson, String playerCharacterId);
   void grantPlayerItems(String grantedItemsJson);
   void requestStatusFromPlayers();
   void clientDisconnected(String userId);
@@ -167,6 +194,17 @@ class ServerMethodsService extends IServerMethodsService {
 
   String? _latestRpgConfigColdJson;
   String? _latestRpgConfigHotJson;
+
+  /// Server slice revisions for protocol v3 (JSON Patch); null until first v3 envelope.
+  int? _localColdSliceRevision;
+  int? _localHotSliceRevision;
+
+  /// Per player-character revision for DM-side character config (protocol v3).
+  final Map<String, int> _dmCharacterConfigRevisionByPlayerId = {};
+
+  /// Owning player: server revision + JSON baseline for upstream patches (protocol v3).
+  final Map<String, int> _playerCharacterLocalRevisionByPlayerId = {};
+  final Map<String, String> _latestPlayerCharacterJsonByPlayerId = {};
 
   // Debounce outgoing config sync to prevent spamming SignalR on rapid provider updates.
   static const Duration _outgoingConfigDebounce = Duration(milliseconds: 800);
@@ -231,18 +269,55 @@ class ServerMethodsService extends IServerMethodsService {
       return;
     }
 
+    final coldV3Upstream = signalRProtocolVersion >= 3 &&
+        _localColdSliceRevision != null &&
+        _latestRpgConfigColdJson != null;
+    final hotV3Upstream = signalRProtocolVersion >= 3 &&
+        _localHotSliceRevision != null &&
+        _latestRpgConfigHotJson != null;
+
     // Send cold first (big) then hot (small), server recombines for legacy clients.
     if (lastColdHash != coldHash) {
-      await serverCommunicationService.executeCriticalServerFunction(
+      if (coldV3Upstream) {
+        final coldEnv = buildRpgConfigUpstreamEnvelope(
+          slice: 'cold',
+          previousJson: _latestRpgConfigColdJson,
+          newJson: coldJson,
+          fromRevision: _localColdSliceRevision!,
+          toRevision: _localColdSliceRevision! + 1,
+        );
+        await serverCommunicationService.executeCriticalServerFunction(
+          "SendUpdatedRpgConfigColdV3",
+          args: [campagneId, coldEnv],
+        );
+      } else {
+        await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigCold",
-          args: [campagneId, coldJson]);
+          args: [campagneId, coldJson],
+        );
+      }
       _lastSentCampagneColdHashById[campagneId] = coldHash;
     }
 
     if (lastHotHash != hotHash) {
-      await serverCommunicationService.executeCriticalServerFunction(
+      if (hotV3Upstream) {
+        final hotEnv = buildRpgConfigUpstreamEnvelope(
+          slice: 'hot',
+          previousJson: _latestRpgConfigHotJson,
+          newJson: hotJson,
+          fromRevision: _localHotSliceRevision!,
+          toRevision: _localHotSliceRevision! + 1,
+        );
+        await serverCommunicationService.executeCriticalServerFunction(
+          "SendUpdatedRpgConfigHotV3",
+          args: [campagneId, hotEnv],
+        );
+      } else {
+        await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigHot",
-          args: [campagneId, hotJson]);
+          args: [campagneId, hotJson],
+        );
+      }
       _lastSentCampagneHotHashById[campagneId] = hotHash;
     }
   }
@@ -272,9 +347,27 @@ class ServerMethodsService extends IServerMethodsService {
       return;
     }
 
-    await serverCommunicationService.executeCriticalServerFunction(
-        "SendUpdatedRpgCharacterConfigToDm",
-        args: [playerCharacterId, json]);
+    final rev = _playerCharacterLocalRevisionByPlayerId[playerCharacterId];
+    final prevJson = _latestPlayerCharacterJsonByPlayerId[playerCharacterId];
+    if (signalRProtocolVersion >= 3 && rev != null && prevJson != null) {
+      final env = buildRpgConfigUpstreamEnvelope(
+        slice: 'character',
+        previousJson: prevJson,
+        newJson: json,
+        fromRevision: rev,
+        toRevision: rev + 1,
+      );
+      await serverCommunicationService.executeCriticalServerFunction(
+        "SendUpdatedRpgCharacterConfigToDmV3",
+        args: [playerCharacterId, env],
+      );
+      _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = rev + 1;
+      _latestPlayerCharacterJsonByPlayerId[playerCharacterId] = json;
+    } else {
+      await serverCommunicationService.executeCriticalServerFunction(
+          "SendUpdatedRpgCharacterConfigToDm",
+          args: [playerCharacterId, json]);
+    }
     _lastSentCharacterHashById[playerCharacterId] = hash;
   }
 
@@ -405,6 +498,8 @@ class ServerMethodsService extends IServerMethodsService {
     }
     _latestRpgConfigColdJson = jsonEncode(cold);
     _latestRpgConfigHotJson = jsonEncode(hot);
+    _localColdSliceRevision = null;
+    _localHotSliceRevision = null;
   }
 
   @override
@@ -413,6 +508,7 @@ class ServerMethodsService extends IServerMethodsService {
       log("Received rpg config cold slice");
     }
     _latestRpgConfigColdJson = parameter;
+    _localColdSliceRevision = null;
     _applyRpgConfigFromSlicesIfPossible();
   }
 
@@ -422,7 +518,101 @@ class ServerMethodsService extends IServerMethodsService {
       log("Received rpg config hot slice");
     }
     _latestRpgConfigHotJson = parameter;
+    _localHotSliceRevision = null;
     _applyRpgConfigFromSlicesIfPossible();
+  }
+
+  @override
+  void updateRpgConfigColdV3(String envelopeJson) {
+    if (kDebugMode == true) {
+      log("Received rpg config cold v3 envelope");
+    }
+    _applyRpgConfigSliceEnvelopeV3(isCold: true, envelopeJson: envelopeJson);
+  }
+
+  @override
+  void updateRpgConfigHotV3(String envelopeJson) {
+    if (kDebugMode == true) {
+      log("Received rpg config hot v3 envelope");
+    }
+    _applyRpgConfigSliceEnvelopeV3(isCold: false, envelopeJson: envelopeJson);
+  }
+
+  void _applyRpgConfigSliceEnvelopeV3({
+    required bool isCold,
+    required String envelopeJson,
+  }) {
+    try {
+      final decoded = jsonDecode(envelopeJson);
+      if (decoded is! Map) {
+        return;
+      }
+      final map = Map<String, dynamic>.from(decoded);
+      final kind = map['kind'] as String?;
+      if (kind == 'full') {
+        final rev = map['revision'] as int;
+        final body = map['body'];
+        final encoded = jsonEncode(body);
+        if (isCold) {
+          _latestRpgConfigColdJson = encoded;
+          _localColdSliceRevision = rev;
+        } else {
+          _latestRpgConfigHotJson = encoded;
+          _localHotSliceRevision = rev;
+        }
+        _applyRpgConfigFromSlicesIfPossible();
+        return;
+      }
+
+      if (kind == 'patch') {
+        final fromRev = map['fromRevision'] as int;
+        final toRev = map['toRevision'] as int;
+        final currentRev = isCold ? _localColdSliceRevision : _localHotSliceRevision;
+        if (currentRev != fromRev) {
+          unawaited(_requestRpgConfigSnapshot());
+          return;
+        }
+        final patchRaw = map['patch'];
+        if (patchRaw is! List) {
+          unawaited(_requestRpgConfigSnapshot());
+          return;
+        }
+        final patches = patchRaw
+            .map((e) => Map<String, dynamic>.from(e as Map))
+            .toList();
+        final currentJson =
+            isCold ? _latestRpgConfigColdJson : _latestRpgConfigHotJson;
+        final current = jsonDecode(currentJson ?? '{}');
+        final patched = JsonPatch.apply(current, patches);
+        final encoded = jsonEncode(patched);
+        if (isCold) {
+          _latestRpgConfigColdJson = encoded;
+          _localColdSliceRevision = toRev;
+        } else {
+          _latestRpgConfigHotJson = encoded;
+          _localHotSliceRevision = toRev;
+        }
+        _applyRpgConfigFromSlicesIfPossible();
+      }
+    } catch (e, st) {
+      if (kDebugMode == true) {
+        log("rpg config v3 envelope failed: $e", stackTrace: st);
+      }
+      unawaited(_requestRpgConfigSnapshot());
+    }
+  }
+
+  Future<void> _requestRpgConfigSnapshot() async {
+    final campagneId =
+        widgetRef.read(connectionDetailsProvider).value?.campagneId;
+    if (campagneId == null) {
+      return;
+    }
+    await serverCommunicationService.executeServerFunction(
+      'RequestRpgConfigSnapshot',
+      args: [campagneId],
+      maxInvokeRetries: 2,
+    );
   }
 
   @override
@@ -498,11 +688,165 @@ class ServerMethodsService extends IServerMethodsService {
       log("Received new rpg character config");
     }
 
-    Map<String, dynamic> map = jsonDecode(config);
+    _dmCharacterConfigRevisionByPlayerId.remove(playerId);
+    final map = jsonDecode(config) as Map<String, dynamic>;
+    _upsertDmSidePlayerCharacter(
+      RpgCharacterConfiguration.fromJson(map),
+      playerId,
+      userId,
+    );
+  }
 
-    var receivedConfig = RpgCharacterConfiguration.fromJson(map);
+  @override
+  void updateRpgCharacterConfigOnDmSideV3(
+      String envelopeJson, String playerId, String userId) {
+    if (kDebugMode == true) {
+      log("Received rpg character config v3 envelope");
+    }
+    try {
+      final decoded = jsonDecode(envelopeJson);
+      if (decoded is! Map) {
+        return;
+      }
+      final map = Map<String, dynamic>.from(decoded);
+      final kind = map['kind'] as String?;
+      if (kind == 'full') {
+        final rev = map['revision'] as int;
+        final body = map['body'];
+        if (body is! Map) {
+          unawaited(_requestPlayerCharacterSnapshot(playerId));
+          return;
+        }
+        _dmCharacterConfigRevisionByPlayerId[playerId] = rev;
+        _upsertDmSidePlayerCharacter(
+          RpgCharacterConfiguration.fromJson(
+              Map<String, dynamic>.from(body)),
+          playerId,
+          userId,
+        );
+        return;
+      }
+      if (kind == 'patch') {
+        final fromRev = map['fromRevision'] as int;
+        final toRev = map['toRevision'] as int;
+        final currentRev = _dmCharacterConfigRevisionByPlayerId[playerId];
+        if (currentRev != fromRev) {
+          unawaited(_requestPlayerCharacterSnapshot(playerId));
+          return;
+        }
+        final patchRaw = map['patch'];
+        if (patchRaw is! List) {
+          unawaited(_requestPlayerCharacterSnapshot(playerId));
+          return;
+        }
+        final patches = patchRaw
+            .map((e) => Map<String, dynamic>.from(e as Map))
+            .toList();
+        final currentDetails =
+            widgetRef.read(connectionDetailsProvider).requireValue;
+        final players = currentDetails.connectedPlayers ?? [];
+        final idx =
+            players.indexWhere((p) => p.playerCharacterId.$value! == playerId);
+        if (idx == -1) {
+          unawaited(_requestPlayerCharacterSnapshot(playerId));
+          return;
+        }
+        final currentJson =
+            jsonEncode(players[idx].configuration.toJson());
+        final patched =
+            JsonPatch.apply(jsonDecode(currentJson), patches);
+        if (patched is! Map) {
+          unawaited(_requestPlayerCharacterSnapshot(playerId));
+          return;
+        }
+        _dmCharacterConfigRevisionByPlayerId[playerId] = toRev;
+        _upsertDmSidePlayerCharacter(
+          RpgCharacterConfiguration.fromJson(
+              Map<String, dynamic>.from(patched)),
+          playerId,
+          userId,
+        );
+      }
+    } catch (e, st) {
+      if (kDebugMode == true) {
+        log("character v3 envelope failed: $e", stackTrace: st);
+      }
+      unawaited(_requestPlayerCharacterSnapshot(playerId));
+    }
+  }
 
-    // we should update the connection info with this player data
+  @override
+  void updateMyRpgCharacterConfigV3(
+      String envelopeJson, String playerCharacterId) {
+    final selfId =
+        widgetRef.read(connectionDetailsProvider).value?.playerCharacterId;
+    if (selfId == null || selfId != playerCharacterId) {
+      return;
+    }
+    try {
+      final decoded = jsonDecode(envelopeJson);
+      if (decoded is! Map) {
+        return;
+      }
+      final map = Map<String, dynamic>.from(decoded);
+      final kind = map['kind'] as String?;
+      if (kind == 'full') {
+        final rev = (map['revision'] as num).toInt();
+        final body = map['body'];
+        if (body is! Map) {
+          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
+          return;
+        }
+        _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = rev;
+        _latestPlayerCharacterJsonByPlayerId[playerCharacterId] =
+            jsonEncode(Map<String, dynamic>.from(body));
+        return;
+      }
+      if (kind == 'patch') {
+        final fromRev = (map['fromRevision'] as num).toInt();
+        final toRev = (map['toRevision'] as num).toInt();
+        final currentRev =
+            _playerCharacterLocalRevisionByPlayerId[playerCharacterId];
+        if (currentRev != fromRev) {
+          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
+          return;
+        }
+        final patchRaw = map['patch'];
+        if (patchRaw is! List) {
+          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
+          return;
+        }
+        final patches = patchRaw
+            .map((e) => Map<String, dynamic>.from(e as Map))
+            .toList();
+        final currentJson = _latestPlayerCharacterJsonByPlayerId[playerCharacterId];
+        if (currentJson == null) {
+          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
+          return;
+        }
+        final patched =
+            JsonPatch.apply(jsonDecode(currentJson), patches);
+        if (patched is! Map) {
+          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
+          return;
+        }
+        _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = toRev;
+        _latestPlayerCharacterJsonByPlayerId[playerCharacterId] =
+            jsonEncode(patched);
+      }
+    } catch (e, st) {
+      if (kDebugMode == true) {
+        log("my character v3 envelope failed: $e", stackTrace: st);
+      }
+      unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
+    }
+  }
+
+  void _upsertDmSidePlayerCharacter(
+    RpgCharacterConfiguration receivedConfig,
+    String playerId,
+    String userId,
+  ) {
     var currentConnectionDetails =
         widgetRef.read(connectionDetailsProvider).requireValue;
 
@@ -531,6 +875,14 @@ class ServerMethodsService extends IServerMethodsService {
     widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
         currentConnectionDetails.copyWith(
             connectedPlayers: updatedPlayerProfiles));
+  }
+
+  Future<void> _requestPlayerCharacterSnapshot(String playerCharacterId) async {
+    await serverCommunicationService.executeServerFunction(
+      'RequestPlayerCharacterConfigSnapshot',
+      args: [playerCharacterId],
+      maxInvokeRetries: 2,
+    );
   }
 
   @override

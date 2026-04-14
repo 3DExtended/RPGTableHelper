@@ -26,7 +26,8 @@ const hubInvokeQueueDrainPeriodicInterval = Duration(seconds: 30);
 /// SignalR protocol capabilities version for this app build.
 /// v1 = legacy `updateRpgConfig` full snapshots.
 /// v2 = cold/hot slices via `updateRpgConfigCold` + `updateRpgConfigHot`.
-const signalRProtocolVersion = 2;
+/// v3 = revisioned JSON Patch envelopes via `updateRpgConfigColdV3` + `updateRpgConfigHotV3`.
+const signalRProtocolVersion = 3;
 
 bool get isInTestEnvironment =>
     Platform.environment.containsKey('FLUTTER_TEST');

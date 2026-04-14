@@ -112,6 +112,32 @@ launch_flutter_multi_job() {
   LAST_FLUTTER_JOB_PID=$!
 }
 
+launch_flutter_single_job() {
+  local label="${1:?label}"
+  local udid="${2:?udid}"
+  local tag="${3:?tag}"
+  local logfile="${4:?log}"
+  local testfile="${5:?testfile}"
+  if [[ "${MULTI_SIM_FOLLOW}" == "1" ]]; then
+    (
+      cd "${FLUTTER_DIR}" \
+        && flutter test "${testfile}" \
+          -d "${udid}" \
+          --dart-define=API_BASE_URL="${API_URL}" \
+          --timeout="${FLUTTER_TEST_TIMEOUT}"
+    ) 2>&1 | awk -v p="[${tag}] " '{ print p $0; fflush(); }' | tee "${logfile}" &
+  else
+    (
+      cd "${FLUTTER_DIR}" \
+        && flutter test "${testfile}" \
+          -d "${udid}" \
+          --dart-define=API_BASE_URL="${API_URL}" \
+          --timeout="${FLUTTER_TEST_TIMEOUT}"
+    ) > "${logfile}" 2>&1 &
+  fi
+  LAST_FLUTTER_JOB_PID=$!
+}
+
 ensure_n_ipad_simulators() {
   local n="${1:?count}"
   if ! command -v xcrun >/dev/null 2>&1 || ! command -v python3 >/dev/null 2>&1; then
@@ -474,9 +500,9 @@ if [[ "${EC_DM}" -ne 0 || "${EC_P1}" -ne 0 || "${EC_P2}" -ne 0 ]]; then
 fi
 
 section "Scenario: Mixed old/new clients (SignalR, signalr_multi_client_mixed_protocol_e2e_test.dart)"
-echo "  Validates mixed protocol v1/v2 in same session:"
+echo "  Validates mixed protocol v1/v3 in same session:"
 echo "  - player1 (legacy, no RegisterClientProtocol) must receive updateRpgConfig (full)"
-echo "  - player2 (v2) must receive updateRpgConfigCold + updateRpgConfigHot"
+echo "  - player2 (v3) must receive updateRpgConfigColdV3 + updateRpgConfigHotV3 (full envelopes)"
 
 section "Reset in-memory multi-client barriers (scenario 2)"
 if ! curl -sf --max-time 15 -X POST "http://127.0.0.1:${PORT}/e2e/multi-client/reset"; then
@@ -521,6 +547,34 @@ summarize_flutter_log "Player 2" "${MULTI_LOG_DIR}/player2.mixed.log"
 
 if [[ "${EC_DM}" -ne 0 || "${EC_P1}" -ne 0 || "${EC_P2}" -ne 0 ]]; then
   echo "Scenario 2 failed. See logs in ${MULTI_LOG_DIR}." >&2
+  exit 1
+fi
+
+section "Scenario: Single-device SignalR Echo (signalr_e2e_test.dart)"
+echo "  Quick smoke test: JWT endpoint + Echo hub roundtrip (MessagePack)."
+section "Step S1 — Single runner (Echo)"
+launch_flutter_single_job "echo" "${UDIDS[0]}" "echo" "${MULTI_LOG_DIR}/echo.log" "integration_test/signalr_e2e_test.dart"
+PID_ECHO="${LAST_FLUTTER_JOB_PID}"
+wait_for_xcode_build_done "${MULTI_LOG_DIR}/echo.log" "echo" || exit 1
+EC_ECHO=0
+wait "${PID_ECHO}" || EC_ECHO=$?
+summarize_flutter_log "Echo" "${MULTI_LOG_DIR}/echo.log"
+if [[ "${EC_ECHO}" -ne 0 ]]; then
+  echo "Echo scenario failed. See ${MULTI_LOG_DIR}/echo.log" >&2
+  exit 1
+fi
+
+section "Scenario: Reconnect + HubInvokeQueue drain (signalr_reconnect_and_queue_e2e_test.dart)"
+echo "  Single-process test: player stop/start + readd + ping; then queue drain after reconnect."
+section "Step S2 — Single runner (Reconnect+Queue)"
+launch_flutter_single_job "reconnect-queue" "${UDIDS[1]}" "rq" "${MULTI_LOG_DIR}/reconnect_queue.log" "integration_test/signalr_reconnect_and_queue_e2e_test.dart"
+PID_RQ="${LAST_FLUTTER_JOB_PID}"
+wait_for_xcode_build_done "${MULTI_LOG_DIR}/reconnect_queue.log" "reconnect-queue" || exit 1
+EC_RQ=0
+wait "${PID_RQ}" || EC_RQ=$?
+summarize_flutter_log "Reconnect+Queue" "${MULTI_LOG_DIR}/reconnect_queue.log"
+if [[ "${EC_RQ}" -ne 0 ]]; then
+  echo "Reconnect+Queue scenario failed. See ${MULTI_LOG_DIR}/reconnect_queue.log" >&2
   exit 1
 fi
 

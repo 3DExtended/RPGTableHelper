@@ -21,6 +21,24 @@ void main() {
       expect(q.dequeue()?.args?[1], 'b');
     });
 
+    test('coalesces SendUpdatedRpgConfigCold and SendUpdatedRpgConfigColdV3 per campagneId',
+        () {
+      final q = HubInvokeQueue();
+      q.enqueue('SendUpdatedRpgConfigCold', ['c1', '{}']);
+      q.enqueue('SendUpdatedRpgConfigColdV3', ['c1', '{"kind":"full"}']);
+      expect(q.length, 1);
+      expect(q.dequeue()?.functionName, 'SendUpdatedRpgConfigColdV3');
+    });
+
+    test('coalesces SendUpdatedRpgCharacterConfigToDm and SendUpdatedRpgCharacterConfigToDmV3',
+        () {
+      final q = HubInvokeQueue();
+      q.enqueue('SendUpdatedRpgCharacterConfigToDm', ['p1', 'a']);
+      q.enqueue('SendUpdatedRpgCharacterConfigToDmV3', ['p1', 'b']);
+      expect(q.length, 1);
+      expect(q.dequeue()?.args?[1], 'b');
+    });
+
     test('unshift preserves order for retry', () {
       final q = HubInvokeQueue();
       q.enqueue('AskPlayersForRolls', ['x', 'y']);

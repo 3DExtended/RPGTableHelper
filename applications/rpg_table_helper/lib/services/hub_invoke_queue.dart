@@ -39,13 +39,41 @@ class HubInvokeQueue {
       _items.removeWhere(
         (p) => p.functionName == 'SendUpdatedRpgConfig' && p.args != null && p.args!.isNotEmpty && p.args![0].toString() == campagneId,
       );
-    } else if (functionName == 'SendUpdatedRpgCharacterConfigToDm' &&
+    } else if ((functionName == 'SendUpdatedRpgConfigCold' ||
+            functionName == 'SendUpdatedRpgConfigColdV3') &&
+        args != null &&
+        args.isNotEmpty) {
+      final campagneId = args[0].toString();
+      _items.removeWhere(
+        (p) =>
+            (p.functionName == 'SendUpdatedRpgConfigCold' ||
+                p.functionName == 'SendUpdatedRpgConfigColdV3') &&
+            p.args != null &&
+            p.args!.isNotEmpty &&
+            p.args![0].toString() == campagneId,
+      );
+    } else if ((functionName == 'SendUpdatedRpgConfigHot' ||
+            functionName == 'SendUpdatedRpgConfigHotV3') &&
+        args != null &&
+        args.isNotEmpty) {
+      final campagneId = args[0].toString();
+      _items.removeWhere(
+        (p) =>
+            (p.functionName == 'SendUpdatedRpgConfigHot' ||
+                p.functionName == 'SendUpdatedRpgConfigHotV3') &&
+            p.args != null &&
+            p.args!.isNotEmpty &&
+            p.args![0].toString() == campagneId,
+      );
+    } else if ((functionName == 'SendUpdatedRpgCharacterConfigToDm' ||
+            functionName == 'SendUpdatedRpgCharacterConfigToDmV3') &&
         args != null &&
         args.isNotEmpty) {
       final playerId = args[0].toString();
       _items.removeWhere(
         (p) =>
-            p.functionName == 'SendUpdatedRpgCharacterConfigToDm' &&
+            (p.functionName == 'SendUpdatedRpgCharacterConfigToDm' ||
+                p.functionName == 'SendUpdatedRpgCharacterConfigToDmV3') &&
             p.args != null &&
             p.args!.isNotEmpty &&
             p.args![0].toString() == playerId,

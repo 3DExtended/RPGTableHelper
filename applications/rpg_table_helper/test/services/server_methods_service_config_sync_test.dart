@@ -69,6 +69,11 @@ class _FakeServerCommunicationService extends IServerCommunicationService {
       required String functionName}) {}
 
   @override
+  void registerCallbackTwoStrings(
+      {required void Function(String param1, String param2) function,
+      required String functionName}) {}
+
+  @override
   void registerCallbackSingleDateTime(
       {required void Function(DateTime parameter) function,
       required String functionName}) {}

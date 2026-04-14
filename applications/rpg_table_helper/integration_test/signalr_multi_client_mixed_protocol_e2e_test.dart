@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:integration_test/integration_test.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/services/rpg_config_upstream_envelope.dart';
 import 'package:signalr_netcore/msgpack_hub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
@@ -129,7 +130,7 @@ Future<void> _pumpDashboard(
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Mixed old/new clients: v1 gets full, v2 gets cold+hot', (tester) async {
+  testWidgets('Mixed old/new clients: v1 gets full, v3 gets JSON Patch envelopes', (tester) async {
     final role = _resolveE2eRole();
     expect(role, anyOf('dm', 'player1', 'player2'));
 
@@ -153,6 +154,9 @@ void main() {
     final gotLegacyFull = Completer<String>();
     final gotCold = Completer<String>();
     final gotHot = Completer<String>();
+    final gotLegacyNameV3 = Completer<String>();
+    final gotCold2 = Completer<String>();
+    final gotHot2 = Completer<String>();
 
     if (role == 'player1') {
       hub.on('updateRpgConfig', (args) {
@@ -160,20 +164,38 @@ void main() {
         if (s != null &&
             s.contains('"allItems"') &&
             s.contains('"rpgName"') &&
-            !gotLegacyFull.isCompleted) {
-          gotLegacyFull.complete(s);
+            (!gotLegacyFull.isCompleted || !gotLegacyNameV3.isCompleted)) {
+          if (!gotLegacyFull.isCompleted) {
+            gotLegacyFull.complete(s);
+          }
+          if (s.contains('MixedProtocolGame-v3') &&
+              !gotLegacyNameV3.isCompleted) {
+            gotLegacyNameV3.complete(s);
+          }
         }
       });
     }
 
     if (role == 'player2') {
-      hub.on('updateRpgConfigCold', (args) {
+      hub.on('updateRpgConfigColdV3', (args) {
         final s = args?.first as String?;
-        if (s != null && !gotCold.isCompleted) gotCold.complete(s);
+        if (s != null && (!gotCold.isCompleted || !gotCold2.isCompleted)) {
+          if (!gotCold.isCompleted) {
+            gotCold.complete(s);
+          } else if (!gotCold2.isCompleted) {
+            gotCold2.complete(s);
+          }
+        }
       });
-      hub.on('updateRpgConfigHot', (args) {
+      hub.on('updateRpgConfigHotV3', (args) {
         final s = args?.first as String?;
-        if (s != null && !gotHot.isCompleted) gotHot.complete(s);
+        if (s != null && (!gotHot.isCompleted || !gotHot2.isCompleted)) {
+          if (!gotHot.isCompleted) {
+            gotHot.complete(s);
+          } else if (!gotHot2.isCompleted) {
+            gotHot2.complete(s);
+          }
+        }
       });
     }
 
@@ -182,6 +204,7 @@ void main() {
 
     if (role == 'dm') {
       await hub.invoke('RegisterGame', args: [campagneId]);
+      await hub.invoke('RegisterClientProtocol', args: [signalRProtocolVersion]);
       await _postEmpty(apiBase, 'e2e/multi-client/sync/dm-game-registered');
       await _e2eAppend(tester, log, 'DM registered game ✓');
 
@@ -193,11 +216,59 @@ void main() {
         'playersReaddedCount >= 2',
       );
 
-      const cold = '{"allItems":[{"uuid":"i1"}],"placesOfFindings":[],"itemCategories":[],"characterStatTabsDefinition":null,"craftingRecipes":[],"currencyDefinition":{"currencyTypes":[]}}';
-      const hot = '{"rpgName":"MixedProtocolGame"}';
-      await hub.invoke('SendUpdatedRpgConfigCold', args: [campagneId, cold]);
-      await hub.invoke('SendUpdatedRpgConfigHot', args: [campagneId, hot]);
-      await _e2eAppend(tester, log, 'DM sent cold+hot ✓');
+      // 1) Baseline via legacy strings (covers v1/v3 downstream broadcast).
+      const cold1 = '{"allItems":[{"uuid":"i1"}],"placesOfFindings":[],"itemCategories":[],"characterStatTabsDefinition":null,"craftingRecipes":[],"currencyDefinition":{"currencyTypes":[]}}';
+      const hot1 = '{"rpgName":"MixedProtocolGame"}';
+      await hub.invoke('SendUpdatedRpgConfigCold', args: [campagneId, cold1]);
+      await hub.invoke('SendUpdatedRpgConfigHot', args: [campagneId, hot1]);
+      await _e2eAppend(tester, log, 'DM sent cold+hot (legacy) ✓');
+
+      // 2) Upstream v3: ask server for current revisions, then send a small patch via V3 methods.
+      final snapCold = Completer<String>();
+      final snapHot = Completer<String>();
+      hub.on('updateRpgConfigColdV3', (args) {
+        final s = args?.first as String?;
+        if (s != null && !snapCold.isCompleted) snapCold.complete(s);
+      });
+      hub.on('updateRpgConfigHotV3', (args) {
+        final s = args?.first as String?;
+        if (s != null && !snapHot.isCompleted) snapHot.complete(s);
+      });
+      await hub.invoke('RequestRpgConfigSnapshot', args: [campagneId]);
+
+      final coldSnapEnv = await snapCold.future.timeout(_barrierTimeout);
+      final hotSnapEnv = await snapHot.future.timeout(_barrierTimeout);
+      final coldSnapMap = jsonDecode(coldSnapEnv) as Map<String, dynamic>;
+      final hotSnapMap = jsonDecode(hotSnapEnv) as Map<String, dynamic>;
+      expect(coldSnapMap['kind'], 'full');
+      expect(hotSnapMap['kind'], 'full');
+      final coldRev = (coldSnapMap['revision'] as num).toInt();
+      final hotRev = (hotSnapMap['revision'] as num).toInt();
+      final coldPrevJson = jsonEncode(coldSnapMap['body']);
+      final hotPrevJson = jsonEncode(hotSnapMap['body']);
+
+      const cold2Body =
+          '{"allItems":[{"uuid":"i1"},{"uuid":"i2"}],"placesOfFindings":[],"itemCategories":[],"characterStatTabsDefinition":null,"craftingRecipes":[],"currencyDefinition":{"currencyTypes":[]}}';
+      const hot2Body = '{"rpgName":"MixedProtocolGame-v3"}';
+
+      final coldUpEnv = buildRpgConfigUpstreamEnvelope(
+        slice: 'cold',
+        previousJson: coldPrevJson,
+        newJson: cold2Body,
+        fromRevision: coldRev,
+        toRevision: coldRev + 1,
+      );
+      final hotUpEnv = buildRpgConfigUpstreamEnvelope(
+        slice: 'hot',
+        previousJson: hotPrevJson,
+        newJson: hot2Body,
+        fromRevision: hotRev,
+        toRevision: hotRev + 1,
+      );
+
+      await hub.invoke('SendUpdatedRpgConfigColdV3', args: [campagneId, coldUpEnv]);
+      await hub.invoke('SendUpdatedRpgConfigHotV3', args: [campagneId, hotUpEnv]);
+      await _e2eAppend(tester, log, 'DM sent cold+hot (upstream v3) ✓');
     } else {
       await _waitFor(
         apiBase,
@@ -211,8 +282,7 @@ void main() {
       await hub.invoke('ReaddToSignalRGroups', args: ['NULL', playerCharacterId!]);
 
       if (role == 'player2') {
-        // New client: declare protocol v2.
-        await hub.invoke('RegisterClientProtocol', args: [2]);
+        await hub.invoke('RegisterClientProtocol', args: [signalRProtocolVersion]);
       }
 
       await _postEmpty(apiBase, 'e2e/multi-client/sync/player-readded');
@@ -221,13 +291,30 @@ void main() {
       if (role == 'player1') {
         final full = await gotLegacyFull.future.timeout(_barrierTimeout);
         full.shouldContain('"rpgName"');
+        final fullWithV3Name =
+            await gotLegacyNameV3.future.timeout(_barrierTimeout);
+        fullWithV3Name.shouldContain('MixedProtocolGame-v3');
         await _e2eAppend(tester, log, 'Player1 got legacy full ✓');
       } else {
         final cold = await gotCold.future.timeout(_barrierTimeout);
         final hot = await gotHot.future.timeout(_barrierTimeout);
-        cold.shouldContain('"allItems"');
-        hot.shouldContain('"rpgName"');
-        await _e2eAppend(tester, log, 'Player2 got cold+hot ✓');
+        final coldMap = jsonDecode(cold) as Map<String, dynamic>;
+        final hotMap = jsonDecode(hot) as Map<String, dynamic>;
+        expect(coldMap['kind'], 'full');
+        expect(hotMap['kind'], 'full');
+        jsonEncode(coldMap['body']).shouldContain('"allItems"');
+        jsonEncode(hotMap['body']).shouldContain('"rpgName"');
+        await _e2eAppend(tester, log, 'Player2 got coldV3+hotV3 ✓');
+
+        final cold2 = await gotCold2.future.timeout(_barrierTimeout);
+        final hot2 = await gotHot2.future.timeout(_barrierTimeout);
+        final cold2Map = jsonDecode(cold2) as Map<String, dynamic>;
+        final hot2Map = jsonDecode(hot2) as Map<String, dynamic>;
+        expect(cold2Map['slice'], 'cold');
+        expect(hot2Map['slice'], 'hot');
+        jsonEncode(cold2Map).shouldContain('"i2"');
+        jsonEncode(hot2Map).shouldContain('MixedProtocolGame-v3');
+        await _e2eAppend(tester, log, 'Player2 got second update ✓');
       }
     }
 

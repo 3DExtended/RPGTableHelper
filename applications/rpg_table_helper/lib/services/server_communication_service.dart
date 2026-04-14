@@ -46,6 +46,11 @@ abstract class IServerCommunicationService {
     required String functionName,
   });
 
+  void registerCallbackTwoStrings({
+    required void Function(String param1, String param2) function,
+    required String functionName,
+  });
+
   void registerCallbackSingleDateTime({
     required void Function(DateTime parameter) function,
     required String functionName,
@@ -321,6 +326,30 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   @override
+  void registerCallbackTwoStrings({
+    required void Function(String param1, String param2) function,
+    required String functionName,
+  }) {
+    registrationMethods.add(() {
+      hubConnection!.on(functionName, (List<Object?>? parameters) {
+        if (parameters == null || parameters.isEmpty) {
+          return;
+        }
+        final String? param1 =
+            parameters[0] != null ? parameters[0] as String : null;
+        final String? param2 =
+            parameters.length > 1 && parameters[1] != null
+                ? parameters[1] as String
+                : null;
+        if (param1 == null || param2 == null) {
+          return;
+        }
+        function(param1, param2);
+      });
+    });
+  }
+
+  @override
   void registerCallbackThreeStrings(
       {required void Function(String param1, String param2, String param3)
           function,
@@ -511,6 +540,12 @@ class MockServerCommunicationService extends IServerCommunicationService {
   @override
   void registerCallbackSingleString({
     required void Function(String parameter) function,
+    required String functionName,
+  }) {}
+
+  @override
+  void registerCallbackTwoStrings({
+    required void Function(String param1, String param2) function,
     required String functionName,
   }) {}
 
