@@ -27,6 +27,21 @@ namespace RPGTableHelper.DataLayer.Entities.RpgEntities
         /// </summary>
         public int? RpgConfigurationSchemaVersion { get; set; }
 
+        /// <summary>
+        /// Monotonic revision for <see cref="RpgConfigurationCold"/> (JSON Patch v3 baselines).
+        /// </summary>
+        public int RpgConfigurationColdRevision { get; set; }
+
+        /// <summary>
+        /// Monotonic revision for <see cref="RpgConfigurationHot"/> (JSON Patch v3 baselines).
+        /// </summary>
+        public int RpgConfigurationHotRevision { get; set; }
+
+        /// <summary>
+        /// Monotonic revision for merged <see cref="RpgConfiguration"/> (upstream v3 full/patch for legacy blob).
+        /// </summary>
+        public int RpgConfigurationMergedRevision { get; set; }
+
         public string CampagneName { get; set; } = default!;
         public string JoinCode { get; set; } = default!;
 

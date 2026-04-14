@@ -10,6 +10,11 @@ namespace RPGTableHelper.DataLayer.Entities.RpgEntities
         /// </summary>
         public string? RpgCharacterConfiguration { get; set; }
 
+        /// <summary>
+        /// Monotonic revision for <see cref="RpgCharacterConfiguration"/> (SignalR JSON Patch v3 to DM).
+        /// </summary>
+        public int RpgCharacterConfigurationRevision { get; set; }
+
         public string CharacterName { get; set; } = default!;
 
         /// <summary>

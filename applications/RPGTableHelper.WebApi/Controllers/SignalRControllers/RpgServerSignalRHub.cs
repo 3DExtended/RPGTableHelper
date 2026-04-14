@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using MimeDetective.Storage.Xml.v2;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
@@ -52,8 +51,13 @@ public class RpgServerSignalRHub : Hub
     /// </summary>
     public Task RegisterClientProtocol(int protocolVersion)
     {
-        // Clamp to supported range.
+        // Clamp to supported range (v1 legacy full, v2 cold/hot strings, v3 JSON Patch envelopes).
         var v = protocolVersion < 1 ? 1 : protocolVersion;
+        if (v > 3)
+        {
+            v = 3;
+        }
+
         CapsByConnectionId[Context.ConnectionId] = new ClientCaps(v);
         return Task.CompletedTask;
     }
@@ -131,7 +135,9 @@ public class RpgServerSignalRHub : Hub
         await Clients.Caller.SendAsync("joinRequestAccepted", (CancellationToken)default);
 
         var campagneModel = campagneOfCharacter.Get();
-        if (campagneModel.RpgConfiguration != null)
+        var pv = GetClientProtocolVersion();
+
+        if (campagneModel.RpgConfiguration != null && pv < 2)
         {
             await Clients.Caller.SendAsync(
                 "updateRpgConfig",
@@ -140,19 +146,21 @@ public class RpgServerSignalRHub : Hub
             );
         }
 
-        // Protocol v2+: send cold/hot slices (client merges locally).
-        if (GetClientProtocolVersion() >= 2)
+        var cold = campagneModel.RpgConfigurationCold;
+        var hot = campagneModel.RpgConfigurationHot;
+        if (string.IsNullOrWhiteSpace(cold) && string.IsNullOrWhiteSpace(hot) && campagneModel.RpgConfiguration != null)
         {
-            var cold = campagneModel.RpgConfigurationCold;
-            var hot = campagneModel.RpgConfigurationHot;
-            if (string.IsNullOrWhiteSpace(cold) && string.IsNullOrWhiteSpace(hot) && campagneModel.RpgConfiguration != null)
-            {
-                // Legacy row not yet migrated: derive slices on the fly for this join.
-                var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(campagneModel.RpgConfiguration);
-                cold = slices.ColdJson;
-                hot = slices.HotJson;
-            }
+            var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(campagneModel.RpgConfiguration);
+            cold = slices.ColdJson;
+            hot = slices.HotJson;
+        }
 
+        var coldRev = campagneModel.RpgConfigurationColdRevision;
+        var hotRev = campagneModel.RpgConfigurationHotRevision;
+
+        // Protocol v2: full cold/hot strings.
+        if (pv == 2)
+        {
             if (!string.IsNullOrWhiteSpace(cold))
             {
                 await Clients.Caller.SendAsync("updateRpgConfigCold", cold, (CancellationToken)default);
@@ -162,6 +170,40 @@ public class RpgServerSignalRHub : Hub
             {
                 await Clients.Caller.SendAsync("updateRpgConfigHot", hot, (CancellationToken)default);
             }
+        }
+
+        // Protocol v3: revisioned envelopes (full on join).
+        if (pv >= 3)
+        {
+            if (!string.IsNullOrWhiteSpace(cold))
+            {
+                await Clients.Caller.SendAsync(
+                    "updateRpgConfigColdV3",
+                    RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("cold", coldRev, cold),
+                    (CancellationToken)default
+                );
+            }
+
+            if (!string.IsNullOrWhiteSpace(hot))
+            {
+                await Clients.Caller.SendAsync(
+                    "updateRpgConfigHotV3",
+                    RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("hot", hotRev, hot),
+                    (CancellationToken)default
+                );
+            }
+
+            var pcModel = playerCharacter.Get();
+            var charJson = string.IsNullOrWhiteSpace(pcModel.RpgCharacterConfiguration)
+                ? "{}"
+                : pcModel.RpgCharacterConfiguration;
+            var charRev = pcModel.RpgCharacterConfigurationRevision;
+            await Clients.Caller.SendAsync(
+                "updateMyRpgCharacterConfigV3",
+                RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("character", charRev, charJson),
+                pcModel.Id.Value.ToString(),
+                (CancellationToken)default
+            );
         }
     }
 
@@ -488,7 +530,13 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
+        var oldCharacterConfig = updatedPlayerCharacter.RpgCharacterConfiguration;
+        var fromCharacterRev = updatedPlayerCharacter.RpgCharacterConfigurationRevision;
+
         updatedPlayerCharacter.RpgCharacterConfiguration = characterConfig;
+        updatedPlayerCharacter.RpgCharacterConfigurationRevision = fromCharacterRev + 1;
+        var toCharacterRev = updatedPlayerCharacter.RpgCharacterConfigurationRevision;
+
         var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updatedPlayerCharacter }
             .RunAsync(_queryProcessor, default)
             .ConfigureAwait(false);
@@ -499,15 +547,43 @@ public class RpgServerSignalRHub : Hub
 
         _logger.LogInformation("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
 
-        await Clients
-            .Group(campagneOfCharacter.Get().Id.Value + "_Dms")
-            .SendAsync(
-                "updateRpgCharacterConfigOnDmSide",
+        var dmsGroupKey = campagneOfCharacter.Get().Id.Value + "_Dms";
+        var dmConnectionIds = GetTrackedConnectionsForGroup(dmsGroupKey).ToList();
+        SplitBroadcastTargets(dmConnectionIds, out var v1Dm, out var v2Dm, out var v3Dm);
+        var legacyDmIds = v1Dm.Concat(v2Dm).ToList();
+
+        if (legacyDmIds.Count > 0)
+        {
+            await Clients
+                .Clients(legacyDmIds)
+                .SendAsync(
+                    "updateRpgCharacterConfigOnDmSide",
+                    characterConfig,
+                    updatedPlayerCharacter.Id.Value.ToString(),
+                    updatedPlayerCharacter.PlayerUserId.Value.ToString(),
+                    (CancellationToken)default
+                );
+        }
+
+        if (v3Dm.Count > 0)
+        {
+            var env = RpgConfigSliceV3EnvelopeBuilder.BuildEnvelope(
+                "character",
+                oldCharacterConfig,
                 characterConfig,
-                updatedPlayerCharacter.Id.Value.ToString(),
-                updatedPlayerCharacter.PlayerUserId.Value.ToString(),
-                (CancellationToken)default
+                fromCharacterRev,
+                toCharacterRev
             );
+            await Clients
+                .Clients(v3Dm)
+                .SendAsync(
+                    "updateRpgCharacterConfigOnDmSideV3",
+                    env,
+                    updatedPlayerCharacter.Id.Value.ToString(),
+                    updatedPlayerCharacter.PlayerUserId.Value.ToString(),
+                    (CancellationToken)default
+                );
+        }
 
         // File backup only outside local/E2E test hosts (avoids /app/database and keeps tests deterministic).
         if (_hostEnvironment.IsEnvironment("E2ETest") || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
@@ -542,6 +618,169 @@ public class RpgServerSignalRHub : Hub
     }
 
     /// <summary>
+    /// Player/DM: request latest RPG config snapshots (v2 strings or v3 envelopes) after a patch mismatch or reconnect.
+    /// </summary>
+    public async Task RequestRpgConfigSnapshot(string campagneId)
+    {
+        var campagneIdParsed = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId));
+        var campagne = await new CampagneQuery { ModelId = campagneIdParsed }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone)
+        {
+            return;
+        }
+
+        var allowed = await new CampagneIsUserInCampagneQuery
+        {
+            CampagneId = campagneIdParsed,
+            UserIdToCheck = _userContext.User.UserIdentifier,
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (allowed.IsNone || !allowed.Get())
+        {
+            return;
+        }
+
+        var m = campagne.Get();
+        var cold = m.RpgConfigurationCold;
+        var hot = m.RpgConfigurationHot;
+        if (string.IsNullOrWhiteSpace(cold) && string.IsNullOrWhiteSpace(hot) && m.RpgConfiguration != null)
+        {
+            var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(m.RpgConfiguration);
+            cold = slices.ColdJson;
+            hot = slices.HotJson;
+        }
+
+        var pv = GetClientProtocolVersion();
+        if (m.RpgConfiguration != null && pv < 2)
+        {
+            await Clients.Caller.SendAsync("updateRpgConfig", m.RpgConfiguration, (CancellationToken)default);
+        }
+
+        if (pv == 2)
+        {
+            if (!string.IsNullOrWhiteSpace(cold))
+            {
+                await Clients.Caller.SendAsync("updateRpgConfigCold", cold!, (CancellationToken)default);
+            }
+
+            if (!string.IsNullOrWhiteSpace(hot))
+            {
+                await Clients.Caller.SendAsync("updateRpgConfigHot", hot!, (CancellationToken)default);
+            }
+        }
+
+        if (pv >= 3)
+        {
+            if (!string.IsNullOrWhiteSpace(cold))
+            {
+                await Clients.Caller.SendAsync(
+                    "updateRpgConfigColdV3",
+                    RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("cold", m.RpgConfigurationColdRevision, cold!),
+                    (CancellationToken)default
+                );
+            }
+
+            if (!string.IsNullOrWhiteSpace(hot))
+            {
+                await Clients.Caller.SendAsync(
+                    "updateRpgConfigHotV3",
+                    RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("hot", m.RpgConfigurationHotRevision, hot!),
+                    (CancellationToken)default
+                );
+            }
+        }
+    }
+
+    /// <summary>
+    /// DM or owning player: request a full character config (legacy string or v3 envelope) after a patch mismatch.
+    /// </summary>
+    public async Task RequestPlayerCharacterConfigSnapshot(string playerCharacterId)
+    {
+        var pc = await new PlayerCharacterQuery
+        {
+            ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playerCharacterId)),
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (pc.IsNone || pc.Get().CampagneId == null)
+        {
+            return;
+        }
+
+        var campagne = await new CampagneQuery { ModelId = pc.Get().CampagneId! }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone)
+        {
+            return;
+        }
+
+        var m = pc.Get();
+        var isDm = campagne.Get().DmUserId == _userContext.User.UserIdentifier;
+        var isOwner = m.PlayerUserId == _userContext.User.UserIdentifier;
+        if (!isDm && !isOwner)
+        {
+            return;
+        }
+
+        var json = string.IsNullOrWhiteSpace(m.RpgCharacterConfiguration) ? "{}" : m.RpgCharacterConfiguration;
+        var rev = m.RpgCharacterConfigurationRevision;
+        var pv = GetClientProtocolVersion();
+
+        if (isDm)
+        {
+            if (pv >= 3)
+            {
+                await Clients.Caller.SendAsync(
+                    "updateRpgCharacterConfigOnDmSideV3",
+                    RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("character", rev, json),
+                    m.Id.Value.ToString(),
+                    m.PlayerUserId.Value.ToString(),
+                    (CancellationToken)default
+                );
+            }
+            else
+            {
+                await Clients.Caller.SendAsync(
+                    "updateRpgCharacterConfigOnDmSide",
+                    json,
+                    m.Id.Value.ToString(),
+                    m.PlayerUserId.Value.ToString(),
+                    (CancellationToken)default
+                );
+            }
+        }
+        else if (isOwner)
+        {
+            if (pv >= 3)
+            {
+                await Clients.Caller.SendAsync(
+                    "updateMyRpgCharacterConfigV3",
+                    RpgConfigSliceV3EnvelopeBuilder.BuildFullEnvelope("character", rev, json),
+                    m.Id.Value.ToString(),
+                    (CancellationToken)default
+                );
+            }
+            else
+            {
+                await Clients.Caller.SendAsync(
+                    "updateMyRpgCharacterConfig",
+                    json,
+                    m.Id.Value.ToString(),
+                    (CancellationToken)default
+                );
+            }
+        }
+    }
+
+    /// <summary>
     /// Dm Method for updating all rpg configs
     /// </summary>
     public async Task SendUpdatedRpgConfig(string campagneId, string rpgConfig)
@@ -557,6 +796,7 @@ public class RpgServerSignalRHub : Hub
         }
 
         var updateCampagne = campagne.Get();
+        var oldMerged = updateCampagne.RpgConfiguration;
 
         // Server-side dedupe: skip DB + broadcast if nothing changed.
         if (updateCampagne.RpgConfiguration == rpgConfig)
@@ -564,13 +804,30 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
+        var oldCold = updateCampagne.RpgConfigurationCold;
+        var oldHot = updateCampagne.RpgConfigurationHot;
+        var fromColdRev = updateCampagne.RpgConfigurationColdRevision;
+        var fromHotRev = updateCampagne.RpgConfigurationHotRevision;
+
         updateCampagne.RpgConfiguration = rpgConfig;
 
         // Keep cold/hot columns in sync even for legacy clients.
         var slices = RpgConfigColdHotSlicer.SliceFromLegacyFull(rpgConfig);
-        updateCampagne.RpgConfigurationCold = slices.ColdJson;
-        updateCampagne.RpgConfigurationHot = slices.HotJson;
+        var newCold = slices.ColdJson;
+        var newHot = slices.HotJson;
+        var coldChanged = !string.Equals(oldCold, newCold, StringComparison.Ordinal);
+        var hotChanged = !string.Equals(oldHot, newHot, StringComparison.Ordinal);
+
+        updateCampagne.RpgConfigurationCold = newCold;
+        updateCampagne.RpgConfigurationHot = newHot;
         updateCampagne.RpgConfigurationSchemaVersion = slices.SchemaVersion;
+        updateCampagne.RpgConfigurationColdRevision = coldChanged ? fromColdRev + 1 : fromColdRev;
+        updateCampagne.RpgConfigurationHotRevision = hotChanged ? fromHotRev + 1 : fromHotRev;
+
+        if (!string.Equals(oldMerged, updateCampagne.RpgConfiguration, StringComparison.Ordinal))
+        {
+            updateCampagne.RpgConfigurationMergedRevision++;
+        }
 
         var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
             .RunAsync(_queryProcessor, default)
@@ -581,25 +838,60 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
+        var toColdRev = updateCampagne.RpgConfigurationColdRevision;
+        var toHotRev = updateCampagne.RpgConfigurationHotRevision;
+
         // Broadcast legacy full config to protocol v1 clients.
         // IMPORTANT: exclude the sender connection to preserve legacy OthersInGroup semantics
         // (the DM should not receive their own update).
         var allConnectionIds = GetTrackedConnectionsForGroup(campagneId + "_All")
             .Where(id => id != Context.ConnectionId)
             .ToList();
-        var v2ConnectionIds = FilterConnectionIdsByProtocol(allConnectionIds, minProtocolVersion: 2);
-        var v1ConnectionIds = allConnectionIds.Except(v2ConnectionIds).ToList();
+        SplitBroadcastTargets(allConnectionIds, out var v1ConnectionIds, out var v2ConnectionIds, out var v3ConnectionIds);
 
         if (v1ConnectionIds.Count > 0)
         {
             await Clients.Clients(v1ConnectionIds).SendAsync("updateRpgConfig", rpgConfig, (CancellationToken)default);
         }
 
-        // Broadcast slices to protocol v2+ clients.
         if (v2ConnectionIds.Count > 0)
         {
-            await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigCold", slices.ColdJson, (CancellationToken)default);
-            await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigHot", slices.HotJson, (CancellationToken)default);
+            if (coldChanged)
+            {
+                await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigCold", newCold, (CancellationToken)default);
+            }
+
+            if (hotChanged)
+            {
+                await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigHot", newHot, (CancellationToken)default);
+            }
+        }
+
+        if (v3ConnectionIds.Count > 0)
+        {
+            if (coldChanged)
+            {
+                var coldEnv = RpgConfigSliceV3EnvelopeBuilder.BuildEnvelope(
+                    "cold",
+                    oldCold,
+                    newCold,
+                    fromColdRev,
+                    toColdRev
+                );
+                await Clients.Clients(v3ConnectionIds).SendAsync("updateRpgConfigColdV3", coldEnv, (CancellationToken)default);
+            }
+
+            if (hotChanged)
+            {
+                var hotEnv = RpgConfigSliceV3EnvelopeBuilder.BuildEnvelope(
+                    "hot",
+                    oldHot,
+                    newHot,
+                    fromHotRev,
+                    toHotRev
+                );
+                await Clients.Clients(v3ConnectionIds).SendAsync("updateRpgConfigHotV3", hotEnv, (CancellationToken)default);
+            }
         }
 
         // File backup only outside local/E2E test hosts (avoids /app/database and keeps tests deterministic).
@@ -660,18 +952,29 @@ public class RpgServerSignalRHub : Hub
             updateCampagne.RpgConfigurationSchemaVersion ??= existingSlices.SchemaVersion;
         }
 
+        var oldMergedForCold = updateCampagne.RpgConfiguration;
+
         // Server-side dedupe: skip DB + broadcast if nothing changed.
         if (updateCampagne.RpgConfigurationCold == rpgConfigCold)
         {
             return;
         }
 
+        var oldCold = updateCampagne.RpgConfigurationCold;
+        var fromColdRev = updateCampagne.RpgConfigurationColdRevision;
+
         updateCampagne.RpgConfigurationCold = rpgConfigCold;
+        updateCampagne.RpgConfigurationColdRevision = fromColdRev + 1;
         updateCampagne.RpgConfigurationSchemaVersion = RpgConfigColdHotSlicer.SchemaVersion;
         updateCampagne.RpgConfiguration = RpgConfigColdHotSlicer.MergeToLegacyFull(
             updateCampagne.RpgConfigurationCold,
             updateCampagne.RpgConfigurationHot
         );
+
+        if (!string.Equals(oldMergedForCold, updateCampagne.RpgConfiguration, StringComparison.Ordinal))
+        {
+            updateCampagne.RpgConfigurationMergedRevision++;
+        }
 
         var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
             .RunAsync(_queryProcessor, default)
@@ -682,13 +985,25 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
+        var toColdRev = updateCampagne.RpgConfigurationColdRevision;
         var allConnectionIds = GetTrackedConnectionsForGroup(campagneId + "_All").ToList();
-        var v2ConnectionIds = FilterConnectionIdsByProtocol(allConnectionIds, minProtocolVersion: 2);
-        var v1ConnectionIds = allConnectionIds.Except(v2ConnectionIds).ToList();
+        SplitBroadcastTargets(allConnectionIds, out var v1ConnectionIds, out var v2ConnectionIds, out var v3ConnectionIds);
 
         if (v2ConnectionIds.Count > 0)
         {
             await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigCold", rpgConfigCold, (CancellationToken)default);
+        }
+
+        if (v3ConnectionIds.Count > 0)
+        {
+            var coldEnv = RpgConfigSliceV3EnvelopeBuilder.BuildEnvelope(
+                "cold",
+                oldCold,
+                rpgConfigCold,
+                fromColdRev,
+                toColdRev
+            );
+            await Clients.Clients(v3ConnectionIds).SendAsync("updateRpgConfigColdV3", coldEnv, (CancellationToken)default);
         }
 
         if (v1ConnectionIds.Count > 0)
@@ -725,18 +1040,29 @@ public class RpgServerSignalRHub : Hub
             updateCampagne.RpgConfigurationSchemaVersion ??= existingSlices.SchemaVersion;
         }
 
+        var oldMergedForHot = updateCampagne.RpgConfiguration;
+
         // Server-side dedupe: skip DB + broadcast if nothing changed.
         if (updateCampagne.RpgConfigurationHot == rpgConfigHot)
         {
             return;
         }
 
+        var oldHot = updateCampagne.RpgConfigurationHot;
+        var fromHotRev = updateCampagne.RpgConfigurationHotRevision;
+
         updateCampagne.RpgConfigurationHot = rpgConfigHot;
+        updateCampagne.RpgConfigurationHotRevision = fromHotRev + 1;
         updateCampagne.RpgConfigurationSchemaVersion = RpgConfigColdHotSlicer.SchemaVersion;
         updateCampagne.RpgConfiguration = RpgConfigColdHotSlicer.MergeToLegacyFull(
             updateCampagne.RpgConfigurationCold,
             updateCampagne.RpgConfigurationHot
         );
+
+        if (!string.Equals(oldMergedForHot, updateCampagne.RpgConfiguration, StringComparison.Ordinal))
+        {
+            updateCampagne.RpgConfigurationMergedRevision++;
+        }
 
         var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
             .RunAsync(_queryProcessor, default)
@@ -747,13 +1073,25 @@ public class RpgServerSignalRHub : Hub
             return;
         }
 
+        var toHotRev = updateCampagne.RpgConfigurationHotRevision;
         var allConnectionIds = GetTrackedConnectionsForGroup(campagneId + "_All").ToList();
-        var v2ConnectionIds = FilterConnectionIdsByProtocol(allConnectionIds, minProtocolVersion: 2);
-        var v1ConnectionIds = allConnectionIds.Except(v2ConnectionIds).ToList();
+        SplitBroadcastTargets(allConnectionIds, out var v1ConnectionIds, out var v2ConnectionIds, out var v3ConnectionIds);
 
         if (v2ConnectionIds.Count > 0)
         {
             await Clients.Clients(v2ConnectionIds).SendAsync("updateRpgConfigHot", rpgConfigHot, (CancellationToken)default);
+        }
+
+        if (v3ConnectionIds.Count > 0)
+        {
+            var hotEnv = RpgConfigSliceV3EnvelopeBuilder.BuildEnvelope(
+                "hot",
+                oldHot,
+                rpgConfigHot,
+                fromHotRev,
+                toHotRev
+            );
+            await Clients.Clients(v3ConnectionIds).SendAsync("updateRpgConfigHotV3", hotEnv, (CancellationToken)default);
         }
 
         if (v1ConnectionIds.Count > 0)
@@ -763,26 +1101,194 @@ public class RpgServerSignalRHub : Hub
         }
     }
 
-    private static IReadOnlyList<string> FilterConnectionIdsByProtocol(
+    /// <summary>
+    /// Protocol v3: DM sends the cold slice as a v3 envelope (RFC 6902 patch or full) to reduce upstream bandwidth.
+    /// </summary>
+    public async Task SendUpdatedRpgConfigColdV3(string campagneId, string envelopeJson)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            return;
+        }
+
+        var updateCampagne = campagne.Get();
+        if (
+            updateCampagne.RpgConfiguration != null
+            && (updateCampagne.RpgConfigurationCold == null || updateCampagne.RpgConfigurationHot == null)
+        )
+        {
+            var existingSlices = RpgConfigColdHotSlicer.SliceFromLegacyFull(updateCampagne.RpgConfiguration);
+            updateCampagne.RpgConfigurationCold ??= existingSlices.ColdJson;
+            updateCampagne.RpgConfigurationHot ??= existingSlices.HotJson;
+            updateCampagne.RpgConfigurationSchemaVersion ??= existingSlices.SchemaVersion;
+        }
+
+        if (
+            !RpgConfigSliceV3UpstreamEnvelope.TryResolveSlicePayload(
+                envelopeJson,
+                "cold",
+                updateCampagne.RpgConfigurationCold,
+                updateCampagne.RpgConfigurationColdRevision,
+                out var coldJson,
+                out _
+            )
+        )
+        {
+            return;
+        }
+
+        await SendUpdatedRpgConfigCold(campagneId, coldJson).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Protocol v3: DM sends the hot slice as a v3 envelope (RFC 6902 patch or full) to reduce upstream bandwidth.
+    /// </summary>
+    public async Task SendUpdatedRpgConfigHotV3(string campagneId, string envelopeJson)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            return;
+        }
+
+        var updateCampagne = campagne.Get();
+        if (
+            updateCampagne.RpgConfiguration != null
+            && (updateCampagne.RpgConfigurationCold == null || updateCampagne.RpgConfigurationHot == null)
+        )
+        {
+            var existingSlices = RpgConfigColdHotSlicer.SliceFromLegacyFull(updateCampagne.RpgConfiguration);
+            updateCampagne.RpgConfigurationCold ??= existingSlices.ColdJson;
+            updateCampagne.RpgConfigurationHot ??= existingSlices.HotJson;
+            updateCampagne.RpgConfigurationSchemaVersion ??= existingSlices.SchemaVersion;
+        }
+
+        if (
+            !RpgConfigSliceV3UpstreamEnvelope.TryResolveSlicePayload(
+                envelopeJson,
+                "hot",
+                updateCampagne.RpgConfigurationHot,
+                updateCampagne.RpgConfigurationHotRevision,
+                out var hotJson,
+                out _
+            )
+        )
+        {
+            return;
+        }
+
+        await SendUpdatedRpgConfigHot(campagneId, hotJson).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Protocol v3: DM sends merged RPG configuration as a v3 envelope (patch or full) to reduce upstream bandwidth.
+    /// </summary>
+    public async Task SendUpdatedRpgConfigV3(string campagneId, string envelopeJson)
+    {
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(Guid.Parse(campagneId)) }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            return;
+        }
+
+        var updateCampagne = campagne.Get();
+        if (
+            !RpgConfigSliceV3UpstreamEnvelope.TryResolveSlicePayload(
+                envelopeJson,
+                "merged",
+                updateCampagne.RpgConfiguration,
+                updateCampagne.RpgConfigurationMergedRevision,
+                out var rpgConfig,
+                out _
+            )
+        )
+        {
+            return;
+        }
+
+        await SendUpdatedRpgConfig(campagneId, rpgConfig).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Protocol v3: player sends character configuration as a v3 envelope (patch or full) to reduce upstream bandwidth.
+    /// </summary>
+    public async Task SendUpdatedRpgCharacterConfigToDmV3(string playercharacterid, string envelopeJson)
+    {
+        var playerCharacter = await new PlayerCharacterQuery
+        {
+            ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
+        }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (
+            playerCharacter.IsNone
+            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
+            || playerCharacter.Get().CampagneId == null
+        )
+        {
+            return;
+        }
+
+        var m = playerCharacter.Get();
+        if (
+            !RpgConfigSliceV3UpstreamEnvelope.TryResolveSlicePayload(
+                envelopeJson,
+                "character",
+                m.RpgCharacterConfiguration,
+                m.RpgCharacterConfigurationRevision,
+                out var characterConfig,
+                out _
+            )
+        )
+        {
+            return;
+        }
+
+        await SendUpdatedRpgCharacterConfigToDm(playercharacterid, characterConfig).ConfigureAwait(false);
+    }
+
+    private static void SplitBroadcastTargets(
         IReadOnlyList<string> connectionIds,
-        int minProtocolVersion
+        out List<string> v1ConnectionIds,
+        out List<string> v2ConnectionIds,
+        out List<string> v3ConnectionIds
     )
     {
-        if (connectionIds.Count == 0)
-        {
-            return Array.Empty<string>();
-        }
-
-        var list = new List<string>(connectionIds.Count);
+        v1ConnectionIds = new List<string>();
+        v2ConnectionIds = new List<string>();
+        v3ConnectionIds = new List<string>();
         foreach (var id in connectionIds)
         {
-            if (CapsByConnectionId.TryGetValue(id, out var caps) && caps.protocolVersion >= minProtocolVersion)
+            if (!CapsByConnectionId.TryGetValue(id, out var caps))
             {
-                list.Add(id);
+                v1ConnectionIds.Add(id);
+                continue;
+            }
+
+            if (caps.protocolVersion >= 3)
+            {
+                v3ConnectionIds.Add(id);
+            }
+            else if (caps.protocolVersion == 2)
+            {
+                v2ConnectionIds.Add(id);
+            }
+            else
+            {
+                v1ConnectionIds.Add(id);
             }
         }
-
-        return list;
     }
 
     private static void TrackAddToGroup(string connectionId, string groupKey)

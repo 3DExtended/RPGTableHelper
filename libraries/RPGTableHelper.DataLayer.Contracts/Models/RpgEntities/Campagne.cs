@@ -32,6 +32,21 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities
         /// </summary>
         public int? RpgConfigurationSchemaVersion { get; set; }
 
+        /// <summary>
+        /// Monotonic revision for <see cref="RpgConfigurationCold"/> (SignalR JSON Patch v3).
+        /// </summary>
+        public int RpgConfigurationColdRevision { get; set; }
+
+        /// <summary>
+        /// Monotonic revision for <see cref="RpgConfigurationHot"/> (SignalR JSON Patch v3).
+        /// </summary>
+        public int RpgConfigurationHotRevision { get; set; }
+
+        /// <summary>
+        /// Monotonic revision for merged <see cref="RpgConfiguration"/> (upstream v3 for full config blob).
+        /// </summary>
+        public int RpgConfigurationMergedRevision { get; set; }
+
         public string CampagneName { get; set; } = default!;
 
         public string JoinCode { get; set; } = default!;
