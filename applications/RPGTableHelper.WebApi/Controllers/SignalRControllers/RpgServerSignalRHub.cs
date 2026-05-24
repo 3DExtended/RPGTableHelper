@@ -523,29 +523,31 @@ public class RpgServerSignalRHub : Hub
         }
 
         var updatedPlayerCharacter = playerCharacter.Get();
-
-        // Server-side dedupe: skip DB + broadcast if nothing changed.
-        if (updatedPlayerCharacter.RpgCharacterConfiguration == characterConfig)
-        {
-            return;
-        }
+        var configUnchanged = updatedPlayerCharacter.RpgCharacterConfiguration == characterConfig;
 
         var oldCharacterConfig = updatedPlayerCharacter.RpgCharacterConfiguration;
         var fromCharacterRev = updatedPlayerCharacter.RpgCharacterConfigurationRevision;
+        var toCharacterRev = fromCharacterRev;
 
-        updatedPlayerCharacter.RpgCharacterConfiguration = characterConfig;
-        updatedPlayerCharacter.RpgCharacterConfigurationRevision = fromCharacterRev + 1;
-        var toCharacterRev = updatedPlayerCharacter.RpgCharacterConfigurationRevision;
-
-        var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updatedPlayerCharacter }
-            .RunAsync(_queryProcessor, default)
-            .ConfigureAwait(false);
-        if (updateResult.IsNone)
+        // Server-side dedupe: skip DB write when nothing changed, but still notify DMs so presence stays accurate.
+        if (!configUnchanged)
         {
-            return;
-        }
+            updatedPlayerCharacter.RpgCharacterConfiguration = characterConfig;
+            updatedPlayerCharacter.RpgCharacterConfigurationRevision = fromCharacterRev + 1;
+            toCharacterRev = updatedPlayerCharacter.RpgCharacterConfigurationRevision;
 
-        _logger.LogInformation("A player updated their character with name " + updatedPlayerCharacter.CharacterName);
+            var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updatedPlayerCharacter }
+                .RunAsync(_queryProcessor, default)
+                .ConfigureAwait(false);
+            if (updateResult.IsNone)
+            {
+                return;
+            }
+
+            _logger.LogInformation(
+                "A player updated their character with name " + updatedPlayerCharacter.CharacterName
+            );
+        }
 
         var dmsGroupKey = campagneOfCharacter.Get().Id.Value + "_Dms";
         var dmConnectionIds = GetTrackedConnectionsForGroup(dmsGroupKey).ToList();
@@ -585,8 +587,11 @@ public class RpgServerSignalRHub : Hub
                 );
         }
 
-        // File backup only outside local/E2E test hosts (avoids /app/database and keeps tests deterministic).
-        if (_hostEnvironment.IsEnvironment("E2ETest") || _hostEnvironment.IsEnvironment("LocalSignalRE2E"))
+        if (
+            configUnchanged
+            || _hostEnvironment.IsEnvironment("E2ETest")
+            || _hostEnvironment.IsEnvironment("LocalSignalRE2E")
+        )
         {
             return;
         }

@@ -89,6 +89,66 @@ public class RpgServerSignalRHubCharacterV3Tests : ControllerTestBase
         await player.DisposeAsync();
     }
 
+    [Fact]
+    public async Task SendUpdatedRpgCharacterConfigToDm_UnchangedConfig_DmStillReceivesPresence()
+    {
+        var scenario = await SignalRHubTestSeed.SeedDmTwoPlayersCampagneAsync(ContextFactory!, Mapper!);
+        var handle = Factory.Server.CreateHandler();
+
+        var dm = CreateJsonHubConnection(handle, CreateJwtForUser(scenario.DmUser));
+        var player = CreateJsonHubConnection(handle, CreateJwtForUser(scenario.PlayerOneUser));
+
+        var received = new TaskCompletionSource<(string Cfg, string CharId, string UserId)>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
+        dm.On<string, string, string>(
+            "updateRpgCharacterConfigOnDmSide",
+            (cfg, charId, userId) => received.TrySetResult((cfg, charId, userId))
+        );
+
+        await dm.StartAsync();
+        await player.StartAsync();
+
+        await dm.InvokeAsync(
+            nameof(RpgServerSignalRHub.RegisterGame),
+            scenario.CampagneId.ToString(),
+            CancellationToken.None
+        );
+        await player.InvokeAsync(
+            nameof(RpgServerSignalRHub.ReaddToSignalRGroups),
+            "NULL",
+            scenario.PlayerOneCharacterId.ToString(),
+            CancellationToken.None
+        );
+
+        await using (var ctx = await ContextFactory!.CreateDbContextAsync())
+        {
+            var row = await ctx.PlayerCharacters.SingleAsync(c => c.Id == scenario.PlayerOneCharacterId);
+            var unchanged = row.RpgCharacterConfiguration ?? "{}";
+
+            await player.InvokeAsync(
+                nameof(RpgServerSignalRHub.SendUpdatedRpgCharacterConfigToDm),
+                scenario.PlayerOneCharacterId.ToString(),
+                unchanged,
+                CancellationToken.None
+            );
+        }
+
+        (await Task.WhenAny(received.Task, Task.Delay(HubCallbackTimeout))).Should().Be(received.Task);
+        var r = await received.Task;
+        r.CharId.Should().Be(scenario.PlayerOneCharacterId.ToString());
+        r.UserId.Should().Be(scenario.PlayerOneUser.Id.Value.ToString());
+
+        await using (var ctx = await ContextFactory!.CreateDbContextAsync())
+        {
+            var row = await ctx.PlayerCharacters.AsNoTracking().SingleAsync(c => c.Id == scenario.PlayerOneCharacterId);
+            row.RpgCharacterConfigurationRevision.Should().Be(0);
+        }
+
+        await dm.DisposeAsync();
+        await player.DisposeAsync();
+    }
+
     private static HubConnection CreateJsonHubConnection(HttpMessageHandler handle, string? jwt) =>
         new HubConnectionBuilder()
             .WithUrl(
