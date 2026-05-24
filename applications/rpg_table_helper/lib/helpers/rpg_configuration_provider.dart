@@ -92,7 +92,9 @@ class RpgConfigurationNotifier
 
   void updateCharacterScreenStatsTabs(
       List<CharacterStatsTabDefinition> tabsToEdit) {
+    final current =
+        state.valueOrNull ?? RpgConfigurationModel.getBaseConfiguration();
     state = AsyncValue.data(
-        state.requireValue.copyWith(characterStatTabsDefinition: tabsToEdit));
+        current.copyWith(characterStatTabsDefinition: tabsToEdit));
   }
 }

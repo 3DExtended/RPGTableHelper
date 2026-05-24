@@ -227,7 +227,64 @@ class ServerMethodsService extends IServerMethodsService {
     "currencyDefinition",
   };
 
+  bool _hasPendingCampagneConfigOutbound() {
+    return _pendingCampagneConfigSendTimers.values.any((timer) => timer.isActive);
+  }
+
+  void _ensureCampagneV3RevisionBaseline() {
+    if (signalRProtocolVersion < 3) {
+      return;
+    }
+    if (_latestRpgConfigColdJson != null && _localColdSliceRevision == null) {
+      _localColdSliceRevision = 0;
+    }
+    if (_latestRpgConfigHotJson != null && _localHotSliceRevision == null) {
+      _localHotSliceRevision = 0;
+    }
+  }
+
+  void _ensureCampagneColdBaselineForFirstV3Upstream(String coldJson) {
+    if (signalRProtocolVersion < 3) {
+      return;
+    }
+    if (_latestRpgConfigColdJson != null) {
+      return;
+    }
+    _latestRpgConfigColdJson = '{}';
+    _localColdSliceRevision = 0;
+  }
+
+  void _ensureCampagneHotBaselineForFirstV3Upstream(String hotJson) {
+    if (signalRProtocolVersion < 3) {
+      return;
+    }
+    if (_latestRpgConfigHotJson != null) {
+      return;
+    }
+    _latestRpgConfigHotJson = '{}';
+    _localHotSliceRevision = 0;
+  }
+
+  void _commitSentCampagneColdSlice({
+    required String coldJson,
+    required int toRevision,
+  }) {
+    _latestRpgConfigColdJson = coldJson;
+    _localColdSliceRevision = toRevision;
+  }
+
+  void _commitSentCampagneHotSlice({
+    required String hotJson,
+    required int toRevision,
+  }) {
+    _latestRpgConfigHotJson = hotJson;
+    _localHotSliceRevision = toRevision;
+  }
+
   void _applyRpgConfigFromSlicesIfPossible() {
+    if (_hasPendingCampagneConfigOutbound()) {
+      return;
+    }
     if (_latestRpgConfigColdJson == null || _latestRpgConfigHotJson == null) {
       return;
     }
@@ -269,6 +326,10 @@ class ServerMethodsService extends IServerMethodsService {
       return;
     }
 
+    _ensureCampagneV3RevisionBaseline();
+    _ensureCampagneColdBaselineForFirstV3Upstream(coldJson);
+    _ensureCampagneHotBaselineForFirstV3Upstream(hotJson);
+
     final coldV3Upstream = signalRProtocolVersion >= 3 &&
         _localColdSliceRevision != null &&
         _latestRpgConfigColdJson != null;
@@ -279,44 +340,52 @@ class ServerMethodsService extends IServerMethodsService {
     // Send cold first (big) then hot (small), server recombines for legacy clients.
     if (lastColdHash != coldHash) {
       if (coldV3Upstream) {
+        final fromRev = _localColdSliceRevision!;
+        final toRev = fromRev + 1;
         final coldEnv = buildRpgConfigUpstreamEnvelope(
           slice: 'cold',
           previousJson: _latestRpgConfigColdJson,
           newJson: coldJson,
-          fromRevision: _localColdSliceRevision!,
-          toRevision: _localColdSliceRevision! + 1,
+          fromRevision: fromRev,
+          toRevision: toRev,
         );
         await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigColdV3",
           args: [campagneId, coldEnv],
         );
+        _commitSentCampagneColdSlice(coldJson: coldJson, toRevision: toRev);
       } else {
         await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigCold",
           args: [campagneId, coldJson],
         );
+        _latestRpgConfigColdJson = coldJson;
       }
       _lastSentCampagneColdHashById[campagneId] = coldHash;
     }
 
     if (lastHotHash != hotHash) {
       if (hotV3Upstream) {
+        final fromRev = _localHotSliceRevision!;
+        final toRev = fromRev + 1;
         final hotEnv = buildRpgConfigUpstreamEnvelope(
           slice: 'hot',
           previousJson: _latestRpgConfigHotJson,
           newJson: hotJson,
-          fromRevision: _localHotSliceRevision!,
-          toRevision: _localHotSliceRevision! + 1,
+          fromRevision: fromRev,
+          toRevision: toRev,
         );
         await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigHotV3",
           args: [campagneId, hotEnv],
         );
+        _commitSentCampagneHotSlice(hotJson: hotJson, toRevision: toRev);
       } else {
         await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigHot",
           args: [campagneId, hotJson],
         );
+        _latestRpgConfigHotJson = hotJson;
       }
       _lastSentCampagneHotHashById[campagneId] = hotHash;
     }
@@ -711,7 +780,12 @@ class ServerMethodsService extends IServerMethodsService {
       final map = Map<String, dynamic>.from(decoded);
       final kind = map['kind'] as String?;
       if (kind == 'full') {
-        final rev = map['revision'] as int;
+        final revRaw = map['revision'];
+        if (revRaw is! num) {
+          unawaited(_requestPlayerCharacterSnapshot(playerId));
+          return;
+        }
+        final rev = revRaw.toInt();
         final body = map['body'];
         if (body is! Map) {
           unawaited(_requestPlayerCharacterSnapshot(playerId));
