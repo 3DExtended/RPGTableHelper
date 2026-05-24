@@ -12,6 +12,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/fuzzysort.dart';
+import 'package:quest_keeper/helpers/item_inventory_sort.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -67,6 +68,7 @@ class _ItemCardRenderingWithFilteringState
 
   List<MapEntry<int, ({int amount, RpgItem item})>> itemsToRender = [];
   Fuzzysort fuzzysort = Fuzzysort();
+  ItemInventorySortMode sortMode = ItemInventorySortMode.nameAscending;
 
   @override
   void dispose() {
@@ -134,9 +136,31 @@ class _ItemCardRenderingWithFilteringState
           .toList();
 
       if (searchtextEditingController.text.isEmpty) {
-        itemsToRender = itemsToRender.sortedBy((m) => m.value.item.name);
+        itemsToRender = sortInventoryItemEntries(itemsToRender, sortMode);
       }
     });
+  }
+
+  String sortModeTooltip(BuildContext context) {
+    switch (sortMode) {
+      case ItemInventorySortMode.nameAscending:
+        return S.of(context).itemSortByName;
+      case ItemInventorySortMode.valueAscending:
+        return S.of(context).itemSortByValueAscending;
+      case ItemInventorySortMode.valueDescending:
+        return S.of(context).itemSortByValueDescending;
+    }
+  }
+
+  IconData sortModeIcon() {
+    switch (sortMode) {
+      case ItemInventorySortMode.nameAscending:
+        return FontAwesomeIcons.arrowDownAZ;
+      case ItemInventorySortMode.valueAscending:
+        return FontAwesomeIcons.arrowDown19;
+      case ItemInventorySortMode.valueDescending:
+        return FontAwesomeIcons.arrowDown91;
+    }
   }
 
   @override
@@ -215,7 +239,32 @@ class _ItemCardRenderingWithFilteringState
                 ),
               ),
               SizedBox(
-                width: 20,
+                width: 10,
+              ),
+              Tooltip(
+                message: sortModeTooltip(context),
+                child: CustomButton(
+                  variant: sortMode != ItemInventorySortMode.nameAscending
+                      ? CustomButtonVariant.DarkButton
+                      : CustomButtonVariant.Default,
+                  icon: CustomFaIcon(
+                    icon: sortModeIcon(),
+                    color: sortMode != ItemInventorySortMode.nameAscending
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkColor,
+                    size: 21,
+                    noPadding: true,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      sortMode = nextItemInventorySortMode(sortMode);
+                      onTextEditControllerChange();
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 10,
               ),
               CustomButton(
                   variant: isSearchFieldShowing

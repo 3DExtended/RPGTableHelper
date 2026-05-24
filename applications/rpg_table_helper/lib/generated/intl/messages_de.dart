@@ -114,6 +114,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "craftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
       "Herstellbar",
     ),
+    "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
+      "Nicht herstellbar",
+    ),
     "createNewAccount": MessageLookupByLibrary.simpleMessage(
       "Neuen Account anlegen",
     ),
@@ -224,6 +227,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "item": MessageLookupByLibrary.simpleMessage("Item"),
     "itemCardDescRequires": MessageLookupByLibrary.simpleMessage("Braucht:"),
     "itemCategoryFilterAll": MessageLookupByLibrary.simpleMessage("Alles"),
+    "itemSortByName": MessageLookupByLibrary.simpleMessage(
+      "Nach Name sortieren (A–Z)",
+    ),
+    "itemSortByValueAscending": MessageLookupByLibrary.simpleMessage(
+      "Nach Wert sortieren (aufsteigend)",
+    ),
+    "itemSortByValueDescending": MessageLookupByLibrary.simpleMessage(
+      "Nach Wert sortieren (absteigend)",
+    ),
     "itemDetailsDescriptionHeader": MessageLookupByLibrary.simpleMessage(
       "Beschreibung:",
     ),
@@ -333,6 +345,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "noItemsInCategoryCraftable": MessageLookupByLibrary.simpleMessage(
       "In dieser Kategorie sind keine Items herstellbar",
+    ),
+    "noItemsInCategoryNotCraftable": MessageLookupByLibrary.simpleMessage(
+      "In dieser Kategorie sind alle Items herstellbar",
     ),
     "noItemsInCategoryErrorText": MessageLookupByLibrary.simpleMessage(
       "Keine Items unter dieser Kategorie",

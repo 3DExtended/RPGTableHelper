@@ -1004,6 +1004,24 @@ abstract class AppLocalizations {
   /// **'Suche'**
   String get searchLabel;
 
+  /// No description provided for @itemSortByName.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach Name sortieren (A–Z)'**
+  String get itemSortByName;
+
+  /// No description provided for @itemSortByValueAscending.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach Wert sortieren (aufsteigend)'**
+  String get itemSortByValueAscending;
+
+  /// No description provided for @itemSortByValueDescending.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach Wert sortieren (absteigend)'**
+  String get itemSortByValueDescending;
+
   /// No description provided for @itemCategoryFilterAll.
   ///
   /// In de, this message translates to:
@@ -1016,11 +1034,23 @@ abstract class AppLocalizations {
   /// **'Herstellbar'**
   String get craftableRecipeFilter;
 
+  /// No description provided for @notCraftableRecipeFilter.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht herstellbar'**
+  String get notCraftableRecipeFilter;
+
   /// No description provided for @noItemsInCategoryCraftable.
   ///
   /// In de, this message translates to:
   /// **'In dieser Kategorie sind keine Items herstellbar'**
   String get noItemsInCategoryCraftable;
+
+  /// No description provided for @noItemsInCategoryNotCraftable.
+  ///
+  /// In de, this message translates to:
+  /// **'In dieser Kategorie sind alle Items herstellbar'**
+  String get noItemsInCategoryNotCraftable;
 
   /// No description provided for @noItemsInCategory.
   ///

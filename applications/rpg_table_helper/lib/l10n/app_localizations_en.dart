@@ -482,14 +482,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchLabel => 'Search';
 
   @override
+  String get itemSortByName => 'Sort by name (A–Z)';
+
+  @override
+  String get itemSortByValueAscending => 'Sort by value (low to high)';
+
+  @override
+  String get itemSortByValueDescending => 'Sort by value (high to low)';
+
+  @override
   String get itemCategoryFilterAll => 'All';
 
   @override
   String get craftableRecipeFilter => 'Craftable';
 
   @override
+  String get notCraftableRecipeFilter => 'Not craftable';
+
+  @override
   String get noItemsInCategoryCraftable =>
       'No craftable items in this category';
+
+  @override
+  String get noItemsInCategoryNotCraftable =>
+      'All items in this category are craftable';
 
   @override
   String get noItemsInCategory => 'No items in this category';

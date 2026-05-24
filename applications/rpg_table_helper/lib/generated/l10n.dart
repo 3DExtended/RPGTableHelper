@@ -1339,6 +1339,36 @@ class S {
     return Intl.message('Search', name: 'searchLabel', desc: '', args: []);
   }
 
+  /// `Sort by name (A–Z)`
+  String get itemSortByName {
+    return Intl.message(
+      'Sort by name (A–Z)',
+      name: 'itemSortByName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sort by value (low to high)`
+  String get itemSortByValueAscending {
+    return Intl.message(
+      'Sort by value (low to high)',
+      name: 'itemSortByValueAscending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sort by value (high to low)`
+  String get itemSortByValueDescending {
+    return Intl.message(
+      'Sort by value (high to low)',
+      name: 'itemSortByValueDescending',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `All`
   String get itemCategoryFilterAll {
     return Intl.message(
@@ -1359,11 +1389,31 @@ class S {
     );
   }
 
+  /// `Not craftable`
+  String get notCraftableRecipeFilter {
+    return Intl.message(
+      'Not craftable',
+      name: 'notCraftableRecipeFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No craftable items in this category`
   String get noItemsInCategoryCraftable {
     return Intl.message(
       'No craftable items in this category',
       name: 'noItemsInCategoryCraftable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All items in this category are craftable`
+  String get noItemsInCategoryNotCraftable {
+    return Intl.message(
+      'All items in this category are craftable',
+      name: 'noItemsInCategoryNotCraftable',
       desc: '',
       args: [],
     );
