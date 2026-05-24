@@ -14,6 +14,7 @@ import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/modals/show_recipe_card_details.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_model_helpers.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -54,7 +55,8 @@ class CraftingRecipeWithRpgItemDetails {
 
 class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
   String? selectedCategory;
-  bool showOnlyCraftableItems = true;
+  RecipeCraftabilityFilter craftabilityFilter =
+      RecipeCraftabilityFilter.craftableOnly;
   bool isSearchFieldShowing = true;
   TextEditingController searchtextEditingController = TextEditingController();
 
@@ -142,21 +144,18 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
           .toList();
     }
 
-    // enrich recipesToRender with amount creatable by user
-    var craftableFilteredRecipes = recipesToRender
-        .map((r) => (
-              recipe: r,
-              amountCraftable: getAmountCreatableForRecipe(
-                rpgCharacterConfig,
-                r.originalRecipe,
-              )
-            ))
-        .toList();
-
-    if (showOnlyCraftableItems) {
-      craftableFilteredRecipes =
-          craftableFilteredRecipes.where((t) => t.amountCraftable > 0).toList();
-    }
+    var craftableFilteredRecipes = applyRecipeCraftabilityFilter(
+      recipesToRender
+          .map((r) => (
+                recipe: r,
+                amountCraftable: getAmountCreatableForRecipe(
+                  rpgCharacterConfig,
+                  r.originalRecipe,
+                )
+              ))
+          .toList(),
+      craftabilityFilter,
+    );
 
     return Column(
       children: [
@@ -187,7 +186,8 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                     children: [
                       CategoryFilterButton(
                           withoutLeadingPadding: true,
-                          isSelected: showOnlyCraftableItems,
+                          isSelected: craftabilityFilter ==
+                              RecipeCraftabilityFilter.craftableOnly,
                           categoryForFilter: ItemCategory(
                             colorCode: null,
                             iconName: null,
@@ -198,7 +198,29 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                           ),
                           onpressedHandler: () {
                             setState(() {
-                              showOnlyCraftableItems = !showOnlyCraftableItems;
+                              craftabilityFilter = craftabilityFilter ==
+                                      RecipeCraftabilityFilter.craftableOnly
+                                  ? RecipeCraftabilityFilter.all
+                                  : RecipeCraftabilityFilter.craftableOnly;
+                            });
+                          }),
+                      CategoryFilterButton(
+                          isSelected: craftabilityFilter ==
+                              RecipeCraftabilityFilter.notCraftableOnly,
+                          categoryForFilter: ItemCategory(
+                            colorCode: null,
+                            iconName: null,
+                            name: S.of(context).notCraftableRecipeFilter,
+                            subCategories: [],
+                            uuid: "notCraftable",
+                            hideInInventoryFilters: false,
+                          ),
+                          onpressedHandler: () {
+                            setState(() {
+                              craftabilityFilter = craftabilityFilter ==
+                                      RecipeCraftabilityFilter.notCraftableOnly
+                                  ? RecipeCraftabilityFilter.all
+                                  : RecipeCraftabilityFilter.notCraftableOnly;
                             });
                           }),
                       Container(
@@ -287,9 +309,14 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                       height: 50,
                     ),
                     Text(
-                      showOnlyCraftableItems
-                          ? S.of(context).noItemsInCategoryCraftable
-                          : S.of(context).noItemsInCategory,
+                      switch (craftabilityFilter) {
+                        RecipeCraftabilityFilter.craftableOnly =>
+                          S.of(context).noItemsInCategoryCraftable,
+                        RecipeCraftabilityFilter.notCraftableOnly =>
+                          S.of(context).noItemsInCategoryNotCraftable,
+                        RecipeCraftabilityFilter.all =>
+                          S.of(context).noItemsInCategory,
+                      },
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontSize: 24,
                           color: CustomThemeProvider.of(context)
@@ -441,51 +468,6 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
         .toList();
 
     return recipesForSelectedCategories.map((tuple) => tuple.$1).toList();
-  }
-
-  int getItemCountInCharacterInventory(
-      RpgCharacterConfiguration? characterConfig, String itemUuid) {
-    if (characterConfig == null) return 0;
-
-    var res = characterConfig.inventory
-        .where((i) => i.itemUuid == itemUuid)
-        .singleOrNull;
-
-    if (res == null) return 0;
-
-    return res.amount;
-  }
-
-  int getAmountCreatableForRecipe(
-      RpgCharacterConfiguration? characterConfig, CraftingRecipe r) {
-    if (characterConfig == null) return 0;
-    const int maxValue = -1 >>> 1;
-
-    // check if requirements are met
-    for (var requirement in r.requiredItemIds) {
-      var ingredientsInInventory =
-          getItemCountInCharacterInventory(characterConfig, requirement);
-      if (ingredientsInInventory == 0) {
-        return 0;
-      }
-    }
-
-    // check how often a user can execute the recipe
-    int createable = maxValue;
-
-    for (var ingredientPair in r.ingredients) {
-      var ingredientsInInventory = getItemCountInCharacterInventory(
-          characterConfig, ingredientPair.itemUuid);
-
-      var numberOfTimes =
-          ingredientsInInventory ~/ ingredientPair.amountOfUsedItem;
-
-      if (createable > numberOfTimes) {
-        createable = numberOfTimes;
-      }
-    }
-
-    return createable;
   }
 
   bool getSubcategoryHasRecipes(

@@ -227,6 +227,98 @@ void main() {
       });
     });
   });
+
+  group('applyRecipeCraftabilityFilter', () {
+    final recipes = [
+      (recipe: 'craftable', amountCraftable: 2),
+      (recipe: 'notCraftable', amountCraftable: 0),
+      (recipe: 'alsoCraftable', amountCraftable: 1),
+    ];
+
+    test('returns all recipes when filter is all', () {
+      final result = applyRecipeCraftabilityFilter(
+        recipes,
+        RecipeCraftabilityFilter.all,
+      );
+
+      expect(result, recipes);
+    });
+
+    test('returns only craftable recipes when filter is craftableOnly', () {
+      final result = applyRecipeCraftabilityFilter(
+        recipes,
+        RecipeCraftabilityFilter.craftableOnly,
+      );
+
+      expect(result.map((r) => r.recipe).toList(), ['craftable', 'alsoCraftable']);
+    });
+
+    test('returns only not craftable recipes when filter is notCraftableOnly',
+        () {
+      final result = applyRecipeCraftabilityFilter(
+        recipes,
+        RecipeCraftabilityFilter.notCraftableOnly,
+      );
+
+      expect(result.map((r) => r.recipe).toList(), ['notCraftable']);
+    });
+  });
+
+  group('getAmountCreatableForRecipe', () {
+    late RpgCharacterConfiguration character;
+
+    setUp(() {
+      character = RpgCharacterConfiguration(
+        tabConfigurations: null,
+        transformationComponents: null,
+        alternateForm: null,
+        isAlternateFormActive: null,
+        alternateForms: [],
+        companionCharacters: [],
+        uuid: "f2d956b6-a739-451a-8213-c60a2337868d",
+        characterName: 'Hero',
+        moneyInBaseType: 100,
+        characterStats: [],
+        inventory: [
+          RpgCharacterOwnedItemPair(itemUuid: 'item1', amount: 4),
+          RpgCharacterOwnedItemPair(itemUuid: 'item2', amount: 1),
+          RpgCharacterOwnedItemPair(itemUuid: 'tool', amount: 1),
+        ],
+      );
+    });
+
+    test('returns zero when required item is missing', () {
+      final recipe = CraftingRecipe(
+        requiredItemIds: ['tool'],
+        recipeUuid: 'recipe1',
+        ingredients: [
+          CraftingRecipeIngredientPair(itemUuid: 'item1', amountOfUsedItem: 2),
+        ],
+        createdItem:
+            CraftingRecipeIngredientPair(itemUuid: 'item3', amountOfUsedItem: 1),
+      );
+
+      character.inventory.removeWhere((i) => i.itemUuid == 'tool');
+
+      expect(getAmountCreatableForRecipe(character, recipe), 0);
+    });
+
+    test('returns craftable count based on limiting ingredient', () {
+      final recipe = CraftingRecipe(
+        requiredItemIds: ['tool'],
+        recipeUuid: 'recipe1',
+        ingredients: [
+          CraftingRecipeIngredientPair(itemUuid: 'item1', amountOfUsedItem: 2),
+          CraftingRecipeIngredientPair(itemUuid: 'item2', amountOfUsedItem: 1),
+        ],
+        createdItem:
+            CraftingRecipeIngredientPair(itemUuid: 'item3', amountOfUsedItem: 1),
+      );
+
+      expect(getAmountCreatableForRecipe(character, recipe), 1);
+    });
+  });
+
   group("getInventoryOfCharacter", () {
     test('Character with no items in inventory', () {
       // Arrange
