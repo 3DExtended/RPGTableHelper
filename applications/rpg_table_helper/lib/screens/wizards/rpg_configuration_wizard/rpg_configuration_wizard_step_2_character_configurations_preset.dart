@@ -63,14 +63,6 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
   }
 
   @override
-  void dispose() {
-    if (hasDataLoaded) {
-      saveChanges();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData((data) {
       setState(() {
