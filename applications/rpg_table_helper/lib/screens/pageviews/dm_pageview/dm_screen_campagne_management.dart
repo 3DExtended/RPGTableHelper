@@ -419,7 +419,7 @@ class _DmScreenCampagneManagementState
               disableEdit: true,
               showMoney: true,
               characterConfigurationOverride: charConfig,
-              showInventory: false,
+              showInventory: true,
               showLore: false,
               showRecipes: false,
             ));

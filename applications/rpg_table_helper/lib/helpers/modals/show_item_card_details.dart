@@ -21,6 +21,7 @@ Future<int?> showItemCardDetails(BuildContext context,
     {required RpgItem item,
     required RpgConfigurationModel rpgConfig,
     required int? currentlyOwned, // null if not relevant.
+    bool readOnly = false,
     GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   return await customShowCupertinoModalBottomSheet<int>(
       isDismissible: true,
@@ -41,6 +42,7 @@ Future<int?> showItemCardDetails(BuildContext context,
           item: item,
           rpgConfig: rpgConfig,
           currentlyOwned: currentlyOwned,
+          readOnly: readOnly,
         );
       });
 }
@@ -52,11 +54,13 @@ class ItemCardDetailsModalContent extends StatefulWidget {
     required this.item,
     required this.currentlyOwned,
     required this.rpgConfig,
+    this.readOnly = false,
   });
   final int? currentlyOwned;
   final RpgItem item;
   final double modalPadding;
   final RpgConfigurationModel rpgConfig;
+  final bool readOnly;
 
   @override
   State<ItemCardDetailsModalContent> createState() =>
@@ -226,20 +230,35 @@ class _ItemCardDetailsModalContentState
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomIntEditField(
-                      minValue: -999,
-                      maxValue: 999,
-                      onValueChange: (newValue) {
-                        setState(() {
-                          currentlyOwned = newValue;
-                        });
-                      },
-                      label: S.of(context).amount,
-                      startValue: currentlyOwned,
-                    ),
+                    if (!widget.readOnly) ...[
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomIntEditField(
+                        minValue: -999,
+                        maxValue: 999,
+                        onValueChange: (newValue) {
+                          setState(() {
+                            currentlyOwned = newValue;
+                          });
+                        },
+                        label: S.of(context).amount,
+                        startValue: currentlyOwned,
+                      ),
+                    ] else ...[
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "${S.of(context).amount}: $currentlyOwned",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
+                              fontSize: 16,
+                            ),
+                      ),
+                    ],
                     const SizedBox(
                       height: 20,
                     ),
@@ -254,14 +273,16 @@ class _ItemCardDetailsModalContentState
                               navigatorKey.currentState!.pop(null);
                             },
                           ),
-                          const Spacer(),
-                          CustomButton(
-                            label: S.of(context).save,
-                            onPressed: () {
-                              navigatorKey.currentState!.pop(currentlyOwned -
-                                  (widget.currentlyOwned ?? 0));
-                            },
-                          ),
+                          if (!widget.readOnly) ...[
+                            const Spacer(),
+                            CustomButton(
+                              label: S.of(context).save,
+                              onPressed: () {
+                                navigatorKey.currentState!.pop(currentlyOwned -
+                                    (widget.currentlyOwned ?? 0));
+                              },
+                            ),
+                          ],
                           const Spacer(),
                         ],
                       ),

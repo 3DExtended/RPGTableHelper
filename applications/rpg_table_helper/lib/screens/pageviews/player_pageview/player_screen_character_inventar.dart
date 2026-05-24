@@ -40,12 +40,12 @@ class _PlayerScreenCharacterInventoryState
       });
     });
 
-    var isCharToRenderEqualToRpgCharacterConfig = widget.charToRender != null &&
+    final isViewingOwnInventory = widget.charToRender != null &&
         ref.read(rpgCharacterConfigurationProvider).hasValue &&
         ref.read(rpgCharacterConfigurationProvider).requireValue.uuid ==
             widget.charToRender!.uuid;
 
-    var incentoryToUse = isCharToRenderEqualToRpgCharacterConfig
+    var incentoryToUse = isViewingOwnInventory
         ? ref.watch(rpgCharacterConfigurationProvider).requireValue.inventory
         : (widget.charToRender is RpgCharacterConfiguration &&
                 (widget.charToRender as RpgCharacterConfiguration)
@@ -72,28 +72,31 @@ class _PlayerScreenCharacterInventoryState
         hideAmount: false,
         items: currentItems,
         onEditItemAmount: null,
-        onAddNewItemPressed: () async {
-          await showAddNewItemModal(
-            itemCategoryFilter: selectedItemCategoryId,
-            context,
-          ).then(
-            (value) {
-              if (value == null) return;
+        onAddNewItemPressed: isViewingOwnInventory
+            ? () async {
+                await showAddNewItemModal(
+                  itemCategoryFilter: selectedItemCategoryId,
+                  context,
+                ).then(
+                  (value) {
+                    if (value == null) return;
 
-              ref.read(rpgCharacterConfigurationProvider.notifier).grantItems(
-                  value
-                      .map((i) => RpgCharacterOwnedItemPair(
-                          itemUuid: i.$1, amount: i.$2))
-                      .toList());
-            },
-          );
-        },
+                    ref
+                        .read(rpgCharacterConfigurationProvider.notifier)
+                        .grantItems(value
+                            .map((i) => RpgCharacterOwnedItemPair(
+                                itemUuid: i.$1, amount: i.$2))
+                            .toList());
+                  },
+                );
+              }
+            : null,
         onSelectNewFilterCategory: (ItemCategory e) {
           setState(() {
             selectedItemCategoryId = e.uuid == "" ? null : e.uuid;
           });
         },
-        renderCreateButton: true,
+        renderCreateButton: isViewingOwnInventory,
         selectedItemCategoryId: selectedItemCategoryId,
         onItemCardPressed:
             (MapEntry<int, ({int amount, RpgItem item})> details) async {
@@ -102,8 +105,11 @@ class _PlayerScreenCharacterInventoryState
             item: details.value.item,
             currentlyOwned: details.value.amount,
             rpgConfig: widget.rpgConfig,
+            readOnly: !isViewingOwnInventory,
           ).then((valueToAdjustAmountBy) {
-            if (valueToAdjustAmountBy == null || valueToAdjustAmountBy == 0) {
+            if (!isViewingOwnInventory ||
+                valueToAdjustAmountBy == null ||
+                valueToAdjustAmountBy == 0) {
               return;
             }
 
