@@ -10,6 +10,7 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -54,12 +55,28 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
   Map<String, List<StatOrGroupIndicator>> statsUnderTab = {};
 
   bool isFormValid = true;
+  RpgConfigurationNotifier? _configNotifier;
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
       widget.setWizardTitle("Character Stats");
     });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _configNotifier = ref.read(rpgConfigurationProvider.notifier);
+  }
+
+  @override
+  void dispose() {
+    if (!isInTestEnvironment && hasDataLoaded) {
+      saveChanges();
+    }
+    super.dispose();
   }
 
   @override
@@ -548,8 +565,8 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
     });
   }
 
-  void saveChanges() {
-    var constructedTabs = tabsToEdit.map((tuple) {
+  List<CharacterStatsTabDefinition> _buildConstructedTabs() {
+    return tabsToEdit.map((tuple) {
       List<CharacterStatDefinition> correctyGroupedStats = [];
 
       int groupCountInTab = 0;
@@ -572,10 +589,12 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
         statsInTab: correctyGroupedStats,
       );
     }).toList();
+  }
 
-    ref
-        .read(rpgConfigurationProvider.notifier)
-        .updateCharacterScreenStatsTabs(constructedTabs);
+  void saveChanges() {
+    final RpgConfigurationNotifier notifier =
+        _configNotifier ?? ref.read(rpgConfigurationProvider.notifier);
+    notifier.updateCharacterScreenStatsTabs(_buildConstructedTabs());
   }
 }
 
