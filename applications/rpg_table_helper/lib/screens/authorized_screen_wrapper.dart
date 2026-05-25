@@ -10,6 +10,7 @@ import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
+import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 
 class AuthorizedScreenWrapper extends ConsumerStatefulWidget {
@@ -41,6 +42,7 @@ class _AuthorizedScreenWrapperState
       SearchScreen.route: (context) => const SearchScreen(),
       UserSettingsScreen.route: (context) => const UserSettingsScreen(),
       ApiKeysScreen.route: (context) => const ApiKeysScreen(),
+      AgentDebugLogScreen.route: (context) => const AgentDebugLogScreen(),
     };
 
     for (var config in allWizardConfigurations.entries.toList()) {

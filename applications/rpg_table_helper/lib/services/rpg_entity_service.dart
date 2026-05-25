@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart' show MultipartFile;
+import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
@@ -52,6 +54,12 @@ abstract class IRpgEntityService {
 
   Future<HRResponse<PlayerCharacterIdentifier>> createNewCharacter(
       {required String characterName, String? characterConfigJson});
+
+  /// Persists merged RPG configuration via REST (reliable for large payloads).
+  Future<HRResponse<bool>> updateCampagneRpgConfiguration({
+    required CampagneIdentifier campagneId,
+    required String rpgConfigurationJson,
+  });
 }
 
 class RpgEntityService extends IRpgEntityService {
@@ -305,6 +313,58 @@ class RpgEntityService extends IRpgEntityService {
 
     return userDescriptors;
   }
+
+  @override
+  Future<HRResponse<bool>> updateCampagneRpgConfiguration({
+    required CampagneIdentifier campagneId,
+    required String rpgConfigurationJson,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error(
+        'Could not load api connector.',
+        'a8f3c2e1-9b4d-4f6a-8c1e-rest-campagne-config',
+      );
+    }
+
+    final campagneIdValue = campagneId.$value;
+    if (campagneIdValue == null || campagneIdValue.isEmpty) {
+      return HRResponse.error(
+        'Missing campagne id.',
+        'b9e4d3f2-0c5e-5g7b-9d2f-rest-campagne-id',
+      );
+    }
+
+    final url = Uri.parse(
+      '${apiBaseUrl}Campagne/updatecampagneconfig/$campagneIdValue',
+    );
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $jwt',
+        },
+        body: jsonEncode({'rpgConfiguration': rpgConfigurationJson}),
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          'Could not save campagne configuration.',
+          'c0f5e4d3-1d6f-6h8c-0e3g-rest-campagne-save',
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(true, statusCode: response.statusCode);
+    } on Exception catch (e) {
+      return HRResponse.error(
+        'Could not save campagne configuration.',
+        'c0f5e4d3-1d6f-6h8c-0e3g-rest-campagne-save',
+        caughtException: e,
+      );
+    }
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -317,6 +377,7 @@ class MockRpgEntityService extends IRpgEntityService {
       getPlayerCharactersForCampagneOverride;
 
   final HRResponse<bool>? handleJoinRequestOverride;
+  final HRResponse<bool>? updateCampagneRpgConfigurationOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
@@ -324,8 +385,19 @@ class MockRpgEntityService extends IRpgEntityService {
     this.saveCampagneAsNewCampagneOverride,
     this.getPlayerCharacetersForPlayerOverride,
     this.handleJoinRequestOverride,
+    this.updateCampagneRpgConfigurationOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
+
+  @override
+  Future<HRResponse<bool>> updateCampagneRpgConfiguration({
+    required CampagneIdentifier campagneId,
+    required String rpgConfigurationJson,
+  }) {
+    return Future.value(
+      updateCampagneRpgConfigurationOverride ?? HRResponse.fromResult(true),
+    );
+  }
 
   @override
   Future<HRResponse<List<Campagne>>> getCampagnesWithPlayerAsDm() {

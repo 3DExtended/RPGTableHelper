@@ -23,6 +23,7 @@ import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
+import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -159,6 +160,11 @@ class AppRoutingShell extends ConsumerWidget {
                       case ApiKeysScreen.route:
                         return MaterialWithModalsPageRoute(
                           builder: (_) => const ApiKeysScreen(),
+                          settings: settings,
+                        );
+                      case AgentDebugLogScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => const AgentDebugLogScreen(),
                           settings: settings,
                         );
                     }

@@ -83,13 +83,19 @@ abstract class IServerCommunicationService {
   Future<void> ensureConnectionReadyForSession();
 
   /// Like [executeServerFunction], but on total failure the invoke is stored in an in-memory queue for later [drainHubInvokeQueue].
-  Future<void> executeCriticalServerFunction(String functionName,
+  /// Returns true when the hub invoke succeeded; false when queued or failed.
+  Future<bool> executeCriticalServerFunction(String functionName,
       {List<Object>? args, int maxInvokeRetries = 3});
 
   /// Retries queued critical invokes; safe to call after reconnect or resume.
   Future<void> drainHubInvokeQueue();
 
   int get pendingHubInvokeCount;
+
+  /// Last hub invoke error message (for diagnostic logs).
+  String? get lastHubInvokeError;
+
+  void clearQueuedCampagneConfigInvokes(String campagneId);
 }
 
 class ServerCommunicationService extends IServerCommunicationService {
@@ -99,6 +105,9 @@ class ServerCommunicationService extends IServerCommunicationService {
 
   @override
   int get pendingHubInvokeCount => _hubInvokeQueue.length;
+
+  @override
+  String? lastHubInvokeError;
 
   bool get connectionIsOpen =>
       hubConnection != null &&
@@ -151,6 +160,8 @@ class ServerCommunicationService extends IServerCommunicationService {
       10000,
       ...List.generate(5000, (i) => 20000)
     ]).build();
+
+    hubConnection!.serverTimeoutInMilliseconds = 120 * 1000;
 
     log(
       "SignalR: HttpConnectionOptions.transport unset — negotiate and try "
@@ -246,6 +257,11 @@ class ServerCommunicationService extends IServerCommunicationService {
 
   @override
   Future stopConnection() async {
+    try {
+      await DependencyProvider.getIt
+          ?.get<IServerMethodsService>()
+          .flushPendingCampagneConfig();
+    } catch (_) {}
     await hubConnection?.stop();
   }
 
@@ -410,7 +426,7 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   @override
-  Future<void> executeCriticalServerFunction(String functionName,
+  Future<bool> executeCriticalServerFunction(String functionName,
       {List<Object>? args, int maxInvokeRetries = 3}) async {
     final ok = await _invokeWithRetries(functionName,
         args: args, maxInvokeRetries: maxInvokeRetries);
@@ -421,6 +437,12 @@ class ServerCommunicationService extends IServerCommunicationService {
         name: "SignalR",
       );
     }
+    return ok;
+  }
+
+  @override
+  void clearQueuedCampagneConfigInvokes(String campagneId) {
+    _hubInvokeQueue.removeCampagneRpgConfigInvokes(campagneId);
   }
 
   @override
@@ -467,10 +489,16 @@ class ServerCommunicationService extends IServerCommunicationService {
       maxInvokeRetries: maxInvokeRetries,
       logSkippedNoHub: (m) => log(m, name: "SignalR"),
       logNotConnected: (m) => log(m, name: "SignalR"),
-      logInvokeOk: (m) => log(m, name: "SignalR"),
-      logInvokeFailed: (m, e, st) =>
-          log(m, name: "SignalR", error: e, stackTrace: st),
+      logInvokeOk: (m) {
+        lastHubInvokeError = null;
+        log(m, name: "SignalR");
+      },
+      logInvokeFailed: (m, e, st) {
+        lastHubInvokeError = e.toString();
+        log(m, name: "SignalR", error: e, stackTrace: st);
+      },
       logGaveUp: (m, e, st) {
+        lastHubInvokeError = e?.toString() ?? m;
         if (e != null) {
           log(m, name: "SignalR", error: e, stackTrace: st);
         }
@@ -559,12 +587,18 @@ class MockServerCommunicationService extends IServerCommunicationService {
   int get pendingHubInvokeCount => 0;
 
   @override
+  String? get lastHubInvokeError => null;
+
+  @override
+  void clearQueuedCampagneConfigInvokes(String campagneId) {}
+
+  @override
   Future<void> drainHubInvokeQueue() async {}
 
   @override
-  Future<void> executeCriticalServerFunction(String functionName,
-      {List<Object>? args, int maxInvokeRetries = 3}) {
-    throw UnimplementedError();
+  Future<bool> executeCriticalServerFunction(String functionName,
+      {List<Object>? args, int maxInvokeRetries = 3}) async {
+    return true;
   }
 
   @override

@@ -93,4 +93,26 @@ class HubInvokeQueue {
   }
 
   void clear() => _items.clear();
+
+  /// Drops queued campagne config SignalR invokes after a successful REST save.
+  void removeCampagneRpgConfigInvokes(String campagneId) {
+    _items.removeWhere((p) {
+      if (p.args == null || p.args!.isEmpty) {
+        return false;
+      }
+      if (p.args![0].toString() != campagneId) {
+        return false;
+      }
+      switch (p.functionName) {
+        case 'SendUpdatedRpgConfig':
+        case 'SendUpdatedRpgConfigCold':
+        case 'SendUpdatedRpgConfigColdV3':
+        case 'SendUpdatedRpgConfigHot':
+        case 'SendUpdatedRpgConfigHotV3':
+          return true;
+        default:
+          return false;
+      }
+    });
+  }
 }

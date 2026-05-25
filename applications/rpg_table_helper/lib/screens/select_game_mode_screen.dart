@@ -14,6 +14,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/agent_debug_log.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
@@ -372,13 +373,32 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         campagne.rpgConfiguration!.isNotEmpty) {
       var parsedJson = RpgConfigurationModel.fromJson(
           jsonDecode(campagne.rpgConfiguration!));
+      agentDebugLog(
+        location: 'select_game_mode_screen.dart:onCampagneSelected',
+        message: 'loaded campagne config from REST',
+        hypothesisId: 'D',
+        data: {
+          'campagneId': campagne.id?.$value,
+          'statTabCount': parsedJson.characterStatTabsDefinition?.length,
+          'statCount': parsedJson.characterStatTabsDefinition?.fold<int>(
+                0,
+                (sum, tab) => sum + tab.statsInTab.length,
+              ) ??
+              0,
+        },
+      );
       ref
           .read(rpgConfigurationProvider.notifier)
           .updateConfiguration(parsedJson);
+      DependencyProvider.of(context)
+          .getService<IServerMethodsService>()
+          .seedRpgConfigSliceCacheFromFull(parsedJson);
     } else {
-      ref
-          .read(rpgConfigurationProvider.notifier)
-          .updateConfiguration(RpgConfigurationModel.getBaseConfiguration());
+      final base = RpgConfigurationModel.getBaseConfiguration();
+      ref.read(rpgConfigurationProvider.notifier).updateConfiguration(base);
+      DependencyProvider.of(context)
+          .getService<IServerMethodsService>()
+          .seedRpgConfigSliceCacheFromFull(base);
     }
 
     var rpgService =

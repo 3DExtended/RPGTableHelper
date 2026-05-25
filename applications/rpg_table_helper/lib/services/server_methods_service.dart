@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:quest_keeper/helpers/agent_debug_log.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
@@ -17,9 +19,12 @@ import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:json_patch/json_patch.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/rpg_config_upstream_envelope.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 
 abstract class IServerMethodsService {
   final bool isMock;
@@ -167,6 +172,12 @@ abstract class IServerMethodsService {
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig, required String campagneId});
 
+  /// Seeds cold/hot slice cache from REST-loaded config (before SignalR echo).
+  void seedRpgConfigSliceCacheFromFull(RpgConfigurationModel config);
+
+  /// Immediately sends any debounced campagne config for the active DM campagne.
+  Future<void> flushPendingCampagneConfig({String? campagneId});
+
   Future askPlayersForRolls(
       {required String campagneId, required FightSequence fightSequence});
 
@@ -227,6 +238,33 @@ class ServerMethodsService extends IServerMethodsService {
     "currencyDefinition",
   };
 
+  /// Set false when the hub reports a missing v3 campagne-config method (older prod servers).
+  bool _serverCampagneConfigV3Available = true;
+
+  /// Set false after REST returns 404 (endpoint not deployed on server).
+  bool _campagneConfigRestPersistAvailable = true;
+
+  bool _hubErrorIndicatesMissingMethod(String? error) {
+    if (error == null) {
+      return false;
+    }
+    return error.contains('Method does not exist');
+  }
+
+  void _commitAfterSuccessfulCampagneConfigSend({
+    required String campagneId,
+    required String coldJson,
+    required String hotJson,
+  }) {
+    _latestRpgConfigColdJson = coldJson;
+    _latestRpgConfigHotJson = hotJson;
+    _localColdSliceRevision = null;
+    _localHotSliceRevision = null;
+    _lastSentCampagneColdHashById[campagneId] = coldJson.hashCode;
+    _lastSentCampagneHotHashById[campagneId] = hotJson.hashCode;
+    serverCommunicationService.clearQueuedCampagneConfigInvokes(campagneId);
+  }
+
   bool _hasPendingCampagneConfigOutbound() {
     return _pendingCampagneConfigSendTimers.values.any((timer) => timer.isActive);
   }
@@ -250,7 +288,7 @@ class ServerMethodsService extends IServerMethodsService {
     if (_latestRpgConfigColdJson != null) {
       return;
     }
-    _latestRpgConfigColdJson = '{}';
+    _latestRpgConfigColdJson = coldJson;
     _localColdSliceRevision = 0;
   }
 
@@ -261,8 +299,60 @@ class ServerMethodsService extends IServerMethodsService {
     if (_latestRpgConfigHotJson != null) {
       return;
     }
-    _latestRpgConfigHotJson = '{}';
+    _latestRpgConfigHotJson = hotJson;
     _localHotSliceRevision = 0;
+  }
+
+  (String coldJson, String hotJson) _splitRpgConfigSlices(
+      RpgConfigurationModel config) {
+    final full = config.toJson();
+    final cold = <String, dynamic>{};
+    final hot = <String, dynamic>{};
+    for (final entry in full.entries) {
+      if (_rpgConfigColdKeys.contains(entry.key)) {
+        cold[entry.key] = entry.value;
+      } else {
+        hot[entry.key] = entry.value;
+      }
+    }
+    return (jsonEncode(cold), jsonEncode(hot));
+  }
+
+  @override
+  void seedRpgConfigSliceCacheFromFull(RpgConfigurationModel config) {
+    final slices = _splitRpgConfigSlices(config);
+    _latestRpgConfigColdJson = slices.$1;
+    _latestRpgConfigHotJson = slices.$2;
+    _localColdSliceRevision = null;
+    _localHotSliceRevision = null;
+    agentDebugLog(
+      location: 'server_methods_service.dart:seedRpgConfigSliceCacheFromFull',
+      message: 'seeded slice cache from REST/full config',
+      hypothesisId: 'D',
+      data: {
+        'coldJsonLen': slices.$1.length,
+        'hotJsonLen': slices.$2.length,
+        'runId': 'post-fix',
+      },
+    );
+  }
+
+  @override
+  Future<void> flushPendingCampagneConfig({String? campagneId}) async {
+    final id = campagneId ??
+        widgetRef.read(connectionDetailsProvider).value?.campagneId;
+    if (id == null) {
+      return;
+    }
+    _pendingCampagneConfigSendTimers[id]?.cancel();
+    _pendingCampagneConfigSendTimers.remove(id);
+    agentDebugLog(
+      location: 'server_methods_service.dart:flushPendingCampagneConfig',
+      message: 'immediate flush requested',
+      hypothesisId: 'A',
+      data: {'campagneId': id, 'runId': 'post-fix'},
+    );
+    await _flushCampagneConfigIfPending(id);
   }
 
   void _commitSentCampagneColdSlice({
@@ -307,11 +397,247 @@ class ServerMethodsService extends IServerMethodsService {
     }
   }
 
+  String _mergeCampagneConfigSlicesJson(String coldJson, String hotJson) {
+    final coldMap =
+        (jsonDecode(coldJson) as Map).cast<String, dynamic>();
+    final hotMap = (jsonDecode(hotJson) as Map).cast<String, dynamic>();
+    return jsonEncode(<String, dynamic>{...coldMap, ...hotMap});
+  }
+
+  Future<bool> _tryPersistCampagneConfigViaRest({
+    required String campagneId,
+    required String coldJson,
+    required String hotJson,
+  }) async {
+    final getIt = DependencyProvider.getIt;
+    if (getIt == null) {
+      return false;
+    }
+    final merged = _mergeCampagneConfigSlicesJson(coldJson, hotJson);
+    final result =
+        await getIt.get<IRpgEntityService>().updateCampagneRpgConfiguration(
+              campagneId: CampagneIdentifier($value: campagneId),
+              rpgConfigurationJson: merged,
+            );
+    agentDebugLog(
+      location: 'server_methods_service.dart:_tryPersistCampagneConfigViaRest',
+      message: result.isSuccessful
+          ? 'REST campagne config save ok'
+          : 'REST campagne config save failed',
+      hypothesisId: 'F',
+      data: {
+        'campagneId': campagneId,
+        'mergedLen': merged.length,
+        'statusCode': result.statusCode,
+        'errorFromServer': result.errorFromServer,
+        'requestUrl':
+            '${apiBaseUrl}Campagne/updatecampagneconfig/$campagneId',
+        'runId': 'post-fix',
+      },
+    );
+    if (!result.isSuccessful) {
+      if (result.statusCode == 404) {
+        _campagneConfigRestPersistAvailable = false;
+      }
+      return false;
+    }
+    _commitAfterSuccessfulCampagneConfigSend(
+      campagneId: campagneId,
+      coldJson: coldJson,
+      hotJson: hotJson,
+    );
+    return true;
+  }
+
+  /// Production hubs often lack v3 + REST; legacy full config is the reliable path.
+  Future<bool> _tryPersistCampagneConfigViaCompatibleHubPaths({
+    required String campagneId,
+    required String coldJson,
+    required String hotJson,
+    required int lastColdHash,
+    required int lastHotHash,
+    required String logContext,
+  }) async {
+    agentDebugLog(
+      location: 'server_methods_service.dart:_tryPersistCampagneConfigViaCompatibleHubPaths',
+      message: 'trying legacy SignalR full config',
+      hypothesisId: 'G',
+      data: {
+        'campagneId': campagneId,
+        'mergedLen': _mergeCampagneConfigSlicesJson(coldJson, hotJson).length,
+        'logContext': logContext,
+        'runId': 'post-fix',
+      },
+    );
+    final legacyOk = await _tryPersistCampagneConfigViaLegacySignalRFull(
+      campagneId: campagneId,
+      coldJson: coldJson,
+      hotJson: hotJson,
+    );
+    if (legacyOk) {
+      return true;
+    }
+
+    agentDebugLog(
+      location: 'server_methods_service.dart:_tryPersistCampagneConfigViaCompatibleHubPaths',
+      message: 'trying SignalR v2 cold+hot slices',
+      hypothesisId: 'G',
+      data: {
+        'campagneId': campagneId,
+        'logContext': logContext,
+        'runId': 'post-fix',
+      },
+    );
+    final v2Ok = await _tryPersistCampagneConfigViaSignalRv2Slices(
+      campagneId: campagneId,
+      coldJson: coldJson,
+      hotJson: hotJson,
+      lastColdHash: lastColdHash,
+      lastHotHash: lastHotHash,
+    );
+    if (v2Ok) {
+      return true;
+    }
+
+    if (_campagneConfigRestPersistAvailable) {
+      agentDebugLog(
+        location:
+            'server_methods_service.dart:_tryPersistCampagneConfigViaCompatibleHubPaths',
+        message: 'trying REST campagne config save',
+        hypothesisId: 'F',
+        data: {
+          'campagneId': campagneId,
+          'logContext': logContext,
+          'runId': 'post-fix',
+        },
+      );
+      final restOk = await _tryPersistCampagneConfigViaRest(
+        campagneId: campagneId,
+        coldJson: coldJson,
+        hotJson: hotJson,
+      );
+      if (restOk) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Future<bool> _tryPersistCampagneConfigViaLegacySignalRFull({
+    required String campagneId,
+    required String coldJson,
+    required String hotJson,
+  }) async {
+    final merged = _mergeCampagneConfigSlicesJson(coldJson, hotJson);
+    final ok = await serverCommunicationService.executeCriticalServerFunction(
+      'SendUpdatedRpgConfig',
+      args: [campagneId, merged],
+    );
+    agentDebugLog(
+      location:
+          'server_methods_service.dart:_tryPersistCampagneConfigViaLegacySignalRFull',
+      message: ok
+          ? 'legacy SignalR full config save ok'
+          : 'legacy SignalR full config save failed',
+      hypothesisId: 'G',
+      data: {
+        'campagneId': campagneId,
+        'mergedLen': merged.length,
+        'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
+        'runId': 'post-fix',
+      },
+    );
+    if (!ok) {
+      return false;
+    }
+    _commitAfterSuccessfulCampagneConfigSend(
+      campagneId: campagneId,
+      coldJson: coldJson,
+      hotJson: hotJson,
+    );
+    return true;
+  }
+
+  Future<bool> _tryPersistCampagneConfigViaSignalRv2Slices({
+    required String campagneId,
+    required String coldJson,
+    required String hotJson,
+    required int lastColdHash,
+    required int lastHotHash,
+  }) async {
+    final coldHash = coldJson.hashCode;
+    final hotHash = hotJson.hashCode;
+    var coldOk = lastColdHash == coldHash;
+    var hotOk = lastHotHash == hotHash;
+
+    if (!coldOk) {
+      coldOk = await serverCommunicationService.executeCriticalServerFunction(
+        'SendUpdatedRpgConfigCold',
+        args: [campagneId, coldJson],
+      );
+      if (coldOk) {
+        _latestRpgConfigColdJson = coldJson;
+      }
+    }
+
+    if (!hotOk) {
+      hotOk = await serverCommunicationService.executeCriticalServerFunction(
+        'SendUpdatedRpgConfigHot',
+        args: [campagneId, hotJson],
+      );
+      if (hotOk) {
+        _latestRpgConfigHotJson = hotJson;
+      }
+    }
+
+    agentDebugLog(
+      location:
+          'server_methods_service.dart:_tryPersistCampagneConfigViaSignalRv2Slices',
+      message: (coldOk && hotOk)
+          ? 'SignalR v2 cold+hot save ok'
+          : 'SignalR v2 cold+hot save failed',
+      hypothesisId: 'G',
+      data: {
+        'campagneId': campagneId,
+        'coldOk': coldOk,
+        'hotOk': hotOk,
+        'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
+        'runId': 'post-fix',
+      },
+    );
+
+    if (!coldOk || !hotOk) {
+      if (_hubErrorIndicatesMissingMethod(
+          serverCommunicationService.lastHubInvokeError)) {
+        _serverCampagneConfigV3Available = false;
+      }
+      return false;
+    }
+
+    _commitAfterSuccessfulCampagneConfigSend(
+      campagneId: campagneId,
+      coldJson: coldJson,
+      hotJson: hotJson,
+    );
+    return true;
+  }
+
   Future<void> _flushCampagneConfigIfPending(String campagneId) async {
     final coldJson = _pendingCampagneColdJsonById[campagneId];
     final hotJson = _pendingCampagneHotJsonById[campagneId];
 
     if (coldJson == null || hotJson == null) {
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+        message: 'flush aborted (missing pending slice)',
+        hypothesisId: 'A',
+        data: {
+          'campagneId': campagneId,
+          'hasCold': coldJson != null,
+          'hasHot': hotJson != null,
+        },
+      );
       return;
     }
 
@@ -323,6 +649,57 @@ class ServerMethodsService extends IServerMethodsService {
 
     // Skip sending unchanged payloads.
     if (lastColdHash == coldHash && lastHotHash == hotHash) {
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+        message: 'flush skipped (hash unchanged)',
+        hypothesisId: 'A',
+        data: {
+          'campagneId': campagneId,
+          'coldHash': coldHash,
+          'hotHash': hotHash,
+        },
+      );
+      return;
+    }
+
+    // Device builds: legacy/v2/REST before v3 (prod hub lacks v3 + REST endpoint).
+    if (!isInTestEnvironment) {
+      final compatibleOk =
+          await _tryPersistCampagneConfigViaCompatibleHubPaths(
+        campagneId: campagneId,
+        coldJson: coldJson,
+        hotJson: hotJson,
+        lastColdHash: lastColdHash ?? 0,
+        lastHotHash: lastHotHash ?? 0,
+        logContext: 'flush-primary',
+      );
+      if (compatibleOk) {
+        agentDebugLog(
+          location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+          message: 'flush completed via compatible hub/rest path',
+          hypothesisId: 'G',
+          data: {
+            'campagneId': campagneId,
+            'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+            'runId': 'post-fix',
+          },
+        );
+        return;
+      }
+    }
+
+    if (!_serverCampagneConfigV3Available) {
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+        message: 'flush aborted (v3 disabled, compatible paths failed)',
+        hypothesisId: 'G',
+        data: {
+          'campagneId': campagneId,
+          'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
+          'restPersistAvailable': _campagneConfigRestPersistAvailable,
+          'runId': 'post-fix',
+        },
+      );
       return;
     }
 
@@ -331,14 +708,62 @@ class ServerMethodsService extends IServerMethodsService {
     _ensureCampagneHotBaselineForFirstV3Upstream(hotJson);
 
     final coldV3Upstream = signalRProtocolVersion >= 3 &&
+        _serverCampagneConfigV3Available &&
         _localColdSliceRevision != null &&
         _latestRpgConfigColdJson != null;
     final hotV3Upstream = signalRProtocolVersion >= 3 &&
+        _serverCampagneConfigV3Available &&
         _localHotSliceRevision != null &&
         _latestRpgConfigHotJson != null;
 
+    Map<String, dynamic>? coldEnvelopeMeta;
+    if (lastColdHash != coldHash && coldV3Upstream) {
+      final fromRev = _localColdSliceRevision!;
+      final coldEnv = buildRpgConfigUpstreamEnvelope(
+        slice: 'cold',
+        previousJson: _latestRpgConfigColdJson,
+        newJson: coldJson,
+        fromRevision: fromRev,
+        toRevision: fromRev + 1,
+      );
+      try {
+        final decoded = jsonDecode(coldEnv) as Map<String, dynamic>;
+        coldEnvelopeMeta = {
+          'kind': decoded['kind'],
+          'fromRevision': decoded['fromRevision'],
+          'toRevision': decoded['toRevision'],
+        };
+      } catch (_) {
+        coldEnvelopeMeta = {'parseError': true};
+      }
+    }
+
+    agentDebugLog(
+      location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+      message: 'flushing campagne config to server',
+      hypothesisId: 'C',
+      data: {
+        'campagneId': campagneId,
+        'hubState': serverCommunicationService.hubConnectionState?.name,
+        'coldV3Upstream': coldV3Upstream,
+        'hotV3Upstream': hotV3Upstream,
+        'localColdRev': _localColdSliceRevision,
+        'localHotRev': _localHotSliceRevision,
+        'coldBaselineLen': _latestRpgConfigColdJson?.length,
+        'coldBaselineIsEmpty': _latestRpgConfigColdJson == '{}',
+        'coldChanged': lastColdHash != coldHash,
+        'hotChanged': lastHotHash != hotHash,
+        'coldEnvelope': coldEnvelopeMeta,
+        'coldJsonLen': coldJson.length,
+      },
+    );
+
+    var coldSent = false;
+    var hotSent = false;
+
     // Send cold first (big) then hot (small), server recombines for legacy clients.
     if (lastColdHash != coldHash) {
+      var coldOk = false;
       if (coldV3Upstream) {
         final fromRev = _localColdSliceRevision!;
         final toRev = fromRev + 1;
@@ -349,22 +774,30 @@ class ServerMethodsService extends IServerMethodsService {
           fromRevision: fromRev,
           toRevision: toRev,
         );
-        await serverCommunicationService.executeCriticalServerFunction(
+        coldOk = await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigColdV3",
           args: [campagneId, coldEnv],
         );
-        _commitSentCampagneColdSlice(coldJson: coldJson, toRevision: toRev);
+        if (coldOk) {
+          _commitSentCampagneColdSlice(coldJson: coldJson, toRevision: toRev);
+        }
       } else {
-        await serverCommunicationService.executeCriticalServerFunction(
+        coldOk = await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigCold",
           args: [campagneId, coldJson],
         );
-        _latestRpgConfigColdJson = coldJson;
+        if (coldOk) {
+          _latestRpgConfigColdJson = coldJson;
+        }
       }
-      _lastSentCampagneColdHashById[campagneId] = coldHash;
+      if (coldOk) {
+        _lastSentCampagneColdHashById[campagneId] = coldHash;
+        coldSent = true;
+      }
     }
 
     if (lastHotHash != hotHash) {
+      var hotOk = false;
       if (hotV3Upstream) {
         final fromRev = _localHotSliceRevision!;
         final toRev = fromRev + 1;
@@ -375,20 +808,76 @@ class ServerMethodsService extends IServerMethodsService {
           fromRevision: fromRev,
           toRevision: toRev,
         );
-        await serverCommunicationService.executeCriticalServerFunction(
+        hotOk = await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigHotV3",
           args: [campagneId, hotEnv],
         );
-        _commitSentCampagneHotSlice(hotJson: hotJson, toRevision: toRev);
+        if (hotOk) {
+          _commitSentCampagneHotSlice(hotJson: hotJson, toRevision: toRev);
+        }
       } else {
-        await serverCommunicationService.executeCriticalServerFunction(
+        hotOk = await serverCommunicationService.executeCriticalServerFunction(
           "SendUpdatedRpgConfigHot",
           args: [campagneId, hotJson],
         );
-        _latestRpgConfigHotJson = hotJson;
+        if (hotOk) {
+          _latestRpgConfigHotJson = hotJson;
+        }
       }
-      _lastSentCampagneHotHashById[campagneId] = hotHash;
+      if (hotOk) {
+        _lastSentCampagneHotHashById[campagneId] = hotHash;
+        hotSent = true;
+      }
     }
+
+    if (_hubErrorIndicatesMissingMethod(
+        serverCommunicationService.lastHubInvokeError)) {
+      _serverCampagneConfigV3Available = false;
+      serverCommunicationService.clearQueuedCampagneConfigInvokes(campagneId);
+    }
+
+    if (coldSent && hotSent) {
+      _commitAfterSuccessfulCampagneConfigSend(
+        campagneId: campagneId,
+        coldJson: coldJson,
+        hotJson: hotJson,
+      );
+    } else if (!isInTestEnvironment) {
+      final compatibleOk =
+          await _tryPersistCampagneConfigViaCompatibleHubPaths(
+        campagneId: campagneId,
+        coldJson: coldJson,
+        hotJson: hotJson,
+        lastColdHash: lastColdHash ?? 0,
+        lastHotHash: lastHotHash ?? 0,
+        logContext: 'flush-v3-fallback',
+      );
+      if (compatibleOk) {
+        agentDebugLog(
+          location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+          message: 'flush completed via compatible path (v3 fallback)',
+          hypothesisId: 'G',
+          data: {'campagneId': campagneId, 'runId': 'post-fix'},
+        );
+        return;
+      }
+    }
+
+    agentDebugLog(
+      location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
+      message: 'flush completed',
+      hypothesisId: 'A',
+      data: {
+        'campagneId': campagneId,
+        'localColdRevAfter': _localColdSliceRevision,
+        'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+        'coldSent': coldSent,
+        'hotSent': hotSent,
+        'v3StillEnabled': _serverCampagneConfigV3Available,
+        'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
+        'runId': 'post-fix',
+      },
+    );
   }
 
   void _debounceCampagneConfigSend({
@@ -400,6 +889,18 @@ class ServerMethodsService extends IServerMethodsService {
     _pendingCampagneHotJsonById[campagneId] = hotJson;
 
     _pendingCampagneConfigSendTimers[campagneId]?.cancel();
+    agentDebugLog(
+      location: 'server_methods_service.dart:_debounceCampagneConfigSend',
+      message: 'debounced campagne config send scheduled',
+      hypothesisId: 'A',
+      data: {
+        'campagneId': campagneId,
+        'debounceMs': _outgoingConfigDebounce.inMilliseconds,
+        'coldJsonLen': coldJson.length,
+        'localColdRev': _localColdSliceRevision,
+        'hasColdBaseline': _latestRpgConfigColdJson != null,
+      },
+    );
     _pendingCampagneConfigSendTimers[campagneId] = Timer(
       _outgoingConfigDebounce,
       () => _flushCampagneConfigIfPending(campagneId),
@@ -688,23 +1189,13 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig,
       required String campagneId}) async {
-    final full = rpgConfig.toJson();
-    final cold = <String, dynamic>{};
-    final hot = <String, dynamic>{};
-
-    for (final entry in full.entries) {
-      if (_rpgConfigColdKeys.contains(entry.key)) {
-        cold[entry.key] = entry.value;
-      } else {
-        hot[entry.key] = entry.value;
-      }
-    }
+    final slices = _splitRpgConfigSlices(rpgConfig);
 
     // v2 protocol: debounce + last-sent equality; server recombines for legacy clients.
     _debounceCampagneConfigSend(
       campagneId: campagneId,
-      coldJson: jsonEncode(cold),
-      hotJson: jsonEncode(hot),
+      coldJson: slices.$1,
+      hotJson: slices.$2,
     );
   }
 

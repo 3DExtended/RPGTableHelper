@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -84,7 +85,18 @@ class UserSettingsScreen extends StatelessWidget {
                           Navigator.of(context).pushNamed(ApiKeysScreen.route);
                         },
                       ),
-                      // Add more settings cards here
+                      const SizedBox(height: 16),
+                      _buildSettingsCard(
+                        context,
+                        icon: FontAwesomeIcons.bug,
+                        title: 'Diagnostic logs',
+                        subtitle:
+                            'Campaign save debug log (for TestFlight troubleshooting)',
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AgentDebugLogScreen.route);
+                        },
+                      ),
                     ],
                   ),
                 ),

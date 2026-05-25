@@ -100,13 +100,20 @@ class _FakeServerCommunicationService extends IServerCommunicationService {
       {List<Object>? args, int maxInvokeRetries = 1}) async {}
 
   @override
-  Future<void> executeCriticalServerFunction(String functionName,
+  Future<bool> executeCriticalServerFunction(String functionName,
       {List<Object>? args, int maxInvokeRetries = 3}) async {
     invokes.add(_RecordedInvoke(functionName, args));
+    return true;
   }
 
   @override
   Future<void> drainHubInvokeQueue() async {}
+
+  @override
+  void clearQueuedCampagneConfigInvokes(String campagneId) {}
+
+  @override
+  String? get lastHubInvokeError => null;
 
   @override
   int get pendingHubInvokeCount => 0;
