@@ -2,7 +2,7 @@ name: quest_keeper
 description: "A tablet app helping with your favorite RPG table top games!"
 publish_to: 'none'
 
-version: 0.9.3+235
+version: 0.9.3+236
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -16,6 +16,7 @@ dependencies:
   uuid: ^4.4.0
   font_awesome_flutter: ^10.10.0
   shared_preferences: ^2.2.3
+  path_provider: ^2.1.5
   timeago: ^3.7.0
   flutter_localizations:
     sdk: flutter
