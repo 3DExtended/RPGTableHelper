@@ -114,9 +114,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "craftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
       "Herstellbar",
     ),
-    "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
-      "Nicht herstellbar",
-    ),
     "createNewAccount": MessageLookupByLibrary.simpleMessage(
       "Neuen Account anlegen",
     ),
@@ -227,15 +224,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "item": MessageLookupByLibrary.simpleMessage("Item"),
     "itemCardDescRequires": MessageLookupByLibrary.simpleMessage("Braucht:"),
     "itemCategoryFilterAll": MessageLookupByLibrary.simpleMessage("Alles"),
-    "itemSortByName": MessageLookupByLibrary.simpleMessage(
-      "Nach Name sortieren (A–Z)",
-    ),
-    "itemSortByValueAscending": MessageLookupByLibrary.simpleMessage(
-      "Nach Wert sortieren (aufsteigend)",
-    ),
-    "itemSortByValueDescending": MessageLookupByLibrary.simpleMessage(
-      "Nach Wert sortieren (absteigend)",
-    ),
     "itemDetailsDescriptionHeader": MessageLookupByLibrary.simpleMessage(
       "Beschreibung:",
     ),
@@ -245,6 +233,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemDetailsPriceHeader": MessageLookupByLibrary.simpleMessage("Preis:"),
     "itemExampleDescription": MessageLookupByLibrary.simpleMessage(
       "Beschreibung eines Items",
+    ),
+    "itemSortByName": MessageLookupByLibrary.simpleMessage(
+      "Nach Name sortieren (A–Z)",
+    ),
+    "itemSortByValueAscending": MessageLookupByLibrary.simpleMessage(
+      "Nach Wert sortieren (aufsteigend)",
+    ),
+    "itemSortByValueDescending": MessageLookupByLibrary.simpleMessage(
+      "Nach Wert sortieren (absteigend)",
     ),
     "itemsToBeFoundInPlaceMarkdown": MessageLookupByLibrary.simpleMessage(
       "## Auffindbare Items in Fundort: ",
@@ -346,11 +343,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "noItemsInCategoryCraftable": MessageLookupByLibrary.simpleMessage(
       "In dieser Kategorie sind keine Items herstellbar",
     ),
-    "noItemsInCategoryNotCraftable": MessageLookupByLibrary.simpleMessage(
-      "In dieser Kategorie sind alle Items herstellbar",
-    ),
     "noItemsInCategoryErrorText": MessageLookupByLibrary.simpleMessage(
       "Keine Items unter dieser Kategorie",
+    ),
+    "noItemsInCategoryNotCraftable": MessageLookupByLibrary.simpleMessage(
+      "In dieser Kategorie sind alle Items herstellbar",
     ),
     "noMoneyDefaultText": MessageLookupByLibrary.simpleMessage("0 Gold"),
     "noOpenJoinRequests": MessageLookupByLibrary.simpleMessage(
@@ -361,6 +358,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
       "Aktuell keine Spieler online",
+    ),
+    "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
+      "Nicht herstellbar",
     ),
     "notEnoughBalance": MessageLookupByLibrary.simpleMessage(
       "Zu wenig Geld für diese Ausgabe",
@@ -392,6 +392,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "in Besitz:",
     ),
     "password": MessageLookupByLibrary.simpleMessage("Passwort"),
+    "pendingHubSyncBanner": MessageLookupByLibrary.simpleMessage(
+      "Einige Änderungen werden noch mit der Sitzung synchronisiert…",
+    ),
     "petDefaultNamePrefix": MessageLookupByLibrary.simpleMessage("Begleiter"),
     "placeOfFinding": MessageLookupByLibrary.simpleMessage("Fundort"),
     "player": MessageLookupByLibrary.simpleMessage("Spieler"),
@@ -413,6 +416,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eigenschaft wurde kopiert",
     ),
     "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+    "realtimeSessionIosHint": MessageLookupByLibrary.simpleMessage(
+      "Auf dem iPad oder iPhone funktionieren Live-Updates am zuverlässigsten, wenn die App im Vordergrund geöffnet ist.",
+    ),
     "receivedItemsModalHeader": MessageLookupByLibrary.simpleMessage(
       "Neue Items",
     ),

@@ -2008,6 +2008,26 @@ class S {
       args: [],
     );
   }
+
+  /// `On iPad or iPhone, live updates work best while this app is open in the foreground.`
+  String get realtimeSessionIosHint {
+    return Intl.message(
+      'On iPad or iPhone, live updates work best while this app is open in the foreground.',
+      name: 'realtimeSessionIosHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some changes are still syncing to the session…`
+  String get pendingHubSyncBanner {
+    return Intl.message(
+      'Some changes are still syncing to the session…',
+      name: 'pendingHubSyncBanner',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

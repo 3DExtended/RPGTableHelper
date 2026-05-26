@@ -102,7 +102,8 @@ class RpgConfigurationNotifier
     final current =
         state.valueOrNull ?? RpgConfigurationModel.getBaseConfiguration();
     agentDebugLog(
-      location: 'rpg_configuration_provider.dart:updateCharacterScreenStatsTabs',
+      location:
+          'rpg_configuration_provider.dart:updateCharacterScreenStatsTabs',
       message: 'character stat tabs updated',
       hypothesisId: 'E',
       data: {
