@@ -255,11 +255,14 @@ class ServerMethodsService extends IServerMethodsService {
     required String campagneId,
     required String coldJson,
     required String hotJson,
+    bool preserveSliceRevisions = false,
   }) {
     _latestRpgConfigColdJson = coldJson;
     _latestRpgConfigHotJson = hotJson;
-    _localColdSliceRevision = null;
-    _localHotSliceRevision = null;
+    if (!preserveSliceRevisions) {
+      _localColdSliceRevision = null;
+      _localHotSliceRevision = null;
+    }
     _lastSentCampagneColdHashById[campagneId] = coldJson.hashCode;
     _lastSentCampagneHotHashById[campagneId] = hotJson.hashCode;
     serverCommunicationService.clearQueuedCampagneConfigInvokes(campagneId);
@@ -841,6 +844,7 @@ class ServerMethodsService extends IServerMethodsService {
         campagneId: campagneId,
         coldJson: coldJson,
         hotJson: hotJson,
+        preserveSliceRevisions: coldV3Upstream && hotV3Upstream,
       );
     } else if (!isInTestEnvironment) {
       final compatibleOk =

@@ -10,6 +10,7 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
@@ -59,22 +60,60 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.setWizardTitle("Character Stats");
     });
-    super.initState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _configNotifier = ref.read(rpgConfigurationProvider.notifier);
+    registerWizardStepSave(_persistToProviderIfReady);
+  }
+
+  void _populateEditorsFromConfig(RpgConfigurationModel data) {
+    var loadedTabs = data.characterStatTabsDefinition ??
+        RpgConfigurationModel.getBaseConfiguration()
+            .characterStatTabsDefinition!;
+
+    for (var tab in loadedTabs) {
+      tabsToEdit.add((
+        tab.uuid,
+        TextEditingController(text: tab.tabName),
+        tab.isOptional,
+        tab.isDefaultTab
+      ));
+
+      var lastGroupIndicator = tab.statsInTab.firstOrNull?.groupId;
+
+      for (var stat in tab.statsInTab) {
+        if (stat.groupId != lastGroupIndicator) {
+          statsUnderTab.putIfAbsent(tab.uuid, () => []).add(StatOrGroupIndicator(
+              stat: null, groupHandleId: UuidV7().generate()));
+          lastGroupIndicator = stat.groupId;
+        }
+
+        statsUnderTab
+            .putIfAbsent(tab.uuid, () => [])
+            .add(StatOrGroupIndicator(stat: stat, groupHandleId: null));
+      }
+    }
+  }
+
+  void _persistToProviderIfReady() {
+    if (!hasDataLoaded) {
+      return;
+    }
+    saveChanges();
   }
 
   @override
   void dispose() {
-    if (!isInTestEnvironment && hasDataLoaded) {
-      saveChanges();
+    registerWizardStepSave(null);
+    for (final tab in tabsToEdit) {
+      tab.$2.dispose();
     }
     super.dispose();
   }
@@ -82,39 +121,25 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
   @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData((data) {
-      setState(() {
-        if (hasDataLoaded) return;
-        hasDataLoaded = true;
-
-        var loadedTabs = (data.characterStatTabsDefinition ??
-            RpgConfigurationModel.getBaseConfiguration()
-                .characterStatTabsDefinition!);
-
-        for (var tab in loadedTabs) {
-          tabsToEdit.add((
-            tab.uuid,
-            TextEditingController(text: tab.tabName),
-            tab.isOptional,
-            tab.isDefaultTab
-          ));
-
-          var lastGroupIndicator = tab.statsInTab.firstOrNull?.groupId;
-
-          for (var stat in tab.statsInTab) {
-            if (stat.groupId != lastGroupIndicator) {
-              statsUnderTab.putIfAbsent(tab.uuid, () => []).add(
-                  StatOrGroupIndicator(
-                      stat: null, groupHandleId: UuidV7().generate()));
-              lastGroupIndicator = stat.groupId;
-            }
-
-            statsUnderTab
-                .putIfAbsent(tab.uuid, () => [])
-                .add(StatOrGroupIndicator(stat: stat, groupHandleId: null));
+      if (!hasDataLoaded) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || hasDataLoaded) {
+            return;
           }
-        }
-      });
+          setState(() {
+            if (hasDataLoaded) {
+              return;
+            }
+            hasDataLoaded = true;
+            _populateEditorsFromConfig(data);
+          });
+        });
+      }
     });
+
+    if (!hasDataLoaded) {
+      return const SizedBox.shrink();
+    }
 
     var stepHelperText = S.of(context).rpgConfigurationDmWizardStep2Tutorial;
 
@@ -125,12 +150,11 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
       onNextBtnPressed: !isFormValid
           ? null
           : () {
-              saveChanges();
+              _persistToProviderIfReady();
               widget.onNextBtnPressed();
             },
       onPreviousBtnPressed: () {
-        saveChanges();
-
+        _persistToProviderIfReady();
         widget.onPreviousBtnPressed();
       },
       sideBarFlex: 1,

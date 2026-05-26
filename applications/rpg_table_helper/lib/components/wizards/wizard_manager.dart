@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -47,6 +48,7 @@ class _WizardManagerState extends State<WizardManager> {
   }
 
   void _goToNextStep() {
+    flushActiveWizardStepSave();
     if (_currentStep < widget.stepBuilders.length - 1) {
       setState(() {
         _currentStep++;
@@ -58,6 +60,7 @@ class _WizardManagerState extends State<WizardManager> {
   }
 
   void _goToPreviousStep() {
+    flushActiveWizardStepSave();
     if (_currentStep > 0) {
       setState(() {
         _currentStep--;
@@ -71,6 +74,9 @@ class _WizardManagerState extends State<WizardManager> {
   void _goToStepId(int id) {
     if (id < 0 || id >= widget.stepBuilders.length) {
       throw ArgumentError('Invalid step index');
+    }
+    if (id != _currentStep) {
+      flushActiveWizardStepSave();
     }
     setState(() {
       _currentStep = id;
