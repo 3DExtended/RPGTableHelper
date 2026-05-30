@@ -528,3 +528,5 @@ applications/RPGTableHelper.WebApi/userimages/**
 *.db
 applications/RPGTableHelper.WebApi/maindb2.db-shm
 applications/RPGTableHelper.WebApi/maindb2.db-wal
+applications/rpg_table_helper/build
+applications/rpg_table_helper/debugdump.txt
