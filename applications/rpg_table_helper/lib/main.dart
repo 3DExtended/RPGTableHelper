@@ -387,6 +387,8 @@ class _ThemeConfigurationForAppState
     await comm.ensureConnectionReadyForSession();
     await serverMethods.readdToSignalRGroups();
     await comm.drainHubInvokeQueue();
+    await serverMethods.flushPendingCampagneConfig();
+    await serverMethods.flushPendingCharacterConfig();
 
     final hubState = comm.hubConnectionState;
     final connected = hubState == HubConnectionState.Connected;

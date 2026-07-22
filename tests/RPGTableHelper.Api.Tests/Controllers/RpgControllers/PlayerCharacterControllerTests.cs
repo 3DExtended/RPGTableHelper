@@ -220,4 +220,76 @@ public class PlayerCharacterControllerTests : ControllerTestBase
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
+
+    [Fact]
+    public async Task UpdatePlayerCharacterRpgConfigAsync_ShouldPersistForOwner()
+    {
+        // arrange
+        var user = await ConfigureLoggedInUser();
+        var entity = new PlayerCharacterEntity
+        {
+            Id = Guid.Empty,
+            CharacterName = "CharacterName1",
+            PlayerUserId = user.Id.Value,
+            RpgCharacterConfiguration = "{\"characterName\":\"old\"}",
+            RpgCharacterConfigurationRevision = 1,
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.PlayerCharacters.AddAsync(entity);
+            await context.SaveChangesAsync();
+        }
+
+        var newConfig = "{\"characterName\":\"new\"}";
+
+        // act
+        var response = await Client.PutAsJsonAsync(
+            $"/PlayerCharacter/updatecharacterconfig/{entity.Id}",
+            new PlayerCharacterUpdateRpgConfigDto { RpgCharacterConfiguration = newConfig }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var stored = await context.PlayerCharacters.SingleAsync(c => c.Id == entity.Id);
+            stored.RpgCharacterConfiguration.Should().Be(newConfig);
+            stored.RpgCharacterConfigurationRevision.Should().Be(2);
+        }
+    }
+
+    [Fact]
+    public async Task UpdatePlayerCharacterRpgConfigAsync_ShouldReturnUnauthorizedForNonOwner()
+    {
+        // arrange
+        await ConfigureLoggedInUser();
+        var other = await RpgDbContextHelpers.CreateUserInDb(
+            ContextFactory!,
+            Mapper!,
+            usernameOverride: "OtherOwner"
+        );
+        var entity = new PlayerCharacterEntity
+        {
+            Id = Guid.Empty,
+            CharacterName = "CharacterName1",
+            PlayerUserId = other.Id.Value,
+            RpgCharacterConfiguration = "{\"characterName\":\"old\"}",
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.PlayerCharacters.AddAsync(entity);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var response = await Client.PutAsJsonAsync(
+            $"/PlayerCharacter/updatecharacterconfig/{entity.Id}",
+            new PlayerCharacterUpdateRpgConfigDto { RpgCharacterConfiguration = "{\"characterName\":\"hacked\"}" }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 }

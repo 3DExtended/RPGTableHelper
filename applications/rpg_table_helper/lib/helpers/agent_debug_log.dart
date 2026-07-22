@@ -5,10 +5,14 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 /// Active debug session id (matches Cursor debug session when used from IDE).
-const agentDebugSessionId = '069be0';
+const agentDebugSessionId = '7db69f';
 
 const _logFileName = 'agent_debug.ndjson';
 const _maxLogFileBytes = 512 * 1024;
+const _workspaceDebugLogPath =
+    '/Users/peteresser/Developer/projects/archive/rpgTableHelper/.cursor/debug-7db69f.log';
+const _debugIngestUrl =
+    'http://127.0.0.1:7464/ingest/582d64c1-b502-4cc5-9e27-7aeb8557927c';
 
 String? _resolvedLogPath;
 Completer<String>? _pathCompleter;
@@ -61,7 +65,6 @@ Future<void> _appendAgentDebugLog({
 }) async {
   // #region agent log
   try {
-    final path = await resolveAgentDebugLogPath();
     final payload = <String, dynamic>{
       'sessionId': agentDebugSessionId,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -71,13 +74,28 @@ Future<void> _appendAgentDebugLog({
       'runId': runId,
       if (hypothesisId != null) 'hypothesisId': hypothesisId,
     };
+    final line = '${jsonEncode(payload)}\n';
+
+    final path = await resolveAgentDebugLogPath();
     final file = File(path);
-    await file.writeAsString(
-      '${jsonEncode(payload)}\n',
-      mode: FileMode.append,
-      flush: true,
-    );
+    await file.writeAsString(line, mode: FileMode.append, flush: true);
     await _trimLogFileIfNeeded(file);
+
+    try {
+      await File(_workspaceDebugLogPath)
+          .writeAsString(line, mode: FileMode.append, flush: true);
+    } catch (_) {}
+
+    try {
+      final client = HttpClient();
+      client.connectionTimeout = const Duration(milliseconds: 400);
+      final request = await client.postUrl(Uri.parse(_debugIngestUrl));
+      request.headers.set('Content-Type', 'application/json');
+      request.headers.set('X-Debug-Session-Id', agentDebugSessionId);
+      request.add(utf8.encode(jsonEncode(payload)));
+      await request.close().timeout(const Duration(milliseconds: 400));
+      client.close(force: true);
+    } catch (_) {}
   } catch (_) {}
   // #endregion
 }

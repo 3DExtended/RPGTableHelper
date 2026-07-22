@@ -149,6 +149,63 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         /// <summary>
+        /// Updates the RPG character configuration for a player character (owner only).
+        /// Used by mobile clients when SignalR is unavailable or for reliable persistence.
+        /// </summary>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("updatecharacterconfig/{playercharacterid}")]
+        public async Task<ActionResult> UpdatePlayerCharacterRpgConfigAsync(
+            string playercharacterid,
+            [FromBody] [Required] PlayerCharacterUpdateRpgConfigDto updateDto,
+            CancellationToken cancellationToken
+        )
+        {
+            if (string.IsNullOrWhiteSpace(playercharacterid) || !Guid.TryParse(playercharacterid, out var playerCharacterIdParsed))
+            {
+                return BadRequest("No valid playercharacterid passed");
+            }
+
+            if (updateDto == null || string.IsNullOrWhiteSpace(updateDto.RpgCharacterConfiguration))
+            {
+                return BadRequest("Missing rpg character configuration");
+            }
+
+            var playerCharacter = await new PlayerCharacterQuery
+            {
+                ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(playerCharacterIdParsed),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
+            {
+                return Unauthorized();
+            }
+
+            var updated = playerCharacter.Get();
+            if (updated.RpgCharacterConfiguration == updateDto.RpgCharacterConfiguration)
+            {
+                return Ok();
+            }
+
+            updated.RpgCharacterConfiguration = updateDto.RpgCharacterConfiguration;
+            updated.RpgCharacterConfigurationRevision++;
+
+            var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updated }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (updateResult.IsNone)
+            {
+                return BadRequest("Could not update player character configuration");
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Returns a list of player characters for a given campagne.
         /// </summary>
         /// <remarks>Please note that only the dm is allowed to retrieve the rpg character configs of the players. if you are not the dm, those configs will be empty!</remarks>

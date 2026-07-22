@@ -1459,6 +1459,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Einige Änderungen werden noch mit der Sitzung synchronisiert…'**
   String get pendingHubSyncBanner;
+
+  /// No description provided for @characterConfigSaveFailedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Charakter nicht gespeichert'**
+  String get characterConfigSaveFailedTitle;
+
+  /// No description provided for @characterConfigSaveFailedBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert.'**
+  String get characterConfigSaveFailedBody;
 }
 
 class _AppLocalizationsDelegate

@@ -15,6 +15,9 @@ namespace RPGTableHelper.WebApi;
 [Authorize] // NOTE this does not work. I am using the IUserContext to ensure authorization!
 public class RpgServerSignalRHub : Hub
 {
+    private const string AgentDebugLogPath =
+        "/Users/peteresser/Developer/projects/archive/rpgTableHelper/.cursor/debug-7db69f.log";
+
     private sealed record ClientCaps(int protocolVersion);
 
     // In-memory capabilities registry; old clients never register => treated as protocol v1.
@@ -24,6 +27,32 @@ public class RpgServerSignalRHub : Hub
     private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> ConnectionIdsByGroupKey = new();
     private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> GroupKeysByConnectionId = new();
 
+    // #region agent log
+    private static void AgentDebugLog(string location, string message, string hypothesisId, object data)
+    {
+        try
+        {
+            var payload = System.Text.Json.JsonSerializer.Serialize(
+                new
+                {
+                    sessionId = "7db69f",
+                    timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    location,
+                    message,
+                    hypothesisId,
+                    data,
+                    runId = "pre-fix",
+                }
+            );
+            System.IO.File.AppendAllText(AgentDebugLogPath, payload + "\n");
+        }
+        catch
+        {
+            // ignore debug log failures
+        }
+    }
+
+    // #endregion
     private readonly ILogger _logger;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly IQueryProcessor _queryProcessor;
@@ -497,6 +526,14 @@ public class RpgServerSignalRHub : Hub
     /// <param name="characterConfig">JSON string</param>
     public async Task SendUpdatedRpgCharacterConfigToDm(string playercharacterid, string characterConfig)
     {
+        // #region agent log
+        AgentDebugLog(
+            "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDm",
+            "character update hub invoked",
+            "E",
+            new { playercharacterid, configLen = characterConfig?.Length ?? 0 }
+        );
+        // #endregion
         var playerCharacter = await new PlayerCharacterQuery
         {
             ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(Guid.Parse(playercharacterid)),
@@ -504,22 +541,17 @@ public class RpgServerSignalRHub : Hub
             .RunAsync(_queryProcessor, default)
             .ConfigureAwait(false);
 
-        if (
-            playerCharacter.IsNone
-            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
-            || playerCharacter.Get().CampagneId == null
-        )
+        if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
         {
-            return;
-        }
-
-        var campagneOfCharacter = await new CampagneQuery { ModelId = playerCharacter.Get().CampagneId! }
-            .RunAsync(_queryProcessor, default)
-            .ConfigureAwait(false);
-
-        if (campagneOfCharacter.IsNone)
-        {
-            return;
+            // #region agent log
+            AgentDebugLog(
+                "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDm",
+                "character update rejected (auth)",
+                "E",
+                new { playercharacterid, isNone = playerCharacter.IsNone }
+            );
+            // #endregion
+            throw new HubException("Not authorized to update this player character.");
         }
 
         var updatedPlayerCharacter = playerCharacter.Get();
@@ -529,7 +561,7 @@ public class RpgServerSignalRHub : Hub
         var fromCharacterRev = updatedPlayerCharacter.RpgCharacterConfigurationRevision;
         var toCharacterRev = fromCharacterRev;
 
-        // Server-side dedupe: skip DB write when nothing changed, but still notify DMs so presence stays accurate.
+        // Always persist for the owning player — do not require CampagneId for DB write.
         if (!configUnchanged)
         {
             updatedPlayerCharacter.RpgCharacterConfiguration = characterConfig;
@@ -541,12 +573,61 @@ public class RpgServerSignalRHub : Hub
                 .ConfigureAwait(false);
             if (updateResult.IsNone)
             {
-                return;
+                // #region agent log
+                AgentDebugLog(
+                    "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDm",
+                    "character DB update failed",
+                    "E",
+                    new { playercharacterid, fromCharacterRev }
+                );
+                // #endregion
+                throw new HubException("Could not persist player character configuration.");
             }
 
+            // #region agent log
+            AgentDebugLog(
+                "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDm",
+                "character DB update succeeded",
+                "E",
+                new
+                {
+                    playercharacterid,
+                    fromCharacterRev,
+                    toCharacterRev,
+                    configLen = characterConfig?.Length ?? 0,
+                    runId = "post-fix",
+                }
+            );
+            // #endregion
             _logger.LogInformation(
                 "A player updated their character with name " + updatedPlayerCharacter.CharacterName
             );
+        }
+        else
+        {
+            // #region agent log
+            AgentDebugLog(
+                "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDm",
+                "character config unchanged (DB write skipped)",
+                "E",
+                new { playercharacterid, fromCharacterRev, runId = "post-fix" }
+            );
+            // #endregion
+        }
+
+        // Broadcast to DMs only when the character is in a campagne.
+        if (updatedPlayerCharacter.CampagneId == null)
+        {
+            return;
+        }
+
+        var campagneOfCharacter = await new CampagneQuery { ModelId = updatedPlayerCharacter.CampagneId }
+            .RunAsync(_queryProcessor, default)
+            .ConfigureAwait(false);
+
+        if (campagneOfCharacter.IsNone)
+        {
+            return;
         }
 
         var dmsGroupKey = campagneOfCharacter.Get().Id.Value + "_Dms";
@@ -1236,13 +1317,17 @@ public class RpgServerSignalRHub : Hub
             .RunAsync(_queryProcessor, default)
             .ConfigureAwait(false);
 
-        if (
-            playerCharacter.IsNone
-            || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier
-            || playerCharacter.Get().CampagneId == null
-        )
+        if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
         {
-            return;
+            // #region agent log
+            AgentDebugLog(
+                "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDmV3",
+                "V3 character update rejected (auth)",
+                "B",
+                new { playercharacterid, isNone = playerCharacter.IsNone }
+            );
+            // #endregion
+            throw new HubException("Not authorized to update this player character.");
         }
 
         var m = playerCharacter.Get();
@@ -1257,9 +1342,38 @@ public class RpgServerSignalRHub : Hub
             )
         )
         {
-            return;
+            // #region agent log
+            AgentDebugLog(
+                "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDmV3",
+                "V3 character patch resolve failed",
+                "B",
+                new
+                {
+                    playercharacterid,
+                    serverRev = m.RpgCharacterConfigurationRevision,
+                    envelopeLen = envelopeJson?.Length ?? 0,
+                }
+            );
+            // #endregion
+            throw new HubException(
+                "Character configuration patch could not be applied (revision mismatch). Retry with full config."
+            );
         }
 
+        // #region agent log
+        AgentDebugLog(
+            "RpgServerSignalRHub.cs:SendUpdatedRpgCharacterConfigToDmV3",
+            "V3 character patch resolved, forwarding to legacy",
+            "B",
+            new
+            {
+                playercharacterid,
+                serverRev = m.RpgCharacterConfigurationRevision,
+                configLen = characterConfig?.Length ?? 0,
+                runId = "post-fix",
+            }
+        );
+        // #endregion
         await SendUpdatedRpgCharacterConfigToDm(playercharacterid, characterConfig).ConfigureAwait(false);
     }
 

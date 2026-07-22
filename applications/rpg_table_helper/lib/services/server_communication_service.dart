@@ -96,6 +96,9 @@ abstract class IServerCommunicationService {
   String? get lastHubInvokeError;
 
   void clearQueuedCampagneConfigInvokes(String campagneId);
+
+  /// Drops queued character-config SignalR invokes after a successful REST save.
+  void clearQueuedCharacterConfigInvokes(String playerCharacterId);
 }
 
 class ServerCommunicationService extends IServerCommunicationService {
@@ -261,6 +264,11 @@ class ServerCommunicationService extends IServerCommunicationService {
       await DependencyProvider.getIt
           ?.get<IServerMethodsService>()
           .flushPendingCampagneConfig();
+    } catch (_) {}
+    try {
+      await DependencyProvider.getIt
+          ?.get<IServerMethodsService>()
+          .flushPendingCharacterConfig();
     } catch (_) {}
     await hubConnection?.stop();
   }
@@ -446,6 +454,11 @@ class ServerCommunicationService extends IServerCommunicationService {
   }
 
   @override
+  void clearQueuedCharacterConfigInvokes(String playerCharacterId) {
+    _hubInvokeQueue.removeCharacterConfigInvokes(playerCharacterId);
+  }
+
+  @override
   Future<void> drainHubInvokeQueue() async {
     if (!connectionIsOpen) {
       return;
@@ -591,6 +604,9 @@ class MockServerCommunicationService extends IServerCommunicationService {
 
   @override
   void clearQueuedCampagneConfigInvokes(String campagneId) {}
+
+  @override
+  void clearQueuedCharacterConfigInvokes(String playerCharacterId) {}
 
   @override
   Future<void> drainHubInvokeQueue() async {}

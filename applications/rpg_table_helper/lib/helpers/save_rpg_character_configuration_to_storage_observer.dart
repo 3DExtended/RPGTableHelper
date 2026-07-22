@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quest_keeper/helpers/agent_debug_log.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -35,24 +36,40 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
       var connectionDetails =
           container.read(connectionDetailsProvider).valueOrNull;
 
-      var isPlayer = (connectionDetails?.isPlayer ?? false) &&
-          (connectionDetails?.isInSession ?? false) &&
-          (connectionDetails?.isConnected ?? false);
+      // Player character edits must sync even when SignalR is briefly disconnected
+      // (reconnect, suspend, flaky Wi‑Fi). Critical invokes queue offline; REST can
+      // still persist when HTTP works. Do NOT gate on isConnected.
+      final willSend = connectionDetails != null &&
+          connectionDetails.isPlayer &&
+          connectionDetails.isInSession &&
+          connectionDetails.playerCharacterId != null;
 
-      if (isPlayer) {
+      // #region agent log
+      agentDebugLog(
+        location:
+            'save_rpg_character_configuration_to_storage_observer.dart:didUpdateProvider',
+        message: 'character config provider updated',
+        hypothesisId: 'A',
+        data: {
+          'willSendToServer': willSend,
+          'isConnected': connectionDetails?.isConnected,
+          'isInSession': connectionDetails?.isInSession,
+          'isPlayerFlag': connectionDetails?.isPlayer,
+          'playerCharacterId': connectionDetails?.playerCharacterId,
+          'characterName': newValue.requireValue.characterName,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
+
+      if (willSend) {
         log("Saving rpg character config");
-
-        if (connectionDetails != null &&
-            connectionDetails.isConnected &&
-            connectionDetails.isPlayer &&
-            connectionDetails.playerCharacterId != null) {
-          // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
-          DependencyProvider.getIt!
-              .get<IServerMethodsService>()
-              .sendUpdatedRpgCharacterConfig(
-                  charConfig: newValue.requireValue,
-                  playercharacterid: connectionDetails.playerCharacterId!);
-        }
+        // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
+        DependencyProvider.getIt!
+            .get<IServerMethodsService>()
+            .sendUpdatedRpgCharacterConfig(
+                charConfig: newValue.requireValue,
+                playercharacterid: connectionDetails.playerCharacterId!);
       }
     }
   }

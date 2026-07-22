@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 
@@ -557,12 +558,15 @@ public class RpgServerSignalRHubPayloadAndEdgeTests : ControllerTestBase
             CancellationToken.None
         );
 
-        await p2.InvokeAsync(
-            nameof(RpgServerSignalRHub.SendUpdatedRpgCharacterConfigToDm),
-            scenario.PlayerOneCharacterId.ToString(),
-            """{"nope":true}""",
-            CancellationToken.None
-        );
+        var act = () =>
+            p2.InvokeAsync(
+                nameof(RpgServerSignalRHub.SendUpdatedRpgCharacterConfigToDm),
+                scenario.PlayerOneCharacterId.ToString(),
+                """{"nope":true}""",
+                CancellationToken.None
+            );
+
+        await act.Should().ThrowAsync<HubException>();
 
         await Task.Delay(NegativeAssertionDelay);
         fired.Should().BeFalse();
@@ -605,12 +609,15 @@ public class RpgServerSignalRHubPayloadAndEdgeTests : ControllerTestBase
             CancellationToken.None
         );
 
-        await p1.InvokeAsync(
-            nameof(RpgServerSignalRHub.SendUpdatedRpgCharacterConfigToDm),
-            Guid.NewGuid().ToString(),
-            "{}",
-            CancellationToken.None
-        );
+        var act = () =>
+            p1.InvokeAsync(
+                nameof(RpgServerSignalRHub.SendUpdatedRpgCharacterConfigToDm),
+                Guid.NewGuid().ToString(),
+                "{}",
+                CancellationToken.None
+            );
+
+        await act.Should().ThrowAsync<HubException>();
 
         await Task.Delay(NegativeAssertionDelay);
         fired.Should().BeFalse();

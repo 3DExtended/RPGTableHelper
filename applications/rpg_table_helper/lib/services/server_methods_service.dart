@@ -5,7 +5,9 @@ import 'dart:developer';
 import 'package:quest_keeper/helpers/agent_debug_log.dart';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
@@ -24,7 +26,7 @@ import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/rpg_config_upstream_envelope.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
-import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 abstract class IServerMethodsService {
   final bool isMock;
@@ -178,6 +180,9 @@ abstract class IServerMethodsService {
   /// Immediately sends any debounced campagne config for the active DM campagne.
   Future<void> flushPendingCampagneConfig({String? campagneId});
 
+  /// Immediately sends any debounced player character config.
+  Future<void> flushPendingCharacterConfig({String? playerCharacterId});
+
   Future askPlayersForRolls(
       {required String campagneId, required FightSequence fightSequence});
 
@@ -243,6 +248,14 @@ class ServerMethodsService extends IServerMethodsService {
 
   /// Set false after REST returns 404 (endpoint not deployed on server).
   bool _campagneConfigRestPersistAvailable = true;
+
+  /// Set false after character REST returns 404.
+  bool _characterConfigRestPersistAvailable = true;
+
+  /// Avoid spamming save-failed snackbars for the same character.
+  DateTime? _lastCharacterSaveFailedSnackAt;
+  static const Duration _characterSaveFailedSnackCooldown =
+      Duration(seconds: 8);
 
   bool _hubErrorIndicatesMissingMethod(String? error) {
     if (error == null) {
@@ -356,6 +369,26 @@ class ServerMethodsService extends IServerMethodsService {
       data: {'campagneId': id, 'runId': 'post-fix'},
     );
     await _flushCampagneConfigIfPending(id);
+  }
+
+  @override
+  Future<void> flushPendingCharacterConfig({String? playerCharacterId}) async {
+    final id = playerCharacterId ??
+        widgetRef.read(connectionDetailsProvider).value?.playerCharacterId;
+    if (id == null) {
+      return;
+    }
+    _pendingCharacterConfigSendTimers[id]?.cancel();
+    _pendingCharacterConfigSendTimers.remove(id);
+    // #region agent log
+    agentDebugLog(
+      location: 'server_methods_service.dart:flushPendingCharacterConfig',
+      message: 'immediate character flush requested',
+      hypothesisId: 'A',
+      data: {'playerCharacterId': id, 'runId': 'post-fix'},
+    );
+    // #endregion
+    await _flushCharacterConfigIfPending(id);
   }
 
   void _commitSentCampagneColdSlice({
@@ -911,6 +944,116 @@ class ServerMethodsService extends IServerMethodsService {
     );
   }
 
+  void _commitAfterSuccessfulCharacterConfigSend({
+    required String playerCharacterId,
+    required String json,
+    int? toRevision,
+  }) {
+    _lastSentCharacterHashById[playerCharacterId] = json.hashCode;
+    _latestPlayerCharacterJsonByPlayerId[playerCharacterId] = json;
+    if (toRevision != null) {
+      _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = toRevision;
+    }
+    serverCommunicationService
+        .clearQueuedCharacterConfigInvokes(playerCharacterId);
+  }
+
+  Future<bool> _tryPersistCharacterConfigViaRest({
+    required String playerCharacterId,
+    required String json,
+  }) async {
+    final getIt = DependencyProvider.getIt;
+    if (getIt == null || !_characterConfigRestPersistAvailable) {
+      return false;
+    }
+    final result =
+        await getIt.get<IRpgEntityService>().updatePlayerCharacterRpgConfiguration(
+              playerCharacterId: PlayerCharacterIdentifier($value: playerCharacterId),
+              rpgCharacterConfigurationJson: json,
+            );
+    // #region agent log
+    agentDebugLog(
+      location: 'server_methods_service.dart:_tryPersistCharacterConfigViaRest',
+      message: result.isSuccessful
+          ? 'REST character config save ok'
+          : 'REST character config save failed',
+      hypothesisId: 'D',
+      data: {
+        'playerCharacterId': playerCharacterId,
+        'jsonLen': json.length,
+        'statusCode': result.statusCode,
+        'errorFromServer': result.errorFromServer,
+        'runId': 'post-fix',
+      },
+    );
+    // #endregion
+    if (!result.isSuccessful) {
+      if (result.statusCode == 404) {
+        _characterConfigRestPersistAvailable = false;
+      }
+      return false;
+    }
+    _commitAfterSuccessfulCharacterConfigSend(
+      playerCharacterId: playerCharacterId,
+      json: json,
+    );
+    return true;
+  }
+
+  void _notifyCharacterConfigSaveFailed(String playerCharacterId) {
+    final now = DateTime.now();
+    if (_lastCharacterSaveFailedSnackAt != null &&
+        now.difference(_lastCharacterSaveFailedSnackAt!) <
+            _characterSaveFailedSnackCooldown) {
+      return;
+    }
+    _lastCharacterSaveFailedSnackAt = now;
+
+    final getIt = DependencyProvider.getIt;
+    final ctx = navigatorKey.currentContext;
+    if (getIt == null || ctx == null || !ctx.mounted) {
+      // #region agent log
+      agentDebugLog(
+        location: 'server_methods_service.dart:_notifyCharacterConfigSaveFailed',
+        message: 'character save failed (no UI context for snackbar)',
+        hypothesisId: 'C',
+        data: {
+          'playerCharacterId': playerCharacterId,
+          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
+      return;
+    }
+
+    final snackBar = SnackBar(
+      showCloseIcon: true,
+      duration: const Duration(seconds: 12),
+      content: Text(
+        S.of(ctx).characterConfigSaveFailedBody,
+        style: Theme.of(ctx).textTheme.bodyLarge!.copyWith(fontSize: 16),
+      ),
+    );
+    getIt.get<ISnackBarService>().showSnackBar(
+          snack: snackBar,
+          uniqueId:
+              'characterConfigSaveFailed-$playerCharacterId-7db69f',
+        );
+    // #region agent log
+    agentDebugLog(
+      location: 'server_methods_service.dart:_notifyCharacterConfigSaveFailed',
+      message: 'character save failed snackbar shown',
+      hypothesisId: 'C',
+      data: {
+        'playerCharacterId': playerCharacterId,
+        'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+        'runId': 'post-fix',
+      },
+    );
+    // #endregion
+  }
+
   Future<void> _flushCharacterConfigIfPending(String playerCharacterId) async {
     final json = _pendingCharacterJsonById[playerCharacterId];
     if (json == null) return;
@@ -918,11 +1061,27 @@ class ServerMethodsService extends IServerMethodsService {
     final hash = json.hashCode;
     final lastHash = _lastSentCharacterHashById[playerCharacterId];
     if (lastHash == hash) {
+      // #region agent log
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
+        message: 'character flush skipped (hash unchanged)',
+        hypothesisId: 'C',
+        data: {
+          'playerCharacterId': playerCharacterId,
+          'jsonLen': json.length,
+          'hash': hash,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
       return;
     }
 
     final rev = _playerCharacterLocalRevisionByPlayerId[playerCharacterId];
     final prevJson = _latestPlayerCharacterJsonByPlayerId[playerCharacterId];
+    var persisted = false;
+
+    // Prefer partial V3 patches when we have a revision baseline.
     if (signalRProtocolVersion >= 3 && rev != null && prevJson != null) {
       final env = buildRpgConfigUpstreamEnvelope(
         slice: 'character',
@@ -931,18 +1090,107 @@ class ServerMethodsService extends IServerMethodsService {
         fromRevision: rev,
         toRevision: rev + 1,
       );
-      await serverCommunicationService.executeCriticalServerFunction(
+      // #region agent log
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
+        message: 'character flush invoking V3',
+        hypothesisId: 'B',
+        data: {
+          'playerCharacterId': playerCharacterId,
+          'fromRev': rev,
+          'toRev': rev + 1,
+          'jsonLen': json.length,
+          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
+      final v3Ok = await serverCommunicationService.executeCriticalServerFunction(
         "SendUpdatedRpgCharacterConfigToDmV3",
         args: [playerCharacterId, env],
       );
-      _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = rev + 1;
-      _latestPlayerCharacterJsonByPlayerId[playerCharacterId] = json;
-    } else {
-      await serverCommunicationService.executeCriticalServerFunction(
-          "SendUpdatedRpgCharacterConfigToDm",
-          args: [playerCharacterId, json]);
+      // #region agent log
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
+        message: v3Ok ? 'character V3 invoke ok' : 'character V3 invoke failed',
+        hypothesisId: 'B',
+        data: {
+          'playerCharacterId': playerCharacterId,
+          'ok': v3Ok,
+          'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
+          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
+      if (v3Ok) {
+        _commitAfterSuccessfulCharacterConfigSend(
+          playerCharacterId: playerCharacterId,
+          json: json,
+          toRevision: rev + 1,
+        );
+        persisted = true;
+      }
     }
-    _lastSentCharacterHashById[playerCharacterId] = hash;
+
+    // Legacy full JSON via SignalR (also fallback after V3 failure).
+    if (!persisted) {
+      // #region agent log
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
+        message: 'character flush invoking legacy',
+        hypothesisId: 'D',
+        data: {
+          'playerCharacterId': playerCharacterId,
+          'jsonLen': json.length,
+          'localRev': rev,
+          'hasBaseline': prevJson != null,
+          'protocolVersion': signalRProtocolVersion,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
+      final legacyOk =
+          await serverCommunicationService.executeCriticalServerFunction(
+              "SendUpdatedRpgCharacterConfigToDm",
+              args: [playerCharacterId, json]);
+      // #region agent log
+      agentDebugLog(
+        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
+        message: legacyOk
+            ? 'character legacy invoke ok'
+            : 'character legacy invoke failed',
+        hypothesisId: 'D',
+        data: {
+          'playerCharacterId': playerCharacterId,
+          'ok': legacyOk,
+          'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
+          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
+          'runId': 'post-fix',
+        },
+      );
+      // #endregion
+      if (legacyOk) {
+        _commitAfterSuccessfulCharacterConfigSend(
+          playerCharacterId: playerCharacterId,
+          json: json,
+        );
+        persisted = true;
+      }
+    }
+
+    // REST fallback when SignalR paths fail (HTTP may still work).
+    if (!persisted && _characterConfigRestPersistAvailable) {
+      persisted = await _tryPersistCharacterConfigViaRest(
+        playerCharacterId: playerCharacterId,
+        json: json,
+      );
+    }
+
+    if (!persisted) {
+      // Do NOT mark hash as sent — keep dirty so a later reconnect/flush retries.
+      _notifyCharacterConfigSaveFailed(playerCharacterId);
+    }
   }
 
   void _debounceCharacterConfigSend({
@@ -951,6 +1199,19 @@ class ServerMethodsService extends IServerMethodsService {
   }) {
     _pendingCharacterJsonById[playerCharacterId] = json;
     _pendingCharacterConfigSendTimers[playerCharacterId]?.cancel();
+    // #region agent log
+    agentDebugLog(
+      location: 'server_methods_service.dart:_debounceCharacterConfigSend',
+      message: 'character config send debounced',
+      hypothesisId: 'A',
+      data: {
+        'playerCharacterId': playerCharacterId,
+        'jsonLen': json.length,
+        'debounceMs': _outgoingConfigDebounce.inMilliseconds,
+        'runId': 'post-fix',
+      },
+    );
+    // #endregion
     _pendingCharacterConfigSendTimers[playerCharacterId] = Timer(
       _outgoingConfigDebounce,
       () => _flushCharacterConfigIfPending(playerCharacterId),

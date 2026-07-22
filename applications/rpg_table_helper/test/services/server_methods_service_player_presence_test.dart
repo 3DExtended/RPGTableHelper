@@ -113,6 +113,9 @@ class _FakeServerCommunicationService extends IServerCommunicationService {
   void clearQueuedCampagneConfigInvokes(String campagneId) {}
 
   @override
+  void clearQueuedCharacterConfigInvokes(String playerCharacterId) {}
+
+  @override
   String? get lastHubInvokeError => null;
 
   @override

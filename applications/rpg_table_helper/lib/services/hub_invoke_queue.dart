@@ -115,4 +115,18 @@ class HubInvokeQueue {
       }
     });
   }
+
+  /// Drops queued character config SignalR invokes after a successful REST save.
+  void removeCharacterConfigInvokes(String playerCharacterId) {
+    _items.removeWhere((p) {
+      if (p.args == null || p.args!.isEmpty) {
+        return false;
+      }
+      if (p.args![0].toString() != playerCharacterId) {
+        return false;
+      }
+      return p.functionName == 'SendUpdatedRpgCharacterConfigToDm' ||
+          p.functionName == 'SendUpdatedRpgCharacterConfigToDmV3';
+    });
+  }
 }

@@ -2028,6 +2028,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Character not saved`
+  String get characterConfigSaveFailedTitle {
+    return Intl.message(
+      'Character not saved',
+      name: 'characterConfigSaveFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.`
+  String get characterConfigSaveFailedBody {
+    return Intl.message(
+      'Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.',
+      name: 'characterConfigSaveFailedBody',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

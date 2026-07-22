@@ -225,5 +225,7 @@
   "enterSomeDescriptionOnTheLeft": "Enter some description on the left",
   "tabIconsConfigurationTitle": "Tab Icons",
   "realtimeSessionIosHint": "On iPad or iPhone, live updates work best while this app is open in the foreground.",
-  "pendingHubSyncBanner": "Some changes are still syncing to the session…"
+  "pendingHubSyncBanner": "Some changes are still syncing to the session…",
+  "characterConfigSaveFailedTitle": "Character not saved",
+  "characterConfigSaveFailedBody": "Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted."
 }

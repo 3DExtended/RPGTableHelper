@@ -60,6 +60,12 @@ abstract class IRpgEntityService {
     required CampagneIdentifier campagneId,
     required String rpgConfigurationJson,
   });
+
+  /// Persists player character configuration via REST when SignalR is unavailable.
+  Future<HRResponse<bool>> updatePlayerCharacterRpgConfiguration({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required String rpgCharacterConfigurationJson,
+  });
 }
 
 class RpgEntityService extends IRpgEntityService {
@@ -365,6 +371,60 @@ class RpgEntityService extends IRpgEntityService {
       );
     }
   }
+
+  @override
+  Future<HRResponse<bool>> updatePlayerCharacterRpgConfiguration({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required String rpgCharacterConfigurationJson,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error(
+        'Could not load api connector.',
+        'd1a6f5e4-2e7a-7i9d-1f4h-rest-character-config',
+      );
+    }
+
+    final idValue = playerCharacterId.$value;
+    if (idValue == null || idValue.isEmpty) {
+      return HRResponse.error(
+        'Missing player character id.',
+        'e2b7g6f5-3f8b-8j0e-2g5i-rest-character-id',
+      );
+    }
+
+    final url = Uri.parse(
+      '${apiBaseUrl}PlayerCharacter/updatecharacterconfig/$idValue',
+    );
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $jwt',
+        },
+        body: jsonEncode({
+          'rpgCharacterConfiguration': rpgCharacterConfigurationJson,
+        }),
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          'Could not save character configuration.',
+          'f3c8h7g6-4g9c-9k1f-3h6j-rest-character-save',
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(true, statusCode: response.statusCode);
+    } on Exception catch (e) {
+      return HRResponse.error(
+        'Could not save character configuration.',
+        'f3c8h7g6-4g9c-9k1f-3h6j-rest-character-save',
+        caughtException: e,
+      );
+    }
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -378,6 +438,7 @@ class MockRpgEntityService extends IRpgEntityService {
 
   final HRResponse<bool>? handleJoinRequestOverride;
   final HRResponse<bool>? updateCampagneRpgConfigurationOverride;
+  final HRResponse<bool>? updatePlayerCharacterRpgConfigurationOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
@@ -386,6 +447,7 @@ class MockRpgEntityService extends IRpgEntityService {
     this.getPlayerCharacetersForPlayerOverride,
     this.handleJoinRequestOverride,
     this.updateCampagneRpgConfigurationOverride,
+    this.updatePlayerCharacterRpgConfigurationOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
 
@@ -396,6 +458,17 @@ class MockRpgEntityService extends IRpgEntityService {
   }) {
     return Future.value(
       updateCampagneRpgConfigurationOverride ?? HRResponse.fromResult(true),
+    );
+  }
+
+  @override
+  Future<HRResponse<bool>> updatePlayerCharacterRpgConfiguration({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required String rpgCharacterConfigurationJson,
+  }) {
+    return Future.value(
+      updatePlayerCharacterRpgConfigurationOverride ??
+          HRResponse.fromResult(true),
     );
   }
 

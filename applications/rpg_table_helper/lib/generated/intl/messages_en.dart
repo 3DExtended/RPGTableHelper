@@ -76,6 +76,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "campaigneName": MessageLookupByLibrary.simpleMessage("Name"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "character": MessageLookupByLibrary.simpleMessage("Character:"),
+    "characterConfigSaveFailedBody": MessageLookupByLibrary.simpleMessage(
+      "Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.",
+    ),
+    "characterConfigSaveFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Character not saved",
+    ),
     "characterName": MessageLookupByLibrary.simpleMessage("Name"),
     "characterNameDefault": MessageLookupByLibrary.simpleMessage("Player name"),
     "characterNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),

@@ -723,4 +723,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pendingHubSyncBanner =>
       'Some changes are still syncing to the session…';
+
+  @override
+  String get characterConfigSaveFailedTitle => 'Character not saved';
+
+  @override
+  String get characterConfigSaveFailedBody =>
+      'Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.';
 }
