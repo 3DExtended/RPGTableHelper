@@ -29,6 +29,7 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
+import 'package:quest_keeper/services/config_sync/config_sync_session_controller.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
@@ -36,6 +37,7 @@ import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:uuid/v7.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
@@ -366,6 +368,32 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         .toList();
   }
 
+  /// Builds a [ConfigSyncSessionController] wired to this session's Riverpod
+  /// stores. Callers still start it for whichever entities apply
+  /// (campagne/character) and must [ConfigSyncSessionController.stop] it when
+  /// the session ends. Only listens for/catches-up on remote `*ConfigChanged`
+  /// SSE notifies for now (sse-04); the SignalR hub invoke queue remains the
+  /// write path used by the editor UI until sse-08.
+  ConfigSyncSessionController _buildConfigSyncSessionController(
+      IRpgEntityService rpgService) {
+    return ConfigSyncSessionController(
+      rpgEntityService: rpgService,
+      eventsClient: DependencyProvider.of(context).getService<EventsClient>(),
+      applyCampagneConfig: (config) =>
+          ref.read(rpgConfigurationProvider.notifier).updateConfiguration(config),
+      readCampagneConfig: () =>
+          ref.read(rpgConfigurationProvider).valueOrNull ??
+          RpgConfigurationModel.getBaseConfiguration(),
+      applyCharacterConfig: (config) => ref
+          .read(rpgCharacterConfigurationProvider.notifier)
+          .updateConfiguration(config),
+      readCharacterConfig: () =>
+          ref.read(rpgCharacterConfigurationProvider).valueOrNull ??
+          RpgCharacterConfiguration.getBaseConfiguration(
+              ref.read(rpgConfigurationProvider).valueOrNull),
+    );
+  }
+
   Future onCampagneSelected(Campagne campagne) async {
     setState(() {
       showLoadingSpinner = true;
@@ -422,6 +450,21 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           .seedRpgConfigSliceCacheFromFull(base);
     }
 
+    // sse-04: start listening for campagneConfigChanged SSE notifies so this
+    // client catches up on config edits made by other session participants.
+    var configSyncSessionController = _buildConfigSyncSessionController(rpgService);
+    var campagneSnapshotResponse = await rpgService.getCampagneRpgConfigSnapshot(
+      campagneId: campagne.id!,
+    );
+    if (!mounted) return;
+    if (campagneSnapshotResponse.isSuccessful &&
+        campagneSnapshotResponse.result != null) {
+      configSyncSessionController.startForCampagne(
+        campagneId: campagne.id!,
+        initialRevision: campagneSnapshotResponse.result!.revision,
+      );
+    }
+
     var joinRequestsResponse = await rpgService.getOpenJoinRequestsForCampagne(
         campagneId: campagne.id!);
 
@@ -469,6 +512,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       // when returning to this screen we want to stop all connections as the user is "disconnected"
       //(in the sense that the DM can't send notifications to this player)
       await serverCommunicationService.stopConnection();
+      await configSyncSessionController.stop();
       await sessionEntryCoordinator.leave(campagneId: campagne.id!);
 
       await loadCampagnesAndPlayersFromServer();
@@ -539,6 +583,35 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   campagneId: character.campagneId?.$value,
                   playerCharacterId: character.id!.$value!));
 
+      // sse-04: start listening for campagneConfigChanged / characterConfigChanged
+      // SSE notifies so this client catches up on config edits made by other
+      // session participants (e.g. the DM).
+      var configSyncSessionController = _buildConfigSyncSessionController(rpgService);
+      var campagneSnapshotResponse =
+          await rpgService.getCampagneRpgConfigSnapshot(
+        campagneId: character.campagneId!,
+      );
+      if (!mounted) return;
+      if (campagneSnapshotResponse.isSuccessful &&
+          campagneSnapshotResponse.result != null) {
+        configSyncSessionController.startForCampagne(
+          campagneId: character.campagneId!,
+          initialRevision: campagneSnapshotResponse.result!.revision,
+        );
+      }
+      var characterSnapshotResponse =
+          await rpgService.getCharacterRpgConfigSnapshot(
+        playerCharacterId: character.id!,
+      );
+      if (!mounted) return;
+      if (characterSnapshotResponse.isSuccessful &&
+          characterSnapshotResponse.result != null) {
+        configSyncSessionController.startForCharacter(
+          playerCharacterId: character.id!,
+          initialRevision: characterSnapshotResponse.result!.revision,
+        );
+      }
+
       // start SignalR connection
       await serverCommunicationService.startConnection();
       if (!mounted) return;
@@ -555,6 +628,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         // when returning to this screen we want to stop all connections as the user is "disconnected"
         //(in the sense that the DM can't send notifications to this player)
         await serverCommunicationService.stopConnection();
+        await configSyncSessionController.stop();
         await sessionEntryCoordinator.leave(campagneId: character.campagneId!);
 
         await loadCampagnesAndPlayersFromServer();

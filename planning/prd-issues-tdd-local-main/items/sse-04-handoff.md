@@ -41,5 +41,8 @@
 ## Dependencies
 Blocked by `sse-01` (SSE hub), `sse-02` (config revision REST), `sse-03` (`SessionEnter`/presence) — all complete.
 
+## Commits
+`a957807e` (backend: config-changed SSE notify), `085ce1de` (Flutter: ConfigSync + wiring)
+
 ## Full chain
 `sse-01` → `sse-03` → `sse-04` → feeds into `sse-06` (session commands, blocked by `sse-01, sse-03, sse-04`) and `sse-08` (SignalR removal, blocked by `sse-04..07`).

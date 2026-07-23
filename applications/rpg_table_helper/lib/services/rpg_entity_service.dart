@@ -9,6 +9,7 @@ import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
+import 'package:quest_keeper/services/config_sync/config_sync_models.dart';
 import 'package:quest_keeper/services/internals/internal_image_upload_service.dart';
 
 abstract class IRpgEntityService {
@@ -83,6 +84,36 @@ abstract class IRpgEntityService {
   /// Loads a single player character by id (used for player session hydration).
   Future<HRResponse<PlayerCharacter>> getPlayerCharacterById({
     required PlayerCharacterIdentifier playerCharacterId,
+  });
+
+  /// New ConfigSync write path (sse-04): PUTs the full campagne config with
+  /// an optional revision failsafe check, returning the new revision. Used
+  /// instead of the SignalR hub invoke queue for session config edits.
+  Future<HRResponse<ConfigWriteResult>> saveCampagneRpgConfig({
+    required CampagneIdentifier campagneId,
+    required String rpgConfigurationJson,
+    int? fromRevision,
+  });
+
+  /// New ConfigSync catch-up path (sse-04): `GET .../getcampagneconfig/{id}
+  /// ?sinceRevision=`, returning a patch or full snapshot depending on
+  /// server-side history availability.
+  Future<HRResponse<ConfigSnapshot>> getCampagneRpgConfigSnapshot({
+    required CampagneIdentifier campagneId,
+    int? sinceRevision,
+  });
+
+  /// New ConfigSync write path (sse-04) for a player character config.
+  Future<HRResponse<ConfigWriteResult>> saveCharacterRpgConfig({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required String rpgCharacterConfigurationJson,
+    int? fromRevision,
+  });
+
+  /// New ConfigSync catch-up path (sse-04) for a player character config.
+  Future<HRResponse<ConfigSnapshot>> getCharacterRpgConfigSnapshot({
+    required PlayerCharacterIdentifier playerCharacterId,
+    int? sinceRevision,
   });
 }
 
@@ -527,6 +558,148 @@ class RpgEntityService extends IRpgEntityService {
 
     return loadedCharacter;
   }
+
+  @override
+  Future<HRResponse<ConfigWriteResult>> saveCampagneRpgConfig({
+    required CampagneIdentifier campagneId,
+    required String rpgConfigurationJson,
+    int? fromRevision,
+  }) {
+    return _putConfig(
+      url: '${apiBaseUrl}Campagne/updatecampagneconfig/${campagneId.$value}',
+      body: {
+        'rpgConfiguration': rpgConfigurationJson,
+        if (fromRevision != null) 'fromRevision': fromRevision,
+      },
+      errorMessage: 'Could not save campagne configuration.',
+      errorCode: 'd4e5f6a7-4d5e-6f7a-8b9c-configsync-campagne-save',
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigSnapshot>> getCampagneRpgConfigSnapshot({
+    required CampagneIdentifier campagneId,
+    int? sinceRevision,
+  }) {
+    return _getConfigSnapshot(
+      url: '${apiBaseUrl}Campagne/getcampagneconfig/${campagneId.$value}',
+      sinceRevision: sinceRevision,
+      errorMessage: 'Could not load campagne configuration.',
+      errorCode: 'e5f6a7b8-5e6f-7a8b-9c0d-configsync-campagne-get',
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigWriteResult>> saveCharacterRpgConfig({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required String rpgCharacterConfigurationJson,
+    int? fromRevision,
+  }) {
+    return _putConfig(
+      url:
+          '${apiBaseUrl}PlayerCharacter/updatecharacterconfig/${playerCharacterId.$value}',
+      body: {
+        'rpgCharacterConfiguration': rpgCharacterConfigurationJson,
+        if (fromRevision != null) 'fromRevision': fromRevision,
+      },
+      errorMessage: 'Could not save character configuration.',
+      errorCode: 'f6a7b8c9-6f7a-8b9c-0d1e-configsync-character-save',
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigSnapshot>> getCharacterRpgConfigSnapshot({
+    required PlayerCharacterIdentifier playerCharacterId,
+    int? sinceRevision,
+  }) {
+    return _getConfigSnapshot(
+      url:
+          '${apiBaseUrl}PlayerCharacter/getplayercharacterconfig/${playerCharacterId.$value}',
+      sinceRevision: sinceRevision,
+      errorMessage: 'Could not load character configuration.',
+      errorCode: 'a7b8c9d0-7a8b-9c0d-1e2f-configsync-character-get',
+    );
+  }
+
+  Future<HRResponse<ConfigWriteResult>> _putConfig({
+    required String url,
+    required Map<String, dynamic> body,
+    required String errorMessage,
+    required String errorCode,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error('Could not load api connector.', errorCode);
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $jwt',
+        },
+        body: jsonEncode(body),
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          errorMessage,
+          errorCode,
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(
+        ConfigWriteResult.fromJson(
+          jsonDecode(response.body) as Map<String, dynamic>,
+        ),
+        statusCode: response.statusCode,
+      );
+    } on Exception catch (e) {
+      return HRResponse.error(errorMessage, errorCode, caughtException: e);
+    }
+  }
+
+  Future<HRResponse<ConfigSnapshot>> _getConfigSnapshot({
+    required String url,
+    required int? sinceRevision,
+    required String errorMessage,
+    required String errorCode,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error('Could not load api connector.', errorCode);
+    }
+
+    final uri = Uri.parse(url).replace(
+      queryParameters: sinceRevision == null
+          ? null
+          : {'sinceRevision': sinceRevision.toString()},
+    );
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {'Authorization': 'Bearer $jwt'},
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          errorMessage,
+          errorCode,
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(
+        ConfigSnapshot.fromJson(
+          jsonDecode(response.body) as Map<String, dynamic>,
+        ),
+        statusCode: response.statusCode,
+      );
+    } on Exception catch (e) {
+      return HRResponse.error(errorMessage, errorCode, caughtException: e);
+    }
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -544,6 +717,10 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<bool>? enterSessionOverride;
   final HRResponse<bool>? leaveSessionOverride;
   final HRResponse<PlayerCharacter>? getPlayerCharacterByIdOverride;
+  final HRResponse<ConfigWriteResult>? saveCampagneRpgConfigOverride;
+  final HRResponse<ConfigSnapshot>? getCampagneRpgConfigSnapshotOverride;
+  final HRResponse<ConfigWriteResult>? saveCharacterRpgConfigOverride;
+  final HRResponse<ConfigSnapshot>? getCharacterRpgConfigSnapshotOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
@@ -556,6 +733,10 @@ class MockRpgEntityService extends IRpgEntityService {
     this.enterSessionOverride,
     this.leaveSessionOverride,
     this.getPlayerCharacterByIdOverride,
+    this.saveCampagneRpgConfigOverride,
+    this.getCampagneRpgConfigSnapshotOverride,
+    this.saveCharacterRpgConfigOverride,
+    this.getCharacterRpgConfigSnapshotOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
 
@@ -772,5 +953,63 @@ class MockRpgEntityService extends IRpgEntityService {
     }
     // TODO: implement getPlayerCharacterById
     throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<ConfigWriteResult>> saveCampagneRpgConfig({
+    required CampagneIdentifier campagneId,
+    required String rpgConfigurationJson,
+    int? fromRevision,
+  }) {
+    return Future.value(
+      saveCampagneRpgConfigOverride ??
+          HRResponse.fromResult(const ConfigWriteResult(revision: 1)),
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigSnapshot>> getCampagneRpgConfigSnapshot({
+    required CampagneIdentifier campagneId,
+    int? sinceRevision,
+  }) {
+    return Future.value(
+      getCampagneRpgConfigSnapshotOverride ??
+          HRResponse.fromResult(
+            const ConfigSnapshot(
+              kind: 'full',
+              revision: 1,
+              fullConfig: '{}',
+            ),
+          ),
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigWriteResult>> saveCharacterRpgConfig({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required String rpgCharacterConfigurationJson,
+    int? fromRevision,
+  }) {
+    return Future.value(
+      saveCharacterRpgConfigOverride ??
+          HRResponse.fromResult(const ConfigWriteResult(revision: 1)),
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigSnapshot>> getCharacterRpgConfigSnapshot({
+    required PlayerCharacterIdentifier playerCharacterId,
+    int? sinceRevision,
+  }) {
+    return Future.value(
+      getCharacterRpgConfigSnapshotOverride ??
+          HRResponse.fromResult(
+            const ConfigSnapshot(
+              kind: 'full',
+              revision: 1,
+              fullConfig: '{}',
+            ),
+          ),
+    );
   }
 }
