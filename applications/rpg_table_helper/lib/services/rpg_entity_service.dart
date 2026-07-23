@@ -66,6 +66,24 @@ abstract class IRpgEntityService {
     required PlayerCharacterIdentifier playerCharacterId,
     required String rpgCharacterConfigurationJson,
   });
+
+  /// Marks the calling, already-accepted DM/player as present for a table session.
+  /// Other participants currently in session for this campagne receive a
+  /// `participantOnline` SSE event.
+  Future<HRResponse<bool>> enterSession({
+    required CampagneIdentifier campagneId,
+  });
+
+  /// Marks the calling user as no longer present for a table session.
+  /// Remaining participants receive a `participantOffline` SSE event.
+  Future<HRResponse<bool>> leaveSession({
+    required CampagneIdentifier campagneId,
+  });
+
+  /// Loads a single player character by id (used for player session hydration).
+  Future<HRResponse<PlayerCharacter>> getPlayerCharacterById({
+    required PlayerCharacterIdentifier playerCharacterId,
+  });
 }
 
 class RpgEntityService extends IRpgEntityService {
@@ -425,6 +443,90 @@ class RpgEntityService extends IRpgEntityService {
       );
     }
   }
+
+  @override
+  Future<HRResponse<bool>> enterSession({
+    required CampagneIdentifier campagneId,
+  }) {
+    return _postSessionAction(
+      action: 'enter',
+      campagneId: campagneId,
+      errorMessage: 'Could not enter session.',
+      errorCode: 'a1b2c3d4-1a2b-3c4d-5e6f-rest-session-enter',
+    );
+  }
+
+  @override
+  Future<HRResponse<bool>> leaveSession({
+    required CampagneIdentifier campagneId,
+  }) {
+    return _postSessionAction(
+      action: 'leave',
+      campagneId: campagneId,
+      errorMessage: 'Could not leave session.',
+      errorCode: 'b2c3d4e5-2b3c-4d5e-6f7a-rest-session-leave',
+    );
+  }
+
+  Future<HRResponse<bool>> _postSessionAction({
+    required String action,
+    required CampagneIdentifier campagneId,
+    required String errorMessage,
+    required String errorCode,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error('Could not load api connector.', errorCode);
+    }
+
+    final campagneIdValue = campagneId.$value;
+    if (campagneIdValue == null || campagneIdValue.isEmpty) {
+      return HRResponse.error('Missing campagne id.', errorCode);
+    }
+
+    final url = Uri.parse('${apiBaseUrl}Session/$action/$campagneIdValue');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Authorization': 'Bearer $jwt'},
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          errorMessage,
+          errorCode,
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(true, statusCode: response.statusCode);
+    } on Exception catch (e) {
+      return HRResponse.error(
+        errorMessage,
+        errorCode,
+        caughtException: e,
+      );
+    }
+  }
+
+  @override
+  Future<HRResponse<PlayerCharacter>> getPlayerCharacterById({
+    required PlayerCharacterIdentifier playerCharacterId,
+  }) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error('Could not load api connector.',
+          'c3d4e5f6-3c4d-5e6f-7a8b-rest-getplayercharacter');
+    }
+
+    var loadedCharacter = await HRResponse.fromApiFuture(
+        api.playerCharacterGetplayercharacterPlayercharacteridGet(
+            playercharacterid: playerCharacterId.$value),
+        'Could not load player character by id.',
+        'c3d4e5f6-3c4d-5e6f-7a8b-rest-getplayercharacter');
+
+    return loadedCharacter;
+  }
 }
 
 class MockRpgEntityService extends IRpgEntityService {
@@ -439,6 +541,9 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<bool>? handleJoinRequestOverride;
   final HRResponse<bool>? updateCampagneRpgConfigurationOverride;
   final HRResponse<bool>? updatePlayerCharacterRpgConfigurationOverride;
+  final HRResponse<bool>? enterSessionOverride;
+  final HRResponse<bool>? leaveSessionOverride;
+  final HRResponse<PlayerCharacter>? getPlayerCharacterByIdOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
@@ -448,6 +553,9 @@ class MockRpgEntityService extends IRpgEntityService {
     this.handleJoinRequestOverride,
     this.updateCampagneRpgConfigurationOverride,
     this.updatePlayerCharacterRpgConfigurationOverride,
+    this.enterSessionOverride,
+    this.leaveSessionOverride,
+    this.getPlayerCharacterByIdOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
 
@@ -639,5 +747,30 @@ class MockRpgEntityService extends IRpgEntityService {
         playerCharacterName: "Hayze",
       ),
     ]));
+  }
+
+  @override
+  Future<HRResponse<bool>> enterSession({
+    required CampagneIdentifier campagneId,
+  }) {
+    return Future.value(enterSessionOverride ?? HRResponse.fromResult(true));
+  }
+
+  @override
+  Future<HRResponse<bool>> leaveSession({
+    required CampagneIdentifier campagneId,
+  }) {
+    return Future.value(leaveSessionOverride ?? HRResponse.fromResult(true));
+  }
+
+  @override
+  Future<HRResponse<PlayerCharacter>> getPlayerCharacterById({
+    required PlayerCharacterIdentifier playerCharacterId,
+  }) {
+    if (getPlayerCharacterByIdOverride != null) {
+      return Future.value(getPlayerCharacterByIdOverride);
+    }
+    // TODO: implement getPlayerCharacterById
+    throw UnimplementedError();
   }
 }

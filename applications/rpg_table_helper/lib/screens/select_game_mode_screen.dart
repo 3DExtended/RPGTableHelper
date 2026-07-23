@@ -33,6 +33,7 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
+import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:uuid/v7.dart';
@@ -369,10 +370,30 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     setState(() {
       showLoadingSpinner = true;
     });
-    if (campagne.rpgConfiguration != null &&
-        campagne.rpgConfiguration!.isNotEmpty) {
+
+    var rpgService =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    var sessionEntryCoordinator =
+        SessionEntryCoordinator(rpgEntityService: rpgService);
+
+    // REST hydration: SessionEnter, then campagne config + all characters in campagne.
+    var hydrationResponse =
+        await sessionEntryCoordinator.enterAsDm(campagneId: campagne.id!);
+    if (!mounted || !context.mounted) return;
+    await hydrationResponse.possiblyHandleError(context);
+    if (!mounted) return;
+    if (!hydrationResponse.isSuccessful) {
+      setState(() {
+        showLoadingSpinner = false;
+      });
+      return;
+    }
+
+    var hydratedCampagne = hydrationResponse.result!.campagne;
+    if (hydratedCampagne.rpgConfiguration != null &&
+        hydratedCampagne.rpgConfiguration!.isNotEmpty) {
       var parsedJson = RpgConfigurationModel.fromJson(
-          jsonDecode(campagne.rpgConfiguration!));
+          jsonDecode(hydratedCampagne.rpgConfiguration!));
       agentDebugLog(
         location: 'select_game_mode_screen.dart:onCampagneSelected',
         message: 'loaded campagne config from REST',
@@ -400,9 +421,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           .getService<IServerMethodsService>()
           .seedRpgConfigSliceCacheFromFull(base);
     }
-
-    var rpgService =
-        DependencyProvider.of(context).getService<IRpgEntityService>();
 
     var joinRequestsResponse = await rpgService.getOpenJoinRequestsForCampagne(
         campagneId: campagne.id!);
@@ -451,6 +469,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       // when returning to this screen we want to stop all connections as the user is "disconnected"
       //(in the sense that the DM can't send notifications to this player)
       await serverCommunicationService.stopConnection();
+      await sessionEntryCoordinator.leave(campagneId: campagne.id!);
 
       await loadCampagnesAndPlayersFromServer();
     });
@@ -469,29 +488,39 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       // rpgConfigurationProvider
       var rpgService =
           DependencyProvider.of(context).getService<IRpgEntityService>();
+      var sessionEntryCoordinator =
+          SessionEntryCoordinator(rpgEntityService: rpgService);
 
-      var campagneLoadResult =
-          await rpgService.getCampagneById(campagneId: character.campagneId!);
+      // REST hydration: SessionEnter, then campagne config + own character.
+      var hydrationResponse = await sessionEntryCoordinator.enterAsPlayer(
+        campagneId: character.campagneId!,
+        playerCharacterId: character.id!,
+      );
       if (!mounted) return;
-      await campagneLoadResult.possiblyHandleError(context);
+      await hydrationResponse.possiblyHandleError(context);
       if (!mounted) return;
 
-      if (!campagneLoadResult.isSuccessful) {
+      if (!hydrationResponse.isSuccessful) {
+        setState(() {
+          showLoadingSpinner = false;
+        });
         return;
       }
 
-      Map<String, dynamic> map =
-          jsonDecode(campagneLoadResult.result!.rpgConfiguration!);
+      Map<String, dynamic> map = jsonDecode(
+          hydrationResponse.result!.campagne.rpgConfiguration!);
 
       var receivedConfig = RpgConfigurationModel.fromJson(map);
       ref
           .read(rpgConfigurationProvider.notifier)
           .updateConfiguration(receivedConfig);
 
-      if (character.rpgCharacterConfiguration != null &&
-          character.rpgCharacterConfiguration!.isNotEmpty) {
+      var hydratedCharacter =
+          hydrationResponse.result!.ownCharacter ?? character;
+      if (hydratedCharacter.rpgCharacterConfiguration != null &&
+          hydratedCharacter.rpgCharacterConfiguration!.isNotEmpty) {
         var parsedJson = RpgCharacterConfiguration.fromJson(
-            jsonDecode(character.rpgCharacterConfiguration!));
+            jsonDecode(hydratedCharacter.rpgCharacterConfiguration!));
         ref
             .read(rpgCharacterConfigurationProvider.notifier)
             .updateConfiguration(parsedJson);
@@ -526,6 +555,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         // when returning to this screen we want to stop all connections as the user is "disconnected"
         //(in the sense that the DM can't send notifications to this player)
         await serverCommunicationService.stopConnection();
+        await sessionEntryCoordinator.leave(campagneId: character.campagneId!);
 
         await loadCampagnesAndPlayersFromServer();
       });
