@@ -37,10 +37,13 @@ public class EventsController : ControllerBase
         var userId = Guid.Parse(_userContext.User.IdentityProviderId);
 
         Response.Headers.ContentType = "text/event-stream";
-        Response.Headers.CacheControl = "no-cache";
+        Response.Headers.CacheControl = "no-cache, no-store";
         Response.Headers.Connection = "keep-alive";
         Response.Headers["X-Accel-Buffering"] = "no";
 
+        // Critical for SSE: prevent Kestrel/middleware from buffering the whole action.
+        HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>()?.DisableBuffering();
+        await Response.StartAsync(cancellationToken).ConfigureAwait(false);
         await Response.Body.FlushAsync(cancellationToken).ConfigureAwait(false);
 
         var writeLock = new SemaphoreSlim(1, 1);

@@ -91,16 +91,14 @@ public sealed class SessionPresenceService : ISessionPresenceService
         {
             return;
         }
-        finally
-        {
-            cts.Dispose();
-        }
 
         // Reconnect may have raced us and already replaced/cancelled this token; only proceed if we're still current.
-        if (!_pendingOfflineGraceByUser.TryRemove(userId, out var currentCts) || currentCts != cts)
+        if (!_pendingOfflineGraceByUser.TryRemove(userId, out var currentCts) || !ReferenceEquals(currentCts, cts))
         {
             return;
         }
+
+        cts.Dispose();
 
         if (!_campagnesByUser.TryRemove(userId, out var campagnes))
         {
@@ -142,6 +140,7 @@ public sealed class SessionPresenceService : ISessionPresenceService
         if (_pendingOfflineGraceByUser.TryRemove(userId, out var cts))
         {
             cts.Cancel();
+            cts.Dispose();
         }
     }
 

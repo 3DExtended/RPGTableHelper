@@ -152,10 +152,16 @@ public class SessionPresenceServiceTests
 
         // act
         await sut.OnSseDisconnectedAsync(droppedUserId, CancellationToken.None);
-        await Task.Delay(250);
+
+        // Poll instead of a fixed sleep — under parallel suite load a short Delay can
+        // race the fire-and-forget grace timer before it has marked the user offline.
+        var wentOffline = await WaitUntilAsync(
+            () => !sut.IsOnline(campagneId, droppedUserId),
+            timeout: TimeSpan.FromSeconds(2)
+        );
 
         // assert
-        sut.IsOnline(campagneId, droppedUserId).Should().BeFalse();
+        wentOffline.Should().BeTrue("grace timer should mark the user offline");
         await sseEventHub
             .Received(1)
             .SendToUsersAsync(
@@ -164,5 +170,21 @@ public class SessionPresenceServiceTests
                 Arg.Is<string>(json => json.Contains(droppedUserId.ToString()) && json.Contains(campagneId.ToString())),
                 Arg.Any<CancellationToken>()
             );
+    }
+
+    private static async Task<bool> WaitUntilAsync(Func<bool> condition, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            if (condition())
+            {
+                return true;
+            }
+
+            await Task.Delay(10);
+        }
+
+        return condition();
     }
 }

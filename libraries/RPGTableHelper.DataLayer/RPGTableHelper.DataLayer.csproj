@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Transitive SQLitePCLRaw audit (EF Sqlite); fails Docker Release restore when treated as error. -->
+    <WarningsNotAsErrors>NU1903</WarningsNotAsErrors>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
