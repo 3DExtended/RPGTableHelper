@@ -20,4 +20,14 @@
 - `dotnet test tests/RPGTableHelper.DataLayer.Tests --filter "FullyQualifiedName~ConfigRevisionHistoryMigrationTests"`: 1 passed
 - `dotnet test RPGTableHelper.sln`: full solution green (Api.Tests 114 passed/1 skipped, DataLayer.Tests 74 passed, BusinessLayer.Tests 9 passed, Shared.Tests 66 passed)
 
+## sse-03 complete
+
+- Table session presence (separate from campagne membership): REST `POST /Session/enter/{campagneid}` / `leave/{campagneid}`, in-process `ISessionPresenceService` online set per campagne, `participantOnline`/`participantOffline` SSE broadcast to other session participants only, grace period on SSE disconnect (20s prod / 150ms E2ETest) so brief reconnects don't flicker offline. Flutter `SessionEntryCoordinator` performs REST hydration right after `SessionEnter` (DM: campagne config + all characters; player: campagne config + own character), wired into `select_game_mode_screen.dart`. SignalR untouched.
+- Commits: `983ae376` (backend), `acc0dfe4` (Flutter)
+- `dotnet test tests/RPGTableHelper.Api.Tests --filter "FullyQualifiedName~SessionController|FullyQualifiedName~SessionPresenceService|FullyQualifiedName~EventsController"`: 11 passed
+- `dotnet test tests/RPGTableHelper.Api.Tests`: 158 passed / 1 skipped (pre-existing, unrelated)
+- `dotnet test tests/RPGTableHelper.DataLayer.Tests`: 74 passed
+- `flutter test test/services/session/session_entry_coordinator_test.dart`: 5 passed
+- `flutter test` (full app suite): 1202 passed
+
 ---
