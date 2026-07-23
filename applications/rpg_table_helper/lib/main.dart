@@ -30,6 +30,7 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
@@ -378,7 +379,10 @@ class _ThemeConfigurationForAppState
     final serverMethods =
         DependencyProvider.getIt!.get<IServerMethodsService>();
     final comm = DependencyProvider.getIt!.get<IServerCommunicationService>();
+    final eventsClient = DependencyProvider.getIt!.get<EventsClient>();
     var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+
+    await eventsClient.ensureConnected();
 
     if (connectionDetails == null || connectionDetails.isInSession == false) {
       return;

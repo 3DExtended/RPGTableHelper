@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
 import 'package:quest_keeper/services/auth/encryption_service.dart';
@@ -12,6 +13,7 @@ import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:quest_keeper/services/systemclock_service.dart';
 import 'package:quest_keeper/services/api_key_service.dart';
 
@@ -137,6 +139,20 @@ class DependencyProvider extends InheritedWidget {
       var apiConnectorService = getService<IApiConnectorService>();
       return MockServerCommunicationService(
           apiConnectorService: apiConnectorService, widgetRef: widgetRef);
+    });
+
+    _registerService<EventsClient>(() {
+      final api = getService<IApiConnectorService>();
+      return EventsClient(getJwt: api.getJwt);
+    }, () {
+      final api = getService<IApiConnectorService>();
+      return EventsClient(
+        getJwt: api.getJwt,
+        openStream: ({required uri, required jwt}) async {
+          return http.ByteStream(const Stream.empty());
+        },
+        sleep: (_) async {},
+      );
     });
 
     _registerService<IServerMethodsService>(() {

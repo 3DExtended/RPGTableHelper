@@ -9,6 +9,7 @@ import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
+import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
@@ -109,6 +110,9 @@ class _AuthorizedScreenWrapperState
       // this initializes the communication
       if (!mounted) return;
       DependencyProvider.of(context).getService<IServerCommunicationService>();
+      await DependencyProvider.of(context)
+          .getService<EventsClient>()
+          .ensureConnected();
 
       if (widget.initTab != null) {
         setState(() {
