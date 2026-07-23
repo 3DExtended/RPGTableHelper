@@ -122,6 +122,19 @@ public class Startup
         services.AddSingleton<IJWTTokenGenerator, JWTTokenGenerator>();
         services.AddSingleton<IAppleClientSecretGenerator, AppleClientSecretGenerator>();
         services.AddSingleton<RPGTableHelper.WebApi.Services.Sse.ISseEventHub, RPGTableHelper.WebApi.Services.Sse.SseEventHub>();
+        services.AddSingleton<RPGTableHelper.WebApi.Services.Presence.ISessionPresenceService>(provider =>
+        {
+            var sseEventHub = provider.GetRequiredService<RPGTableHelper.WebApi.Services.Sse.ISseEventHub>();
+            var hostEnvironment = provider.GetRequiredService<Microsoft.Extensions.Hosting.IHostEnvironment>();
+
+            // E2E/integration tests use a short grace period so reconnect-vs-expiry behavior stays test-fast;
+            // real clients get enough slack to survive brief background/app-resume SSE drops.
+            var gracePeriod = hostEnvironment.IsEnvironment("E2ETest")
+                ? TimeSpan.FromMilliseconds(150)
+                : TimeSpan.FromSeconds(20);
+
+            return new RPGTableHelper.WebApi.Services.Presence.SessionPresenceService(sseEventHub, gracePeriod);
+        });
         services.AddTransient<
             RPGTableHelper.WebApi.Services.ConfigRevisions.IConfigRevisionHistoryStore,
             RPGTableHelper.WebApi.Services.ConfigRevisions.ConfigRevisionHistoryStore

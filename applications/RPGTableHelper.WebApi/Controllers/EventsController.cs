@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.WebApi.Services.Presence;
 using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers;
@@ -14,11 +15,17 @@ public class EventsController : ControllerBase
 {
     private readonly ISseEventHub _sseEventHub;
     private readonly IUserContext _userContext;
+    private readonly ISessionPresenceService _sessionPresenceService;
 
-    public EventsController(ISseEventHub sseEventHub, IUserContext userContext)
+    public EventsController(
+        ISseEventHub sseEventHub,
+        IUserContext userContext,
+        ISessionPresenceService sessionPresenceService
+    )
     {
         _sseEventHub = sseEventHub;
         _userContext = userContext;
+        _sessionPresenceService = sessionPresenceService;
     }
 
     /// <summary>
@@ -38,7 +45,7 @@ public class EventsController : ControllerBase
 
         var writeLock = new SemaphoreSlim(1, 1);
 
-        await using var registration = _sseEventHub.Register(
+        var registration = _sseEventHub.Register(
             userId,
             async (eventType, dataJson, ct) =>
             {
@@ -46,25 +53,39 @@ public class EventsController : ControllerBase
             }
         );
 
-        await WriteSseEventAsync(
-                writeLock,
-                "hello",
-                JsonSerializer.Serialize(new { userId = userId.ToString() }),
-                cancellationToken
-            )
-            .ConfigureAwait(false);
+        await _sessionPresenceService.OnSseConnectedAsync(userId, cancellationToken).ConfigureAwait(false);
 
         try
         {
-            while (!cancellationToken.IsCancellationRequested)
+            await WriteSseEventAsync(
+                    writeLock,
+                    "hello",
+                    JsonSerializer.Serialize(new { userId = userId.ToString() }),
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            try
             {
-                await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false);
-                await WriteSseCommentAsync(writeLock, "keepalive", cancellationToken).ConfigureAwait(false);
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken).ConfigureAwait(false);
+                    await WriteSseCommentAsync(writeLock, "keepalive", cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Client disconnected.
             }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            // Client disconnected.
+            await registration.DisposeAsync().ConfigureAwait(false);
+
+            if (!_sseEventHub.HasConnection(userId))
+            {
+                await _sessionPresenceService.OnSseDisconnectedAsync(userId, CancellationToken.None).ConfigureAwait(false);
+            }
         }
     }
 

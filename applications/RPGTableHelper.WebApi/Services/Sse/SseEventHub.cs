@@ -18,6 +18,9 @@ public sealed class SseEventHub : ISseEventHub
         return new Registration(this, userId, connectionId);
     }
 
+    public bool HasConnection(Guid userId) =>
+        _connections.TryGetValue(userId, out var userConnections) && !userConnections.IsEmpty;
+
     public async Task SendToUserAsync(
         Guid userId,
         string eventType,

@@ -10,6 +10,11 @@ public interface ISseEventHub
     /// </summary>
     IAsyncDisposable Register(Guid userId, Func<string, string, CancellationToken, Task> writeEventAsync);
 
+    /// <summary>
+    /// True if <paramref name="userId"/> currently has at least one registered connection.
+    /// </summary>
+    bool HasConnection(Guid userId);
+
     Task SendToUserAsync(Guid userId, string eventType, string dataJson, CancellationToken cancellationToken);
 
     Task SendToUsersAsync(
