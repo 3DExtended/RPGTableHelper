@@ -63,7 +63,8 @@ abstract class IRpgEntityService {
     required String rpgConfigurationJson,
   });
 
-  /// Persists player character configuration via REST when SignalR is unavailable.
+  /// Persists player character configuration via a full REST PUT (legacy
+  /// fallback used only when no ConfigSync session controller is active).
   Future<HRResponse<bool>> updatePlayerCharacterRpgConfiguration({
     required PlayerCharacterIdentifier playerCharacterId,
     required String rpgCharacterConfigurationJson,
@@ -87,9 +88,9 @@ abstract class IRpgEntityService {
     required PlayerCharacterIdentifier playerCharacterId,
   });
 
-  /// New ConfigSync write path (sse-04): PUTs the full campagne config with
-  /// an optional revision failsafe check, returning the new revision. Used
-  /// instead of the SignalR hub invoke queue for session config edits.
+  /// ConfigSync write path (sse-04): PUTs the full campagne config with an
+  /// optional revision failsafe check, returning the new revision. This is the
+  /// sole session config write path after the SignalR hard cut (sse-08).
   Future<HRResponse<ConfigWriteResult>> saveCampagneRpgConfig({
     required CampagneIdentifier campagneId,
     required String rpgConfigurationJson,

@@ -29,7 +29,6 @@ import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_cha
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_recepies.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
-import 'package:signalr_netcore/errors.dart';
 
 class PlayerPageScreenRouteSettings {
   final RpgCharacterConfigurationBase? characterConfigurationOverride;
@@ -141,7 +140,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
                 if (indexOfSelectedCompChar == -1) {
                   if (newestCharacterConfig.alternateForm == null) {
-                    throw NotImplementedException();
+                    throw UnimplementedError();
                   }
 
                   // check altforms

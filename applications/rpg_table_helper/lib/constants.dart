@@ -2,33 +2,6 @@ import 'dart:io';
 
 const iconSizeInlineButtons = 16.0;
 
-/// How often the DM app sends SignalR pings and runs presence checks.
-const pingInterval = Duration(seconds: 5);
-
-/// Player UI: warn if no DM ping received for this long (less aggressive than one missed tick).
-const playerDisconnectedFromDmAfter = Duration(seconds: 12);
-
-/// DM list: consider a player's `lastPing` stale only after this age before counting toward removal.
-const dmPlayerPingStaleThreshold = Duration(seconds: 15);
-
-/// DM list: require this many consecutive periodic checks with a stale ping before removing the player.
-const dmConsecutiveStaleChecksBeforeRemove = 3;
-
-/// DM: delay removing a player after SignalR `clientDisconnected` so brief reconnects do not flash offline.
-const clientDisconnectedDebounce = Duration(seconds: 4);
-
-/// Max pending critical hub invokes when offline (oldest dropped when exceeded).
-const hubInvokeQueueMaxItems = 20;
-
-/// Drain queued invokes on this interval while in session and queue non-empty.
-const hubInvokeQueueDrainPeriodicInterval = Duration(seconds: 30);
-
-/// SignalR protocol capabilities version for this app build.
-/// v1 = legacy `updateRpgConfig` full snapshots.
-/// v2 = cold/hot slices via `updateRpgConfigCold` + `updateRpgConfigHot`.
-/// v3 = revisioned JSON Patch envelopes via `updateRpgConfigColdV3` + `updateRpgConfigHotV3`.
-const signalRProtocolVersion = 3;
-
 bool get isInTestEnvironment =>
     Platform.environment.containsKey('FLUTTER_TEST');
 
@@ -41,8 +14,8 @@ const outerPadding = 20.0;
 const sharedPrefsKeyRpgConfigJson = "rpgconfig";
 const sharedPrefsKeyRpgCharacterConfigJson = "rpgcharacterconfig";
 
-// The location of the REST API and SignalR server.
-// NOTE: Include the trailing slash. Override for local E2E:
+// The location of the REST API (and SSE `/events` stream).
+// NOTE: Include the trailing slash. Override for local runs:
 // `--dart-define=API_BASE_URL=http://127.0.0.1:5012/`
 String get apiBaseUrl {
   const fromDefine = String.fromEnvironment('API_BASE_URL', defaultValue: '');
@@ -55,8 +28,6 @@ String get apiBaseUrl {
   }
   return 'https://questkeeper-prod.peter-esser.de/';
 }
-
-String get serverUrl => '${apiBaseUrl}Chat';
 
 const rpgtablehelperPublicCertificate = '''-----BEGIN PUBLIC KEY-----
 MIICLjANBgkqhkiG9w0BAQEFAAOCAhsAMIICFgKCAg0LBlhtjPsdRKW8xNSSfqAr

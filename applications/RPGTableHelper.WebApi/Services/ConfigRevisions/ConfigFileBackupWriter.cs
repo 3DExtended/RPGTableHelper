@@ -7,7 +7,7 @@ namespace RPGTableHelper.WebApi.Services.ConfigRevisions;
 
 /// <summary>
 /// Writes timestamped filesystem backups of config documents under <c>configbackups/</c> on every successful
-/// persist, mirroring the existing SignalR hub backup behavior. Skipped in E2E test hosts to keep tests deterministic.
+/// persist. Skipped in E2E test hosts to keep tests deterministic.
 /// </summary>
 public static class ConfigFileBackupWriter
 {

@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
-import 'package:signalr_netcore/errors.dart';
 import 'package:uuid/v7.dart';
 
 part 'rpg_character_configuration.g.dart';
@@ -354,7 +353,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                 );
 
               default:
-                throw NotImplementedException();
+                throw UnimplementedError();
             }
           }).toList();
   }

@@ -174,7 +174,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
         /// <summary>
         /// Updates the RPG character configuration for a player character (owner only).
-        /// Used by mobile clients when SignalR is unavailable or for reliable persistence.
+        /// Primary write path for mobile clients (REST PATCH/PUT via ConfigSync).
         /// </summary>
         [ProducesResponseType(typeof(ConfigWriteResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

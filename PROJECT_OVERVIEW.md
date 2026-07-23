@@ -12,7 +12,7 @@
 ### Backend (`applications/RPGTableHelper.WebApi`)
 
 - **Framework**: .NET 10 (ASP.NET Core).
-- **Communication**: REST API (Controllers) & SignalR (Real-time).
+- **Communication**: REST API (Controllers) for all durable state (config revisions, session commands, notes) plus a single Server-Sent Events (SSE) stream at `GET /events` for real-time notifications (presence, config-changed, join requests, session commands). SignalR was fully removed in favor of SSE + REST.
 - **Database**: SQLite (Dev/Docker Containers), Entity Framework Core (EF Core) 10.0.
 - **Patterns**:
   - **CQRS**: Uses `Prodot.Patterns.Cqrs` library.
@@ -29,8 +29,8 @@
 - **Language**: Dart.
 - **State Management**: **Riverpod** (v2.5.1) with Code Generation.
 - **Networking**:
-  - **Chopper**: For REST API generation.
-  - **SignalR Client**: For real-time updates.
+  - **Chopper**: For REST API generation (durable writes via ConfigSync PATCH/PUT with revision + 409 rebase).
+  - **SSE (`EventsClient`)**: Long-lived `GET /events` stream for real-time notifications; drives ConfigSync catch-up and session-command handlers. No SignalR hub client.
 - **Localization**: `flutter_localizations`, `intl` (English/German).
 - **Design**: Material 3, Custom Theme Provider (`CustomThemeProvider`), `Ruwudu` Font.
 

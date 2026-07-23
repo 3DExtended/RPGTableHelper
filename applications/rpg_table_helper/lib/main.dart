@@ -9,12 +9,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
-import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/lifecycle_event_handler.dart';
 import 'package:quest_keeper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:quest_keeper/helpers/save_rpg_configuration_to_storage_observer.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
-import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/screens/authorized_screen_wrapper.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
@@ -28,11 +26,7 @@ import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
-import 'package:quest_keeper/services/server_communication_service.dart';
-import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
-import 'package:quest_keeper/services/snack_bar_service.dart';
-import 'package:signalr_netcore/signalr_client.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -209,11 +203,7 @@ class _ThemeConfigurationForAppState
     extends ConsumerState<ThemeConfigurationForApp> {
   LifecycleEventHandler? observer;
 
-  /// DM: consecutive periodic checks where a player's `lastPing` stayed stale (see constants).
-  final Map<String, int> _dmConsecutiveStalePingCounts = {};
-
   StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
-  Timer? _hubDrainTimer;
   List<ConnectivityResult> _lastConnectivity = const [ConnectivityResult.none];
 
   // This widget is the root of your application.
@@ -237,188 +227,30 @@ class _ThemeConfigurationForAppState
         if (!hadNone || !hasNetwork || !mounted) {
           return;
         }
-        final connectionDetails =
-            ref.read(connectionDetailsProvider).valueOrNull;
-        if (connectionDetails?.isInSession != true) {
-          return;
-        }
-        await recoverSignalRSession();
-      });
-
-      _hubDrainTimer =
-          Timer.periodic(hubInvokeQueueDrainPeriodicInterval, (_) async {
-        if (!mounted) {
-          return;
-        }
-        final connectionDetails =
-            ref.read(connectionDetailsProvider).valueOrNull;
-        if (connectionDetails?.isInSession != true) {
-          return;
-        }
-        final comm =
-            DependencyProvider.getIt!.get<IServerCommunicationService>();
-        if (comm.pendingHubInvokeCount > 0) {
-          await comm.ensureConnectionReadyForSession();
-          await comm.drainHubInvokeQueue();
-        }
-      });
-    }
-
-    if (!isInTestEnvironment) {
-      // future which runs every 10 seconds
-      Timer.periodic(pingInterval, (timer) {
-        log("pingInterval");
-        if (kDebugMode) {}
-
-        if (!mounted || !context.mounted) {
-          log("pingInterval ERROR - not mounted");
-          timer.cancel();
-
-          return;
-        }
-
-        var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
-        if (connectionDetails == null ||
-            connectionDetails.isInSession == false) {
-          return;
-        }
-        if (connectionDetails.isInSession == false) {
-          return;
-        }
-
-        if (connectionDetails.isPlayer == true) {
-          if (connectionDetails.lastPing == null) {
-            // the player cannot initiate a ping message and has to wait for the DM to send one
-            return;
-          }
-
-          // check when we received the last ping message from DM
-          if (connectionDetails.lastPing!.isBefore(DateTime.now()
-              .subtract(playerDisconnectedFromDmAfter))) {
-            var snackBar = SnackBar(
-              showCloseIcon: true,
-              duration: Duration(seconds: 60),
-              content: Text(
-                S.of(context).yourAreDisconnectedBody,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: CustomThemeProvider.of(context).theme.textColor,
-                      fontSize: 16,
-                    ),
-              ),
-            );
-
-            DependencyProvider.getIt!.get<ISnackBarService>().showSnackBar(
-                  snack: snackBar,
-                  uniqueId:
-                      "disconnectedFromDm-f3fdf3b4-fdfe-4910-9551-00d751020e17",
-                );
-          } else {
-            DependencyProvider.getIt!.get<ISnackBarService>().hideSnackBar(
-                  "disconnectedFromDm-f3fdf3b4-fdfe-4910-9551-00d751020e17",
-                );
-          }
-        } else {
-          if (connectionDetails.lastPing != null) {
-            final now = DateTime.now();
-            final staleBefore = now.subtract(dmPlayerPingStaleThreshold);
-            final nextStaleCounts = <String, int>{};
-            final userIdsToRemove = <String>[];
-
-            for (final element in connectionDetails.connectedPlayers ?? []) {
-              final uid = element.userId.$value!;
-              final last = element.lastPing;
-              if (last != null && last.isBefore(staleBefore)) {
-                final c =
-                    (_dmConsecutiveStalePingCounts[uid] ?? 0) + 1;
-                nextStaleCounts[uid] = c;
-                if (c >= dmConsecutiveStaleChecksBeforeRemove) {
-                  userIdsToRemove.add(uid);
-                }
-              }
-            }
-
-            _dmConsecutiveStalePingCounts
-              ..clear()
-              ..addAll(nextStaleCounts);
-
-            if (userIdsToRemove.isNotEmpty) {
-              ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-                  ref.read(connectionDetailsProvider).value?.copyWith(
-                            connectedPlayers: connectionDetails.connectedPlayers
-                                ?.where((e) => !userIdsToRemove
-                                    .contains(e.userId.$value))
-                                .toList(),
-                          ) ??
-                      ConnectionDetails.defaultValue());
-            }
-          }
-
-          // send new ping message to all players
-          // mark all players as disconnected if they did not respond since last ping
-          var newPingTimestamp = DateTime.now();
-          ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-              ref.read(connectionDetailsProvider).value?.copyWith(
-                        lastPing: newPingTimestamp,
-                      ) ??
-                  ConnectionDetails.defaultValue());
-
-          var serverMethods =
-              DependencyProvider.getIt!.get<IServerMethodsService>();
-          serverMethods.sendPingToPlayers(
-            campagneId: connectionDetails.campagneId!,
-            timestamp: newPingTimestamp,
-          );
-        }
+        await _recoverSseSession();
       });
     }
     WidgetsBinding.instance.addObserver(observer!);
   }
 
-  /// Reconnect SignalR, re-join groups, drain queued critical invokes, refresh UI flags.
-  Future<void> recoverSignalRSession() async {
-    final serverMethods =
-        DependencyProvider.getIt!.get<IServerMethodsService>();
-    final comm = DependencyProvider.getIt!.get<IServerCommunicationService>();
+  /// Presence and live updates now ride the SSE `/events` stream (sse-03/04),
+  /// so recovery just re-establishes that stream; the reconnecting client then
+  /// catches up on config via `*ConfigChanged` notifies.
+  Future<void> _recoverSseSession() async {
     final eventsClient = DependencyProvider.getIt!.get<EventsClient>();
-    var connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
-
     await eventsClient.ensureConnected();
-
-    if (connectionDetails == null || connectionDetails.isInSession == false) {
-      return;
-    }
-
-    await comm.ensureConnectionReadyForSession();
-    await serverMethods.readdToSignalRGroups();
-    await comm.drainHubInvokeQueue();
-    await serverMethods.flushPendingCampagneConfig();
-    await serverMethods.flushPendingCharacterConfig();
-
-    final hubState = comm.hubConnectionState;
-    final connected = hubState == HubConnectionState.Connected;
-    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-          ref.read(connectionDetailsProvider).value?.copyWith(
-                isConnected: connected,
-                isConnecting: !connected &&
-                    hubState != null &&
-                    (hubState == HubConnectionState.Connecting ||
-                        hubState == HubConnectionState.Reconnecting),
-              ) ??
-              ConnectionDetails.defaultValue(),
-        );
   }
 
   LifecycleEventHandler getObserver() {
     return LifecycleEventHandler(
       resumeCallBack: () async {
-        log("resumeCallBack", name: "SignalR");
-        await recoverSignalRSession();
+        log("resumeCallBack: re-ensuring SSE stream", name: "SSE");
+        await _recoverSseSession();
       },
       suspendingCallBack: () async {
         log(
-          "App lifecycle: inactive/paused/hidden — iOS may suspend sockets; "
-          "hub left connected (not stopped) to reduce churn.",
-          name: "SignalR",
+          "App lifecycle: inactive/paused/hidden — SSE stream left as-is.",
+          name: "SSE",
         );
       },
     );
@@ -427,7 +259,6 @@ class _ThemeConfigurationForAppState
   @override
   void dispose() {
     _connectivitySub?.cancel();
-    _hubDrainTimer?.cancel();
     if (observer != null) WidgetsBinding.instance.removeObserver(observer!);
     super.dispose();
   }

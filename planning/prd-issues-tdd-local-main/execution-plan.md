@@ -12,10 +12,10 @@
 | 2 | sse-02 | Config revision store + REST PATCH/PUT/GET | — | done |
 | 3 | sse-03 | SessionEnter + presence SSE + hydration | sse-01 | done |
 | 4 | sse-04 | Config-changed SSE + Flutter ConfigSync | sse-01,02,03 | done |
-| 5 | sse-05 | Join-request SSE + Flutter handlers | sse-01 | pending |
-| 6 | sse-06 | Session commands: rolls + grants | sse-01,03,04 | pending |
-| 7 | sse-07 | Notes ACL/content SSE + LoreSync | sse-01 | pending |
-| 8 | sse-08 | Delete SignalR + SSE/REST E2E | sse-04..07 | pending |
+| 5 | sse-05 | Join-request SSE + Flutter handlers | sse-01 | done |
+| 6 | sse-06 | Session commands: rolls + grants | sse-01,03,04 | done |
+| 7 | sse-07 | Notes ACL/content SSE + LoreSync | sse-01 | done |
+| 8 | sse-08 | Delete SignalR + SSE/REST E2E | sse-04..07 | done |
 
 ## Dependency graph
 

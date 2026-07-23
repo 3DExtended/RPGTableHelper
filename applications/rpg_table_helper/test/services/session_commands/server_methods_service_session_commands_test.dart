@@ -7,15 +7,12 @@ import 'package:quest_keeper/generated/swaggen/swagger.swagger.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
-import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/config_sync/config_sync_models.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
-import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
-import 'package:signalr_netcore/signalr_client.dart';
 
 class _FakeNav extends INavigationService {
   _FakeNav() : super(isMock: true);
@@ -53,97 +50,6 @@ class _FakeApi extends IApiConnectorService {
 
   @override
   void clearCache() {}
-}
-
-class _NoopComm extends IServerCommunicationService {
-  _NoopComm({required WidgetRef widgetRef})
-      : super(isMock: true, apiConnectorService: _FakeApi(), widgetRef: widgetRef);
-
-  final List<String> invokes = [];
-
-  @override
-  Future startConnection() async {}
-
-  @override
-  Future stopConnection() async {}
-
-  @override
-  HubConnectionState? get hubConnectionState => null;
-
-  @override
-  Future<void> ensureConnectionReadyForSession() async {}
-
-  @override
-  void registerCallbackWithoutParameters(
-      {required void Function() function, required String functionName}) {}
-
-  @override
-  void completeFunctionRegistration() {}
-
-  @override
-  void registerCallbackSingleString(
-      {required void Function(String parameter) function,
-      required String functionName}) {}
-
-  @override
-  void registerCallbackTwoStrings(
-      {required void Function(String param1, String param2) function,
-      required String functionName}) {}
-
-  @override
-  void registerCallbackSingleDateTime(
-      {required void Function(DateTime parameter) function,
-      required String functionName}) {}
-
-  @override
-  void registerCallbackSingleDateTimeAndOneString(
-      {required void Function(DateTime param1, String param2) function,
-      required String functionName}) {}
-
-  @override
-  void registerCallbackThreeStrings(
-      {required void Function(String param1, String param2, String param3)
-              function,
-      required String functionName}) {}
-
-  @override
-  void registerCallbackFourStrings(
-      {required void Function(
-              String param1, String param2, String param3, String param4)
-          function,
-      required String functionName}) {}
-
-  @override
-  Future executeServerFunction(String functionName,
-      {List<Object>? args, int maxInvokeRetries = 1}) async {}
-
-  @override
-  Future<bool> executeCriticalServerFunction(String functionName,
-      {List<Object>? args, int maxInvokeRetries = 3}) async {
-    invokes.add(functionName);
-    return true;
-  }
-
-  @override
-  void seedRpgConfigSliceCacheFromFull(RpgConfigurationModel config) {}
-
-  @override
-  Future<void> flushPendingCampagneConfig({String? campagneId}) async {}
-
-  @override
-  Future<void> drainHubInvokeQueue() async {}
-
-  @override
-  void clearQueuedCampagneConfigInvokes(String campagneId) {}
-
-  @override
-  void clearQueuedCharacterConfigInvokes(String playerCharacterId) {}
-
-  @override
-  String? get lastHubInvokeError => null;
-
-  @override
-  int get pendingHubInvokeCount => 0;
 }
 
 class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
@@ -188,7 +94,6 @@ class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
 Future<
     ({
       WidgetRef ref,
-      _NoopComm comm,
       ServerMethodsService svc,
       _RecordingRpgEntityForSessionCommands rpgEntity,
     })> _setup(WidgetTester tester) async {
@@ -200,9 +105,7 @@ Future<
     }),
   ));
 
-  final comm = _NoopComm(widgetRef: ref);
   final svc = ServerMethodsService(
-    serverCommunicationService: comm,
     navigationService: _FakeNav(),
     widgetRef: ref,
   );
@@ -212,7 +115,7 @@ Future<
   DependencyProvider.getIt = GetIt.asNewInstance()
     ..registerSingleton<IRpgEntityService>(rpgEntity);
 
-  return (ref: ref, comm: comm, svc: svc, rpgEntity: rpgEntity);
+  return (ref: ref, svc: svc, rpgEntity: rpgEntity);
 }
 
 void main() {
@@ -236,7 +139,6 @@ void main() {
       h.rpgEntity.askPlayersForRollsCalls.single.$2.fightUuid,
       'fight-1',
     );
-    expect(h.comm.invokes, isNot(contains('AskPlayersForRolls')));
   });
 
   testWidgets(
@@ -256,7 +158,6 @@ void main() {
 
     expect(h.rpgEntity.sendFightSequenceRollsToDmCalls, hasLength(1));
     expect(h.rpgEntity.sendFightSequenceRollsToDmCalls.single.$1, 'pc-1');
-    expect(h.comm.invokes, isNot(contains('SendFightSequenceRollsToDm')));
   });
 
   testWidgets(
@@ -291,6 +192,5 @@ void main() {
       h.rpgEntity.grantItemsToCharacterCalls.map((c) => c.$1),
       containsAll(['pc-1', 'pc-2']),
     );
-    expect(h.comm.invokes, isNot(contains('SendGrantedItemsToPlayers')));
   });
 }

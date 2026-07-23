@@ -45,8 +45,8 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
         log("Saving rpg config");
         // _handleAsyncData(newValue);
 
-        // DM campagne edits must sync even when SignalR is briefly disconnected
-        // (wizard editing, reconnect, large payload). Critical invokes queue offline.
+        // DM campagne edits are persisted via ConfigSync (debounced REST
+        // PATCH/PUT with revision + 409 rebase); no realtime hub involved.
         final willSend = connectionDetails != null &&
             connectionDetails.isDm &&
             connectionDetails.campagneId != null;

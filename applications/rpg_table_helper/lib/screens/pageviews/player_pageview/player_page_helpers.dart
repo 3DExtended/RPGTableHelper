@@ -9,7 +9,6 @@ import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
-import 'package:signalr_netcore/errors.dart';
 
 class PlayerPageHelpers {
   static Future<String?> askPlayerForCharacterName(
@@ -178,7 +177,7 @@ class PlayerPageHelpers {
             if (indexOfSelectedCompChar == -1) {
               // check altforms
               if (newestCharacterConfig.alternateForm == null) {
-                throw NotImplementedException();
+                throw UnimplementedError();
               }
 
               var altCharactersCopy = (newestCharacterConfig.alternateForm!);

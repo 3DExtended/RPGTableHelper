@@ -20,8 +20,9 @@ import 'package:quest_keeper/services/sse/sse_parser.dart';
 ///   the entity ids started here drive a `GET ?sinceRevision=` catch-up that
 ///   is applied back via [applyCampagneConfig] / [applyCharacterConfig].
 ///
-/// This is the primary new sync path for session config edits (sse-04); the
-/// SignalR hub invoke queue is left in place for other flows until sse-08.
+/// After the SignalR hard cut (sse-08) this is the sole sync path for session
+/// config edits: durable writes go out as debounced REST PATCH/PUT and inbound
+/// changes arrive via the `/events` SSE stream.
 class ConfigSyncSessionController {
   ConfigSyncSessionController({
     required this.rpgEntityService,

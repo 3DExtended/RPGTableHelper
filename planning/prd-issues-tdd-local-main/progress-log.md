@@ -39,4 +39,14 @@
 - `flutter test test/services/config_sync/`: 14 passed
 - `flutter test` (full app suite): 1216 passed
 
+## sse-08 complete — SignalR hard cut (SSE + REST only)
+
+- **Backend deleted**: `RpgServerSignalRHub`, `RpgConfigSliceV3EnvelopeBuilder`, `RpgConfigSliceV3UpstreamEnvelope`, `AddSignalR().AddMessagePackProtocol()` + `MapHub<>` in `Startup`, and the `MessagePack` package ref. All SignalR API tests removed (`SignalRControllers/`, V3 envelope tests). `RpgConfigColdHotSlicer` kept (used by REST config store, not SignalR-only).
+- **Flutter deleted**: `server_communication_service.dart` (hub client), `hub_invoke_queue.dart`, `hub_invoke_retry.dart`, `rpg_config_upstream_envelope.dart`, the `signalr_netcore` dependency, all `integration_test/signalr_*` + hub-only unit tests, and the `run_flutter_signalr_e2e.sh` / `run_flutter_multi_sim_e2e.sh` scripts.
+- **Rewired**: `ServerMethodsService` no longer depends on the hub client; durable config writes route through the active `ConfigSyncSessionController` (debounced REST PATCH/PUT + 409 rebase), falling back to a direct REST PUT when no session controller is active. DM/player storage observers call the same path. `main.dart` ping/pong + hub-drain timers removed in favor of `EventsClient.ensureConnected()`.
+- **Docs**: `PROJECT_OVERVIEW.md` communication section updated to SSE + REST.
+- `dotnet test` — Api.Tests: 143 passed / 1 skipped (pre-existing, unrelated); DataLayer.Tests: 77 passed; BusinessLayer.Tests: 9 passed; Shared.Tests: 66 passed.
+- `flutter test` (full app suite): **1204 passed**.
+- **Known gap**: real-time DM view of a *player's* character edits (old `updateRpgCharacterConfigOnDmSide` hub relay) is not yet wired to an SSE listener on the DM side; player edits still persist via ConfigSync REST. Deferred to a follow-up.
+
 ---

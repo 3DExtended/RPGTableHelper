@@ -15,7 +15,6 @@ import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.da
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
-import 'package:signalr_netcore/errors.dart';
 import 'package:uuid/v7.dart';
 
 Future<CharacterStatDefinition?> showGetDmConfigurationModal({
@@ -295,7 +294,7 @@ class _ShowGetDmConfigurationModalContentState
                         child: Text(S.of(context).propertyEditTypeStatic),
                       );
                     default:
-                      throw NotImplementedException();
+                      throw UnimplementedError();
                   }
                 }).toList(),
                 label: S.of(context).propertyEditTypeLabel),

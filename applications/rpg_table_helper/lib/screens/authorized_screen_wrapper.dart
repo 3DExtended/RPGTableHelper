@@ -8,7 +8,6 @@ import 'package:quest_keeper/screens/search_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
-import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
@@ -107,9 +106,8 @@ class _AuthorizedScreenWrapperState
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      // this initializes the communication
+      // this initializes the realtime SSE stream for the app shell
       if (!mounted) return;
-      DependencyProvider.of(context).getService<IServerCommunicationService>();
       await DependencyProvider.of(context)
           .getService<EventsClient>()
           .ensureConnected();

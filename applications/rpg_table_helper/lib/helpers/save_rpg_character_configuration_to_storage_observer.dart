@@ -36,9 +36,9 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
       var connectionDetails =
           container.read(connectionDetailsProvider).valueOrNull;
 
-      // Player character edits must sync even when SignalR is briefly disconnected
-      // (reconnect, suspend, flaky Wi‑Fi). Critical invokes queue offline; REST can
-      // still persist when HTTP works. Do NOT gate on isConnected.
+      // Player character edits are persisted via ConfigSync (debounced REST
+      // PATCH/PUT with revision + 409 rebase). Do NOT gate on isConnected so
+      // edits still flush once HTTP recovers after suspend/flaky Wi‑Fi.
       final willSend = connectionDetails != null &&
           connectionDetails.isPlayer &&
           connectionDetails.isInSession &&

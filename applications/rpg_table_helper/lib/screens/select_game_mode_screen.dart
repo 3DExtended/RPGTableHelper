@@ -35,7 +35,6 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/join_requests/join_request_notification_controller.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
-import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
@@ -452,11 +451,12 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   }
 
   /// Builds a [ConfigSyncSessionController] wired to this session's Riverpod
-  /// stores. Callers still start it for whichever entities apply
+  /// stores. Callers start it for whichever entities apply
   /// (campagne/character) and must [ConfigSyncSessionController.stop] it when
-  /// the session ends. Only listens for/catches-up on remote `*ConfigChanged`
-  /// SSE notifies for now (sse-04); the SignalR hub invoke queue remains the
-  /// write path used by the editor UI until sse-08.
+  /// the session ends. It is both the read path (catch-up on remote
+  /// `*ConfigChanged` SSE notifies) and, after sse-08, the sole write path:
+  /// [IServerMethodsService.activeConfigSyncSessionController] is pointed at it
+  /// so editor-driven config edits persist via debounced REST PATCH/PUT.
   ConfigSyncSessionController _buildConfigSyncSessionController(
       IRpgEntityService rpgService) {
     return ConfigSyncSessionController(
@@ -479,11 +479,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
   /// sse-06: builds a fresh [SessionCommandNotificationController] wired to
   /// this session's `/events` stream. Its callbacks re-serialize the parsed
-  /// SSE payload and hand off to the existing [IServerMethodsService]
-  /// fight/grant handlers (`playersAreAskedForRolls`,
-  /// `dmReceivedFightSequenceAnswer`, `grantPlayerItems`) so the roll-modal
-  /// and grant-toast UX stays identical regardless of whether the DM's ask
-  /// arrived via SignalR or via SSE. Started/stopped per session-entry, like
+  /// SSE payload and hand off to the [IServerMethodsService] fight/grant
+  /// handlers (`playersAreAskedForRolls`, `dmReceivedFightSequenceAnswer`,
+  /// `grantPlayerItems`) so the roll-modal and grant-toast UX is driven purely
+  /// over SSE. Started/stopped per session-entry, like
   /// [_buildConfigSyncSessionController].
   SessionCommandNotificationController _buildSessionCommandNotificationController() {
     final eventsClient = DependencyProvider.of(context).getService<EventsClient>();
@@ -573,15 +572,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       ref
           .read(rpgConfigurationProvider.notifier)
           .updateConfiguration(parsedJson);
-      DependencyProvider.of(context)
-          .getService<IServerMethodsService>()
-          .seedRpgConfigSliceCacheFromFull(parsedJson);
     } else {
       final base = RpgConfigurationModel.getBaseConfiguration();
       ref.read(rpgConfigurationProvider.notifier).updateConfiguration(base);
-      DependencyProvider.of(context)
-          .getService<IServerMethodsService>()
-          .seedRpgConfigSliceCacheFromFull(base);
     }
 
     // sse-04: start listening for campagneConfigChanged SSE notifies so this
@@ -631,25 +624,20 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     var sessionCommandController = _buildSessionCommandNotificationController();
     sessionCommandController.start();
 
-    // start SignalR connection
     if (!mounted || !context.mounted) return;
 
-    var serverCommunicationService = DependencyProvider.of(context)
-        .getService<IServerCommunicationService>();
-    await serverCommunicationService.startConnection();
-    if (!mounted) return;
-
-    // register game in signalr
+    // sse-08: config edits now persist via REST/ConfigSync (no SignalR hub).
     final com =
         DependencyProvider.of(context).getService<IServerMethodsService>();
+    com.activeConfigSyncSessionController = configSyncSessionController;
     await com.registerGame(campagneId: campagne.id!.$value!);
     if (!mounted) return;
 
     // navigate to main game screen (auth screen wrapper)
     navigatorKey.currentState!.pushNamed(DmPageScreen.route).then((asdf) async {
-      // when returning to this screen we want to stop all connections as the user is "disconnected"
-      //(in the sense that the DM can't send notifications to this player)
-      await serverCommunicationService.stopConnection();
+      // when returning to this screen we tear down the session's SSE + config
+      // sync so the user is "disconnected" from live table updates.
+      com.activeConfigSyncSessionController = null;
       await configSyncSessionController.stop();
       await sessionCommandController.stop();
       await sessionEntryCoordinator.leave(campagneId: campagne.id!);
@@ -662,9 +650,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     setState(() {
       showLoadingSpinner = true;
     });
-    var serverCommunicationService = DependencyProvider.of(context)
-        .getService<IServerCommunicationService>();
-    serverCommunicationService.stopConnection();
 
     if (character.campagneId != null && character.campagneId!.$value != null) {
       // set initial rpg config
@@ -755,22 +740,21 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       var sessionCommandController = _buildSessionCommandNotificationController();
       sessionCommandController.start();
 
-      // start SignalR connection
-      await serverCommunicationService.startConnection();
       if (!mounted) return;
 
-      // the player is assigned to a campagne. hence we can start the signal r process here
+      // sse-08: character edits now persist via REST/ConfigSync (no SignalR hub).
       final com =
           DependencyProvider.of(context).getService<IServerMethodsService>();
+      com.activeConfigSyncSessionController = configSyncSessionController;
       await com.joinGameSession(playerCharacterId: character.id!.$value!);
 
       // navigate to main game screen (auth screen wrapper)
       navigatorKey.currentState!
           .pushNamed(PlayerPageScreen.route)
           .then((asdf) async {
-        // when returning to this screen we want to stop all connections as the user is "disconnected"
-        //(in the sense that the DM can't send notifications to this player)
-        await serverCommunicationService.stopConnection();
+        // when returning to this screen we tear down the session's SSE + config
+        // sync so the user is "disconnected" from live table updates.
+        com.activeConfigSyncSessionController = null;
         await configSyncSessionController.stop();
         await sessionCommandController.stop();
         await sessionEntryCoordinator.leave(campagneId: character.campagneId!);

@@ -1,13 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
-import 'package:quest_keeper/helpers/agent_debug_log.dart';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
@@ -15,1213 +9,75 @@ import 'package:quest_keeper/helpers/modals/show_ask_player_for_fight_order_roll
 import 'package:quest_keeper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
-import 'package:json_patch/json_patch.dart';
+import 'package:quest_keeper/services/config_sync/config_sync_session_controller.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
-import 'package:quest_keeper/services/rpg_config_upstream_envelope.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
-import 'package:quest_keeper/services/server_communication_service.dart';
-import 'package:quest_keeper/services/snack_bar_service.dart';
 
+/// Session-scoped table interactions, all delivered over SSE + REST (sse-01..08).
+///
+/// After the SignalR hard cut (sse-08) there is no hub connection: durable
+/// config writes flow through the active [ConfigSyncSessionController]
+/// (debounced REST PATCH/PUT with revision + 409 rebase), inbound edits arrive
+/// as `campagneConfigChanged` / `characterConfigChanged` SSE notifies, and
+/// ephemeral fight/roll/grant signals travel over the shared `/events` stream
+/// (handled here by [playersAreAskedForRolls], [dmReceivedFightSequenceAnswer]
+/// and [grantPlayerItems]).
 abstract class IServerMethodsService {
   final bool isMock;
   final WidgetRef widgetRef;
-  final IServerCommunicationService serverCommunicationService;
   final INavigationService navigationService;
+
+  /// Write path for the currently entered table session's config documents.
+  /// Set by the session-entry flow (select game mode screen) once the
+  /// coordinators are wired to this session's Riverpod stores, and cleared on
+  /// leave. `null` outside of an active session.
+  ConfigSyncSessionController? activeConfigSyncSessionController;
 
   IServerMethodsService({
     required this.isMock,
     required this.widgetRef,
-    required this.serverCommunicationService,
     required this.navigationService,
-  }) {
-    serverCommunicationService.registerCallbackSingleString(
-      function: registerGameResponse,
-      functionName: "registerGameResponse",
-    );
+  });
 
-    serverCommunicationService.registerCallbackSingleString(
-      function: playersAreAskedForRolls,
-      functionName: "playersAreAskedForRolls",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: dmReceivedFightSequenceAnswer,
-      functionName: "dmReceivedFightSequenceAnswer",
-    );
-
-    serverCommunicationService.registerCallbackFourStrings(
-      function: requestJoinPermission,
-      functionName: "requestJoinPermission",
-    );
-
-    serverCommunicationService.registerCallbackWithoutParameters(
-      function: joinRequestAccepted,
-      functionName: "joinRequestAccepted",
-    );
-    serverCommunicationService.registerCallbackWithoutParameters(
-      function: requestStatusFromPlayers,
-      functionName: "requestStatusFromPlayers",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: updateRpgConfig,
-      functionName: "updateRpgConfig",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: updateRpgConfigCold,
-      functionName: "updateRpgConfigCold",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: updateRpgConfigHot,
-      functionName: "updateRpgConfigHot",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: updateRpgConfigColdV3,
-      functionName: "updateRpgConfigColdV3",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: updateRpgConfigHotV3,
-      functionName: "updateRpgConfigHotV3",
-    );
-
-    serverCommunicationService.registerCallbackThreeStrings(
-      function: updateRpgCharacterConfigOnDmSide,
-      functionName: "updateRpgCharacterConfigOnDmSide",
-    );
-
-    serverCommunicationService.registerCallbackThreeStrings(
-      function: updateRpgCharacterConfigOnDmSideV3,
-      functionName: "updateRpgCharacterConfigOnDmSideV3",
-    );
-
-    serverCommunicationService.registerCallbackTwoStrings(
-      function: updateMyRpgCharacterConfigV3,
-      functionName: "updateMyRpgCharacterConfigV3",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: grantPlayerItems,
-      functionName: "grantPlayerItems",
-    );
-    serverCommunicationService.registerCallbackSingleString(
-      function: clientDisconnected,
-      functionName: "clientDisconnected",
-    );
-
-    serverCommunicationService.registerCallbackSingleDateTime(
-      function: pingFromDm,
-      functionName: "pingFromDm",
-    );
-    serverCommunicationService.registerCallbackSingleDateTimeAndOneString(
-      function: pongFromPlayer,
-      functionName: "pongFromPlayer",
-    );
-
-    serverCommunicationService.registerCallbackSingleString(
-      function: signalRGroupsRejoined,
-      functionName: "signalRGroupsRejoined",
-    );
-  }
-
-  // this should contain every method that is callable by the server
-  void playersAreAskedForRolls(String serializedFightSequence);
-  void dmReceivedFightSequenceAnswer(String serializedFightSequence);
-
-  void registerGameResponse(String parameter);
-  void requestJoinPermission(String playerName, String username,
-      String playerCharacterId, String campagneJoinRequestId);
-  void joinRequestAccepted();
-  void updateRpgConfig(String parameter);
-  void updateRpgConfigCold(String parameter);
-  void updateRpgConfigHot(String parameter);
-  void updateRpgConfigColdV3(String envelopeJson);
-  void updateRpgConfigHotV3(String envelopeJson);
-  void updateRpgCharacterConfigOnDmSide(
-      String config, String playerId, String userId);
-  void updateRpgCharacterConfigOnDmSideV3(
-      String envelopeJson, String playerId, String userId);
-  void updateMyRpgCharacterConfigV3(String envelopeJson, String playerCharacterId);
-  void grantPlayerItems(String grantedItemsJson);
-  void requestStatusFromPlayers();
-  void clientDisconnected(String userId);
-
-  void pingFromDm(DateTime timestamp);
-  void pongFromPlayer(DateTime timestamp, String userId);
-
-  /// Server confirmation after [ReaddToSignalRGroups] applied groups for this connection.
-  void signalRGroupsRejoined(String campagneId);
-
-  // this should contain every method that call the server
-  Future sendPingToPlayers(
-      {required String campagneId, required DateTime timestamp});
-  Future sendPongToDm(
-      {required String campagneId, required DateTime timestamp});
-
+  // --- Session entry (REST SessionEnter already done by the caller) ---
   Future registerGame({required String campagneId});
-  Future readdToSignalRGroups();
   Future joinGameSession({required String playerCharacterId});
 
+  // --- Durable config writes (REST via ConfigSync) ---
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig, required String campagneId});
-
-  /// Seeds cold/hot slice cache from REST-loaded config (before SignalR echo).
-  void seedRpgConfigSliceCacheFromFull(RpgConfigurationModel config);
-
-  /// Immediately sends any debounced campagne config for the active DM campagne.
-  Future<void> flushPendingCampagneConfig({String? campagneId});
-
-  /// Immediately sends any debounced player character config.
-  Future<void> flushPendingCharacterConfig({String? playerCharacterId});
-
-  Future askPlayersForRolls(
-      {required String campagneId, required FightSequence fightSequence});
-
-  Future sendFightSequenceRollsToDm(
-      {required String playerId, required FightSequence fightSequence});
-
   Future sendUpdatedRpgCharacterConfig(
       {required RpgCharacterConfiguration charConfig,
       required String playercharacterid});
 
+  // --- Ephemeral session commands (REST + SSE fan-out) ---
+  Future askPlayersForRolls(
+      {required String campagneId, required FightSequence fightSequence});
+  Future sendFightSequenceRollsToDm(
+      {required String playerId, required FightSequence fightSequence});
   Future sendGrantedItemsToPlayers(
       {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems});
+
+  // --- Inbound SSE session-command handlers ---
+  void playersAreAskedForRolls(String serializedFightSequence);
+  void dmReceivedFightSequenceAnswer(String serializedFightSequence);
+  void grantPlayerItems(String grantedItemsJson);
 }
 
 class ServerMethodsService extends IServerMethodsService {
-  ServerMethodsService(
-      {required super.serverCommunicationService,
-      required super.navigationService,
-      required super.widgetRef})
-      : super(isMock: false);
-
-  /// Brief SignalR reconnects should not drop the player from the DM list immediately.
-  final Map<String, Timer> _pendingDisconnectByUserId = {};
-
-  String? _latestRpgConfigColdJson;
-  String? _latestRpgConfigHotJson;
-
-  /// Server slice revisions for protocol v3 (JSON Patch); null until first v3 envelope.
-  int? _localColdSliceRevision;
-  int? _localHotSliceRevision;
-
-  /// Per player-character revision for DM-side character config (protocol v3).
-  final Map<String, int> _dmCharacterConfigRevisionByPlayerId = {};
-
-  /// Owning player: server revision + JSON baseline for upstream patches (protocol v3).
-  final Map<String, int> _playerCharacterLocalRevisionByPlayerId = {};
-  final Map<String, String> _latestPlayerCharacterJsonByPlayerId = {};
-
-  // Debounce outgoing config sync to prevent spamming SignalR on rapid provider updates.
-  static const Duration _outgoingConfigDebounce = Duration(milliseconds: 800);
-  final Map<String, Timer> _pendingCampagneConfigSendTimers = {};
-  final Map<String, String> _pendingCampagneColdJsonById = {};
-  final Map<String, String> _pendingCampagneHotJsonById = {};
-  final Map<String, int> _lastSentCampagneColdHashById = {};
-  final Map<String, int> _lastSentCampagneHotHashById = {};
-
-  final Map<String, Timer> _pendingCharacterConfigSendTimers = {};
-  final Map<String, String> _pendingCharacterJsonById = {};
-  final Map<String, int> _lastSentCharacterHashById = {};
-
-  static const Set<String> _rpgConfigColdKeys = {
-    "allItems",
-    "placesOfFindings",
-    "itemCategories",
-    "characterStatTabsDefinition",
-    "craftingRecipes",
-    "currencyDefinition",
-  };
-
-  /// Set false when the hub reports a missing v3 campagne-config method (older prod servers).
-  bool _serverCampagneConfigV3Available = true;
-
-  /// Set false after REST returns 404 (endpoint not deployed on server).
-  bool _campagneConfigRestPersistAvailable = true;
-
-  /// Set false after character REST returns 404.
-  bool _characterConfigRestPersistAvailable = true;
-
-  /// Avoid spamming save-failed snackbars for the same character.
-  DateTime? _lastCharacterSaveFailedSnackAt;
-  static const Duration _characterSaveFailedSnackCooldown =
-      Duration(seconds: 8);
-
-  bool _hubErrorIndicatesMissingMethod(String? error) {
-    if (error == null) {
-      return false;
-    }
-    return error.contains('Method does not exist');
-  }
-
-  void _commitAfterSuccessfulCampagneConfigSend({
-    required String campagneId,
-    required String coldJson,
-    required String hotJson,
-    bool preserveSliceRevisions = false,
-  }) {
-    _latestRpgConfigColdJson = coldJson;
-    _latestRpgConfigHotJson = hotJson;
-    if (!preserveSliceRevisions) {
-      _localColdSliceRevision = null;
-      _localHotSliceRevision = null;
-    }
-    _lastSentCampagneColdHashById[campagneId] = coldJson.hashCode;
-    _lastSentCampagneHotHashById[campagneId] = hotJson.hashCode;
-    serverCommunicationService.clearQueuedCampagneConfigInvokes(campagneId);
-  }
-
-  bool _hasPendingCampagneConfigOutbound() {
-    return _pendingCampagneConfigSendTimers.values.any((timer) => timer.isActive);
-  }
-
-  void _ensureCampagneV3RevisionBaseline() {
-    if (signalRProtocolVersion < 3) {
-      return;
-    }
-    if (_latestRpgConfigColdJson != null && _localColdSliceRevision == null) {
-      _localColdSliceRevision = 0;
-    }
-    if (_latestRpgConfigHotJson != null && _localHotSliceRevision == null) {
-      _localHotSliceRevision = 0;
-    }
-  }
-
-  void _ensureCampagneColdBaselineForFirstV3Upstream(String coldJson) {
-    if (signalRProtocolVersion < 3) {
-      return;
-    }
-    if (_latestRpgConfigColdJson != null) {
-      return;
-    }
-    _latestRpgConfigColdJson = coldJson;
-    _localColdSliceRevision = 0;
-  }
-
-  void _ensureCampagneHotBaselineForFirstV3Upstream(String hotJson) {
-    if (signalRProtocolVersion < 3) {
-      return;
-    }
-    if (_latestRpgConfigHotJson != null) {
-      return;
-    }
-    _latestRpgConfigHotJson = hotJson;
-    _localHotSliceRevision = 0;
-  }
-
-  (String coldJson, String hotJson) _splitRpgConfigSlices(
-      RpgConfigurationModel config) {
-    final full = config.toJson();
-    final cold = <String, dynamic>{};
-    final hot = <String, dynamic>{};
-    for (final entry in full.entries) {
-      if (_rpgConfigColdKeys.contains(entry.key)) {
-        cold[entry.key] = entry.value;
-      } else {
-        hot[entry.key] = entry.value;
-      }
-    }
-    return (jsonEncode(cold), jsonEncode(hot));
-  }
-
-  @override
-  void seedRpgConfigSliceCacheFromFull(RpgConfigurationModel config) {
-    final slices = _splitRpgConfigSlices(config);
-    _latestRpgConfigColdJson = slices.$1;
-    _latestRpgConfigHotJson = slices.$2;
-    _localColdSliceRevision = null;
-    _localHotSliceRevision = null;
-    agentDebugLog(
-      location: 'server_methods_service.dart:seedRpgConfigSliceCacheFromFull',
-      message: 'seeded slice cache from REST/full config',
-      hypothesisId: 'D',
-      data: {
-        'coldJsonLen': slices.$1.length,
-        'hotJsonLen': slices.$2.length,
-        'runId': 'post-fix',
-      },
-    );
-  }
-
-  @override
-  Future<void> flushPendingCampagneConfig({String? campagneId}) async {
-    final id = campagneId ??
-        widgetRef.read(connectionDetailsProvider).value?.campagneId;
-    if (id == null) {
-      return;
-    }
-    _pendingCampagneConfigSendTimers[id]?.cancel();
-    _pendingCampagneConfigSendTimers.remove(id);
-    agentDebugLog(
-      location: 'server_methods_service.dart:flushPendingCampagneConfig',
-      message: 'immediate flush requested',
-      hypothesisId: 'A',
-      data: {'campagneId': id, 'runId': 'post-fix'},
-    );
-    await _flushCampagneConfigIfPending(id);
-  }
-
-  @override
-  Future<void> flushPendingCharacterConfig({String? playerCharacterId}) async {
-    final id = playerCharacterId ??
-        widgetRef.read(connectionDetailsProvider).value?.playerCharacterId;
-    if (id == null) {
-      return;
-    }
-    _pendingCharacterConfigSendTimers[id]?.cancel();
-    _pendingCharacterConfigSendTimers.remove(id);
-    // #region agent log
-    agentDebugLog(
-      location: 'server_methods_service.dart:flushPendingCharacterConfig',
-      message: 'immediate character flush requested',
-      hypothesisId: 'A',
-      data: {'playerCharacterId': id, 'runId': 'post-fix'},
-    );
-    // #endregion
-    await _flushCharacterConfigIfPending(id);
-  }
-
-  void _commitSentCampagneColdSlice({
-    required String coldJson,
-    required int toRevision,
-  }) {
-    _latestRpgConfigColdJson = coldJson;
-    _localColdSliceRevision = toRevision;
-  }
-
-  void _commitSentCampagneHotSlice({
-    required String hotJson,
-    required int toRevision,
-  }) {
-    _latestRpgConfigHotJson = hotJson;
-    _localHotSliceRevision = toRevision;
-  }
-
-  void _applyRpgConfigFromSlicesIfPossible() {
-    if (_hasPendingCampagneConfigOutbound()) {
-      return;
-    }
-    if (_latestRpgConfigColdJson == null || _latestRpgConfigHotJson == null) {
-      return;
-    }
-
-    try {
-      final coldMap =
-          (jsonDecode(_latestRpgConfigColdJson!) as Map).cast<String, dynamic>();
-      final hotMap =
-          (jsonDecode(_latestRpgConfigHotJson!) as Map).cast<String, dynamic>();
-
-      // Hot overwrites cold on conflict.
-      final merged = <String, dynamic>{...coldMap, ...hotMap};
-
-      final receivedConfig = RpgConfigurationModel.fromJson(merged);
-      serverCommunicationService.updateRpgConfiguration(receivedConfig);
-    } catch (e, st) {
-      if (kDebugMode == true) {
-        log("Failed to merge rpg config slices: $e", stackTrace: st);
-      }
-    }
-  }
-
-  String _mergeCampagneConfigSlicesJson(String coldJson, String hotJson) {
-    final coldMap =
-        (jsonDecode(coldJson) as Map).cast<String, dynamic>();
-    final hotMap = (jsonDecode(hotJson) as Map).cast<String, dynamic>();
-    return jsonEncode(<String, dynamic>{...coldMap, ...hotMap});
-  }
-
-  Future<bool> _tryPersistCampagneConfigViaRest({
-    required String campagneId,
-    required String coldJson,
-    required String hotJson,
-  }) async {
-    final getIt = DependencyProvider.getIt;
-    if (getIt == null) {
-      return false;
-    }
-    final merged = _mergeCampagneConfigSlicesJson(coldJson, hotJson);
-    final result =
-        await getIt.get<IRpgEntityService>().updateCampagneRpgConfiguration(
-              campagneId: CampagneIdentifier($value: campagneId),
-              rpgConfigurationJson: merged,
-            );
-    agentDebugLog(
-      location: 'server_methods_service.dart:_tryPersistCampagneConfigViaRest',
-      message: result.isSuccessful
-          ? 'REST campagne config save ok'
-          : 'REST campagne config save failed',
-      hypothesisId: 'F',
-      data: {
-        'campagneId': campagneId,
-        'mergedLen': merged.length,
-        'statusCode': result.statusCode,
-        'errorFromServer': result.errorFromServer,
-        'requestUrl':
-            '${apiBaseUrl}Campagne/updatecampagneconfig/$campagneId',
-        'runId': 'post-fix',
-      },
-    );
-    if (!result.isSuccessful) {
-      if (result.statusCode == 404) {
-        _campagneConfigRestPersistAvailable = false;
-      }
-      return false;
-    }
-    _commitAfterSuccessfulCampagneConfigSend(
-      campagneId: campagneId,
-      coldJson: coldJson,
-      hotJson: hotJson,
-    );
-    return true;
-  }
-
-  /// Production hubs often lack v3 + REST; legacy full config is the reliable path.
-  Future<bool> _tryPersistCampagneConfigViaCompatibleHubPaths({
-    required String campagneId,
-    required String coldJson,
-    required String hotJson,
-    required int lastColdHash,
-    required int lastHotHash,
-    required String logContext,
-  }) async {
-    agentDebugLog(
-      location: 'server_methods_service.dart:_tryPersistCampagneConfigViaCompatibleHubPaths',
-      message: 'trying legacy SignalR full config',
-      hypothesisId: 'G',
-      data: {
-        'campagneId': campagneId,
-        'mergedLen': _mergeCampagneConfigSlicesJson(coldJson, hotJson).length,
-        'logContext': logContext,
-        'runId': 'post-fix',
-      },
-    );
-    final legacyOk = await _tryPersistCampagneConfigViaLegacySignalRFull(
-      campagneId: campagneId,
-      coldJson: coldJson,
-      hotJson: hotJson,
-    );
-    if (legacyOk) {
-      return true;
-    }
-
-    agentDebugLog(
-      location: 'server_methods_service.dart:_tryPersistCampagneConfigViaCompatibleHubPaths',
-      message: 'trying SignalR v2 cold+hot slices',
-      hypothesisId: 'G',
-      data: {
-        'campagneId': campagneId,
-        'logContext': logContext,
-        'runId': 'post-fix',
-      },
-    );
-    final v2Ok = await _tryPersistCampagneConfigViaSignalRv2Slices(
-      campagneId: campagneId,
-      coldJson: coldJson,
-      hotJson: hotJson,
-      lastColdHash: lastColdHash,
-      lastHotHash: lastHotHash,
-    );
-    if (v2Ok) {
-      return true;
-    }
-
-    if (_campagneConfigRestPersistAvailable) {
-      agentDebugLog(
-        location:
-            'server_methods_service.dart:_tryPersistCampagneConfigViaCompatibleHubPaths',
-        message: 'trying REST campagne config save',
-        hypothesisId: 'F',
-        data: {
-          'campagneId': campagneId,
-          'logContext': logContext,
-          'runId': 'post-fix',
-        },
-      );
-      final restOk = await _tryPersistCampagneConfigViaRest(
-        campagneId: campagneId,
-        coldJson: coldJson,
-        hotJson: hotJson,
-      );
-      if (restOk) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  Future<bool> _tryPersistCampagneConfigViaLegacySignalRFull({
-    required String campagneId,
-    required String coldJson,
-    required String hotJson,
-  }) async {
-    final merged = _mergeCampagneConfigSlicesJson(coldJson, hotJson);
-    final ok = await serverCommunicationService.executeCriticalServerFunction(
-      'SendUpdatedRpgConfig',
-      args: [campagneId, merged],
-    );
-    agentDebugLog(
-      location:
-          'server_methods_service.dart:_tryPersistCampagneConfigViaLegacySignalRFull',
-      message: ok
-          ? 'legacy SignalR full config save ok'
-          : 'legacy SignalR full config save failed',
-      hypothesisId: 'G',
-      data: {
-        'campagneId': campagneId,
-        'mergedLen': merged.length,
-        'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
-        'runId': 'post-fix',
-      },
-    );
-    if (!ok) {
-      return false;
-    }
-    _commitAfterSuccessfulCampagneConfigSend(
-      campagneId: campagneId,
-      coldJson: coldJson,
-      hotJson: hotJson,
-    );
-    return true;
-  }
-
-  Future<bool> _tryPersistCampagneConfigViaSignalRv2Slices({
-    required String campagneId,
-    required String coldJson,
-    required String hotJson,
-    required int lastColdHash,
-    required int lastHotHash,
-  }) async {
-    final coldHash = coldJson.hashCode;
-    final hotHash = hotJson.hashCode;
-    var coldOk = lastColdHash == coldHash;
-    var hotOk = lastHotHash == hotHash;
-
-    if (!coldOk) {
-      coldOk = await serverCommunicationService.executeCriticalServerFunction(
-        'SendUpdatedRpgConfigCold',
-        args: [campagneId, coldJson],
-      );
-      if (coldOk) {
-        _latestRpgConfigColdJson = coldJson;
-      }
-    }
-
-    if (!hotOk) {
-      hotOk = await serverCommunicationService.executeCriticalServerFunction(
-        'SendUpdatedRpgConfigHot',
-        args: [campagneId, hotJson],
-      );
-      if (hotOk) {
-        _latestRpgConfigHotJson = hotJson;
-      }
-    }
-
-    agentDebugLog(
-      location:
-          'server_methods_service.dart:_tryPersistCampagneConfigViaSignalRv2Slices',
-      message: (coldOk && hotOk)
-          ? 'SignalR v2 cold+hot save ok'
-          : 'SignalR v2 cold+hot save failed',
-      hypothesisId: 'G',
-      data: {
-        'campagneId': campagneId,
-        'coldOk': coldOk,
-        'hotOk': hotOk,
-        'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
-        'runId': 'post-fix',
-      },
-    );
-
-    if (!coldOk || !hotOk) {
-      if (_hubErrorIndicatesMissingMethod(
-          serverCommunicationService.lastHubInvokeError)) {
-        _serverCampagneConfigV3Available = false;
-      }
-      return false;
-    }
-
-    _commitAfterSuccessfulCampagneConfigSend(
-      campagneId: campagneId,
-      coldJson: coldJson,
-      hotJson: hotJson,
-    );
-    return true;
-  }
-
-  Future<void> _flushCampagneConfigIfPending(String campagneId) async {
-    final coldJson = _pendingCampagneColdJsonById[campagneId];
-    final hotJson = _pendingCampagneHotJsonById[campagneId];
-
-    if (coldJson == null || hotJson == null) {
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-        message: 'flush aborted (missing pending slice)',
-        hypothesisId: 'A',
-        data: {
-          'campagneId': campagneId,
-          'hasCold': coldJson != null,
-          'hasHot': hotJson != null,
-        },
-      );
-      return;
-    }
-
-    final coldHash = coldJson.hashCode;
-    final hotHash = hotJson.hashCode;
-
-    final lastColdHash = _lastSentCampagneColdHashById[campagneId];
-    final lastHotHash = _lastSentCampagneHotHashById[campagneId];
-
-    // Skip sending unchanged payloads.
-    if (lastColdHash == coldHash && lastHotHash == hotHash) {
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-        message: 'flush skipped (hash unchanged)',
-        hypothesisId: 'A',
-        data: {
-          'campagneId': campagneId,
-          'coldHash': coldHash,
-          'hotHash': hotHash,
-        },
-      );
-      return;
-    }
-
-    // Device builds: legacy/v2/REST before v3 (prod hub lacks v3 + REST endpoint).
-    if (!isInTestEnvironment) {
-      final compatibleOk =
-          await _tryPersistCampagneConfigViaCompatibleHubPaths(
-        campagneId: campagneId,
-        coldJson: coldJson,
-        hotJson: hotJson,
-        lastColdHash: lastColdHash ?? 0,
-        lastHotHash: lastHotHash ?? 0,
-        logContext: 'flush-primary',
-      );
-      if (compatibleOk) {
-        agentDebugLog(
-          location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-          message: 'flush completed via compatible hub/rest path',
-          hypothesisId: 'G',
-          data: {
-            'campagneId': campagneId,
-            'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-            'runId': 'post-fix',
-          },
-        );
-        return;
-      }
-    }
-
-    if (!_serverCampagneConfigV3Available) {
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-        message: 'flush aborted (v3 disabled, compatible paths failed)',
-        hypothesisId: 'G',
-        data: {
-          'campagneId': campagneId,
-          'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
-          'restPersistAvailable': _campagneConfigRestPersistAvailable,
-          'runId': 'post-fix',
-        },
-      );
-      return;
-    }
-
-    _ensureCampagneV3RevisionBaseline();
-    _ensureCampagneColdBaselineForFirstV3Upstream(coldJson);
-    _ensureCampagneHotBaselineForFirstV3Upstream(hotJson);
-
-    final coldV3Upstream = signalRProtocolVersion >= 3 &&
-        _serverCampagneConfigV3Available &&
-        _localColdSliceRevision != null &&
-        _latestRpgConfigColdJson != null;
-    final hotV3Upstream = signalRProtocolVersion >= 3 &&
-        _serverCampagneConfigV3Available &&
-        _localHotSliceRevision != null &&
-        _latestRpgConfigHotJson != null;
-
-    Map<String, dynamic>? coldEnvelopeMeta;
-    if (lastColdHash != coldHash && coldV3Upstream) {
-      final fromRev = _localColdSliceRevision!;
-      final coldEnv = buildRpgConfigUpstreamEnvelope(
-        slice: 'cold',
-        previousJson: _latestRpgConfigColdJson,
-        newJson: coldJson,
-        fromRevision: fromRev,
-        toRevision: fromRev + 1,
-      );
-      try {
-        final decoded = jsonDecode(coldEnv) as Map<String, dynamic>;
-        coldEnvelopeMeta = {
-          'kind': decoded['kind'],
-          'fromRevision': decoded['fromRevision'],
-          'toRevision': decoded['toRevision'],
-        };
-      } catch (_) {
-        coldEnvelopeMeta = {'parseError': true};
-      }
-    }
-
-    agentDebugLog(
-      location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-      message: 'flushing campagne config to server',
-      hypothesisId: 'C',
-      data: {
-        'campagneId': campagneId,
-        'hubState': serverCommunicationService.hubConnectionState?.name,
-        'coldV3Upstream': coldV3Upstream,
-        'hotV3Upstream': hotV3Upstream,
-        'localColdRev': _localColdSliceRevision,
-        'localHotRev': _localHotSliceRevision,
-        'coldBaselineLen': _latestRpgConfigColdJson?.length,
-        'coldBaselineIsEmpty': _latestRpgConfigColdJson == '{}',
-        'coldChanged': lastColdHash != coldHash,
-        'hotChanged': lastHotHash != hotHash,
-        'coldEnvelope': coldEnvelopeMeta,
-        'coldJsonLen': coldJson.length,
-      },
-    );
-
-    var coldSent = false;
-    var hotSent = false;
-
-    // Send cold first (big) then hot (small), server recombines for legacy clients.
-    if (lastColdHash != coldHash) {
-      var coldOk = false;
-      if (coldV3Upstream) {
-        final fromRev = _localColdSliceRevision!;
-        final toRev = fromRev + 1;
-        final coldEnv = buildRpgConfigUpstreamEnvelope(
-          slice: 'cold',
-          previousJson: _latestRpgConfigColdJson,
-          newJson: coldJson,
-          fromRevision: fromRev,
-          toRevision: toRev,
-        );
-        coldOk = await serverCommunicationService.executeCriticalServerFunction(
-          "SendUpdatedRpgConfigColdV3",
-          args: [campagneId, coldEnv],
-        );
-        if (coldOk) {
-          _commitSentCampagneColdSlice(coldJson: coldJson, toRevision: toRev);
-        }
-      } else {
-        coldOk = await serverCommunicationService.executeCriticalServerFunction(
-          "SendUpdatedRpgConfigCold",
-          args: [campagneId, coldJson],
-        );
-        if (coldOk) {
-          _latestRpgConfigColdJson = coldJson;
-        }
-      }
-      if (coldOk) {
-        _lastSentCampagneColdHashById[campagneId] = coldHash;
-        coldSent = true;
-      }
-    }
-
-    if (lastHotHash != hotHash) {
-      var hotOk = false;
-      if (hotV3Upstream) {
-        final fromRev = _localHotSliceRevision!;
-        final toRev = fromRev + 1;
-        final hotEnv = buildRpgConfigUpstreamEnvelope(
-          slice: 'hot',
-          previousJson: _latestRpgConfigHotJson,
-          newJson: hotJson,
-          fromRevision: fromRev,
-          toRevision: toRev,
-        );
-        hotOk = await serverCommunicationService.executeCriticalServerFunction(
-          "SendUpdatedRpgConfigHotV3",
-          args: [campagneId, hotEnv],
-        );
-        if (hotOk) {
-          _commitSentCampagneHotSlice(hotJson: hotJson, toRevision: toRev);
-        }
-      } else {
-        hotOk = await serverCommunicationService.executeCriticalServerFunction(
-          "SendUpdatedRpgConfigHot",
-          args: [campagneId, hotJson],
-        );
-        if (hotOk) {
-          _latestRpgConfigHotJson = hotJson;
-        }
-      }
-      if (hotOk) {
-        _lastSentCampagneHotHashById[campagneId] = hotHash;
-        hotSent = true;
-      }
-    }
-
-    if (_hubErrorIndicatesMissingMethod(
-        serverCommunicationService.lastHubInvokeError)) {
-      _serverCampagneConfigV3Available = false;
-      serverCommunicationService.clearQueuedCampagneConfigInvokes(campagneId);
-    }
-
-    if (coldSent && hotSent) {
-      _commitAfterSuccessfulCampagneConfigSend(
-        campagneId: campagneId,
-        coldJson: coldJson,
-        hotJson: hotJson,
-        preserveSliceRevisions: coldV3Upstream && hotV3Upstream,
-      );
-    } else if (!isInTestEnvironment) {
-      final compatibleOk =
-          await _tryPersistCampagneConfigViaCompatibleHubPaths(
-        campagneId: campagneId,
-        coldJson: coldJson,
-        hotJson: hotJson,
-        lastColdHash: lastColdHash ?? 0,
-        lastHotHash: lastHotHash ?? 0,
-        logContext: 'flush-v3-fallback',
-      );
-      if (compatibleOk) {
-        agentDebugLog(
-          location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-          message: 'flush completed via compatible path (v3 fallback)',
-          hypothesisId: 'G',
-          data: {'campagneId': campagneId, 'runId': 'post-fix'},
-        );
-        return;
-      }
-    }
-
-    agentDebugLog(
-      location: 'server_methods_service.dart:_flushCampagneConfigIfPending',
-      message: 'flush completed',
-      hypothesisId: 'A',
-      data: {
-        'campagneId': campagneId,
-        'localColdRevAfter': _localColdSliceRevision,
-        'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-        'coldSent': coldSent,
-        'hotSent': hotSent,
-        'v3StillEnabled': _serverCampagneConfigV3Available,
-        'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
-        'runId': 'post-fix',
-      },
-    );
-  }
-
-  void _debounceCampagneConfigSend({
-    required String campagneId,
-    required String coldJson,
-    required String hotJson,
-  }) {
-    _pendingCampagneColdJsonById[campagneId] = coldJson;
-    _pendingCampagneHotJsonById[campagneId] = hotJson;
-
-    _pendingCampagneConfigSendTimers[campagneId]?.cancel();
-    agentDebugLog(
-      location: 'server_methods_service.dart:_debounceCampagneConfigSend',
-      message: 'debounced campagne config send scheduled',
-      hypothesisId: 'A',
-      data: {
-        'campagneId': campagneId,
-        'debounceMs': _outgoingConfigDebounce.inMilliseconds,
-        'coldJsonLen': coldJson.length,
-        'localColdRev': _localColdSliceRevision,
-        'hasColdBaseline': _latestRpgConfigColdJson != null,
-      },
-    );
-    _pendingCampagneConfigSendTimers[campagneId] = Timer(
-      _outgoingConfigDebounce,
-      () => _flushCampagneConfigIfPending(campagneId),
-    );
-  }
-
-  void _commitAfterSuccessfulCharacterConfigSend({
-    required String playerCharacterId,
-    required String json,
-    int? toRevision,
-  }) {
-    _lastSentCharacterHashById[playerCharacterId] = json.hashCode;
-    _latestPlayerCharacterJsonByPlayerId[playerCharacterId] = json;
-    if (toRevision != null) {
-      _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = toRevision;
-    }
-    serverCommunicationService
-        .clearQueuedCharacterConfigInvokes(playerCharacterId);
-  }
-
-  Future<bool> _tryPersistCharacterConfigViaRest({
-    required String playerCharacterId,
-    required String json,
-  }) async {
-    final getIt = DependencyProvider.getIt;
-    if (getIt == null || !_characterConfigRestPersistAvailable) {
-      return false;
-    }
-    final result =
-        await getIt.get<IRpgEntityService>().updatePlayerCharacterRpgConfiguration(
-              playerCharacterId: PlayerCharacterIdentifier($value: playerCharacterId),
-              rpgCharacterConfigurationJson: json,
-            );
-    // #region agent log
-    agentDebugLog(
-      location: 'server_methods_service.dart:_tryPersistCharacterConfigViaRest',
-      message: result.isSuccessful
-          ? 'REST character config save ok'
-          : 'REST character config save failed',
-      hypothesisId: 'D',
-      data: {
-        'playerCharacterId': playerCharacterId,
-        'jsonLen': json.length,
-        'statusCode': result.statusCode,
-        'errorFromServer': result.errorFromServer,
-        'runId': 'post-fix',
-      },
-    );
-    // #endregion
-    if (!result.isSuccessful) {
-      if (result.statusCode == 404) {
-        _characterConfigRestPersistAvailable = false;
-      }
-      return false;
-    }
-    _commitAfterSuccessfulCharacterConfigSend(
-      playerCharacterId: playerCharacterId,
-      json: json,
-    );
-    return true;
-  }
-
-  void _notifyCharacterConfigSaveFailed(String playerCharacterId) {
-    final now = DateTime.now();
-    if (_lastCharacterSaveFailedSnackAt != null &&
-        now.difference(_lastCharacterSaveFailedSnackAt!) <
-            _characterSaveFailedSnackCooldown) {
-      return;
-    }
-    _lastCharacterSaveFailedSnackAt = now;
-
-    final getIt = DependencyProvider.getIt;
-    final ctx = navigatorKey.currentContext;
-    if (getIt == null || ctx == null || !ctx.mounted) {
-      // #region agent log
-      agentDebugLog(
-        location: 'server_methods_service.dart:_notifyCharacterConfigSaveFailed',
-        message: 'character save failed (no UI context for snackbar)',
-        hypothesisId: 'C',
-        data: {
-          'playerCharacterId': playerCharacterId,
-          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
-      return;
-    }
-
-    final snackBar = SnackBar(
-      showCloseIcon: true,
-      duration: const Duration(seconds: 12),
-      content: Text(
-        S.of(ctx).characterConfigSaveFailedBody,
-        style: Theme.of(ctx).textTheme.bodyLarge!.copyWith(fontSize: 16),
-      ),
-    );
-    getIt.get<ISnackBarService>().showSnackBar(
-          snack: snackBar,
-          uniqueId:
-              'characterConfigSaveFailed-$playerCharacterId-7db69f',
-        );
-    // #region agent log
-    agentDebugLog(
-      location: 'server_methods_service.dart:_notifyCharacterConfigSaveFailed',
-      message: 'character save failed snackbar shown',
-      hypothesisId: 'C',
-      data: {
-        'playerCharacterId': playerCharacterId,
-        'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-        'runId': 'post-fix',
-      },
-    );
-    // #endregion
-  }
-
-  Future<void> _flushCharacterConfigIfPending(String playerCharacterId) async {
-    final json = _pendingCharacterJsonById[playerCharacterId];
-    if (json == null) return;
-
-    final hash = json.hashCode;
-    final lastHash = _lastSentCharacterHashById[playerCharacterId];
-    if (lastHash == hash) {
-      // #region agent log
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
-        message: 'character flush skipped (hash unchanged)',
-        hypothesisId: 'C',
-        data: {
-          'playerCharacterId': playerCharacterId,
-          'jsonLen': json.length,
-          'hash': hash,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
-      return;
-    }
-
-    final rev = _playerCharacterLocalRevisionByPlayerId[playerCharacterId];
-    final prevJson = _latestPlayerCharacterJsonByPlayerId[playerCharacterId];
-    var persisted = false;
-
-    // Prefer partial V3 patches when we have a revision baseline.
-    if (signalRProtocolVersion >= 3 && rev != null && prevJson != null) {
-      final env = buildRpgConfigUpstreamEnvelope(
-        slice: 'character',
-        previousJson: prevJson,
-        newJson: json,
-        fromRevision: rev,
-        toRevision: rev + 1,
-      );
-      // #region agent log
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
-        message: 'character flush invoking V3',
-        hypothesisId: 'B',
-        data: {
-          'playerCharacterId': playerCharacterId,
-          'fromRev': rev,
-          'toRev': rev + 1,
-          'jsonLen': json.length,
-          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
-      final v3Ok = await serverCommunicationService.executeCriticalServerFunction(
-        "SendUpdatedRpgCharacterConfigToDmV3",
-        args: [playerCharacterId, env],
-      );
-      // #region agent log
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
-        message: v3Ok ? 'character V3 invoke ok' : 'character V3 invoke failed',
-        hypothesisId: 'B',
-        data: {
-          'playerCharacterId': playerCharacterId,
-          'ok': v3Ok,
-          'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
-          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
-      if (v3Ok) {
-        _commitAfterSuccessfulCharacterConfigSend(
-          playerCharacterId: playerCharacterId,
-          json: json,
-          toRevision: rev + 1,
-        );
-        persisted = true;
-      }
-    }
-
-    // Legacy full JSON via SignalR (also fallback after V3 failure).
-    if (!persisted) {
-      // #region agent log
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
-        message: 'character flush invoking legacy',
-        hypothesisId: 'D',
-        data: {
-          'playerCharacterId': playerCharacterId,
-          'jsonLen': json.length,
-          'localRev': rev,
-          'hasBaseline': prevJson != null,
-          'protocolVersion': signalRProtocolVersion,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
-      final legacyOk =
-          await serverCommunicationService.executeCriticalServerFunction(
-              "SendUpdatedRpgCharacterConfigToDm",
-              args: [playerCharacterId, json]);
-      // #region agent log
-      agentDebugLog(
-        location: 'server_methods_service.dart:_flushCharacterConfigIfPending',
-        message: legacyOk
-            ? 'character legacy invoke ok'
-            : 'character legacy invoke failed',
-        hypothesisId: 'D',
-        data: {
-          'playerCharacterId': playerCharacterId,
-          'ok': legacyOk,
-          'lastHubInvokeError': serverCommunicationService.lastHubInvokeError,
-          'pendingHubQueue': serverCommunicationService.pendingHubInvokeCount,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
-      if (legacyOk) {
-        _commitAfterSuccessfulCharacterConfigSend(
-          playerCharacterId: playerCharacterId,
-          json: json,
-        );
-        persisted = true;
-      }
-    }
-
-    // REST fallback when SignalR paths fail (HTTP may still work).
-    if (!persisted && _characterConfigRestPersistAvailable) {
-      persisted = await _tryPersistCharacterConfigViaRest(
-        playerCharacterId: playerCharacterId,
-        json: json,
-      );
-    }
-
-    if (!persisted) {
-      // Do NOT mark hash as sent — keep dirty so a later reconnect/flush retries.
-      _notifyCharacterConfigSaveFailed(playerCharacterId);
-    }
-  }
-
-  void _debounceCharacterConfigSend({
-    required String playerCharacterId,
-    required String json,
-  }) {
-    _pendingCharacterJsonById[playerCharacterId] = json;
-    _pendingCharacterConfigSendTimers[playerCharacterId]?.cancel();
-    // #region agent log
-    agentDebugLog(
-      location: 'server_methods_service.dart:_debounceCharacterConfigSend',
-      message: 'character config send debounced',
-      hypothesisId: 'A',
-      data: {
-        'playerCharacterId': playerCharacterId,
-        'jsonLen': json.length,
-        'debounceMs': _outgoingConfigDebounce.inMilliseconds,
-        'runId': 'post-fix',
-      },
-    );
-    // #endregion
-    _pendingCharacterConfigSendTimers[playerCharacterId] = Timer(
-      _outgoingConfigDebounce,
-      () => _flushCharacterConfigIfPending(playerCharacterId),
-    );
-  }
-
-  void _cancelPendingDisconnect(String userId) {
-    _pendingDisconnectByUserId[userId]?.cancel();
-    _pendingDisconnectByUserId.remove(userId);
-  }
+  ServerMethodsService({
+    required super.navigationService,
+    required super.widgetRef,
+  }) : super(isMock: false);
+
+  IRpgEntityService? get _rpgEntityService =>
+      DependencyProvider.getIt?.get<IRpgEntityService>();
 
   @override
   Future registerGame({required String campagneId}) async {
@@ -1229,13 +85,11 @@ class ServerMethodsService extends IServerMethodsService {
         (widgetRef.read(connectionDetailsProvider).value ??
                 ConnectionDetails.defaultValue())
             .copyWith(
-                isConnected: false,
-                isConnecting: true,
+                isConnected: true,
+                isConnecting: false,
+                isDm: true,
+                isInSession: true,
                 campagneId: campagneId));
-
-    await serverCommunicationService.executeCriticalServerFunction(
-        "RegisterGame",
-        args: [campagneId]);
   }
 
   @override
@@ -1246,221 +100,39 @@ class ServerMethodsService extends IServerMethodsService {
             .copyWith(
                 isConnected: true,
                 isConnecting: false,
-                playerCharacterId: playerCharacterId));
-
-    await serverCommunicationService.executeCriticalServerFunction(
-        "JoinGame",
-        args: [playerCharacterId]);
-  }
-
-  @override
-  void registerGameResponse(String parameter) {
-    log("Gamecode: $parameter");
-    // as we have loaded the session here, we now can update the riverpod state to reflect that
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        (widgetRef.read(connectionDetailsProvider).value ??
-                ConnectionDetails.defaultValue())
-            .copyWith(
-                isConnected: true,
-                isConnecting: false,
-                isDm: true,
                 isInSession: true,
-                sessionConnectionNumberForPlayers: parameter));
-  }
-
-  @override
-  void requestJoinPermission(String playerName, String username,
-      String playerCharacterId, String campagneJoinRequestId) {
-    log("requestJoinPermission:");
-
-    List<PlayerJoinRequests> openRequests = [
-      ...(widgetRef.read(connectionDetailsProvider).value?.openPlayerRequests ??
-          []),
-      PlayerJoinRequests(
-        playerName: playerName,
-        username: username,
-        playerCharacterId: playerCharacterId,
-        campagneJoinRequestId: campagneJoinRequestId,
-      ),
-    ];
-
-    // as we have loaded the session here, we now can update the riverpod state to reflect that
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        widgetRef.read(connectionDetailsProvider).value?.copyWith(
-                isConnected: true,
-                isConnecting: false,
-                openPlayerRequests: openRequests) ??
-            ConnectionDetails.defaultValue());
-  }
-
-  @override
-  void joinRequestAccepted() {
-    log("accepted as player within session");
-
-    var connectionDetails =
-        widgetRef.read(connectionDetailsProvider).requireValue;
-    var charDetails =
-        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
-
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        connectionDetails.copyWith(
-            isConnected: true, isConnecting: false, isInSession: true));
-
-    sendUpdatedRpgCharacterConfig(
-      charConfig: charDetails,
-      playercharacterid: connectionDetails.playerCharacterId!,
-    );
-  }
-
-  @override
-  void updateRpgConfig(String parameter) {
-    log("Received new rpg config");
-    Map<String, dynamic> map = jsonDecode(parameter);
-
-    var receivedConfig = RpgConfigurationModel.fromJson(map);
-    serverCommunicationService.updateRpgConfiguration(receivedConfig);
-
-    // Keep slice cache in sync for follow-up hot/cold updates in the same session.
-    final full = receivedConfig.toJson();
-    final cold = <String, dynamic>{};
-    final hot = <String, dynamic>{};
-    for (final entry in full.entries) {
-      if (_rpgConfigColdKeys.contains(entry.key)) {
-        cold[entry.key] = entry.value;
-      } else {
-        hot[entry.key] = entry.value;
-      }
-    }
-    _latestRpgConfigColdJson = jsonEncode(cold);
-    _latestRpgConfigHotJson = jsonEncode(hot);
-    _localColdSliceRevision = null;
-    _localHotSliceRevision = null;
-  }
-
-  @override
-  void updateRpgConfigCold(String parameter) {
-    if (kDebugMode == true) {
-      log("Received rpg config cold slice");
-    }
-    _latestRpgConfigColdJson = parameter;
-    _localColdSliceRevision = null;
-    _applyRpgConfigFromSlicesIfPossible();
-  }
-
-  @override
-  void updateRpgConfigHot(String parameter) {
-    if (kDebugMode == true) {
-      log("Received rpg config hot slice");
-    }
-    _latestRpgConfigHotJson = parameter;
-    _localHotSliceRevision = null;
-    _applyRpgConfigFromSlicesIfPossible();
-  }
-
-  @override
-  void updateRpgConfigColdV3(String envelopeJson) {
-    if (kDebugMode == true) {
-      log("Received rpg config cold v3 envelope");
-    }
-    _applyRpgConfigSliceEnvelopeV3(isCold: true, envelopeJson: envelopeJson);
-  }
-
-  @override
-  void updateRpgConfigHotV3(String envelopeJson) {
-    if (kDebugMode == true) {
-      log("Received rpg config hot v3 envelope");
-    }
-    _applyRpgConfigSliceEnvelopeV3(isCold: false, envelopeJson: envelopeJson);
-  }
-
-  void _applyRpgConfigSliceEnvelopeV3({
-    required bool isCold,
-    required String envelopeJson,
-  }) {
-    try {
-      final decoded = jsonDecode(envelopeJson);
-      if (decoded is! Map) {
-        return;
-      }
-      final map = Map<String, dynamic>.from(decoded);
-      final kind = map['kind'] as String?;
-      if (kind == 'full') {
-        final rev = map['revision'] as int;
-        final body = map['body'];
-        final encoded = jsonEncode(body);
-        if (isCold) {
-          _latestRpgConfigColdJson = encoded;
-          _localColdSliceRevision = rev;
-        } else {
-          _latestRpgConfigHotJson = encoded;
-          _localHotSliceRevision = rev;
-        }
-        _applyRpgConfigFromSlicesIfPossible();
-        return;
-      }
-
-      if (kind == 'patch') {
-        final fromRev = map['fromRevision'] as int;
-        final toRev = map['toRevision'] as int;
-        final currentRev = isCold ? _localColdSliceRevision : _localHotSliceRevision;
-        if (currentRev != fromRev) {
-          unawaited(_requestRpgConfigSnapshot());
-          return;
-        }
-        final patchRaw = map['patch'];
-        if (patchRaw is! List) {
-          unawaited(_requestRpgConfigSnapshot());
-          return;
-        }
-        final patches = patchRaw
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
-        final currentJson =
-            isCold ? _latestRpgConfigColdJson : _latestRpgConfigHotJson;
-        final current = jsonDecode(currentJson ?? '{}');
-        final patched = JsonPatch.apply(current, patches);
-        final encoded = jsonEncode(patched);
-        if (isCold) {
-          _latestRpgConfigColdJson = encoded;
-          _localColdSliceRevision = toRev;
-        } else {
-          _latestRpgConfigHotJson = encoded;
-          _localHotSliceRevision = toRev;
-        }
-        _applyRpgConfigFromSlicesIfPossible();
-      }
-    } catch (e, st) {
-      if (kDebugMode == true) {
-        log("rpg config v3 envelope failed: $e", stackTrace: st);
-      }
-      unawaited(_requestRpgConfigSnapshot());
-    }
-  }
-
-  Future<void> _requestRpgConfigSnapshot() async {
-    final campagneId =
-        widgetRef.read(connectionDetailsProvider).value?.campagneId;
-    if (campagneId == null) {
-      return;
-    }
-    await serverCommunicationService.executeServerFunction(
-      'RequestRpgConfigSnapshot',
-      args: [campagneId],
-      maxInvokeRetries: 2,
-    );
+                playerCharacterId: playerCharacterId));
   }
 
   @override
   Future sendUpdatedRpgConfig(
       {required RpgConfigurationModel rpgConfig,
       required String campagneId}) async {
-    final slices = _splitRpgConfigSlices(rpgConfig);
+    final controller = activeConfigSyncSessionController;
+    if (controller != null) {
+      controller.notifyLocalCampagneEdit(rpgConfig);
+      return;
+    }
+    // Fallback (no active session controller): best-effort direct REST PUT.
+    await _rpgEntityService?.updateCampagneRpgConfiguration(
+      campagneId: CampagneIdentifier($value: campagneId),
+      rpgConfigurationJson: jsonEncode(rpgConfig),
+    );
+  }
 
-    // v2 protocol: debounce + last-sent equality; server recombines for legacy clients.
-    _debounceCampagneConfigSend(
-      campagneId: campagneId,
-      coldJson: slices.$1,
-      hotJson: slices.$2,
+  @override
+  Future sendUpdatedRpgCharacterConfig(
+      {required RpgCharacterConfiguration charConfig,
+      required String playercharacterid}) async {
+    final controller = activeConfigSyncSessionController;
+    if (controller != null) {
+      controller.notifyLocalCharacterEdit(charConfig);
+      return;
+    }
+    // Fallback (no active session controller): best-effort direct REST PUT.
+    await _rpgEntityService?.updatePlayerCharacterRpgConfiguration(
+      playerCharacterId: PlayerCharacterIdentifier($value: playercharacterid),
+      rpgCharacterConfigurationJson: jsonEncode(charConfig),
     );
   }
 
@@ -1468,46 +140,26 @@ class ServerMethodsService extends IServerMethodsService {
   Future askPlayersForRolls(
       {required String campagneId,
       required FightSequence fightSequence}) async {
-    // sse-06: REST + SSE (playersAreAskedForRolls) replaces the SignalR hub
-    // invoke as the primary path for new clients.
+    // sse-06: REST + SSE (playersAreAskedForRolls) fan-out.
     var strippedFightSequence = fightSequence.copyWith(
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
-    final getIt = DependencyProvider.getIt;
-    if (getIt == null) {
-      return;
-    }
-    await getIt.get<IRpgEntityService>().askPlayersForRolls(
-          campagneId: CampagneIdentifier($value: campagneId),
-          fightSequence: strippedFightSequence,
-        );
+    await _rpgEntityService?.askPlayersForRolls(
+      campagneId: CampagneIdentifier($value: campagneId),
+      fightSequence: strippedFightSequence,
+    );
   }
 
   @override
   Future sendFightSequenceRollsToDm(
       {required String playerId, required FightSequence fightSequence}) async {
-    // sse-06: REST + SSE (dmReceivedFightSequenceAnswer) replaces the
-    // SignalR hub invoke as the primary path for new clients.
+    // sse-06: REST + SSE (dmReceivedFightSequenceAnswer) fan-out.
     var strippedFightSequence = fightSequence.copyWith(
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
-    final getIt = DependencyProvider.getIt;
-    if (getIt == null) {
-      return;
-    }
-    await getIt.get<IRpgEntityService>().sendFightSequenceRollsToDm(
-          playerCharacterId: PlayerCharacterIdentifier($value: playerId),
-          fightSequence: strippedFightSequence,
-        );
-  }
-
-  @override
-  Future sendUpdatedRpgCharacterConfig(
-      {required RpgCharacterConfiguration charConfig,
-      required String playercharacterid}) async {
-    _debounceCharacterConfigSend(
-      playerCharacterId: playercharacterid,
-      json: jsonEncode(charConfig),
+    await _rpgEntityService?.sendFightSequenceRollsToDm(
+      playerCharacterId: PlayerCharacterIdentifier($value: playerId),
+      fightSequence: strippedFightSequence,
     );
   }
 
@@ -1515,14 +167,12 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendGrantedItemsToPlayers(
       {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems}) async {
-    // sse-06: REST grant-items (revisioned config write) + characterConfigChanged
-    // / itemsGranted SSE replaces the SignalR hub invoke as the primary path
-    // for new clients. One REST call per granted player character.
-    final getIt = DependencyProvider.getIt;
-    if (getIt == null) {
+    // sse-06: REST grant-items (revisioned config write) + itemsGranted SSE.
+    // One REST call per granted player character.
+    final rpgEntityService = _rpgEntityService;
+    if (rpgEntityService == null) {
       return;
     }
-    final rpgEntityService = getIt.get<IRpgEntityService>();
     for (final grant in grantedItems) {
       await rpgEntityService.grantItemsToCharacter(
         playerCharacterId: PlayerCharacterIdentifier($value: grant.playerId),
@@ -1532,222 +182,10 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  void updateRpgCharacterConfigOnDmSide(
-      String config, String playerId, String userId) {
-    if (kDebugMode == true) {
-      log("Received new rpg character config");
-    }
-
-    _dmCharacterConfigRevisionByPlayerId.remove(playerId);
-    final map = jsonDecode(config) as Map<String, dynamic>;
-    _upsertDmSidePlayerCharacter(
-      RpgCharacterConfiguration.fromJson(map),
-      playerId,
-      userId,
-    );
-  }
-
-  @override
-  void updateRpgCharacterConfigOnDmSideV3(
-      String envelopeJson, String playerId, String userId) {
-    if (kDebugMode == true) {
-      log("Received rpg character config v3 envelope");
-    }
-    try {
-      final decoded = jsonDecode(envelopeJson);
-      if (decoded is! Map) {
-        return;
-      }
-      final map = Map<String, dynamic>.from(decoded);
-      final kind = map['kind'] as String?;
-      if (kind == 'full') {
-        final revRaw = map['revision'];
-        if (revRaw is! num) {
-          unawaited(_requestPlayerCharacterSnapshot(playerId));
-          return;
-        }
-        final rev = revRaw.toInt();
-        final body = map['body'];
-        if (body is! Map) {
-          unawaited(_requestPlayerCharacterSnapshot(playerId));
-          return;
-        }
-        _dmCharacterConfigRevisionByPlayerId[playerId] = rev;
-        _upsertDmSidePlayerCharacter(
-          RpgCharacterConfiguration.fromJson(
-              Map<String, dynamic>.from(body)),
-          playerId,
-          userId,
-        );
-        return;
-      }
-      if (kind == 'patch') {
-        final fromRev = map['fromRevision'] as int;
-        final toRev = map['toRevision'] as int;
-        final currentRev = _dmCharacterConfigRevisionByPlayerId[playerId];
-        if (currentRev != fromRev) {
-          unawaited(_requestPlayerCharacterSnapshot(playerId));
-          return;
-        }
-        final patchRaw = map['patch'];
-        if (patchRaw is! List) {
-          unawaited(_requestPlayerCharacterSnapshot(playerId));
-          return;
-        }
-        final patches = patchRaw
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
-        final currentDetails =
-            widgetRef.read(connectionDetailsProvider).requireValue;
-        final players = currentDetails.connectedPlayers ?? [];
-        final idx =
-            players.indexWhere((p) => p.playerCharacterId.$value! == playerId);
-        if (idx == -1) {
-          unawaited(_requestPlayerCharacterSnapshot(playerId));
-          return;
-        }
-        final currentJson =
-            jsonEncode(players[idx].configuration.toJson());
-        final patched =
-            JsonPatch.apply(jsonDecode(currentJson), patches);
-        if (patched is! Map) {
-          unawaited(_requestPlayerCharacterSnapshot(playerId));
-          return;
-        }
-        _dmCharacterConfigRevisionByPlayerId[playerId] = toRev;
-        _upsertDmSidePlayerCharacter(
-          RpgCharacterConfiguration.fromJson(
-              Map<String, dynamic>.from(patched)),
-          playerId,
-          userId,
-        );
-      }
-    } catch (e, st) {
-      if (kDebugMode == true) {
-        log("character v3 envelope failed: $e", stackTrace: st);
-      }
-      unawaited(_requestPlayerCharacterSnapshot(playerId));
-    }
-  }
-
-  @override
-  void updateMyRpgCharacterConfigV3(
-      String envelopeJson, String playerCharacterId) {
-    final selfId =
-        widgetRef.read(connectionDetailsProvider).value?.playerCharacterId;
-    if (selfId == null || selfId != playerCharacterId) {
-      return;
-    }
-    try {
-      final decoded = jsonDecode(envelopeJson);
-      if (decoded is! Map) {
-        return;
-      }
-      final map = Map<String, dynamic>.from(decoded);
-      final kind = map['kind'] as String?;
-      if (kind == 'full') {
-        final rev = (map['revision'] as num).toInt();
-        final body = map['body'];
-        if (body is! Map) {
-          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
-          return;
-        }
-        _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = rev;
-        _latestPlayerCharacterJsonByPlayerId[playerCharacterId] =
-            jsonEncode(Map<String, dynamic>.from(body));
-        return;
-      }
-      if (kind == 'patch') {
-        final fromRev = (map['fromRevision'] as num).toInt();
-        final toRev = (map['toRevision'] as num).toInt();
-        final currentRev =
-            _playerCharacterLocalRevisionByPlayerId[playerCharacterId];
-        if (currentRev != fromRev) {
-          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
-          return;
-        }
-        final patchRaw = map['patch'];
-        if (patchRaw is! List) {
-          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
-          return;
-        }
-        final patches = patchRaw
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
-        final currentJson = _latestPlayerCharacterJsonByPlayerId[playerCharacterId];
-        if (currentJson == null) {
-          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
-          return;
-        }
-        final patched =
-            JsonPatch.apply(jsonDecode(currentJson), patches);
-        if (patched is! Map) {
-          unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
-          return;
-        }
-        _playerCharacterLocalRevisionByPlayerId[playerCharacterId] = toRev;
-        _latestPlayerCharacterJsonByPlayerId[playerCharacterId] =
-            jsonEncode(patched);
-      }
-    } catch (e, st) {
-      if (kDebugMode == true) {
-        log("my character v3 envelope failed: $e", stackTrace: st);
-      }
-      unawaited(_requestPlayerCharacterSnapshot(playerCharacterId));
-    }
-  }
-
-  void _upsertDmSidePlayerCharacter(
-    RpgCharacterConfiguration receivedConfig,
-    String playerId,
-    String userId,
-  ) {
-    var currentConnectionDetails =
-        widgetRef.read(connectionDetailsProvider).requireValue;
-
-    List<OpenPlayerConnection> updatedPlayerProfiles = [
-      ...(currentConnectionDetails.connectedPlayers ?? [])
-    ];
-
-    var indexOfExistingPlayer = updatedPlayerProfiles
-        .indexWhere((p) => p.playerCharacterId.$value! == playerId);
-
-    _cancelPendingDisconnect(userId);
-
-    var connectionObject = OpenPlayerConnection(
-      configuration: receivedConfig,
-      playerCharacterId: PlayerCharacterIdentifier($value: playerId),
-      userId: UserIdentifier($value: userId),
-      lastPing: DateTime.now(),
-    );
-
-    if (indexOfExistingPlayer == -1) {
-      updatedPlayerProfiles.add(connectionObject);
-    } else {
-      updatedPlayerProfiles[indexOfExistingPlayer] = connectionObject;
-    }
-
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        currentConnectionDetails.copyWith(
-            connectedPlayers: updatedPlayerProfiles));
-  }
-
-  Future<void> _requestPlayerCharacterSnapshot(String playerCharacterId) async {
-    await serverCommunicationService.executeServerFunction(
-      'RequestPlayerCharacterConfigSnapshot',
-      args: [playerCharacterId],
-      maxInvokeRetries: 2,
-    );
-  }
-
-  @override
   void playersAreAskedForRolls(String serializedFightSequence) {
-    // TODO
-    // decode fight sequence
     var decodedFightSequence =
         FightSequence.fromJson(jsonDecode(serializedFightSequence));
 
-    // search which of my characters are asked for a roll
     var currentCharacter =
         widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
 
@@ -1784,7 +222,6 @@ class ServerMethodsService extends IServerMethodsService {
       }
 
       for (var characterAsked in charactersInQuestion) {
-        // for every character ask show modal which asks for a roll
         var roll = await showAskPlayerForFightOrderRoll(
           navKey.currentContext!,
           characterName: characterAsked.characterName,
@@ -1798,7 +235,6 @@ class ServerMethodsService extends IServerMethodsService {
       var fightSequenceAnswer = FightSequence(
           fightUuid: decodedFightSequence.fightUuid, sequence: rollAnswers);
 
-      // send answer to dm
       await sendFightSequenceRollsToDm(
           playerId: connectionDetails.playerCharacterId!,
           fightSequence: fightSequenceAnswer);
@@ -1806,115 +242,7 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  void grantPlayerItems(String grantedItemsJson) {
-    List<dynamic> listOfGrants = jsonDecode(grantedItemsJson);
-    var castedList = listOfGrants
-        .map((e) => GrantedItemsForPlayer.fromJson(e as Map<String, dynamic>))
-        .toList();
-
-    var currentCharacter =
-        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
-
-    // filter correct grants for current user
-    var myNewItems = castedList
-        .where((el) => el.playerId == currentCharacter.uuid)
-        .singleOrNull;
-    if (myNewItems == null) {
-      // do nothing...
-      return;
-    }
-
-    // update inventory
-    widgetRef
-        .read(rpgCharacterConfigurationProvider.notifier)
-        .grantItems(myNewItems.grantedItems);
-
-    var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
-
-    var navKey = navigationService.getCurrentNavigationKey();
-    if (navKey.currentContext == null) {
-      navKey = navigatorKey;
-    }
-
-    // show modal
-    showPlayerHasBeenGrantedItemsThroughDmModal(
-      navKey.currentContext!,
-      grantedItems: myNewItems,
-      rpgConfig: rpgConfig,
-    );
-  }
-
-  @override
-  void requestStatusFromPlayers() {
-    var connectionDetails =
-        widgetRef.read(connectionDetailsProvider).requireValue;
-    var charDetails =
-        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
-
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        connectionDetails.copyWith(
-            isConnected: true, isConnecting: false, isInSession: true));
-
-    sendUpdatedRpgCharacterConfig(
-      charConfig: charDetails,
-      playercharacterid: connectionDetails.playerCharacterId!,
-    );
-  }
-
-  @override
-  Future readdToSignalRGroups() async {
-    var connectionDetails =
-        widgetRef.read(connectionDetailsProvider).requireValue;
-
-    // ReaddToSignalRGroups(string? campagneId, string? characterId)
-    await serverCommunicationService.executeServerFunction(
-      "ReaddToSignalRGroups",
-      args: [
-        connectionDetails.campagneId ?? "NULL",
-        connectionDetails.playerCharacterId ?? "NULL"
-      ],
-      maxInvokeRetries: 3,
-    );
-  }
-
-  void _applyClientDisconnectedRemoval(String userId) {
-    _pendingDisconnectByUserId.remove(userId);
-    var currentConnectionDetails =
-        widgetRef.read(connectionDetailsProvider).valueOrNull;
-    if (currentConnectionDetails == null) {
-      return;
-    }
-
-    List<OpenPlayerConnection> updatedPlayerProfiles = [
-      ...(currentConnectionDetails.connectedPlayers ?? [])
-    ];
-
-    var indexOfExistingPlayer =
-        updatedPlayerProfiles.indexWhere((p) => p.userId.$value! == userId);
-
-    if (indexOfExistingPlayer < 0) {
-      return;
-    }
-
-    updatedPlayerProfiles.removeAt(indexOfExistingPlayer);
-
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        currentConnectionDetails.copyWith(
-            connectedPlayers: updatedPlayerProfiles));
-  }
-
-  @override
-  void clientDisconnected(String userId) {
-    _cancelPendingDisconnect(userId);
-    _pendingDisconnectByUserId[userId] =
-        Timer(clientDisconnectedDebounce, () {
-      _applyClientDisconnectedRemoval(userId);
-    });
-  }
-
-  @override
   void dmReceivedFightSequenceAnswer(String serializedFightSequence) {
-    // decode fight sequence
     var decodedFightSequence =
         FightSequence.fromJson(jsonDecode(serializedFightSequence));
 
@@ -1929,7 +257,6 @@ class ServerMethodsService extends IServerMethodsService {
       return;
     }
 
-    // merge answers into connectiondetails
     var fightSequenceList = currentFightSequenceAskedFor.sequence;
 
     fightSequenceList.addAllIntoSortedList(
@@ -1943,81 +270,37 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  void pingFromDm(DateTime timestamp) {
-    Future.delayed(Duration.zero, () async {
-      log("pingFromDm is called: $timestamp");
-      // update lastPing on connection details
-      var currentConnectionDetails =
-          widgetRef.read(connectionDetailsProvider).requireValue;
-      widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-          currentConnectionDetails.copyWith(lastPing: timestamp));
+  void grantPlayerItems(String grantedItemsJson) {
+    List<dynamic> listOfGrants = jsonDecode(grantedItemsJson);
+    var castedList = listOfGrants
+        .map((e) => GrantedItemsForPlayer.fromJson(e as Map<String, dynamic>))
+        .toList();
 
-      await sendPongToDm(
-          campagneId: widgetRef
-              .read(connectionDetailsProvider)
-              .requireValue
-              .campagneId!,
-          timestamp: timestamp);
-    });
-  }
+    var currentCharacter =
+        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
 
-  @override
-  void pongFromPlayer(DateTime timestamp, String userId) {
-    log("pingFromDm is received");
-    _cancelPendingDisconnect(userId);
-
-    var currentConnectionDetails =
-        widgetRef.read(connectionDetailsProvider).requireValue;
-
-    var indexOfExistingPlayer = currentConnectionDetails.connectedPlayers
-        ?.indexWhere((p) => p.userId.$value! == userId);
-
-    if (indexOfExistingPlayer == -1 || indexOfExistingPlayer == null) {
-      return;
-    } else {
-      currentConnectionDetails.connectedPlayers![indexOfExistingPlayer] =
-          currentConnectionDetails.connectedPlayers![indexOfExistingPlayer]
-              .copyWith(lastPing: timestamp);
-
-      widgetRef
-          .read(connectionDetailsProvider.notifier)
-          .updateConfiguration(currentConnectionDetails);
-    }
-  }
-
-  @override
-  void signalRGroupsRejoined(String campagneId) {
-    if (kDebugMode) {
-      log('signalRGroupsRejoined: $campagneId', name: 'SignalR');
-    }
-    final d = widgetRef.read(connectionDetailsProvider).valueOrNull;
-    if (d == null || !d.isInSession) {
+    var myNewItems = castedList
+        .where((el) => el.playerId == currentCharacter.uuid)
+        .singleOrNull;
+    if (myNewItems == null) {
       return;
     }
-    widgetRef.read(connectionDetailsProvider.notifier).updateConfiguration(
-        d.copyWith(isConnected: true, isConnecting: false));
-  }
 
-  @override
-  Future sendPingToPlayers(
-      {required String campagneId, required DateTime timestamp}) async {
-    // SendPingToPlayers(string campagneId, DateTime timestamp)
-    await serverCommunicationService
-        .executeServerFunction("SendPingToPlayers", args: [
-      campagneId,
-      timestamp.toIso8601String(),
-    ]);
-  }
+    widgetRef
+        .read(rpgCharacterConfigurationProvider.notifier)
+        .grantItems(myNewItems.grantedItems);
 
-  @override
-  Future sendPongToDm(
-      {required String campagneId, required DateTime timestamp}) async {
-    log("sendPongToDm is called: $timestamp");
-    // SendPongToDm(string campagneId, DateTime timestamp)
-    await serverCommunicationService
-        .executeServerFunction("SendPongToDm", args: [
-      campagneId,
-      timestamp.toIso8601String(),
-    ]);
+    var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
+
+    var navKey = navigationService.getCurrentNavigationKey();
+    if (navKey.currentContext == null) {
+      navKey = navigatorKey;
+    }
+
+    showPlayerHasBeenGrantedItemsThroughDmModal(
+      navKey.currentContext!,
+      grantedItems: myNewItems,
+      rpgConfig: rpgConfig,
+    );
   }
 }

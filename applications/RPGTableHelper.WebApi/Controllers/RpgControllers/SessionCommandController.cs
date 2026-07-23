@@ -17,12 +17,11 @@ using RPGTableHelper.WebApi.Services.Sse;
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
     /// <summary>
-    /// sse-06: REST commands for table-session-scoped fight/roll signals and item grants, replacing the
-    /// SignalR hub relays (<c>AskPlayersForRolls</c> / <c>SendFightSequenceRollsToDm</c> /
-    /// <c>SendGrantedItemsToPlayers</c>) as the primary path for new clients. Rolls fan out an inline
+    /// sse-06: REST commands for table-session-scoped fight/roll signals and item grants
+    /// (<c>AskPlayersForRolls</c> / <c>SendFightSequenceRollsToDm</c> /
+    /// <c>SendGrantedItemsToPlayers</c>) as the sole path for clients. Rolls fan out an inline
     /// fight-sequence payload over SSE to session participants; grants mutate the character config through
-    /// the same revisioned store used by sse-02/sse-04 and notify via <c>characterConfigChanged</c>. The
-    /// SignalR hub is left in place until sse-08.
+    /// the same revisioned store used by sse-02/sse-04 and notify via <c>characterConfigChanged</c>.
     /// </summary>
     [Authorize]
     [ApiController]

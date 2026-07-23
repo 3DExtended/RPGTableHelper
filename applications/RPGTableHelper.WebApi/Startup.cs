@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -108,7 +107,6 @@ public class Startup
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapHub<RpgServerSignalRHub>("/Chat", (options) => { });
             endpoints.MapControllers();
         });
     }
@@ -150,18 +148,6 @@ public class Startup
             const string categoryName = "Any";
             return loggerFactory.CreateLogger(categoryName);
         });
-
-        services
-            .AddSignalR(signalR =>
-            {
-                signalR.MaximumReceiveMessageSize = long.MaxValue;
-                // Align with long-lived WebSocket connections through reverse proxies / Cloudflare tunnel:
-                // server sends keep-alive pings; client must respond within ClientTimeoutInterval.
-                signalR.KeepAliveInterval = TimeSpan.FromSeconds(15);
-                signalR.ClientTimeoutInterval = TimeSpan.FromSeconds(120);
-                signalR.EnableDetailedErrors = Environment.IsDevelopment();
-            })
-            .AddMessagePackProtocol();
 
         AddCqrs(services);
 

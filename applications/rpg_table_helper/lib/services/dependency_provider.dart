@@ -10,7 +10,6 @@ import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
-import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
@@ -131,16 +130,6 @@ class DependencyProvider extends InheritedWidget {
     _registerService<INavigationService>(
         () => NavigationService(), () => NavigationService());
 
-    _registerService<IServerCommunicationService>(() {
-      var apiConnectorService = getService<IApiConnectorService>();
-      return ServerCommunicationService(
-          apiConnectorService: apiConnectorService, widgetRef: widgetRef);
-    }, () {
-      var apiConnectorService = getService<IApiConnectorService>();
-      return MockServerCommunicationService(
-          apiConnectorService: apiConnectorService, widgetRef: widgetRef);
-    });
-
     _registerService<EventsClient>(() {
       final api = getService<IApiConnectorService>();
       return EventsClient(getJwt: api.getJwt);
@@ -156,22 +145,14 @@ class DependencyProvider extends InheritedWidget {
     });
 
     _registerService<IServerMethodsService>(() {
-      var serverCommunicationService =
-          getService<IServerCommunicationService>();
       var navService = getService<INavigationService>();
       return ServerMethodsService(
-          navigationService: navService,
-          serverCommunicationService: serverCommunicationService,
-          widgetRef: widgetRef);
+          navigationService: navService, widgetRef: widgetRef);
     }, () {
-      var serverCommunicationService =
-          getService<IServerCommunicationService>();
       var navService = getService<INavigationService>();
 
       return ServerMethodsService(
-          navigationService: navService,
-          serverCommunicationService: serverCommunicationService,
-          widgetRef: widgetRef);
+          navigationService: navService, widgetRef: widgetRef);
     });
   }
 

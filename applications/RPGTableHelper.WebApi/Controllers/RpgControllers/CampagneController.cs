@@ -192,7 +192,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
     /// <summary>
     /// Updates the merged RPG configuration for a campagne (DM only).
-    /// Used by mobile clients for large configs that exceed reliable SignalR invoke size.
+    /// Primary write path for mobile clients (REST PATCH/PUT via ConfigSync).
     /// Accepts an optional <see cref="CampagneUpdateRpgConfigDto.FromRevision"/> failsafe check.
     /// </summary>
     [ProducesResponseType(typeof(ConfigWriteResultDto), StatusCodes.Status200OK)]
