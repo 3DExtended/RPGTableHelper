@@ -60,4 +60,4 @@ Single-document config storage (one JSON body + one monotonic `Revision`) for `C
   - `dotnet test tests/RPGTableHelper.DataLayer.Tests --filter "FullyQualifiedName~ConfigRevisionHistoryMigrationTests"` → 1 passed
   - `dotnet test RPGTableHelper.sln` (full solution, SignalR e2e excluded from this pass since it needs a live compose stack) → all green (Api.Tests 114 passed/1 skipped, DataLayer.Tests 74 passed, BusinessLayer.Tests 9 passed, Shared.Tests 66 passed, plus the vendored Prodot.Patterns.Cqrs suites)
 - Visual snapshots: none (backend-only slice, no Flutter/UI changes)
-- Commit(s): `190792f3`
+- Commit(s): `6c9a907c`
