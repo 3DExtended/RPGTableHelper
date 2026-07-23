@@ -9,4 +9,10 @@ public class PlayerCharacterUpdateRpgConfigDto
     /// </summary>
     [Required]
     public string RpgCharacterConfiguration { get; set; } = default!;
+
+    /// <summary>
+    /// Optional failsafe revision check. When provided, the write is rejected with 409 if it does not match
+    /// the server's current revision.
+    /// </summary>
+    public int? FromRevision { get; set; }
 }

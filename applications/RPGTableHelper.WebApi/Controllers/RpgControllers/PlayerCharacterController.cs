@@ -1,12 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
+using RPGTableHelper.WebApi.Services.ConfigRevisions;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -17,11 +20,23 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
     {
         private readonly IUserContext _userContext;
         private readonly IQueryProcessor _queryProcessor;
+        private readonly IConfigRevisionHistoryStore _configRevisionHistoryStore;
+        private readonly IHostEnvironment _hostEnvironment;
+        private readonly ILogger<PlayerCharacterController> _logger;
 
-        public PlayerCharacterController(IUserContext userContext, IQueryProcessor queryProcessor)
+        public PlayerCharacterController(
+            IUserContext userContext,
+            IQueryProcessor queryProcessor,
+            IConfigRevisionHistoryStore configRevisionHistoryStore,
+            IHostEnvironment hostEnvironment,
+            ILogger<PlayerCharacterController> logger
+        )
         {
             _userContext = userContext;
             _queryProcessor = queryProcessor;
+            _configRevisionHistoryStore = configRevisionHistoryStore;
+            _hostEnvironment = hostEnvironment;
+            _logger = logger;
         }
 
         /// <summary>
@@ -152,11 +167,12 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// Updates the RPG character configuration for a player character (owner only).
         /// Used by mobile clients when SignalR is unavailable or for reliable persistence.
         /// </summary>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ConfigWriteResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPut("updatecharacterconfig/{playercharacterid}")]
-        public async Task<ActionResult> UpdatePlayerCharacterRpgConfigAsync(
+        public async Task<ActionResult<ConfigWriteResultDto>> UpdatePlayerCharacterRpgConfigAsync(
             string playercharacterid,
             [FromBody] [Required] PlayerCharacterUpdateRpgConfigDto updateDto,
             CancellationToken cancellationToken
@@ -185,13 +201,21 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             var updated = playerCharacter.Get();
-            if (updated.RpgCharacterConfiguration == updateDto.RpgCharacterConfiguration)
+            var currentRevision = updated.RpgCharacterConfigurationRevision;
+
+            if (updateDto.FromRevision.HasValue && updateDto.FromRevision.Value != currentRevision)
             {
-                return Ok();
+                return Conflict($"Stale fromRevision. Current revision is {currentRevision}.");
             }
 
+            if (updated.RpgCharacterConfiguration == updateDto.RpgCharacterConfiguration)
+            {
+                return Ok(new ConfigWriteResultDto { Revision = currentRevision });
+            }
+
+            var newRevision = currentRevision + 1;
             updated.RpgCharacterConfiguration = updateDto.RpgCharacterConfiguration;
-            updated.RpgCharacterConfigurationRevision++;
+            updated.RpgCharacterConfigurationRevision = newRevision;
 
             var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updated }
                 .RunAsync(_queryProcessor, cancellationToken)
@@ -202,7 +226,184 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not update player character configuration");
             }
 
-            return Ok();
+            await _configRevisionHistoryStore
+                .RecordPlayerCharacterSnapshotAsync(
+                    playerCharacterIdParsed,
+                    newRevision,
+                    updateDto.RpgCharacterConfiguration,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
+            await ConfigFileBackupWriter
+                .WriteBackupAsync(
+                    _hostEnvironment,
+                    _logger,
+                    $"{updated.CharacterName}-{playerCharacterIdParsed}-{timestamp}-rpgbackup.json",
+                    updateDto.RpgCharacterConfiguration,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            return Ok(new ConfigWriteResultDto { Revision = newRevision });
+        }
+
+        /// <summary>
+        /// Applies a RFC 6902 JSON Patch to the player character configuration (owner only).
+        /// Fails with 409 if <see cref="ConfigPatchRequestDto.FromRevision"/> does not match the current revision.
+        /// </summary>
+        [ProducesResponseType(typeof(ConfigWriteResultDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [HttpPatch("patchcharacterconfig/{playercharacterid}")]
+        public async Task<ActionResult<ConfigWriteResultDto>> PatchPlayerCharacterRpgConfigAsync(
+            string playercharacterid,
+            [FromBody] [Required] ConfigPatchRequestDto patchDto,
+            CancellationToken cancellationToken
+        )
+        {
+            if (
+                string.IsNullOrWhiteSpace(playercharacterid)
+                || !Guid.TryParse(playercharacterid, out var playerCharacterIdParsed)
+            )
+            {
+                return BadRequest("No valid playercharacterid passed");
+            }
+
+            var playerCharacter = await new PlayerCharacterQuery
+            {
+                ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(playerCharacterIdParsed),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
+            {
+                return Unauthorized();
+            }
+
+            var updated = playerCharacter.Get();
+            var currentRevision = updated.RpgCharacterConfigurationRevision;
+
+            if (patchDto.FromRevision != currentRevision)
+            {
+                return Conflict($"Stale fromRevision. Current revision is {currentRevision}.");
+            }
+
+            if (!ConfigDocumentPatcher.TryApply(updated.RpgCharacterConfiguration, patchDto.Patch, out var resultJson, out var error))
+            {
+                return BadRequest($"Could not apply patch: {error}");
+            }
+
+            var newRevision = currentRevision + 1;
+            updated.RpgCharacterConfiguration = resultJson;
+            updated.RpgCharacterConfigurationRevision = newRevision;
+
+            var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updated }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (updateResult.IsNone)
+            {
+                return BadRequest("Could not update player character configuration");
+            }
+
+            await _configRevisionHistoryStore
+                .RecordPlayerCharacterSnapshotAsync(playerCharacterIdParsed, newRevision, resultJson, cancellationToken)
+                .ConfigureAwait(false);
+
+            var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
+            await ConfigFileBackupWriter
+                .WriteBackupAsync(
+                    _hostEnvironment,
+                    _logger,
+                    $"{updated.CharacterName}-{playerCharacterIdParsed}-{timestamp}-rpgbackup.json",
+                    resultJson,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            return Ok(new ConfigWriteResultDto { Revision = newRevision });
+        }
+
+        /// <summary>
+        /// Returns the player character configuration (owner only), as a patch from <paramref name="sinceRevision"/>
+        /// when a matching history snapshot exists, or the full document otherwise.
+        /// </summary>
+        [ProducesResponseType(typeof(ConfigSnapshotResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpGet("getplayercharacterconfig/{playercharacterid}")]
+        public async Task<ActionResult<ConfigSnapshotResponseDto>> GetPlayerCharacterRpgConfigAsync(
+            string playercharacterid,
+            [FromQuery] int? sinceRevision,
+            CancellationToken cancellationToken
+        )
+        {
+            if (
+                string.IsNullOrWhiteSpace(playercharacterid)
+                || !Guid.TryParse(playercharacterid, out var playerCharacterIdParsed)
+            )
+            {
+                return BadRequest("No valid playercharacterid passed");
+            }
+
+            var playerCharacter = await new PlayerCharacterQuery
+            {
+                ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(playerCharacterIdParsed),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
+            {
+                return Unauthorized();
+            }
+
+            var current = playerCharacter.Get();
+            var currentRevision = current.RpgCharacterConfigurationRevision;
+            var currentJson = current.RpgCharacterConfiguration ?? "{}";
+
+            if (sinceRevision.HasValue && sinceRevision.Value == currentRevision)
+            {
+                return Ok(
+                    new ConfigSnapshotResponseDto
+                    {
+                        Kind = "patch",
+                        Revision = currentRevision,
+                        FromRevision = sinceRevision,
+                        Patch = "[]",
+                    }
+                );
+            }
+
+            if (sinceRevision.HasValue)
+            {
+                var snapshot = await _configRevisionHistoryStore
+                    .GetPlayerCharacterSnapshotAsync(playerCharacterIdParsed, sinceRevision.Value, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (snapshot != null)
+                {
+                    var patch = ConfigDocumentPatcher.TryBuildTopLevelPatch(snapshot, currentJson);
+                    if (patch != null)
+                    {
+                        return Ok(
+                            new ConfigSnapshotResponseDto
+                            {
+                                Kind = "patch",
+                                Revision = currentRevision,
+                                FromRevision = sinceRevision,
+                                Patch = patch,
+                            }
+                        );
+                    }
+                }
+            }
+
+            return Ok(new ConfigSnapshotResponseDto { Kind = "full", Revision = currentRevision, FullConfig = currentJson });
         }
 
         /// <summary>

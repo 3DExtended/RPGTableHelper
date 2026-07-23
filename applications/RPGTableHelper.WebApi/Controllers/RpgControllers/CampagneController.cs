@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
@@ -8,6 +10,7 @@ using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services;
+using RPGTableHelper.WebApi.Services.ConfigRevisions;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -18,11 +21,23 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
     {
         private readonly IUserContext _userContext;
         private readonly IQueryProcessor _queryProcessor;
+        private readonly IConfigRevisionHistoryStore _configRevisionHistoryStore;
+        private readonly IHostEnvironment _hostEnvironment;
+        private readonly ILogger<CampagneController> _logger;
 
-        public CampagneController(IUserContext userContext, IQueryProcessor queryProcessor)
+        public CampagneController(
+            IUserContext userContext,
+            IQueryProcessor queryProcessor,
+            IConfigRevisionHistoryStore configRevisionHistoryStore,
+            IHostEnvironment hostEnvironment,
+            ILogger<CampagneController> logger
+        )
         {
             _userContext = userContext;
             _queryProcessor = queryProcessor;
+            _configRevisionHistoryStore = configRevisionHistoryStore;
+            _hostEnvironment = hostEnvironment;
+            _logger = logger;
         }
 
         /// <summary>
@@ -169,12 +184,14 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
     /// <summary>
     /// Updates the merged RPG configuration for a campagne (DM only).
     /// Used by mobile clients for large configs that exceed reliable SignalR invoke size.
+    /// Accepts an optional <see cref="CampagneUpdateRpgConfigDto.FromRevision"/> failsafe check.
     /// </summary>
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ConfigWriteResultDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [HttpPut("updatecampagneconfig/{campagneid}")]
-    public async Task<ActionResult> UpdateCampagneRpgConfigAsync(
+    public async Task<ActionResult<ConfigWriteResultDto>> UpdateCampagneRpgConfigAsync(
         string campagneid,
         [FromBody] [Required] CampagneUpdateRpgConfigDto updateDto,
         CancellationToken cancellationToken
@@ -203,9 +220,16 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         var updateCampagne = campagne.Get();
+        var currentRevision = updateCampagne.RpgConfigurationMergedRevision;
+
+        if (updateDto.FromRevision.HasValue && updateDto.FromRevision.Value != currentRevision)
+        {
+            return Conflict($"Stale fromRevision. Current revision is {currentRevision}.");
+        }
+
         if (updateCampagne.RpgConfiguration == updateDto.RpgConfiguration)
         {
-            return Ok();
+            return Ok(new ConfigWriteResultDto { Revision = currentRevision });
         }
 
         var oldCold = updateCampagne.RpgConfigurationCold;
@@ -226,7 +250,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         updateCampagne.RpgConfigurationSchemaVersion = slices.SchemaVersion;
         updateCampagne.RpgConfigurationColdRevision = coldChanged ? fromColdRev + 1 : fromColdRev;
         updateCampagne.RpgConfigurationHotRevision = hotChanged ? fromHotRev + 1 : fromHotRev;
-        updateCampagne.RpgConfigurationMergedRevision++;
+        var newRevision = currentRevision + 1;
+        updateCampagne.RpgConfigurationMergedRevision = newRevision;
 
         var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
             .RunAsync(_queryProcessor, cancellationToken)
@@ -237,7 +262,174 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             return BadRequest("Could not update campagne configuration");
         }
 
-        return Ok();
+        await _configRevisionHistoryStore
+            .RecordCampagneSnapshotAsync(campagneIdParsed, newRevision, updateDto.RpgConfiguration, cancellationToken)
+            .ConfigureAwait(false);
+
+        await WriteCampagneBackupAsync(campagneIdParsed, updateDto.RpgConfiguration, cancellationToken).ConfigureAwait(false);
+
+        return Ok(new ConfigWriteResultDto { Revision = newRevision });
+    }
+
+    /// <summary>
+    /// Applies a RFC 6902 JSON Patch to the merged RPG configuration for a campagne (DM only).
+    /// Fails with 409 if <see cref="ConfigPatchRequestDto.FromRevision"/> does not match the current revision.
+    /// </summary>
+    [ProducesResponseType(typeof(ConfigWriteResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [HttpPatch("patchcampagneconfig/{campagneid}")]
+    public async Task<ActionResult<ConfigWriteResultDto>> PatchCampagneRpgConfigAsync(
+        string campagneid,
+        [FromBody] [Required] ConfigPatchRequestDto patchDto,
+        CancellationToken cancellationToken
+    )
+    {
+        if (string.IsNullOrWhiteSpace(campagneid) || !Guid.TryParse(campagneid, out var campagneIdParsed))
+        {
+            return BadRequest("No valid campagneId passed");
+        }
+
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(campagneIdParsed) }
+            .RunAsync(_queryProcessor, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
+        {
+            return Unauthorized();
+        }
+
+        var updateCampagne = campagne.Get();
+        var currentRevision = updateCampagne.RpgConfigurationMergedRevision;
+
+        if (patchDto.FromRevision != currentRevision)
+        {
+            return Conflict($"Stale fromRevision. Current revision is {currentRevision}.");
+        }
+
+        if (!ConfigDocumentPatcher.TryApply(updateCampagne.RpgConfiguration, patchDto.Patch, out var resultJson, out var error))
+        {
+            return BadRequest($"Could not apply patch: {error}");
+        }
+
+        var newRevision = currentRevision + 1;
+        updateCampagne.RpgConfiguration = resultJson;
+        updateCampagne.RpgConfigurationMergedRevision = newRevision;
+
+        var updateResult = await new CampagneUpdateQuery { UpdatedModel = updateCampagne }
+            .RunAsync(_queryProcessor, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (updateResult.IsNone)
+        {
+            return BadRequest("Could not update campagne configuration");
+        }
+
+        await _configRevisionHistoryStore
+            .RecordCampagneSnapshotAsync(campagneIdParsed, newRevision, resultJson, cancellationToken)
+            .ConfigureAwait(false);
+
+        await WriteCampagneBackupAsync(campagneIdParsed, resultJson, cancellationToken).ConfigureAwait(false);
+
+        return Ok(new ConfigWriteResultDto { Revision = newRevision });
+    }
+
+    /// <summary>
+    /// Returns the merged RPG configuration for a campagne (DM or player in the campagne), as a patch from
+    /// <paramref name="sinceRevision"/> when a matching history snapshot exists, or the full document otherwise.
+    /// </summary>
+    [ProducesResponseType(typeof(ConfigSnapshotResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [HttpGet("getcampagneconfig/{campagneid}")]
+    public async Task<ActionResult<ConfigSnapshotResponseDto>> GetCampagneRpgConfigAsync(
+        string campagneid,
+        [FromQuery] int? sinceRevision,
+        CancellationToken cancellationToken
+    )
+    {
+        if (string.IsNullOrWhiteSpace(campagneid) || !Guid.TryParse(campagneid, out var campagneIdParsed))
+        {
+            return BadRequest("No valid campagneId passed");
+        }
+
+        var isUserInCampagneResult = await new CampagneIsUserInCampagneQuery
+        {
+            CampagneId = Campagne.CampagneIdentifier.From(campagneIdParsed),
+            UserIdToCheck = _userContext.User.UserIdentifier,
+        }
+            .RunAsync(_queryProcessor, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (isUserInCampagneResult.IsNone || !isUserInCampagneResult.Get())
+        {
+            return Unauthorized();
+        }
+
+        var campagne = await new CampagneQuery { ModelId = Campagne.CampagneIdentifier.From(campagneIdParsed) }
+            .RunAsync(_queryProcessor, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (campagne.IsNone)
+        {
+            return BadRequest("Could not retrieve campagne");
+        }
+
+        var current = campagne.Get();
+        var currentRevision = current.RpgConfigurationMergedRevision;
+        var currentJson = current.RpgConfiguration ?? "{}";
+
+        if (sinceRevision.HasValue && sinceRevision.Value == currentRevision)
+        {
+            return Ok(
+                new ConfigSnapshotResponseDto
+                {
+                    Kind = "patch",
+                    Revision = currentRevision,
+                    FromRevision = sinceRevision,
+                    Patch = "[]",
+                }
+            );
+        }
+
+        if (sinceRevision.HasValue)
+        {
+            var snapshot = await _configRevisionHistoryStore
+                .GetCampagneSnapshotAsync(campagneIdParsed, sinceRevision.Value, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (snapshot != null)
+            {
+                var patch = ConfigDocumentPatcher.TryBuildTopLevelPatch(snapshot, currentJson);
+                if (patch != null)
+                {
+                    return Ok(
+                        new ConfigSnapshotResponseDto
+                        {
+                            Kind = "patch",
+                            Revision = currentRevision,
+                            FromRevision = sinceRevision,
+                            Patch = patch,
+                        }
+                    );
+                }
+            }
+        }
+
+        return Ok(new ConfigSnapshotResponseDto { Kind = "full", Revision = currentRevision, FullConfig = currentJson });
+    }
+
+    private Task WriteCampagneBackupAsync(Guid campagneId, string rpgConfig, CancellationToken cancellationToken)
+    {
+        var timestamp = DateTime.Now.ToString("yyyyMMdd");
+        return ConfigFileBackupWriter.WriteBackupAsync(
+            _hostEnvironment,
+            _logger,
+            $"{campagneId}-{timestamp}-rpgbackup.json",
+            rpgConfig,
+            cancellationToken
+        );
     }
     }
 }

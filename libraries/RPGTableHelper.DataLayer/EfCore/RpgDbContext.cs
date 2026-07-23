@@ -62,6 +62,8 @@ public class RpgDbContext : DbContext
     public DbSet<CampagneJoinRequestEntity> CampagneJoinRequests { get; set; } = default!;
     public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } = default!;
     public DbSet<ApiKeyEntity> ApiKeys { get; set; } = default!;
+    public DbSet<CampagneRpgConfigHistoryEntity> CampagneRpgConfigHistories { get; set; } = default!;
+    public DbSet<PlayerCharacterRpgConfigHistoryEntity> PlayerCharacterRpgConfigHistories { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,6 +97,30 @@ public class RpgDbContext : DbContext
             .HasForeignKey(e => e.CampagneId);
 
         modelBuilder.Entity<CampagneEntity>().HasIndex(entity => entity.JoinCode).IsUnique();
+
+        modelBuilder
+            .Entity<CampagneRpgConfigHistoryEntity>()
+            .HasOne(e => e.Campagne)
+            .WithMany()
+            .HasForeignKey(e => e.CampagneId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
+            .Entity<CampagneRpgConfigHistoryEntity>()
+            .HasIndex(entity => new { entity.CampagneId, entity.Revision })
+            .IsUnique();
+
+        modelBuilder
+            .Entity<PlayerCharacterRpgConfigHistoryEntity>()
+            .HasOne(e => e.PlayerCharacter)
+            .WithMany()
+            .HasForeignKey(e => e.PlayerCharacterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
+            .Entity<PlayerCharacterRpgConfigHistoryEntity>()
+            .HasIndex(entity => new { entity.PlayerCharacterId, entity.Revision })
+            .IsUnique();
 
         modelBuilder
             .Entity<CampagneJoinRequestEntity>()
