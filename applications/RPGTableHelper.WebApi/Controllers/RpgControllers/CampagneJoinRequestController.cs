@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.CampagneJoinRequests;
@@ -10,6 +10,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
+using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -20,17 +21,17 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
     {
         private readonly IUserContext _userContext;
         private readonly IQueryProcessor _queryProcessor;
-        private readonly IHubContext<RpgServerSignalRHub>? _hubContext;
+        private readonly ISseEventHub _sseEventHub;
 
         public CampagneJoinRequestController(
             IUserContext userContext,
             IQueryProcessor queryProcessor,
-            IHubContext<RpgServerSignalRHub>? hubContext
+            ISseEventHub sseEventHub
         )
         {
             _userContext = userContext;
             _queryProcessor = queryProcessor;
-            _hubContext = hubContext;
+            _sseEventHub = sseEventHub;
         }
 
         /// <summary>
@@ -101,19 +102,13 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not create new campagneJoinRequest");
             }
 
-            if (_hubContext != null)
-            {
-                await _hubContext
-                    .Clients.Group(campagneJoinRequestId + "_Dm")
-                    .SendAsync(
-                        "requestJoinPermission",
-                        playerCharacter.Get().CharacterName,
-                        _userContext.User.Username,
-                        playerCharacter.Get().Id.Value.ToString(),
-                        campagneJoinRequestId.Get().Value.ToString(),
-                        cancellationToken
-                    );
-            }
+            await NotifyJoinRequestCreatedAsync(
+                    campagneForJoinCode.Get(),
+                    campagneJoinRequestId.Get(),
+                    playerCharacter.Get(),
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
 
             return Ok(campagneJoinRequestId.Get());
         }
@@ -199,17 +194,13 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not delete CampagneJoinRequest (but updated player).");
             }
 
-            if (_hubContext != null)
-            {
-                await _hubContext
-                    .Clients.All.SendAsync(
-                        "joinrequesthandled",
-                        joinRequest.Get().Id.Value.ToString(),
-                        handleJoinRequestDto.Type.ToString(),
-                        cancellationToken
-                    )
-                    .ConfigureAwait(false);
-            }
+            await NotifyJoinRequestResolvedAsync(
+                    joinRequest.Get(),
+                    campagne.Get(),
+                    handleJoinRequestDto.Type,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
 
             return Ok();
         }
@@ -265,6 +256,65 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                         Username = r.username,
                     })
                     .ToList()
+            );
+        }
+
+        /// <summary>
+        /// Emits a membership-scoped <c>joinRequestCreated</c> SSE notify to the campagne's DM, whenever
+        /// their <c>/events</c> stream is up. Not gated on table session presence (join-request management
+        /// works from the app shell, see PRD user story 29).
+        /// </summary>
+        private Task NotifyJoinRequestCreatedAsync(
+            Campagne campagne,
+            CampagneJoinRequest.CampagneJoinRequestIdentifier campagneJoinRequestId,
+            PlayerCharacter playerCharacter,
+            CancellationToken cancellationToken
+        )
+        {
+            var payload = JsonSerializer.Serialize(
+                new
+                {
+                    requestId = campagneJoinRequestId.Value.ToString(),
+                    campagneId = campagne.Id.Value.ToString(),
+                    playerCharacterId = playerCharacter.Id.Value.ToString(),
+                    playerName = playerCharacter.CharacterName,
+                    username = _userContext.User.Username,
+                }
+            );
+
+            return _sseEventHub.SendToUserAsync(
+                campagne.DmUserId.Value,
+                "joinRequestCreated",
+                payload,
+                cancellationToken
+            );
+        }
+
+        /// <summary>
+        /// Emits a membership-scoped <c>joinRequestResolved</c> SSE notify to the requesting player, whenever
+        /// their <c>/events</c> stream is up. Not gated on table session presence.
+        /// </summary>
+        private Task NotifyJoinRequestResolvedAsync(
+            CampagneJoinRequest joinRequest,
+            Campagne campagne,
+            HandleJoinRequestType type,
+            CancellationToken cancellationToken
+        )
+        {
+            var payload = JsonSerializer.Serialize(
+                new
+                {
+                    requestId = joinRequest.Id.Value.ToString(),
+                    campagneId = campagne.Id.Value.ToString(),
+                    type = type.ToString(),
+                }
+            );
+
+            return _sseEventHub.SendToUserAsync(
+                joinRequest.UserId.Value,
+                "joinRequestResolved",
+                payload,
+                cancellationToken
             );
         }
     }

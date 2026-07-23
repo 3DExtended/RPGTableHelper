@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -32,6 +33,7 @@ import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/services/config_sync/config_sync_session_controller.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/join_requests/join_request_notification_controller.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
@@ -56,13 +58,92 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
   var showLoadingSpinner = true;
 
+  JoinRequestNotificationController? _joinRequestController;
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
       await loadCampagnesAndPlayersFromServer();
+      if (!mounted) return;
+      await _startJoinRequestNotifications();
     });
 
     super.initState();
+  }
+
+  /// sse-05: keeps join-request notifies flowing from the app shell, even
+  /// before any `SessionEnter` - the DM sees new requests, the player sees
+  /// resolutions, whenever their `/events` stream is up. This screen's state
+  /// stays alive (offstage) while a campagne/character session is pushed on
+  /// top of it, so the subscription also covers requests that arrive while
+  /// the DM is already managing the table.
+  Future<void> _startJoinRequestNotifications() async {
+    if (!mounted) return;
+    final eventsClient =
+        DependencyProvider.of(context).getService<EventsClient>();
+    await eventsClient.ensureConnected();
+    if (!mounted) return;
+
+    _joinRequestController ??= JoinRequestNotificationController(
+      eventsClient: eventsClient,
+      onJoinRequestCreated: _onJoinRequestCreated,
+      onJoinRequestResolved: _onJoinRequestResolved,
+    );
+    _joinRequestController!.start();
+  }
+
+  void _onJoinRequestCreated(JoinRequestCreatedEvent event) {
+    if (!mounted) return;
+
+    final connectionDetails =
+        ref.read(connectionDetailsProvider).valueOrNull;
+    if (connectionDetails != null &&
+        connectionDetails.isDm &&
+        connectionDetails.campagneId == event.campagneId) {
+      final openRequests = <PlayerJoinRequests>[
+        ...(connectionDetails.openPlayerRequests ?? []),
+        event.toPlayerJoinRequest(),
+      ];
+      ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+            connectionDetails.copyWith(openPlayerRequests: openRequests),
+          );
+    }
+
+    final snackService =
+        DependencyProvider.of(context).getService<ISnackBarService>();
+    snackService.showSnackBar(
+      snack: SnackBar(
+        content: Text(
+          '${event.playerName} (${event.username}) wants to join your campagne.',
+        ),
+        duration: const Duration(seconds: 8),
+        showCloseIcon: true,
+      ),
+      uniqueId: 'joinRequestCreated-${event.requestId}',
+    );
+  }
+
+  void _onJoinRequestResolved(JoinRequestResolvedEvent event) {
+    if (!mounted) return;
+
+    final snackService =
+        DependencyProvider.of(context).getService<ISnackBarService>();
+    snackService.showSnackBar(
+      snack: SnackBar(
+        content: Text(
+          event.accepted
+              ? 'Your join request was accepted! You can now enter the campagne.'
+              : 'Your join request was denied.',
+        ),
+        duration: const Duration(seconds: 8),
+        showCloseIcon: true,
+      ),
+      uniqueId: 'joinRequestResolved-${event.requestId}',
+    );
+
+    if (event.accepted) {
+      unawaited(loadCampagnesAndPlayersFromServer());
+    }
   }
 
   Future loadCampagnesAndPlayersFromServer() async {
@@ -90,6 +171,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
   @override
   void dispose() {
+    unawaited(_joinRequestController?.stop());
     super.dispose();
   }
 
@@ -687,9 +769,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
             uniqueId:
                 "joinRequestWasSent-d0b3e639-f361-49b6-8cd6-68bb9a201b21");
 
-        // 3. TODO wait for "joinrequesthandled" signalR method
-        // 4. TODO block user from creating more join requsts...
-        // 5. TODO reload this screen after "joinrequesthandled" for this player
+        // 3. sse-05: resolution (accept/deny) arrives via the joinRequestResolved
+        // SSE notify handled by _onJoinRequestResolved, which reloads this
+        // screen's characters list once accepted.
+        // TODO block user from creating more join requests for the same character
+        // while one is still pending.
       });
     }
   }
