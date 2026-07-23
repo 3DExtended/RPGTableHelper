@@ -49,4 +49,16 @@
 - `flutter test` (full app suite): **1204 passed**.
 - **Known gap**: real-time DM view of a *player's* character edits (old `updateRpgCharacterConfigOnDmSide` hub relay) is not yet wired to an SSE listener on the DM side; player edits still persist via ConfigSync REST. Deferred to a follow-up.
 
+## sse-08 follow-up: fix DM live player-character view (prod-readiness)
+
+- **Bug**: `select_game_mode_screen.dart` `onCampagneSelected` set `connectedPlayers: null` and never mapped `SessionHydrationResult.allCharacters` into `ConnectionDetails.connectedPlayers`, so every DM view that reads `connectedPlayers` (character overview, fight sequence, grant items, campagne management) rendered nothing. On top of that, `ConfigSyncSessionController._onSseEvent` only ever applied `characterConfigChanged` for `id == _characterId` ("our own" character), which the DM never sets — so player edits never reached the DM's roster, and `participantOnline`/`participantOffline` presence SSE (sse-03) was ignored entirely by the config-sync layer.
+- **Fix**:
+  - New pure `mapCharactersToOpenPlayerConnections` (`lib/services/session/connected_players_mapper.dart`) parses each hydrated `PlayerCharacter`'s `rpgCharacterConfiguration` into an `OpenPlayerConnection` (falling back to a named base config on missing/malformed JSON), skipping characters without an id or player user id. `onCampagneSelected` now seeds `connectedPlayers` from `hydrationResponse.result!.allCharacters` via this mapper immediately after DM hydration.
+  - `ConfigSyncSessionController` gained three optional DM-companion callbacks: `onRemoteCharacterConfig(characterId, config)` (fired on `characterConfigChanged` for any character other than `_characterId` — GETs the character via `getPlayerCharacterById` and forwards the parsed config), `onParticipantOnline(userId)` / `onParticipantOffline(userId)` (fired on presence SSE, scoped to the started campagne). The DM's own `startForCharacter` behavior (own-character catch-up) is untouched.
+  - `select_game_mode_screen.dart` wires these into `_onRemoteCharacterConfigForDm` / `_onParticipantPresenceForDm`, which patch the matching `connectedPlayers` entry (by `playerCharacterId` / `userId`) in place — config + `lastPing` refresh on remote edit, `lastPing` set/cleared on presence. Player path (`onCharacterSelected`) is unchanged (`connectedPlayers` stays `null` there, as before).
+  - No SignalR resurrected; still pure SSE + REST.
+- Commit: see `git log -1`.
+- `flutter test test/services/session/ test/services/config_sync/ test/screens/select_game_mode_screen_test.dart test/screens/pageviews/dm_page_screen_test.dart`: 61 passed.
+- `flutter test` (full app suite): 1216 passed.
+
 ---

@@ -35,6 +35,7 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/join_requests/join_request_notification_controller.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/session/connected_players_mapper.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
@@ -458,7 +459,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   /// [IServerMethodsService.activeConfigSyncSessionController] is pointed at it
   /// so editor-driven config edits persist via debounced REST PATCH/PUT.
   ConfigSyncSessionController _buildConfigSyncSessionController(
-      IRpgEntityService rpgService) {
+      IRpgEntityService rpgService,
+      {void Function(String characterId, RpgCharacterConfiguration config)?
+          onRemoteCharacterConfig,
+      void Function(String userId)? onParticipantOnline,
+      void Function(String userId)? onParticipantOffline}) {
     return ConfigSyncSessionController(
       rpgEntityService: rpgService,
       eventsClient: DependencyProvider.of(context).getService<EventsClient>(),
@@ -474,7 +479,54 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           ref.read(rpgCharacterConfigurationProvider).valueOrNull ??
           RpgCharacterConfiguration.getBaseConfiguration(
               ref.read(rpgConfigurationProvider).valueOrNull),
+      onRemoteCharacterConfig: onRemoteCharacterConfig,
+      onParticipantOnline: onParticipantOnline,
+      onParticipantOffline: onParticipantOffline,
     );
+  }
+
+  /// DM-only: patches the config of an already-known `connectedPlayers`
+  /// entry in place when a `characterConfigChanged` SSE notify (for a
+  /// character other than the DM's own, since the DM has none) arrives via
+  /// [ConfigSyncSessionController.onRemoteCharacterConfig]. No-ops if the
+  /// character isn't part of the currently hydrated roster.
+  void _onRemoteCharacterConfigForDm(
+      String characterId, RpgCharacterConfiguration config) {
+    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    final connectedPlayers = connectionDetails?.connectedPlayers;
+    if (connectionDetails == null || connectedPlayers == null) {
+      return;
+    }
+
+    final updated = connectedPlayers
+        .map((p) => p.playerCharacterId.$value == characterId
+            ? p.copyWith(configuration: config, lastPing: DateTime.now())
+            : p)
+        .toList();
+
+    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+        connectionDetails.copyWith(connectedPlayers: updated));
+  }
+
+  /// DM-only: reflects `participantOnline` / `participantOffline` presence
+  /// SSE notifies (sse-03) onto the matching `connectedPlayers` entries by
+  /// updating `lastPing`. No-ops if the user isn't part of the currently
+  /// hydrated roster.
+  void _onParticipantPresenceForDm(String userId, {required bool online}) {
+    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    final connectedPlayers = connectionDetails?.connectedPlayers;
+    if (connectionDetails == null || connectedPlayers == null) {
+      return;
+    }
+
+    final updated = connectedPlayers
+        .map((p) => p.userId.$value == userId
+            ? p.copyWith(lastPing: online ? DateTime.now() : null)
+            : p)
+        .toList();
+
+    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+        connectionDetails.copyWith(connectedPlayers: updated));
   }
 
   /// sse-06: builds a fresh [SessionCommandNotificationController] wired to
@@ -551,6 +603,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     }
 
     var hydratedCampagne = hydrationResponse.result!.campagne;
+    RpgConfigurationModel campagneConfigModel;
     if (hydratedCampagne.rpgConfiguration != null &&
         hydratedCampagne.rpgConfiguration!.isNotEmpty) {
       var parsedJson = RpgConfigurationModel.fromJson(
@@ -572,14 +625,25 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       ref
           .read(rpgConfigurationProvider.notifier)
           .updateConfiguration(parsedJson);
+      campagneConfigModel = parsedJson;
     } else {
       final base = RpgConfigurationModel.getBaseConfiguration();
       ref.read(rpgConfigurationProvider.notifier).updateConfiguration(base);
+      campagneConfigModel = base;
     }
 
-    // sse-04: start listening for campagneConfigChanged SSE notifies so this
-    // client catches up on config edits made by other session participants.
-    var configSyncSessionController = _buildConfigSyncSessionController(rpgService);
+    // sse-08 follow-up: the DM never calls startForCharacter (they have no
+    // "own" character), so remote characterConfigChanged / presence notifies
+    // for *other* participants are routed through these companion callbacks
+    // instead, which patch the hydrated connectedPlayers roster below.
+    var configSyncSessionController = _buildConfigSyncSessionController(
+      rpgService,
+      onRemoteCharacterConfig: _onRemoteCharacterConfigForDm,
+      onParticipantOnline: (userId) =>
+          _onParticipantPresenceForDm(userId, online: true),
+      onParticipantOffline: (userId) =>
+          _onParticipantPresenceForDm(userId, online: false),
+    );
     var campagneSnapshotResponse = await rpgService.getCampagneRpgConfigSnapshot(
       campagneId: campagne.id!,
     );
@@ -595,13 +659,23 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     var joinRequestsResponse = await rpgService.getOpenJoinRequestsForCampagne(
         campagneId: campagne.id!);
 
+    // bugfix (post sse-08): hydrate connectedPlayers from the REST-fetched
+    // characters right away, instead of leaving it null - otherwise the DM's
+    // live views (character overview, fight sequence, grant items, ...) have
+    // nothing to render until a characterConfigChanged notify happens to
+    // arrive for every single character.
+    var connectedPlayers = mapCharactersToOpenPlayerConnections(
+      hydrationResponse.result!.allCharacters ?? const [],
+      campagneConfig: campagneConfigModel,
+    );
+
     ref.read(connectionDetailsProvider.notifier).updateConfiguration(
         (ref.read(connectionDetailsProvider).valueOrNull ??
                 ConnectionDetails.defaultValue())
             .copyWith(
                 lastPing: null,
                 isDm: true,
-                connectedPlayers: null,
+                connectedPlayers: connectedPlayers,
                 fightSequence: null,
                 lastGrantedItems: null,
 
