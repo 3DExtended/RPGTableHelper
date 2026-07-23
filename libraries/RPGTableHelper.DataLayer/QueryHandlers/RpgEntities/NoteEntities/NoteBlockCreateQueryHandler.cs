@@ -21,11 +21,50 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.NoteEntities
             NoteBlockEntityBase
         >
     {
+        private readonly IDbContextFactory<RpgDbContext> _contextFactory;
+
         public NoteBlockCreateQueryHandler(
             IMapper mapper,
             IDbContextFactory<RpgDbContext> contextFactory,
             ISystemClock systemClock
         )
-            : base(mapper, contextFactory, systemClock) { }
+            : base(mapper, contextFactory, systemClock)
+        {
+            _contextFactory = contextFactory;
+        }
+
+        /// <summary>
+        /// The model-to-entity mapping deliberately ignores <c>PermittedUsers</c> (managed manually, see
+        /// <see cref="NoteBlockUpdateQueryHandler"/>), so persist any permitted users requested on creation
+        /// here - required for sse-07's create-time <c>granted</c> notify to reflect reality.
+        /// </summary>
+        protected override async Task AfterCreationAsync(
+            NoteBlockCreateQuery query,
+            NoteBlockModelBase.NoteBlockModelBaseIdentifier id,
+            CancellationToken cancellationToken
+        )
+        {
+            if (query.ModelToCreate.PermittedUsers.Count == 0)
+            {
+                return;
+            }
+
+            using var context = await _contextFactory
+                .CreateDbContextAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            await context
+                .PermittedUsersToNotesBlocks.AddRangeAsync(
+                    query.ModelToCreate.PermittedUsers.Select(pu => new PermittedUsersToNotesBlockEntity
+                    {
+                        NotesBlockId = id.Value,
+                        PermittedUserId = pu.Value,
+                    }),
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
     }
 }

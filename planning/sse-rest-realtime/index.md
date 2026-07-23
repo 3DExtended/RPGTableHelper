@@ -12,5 +12,5 @@ Parent PRD: [`docs/prd/sse-rest-realtime-replace-signalr.md`](../../docs/prd/sse
 | sse-04 | Config-changed SSE + Flutter ConfigSync | AFK | ready | sse-01, sse-02, sse-03 | local |
 | sse-05 | Join-request SSE + Flutter handlers | AFK | done | sse-01 | local |
 | sse-06 | Session commands: rolls + grants | AFK | ready | sse-01, sse-03, sse-04 | local |
-| sse-07 | Notes ACL/content SSE + LoreSync | AFK | ready | sse-01 | local |
+| sse-07 | Notes ACL/content SSE + LoreSync | AFK | done | sse-01 | local |
 | sse-08 | Delete SignalR + SSE/REST E2E | AFK | ready | sse-04, sse-05, sse-06, sse-07 | local |

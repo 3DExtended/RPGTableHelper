@@ -20,4 +20,9 @@ public class NoteBlockQueryHandler
 {
     public NoteBlockQueryHandler(IMapper mapper, IDbContextFactory<RpgDbContext> contextFactory)
         : base(mapper, contextFactory) { }
+
+    protected override IQueryable<NoteBlockEntityBase> AddIncludes(IQueryable<NoteBlockEntityBase> queryable)
+    {
+        return queryable.Include(x => x.PermittedUsers);
+    }
 }

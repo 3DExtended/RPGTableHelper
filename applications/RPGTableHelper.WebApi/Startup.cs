@@ -122,6 +122,10 @@ public class Startup
         services.AddSingleton<IJWTTokenGenerator, JWTTokenGenerator>();
         services.AddSingleton<IAppleClientSecretGenerator, AppleClientSecretGenerator>();
         services.AddSingleton<RPGTableHelper.WebApi.Services.Sse.ISseEventHub, RPGTableHelper.WebApi.Services.Sse.SseEventHub>();
+        services.AddTransient<
+            RPGTableHelper.WebApi.Services.Sse.INoteAccessChangeNotifier,
+            RPGTableHelper.WebApi.Services.Sse.NoteAccessChangeNotifier
+        >();
         services.AddSingleton<RPGTableHelper.WebApi.Services.Presence.ISessionPresenceService>(provider =>
         {
             var sseEventHub = provider.GetRequiredService<RPGTableHelper.WebApi.Services.Sse.ISseEventHub>();

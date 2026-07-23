@@ -15,6 +15,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.NoteEntities;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services;
+using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -27,18 +28,21 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         private readonly IUserContext _userContext;
         private readonly IMapper _mapper;
         private readonly INoteService _noteService;
+        private readonly INoteAccessChangeNotifier _noteAccessChangeNotifier;
 
         public NotesController(
             IQueryProcessor queryProcessor,
             IUserContext userContext,
             IMapper mapper,
-            INoteService noteService
+            INoteService noteService,
+            INoteAccessChangeNotifier noteAccessChangeNotifier
         )
         {
             _queryProcessor = queryProcessor;
             _userContext = userContext;
             _mapper = mapper;
             _noteService = noteService;
+            _noteAccessChangeNotifier = noteAccessChangeNotifier;
         }
 
         /// <summary>
@@ -183,6 +187,10 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest();
             }
 
+            await _noteAccessChangeNotifier
+                .NotifyDocumentDeletedAsync(noteDocument.Get(), _userContext.User.UserIdentifier, cancellationToken)
+                .ConfigureAwait(false);
+
             return Ok();
         }
 
@@ -312,6 +320,16 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not load textblock");
             }
 
+            await _noteAccessChangeNotifier
+                .NotifyBlockCreatedAsync(
+                    noteDocument.Get().CreatedForCampagneId,
+                    noteDocument.Get().Id,
+                    textBlock.Get(),
+                    _userContext.User.UserIdentifier,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
             return Ok(textBlock.Get());
         }
 
@@ -383,6 +401,16 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not load imageBlock");
             }
 
+            await _noteAccessChangeNotifier
+                .NotifyBlockCreatedAsync(
+                    noteDocument.Get().CreatedForCampagneId,
+                    noteDocument.Get().Id,
+                    imageBlock.Get(),
+                    _userContext.User.UserIdentifier,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
             return Ok(imageBlock.Get());
         }
 
@@ -429,6 +457,31 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not update textblock");
             }
 
+            var updatedTextBlockLoaded = await new NoteBlockQuery { ModelId = textBlockToUpdate.Id }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            var documentForTextBlockUpdate = await new NoteDocumentQuery
+            {
+                ModelId = blockLoaded.Get().NoteDocumentId,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (updatedTextBlockLoaded.IsSome && documentForTextBlockUpdate.IsSome)
+            {
+                await _noteAccessChangeNotifier
+                    .NotifyBlockUpdatedAsync(
+                        documentForTextBlockUpdate.Get().CreatedForCampagneId,
+                        documentForTextBlockUpdate.Get().Id,
+                        blockLoaded.Get(),
+                        updatedTextBlockLoaded.Get(),
+                        _userContext.User.UserIdentifier,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
+            }
+
             return Ok(textBlockUpdateResult.Get());
         }
 
@@ -473,6 +526,31 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (imageBlockUpdateResult.IsNone)
             {
                 return BadRequest("Could not update imageblock");
+            }
+
+            var updatedImageBlockLoaded = await new NoteBlockQuery { ModelId = imageBlockToUpdate.Id }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            var documentForImageBlockUpdate = await new NoteDocumentQuery
+            {
+                ModelId = blockLoaded.Get().NoteDocumentId,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (updatedImageBlockLoaded.IsSome && documentForImageBlockUpdate.IsSome)
+            {
+                await _noteAccessChangeNotifier
+                    .NotifyBlockUpdatedAsync(
+                        documentForImageBlockUpdate.Get().CreatedForCampagneId,
+                        documentForImageBlockUpdate.Get().Id,
+                        blockLoaded.Get(),
+                        updatedImageBlockLoaded.Get(),
+                        _userContext.User.UserIdentifier,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
             }
 
             return Ok(imageBlockUpdateResult.Get());
@@ -526,6 +604,21 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("Could not update note document");
             }
 
+            var updatedDocumentLoaded = await new NoteDocumentQuery { ModelId = documentToUpdate.Id }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (updatedDocumentLoaded.IsSome)
+            {
+                await _noteAccessChangeNotifier
+                    .NotifyDocumentUpdatedAsync(
+                        updatedDocumentLoaded.Get(),
+                        _userContext.User.UserIdentifier,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
+            }
+
             return Ok(documentUpdateResult.Get());
         }
 
@@ -561,6 +654,10 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Unauthorized();
             }
 
+            var documentForBlockDelete = await new NoteDocumentQuery { ModelId = blockLoaded.Get().NoteDocumentId }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
             var noteBlockDeleteResult = await new NoteBlockDeleteQuery { Id = blockToDeleteId }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
@@ -568,6 +665,19 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (noteBlockDeleteResult.IsNone)
             {
                 return BadRequest("Could not delete note block");
+            }
+
+            if (documentForBlockDelete.IsSome)
+            {
+                await _noteAccessChangeNotifier
+                    .NotifyBlockDeletedAsync(
+                        documentForBlockDelete.Get().CreatedForCampagneId,
+                        documentForBlockDelete.Get().Id,
+                        blockLoaded.Get(),
+                        _userContext.User.UserIdentifier,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
             }
 
             return Ok(noteBlockDeleteResult.Get());

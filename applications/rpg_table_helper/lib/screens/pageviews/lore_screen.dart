@@ -30,8 +30,10 @@ import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_config
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
+import 'package:quest_keeper/services/notes/note_access_notification_controller.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:quest_keeper/services/systemclock_service.dart';
 import 'package:themed/themed.dart';
 
@@ -89,6 +91,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
   List<NoteDocumentPlayerDescriptorDto> usersInCampagne = [];
 
+  NoteAccessNotificationController? _noteAccessController;
+
   int numberOfDocumentsForThisPlayer = 0;
   UserIdentifier? get _myUser =>
       usersInCampagne.firstWhereOrNull((u) => u.isYou)?.userId;
@@ -102,14 +106,95 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       await _reloadAllPages();
+      if (!mounted) return;
       setState(() {
         if (!isInTestEnvironment) {
           // so we can see the navbar in golden tests
           _isNavbarCollapsed = !context.isTablet;
         }
       });
+      await _startNoteAccessNotifications();
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _noteAccessController?.stop();
+    super.dispose();
+  }
+
+  /// sse-07: listens for membership-scoped `noteAccessChanged` notifies -
+  /// even without an active table session - so a revoked share disappears
+  /// from this player's lore immediately, and a granted/updated share is
+  /// picked up via a fresh `GET /Notes/getdocuments/{campagneId}`.
+  Future<void> _startNoteAccessNotifications() async {
+    if (!mounted) return;
+    final eventsClient = DependencyProvider.of(context).getService<EventsClient>();
+    await eventsClient.ensureConnected();
+    if (!mounted) return;
+
+    _noteAccessController ??= NoteAccessNotificationController(
+      eventsClient: eventsClient,
+      onNoteAccessChanged: _onNoteAccessChanged,
+    );
+    _noteAccessController!.start();
+  }
+
+  void _onNoteAccessChanged(NoteAccessChangedEvent event) {
+    if (!mounted) return;
+
+    final currentCampagneId =
+        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+    if (currentCampagneId == null || currentCampagneId != event.campagneId) {
+      return;
+    }
+
+    switch (event.changeKind) {
+      case NoteAccessChangeKind.revoked:
+        _dropRevokedContentFromLocalLore(event);
+        break;
+      case NoteAccessChangeKind.granted:
+      case NoteAccessChangeKind.updated:
+        _reloadAllPages();
+        break;
+    }
+  }
+
+  /// Drops the document/block named in a `revoked` [event] from local lore
+  /// state immediately, without waiting for a refetch.
+  void _dropRevokedContentFromLocalLore(NoteAccessChangedEvent event) {
+    setState(() {
+      if (event.blockId == null) {
+        // document-level revoke (document deleted, or all its blocks lost)
+        for (final group in groupedDocuments.keys.toList()) {
+          groupedDocuments[group]
+              ?.removeWhere((d) => d.id?.$value == event.documentId);
+        }
+
+        if (selectedDocument?.id?.$value == event.documentId) {
+          selectedDocument = null;
+          selectedDocumentId = null;
+        }
+        return;
+      }
+
+      for (final group in groupedDocuments.keys) {
+        final doc = groupedDocuments[group]
+            ?.firstWhereOrNull((d) => d.id?.$value == event.documentId);
+        if (doc == null) continue;
+
+        doc.textBlocks.removeWhere((b) => b.id?.$value == event.blockId);
+        doc.imageBlocks.removeWhere((b) => b.id?.$value == event.blockId);
+      }
+
+      if (selectedDocument?.id?.$value == event.documentId) {
+        selectedDocument!.textBlocks
+            .removeWhere((b) => b.id?.$value == event.blockId);
+        selectedDocument!.imageBlocks
+            .removeWhere((b) => b.id?.$value == event.blockId);
+      }
+    });
   }
 
   @override
