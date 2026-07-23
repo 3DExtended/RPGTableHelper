@@ -38,6 +38,7 @@ import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/server_communication_service.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:uuid/v7.dart';
@@ -476,6 +477,57 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     );
   }
 
+  /// sse-06: builds a fresh [SessionCommandNotificationController] wired to
+  /// this session's `/events` stream. Its callbacks re-serialize the parsed
+  /// SSE payload and hand off to the existing [IServerMethodsService]
+  /// fight/grant handlers (`playersAreAskedForRolls`,
+  /// `dmReceivedFightSequenceAnswer`, `grantPlayerItems`) so the roll-modal
+  /// and grant-toast UX stays identical regardless of whether the DM's ask
+  /// arrived via SignalR or via SSE. Started/stopped per session-entry, like
+  /// [_buildConfigSyncSessionController].
+  SessionCommandNotificationController _buildSessionCommandNotificationController() {
+    final eventsClient = DependencyProvider.of(context).getService<EventsClient>();
+    final serverMethodsService =
+        DependencyProvider.of(context).getService<IServerMethodsService>();
+
+    return SessionCommandNotificationController(
+      eventsClient: eventsClient,
+      onPlayersAreAskedForRolls: (event) {
+        serverMethodsService.playersAreAskedForRolls(
+          jsonEncode(
+            FightSequence(fightUuid: event.fightUuid, sequence: event.sequence),
+          ),
+        );
+      },
+      onDmReceivedFightSequenceAnswer: (event) {
+        serverMethodsService.dmReceivedFightSequenceAnswer(
+          jsonEncode(
+            FightSequence(fightUuid: event.fightUuid, sequence: event.sequence),
+          ),
+        );
+      },
+      onItemsGranted: (event) {
+        final currentCharacter =
+            ref.read(rpgCharacterConfigurationProvider).valueOrNull;
+        if (currentCharacter == null ||
+            currentCharacter.uuid != event.playerCharacterId) {
+          return;
+        }
+        final grant = GrantedItemsForPlayer(
+          characterName: currentCharacter.characterName,
+          playerId: event.playerCharacterId,
+          grantedItems: event.items
+              .map((i) => RpgCharacterOwnedItemPair(
+                    itemUuid: i.itemUuid,
+                    amount: i.amount,
+                  ))
+              .toList(),
+        );
+        serverMethodsService.grantPlayerItems(jsonEncode([grant]));
+      },
+    );
+  }
+
   Future onCampagneSelected(Campagne campagne) async {
     setState(() {
       showLoadingSpinner = true;
@@ -575,6 +627,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 campagneId: campagne.id!.$value!,
                 sessionConnectionNumberForPlayers: campagne.joinCode));
 
+    // sse-06: session-scoped fight/roll and item-grant SSE notifies.
+    var sessionCommandController = _buildSessionCommandNotificationController();
+    sessionCommandController.start();
+
     // start SignalR connection
     if (!mounted || !context.mounted) return;
 
@@ -595,6 +651,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       //(in the sense that the DM can't send notifications to this player)
       await serverCommunicationService.stopConnection();
       await configSyncSessionController.stop();
+      await sessionCommandController.stop();
       await sessionEntryCoordinator.leave(campagneId: campagne.id!);
 
       await loadCampagnesAndPlayersFromServer();
@@ -694,6 +751,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         );
       }
 
+      // sse-06: session-scoped fight/roll and item-grant SSE notifies.
+      var sessionCommandController = _buildSessionCommandNotificationController();
+      sessionCommandController.start();
+
       // start SignalR connection
       await serverCommunicationService.startConnection();
       if (!mounted) return;
@@ -711,6 +772,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         //(in the sense that the DM can't send notifications to this player)
         await serverCommunicationService.stopConnection();
         await configSyncSessionController.stop();
+        await sessionCommandController.stop();
         await sessionEntryCoordinator.leave(campagneId: character.campagneId!);
 
         await loadCampagnesAndPlayersFromServer();

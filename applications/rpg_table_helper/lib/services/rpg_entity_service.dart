@@ -5,6 +5,7 @@ import 'package:http/http.dart' show MultipartFile;
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -114,6 +115,34 @@ abstract class IRpgEntityService {
   Future<HRResponse<ConfigSnapshot>> getCharacterRpgConfigSnapshot({
     required PlayerCharacterIdentifier playerCharacterId,
     int? sinceRevision,
+  });
+
+  /// sse-06: DM asks the other table session participants to roll for fight
+  /// order. Fans out [fightSequence] inline over SSE (`playersAreAskedForRolls`)
+  /// - no ephemeral state is persisted server-side. Replaces the
+  /// `AskPlayersForRolls` hub invoke for new clients.
+  Future<HRResponse<bool>> askPlayersForRolls({
+    required CampagneIdentifier campagneId,
+    required FightSequence fightSequence,
+  });
+
+  /// sse-06: a player reports their fight-order roll(s) back to the DM.
+  /// Notifies the DM inline over SSE (`dmReceivedFightSequenceAnswer`) if
+  /// they currently have an active table session for this character's
+  /// campagne. Replaces the `SendFightSequenceRollsToDm` hub invoke.
+  Future<HRResponse<bool>> sendFightSequenceRollsToDm({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required FightSequence fightSequence,
+  });
+
+  /// sse-06: DM grants [items] to [playerCharacterId]. Additively merges
+  /// them into the character's inventory through the revisioned config
+  /// store (bumping the revision, notifying `characterConfigChanged` and a
+  /// small `itemsGranted` toast to the player). Replaces the
+  /// `SendGrantedItemsToPlayers` hub invoke for new clients.
+  Future<HRResponse<ConfigWriteResult>> grantItemsToCharacter({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required List<RpgCharacterOwnedItemPair> items,
   });
 }
 
@@ -660,6 +689,136 @@ class RpgEntityService extends IRpgEntityService {
     }
   }
 
+  @override
+  Future<HRResponse<bool>> askPlayersForRolls({
+    required CampagneIdentifier campagneId,
+    required FightSequence fightSequence,
+  }) {
+    return _postSessionCommand(
+      url:
+          '${apiBaseUrl}SessionCommand/askplayersforrolls/${campagneId.$value}',
+      body: _fightSequenceToRequestBody(fightSequence),
+      errorMessage: 'Could not ask players for rolls.',
+      errorCode: 'a4b5c6d7-4a5b-6c7d-8e9f-sessioncommand-askrolls',
+    );
+  }
+
+  @override
+  Future<HRResponse<bool>> sendFightSequenceRollsToDm({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required FightSequence fightSequence,
+  }) {
+    return _postSessionCommand(
+      url:
+          '${apiBaseUrl}SessionCommand/sendfightsequencerollstodm/${playerCharacterId.$value}',
+      body: _fightSequenceToRequestBody(fightSequence),
+      errorMessage: 'Could not send fight sequence rolls to dm.',
+      errorCode: 'b5c6d7e8-5b6c-7d8e-9f0a-sessioncommand-sendrolls',
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigWriteResult>> grantItemsToCharacter({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required List<RpgCharacterOwnedItemPair> items,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error(
+        'Could not load api connector.',
+        'c6d7e8f9-6c7d-8e9f-0a1b-sessioncommand-grantitems',
+      );
+    }
+
+    final url = Uri.parse(
+      '${apiBaseUrl}SessionCommand/grantitems/${playerCharacterId.$value}',
+    );
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $jwt',
+        },
+        body: jsonEncode({
+          'items': items
+              .map((i) => {'itemUuid': i.itemUuid, 'amount': i.amount})
+              .toList(),
+        }),
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          'Could not grant items to character.',
+          'c6d7e8f9-6c7d-8e9f-0a1b-sessioncommand-grantitems',
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(
+        ConfigWriteResult.fromJson(
+          jsonDecode(response.body) as Map<String, dynamic>,
+        ),
+        statusCode: response.statusCode,
+      );
+    } on Exception catch (e) {
+      return HRResponse.error(
+        'Could not grant items to character.',
+        'c6d7e8f9-6c7d-8e9f-0a1b-sessioncommand-grantitems',
+        caughtException: e,
+      );
+    }
+  }
+
+  Map<String, dynamic> _fightSequenceToRequestBody(
+    FightSequence fightSequence,
+  ) {
+    return {
+      'fightUuid': fightSequence.fightUuid,
+      'sequence': fightSequence.sequence
+          .map((entry) => {
+                'characterId': entry.$1,
+                'characterName': entry.$2,
+                'roll': entry.$3,
+              })
+          .toList(),
+    };
+  }
+
+  Future<HRResponse<bool>> _postSessionCommand({
+    required String url,
+    required Map<String, dynamic> body,
+    required String errorMessage,
+    required String errorCode,
+  }) async {
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error('Could not load api connector.', errorCode);
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $jwt',
+        },
+        body: jsonEncode(body),
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          errorMessage,
+          errorCode,
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+      return HRResponse.fromResult(true, statusCode: response.statusCode);
+    } on Exception catch (e) {
+      return HRResponse.error(errorMessage, errorCode, caughtException: e);
+    }
+  }
+
   Future<HRResponse<ConfigSnapshot>> _getConfigSnapshot({
     required String url,
     required int? sinceRevision,
@@ -721,6 +880,9 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<ConfigSnapshot>? getCampagneRpgConfigSnapshotOverride;
   final HRResponse<ConfigWriteResult>? saveCharacterRpgConfigOverride;
   final HRResponse<ConfigSnapshot>? getCharacterRpgConfigSnapshotOverride;
+  final HRResponse<bool>? askPlayersForRollsOverride;
+  final HRResponse<bool>? sendFightSequenceRollsToDmOverride;
+  final HRResponse<ConfigWriteResult>? grantItemsToCharacterOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
@@ -737,6 +899,9 @@ class MockRpgEntityService extends IRpgEntityService {
     this.getCampagneRpgConfigSnapshotOverride,
     this.saveCharacterRpgConfigOverride,
     this.getCharacterRpgConfigSnapshotOverride,
+    this.askPlayersForRollsOverride,
+    this.sendFightSequenceRollsToDmOverride,
+    this.grantItemsToCharacterOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
 
@@ -1010,6 +1175,37 @@ class MockRpgEntityService extends IRpgEntityService {
               fullConfig: '{}',
             ),
           ),
+    );
+  }
+
+  @override
+  Future<HRResponse<bool>> askPlayersForRolls({
+    required CampagneIdentifier campagneId,
+    required FightSequence fightSequence,
+  }) {
+    return Future.value(
+      askPlayersForRollsOverride ?? HRResponse.fromResult(true),
+    );
+  }
+
+  @override
+  Future<HRResponse<bool>> sendFightSequenceRollsToDm({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required FightSequence fightSequence,
+  }) {
+    return Future.value(
+      sendFightSequenceRollsToDmOverride ?? HRResponse.fromResult(true),
+    );
+  }
+
+  @override
+  Future<HRResponse<ConfigWriteResult>> grantItemsToCharacter({
+    required PlayerCharacterIdentifier playerCharacterId,
+    required List<RpgCharacterOwnedItemPair> items,
+  }) {
+    return Future.value(
+      grantItemsToCharacterOverride ??
+          HRResponse.fromResult(const ConfigWriteResult(revision: 1)),
     );
   }
 }

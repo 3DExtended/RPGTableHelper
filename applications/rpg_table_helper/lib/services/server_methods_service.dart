@@ -1468,23 +1468,37 @@ class ServerMethodsService extends IServerMethodsService {
   Future askPlayersForRolls(
       {required String campagneId,
       required FightSequence fightSequence}) async {
+    // sse-06: REST + SSE (playersAreAskedForRolls) replaces the SignalR hub
+    // invoke as the primary path for new clients.
     var strippedFightSequence = fightSequence.copyWith(
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
-    await serverCommunicationService.executeCriticalServerFunction(
-        "AskPlayersForRolls",
-        args: [campagneId, jsonEncode(strippedFightSequence)]);
+    final getIt = DependencyProvider.getIt;
+    if (getIt == null) {
+      return;
+    }
+    await getIt.get<IRpgEntityService>().askPlayersForRolls(
+          campagneId: CampagneIdentifier($value: campagneId),
+          fightSequence: strippedFightSequence,
+        );
   }
 
   @override
   Future sendFightSequenceRollsToDm(
       {required String playerId, required FightSequence fightSequence}) async {
+    // sse-06: REST + SSE (dmReceivedFightSequenceAnswer) replaces the
+    // SignalR hub invoke as the primary path for new clients.
     var strippedFightSequence = fightSequence.copyWith(
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
-    await serverCommunicationService.executeCriticalServerFunction(
-        "SendFightSequenceRollsToDm",
-        args: [playerId, jsonEncode(strippedFightSequence)]);
+    final getIt = DependencyProvider.getIt;
+    if (getIt == null) {
+      return;
+    }
+    await getIt.get<IRpgEntityService>().sendFightSequenceRollsToDm(
+          playerCharacterId: PlayerCharacterIdentifier($value: playerId),
+          fightSequence: strippedFightSequence,
+        );
   }
 
   @override
@@ -1501,9 +1515,20 @@ class ServerMethodsService extends IServerMethodsService {
   Future sendGrantedItemsToPlayers(
       {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems}) async {
-    await serverCommunicationService.executeCriticalServerFunction(
-        "SendGrantedItemsToPlayers",
-        args: [campagneId, jsonEncode(grantedItems)]);
+    // sse-06: REST grant-items (revisioned config write) + characterConfigChanged
+    // / itemsGranted SSE replaces the SignalR hub invoke as the primary path
+    // for new clients. One REST call per granted player character.
+    final getIt = DependencyProvider.getIt;
+    if (getIt == null) {
+      return;
+    }
+    final rpgEntityService = getIt.get<IRpgEntityService>();
+    for (final grant in grantedItems) {
+      await rpgEntityService.grantItemsToCharacter(
+        playerCharacterId: PlayerCharacterIdentifier($value: grant.playerId),
+        items: grant.grantedItems,
+      );
+    }
   }
 
   @override
