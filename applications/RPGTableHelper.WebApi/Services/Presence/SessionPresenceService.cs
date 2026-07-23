@@ -76,6 +76,11 @@ public sealed class SessionPresenceService : ISessionPresenceService
     public bool IsOnline(Guid campagneId, Guid userId) =>
         _participantsByCampagne.TryGetValue(campagneId, out var participants) && participants.ContainsKey(userId);
 
+    public IReadOnlyCollection<Guid> GetOnlineParticipants(Guid campagneId) =>
+        _participantsByCampagne.TryGetValue(campagneId, out var participants)
+            ? participants.Keys.ToList()
+            : Array.Empty<Guid>();
+
     private async Task ExpireAfterGraceAsync(Guid userId, CancellationTokenSource cts)
     {
         try

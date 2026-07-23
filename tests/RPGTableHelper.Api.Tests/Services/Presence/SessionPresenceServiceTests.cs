@@ -68,6 +68,44 @@ public class SessionPresenceServiceTests
     }
 
     [Fact]
+    public async Task GetOnlineParticipants_ReturnsCurrentlyOnlineUserIds_ForThatCampagneOnly()
+    {
+        // arrange
+        var sseEventHub = Substitute.For<ISseEventHub>();
+        var sut = new SessionPresenceService(sseEventHub);
+
+        var campagneId = Guid.NewGuid();
+        var otherCampagneId = Guid.NewGuid();
+        var participantOneId = Guid.NewGuid();
+        var participantTwoId = Guid.NewGuid();
+        var otherCampagneParticipantId = Guid.NewGuid();
+
+        await sut.EnterAsync(campagneId, participantOneId, CancellationToken.None);
+        await sut.EnterAsync(campagneId, participantTwoId, CancellationToken.None);
+        await sut.EnterAsync(otherCampagneId, otherCampagneParticipantId, CancellationToken.None);
+
+        // act
+        var onlineParticipants = sut.GetOnlineParticipants(campagneId);
+
+        // assert
+        onlineParticipants.Should().BeEquivalentTo(new[] { participantOneId, participantTwoId });
+    }
+
+    [Fact]
+    public void GetOnlineParticipants_ForCampagneWithNoParticipants_ReturnsEmpty()
+    {
+        // arrange
+        var sseEventHub = Substitute.For<ISseEventHub>();
+        var sut = new SessionPresenceService(sseEventHub);
+
+        // act
+        var onlineParticipants = sut.GetOnlineParticipants(Guid.NewGuid());
+
+        // assert
+        onlineParticipants.Should().BeEmpty();
+    }
+
+    [Fact]
     public async Task OnSseDisconnectedAsync_ThenReconnectWithinGrace_DoesNotGoOfflineOrBroadcast()
     {
         // arrange

@@ -35,4 +35,10 @@ public interface ISessionPresenceService
     /// True if <paramref name="userId"/> is currently marked online for <paramref name="campagneId"/>.
     /// </summary>
     bool IsOnline(Guid campagneId, Guid userId);
+
+    /// <summary>
+    /// Returns the user ids currently marked online for <paramref name="campagneId"/>'s table session.
+    /// Used to scope config-changed (and similar) SSE notifications to active session participants.
+    /// </summary>
+    IReadOnlyCollection<Guid> GetOnlineParticipants(Guid campagneId);
 }

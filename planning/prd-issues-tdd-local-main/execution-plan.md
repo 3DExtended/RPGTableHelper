@@ -11,7 +11,7 @@
 | 1 | sse-01 | SSE `/events` hub + Flutter EventsClient | — | done |
 | 2 | sse-02 | Config revision store + REST PATCH/PUT/GET | — | done |
 | 3 | sse-03 | SessionEnter + presence SSE + hydration | sse-01 | done |
-| 4 | sse-04 | Config-changed SSE + Flutter ConfigSync | sse-01,02,03 | pending |
+| 4 | sse-04 | Config-changed SSE + Flutter ConfigSync | sse-01,02,03 | done |
 | 5 | sse-05 | Join-request SSE + Flutter handlers | sse-01 | pending |
 | 6 | sse-06 | Session commands: rolls + grants | sse-01,03,04 | pending |
 | 7 | sse-07 | Notes ACL/content SSE + LoreSync | sse-01 | pending |

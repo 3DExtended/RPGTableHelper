@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,8 @@ using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services;
 using RPGTableHelper.WebApi.Services.ConfigRevisions;
+using RPGTableHelper.WebApi.Services.Presence;
+using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -24,13 +27,17 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         private readonly IConfigRevisionHistoryStore _configRevisionHistoryStore;
         private readonly IHostEnvironment _hostEnvironment;
         private readonly ILogger<CampagneController> _logger;
+        private readonly ISseEventHub _sseEventHub;
+        private readonly ISessionPresenceService _sessionPresenceService;
 
         public CampagneController(
             IUserContext userContext,
             IQueryProcessor queryProcessor,
             IConfigRevisionHistoryStore configRevisionHistoryStore,
             IHostEnvironment hostEnvironment,
-            ILogger<CampagneController> logger
+            ILogger<CampagneController> logger,
+            ISseEventHub sseEventHub,
+            ISessionPresenceService sessionPresenceService
         )
         {
             _userContext = userContext;
@@ -38,6 +45,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             _configRevisionHistoryStore = configRevisionHistoryStore;
             _hostEnvironment = hostEnvironment;
             _logger = logger;
+            _sseEventHub = sseEventHub;
+            _sessionPresenceService = sessionPresenceService;
         }
 
         /// <summary>
@@ -268,6 +277,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
         await WriteCampagneBackupAsync(campagneIdParsed, updateDto.RpgConfiguration, cancellationToken).ConfigureAwait(false);
 
+        await NotifyCampagneConfigChangedAsync(campagneIdParsed, newRevision, cancellationToken).ConfigureAwait(false);
+
         return Ok(new ConfigWriteResultDto { Revision = newRevision });
     }
 
@@ -331,6 +342,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             .ConfigureAwait(false);
 
         await WriteCampagneBackupAsync(campagneIdParsed, resultJson, cancellationToken).ConfigureAwait(false);
+
+        await NotifyCampagneConfigChangedAsync(campagneIdParsed, newRevision, cancellationToken).ConfigureAwait(false);
 
         return Ok(new ConfigWriteResultDto { Revision = newRevision });
     }
@@ -418,6 +431,27 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         }
 
         return Ok(new ConfigSnapshotResponseDto { Kind = "full", Revision = currentRevision, FullConfig = currentJson });
+    }
+
+    /// <summary>
+    /// Emits a session-scoped <c>campagneConfigChanged</c> SSE notify (<c>{ id, revision }</c> only, no body)
+    /// to the other users currently in this campagne's table session (see <see cref="ISessionPresenceService"/>).
+    /// </summary>
+    private Task NotifyCampagneConfigChangedAsync(Guid campagneId, int revision, CancellationToken cancellationToken)
+    {
+        var actorUserId = _userContext.User.UserIdentifier.Value;
+        var recipients = _sessionPresenceService
+            .GetOnlineParticipants(campagneId)
+            .Where(id => id != actorUserId)
+            .ToList();
+
+        if (recipients.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
+
+        var payload = JsonSerializer.Serialize(new { id = campagneId.ToString(), revision });
+        return _sseEventHub.SendToUsersAsync(recipients, "campagneConfigChanged", payload, cancellationToken);
     }
 
     private Task WriteCampagneBackupAsync(Guid campagneId, string rpgConfig, CancellationToken cancellationToken)

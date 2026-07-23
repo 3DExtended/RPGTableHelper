@@ -30,4 +30,13 @@
 - `flutter test test/services/session/session_entry_coordinator_test.dart`: 5 passed
 - `flutter test` (full app suite): 1202 passed
 
+## sse-04 complete
+
+- Config-changed SSE: `CampagneController`/`PlayerCharacterController` PATCH/PUT now emit session-scoped `campagneConfigChanged`/`characterConfigChanged` (`{ id, revision }` only, no body) to other online session participants (`ISessionPresenceService.GetOnlineParticipants`, new). Flutter `ConfigSyncCoordinator` (debounce/coalesce, single-in-flight PUT, 409 GET/rebase/retry, SSE-notify → `GET ?sinceRevision=` catch-up) + `ConfigSyncSessionController` (wires coordinators to `IRpgEntityService` + shared `EventsClient`, applies patch/full into Riverpod). `select_game_mode_screen.dart` starts/stops the controller around session enter/leave. Hub invoke queue remains the UI's write path until `sse-08`, per task instructions.
+- Commit(s): see below
+- `dotnet test tests/RPGTableHelper.Api.Tests --filter "FullyQualifiedName~SessionPresenceServiceTests|FullyQualifiedName~ConfigChangedSseNotificationControllerTests"`: 11 passed
+- `dotnet test RPGTableHelper.sln`: full solution green (Api.Tests 165 passed/1 skipped pre-existing unrelated, DataLayer.Tests 74 passed, BusinessLayer.Tests 9 passed, Shared.Tests 66 passed)
+- `flutter test test/services/config_sync/`: 14 passed
+- `flutter test` (full app suite): 1216 passed
+
 ---

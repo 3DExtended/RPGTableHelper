@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services.ConfigRevisions;
+using RPGTableHelper.WebApi.Services.Presence;
+using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -23,13 +26,17 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         private readonly IConfigRevisionHistoryStore _configRevisionHistoryStore;
         private readonly IHostEnvironment _hostEnvironment;
         private readonly ILogger<PlayerCharacterController> _logger;
+        private readonly ISseEventHub _sseEventHub;
+        private readonly ISessionPresenceService _sessionPresenceService;
 
         public PlayerCharacterController(
             IUserContext userContext,
             IQueryProcessor queryProcessor,
             IConfigRevisionHistoryStore configRevisionHistoryStore,
             IHostEnvironment hostEnvironment,
-            ILogger<PlayerCharacterController> logger
+            ILogger<PlayerCharacterController> logger,
+            ISseEventHub sseEventHub,
+            ISessionPresenceService sessionPresenceService
         )
         {
             _userContext = userContext;
@@ -37,6 +44,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             _configRevisionHistoryStore = configRevisionHistoryStore;
             _hostEnvironment = hostEnvironment;
             _logger = logger;
+            _sseEventHub = sseEventHub;
+            _sessionPresenceService = sessionPresenceService;
         }
 
         /// <summary>
@@ -246,6 +255,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 )
                 .ConfigureAwait(false);
 
+            await NotifyCharacterConfigChangedAsync(playerCharacterIdParsed, updated.CampagneId, newRevision, cancellationToken)
+                .ConfigureAwait(false);
+
             return Ok(new ConfigWriteResultDto { Revision = newRevision });
         }
 
@@ -323,6 +335,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     resultJson,
                     cancellationToken
                 )
+                .ConfigureAwait(false);
+
+            await NotifyCharacterConfigChangedAsync(playerCharacterIdParsed, updated.CampagneId, newRevision, cancellationToken)
                 .ConfigureAwait(false);
 
             return Ok(new ConfigWriteResultDto { Revision = newRevision });
@@ -554,6 +569,38 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             );
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Emits a session-scoped <c>characterConfigChanged</c> SSE notify (<c>{ id, revision }</c> only, no body)
+        /// to the other users currently in the owning campagne's table session. No-op if the character is not
+        /// assigned to a campagne, or no other session participants are online.
+        /// </summary>
+        private Task NotifyCharacterConfigChangedAsync(
+            Guid playerCharacterId,
+            Campagne.CampagneIdentifier? campagneId,
+            int revision,
+            CancellationToken cancellationToken
+        )
+        {
+            if (campagneId == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var actorUserId = _userContext.User.UserIdentifier.Value;
+            var recipients = _sessionPresenceService
+                .GetOnlineParticipants(campagneId.Value)
+                .Where(id => id != actorUserId)
+                .ToList();
+
+            if (recipients.Count == 0)
+            {
+                return Task.CompletedTask;
+            }
+
+            var payload = JsonSerializer.Serialize(new { id = playerCharacterId.ToString(), revision });
+            return _sseEventHub.SendToUsersAsync(recipients, "characterConfigChanged", payload, cancellationToken);
         }
     }
 }
