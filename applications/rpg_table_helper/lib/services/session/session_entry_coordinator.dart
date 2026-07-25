@@ -6,16 +6,21 @@ import 'package:quest_keeper/services/rpg_entity_service.dart';
 ///
 /// [allCharacters] is populated for the DM path, [ownCharacter] for the
 /// player path — the other is left `null`.
+///
+/// [onlineUserIds] is the presence snapshot from `POST /Session/enter`
+/// (including the caller).
 class SessionHydrationResult {
   const SessionHydrationResult({
     required this.campagne,
     this.allCharacters,
     this.ownCharacter,
+    this.onlineUserIds = const [],
   });
 
   final Campagne campagne;
   final List<PlayerCharacter>? allCharacters;
   final PlayerCharacter? ownCharacter;
+  final List<String> onlineUserIds;
 }
 
 /// Coordinates table session presence (`SessionEnter`/leave) with the REST
@@ -65,6 +70,7 @@ class SessionEntryCoordinator extends ISessionEntryCoordinator {
       SessionHydrationResult(
         campagne: campagneResult.result!,
         allCharacters: charactersResult.result ?? const [],
+        onlineUserIds: enterResult.result ?? const [],
       ),
     );
   }
@@ -94,6 +100,7 @@ class SessionEntryCoordinator extends ISessionEntryCoordinator {
       SessionHydrationResult(
         campagne: campagneResult.result!,
         ownCharacter: characterResult.result,
+        onlineUserIds: enterResult.result ?? const [],
       ),
     );
   }

@@ -6,6 +6,7 @@ using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services.Presence;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
@@ -39,10 +40,10 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// </summary>
         /// <param name="campagneid">The id of the campagne to enter a session for.</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <response code="200">The user is now marked as present for this campagne's session</response>
+        /// <response code="200">The user is now marked as present; body lists all currently online user ids</response>
         /// <response code="400">If the campagneid is invalid</response>
         /// <response code="401">If you are not logged in or not the dm/an accepted player of this campagne</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SessionEnterResultDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("enter/{campagneid}")]
@@ -70,7 +71,14 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 .EnterAsync(campagneIdParsed, _userContext.User.UserIdentifier.Value, cancellationToken)
                 .ConfigureAwait(false);
 
-            return Ok();
+            // Snapshot after enter: SSE only notifies on transitions, so a late joiner
+            // (e.g. DM opening the app) would otherwise never learn who was already online.
+            var onlineUserIds = _sessionPresenceService
+                .GetOnlineParticipants(campagneIdParsed)
+                .Select(id => id.ToString())
+                .ToList();
+
+            return Ok(new SessionEnterResultDto { OnlineUserIds = onlineUserIds });
         }
 
         /// <summary>

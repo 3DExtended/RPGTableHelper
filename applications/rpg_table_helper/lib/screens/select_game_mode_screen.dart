@@ -490,6 +490,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   /// character other than the DM's own, since the DM has none) arrives via
   /// [ConfigSyncSessionController.onRemoteCharacterConfig]. No-ops if the
   /// character isn't part of the currently hydrated roster.
+  ///
+  /// Does **not** touch [OpenPlayerConnection.lastPing] — config sync is not
+  /// presence.
   void _onRemoteCharacterConfigForDm(
       String characterId, RpgCharacterConfiguration config) {
     final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
@@ -500,7 +503,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
     final updated = connectedPlayers
         .map((p) => p.playerCharacterId.$value == characterId
-            ? p.copyWith(configuration: config, lastPing: DateTime.now())
+            ? p.copyWith(configuration: config)
             : p)
         .toList();
 
@@ -509,24 +512,49 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   }
 
   /// DM-only: reflects `participantOnline` / `participantOffline` presence
-  /// SSE notifies (sse-03) onto the matching `connectedPlayers` entries by
-  /// updating `lastPing`. No-ops if the user isn't part of the currently
-  /// hydrated roster.
-  void _onParticipantPresenceForDm(String userId, {required bool online}) {
+  /// SSE notifies onto `connectedPlayers` via [lastPing].
+  ///
+  /// When an unknown user comes online (typical after a newly accepted join),
+  /// refreshes the campagne character list so the roster can grow, then marks
+  /// them online.
+  Future<void> _onParticipantPresenceForDm(String userId,
+      {required bool online}) async {
     final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
     final connectedPlayers = connectionDetails?.connectedPlayers;
     if (connectionDetails == null || connectedPlayers == null) {
       return;
     }
 
-    final updated = connectedPlayers
-        .map((p) => p.userId.$value == userId
-            ? p.copyWith(lastPing: online ? DateTime.now() : null)
-            : p)
-        .toList();
+    final known = connectedPlayers.any((p) => p.userId.$value == userId);
+    List<PlayerCharacter>? allCharacters;
+    if (!known && online && connectionDetails.campagneId != null) {
+      final rpgService =
+          DependencyProvider.of(context).getService<IRpgEntityService>();
+      final charsResponse = await rpgService.getPlayerCharactersForCampagne(
+        campagneId: CampagneIdentifier($value: connectionDetails.campagneId!),
+      );
+      if (charsResponse.isSuccessful) {
+        allCharacters = charsResponse.result;
+      }
+    }
+
+    if (!mounted) return;
+
+    final latest = ref.read(connectionDetailsProvider).valueOrNull;
+    if (latest?.connectedPlayers == null) {
+      return;
+    }
+
+    final updated = applyParticipantPresence(
+      connectedPlayers: latest!.connectedPlayers!,
+      userId: userId,
+      online: online,
+      allCharacters: allCharacters,
+      campagneConfig: ref.read(rpgConfigurationProvider).valueOrNull,
+    );
 
     ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-        connectionDetails.copyWith(connectedPlayers: updated));
+        latest.copyWith(connectedPlayers: updated));
   }
 
   /// sse-06: builds a fresh [SessionCommandNotificationController] wired to
@@ -639,10 +667,12 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     var configSyncSessionController = _buildConfigSyncSessionController(
       rpgService,
       onRemoteCharacterConfig: _onRemoteCharacterConfigForDm,
-      onParticipantOnline: (userId) =>
-          _onParticipantPresenceForDm(userId, online: true),
-      onParticipantOffline: (userId) =>
-          _onParticipantPresenceForDm(userId, online: false),
+      onParticipantOnline: (userId) {
+        _onParticipantPresenceForDm(userId, online: true);
+      },
+      onParticipantOffline: (userId) {
+        _onParticipantPresenceForDm(userId, online: false);
+      },
     );
     var campagneSnapshotResponse = await rpgService.getCampagneRpgConfigSnapshot(
       campagneId: campagne.id!,
@@ -667,6 +697,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     var connectedPlayers = mapCharactersToOpenPlayerConnections(
       hydrationResponse.result!.allCharacters ?? const [],
       campagneConfig: campagneConfigModel,
+      onlineUserIds: hydrationResponse.result!.onlineUserIds,
     );
 
     ref.read(connectionDetailsProvider.notifier).updateConfiguration(

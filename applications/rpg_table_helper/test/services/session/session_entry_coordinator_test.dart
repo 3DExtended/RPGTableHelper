@@ -44,7 +44,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   final List<String> calls = [];
 
   @override
-  Future<HRResponse<bool>> enterSession({
+  Future<HRResponse<List<String>>> enterSession({
     required CampagneIdentifier campagneId,
   }) {
     calls.add('enterSession:${campagneId.$value}');
@@ -117,11 +117,31 @@ void main() {
       expect(result.result!.campagne.id!.$value, 'campagne-1');
       expect(result.result!.allCharacters, characters);
       expect(result.result!.ownCharacter, isNull);
+      expect(result.result!.onlineUserIds, isEmpty);
       expect(rpgEntityService.calls, [
         'enterSession:campagne-1',
         'getCampagneById:campagne-1',
         'getPlayerCharactersForCampagne:campagne-1',
       ]);
+    });
+
+    test('enterAsDm forwards onlineUserIds from SessionEnter snapshot',
+        () async {
+      final rpgEntityService = _RecordingRpgEntityService(
+        enterSessionOverride:
+            HRResponse.fromResult(const ['user-online-1', 'user-online-2']),
+        getAllCharactersOverride: HRResponse.fromResult(<PlayerCharacter>[]),
+      );
+      final sut =
+          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+
+      final result = await sut.enterAsDm(
+        campagneId: CampagneIdentifier($value: 'campagne-1'),
+      );
+
+      expect(result.isSuccessful, isTrue);
+      expect(result.result!.onlineUserIds,
+          ['user-online-1', 'user-online-2']);
     });
 
     test('enterAsDm propagates error and skips hydration when enter fails',

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 
 using FluentAssertions;
@@ -11,6 +12,7 @@ using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.WebApi;
+using RPGTableHelper.WebApi.Dtos.RpgEntities;
 
 namespace RPGTableHelper.Api.Tests.Controllers.RpgControllers;
 
@@ -39,7 +41,7 @@ public class SessionControllerTests : ControllerTestBase
     }
 
     [Fact]
-    public async Task EnterAsync_WhenUserIsDmOfCampagne_ReturnsOk()
+    public async Task EnterAsync_WhenUserIsDmOfCampagne_ReturnsOk_WithSelfInOnlineUserIds()
     {
         // arrange
         var dm = await ConfigureLoggedInUser();
@@ -50,6 +52,51 @@ public class SessionControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var body = await response.Content.ReadFromJsonAsync<SessionEnterResultDto>();
+        body.Should().NotBeNull();
+        body!.OnlineUserIds.Should().ContainSingle().Which.Should().Be(dm.Id.Value.ToString());
+    }
+
+    [Fact]
+    public async Task EnterAsync_WhenOtherParticipantsAlreadyOnline_ReturnsFullOnlineSnapshot()
+    {
+        // arrange: player enters first, then DM enters and must see both ids in the snapshot
+        // (SSE alone would not re-notify the DM about the already-online player).
+        var dm = await ConfigureLoggedInUser();
+        var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory!, Mapper!, dm);
+
+        var player = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "Player1");
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.PlayerCharacters.AddAsync(
+                new PlayerCharacterEntity
+                {
+                    Id = Guid.NewGuid(),
+                    CharacterName = "Hero",
+                    PlayerUserId = player.Id.Value,
+                    CampagneId = campagne.Id.Value,
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+
+        using var playerClient = Factory.CreateClient();
+        playerClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            CreateJwtForUser(player)
+        );
+
+        var playerEnterResponse = await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null);
+        playerEnterResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        // act
+        var dmEnterResponse = await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null);
+
+        // assert
+        dmEnterResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var body = await dmEnterResponse.Content.ReadFromJsonAsync<SessionEnterResultDto>();
+        body.Should().NotBeNull();
+        body!.OnlineUserIds.Should().BeEquivalentTo(new[] { dm.Id.Value.ToString(), player.Id.Value.ToString() });
     }
 
     [Fact]

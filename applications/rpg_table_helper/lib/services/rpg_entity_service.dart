@@ -73,7 +73,11 @@ abstract class IRpgEntityService {
   /// Marks the calling, already-accepted DM/player as present for a table session.
   /// Other participants currently in session for this campagne receive a
   /// `participantOnline` SSE event.
-  Future<HRResponse<bool>> enterSession({
+  ///
+  /// On success, [HRResponse.result] is the full online user-id snapshot for
+  /// this campagne (including the caller) so clients can hydrate presence
+  /// without waiting for SSE transitions.
+  Future<HRResponse<List<String>>> enterSession({
     required CampagneIdentifier campagneId,
   });
 
@@ -506,15 +510,10 @@ class RpgEntityService extends IRpgEntityService {
   }
 
   @override
-  Future<HRResponse<bool>> enterSession({
+  Future<HRResponse<List<String>>> enterSession({
     required CampagneIdentifier campagneId,
   }) {
-    return _postSessionAction(
-      action: 'enter',
-      campagneId: campagneId,
-      errorMessage: 'Could not enter session.',
-      errorCode: 'a1b2c3d4-1a2b-3c4d-5e6f-rest-session-enter',
-    );
+    return _postSessionEnter(campagneId: campagneId);
   }
 
   @override
@@ -527,6 +526,63 @@ class RpgEntityService extends IRpgEntityService {
       errorMessage: 'Could not leave session.',
       errorCode: 'b2c3d4e5-2b3c-4d5e-6f7a-rest-session-leave',
     );
+  }
+
+  Future<HRResponse<List<String>>> _postSessionEnter({
+    required CampagneIdentifier campagneId,
+  }) async {
+    const errorMessage = 'Could not enter session.';
+    const errorCode = 'a1b2c3d4-1a2b-3c4d-5e6f-rest-session-enter';
+
+    final jwt = await apiConnectorService.getJwt();
+    if (jwt == null) {
+      return HRResponse.error(errorMessage, errorCode);
+    }
+
+    final campagneIdValue = campagneId.$value;
+    if (campagneIdValue == null || campagneIdValue.isEmpty) {
+      return HRResponse.error('Missing campagne id.', errorCode);
+    }
+
+    final url = Uri.parse('${apiBaseUrl}Session/enter/$campagneIdValue');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Authorization': 'Bearer $jwt'},
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return HRResponse.error(
+          errorMessage,
+          errorCode,
+          statusCode: response.statusCode,
+          errorFromServer: response.body,
+        );
+      }
+
+      final onlineUserIds = <String>[];
+      if (response.body.isNotEmpty) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) {
+          final raw = decoded['onlineUserIds'] ?? decoded['OnlineUserIds'];
+          if (raw is List) {
+            for (final id in raw) {
+              if (id != null) {
+                onlineUserIds.add(id.toString());
+              }
+            }
+          }
+        }
+      }
+
+      return HRResponse.fromResult(onlineUserIds, statusCode: response.statusCode);
+    } on Exception catch (e) {
+      return HRResponse.error(
+        errorMessage,
+        errorCode,
+        caughtException: e,
+      );
+    }
   }
 
   Future<HRResponse<bool>> _postSessionAction({
@@ -874,7 +930,7 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<bool>? handleJoinRequestOverride;
   final HRResponse<bool>? updateCampagneRpgConfigurationOverride;
   final HRResponse<bool>? updatePlayerCharacterRpgConfigurationOverride;
-  final HRResponse<bool>? enterSessionOverride;
+  final HRResponse<List<String>>? enterSessionOverride;
   final HRResponse<bool>? leaveSessionOverride;
   final HRResponse<PlayerCharacter>? getPlayerCharacterByIdOverride;
   final HRResponse<ConfigWriteResult>? saveCampagneRpgConfigOverride;
@@ -1097,10 +1153,12 @@ class MockRpgEntityService extends IRpgEntityService {
   }
 
   @override
-  Future<HRResponse<bool>> enterSession({
+  Future<HRResponse<List<String>>> enterSession({
     required CampagneIdentifier campagneId,
   }) {
-    return Future.value(enterSessionOverride ?? HRResponse.fromResult(true));
+    return Future.value(
+      enterSessionOverride ?? HRResponse.fromResult(const <String>[]),
+    );
   }
 
   @override

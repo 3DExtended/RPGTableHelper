@@ -14,6 +14,11 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 /// entry, before any `characterConfigChanged` SSE notify has arrived for a
 /// given character.
 ///
+/// [onlineUserIds] is the presence snapshot returned by `POST /Session/enter`
+/// — matching characters get a non-null [OpenPlayerConnection.lastPing]
+/// (online); everyone else stays offline (`lastPing: null`). Roster membership
+/// alone must never be treated as online.
+///
 /// Characters missing an id or a player user id are skipped (they cannot be
 /// addressed by later SSE-driven updates). Characters with no persisted
 /// config yet, or a config that fails to parse, fall back to a base
@@ -22,7 +27,12 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 List<OpenPlayerConnection> mapCharactersToOpenPlayerConnections(
   List<PlayerCharacter> characters, {
   RpgConfigurationModel? campagneConfig,
+  Iterable<String>? onlineUserIds,
 }) {
+  final online = onlineUserIds == null
+      ? const <String>{}
+      : onlineUserIds.where((id) => id.isNotEmpty).toSet();
+  final now = DateTime.now();
   final result = <OpenPlayerConnection>[];
 
   for (final character in characters) {
@@ -32,17 +42,77 @@ List<OpenPlayerConnection> mapCharactersToOpenPlayerConnections(
       continue;
     }
 
+    final userIdValue = userId.$value;
+    final isOnline = userIdValue != null && online.contains(userIdValue);
+
     result.add(
       OpenPlayerConnection(
         userId: userId,
         playerCharacterId: playerCharacterId,
         configuration: _parseCharacterConfiguration(character, campagneConfig),
-        lastPing: null,
+        lastPing: isOnline ? now : null,
       ),
     );
   }
 
   return result;
+}
+
+/// Applies a `participantOnline` / `participantOffline` presence delta onto
+/// an existing [connectedPlayers] roster.
+///
+/// When [online] is true and [userId] is not yet in the roster, [allCharacters]
+/// (fresh REST pull) is used to grow the roster via
+/// [mapCharactersToOpenPlayerConnections], preserving existing lastPing values
+/// and marking [userId] online. Returns the unchanged list when offline for an
+/// unknown user, or when growth is requested but no characters were supplied.
+List<OpenPlayerConnection> applyParticipantPresence({
+  required List<OpenPlayerConnection> connectedPlayers,
+  required String userId,
+  required bool online,
+  List<PlayerCharacter>? allCharacters,
+  RpgConfigurationModel? campagneConfig,
+}) {
+  final known = connectedPlayers.any((p) => p.userId.$value == userId);
+  if (!known) {
+    if (!online || allCharacters == null) {
+      return connectedPlayers;
+    }
+
+    final previousPings = <String, DateTime?>{
+      for (final p in connectedPlayers)
+        if (p.userId.$value != null) p.userId.$value!: p.lastPing,
+    };
+    previousPings[userId] = DateTime.now();
+
+    final remapped = mapCharactersToOpenPlayerConnections(
+      allCharacters,
+      campagneConfig: campagneConfig,
+      onlineUserIds: previousPings.entries
+          .where((e) => e.value != null)
+          .map((e) => e.key),
+    );
+
+    // Preserve exact lastPing timestamps for users that were already online.
+    return remapped
+        .map((p) {
+          final id = p.userId.$value;
+          if (id == null) return p;
+          final previous = previousPings[id];
+          if (previous == null && p.lastPing == null) return p;
+          if (previous != null && p.lastPing != null) {
+            return p.copyWith(lastPing: previous);
+          }
+          return p;
+        })
+        .toList();
+  }
+
+  return connectedPlayers
+      .map((p) => p.userId.$value == userId
+          ? p.copyWith(lastPing: online ? DateTime.now() : null)
+          : p)
+      .toList();
 }
 
 RpgCharacterConfiguration _parseCharacterConfiguration(

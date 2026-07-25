@@ -23,6 +23,7 @@ import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_scree
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/session/connected_players_mapper.dart';
 import 'package:themed/themed.dart';
 
 class DmScreenCampagneManagement extends ConsumerStatefulWidget {
@@ -257,6 +258,11 @@ class _DmScreenCampagneManagementState
                                           // remove this particular request from open requests
                                           deleteJoinRequestAt(
                                               request.value, ref);
+
+                                          // Grow the membership roster immediately so the
+                                          // new character appears (offline until SessionEnter
+                                          // / participantOnline stamps lastPing).
+                                          await _refreshPlayersAfterJoinChange();
                                         }),
                                   ),
                                   Padding(
@@ -344,6 +350,62 @@ class _DmScreenCampagneManagementState
         ));
   }
 
+  /// Reloads campagne characters after accept/deny and merges them into
+  /// `connectedPlayers` without clearing existing presence (`lastPing`).
+  Future<void> _refreshPlayersAfterJoinChange() async {
+    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    if (connectionDetails?.campagneId == null) {
+      return;
+    }
+
+    final service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    final loadedCharsResponse = await service.getPlayerCharactersForCampagne(
+      campagneId: CampagneIdentifier($value: connectionDetails!.campagneId!),
+    );
+    if (!mounted || !context.mounted) return;
+    if (!loadedCharsResponse.isSuccessful ||
+        loadedCharsResponse.result == null) {
+      return;
+    }
+
+    final characters = loadedCharsResponse.result!;
+    setState(() {
+      fromServerLoadedPlayers = characters;
+    });
+
+    final previous = connectionDetails.connectedPlayers ?? const [];
+    final onlineIds = previous
+        .where((p) => p.lastPing != null && p.userId.$value != null)
+        .map((p) => p.userId.$value!)
+        .toSet();
+
+    final remapped = mapCharactersToOpenPlayerConnections(
+      characters,
+      campagneConfig: ref.read(rpgConfigurationProvider).valueOrNull,
+      onlineUserIds: onlineIds,
+    );
+
+    // Keep prior configs/lastPing timestamps for users that were already known.
+    final previousByUser = {
+      for (final p in previous)
+        if (p.userId.$value != null) p.userId.$value!: p,
+    };
+    final merged = remapped.map((p) {
+      final prior = previousByUser[p.userId.$value];
+      if (prior == null) return p;
+      return prior.copyWith(
+        configuration: prior.configuration,
+        lastPing: prior.lastPing,
+        playerCharacterId: p.playerCharacterId,
+      );
+    }).toList();
+
+    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
+          connectionDetails.copyWith(connectedPlayers: merged),
+        );
+  }
+
   List<Widget> getAllPlayersOfflineStatusWidgets(
       ConnectionDetails? connectionDetails, RpgConfigurationModel? rpgConfig) {
     List<Widget> result = [];
@@ -356,7 +418,7 @@ class _DmScreenCampagneManagementState
             ?.firstWhereOrNull(
                 (cp) => cp.playerCharacterId.$value == char.id!.$value!);
 
-        var isOnline = connectedPlayerDetails != null;
+        var isOnline = connectedPlayerDetails?.lastPing != null;
 
         var parsedConfig = RpgCharacterConfiguration.fromJson(
             jsonDecode(char.rpgCharacterConfiguration!));
@@ -380,7 +442,7 @@ class _DmScreenCampagneManagementState
       // if we havent loaded any chars from the server we simply show all online users using the connectionDetails
       for (var connectedPlayer in connectionDetails?.connectedPlayers ??
           List<OpenPlayerConnection>.empty()) {
-        var isOnline = true;
+        var isOnline = connectedPlayer.lastPing != null;
 
         var imageOfPlayerCharacter =
             connectedPlayer.configuration.getImageUrlWithoutBasePath(rpgConfig);
