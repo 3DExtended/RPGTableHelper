@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,6 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
-import 'package:quest_keeper/helpers/agent_debug_log.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
@@ -60,6 +60,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   var showLoadingSpinner = true;
 
   JoinRequestNotificationController? _joinRequestController;
+  /// Character ids for which we already showed join-accepted UI (SSE or poll).
+  final Set<String> _joinAcceptNotifiedCharacterIds = {};
 
   @override
   void initState() {
@@ -82,7 +84,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     if (!mounted) return;
     final eventsClient =
         DependencyProvider.of(context).getService<EventsClient>();
-    await eventsClient.ensureConnected();
+    // Prefer a fresh stream: Cloudflare/proxies can drop idle SSE while the
+    // client still reports isConnected=true, which silently loses join resolves.
+    await eventsClient.forceReconnect();
     if (!mounted) return;
 
     _joinRequestController ??= JoinRequestNotificationController(
@@ -127,23 +131,72 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   void _onJoinRequestResolved(JoinRequestResolvedEvent event) {
     if (!mounted) return;
 
+    _notifyJoinResolved(accepted: event.accepted, source: 'sse');
+  }
+
+  void _notifyJoinResolved({
+    required bool accepted,
+    String source = 'sse',
+    String? playerCharacterId,
+  }) {
+    if (accepted &&
+        playerCharacterId != null &&
+        !_joinAcceptNotifiedCharacterIds.add(playerCharacterId)) {
+      return;
+    }
+
     final snackService =
         DependencyProvider.of(context).getService<ISnackBarService>();
     snackService.showSnackBar(
       snack: SnackBar(
         content: Text(
-          event.accepted
+          accepted
               ? 'Your join request was accepted! You can now enter the campagne.'
               : 'Your join request was denied.',
         ),
         duration: const Duration(seconds: 8),
         showCloseIcon: true,
       ),
-      uniqueId: 'joinRequestResolved-${event.requestId}',
+      uniqueId: 'joinRequestResolved-$source-${playerCharacterId ?? 'unknown'}',
     );
 
-    if (event.accepted) {
+    if (accepted) {
       unawaited(loadCampagnesAndPlayersFromServer());
+    }
+  }
+
+  /// Fallback when `joinRequestResolved` SSE is dropped (idle proxy timeout).
+  /// Polls until the character gains a campagneId (accept) or times out.
+  Future<void> _pollForJoinAcceptance({
+    required PlayerCharacterIdentifier playerCharacterId,
+  }) async {
+    final service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+    final characterIdValue = playerCharacterId.$value;
+    if (characterIdValue == null) return;
+
+    for (var attempt = 0; attempt < 45; attempt++) {
+      await Future<void>.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+
+      final response = await service.getPlayerCharacetersForPlayer();
+      if (!response.isSuccessful || response.result == null) {
+        continue;
+      }
+
+      final match = response.result!.firstWhereOrNull(
+        (c) => c.id?.$value == characterIdValue,
+      );
+      final campagneId = match?.campagneId?.$value;
+
+      if (campagneId != null && campagneId.isNotEmpty) {
+        _notifyJoinResolved(
+          accepted: true,
+          source: 'poll',
+          playerCharacterId: characterIdValue,
+        );
+        return;
+      }
     }
   }
 
@@ -525,6 +578,16 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       return;
     }
 
+    // Ignore presence for the campagne DM account: opening the table as DM
+    // must not mark a DM-owned test character as "player online".
+    final dmCampagne = (campagnes ?? const <Campagne>[])
+        .where((c) => c.id?.$value == connectionDetails.campagneId)
+        .firstOrNull;
+    final dmUserId = dmCampagne?.dmUserId?.$value;
+    if (dmUserId != null && userId == dmUserId) {
+      return;
+    }
+
     final known = connectedPlayers.any((p) => p.userId.$value == userId);
     List<PlayerCharacter>? allCharacters;
     if (!known && online && connectionDetails.campagneId != null) {
@@ -636,20 +699,6 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         hydratedCampagne.rpgConfiguration!.isNotEmpty) {
       var parsedJson = RpgConfigurationModel.fromJson(
           jsonDecode(hydratedCampagne.rpgConfiguration!));
-      agentDebugLog(
-        location: 'select_game_mode_screen.dart:onCampagneSelected',
-        message: 'loaded campagne config from REST',
-        hypothesisId: 'D',
-        data: {
-          'campagneId': campagne.id?.$value,
-          'statTabCount': parsedJson.characterStatTabsDefinition?.length,
-          'statCount': parsedJson.characterStatTabsDefinition?.fold<int>(
-                0,
-                (sum, tab) => sum + tab.statsInTab.length,
-              ) ??
-              0,
-        },
-      );
       ref
           .read(rpgConfigurationProvider.notifier)
           .updateConfiguration(parsedJson);
@@ -694,10 +743,18 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     // live views (character overview, fight sequence, grant items, ...) have
     // nothing to render until a characterConfigChanged notify happens to
     // arrive for every single character.
+    // Character "online" means a player has opened that character (player
+    // SessionEnter), not that the DM opened the table. Exclude the campagne
+    // DM's userId from the presence snapshot when hydrating the roster.
+    final dmUserId = hydratedCampagne.dmUserId?.$value;
+    final onlinePlayerUserIds = hydrationResponse.result!.onlineUserIds
+        .where((id) => dmUserId == null || id != dmUserId)
+        .toList();
+
     var connectedPlayers = mapCharactersToOpenPlayerConnections(
       hydrationResponse.result!.allCharacters ?? const [],
       campagneConfig: campagneConfigModel,
-      onlineUserIds: hydrationResponse.result!.onlineUserIds,
+      onlineUserIds: onlinePlayerUserIds,
     );
 
     ref.read(connectionDetailsProvider.notifier).updateConfiguration(
@@ -892,6 +949,18 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           showLoadingSpinner = false;
         });
 
+        if (!createResponse.isSuccessful) {
+          return;
+        }
+
+        // Refresh SSE right before waiting: idle connections often look connected
+        // locally but are already gone on the server (resolve notify then no-ops).
+        final eventsClient =
+            DependencyProvider.of(context).getService<EventsClient>();
+        await eventsClient.forceReconnect();
+        if (!mounted) return;
+        _joinRequestController?.start();
+
         // TODO show popup that the request was sent to the dm
         var snackService =
             DependencyProvider.of(context).getService<ISnackBarService>();
@@ -920,9 +989,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
             uniqueId:
                 "joinRequestWasSent-d0b3e639-f361-49b6-8cd6-68bb9a201b21");
 
-        // 3. sse-05: resolution (accept/deny) arrives via the joinRequestResolved
-        // SSE notify handled by _onJoinRequestResolved, which reloads this
-        // screen's characters list once accepted.
+        // 3. Prefer SSE joinRequestResolved; also poll REST in case the proxy
+        // dropped the player's /events stream (seen against Cloudflare prod).
+        unawaited(_pollForJoinAcceptance(playerCharacterId: character.id!));
         // TODO block user from creating more join requests for the same character
         // while one is still pending.
       });

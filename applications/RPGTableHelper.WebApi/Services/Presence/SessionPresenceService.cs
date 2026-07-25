@@ -74,12 +74,47 @@ public sealed class SessionPresenceService : ISessionPresenceService
     }
 
     public bool IsOnline(Guid campagneId, Guid userId) =>
-        _participantsByCampagne.TryGetValue(campagneId, out var participants) && participants.ContainsKey(userId);
-
-    public IReadOnlyCollection<Guid> GetOnlineParticipants(Guid campagneId) =>
         _participantsByCampagne.TryGetValue(campagneId, out var participants)
-            ? participants.Keys.ToList()
-            : Array.Empty<Guid>();
+        && participants.ContainsKey(userId)
+        && IsLiveOrInGrace(userId);
+
+    public IReadOnlyCollection<Guid> GetOnlineParticipants(Guid campagneId)
+    {
+        if (!_participantsByCampagne.TryGetValue(campagneId, out var participants))
+        {
+            return Array.Empty<Guid>();
+        }
+
+        // Snapshot keys so we can prune zombies while iterating.
+        var candidateIds = participants.Keys.ToList();
+        var result = new List<Guid>(candidateIds.Count);
+
+        foreach (var userId in candidateIds)
+        {
+            if (IsLiveOrInGrace(userId))
+            {
+                result.Add(userId);
+                continue;
+            }
+
+            // Entered the session but has no live SSE and no grace timer — typical
+            // after a hard app kill where the SSE request never observed disconnect.
+            // Drop them so SessionEnter snapshots do not show ghost "online" players.
+            if (RemoveParticipant(campagneId, userId))
+            {
+                _ = BroadcastAsync(campagneId, userId, "participantOffline", CancellationToken.None);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// True while the user has an active SSE connection, or is inside the brief
+    /// reconnect grace window after an observed SSE disconnect.
+    /// </summary>
+    private bool IsLiveOrInGrace(Guid userId) =>
+        _sseEventHub.HasConnection(userId) || _pendingOfflineGraceByUser.ContainsKey(userId);
 
     private async Task ExpireAfterGraceAsync(Guid userId, CancellationTokenSource cts)
     {

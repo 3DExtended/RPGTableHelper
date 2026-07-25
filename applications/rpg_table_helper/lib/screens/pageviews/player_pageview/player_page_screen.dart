@@ -112,7 +112,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   ref.read(rpgCharacterConfigurationProvider).valueOrNull;
               if (newestCharacterConfig == null) return;
 
-              var mergedStats = charToRender!.characterStats;
+              // Copy before mutate — in-place edits to charToRender.characterStats
+              // also mutate provider state and trip the json-equality skip.
+              var mergedStats =
+                  List<RpgCharacterStatValue>.from(charToRender!.characterStats);
 
               mergedStats
                   .removeWhere((st) => st.statUuid == updatedStat.statUuid);
@@ -273,7 +276,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
     RpgCharacterConfigurationBase? charToRender;
     if (rpgCharacterToRender != null) {
-      charToRender = rpgCharacterToRender;
+      // DM preview: prefer live roster config so characterConfigChanged SSE
+      // updates (via connectedPlayers) refresh this open screen.
+      final liveFromRoster = connectionDetails?.connectedPlayers
+          ?.map((p) => p.configuration)
+          .where((c) => c.uuid == rpgCharacterToRender!.uuid)
+          .firstOrNull;
+      charToRender = liveFromRoster ?? rpgCharacterToRender;
     } else {
       charToRender = tempLoadedRpgCharacter;
     }
@@ -284,7 +293,14 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         (_alreadyCheckedForMissingStats == false)) {
       _alreadyCheckedForMissingStats = true;
 
-      if (connectionDetails.isPlayer) {
+      // Only the player configuring their own live character — never the DM
+      // previewing via characterConfigurationOverride / disableEdit.
+      final shouldPromptMissingStats = connectionDetails.isPlayer &&
+          connectionDetails.isInSession &&
+          rpgCharacterToRender == null &&
+          !disableEdit;
+
+      if (shouldPromptMissingStats) {
         Future.delayed(Duration.zero, () async {
           if (!mounted || !context.mounted) return;
 
@@ -338,16 +354,24 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                         .indexWhere((tab) => tab.isDefaultTab == true));
                   });
                 } else {
-                  // close connection
-                  ref
-                      .read(connectionDetailsProvider.notifier)
-                      .updateConfiguration(ref
-                          .read(connectionDetailsProvider)
-                          .requireValue
-                          .copyWith(
-                            isInSession: false,
-                            isDm: false,
-                          ));
+                  // Player leaving their own live session: mark out of session.
+                  // Do NOT clear isDm when the DM is only previewing another
+                  // character via characterConfigurationOverride — that would
+                  // make the next open look like a player session and crash on
+                  // AsyncLoading character provider.
+                  final details =
+                      ref.read(connectionDetailsProvider).requireValue;
+                  final isPreviewOnly = rpgCharacterToRender != null ||
+                      details.isDm ||
+                      disableEdit;
+                  if (!isPreviewOnly) {
+                    ref
+                        .read(connectionDetailsProvider.notifier)
+                        .updateConfiguration(details.copyWith(
+                          isInSession: false,
+                          isDm: false,
+                        ));
+                  }
 
                   navigatorKey.currentState!.pop();
                 }

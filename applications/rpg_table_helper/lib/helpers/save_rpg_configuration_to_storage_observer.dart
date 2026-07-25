@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quest_keeper/helpers/agent_debug_log.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -50,27 +49,6 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
         final willSend = connectionDetails != null &&
             connectionDetails.isDm &&
             connectionDetails.campagneId != null;
-        agentDebugLog(
-          location: 'save_rpg_configuration_to_storage_observer.dart:didUpdateProvider',
-          message: 'rpg config provider updated',
-          hypothesisId: 'B',
-          data: {
-            'willSendToServer': willSend,
-            'isConnected': connectionDetails?.isConnected,
-            'isDm': connectionDetails?.isDm,
-            'isConnecting': connectionDetails?.isConnecting,
-            'campagneId': connectionDetails?.campagneId,
-            'runId': 'post-fix',
-            'statTabCount':
-                newValue.requireValue.characterStatTabsDefinition?.length,
-            'statCount': newValue.requireValue.characterStatTabsDefinition
-                    ?.fold<int>(
-                  0,
-                  (sum, tab) => sum + tab.statsInTab.length,
-                ) ??
-                0,
-          },
-        );
         if (willSend) {
           // TODO this is ugly and should be rewritten... I am using a static singleton in DependencyProvider since i have no access to the buildcontext to receive our instance of the DependencyProvider
           DependencyProvider.getIt!

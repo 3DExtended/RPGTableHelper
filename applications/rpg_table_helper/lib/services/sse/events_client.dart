@@ -41,6 +41,9 @@ class EventsClient {
   Stream<SseEvent> get events => _controller.stream;
   bool get isConnected => _subscription != null;
 
+  /// Last time any SSE bytes (including keepalive comments) were received.
+  DateTime? lastActivityAt;
+
   Future<void> start() async {
     _wanted = true;
     await _connect();
@@ -50,6 +53,17 @@ class EventsClient {
     _wanted = false;
     await _subscription?.cancel();
     _subscription = null;
+  }
+
+  /// Drop the current stream and open a fresh one with the current JWT.
+  /// Use after login or when the proxy may have silently dropped the connection
+  /// while the client still thinks it is connected.
+  Future<void> forceReconnect() async {
+    _wanted = true;
+    await _subscription?.cancel();
+    _subscription = null;
+    _reconnectAttempt = 0;
+    await _connect();
   }
 
   /// Re-open after app resume (no-op if stop() was called).
@@ -91,6 +105,7 @@ class EventsClient {
         await _subscription?.cancel();
         _subscription = stream.listen(
           (bytes) {
+            lastActivityAt = DateTime.now();
             final chunk = utf8.decode(bytes);
             for (final event in _parser.addChunk(chunk)) {
               if (!_controller.isClosed) {

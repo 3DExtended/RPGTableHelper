@@ -44,6 +44,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
     super.saveCharacterRpgConfigOverride,
     super.getCharacterRpgConfigSnapshotOverride,
     super.getPlayerCharacterByIdOverride,
+    super.getPlayerCharactersForCampagneOverride,
   }) : super(apiConnectorService: _FakeApi());
 
   final List<String> calls = [];
@@ -54,6 +55,13 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   }) {
     calls.add('getPlayerCharacterById:${playerCharacterId.$value}');
     return super.getPlayerCharacterById(playerCharacterId: playerCharacterId);
+  }
+
+  @override
+  Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
+      {required CampagneIdentifier campagneId}) {
+    calls.add('getPlayerCharactersForCampagne:${campagneId.$value}');
+    return super.getPlayerCharactersForCampagne(campagneId: campagneId);
   }
 
   @override
@@ -158,8 +166,7 @@ void main() {
 
       final edited =
           RpgConfigurationModel.getBaseConfiguration().copyWith(rpgName: 'x');
-      sut.notifyLocalCampagneEdit(edited);
-      await Future<void>.delayed(const Duration(milliseconds: 600));
+      await sut.notifyLocalCampagneEdit(edited);
 
       expect(
         rpgEntityService.calls.single,
@@ -302,7 +309,8 @@ void main() {
         ),
       );
       final rpgEntityService = _RecordingRpgEntityService(
-        getPlayerCharacterByIdOverride: HRResponse.fromResult(remoteCharacter),
+        getPlayerCharactersForCampagneOverride:
+            HRResponse.fromResult([remoteCharacter]),
       );
       String? forwardedId;
       RpgCharacterConfiguration? forwardedConfig;
@@ -334,7 +342,8 @@ void main() {
       );
       await Future<void>.delayed(const Duration(milliseconds: 50));
 
-      expect(rpgEntityService.calls, ['getPlayerCharacterById:pc-other']);
+      expect(rpgEntityService.calls,
+          ['getPlayerCharactersForCampagne:campagne-1']);
       expect(forwardedId, 'pc-other');
       expect(forwardedConfig?.characterName, 'Sam');
 

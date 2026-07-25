@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quest_keeper/helpers/agent_debug_log.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -43,24 +42,6 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
           connectionDetails.isPlayer &&
           connectionDetails.isInSession &&
           connectionDetails.playerCharacterId != null;
-
-      // #region agent log
-      agentDebugLog(
-        location:
-            'save_rpg_character_configuration_to_storage_observer.dart:didUpdateProvider',
-        message: 'character config provider updated',
-        hypothesisId: 'A',
-        data: {
-          'willSendToServer': willSend,
-          'isConnected': connectionDetails?.isConnected,
-          'isInSession': connectionDetails?.isInSession,
-          'isPlayerFlag': connectionDetails?.isPlayer,
-          'playerCharacterId': connectionDetails?.playerCharacterId,
-          'characterName': newValue.requireValue.characterName,
-          'runId': 'post-fix',
-        },
-      );
-      // #endregion
 
       if (willSend) {
         log("Saving rpg character config");

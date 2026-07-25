@@ -97,12 +97,13 @@ class _SpyConfigSyncSessionController extends ConfigSyncSessionController {
   final List<String> characterEdits = [];
 
   @override
-  void notifyLocalCampagneEdit(RpgConfigurationModel config) {
+  Future<void> notifyLocalCampagneEdit(RpgConfigurationModel config) async {
     campagneEdits.add(config.rpgName);
   }
 
   @override
-  void notifyLocalCharacterEdit(RpgCharacterConfiguration config) {
+  Future<void> notifyLocalCharacterEdit(
+      RpgCharacterConfiguration config) async {
     characterEdits.add(config.characterName);
   }
 }

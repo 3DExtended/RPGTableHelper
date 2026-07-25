@@ -7,6 +7,8 @@ import 'package:quest_keeper/components/dynamic_height_column_layout.dart';
 import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
@@ -93,7 +95,17 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
 
       result.add(LongPressScaleWidget(
         onLongPress: () {
-          // i want to edit only this stat value
+          // Preview / DM views may not have hydrated the player character
+          // provider; missing-stats edits only apply to the live player session.
+          final connectionDetails =
+              ref.read(connectionDetailsProvider).valueOrNull;
+          if (connectionDetails == null ||
+              connectionDetails.isDm ||
+              !connectionDetails.isInSession ||
+              !ref.read(rpgCharacterConfigurationProvider).hasValue) {
+            return;
+          }
+
           Future.delayed(Duration.zero, () async {
             if (!context.mounted) return;
 

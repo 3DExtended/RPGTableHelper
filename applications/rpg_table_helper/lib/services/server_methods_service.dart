@@ -110,7 +110,7 @@ class ServerMethodsService extends IServerMethodsService {
       required String campagneId}) async {
     final controller = activeConfigSyncSessionController;
     if (controller != null) {
-      controller.notifyLocalCampagneEdit(rpgConfig);
+      await controller.notifyLocalCampagneEdit(rpgConfig);
       return;
     }
     // Fallback (no active session controller): best-effort direct REST PUT.
@@ -126,7 +126,7 @@ class ServerMethodsService extends IServerMethodsService {
       required String playercharacterid}) async {
     final controller = activeConfigSyncSessionController;
     if (controller != null) {
-      controller.notifyLocalCharacterEdit(charConfig);
+      await controller.notifyLocalCharacterEdit(charConfig);
       return;
     }
     // Fallback (no active session controller): best-effort direct REST PUT.

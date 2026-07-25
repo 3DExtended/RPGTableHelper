@@ -65,8 +65,13 @@ class PlayerPageHelpers {
       var tabsToValidate = rpgConfig.characterStatTabsDefinition
           ?.where((tab) => filterTabId == null || tab.uuid == filterTabId);
 
-      var tempLoadedCharacterConfig =
-          ref.read(rpgCharacterConfigurationProvider).requireValue;
+      final characterAsync = ref.read(rpgCharacterConfigurationProvider);
+      // DM (and other) views use characterConfigurationOverride and may never
+      // hydrate rpgCharacterConfigurationProvider — do not crash on loading.
+      if (!characterAsync.hasValue) {
+        return;
+      }
+      var tempLoadedCharacterConfig = characterAsync.requireValue;
 
       var selectedCharacterId = selectedCharacter.uuid;
       var isUpdatingMainCharacter =
@@ -152,10 +157,12 @@ class PlayerPageHelpers {
           var newestCharacterConfig =
               ref.read(rpgCharacterConfigurationProvider).requireValue;
 
-          var mergedStatsForSelectedCharacter =
-              selectedCharacter.characterStats;
-
-          var mergedStats = mergedStatsForSelectedCharacter;
+          // Copy before merge — mutating selectedCharacter.characterStats in
+          // place would also mutate the provider's current state list, so
+          // updateConfiguration's json-equality guard would skip the notify
+          // and ConfigSync would never persist the edit.
+          var mergedStats = List<RpgCharacterStatValue>.from(
+              selectedCharacter.characterStats);
           mergedStats.removeWhere((st) => updatedCharacterStats
               .any((upst) => upst.statUuid == st.statUuid));
           mergedStats.addAll(updatedCharacterStats);

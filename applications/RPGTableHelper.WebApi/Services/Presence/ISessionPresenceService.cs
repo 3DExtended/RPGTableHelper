@@ -2,8 +2,9 @@ namespace RPGTableHelper.WebApi.Services.Presence;
 
 /// <summary>
 /// Tracks table session presence (separate from campagne membership) for already-accepted DM/players.
-/// Online status combines an explicit <see cref="EnterAsync"/> with SSE liveness, using a short grace
-/// period on SSE disconnect so brief reconnects do not flicker offline.
+/// Online status requires an explicit <see cref="EnterAsync"/> and SSE liveness (active connection
+/// or a short reconnect grace after an observed disconnect). Users who entered but lost SSE without
+/// a disconnect callback are pruned as zombies on the next snapshot.
 /// </summary>
 public interface ISessionPresenceService
 {

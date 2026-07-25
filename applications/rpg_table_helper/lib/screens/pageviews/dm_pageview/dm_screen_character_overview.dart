@@ -58,6 +58,10 @@ class _DmScreenCharacterOverviewState
 
     if (connectionDetails.connectedPlayers != null) {
       for (var connectedPlayer in (connectionDetails.connectedPlayers!)) {
+        // Presence: roster membership is not online. Only lastPing marks session presence.
+        if (connectedPlayer.lastPing == null) {
+          continue;
+        }
         var charConfig = connectedPlayer.configuration;
 
         if (charConfig.isAlternateFormActive != true ||

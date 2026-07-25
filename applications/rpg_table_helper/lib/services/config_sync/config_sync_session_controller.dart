@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:json_patch/json_patch.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
@@ -137,20 +138,41 @@ class ConfigSyncSessionController {
 
   /// Call whenever the local campagne config Riverpod state changes due to a
   /// UI-driven edit (not one applied by this controller itself).
-  void notifyLocalCampagneEdit(RpgConfigurationModel config) {
-    _campagneCoordinator?.notifyLocalEdit(jsonEncode(config));
+  ///
+  /// Flushes immediately so DM edits are durable without a debounce wait.
+  Future<void> notifyLocalCampagneEdit(RpgConfigurationModel config) async {
+    final coordinator = _campagneCoordinator;
+    if (coordinator == null) {
+      return;
+    }
+    coordinator.notifyLocalEdit(jsonEncode(config));
+    await coordinator.flushNow();
   }
 
   /// Call whenever the local character config Riverpod state changes due to
   /// a UI-driven edit (not one applied by this controller itself).
-  void notifyLocalCharacterEdit(RpgCharacterConfiguration config) {
-    _characterCoordinator?.notifyLocalEdit(jsonEncode(config));
+  ///
+  /// Flushes immediately (no debounce wait) so edits reach the server before
+  /// the player can leave the character screen.
+  Future<void> notifyLocalCharacterEdit(
+      RpgCharacterConfiguration config) async {
+    final coordinator = _characterCoordinator;
+    if (coordinator == null) {
+      return;
+    }
+    coordinator.notifyLocalEdit(jsonEncode(config));
+    await coordinator.flushNow();
   }
 
   /// Stops both coordinators and the SSE subscription (e.g. on table leave).
+  ///
+  /// Flushes any pending local edits before dispose so a navigate-away cannot
+  /// cancel an in-flight debounce and drop unsaved config.
   Future<void> stop() async {
     await _sseSubscription?.cancel();
     _sseSubscription = null;
+    await _campagneCoordinator?.flushNow();
+    await _characterCoordinator?.flushNow();
     _campagneCoordinator?.dispose();
     _characterCoordinator?.dispose();
     _campagneCoordinator = null;
@@ -232,15 +254,33 @@ class ConfigSyncSessionController {
   /// remotely. There is no revision-tracked coordinator for it, so we simply
   /// GET the current character (which carries the full config) and forward
   /// the parsed result to [onRemoteCharacterConfig].
+  ///
+  /// Uses [IRpgEntityService.getPlayerCharactersForCampagne] when a campagne
+  /// session is active — `getPlayerCharacterById` is owner-only and returns
+  /// 401 for the DM, which previously dropped all live roster updates.
   Future<void> _fetchAndForwardRemoteCharacterConfig(String characterId) async {
-    final response = await rpgEntityService.getPlayerCharacterById(
-      playerCharacterId: PlayerCharacterIdentifier($value: characterId),
-    );
-    if (!response.isSuccessful || response.result == null) {
-      return;
+    String? rawConfig;
+    if (_campagneId != null) {
+      final response = await rpgEntityService.getPlayerCharactersForCampagne(
+        campagneId: CampagneIdentifier($value: _campagneId),
+      );
+      if (!response.isSuccessful || response.result == null) {
+        return;
+      }
+      final match = response.result!
+          .where((c) => c.id?.$value == characterId)
+          .firstOrNull;
+      rawConfig = match?.rpgCharacterConfiguration;
+    } else {
+      final response = await rpgEntityService.getPlayerCharacterById(
+        playerCharacterId: PlayerCharacterIdentifier($value: characterId),
+      );
+      if (!response.isSuccessful || response.result == null) {
+        return;
+      }
+      rawConfig = response.result!.rpgCharacterConfiguration;
     }
 
-    final rawConfig = response.result!.rpgCharacterConfiguration;
     if (rawConfig == null || rawConfig.isEmpty) {
       return;
     }

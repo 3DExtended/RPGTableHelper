@@ -574,6 +574,10 @@ List<RpgCharacterConfigurationBase> getAllOnlineCharactersAndCompanions(
 
   for (var char in (connectionDetails.connectedPlayers ??
       List<OpenPlayerConnection>.empty())) {
+    // Presence: only session-online players (lastPing set).
+    if (char.lastPing == null) {
+      continue;
+    }
     result.add(char.configuration);
 
     result.addAll(char.configuration.companionCharacters ?? []);
