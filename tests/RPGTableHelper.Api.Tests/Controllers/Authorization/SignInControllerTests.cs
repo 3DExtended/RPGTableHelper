@@ -218,10 +218,87 @@ public class SignInControllerTests : ControllerTestBase
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var jwtContent = await response.Content.ReadAsStringAsync();
-        jwtContent.Should().NotBeNull();
+        var tokenPair = await response.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        tokenPair.Should().NotBeNull();
+        tokenPair!.AccessToken.Should().NotBeNullOrEmpty();
+        tokenPair.RefreshToken.Should().NotBeNullOrEmpty();
+        tokenPair.ExpiresIn.Should().Be(12000);
 
-        await RegisterControllerTests.VerifyLoginValidity(Client, jwtContent);
+        await RegisterControllerTests.VerifyLoginValidity(Client, tokenPair.AccessToken);
+    }
+
+    [Fact]
+    public async Task LoginWithUsernameAndPassword_ShouldCreateAuthSessionWithHashedRefreshToken()
+    {
+        // arrange
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
+
+        // act
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username,
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+            }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var tokenPair = await response.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        tokenPair.Should().NotBeNull();
+
+        using var context = ContextFactory!.CreateDbContext();
+        var authSessions = await context.AuthSessions.ToListAsync();
+
+        authSessions.Should().HaveCount(1);
+        authSessions[0].UserId.Should().Be(user.Id.Value);
+        authSessions[0].TokenHash.Should().NotBeNullOrEmpty();
+        authSessions[0].TokenHash.Should().NotBe(tokenPair!.RefreshToken);
+
+        var expectedExpiry = SystemClock.Now.AddSeconds(7776000);
+        authSessions[0]
+            .ExpiresAt.Should()
+            .BeCloseTo(expectedExpiry, TimeSpan.FromMinutes(1));
+    }
+
+    [Fact]
+    public async Task LoginWithUsernameAndPassword_TwoLogins_ShouldCreateTwoAuthSessions()
+    {
+        // arrange
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
+
+        var loginDto = new LoginWithUsernameAndPasswordDto
+        {
+            Username = user.Username,
+            UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+        };
+
+        // act
+        var firstResponse = await Client.PostAsJsonAsync($"/signin/login", loginDto);
+        var secondResponse = await Client.PostAsJsonAsync($"/signin/login", loginDto);
+
+        // assert
+        firstResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        secondResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var firstTokenPair = await firstResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        var secondTokenPair = await secondResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        firstTokenPair!.RefreshToken.Should().NotBe(secondTokenPair!.RefreshToken);
+
+        using var context = ContextFactory!.CreateDbContext();
+        var authSessions = await context.AuthSessions.Where(s => s.UserId == user.Id.Value).ToListAsync();
+
+        authSessions.Should().HaveCount(2);
     }
 
     [Fact]

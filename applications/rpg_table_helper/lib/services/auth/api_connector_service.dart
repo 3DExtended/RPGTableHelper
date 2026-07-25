@@ -119,6 +119,9 @@ class MockApiConnectorService extends IApiConnectorService {
   final bool? jwtSetResultOverride;
   final bool? jwtRemoveResultOverride;
 
+  /// The last value passed to [setJwt], for assertions in tests.
+  String? lastSetJwt;
+
   @override
   void clearCache() {}
 
@@ -136,6 +139,7 @@ class MockApiConnectorService extends IApiConnectorService {
 
   @override
   Future<bool> setJwt(String jwt) async {
+    lastSetJwt = jwt;
     return Future.value(jwtSetResultOverride ?? true);
   }
 

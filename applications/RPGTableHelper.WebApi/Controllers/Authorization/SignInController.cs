@@ -10,6 +10,7 @@ using RPGTableHelper.BusinessLayer.Contracts.Queries;
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Queries;
 using RPGTableHelper.DataLayer.Contracts.Extensions;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Queries.AuthSessions;
 using RPGTableHelper.DataLayer.Contracts.Queries.Encryptions;
 using RPGTableHelper.DataLayer.Contracts.Queries.OpenSignInProviderRegisterRequests;
 using RPGTableHelper.DataLayer.Contracts.Queries.UserCredentials;
@@ -18,6 +19,7 @@ using RPGTableHelper.Shared.Extensions;
 using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
+using RPGTableHelper.WebApi.Options;
 
 namespace RPGTableHelper.WebApi.Controllers
 {
@@ -27,11 +29,20 @@ namespace RPGTableHelper.WebApi.Controllers
     {
         private readonly IQueryProcessor _queryProcessor;
         private readonly IJWTTokenGenerator _jwtTokenGenerator;
+        private readonly JwtOptions _jwtOptions;
+        private readonly ISystemClock _systemClock;
 
-        public SignInController(IQueryProcessor queryProcessor, IJWTTokenGenerator jwtTokenGenerator)
+        public SignInController(
+            IQueryProcessor queryProcessor,
+            IJWTTokenGenerator jwtTokenGenerator,
+            JwtOptions jwtOptions,
+            ISystemClock systemClock
+        )
         {
             _queryProcessor = queryProcessor;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _jwtOptions = jwtOptions;
+            _systemClock = systemClock;
         }
 
         /// <summary>
@@ -120,13 +131,13 @@ namespace RPGTableHelper.WebApi.Controllers
         /// </summary>
         /// <param name="loginDto">The username and password</param>
         /// <param name="cancellationToken">CancellationToken</param>
-        /// <returns>A JWT if everything worked</returns>
-        /// <response code="200">Returns the jwt for the user</response>
+        /// <returns>An access + refresh token pair if everything worked</returns>
+        /// <response code="200">Returns the access + refresh token pair for the user</response>
         /// <response code="401">If username or password did not match</response>
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthTokenPairDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [HttpPost("login")]
-        public async Task<ActionResult<string>> LoginWithUsernameAndPasswordAsync(
+        public async Task<ActionResult<AuthTokenPairDto>> LoginWithUsernameAndPasswordAsync(
             [FromBody] [Required] LoginWithUsernameAndPasswordDto loginDto,
             CancellationToken cancellationToken
         )
@@ -143,9 +154,31 @@ namespace RPGTableHelper.WebApi.Controllers
             if (possiblyExistingUserId.IsSome)
             {
                 var username = loginDto.Username;
-                var userIdentityProviderId = possiblyExistingUserId.Get().Value.ToString();
+                var userId = possiblyExistingUserId.Get();
+                var userIdentityProviderId = userId.Value.ToString();
                 var stringToken = _jwtTokenGenerator.GetJWTToken(username, userIdentityProviderId);
-                return Ok(stringToken);
+
+                var authSessionResult = await new CreateAuthSessionQuery
+                {
+                    UserId = userId,
+                    ExpiresAt = _systemClock.Now.AddSeconds(_jwtOptions.RefreshTokenNumberOfSecondsToExpire),
+                }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (authSessionResult.IsNone)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(
+                    new AuthTokenPairDto
+                    {
+                        AccessToken = stringToken!,
+                        RefreshToken = authSessionResult.Get().PlainRefreshToken,
+                        ExpiresIn = _jwtOptions.NumberOfSecondsToExpire,
+                    }
+                );
             }
 
             return Unauthorized();

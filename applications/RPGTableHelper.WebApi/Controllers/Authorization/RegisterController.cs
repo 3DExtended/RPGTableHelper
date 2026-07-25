@@ -233,8 +233,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            var refreshToken = ApiKeyGenerator.GenerateKey(32);
-
             var userCredentialCreateResult = await new UserCredentialCreateQuery
             {
                 ModelToCreate = new UserCredential
@@ -242,7 +240,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     Email = encryptedEmail.Get(),
                     EncryptionChallengeId = registerDto.EncryptionChallengeIdentifier,
                     HashedPassword = registerDto.UserSecret,
-                    RefreshToken = refreshToken,
                     UserId = usercreateresult.Get(),
                     EmailVerified = false,
                     SignInProvider = false,
@@ -354,8 +351,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest();
             }
 
-            var refreshToken = ApiKeyGenerator.GenerateKey(32);
-
             var userCredentialCreateResult = await new UserCredentialCreateQuery
             {
                 ModelToCreate = new UserCredential
@@ -363,7 +358,6 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                     EncryptionChallengeId = Option.None,
                     HashedPassword = string.Empty,
                     SignInProvider = true,
-                    RefreshToken = refreshToken,
                     Email = encryptedEmail.Get(),
                     UserId = usercreateresult.Get(),
                 },

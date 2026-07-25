@@ -11,6 +11,8 @@ namespace RPGTableHelper.WebApi.Options
         public string Audience { get; set; } = default!;
         public string Key { get; set; } = default!;
 
-        public long NumberOfSecondsToExpire { get; set; } = 12000; // defaults to 200 minutes
+        public long NumberOfSecondsToExpire { get; set; } = 21600; // defaults to 6 hours
+
+        public long RefreshTokenNumberOfSecondsToExpire { get; set; } = 7776000; // defaults to 90 days
     }
 }

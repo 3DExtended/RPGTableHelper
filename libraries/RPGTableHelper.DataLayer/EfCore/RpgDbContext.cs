@@ -62,6 +62,7 @@ public class RpgDbContext : DbContext
     public DbSet<CampagneJoinRequestEntity> CampagneJoinRequests { get; set; } = default!;
     public DbSet<OpenSignInProviderRegisterRequestEntity> OpenSignInProviderRegisterRequests { get; set; } = default!;
     public DbSet<ApiKeyEntity> ApiKeys { get; set; } = default!;
+    public DbSet<AuthSessionEntity> AuthSessions { get; set; } = default!;
     public DbSet<CampagneRpgConfigHistoryEntity> CampagneRpgConfigHistories { get; set; } = default!;
     public DbSet<PlayerCharacterRpgConfigHistoryEntity> PlayerCharacterRpgConfigHistories { get; set; } = default!;
 
@@ -134,6 +135,9 @@ public class RpgDbContext : DbContext
 
         modelBuilder.Entity<UserEntity>().HasIndex(entity => entity.Username).IsUnique();
         modelBuilder.Entity<UserCredentialEntity>().HasIndex(entity => entity.Email).IsUnique();
+
+        modelBuilder.Entity<AuthSessionEntity>().HasIndex(entity => entity.TokenHash).IsUnique();
+        modelBuilder.Entity<AuthSessionEntity>().HasIndex(entity => entity.UserId);
 
         modelBuilder
             .Entity<NoteBlockEntityBase>()

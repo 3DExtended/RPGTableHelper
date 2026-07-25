@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
 import 'package:quest_keeper/services/auth/encryption_service.dart';
+import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
@@ -64,22 +65,29 @@ class DependencyProvider extends InheritedWidget {
     _registerService<IApiConnectorService>(
         () => ApiConnectorService(), () => MockApiConnectorService());
 
+    _registerService<ISecureRefreshTokenStorage>(() => SecureRefreshTokenStorage(),
+        () => MockSecureRefreshTokenStorage());
+
     _registerService<ISnackBarService>(
         () => SnackBarService(), () => SnackBarService());
 
     _registerService<IAuthenticationService>(() {
       var encryptionService = getService<IEncryptionService>();
       var apiConnectorService = getService<IApiConnectorService>();
+      var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
       return AuthenticationService(
           apiConnectorService: apiConnectorService,
-          encryptionService: encryptionService);
+          encryptionService: encryptionService,
+          secureRefreshTokenStorage: secureRefreshTokenStorage);
     }, () {
       var encryptionService = getService<IEncryptionService>();
       var apiConnectorService = getService<IApiConnectorService>();
+      var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
 
       return MockAuthenticationService(
           apiConnectorService: apiConnectorService,
-          encryptionService: encryptionService);
+          encryptionService: encryptionService,
+          secureRefreshTokenStorage: secureRefreshTokenStorage);
     });
 
     _registerService<IRpgEntityService>(() {

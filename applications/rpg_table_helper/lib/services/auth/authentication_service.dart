@@ -6,6 +6,7 @@ import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/auth/encryption_service.dart';
 import 'package:quest_keeper/services/auth/rsa_key_helper.dart';
+import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
 
 enum SignInResultType {
   loginFailed,
@@ -25,11 +26,13 @@ abstract class IAuthenticationService {
 
   final IApiConnectorService apiConnectorService;
   final IEncryptionService encryptionService;
+  final ISecureRefreshTokenStorage secureRefreshTokenStorage;
 
   const IAuthenticationService(
       {required this.isMock,
       required this.apiConnectorService,
-      required this.encryptionService});
+      required this.encryptionService,
+      required this.secureRefreshTokenStorage});
 
   /// This method tries login in to the server using the SignInWithApple functionality.
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
@@ -61,9 +64,11 @@ abstract class IAuthenticationService {
 }
 
 class AuthenticationService extends IAuthenticationService {
-  const AuthenticationService(
-      {required super.apiConnectorService, required super.encryptionService})
-      : super(isMock: false);
+  const AuthenticationService({
+    required super.apiConnectorService,
+    required super.encryptionService,
+    required super.secureRefreshTokenStorage,
+  }) : super(isMock: false);
 
   @override
   Future<HRResponse<bool>> loginWithUsernameAndPassword(
@@ -118,10 +123,23 @@ class AuthenticationService extends IAuthenticationService {
       return HRResponse.fromResult(true, statusCode: result.statusCode);
     }
 
-    await apiConnectorService.setJwt(result.result!);
-    apiConnectorService.clearCache();
+    await persistTokenPair(result.result!);
 
     return HRResponse.fromResult(true, statusCode: result.statusCode);
+  }
+
+  /// Parses the `{ accessToken, refreshToken, expiresIn }` JSON body returned
+  /// by password login and persists both tokens: the access JWT via
+  /// [IApiConnectorService.setJwt] (SharedPreferences) and the refresh token
+  /// via [ISecureRefreshTokenStorage] (secure storage).
+  Future<void> persistTokenPair(String rawTokenPairJson) async {
+    var tokenPair = jsonDecode(rawTokenPairJson) as Map<String, dynamic>;
+    var accessToken = tokenPair['accessToken'] as String;
+    var refreshToken = tokenPair['refreshToken'] as String;
+
+    await apiConnectorService.setJwt(accessToken);
+    await secureRefreshTokenStorage.setRefreshToken(refreshToken);
+    apiConnectorService.clearCache();
   }
 
   @override
@@ -314,6 +332,7 @@ class MockAuthenticationService extends IAuthenticationService {
   const MockAuthenticationService({
     required super.apiConnectorService,
     required super.encryptionService,
+    required super.secureRefreshTokenStorage,
     this.nowOverride,
   }) : super(isMock: true);
 
