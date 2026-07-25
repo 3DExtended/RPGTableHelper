@@ -19,6 +19,7 @@ import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_scree
 import 'package:quest_keeper/screens/preauthorized/complete_sso_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/session_restorer_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
@@ -108,10 +109,16 @@ class AppRoutingShell extends ConsumerWidget {
                         key: globalThemeWrapperKey, child: child!);
                   },
                   navigatorKey: navigatorKey,
-                  initialRoute: widget.initialRoute ?? LoginScreen.route,
+                  initialRoute:
+                      widget.initialRoute ?? SessionRestorerScreen.route,
                   onGenerateRoute: (RouteSettings settings) {
                     // add all routes which are accessible without authorization
                     switch (settings.name) {
+                      case SessionRestorerScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => const SessionRestorerScreen(),
+                          settings: settings,
+                        );
                       case AuthorizedScreenWrapper.route:
                         return MaterialWithModalsPageRoute(
                           builder: (_) => AuthorizedScreenWrapper(),

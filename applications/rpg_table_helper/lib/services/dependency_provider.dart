@@ -7,6 +7,7 @@ import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
 import 'package:quest_keeper/services/auth/encryption_service.dart';
 import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
+import 'package:quest_keeper/services/auth/session_restorer.dart';
 import 'package:quest_keeper/services/auth/token_refresher.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
@@ -76,6 +77,14 @@ class DependencyProvider extends InheritedWidget {
           apiConnectorService: apiConnectorService,
           secureRefreshTokenStorage: secureRefreshTokenStorage);
     }, () => MockTokenRefresher());
+
+    _registerService<ISessionRestorer>(() {
+      var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
+      var tokenRefresher = getService<ITokenRefresher>();
+      return SessionRestorer(
+          secureRefreshTokenStorage: secureRefreshTokenStorage,
+          tokenRefresher: tokenRefresher);
+    }, () => MockSessionRestorer());
 
     _registerService<ISnackBarService>(
         () => SnackBarService(), () => SnackBarService());
