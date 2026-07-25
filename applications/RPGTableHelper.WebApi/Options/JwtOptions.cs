@@ -14,5 +14,11 @@ namespace RPGTableHelper.WebApi.Options
         public long NumberOfSecondsToExpire { get; set; } = 21600; // defaults to 6 hours
 
         public long RefreshTokenNumberOfSecondsToExpire { get; set; } = 7776000; // defaults to 90 days
+
+        /// <summary>
+        /// Number of seconds after rotation during which the previous refresh token is still
+        /// accepted (to absorb twin refreshes from flaky clients). Defaults to 60 seconds.
+        /// </summary>
+        public long RefreshTokenGracePeriodSeconds { get; set; } = 60;
     }
 }

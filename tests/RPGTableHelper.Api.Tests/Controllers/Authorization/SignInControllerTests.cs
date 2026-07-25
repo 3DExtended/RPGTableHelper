@@ -355,6 +355,201 @@ public class SignInControllerTests : ControllerTestBase
         jwtContent.Should().NotBeNull();
     }
 
+    [Fact]
+    public async Task Refresh_WithValidToken_ShouldRotateSessionAndReturnNewWorkingPair()
+    {
+        // arrange
+        var initialPair = await LoginAndGetTokenPairAsync();
+
+        // act
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var newPair = await response.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        newPair.Should().NotBeNull();
+        newPair!.AccessToken.Should().NotBeNullOrEmpty();
+        newPair.RefreshToken.Should().NotBeNullOrEmpty();
+        newPair.RefreshToken.Should().NotBe(initialPair.RefreshToken);
+        newPair.ExpiresIn.Should().Be(12000);
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var session = await context.AuthSessions.SingleAsync();
+            session.PreviousTokenExpiresAt.Should().NotBeNull();
+            session.RevokedAt.Should().BeNull();
+        }
+
+        await RegisterControllerTests.VerifyLoginValidity(Client, newPair.AccessToken);
+    }
+
+    [Fact]
+    public async Task Refresh_TwinRefreshWithinGraceUsingOldToken_ShouldStillSucceed()
+    {
+        // arrange
+        var initialPair = await LoginAndGetTokenPairAsync();
+
+        var firstRefreshResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+        firstRefreshResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var firstPair = await firstRefreshResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+
+        // act: twin refresh with the OLD (pre-rotation) token, still within the grace window
+        var secondRefreshResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+
+        // assert
+        secondRefreshResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var secondPair = await secondRefreshResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        secondPair!.RefreshToken.Should().NotBe(firstPair!.RefreshToken);
+
+        using var context = ContextFactory!.CreateDbContext();
+        var session = await context.AuthSessions.SingleAsync();
+        session.RevokedAt.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Refresh_ReusingOldTokenAfterGraceWindow_ShouldReturnUnauthorizedAndRevokeSession()
+    {
+        // arrange
+        var initialPair = await LoginAndGetTokenPairAsync();
+
+        var firstRefreshResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+        firstRefreshResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        // simulate the grace window having elapsed
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var session = await context.AuthSessions.SingleAsync();
+            session.PreviousTokenExpiresAt = SystemClock.Now.AddSeconds(-5);
+            await context.SaveChangesAsync();
+        }
+
+        // act: reuse the OLD (pre-rotation) token, now after grace
+        var reuseResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+
+        // assert
+        reuseResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var session = await context.AuthSessions.SingleAsync();
+            session.RevokedAt.Should().NotBeNull();
+        }
+    }
+
+    [Fact]
+    public async Task Refresh_WithExpiredRefreshToken_ShouldReturnUnauthorized()
+    {
+        // arrange
+        var initialPair = await LoginAndGetTokenPairAsync();
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var session = await context.AuthSessions.SingleAsync();
+            session.ExpiresAt = SystemClock.Now.AddSeconds(-5);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Refresh_WithUnknownRefreshToken_ShouldReturnUnauthorized()
+    {
+        // arrange
+        await LoginAndGetTokenPairAsync();
+
+        // act
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = "totally-unknown-refresh-token" }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Refresh_TwoSessionsForSameUser_ReuseRevokeOnOneDoesNotAffectTheOther()
+    {
+        // arrange
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
+
+        var loginDto = new LoginWithUsernameAndPasswordDto
+        {
+            Username = user.Username,
+            UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+        };
+
+        var firstLoginResponse = await Client.PostAsJsonAsync($"/signin/login", loginDto);
+        var secondLoginResponse = await Client.PostAsJsonAsync($"/signin/login", loginDto);
+        var pairA = await firstLoginResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        var pairB = await secondLoginResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+
+        // rotate session A once, then simulate grace elapsing and reuse the old token
+        var rotateAResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = pairA!.RefreshToken }
+        );
+        rotateAResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var sessionA = await context.AuthSessions.SingleAsync(s => s.PreviousTokenHash != null);
+            sessionA.PreviousTokenExpiresAt = SystemClock.Now.AddSeconds(-5);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var reuseAResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = pairA.RefreshToken }
+        );
+
+        // assert
+        reuseAResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+
+        // session B (untouched) can still refresh successfully
+        var refreshBResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = pairB!.RefreshToken }
+        );
+        refreshBResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var sessions = await context.AuthSessions.Where(s => s.UserId == user.Id.Value).ToListAsync();
+            sessions.Should().HaveCount(2);
+            sessions.Count(s => s.RevokedAt != null).Should().Be(1);
+        }
+    }
+
     private static (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()
     {
         // some mocked 1024byte strong rsa certs
@@ -393,5 +588,29 @@ public class SignInControllerTests : ControllerTestBase
         var jwtContent = await response.Content.ReadAsStringAsync();
         jwtContent.Should().NotBeNull();
         return (user, encryptionChallenge, userCredential, jwtContent);
+    }
+
+    private async Task<AuthTokenPairDto> LoginAndGetTokenPairAsync()
+    {
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
+
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/login",
+            new LoginWithUsernameAndPasswordDto
+            {
+                Username = user.Username,
+                UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+            }
+        );
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var tokenPair = await response.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        tokenPair.Should().NotBeNull();
+        return tokenPair!;
     }
 }

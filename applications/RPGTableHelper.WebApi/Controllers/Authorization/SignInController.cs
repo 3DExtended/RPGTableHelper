@@ -184,6 +184,67 @@ namespace RPGTableHelper.WebApi.Controllers
             return Unauthorized();
         }
 
+        /// <summary>
+        /// Exchanges a refresh token for a new access + refresh token pair, rotating the
+        /// server-side session. The previous refresh token stays valid for a short grace
+        /// window (to absorb twin refreshes from flaky clients); presenting it again after
+        /// that window revokes the session.
+        /// </summary>
+        /// <param name="refreshDto">The previously issued refresh token</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>A new access + refresh token pair if the refresh token was valid</returns>
+        /// <response code="200">Returns a new access + refresh token pair</response>
+        /// <response code="401">If the refresh token is unknown, expired, or revoked</response>
+        [ProducesResponseType(typeof(AuthTokenPairDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("refresh")]
+        public async Task<ActionResult<AuthTokenPairDto>> RefreshAsync(
+            [FromBody] [Required] RefreshTokenRequestDto refreshDto,
+            CancellationToken cancellationToken
+        )
+        {
+            var refreshResult = await new RefreshAuthSessionQuery
+            {
+                PlainRefreshToken = refreshDto.RefreshToken,
+                NewRefreshTokenLifetimeSeconds = _jwtOptions.RefreshTokenNumberOfSecondsToExpire,
+                GracePeriodSeconds = _jwtOptions.RefreshTokenGracePeriodSeconds,
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (refreshResult.IsNone)
+            {
+                return Unauthorized();
+            }
+
+            var session = refreshResult.Get();
+
+            // NOTE: `User` here would resolve to ControllerBase.User (ClaimsPrincipal), so the
+            // DataLayer `User` model's identifier type is referenced with its full name.
+            var user = await new UserQuery
+            {
+                ModelId = RPGTableHelper.DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(session.UserId),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (user.IsNone)
+            {
+                return Unauthorized();
+            }
+
+            var stringToken = _jwtTokenGenerator.GetJWTToken(user.Get().Username!, session.UserId.ToString());
+
+            return Ok(
+                new AuthTokenPairDto
+                {
+                    AccessToken = stringToken!,
+                    RefreshToken = session.PlainRefreshToken,
+                    ExpiresIn = _jwtOptions.NumberOfSecondsToExpire,
+                }
+            );
+        }
+
         [HttpPost("loginwithapple")]
         public async Task<ActionResult<string>> LoginWithAppleAsync(
             [FromBody] [Required] AppleLoginDetails loginDto,

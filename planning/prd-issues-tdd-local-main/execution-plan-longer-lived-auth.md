@@ -11,7 +11,7 @@
 | Order | ID | Title | Blocked by | Status |
 |------:|----|--------|------------|--------|
 | 1 | auth-01 | Token pair on password login + AuthSession store + Flutter secure refresh storage | — | done |
-| 2 | auth-02 | Refresh API (rotate, grace, reuse-revoke) + Flutter TokenRefresher call path | auth-01 | pending |
+| 2 | auth-02 | Refresh API (rotate, grace, reuse-revoke) + Flutter TokenRefresher call path | auth-01 | done |
 | 3 | auth-03 | Cold-start SessionRestorer (skip login / fail → login; no offline bypass) | auth-02 | pending |
 | 4 | auth-05 | Logout on SelectGameMode + revoke; Apple/register token pairs; revoke-all API; EN/DE | auth-01, auth-02 | pending |
 | 5 | auth-04 | Auto-refresh: proactive timer + Chopper 401 + SSE `refreshJwt` single-flight | auth-02, auth-03 | pending |
