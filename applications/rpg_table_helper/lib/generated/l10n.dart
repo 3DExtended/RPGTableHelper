@@ -1164,6 +1164,46 @@ class S {
     );
   }
 
+  /// `Incomplete selection`
+  String get initiativeBonusIncompleteWarningTitle {
+    return Intl.message(
+      'Incomplete selection',
+      name: 'initiativeBonusIncompleteWarningTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your initiative bonus selection is incomplete and will be cleared if you leave.`
+  String get initiativeBonusIncompleteWarningBody {
+    return Intl.message(
+      'Your initiative bonus selection is incomplete and will be cleared if you leave.',
+      name: 'initiativeBonusIncompleteWarningBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stay`
+  String get initiativeBonusIncompleteStay {
+    return Intl.message(
+      'Stay',
+      name: 'initiativeBonusIncompleteStay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave anyway`
+  String get initiativeBonusIncompleteLeave {
+    return Intl.message(
+      'Leave anyway',
+      name: 'initiativeBonusIncompleteLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Absenden`
   String get send {
     return Intl.message('Absenden', name: 'send', desc: '', args: []);

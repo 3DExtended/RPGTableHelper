@@ -23,7 +23,7 @@ init-01
 | 1 | init-01 | Config fields + field enum + base-preset prefill + resolve/format helper | done |
 | 2 | init-02 | Initiative popup helper sentence (main / companion / form) | done |
 | 3 | init-03 | Fight / Initiative wizard step (pickers, preview, None, broken→None wipe) | done |
-| 4 | init-04 | Incomplete-Next confirm + Back keeps draft | pending |
+| 4 | init-04 | Incomplete-Next confirm + Back keeps draft | done |
 
 ## Verification notes (this repo)
 

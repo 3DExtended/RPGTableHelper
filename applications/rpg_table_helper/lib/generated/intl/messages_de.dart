@@ -240,6 +240,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Feld",
     ),
+    "initiativeBonusIncompleteWarningTitle":
+        MessageLookupByLibrary.simpleMessage("Unvollständige Auswahl"),
+    "initiativeBonusIncompleteWarningBody": MessageLookupByLibrary.simpleMessage(
+      "Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.",
+    ),
+    "initiativeBonusIncompleteStay": MessageLookupByLibrary.simpleMessage(
+      "Bleiben",
+    ),
+    "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
+      "Trotzdem verlassen",
+    ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Zahlen-Wert"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Zahlen-Wert mit zusätzlicher Zahl",

@@ -7,6 +7,7 @@ import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/initiative_bonus_resolver.dart';
+import 'package:quest_keeper/helpers/initiative_bonus_wizard_draft_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -59,9 +60,17 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
     super.dispose();
   }
 
+  /// Called by [WizardManager] before swapping steps (sidebar / flush).
+  /// Incomplete selections keep campaign config untouched and stash a draft
+  /// so Back → return restores the in-progress pickers.
   void _persistToProviderIfReady() {
     if (!hasDataLoaded) return;
+    if (_isIncompleteSelection()) {
+      _writeDraft();
+      return;
+    }
     saveChanges();
+    _clearDraft();
   }
 
   CharacterStatDefinition? _selectedDefinition() {
@@ -69,15 +78,54 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
     return eligibleStats.firstWhereOrNull((s) => s.statUuid == selectedStatUuid);
   }
 
+  bool _isIncompleteSelection() {
+    final definition = _selectedDefinition();
+    if (definition == null) return false;
+    if (!isListInitiativeBonusStatType(definition.valueType)) return false;
+    return selectedListEntryUuid == null;
+  }
+
+  bool _isSelectionComplete() {
+    final definition = _selectedDefinition();
+    if (definition == null) return true; // None is a complete choice
+    if (!isListInitiativeBonusStatType(definition.valueType)) return true;
+    return selectedListEntryUuid != null;
+  }
+
+  void _writeDraft() {
+    ref.read(initiativeBonusWizardDraftProvider.notifier).state =
+        InitiativeBonusWizardDraft(
+      selectedStatUuid: selectedStatUuid,
+      selectedListEntryUuid: selectedListEntryUuid,
+      selectedField: selectedField,
+    );
+  }
+
+  void _clearDraft() {
+    ref.read(initiativeBonusWizardDraftProvider.notifier).state = null;
+  }
+
+  void _applyDraft(InitiativeBonusWizardDraft draft) {
+    selectedStatUuid = draft.selectedStatUuid;
+    selectedListEntryUuid = draft.selectedListEntryUuid;
+    selectedField = draft.selectedField;
+  }
+
   /// Loads persisted refs into local UI state, soft-invalidating (showing
   /// None) whenever the stored refs no longer resolve against the current
-  /// character-stat definitions.
+  /// character-stat definitions. An in-memory draft (from Back) wins.
   void _populateFromConfig(RpgConfigurationModel data) {
     eligibleStats = [
       for (final tab in data.characterStatTabsDefinition ?? const [])
         for (final stat in tab.statsInTab)
           if (eligibleInitiativeBonusStatTypes.contains(stat.valueType)) stat,
     ];
+
+    final draft = ref.read(initiativeBonusWizardDraftProvider);
+    if (draft != null) {
+      _applyDraft(draft);
+      return;
+    }
 
     final statUuid = data.initiativeBonusStatUuid;
     if (statUuid == null || statUuid.isEmpty) {
@@ -120,6 +168,41 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
     selectedField = null;
   }
 
+  Future<bool?> _confirmIncompleteLeave() {
+    return showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: CustomThemeProvider.of(dialogContext).theme.bgColor,
+        title: Text(
+          S.of(dialogContext).initiativeBonusIncompleteWarningTitle,
+          style: Theme.of(dialogContext).textTheme.titleLarge!.copyWith(
+                color:
+                    CustomThemeProvider.of(dialogContext).theme.darkTextColor,
+              ),
+        ),
+        content: Text(
+          S.of(dialogContext).initiativeBonusIncompleteWarningBody,
+          style: Theme.of(dialogContext).textTheme.bodyMedium!.copyWith(
+                color:
+                    CustomThemeProvider.of(dialogContext).theme.darkTextColor,
+              ),
+        ),
+        actions: [
+          TextButton(
+            key: const Key('initiativeBonusIncompleteStay'),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(S.of(dialogContext).initiativeBonusIncompleteStay),
+          ),
+          TextButton(
+            key: const Key('initiativeBonusIncompleteLeave'),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(S.of(dialogContext).initiativeBonusIncompleteLeave),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.watch(rpgConfigurationProvider).whenData((data) {
@@ -154,12 +237,30 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
       isLandscapeMode: MediaQuery.of(context).size.width >
           MediaQuery.of(context).size.height,
       stepHelperText: S.of(context).fightInitiativeStepTutorial,
-      onNextBtnPressed: () {
+      onNextBtnPressed: () async {
+        if (_isIncompleteSelection()) {
+          final leave = await _confirmIncompleteLeave();
+          if (!mounted) return;
+          if (leave != true) {
+            return; // Stay — keep draft in widget state
+          }
+          _resetSelectionToNone();
+          saveChanges();
+          _clearDraft();
+          widget.onNextBtnPressed();
+          return;
+        }
         saveChanges();
+        _clearDraft();
         widget.onNextBtnPressed();
       },
       onPreviousBtnPressed: () {
-        saveChanges();
+        if (_isIncompleteSelection()) {
+          _writeDraft();
+        } else {
+          saveChanges();
+          _clearDraft();
+        }
         widget.onPreviousBtnPressed();
       },
       sideBarFlex: 1,
@@ -279,36 +380,35 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
         label: definition.name, bonus: _previewSampleBonus);
   }
 
-  bool _isSelectionComplete() {
-    final definition = _selectedDefinition();
-    if (definition == null) return true;
-    if (!isListInitiativeBonusStatType(definition.valueType)) return true;
-    return selectedListEntryUuid != null;
-  }
-
   void saveChanges() {
     final notifier = ref.read(rpgConfigurationProvider.notifier);
     final current = ref.read(rpgConfigurationProvider).valueOrNull ??
         RpgConfigurationModel.getBaseConfiguration();
 
-    // Incomplete selections are not stored as "set" (init-04 adds a
-    // Stay/Leave confirmation on Next; for now we simply clear).
     if (!_isSelectionComplete() || selectedStatUuid == null) {
-      notifier.updateConfiguration(current.copyWith(
-        initiativeBonusStatUuid: null,
-        initiativeBonusListEntryUuid: null,
-        initiativeBonusField: null,
-      ));
+      notifier.updateConfiguration(
+        current
+            .copyWith
+            .initiativeBonusStatUuid(null)
+            .copyWith
+            .initiativeBonusListEntryUuid(null)
+            .copyWith
+            .initiativeBonusField(null),
+      );
       return;
     }
 
     final definition = _selectedDefinition();
     if (definition == null) {
-      notifier.updateConfiguration(current.copyWith(
-        initiativeBonusStatUuid: null,
-        initiativeBonusListEntryUuid: null,
-        initiativeBonusField: null,
-      ));
+      notifier.updateConfiguration(
+        current
+            .copyWith
+            .initiativeBonusStatUuid(null)
+            .copyWith
+            .initiativeBonusListEntryUuid(null)
+            .copyWith
+            .initiativeBonusField(null),
+      );
       return;
     }
 

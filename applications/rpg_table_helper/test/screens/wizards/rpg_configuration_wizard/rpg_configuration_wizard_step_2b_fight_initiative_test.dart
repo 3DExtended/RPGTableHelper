@@ -167,5 +167,198 @@ void main() {
         findsNothing,
       );
     });
+
+    testWidgets('incomplete Next shows dialog; Stay keeps selection',
+        (tester) async {
+      var nextCalled = false;
+      final startConfig = RpgConfigurationModel.getBaseConfiguration()
+          .copyWith
+          .initiativeBonusStatUuid(null)
+          .copyWith
+          .initiativeBonusListEntryUuid(null)
+          .copyWith
+          .initiativeBonusField(null);
+
+      final container = ProviderContainer(overrides: [
+        rpgConfigurationProvider.overrideWith((ref) {
+          return RpgConfigurationNotifier(
+            decks: AsyncValue.data(startConfig),
+            ref: ref,
+            runningInTests: true,
+          );
+        }),
+      ]);
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: CustomThemeProvider(
+            overrideBrightness: Brightness.light,
+            child: MaterialApp(
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: const Locale('en'),
+              home: Scaffold(
+                body: RpgConfigurationWizardStep2bFightInitiative(
+                  onPreviousBtnPressed: () {},
+                  onNextBtnPressed: () {
+                    nextCalled = true;
+                  },
+                  setWizardTitle: (_) {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await _selectDropdownValue(
+          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+      // Leave list entry unset → incomplete
+
+      await _tapNext(tester);
+
+      expect(find.byKey(const Key('initiativeBonusIncompleteStay')),
+          findsOneWidget);
+      expect(nextCalled, isFalse);
+
+      await tester.tap(find.byKey(const Key('initiativeBonusIncompleteStay')));
+      await tester.pumpAndSettle();
+
+      expect(nextCalled, isFalse);
+      expect(find.byKey(const Key('initiativeBonusListEntryDropdown')),
+          findsOneWidget);
+      expect(container.read(rpgConfigurationProvider).value!.initiativeBonusStatUuid,
+          isNull);
+    });
+
+    testWidgets('incomplete Next Leave clears config and advances',
+        (tester) async {
+      var nextCalled = false;
+      final startConfig = RpgConfigurationModel.getBaseConfiguration();
+
+      final container = ProviderContainer(overrides: [
+        rpgConfigurationProvider.overrideWith((ref) {
+          return RpgConfigurationNotifier(
+            decks: AsyncValue.data(startConfig),
+            ref: ref,
+            runningInTests: true,
+          );
+        }),
+      ]);
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: CustomThemeProvider(
+            overrideBrightness: Brightness.light,
+            child: MaterialApp(
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: const Locale('en'),
+              home: Scaffold(
+                body: RpgConfigurationWizardStep2bFightInitiative(
+                  onPreviousBtnPressed: () {},
+                  onNextBtnPressed: () {
+                    nextCalled = true;
+                  },
+                  setWizardTitle: (_) {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await _selectDropdownValue(
+          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+      await _tapNext(tester);
+
+      await tester.tap(find.byKey(const Key('initiativeBonusIncompleteLeave')));
+      await tester.pumpAndSettle();
+
+      expect(nextCalled, isTrue);
+      final saved = container.read(rpgConfigurationProvider).value!;
+      expect(saved.initiativeBonusStatUuid, isNull);
+      expect(saved.initiativeBonusListEntryUuid, isNull);
+      expect(saved.initiativeBonusField, isNull);
+    });
+
+    testWidgets('Back with incomplete draft restores selection on remount',
+        (tester) async {
+      final startConfig = RpgConfigurationModel.getBaseConfiguration()
+          .copyWith
+          .initiativeBonusStatUuid(null)
+          .copyWith
+          .initiativeBonusListEntryUuid(null)
+          .copyWith
+          .initiativeBonusField(null);
+
+      final container = ProviderContainer(overrides: [
+        rpgConfigurationProvider.overrideWith((ref) {
+          return RpgConfigurationNotifier(
+            decks: AsyncValue.data(startConfig),
+            ref: ref,
+            runningInTests: true,
+          );
+        }),
+      ]);
+      addTearDown(container.dispose);
+
+      Future<void> pumpStep() async {
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: CustomThemeProvider(
+              overrideBrightness: Brightness.light,
+              child: MaterialApp(
+                localizationsDelegates: [
+                  ...AppLocalizations.localizationsDelegates,
+                  S.delegate,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                locale: const Locale('en'),
+                home: Scaffold(
+                  body: RpgConfigurationWizardStep2bFightInitiative(
+                    onPreviousBtnPressed: () {},
+                    onNextBtnPressed: () {},
+                    setWizardTitle: (_) {},
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      await pumpStep();
+      await _selectDropdownValue(
+          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+
+      // Simulate Back: write draft via previous handler
+      await tester.tap(find.byType(CustomButton).first);
+      await tester.pumpAndSettle();
+
+      // Remount step (as WizardManager does when returning)
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
+      await pumpStep();
+
+      expect(find.byKey(const Key('initiativeBonusListEntryDropdown')),
+          findsOneWidget);
+      expect(container.read(rpgConfigurationProvider).value!.initiativeBonusStatUuid,
+          isNull);
+    });
   });
 }

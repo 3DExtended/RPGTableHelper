@@ -232,6 +232,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Field",
     ),
+    "initiativeBonusIncompleteWarningTitle":
+        MessageLookupByLibrary.simpleMessage("Incomplete selection"),
+    "initiativeBonusIncompleteWarningBody": MessageLookupByLibrary.simpleMessage(
+      "Your initiative bonus selection is incomplete and will be cleared if you leave.",
+    ),
+    "initiativeBonusIncompleteStay": MessageLookupByLibrary.simpleMessage(
+      "Stay",
+    ),
+    "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
+      "Leave anyway",
+    ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Number value"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Number value with additional number",

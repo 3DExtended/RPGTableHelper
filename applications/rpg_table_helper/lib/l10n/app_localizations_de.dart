@@ -420,6 +420,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get initiativeBonusFieldPickerLabel => 'Feld';
 
   @override
+  String get initiativeBonusIncompleteWarningTitle => 'Unvollständige Auswahl';
+
+  @override
+  String get initiativeBonusIncompleteWarningBody =>
+      'Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.';
+
+  @override
+  String get initiativeBonusIncompleteStay => 'Bleiben';
+
+  @override
+  String get initiativeBonusIncompleteLeave => 'Trotzdem verlassen';
+
+  @override
   String get send => 'Absenden';
 
   @override

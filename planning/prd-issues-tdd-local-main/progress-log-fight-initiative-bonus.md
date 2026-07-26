@@ -24,3 +24,8 @@
 - User updated goldens manually; committing initiative-related `withBonusHint` only
 - Next: init-04
 
+## init-04 complete
+
+- Incomplete Next dialog + Back draft provider
+- All fight-initiative slices done on `main`
+

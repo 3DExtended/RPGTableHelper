@@ -866,6 +866,30 @@ abstract class AppLocalizations {
   /// **'Feld'**
   String get initiativeBonusFieldPickerLabel;
 
+  /// No description provided for @initiativeBonusIncompleteWarningTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Unvollständige Auswahl'**
+  String get initiativeBonusIncompleteWarningTitle;
+
+  /// No description provided for @initiativeBonusIncompleteWarningBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.'**
+  String get initiativeBonusIncompleteWarningBody;
+
+  /// No description provided for @initiativeBonusIncompleteStay.
+  ///
+  /// In de, this message translates to:
+  /// **'Bleiben'**
+  String get initiativeBonusIncompleteStay;
+
+  /// No description provided for @initiativeBonusIncompleteLeave.
+  ///
+  /// In de, this message translates to:
+  /// **'Trotzdem verlassen'**
+  String get initiativeBonusIncompleteLeave;
+
   /// No description provided for @send.
   ///
   /// In de, this message translates to:
