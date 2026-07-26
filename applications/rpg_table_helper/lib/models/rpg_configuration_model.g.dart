@@ -23,6 +23,15 @@ abstract class _$RpgConfigurationModelCWProxy {
 
   RpgConfigurationModel craftingRecipes(List<CraftingRecipe> craftingRecipes);
 
+  RpgConfigurationModel initiativeBonusStatUuid(
+      String? initiativeBonusStatUuid);
+
+  RpgConfigurationModel initiativeBonusListEntryUuid(
+      String? initiativeBonusListEntryUuid);
+
+  RpgConfigurationModel initiativeBonusField(
+      InitiativeBonusField? initiativeBonusField);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgConfigurationModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -37,6 +46,9 @@ abstract class _$RpgConfigurationModelCWProxy {
     List<ItemCategory> itemCategories,
     List<CharacterStatsTabDefinition>? characterStatTabsDefinition,
     List<CraftingRecipe> craftingRecipes,
+    String? initiativeBonusStatUuid,
+    String? initiativeBonusListEntryUuid,
+    InitiativeBonusField? initiativeBonusField,
   });
 }
 
@@ -78,6 +90,21 @@ class _$RpgConfigurationModelCWProxyImpl
       this(craftingRecipes: craftingRecipes);
 
   @override
+  RpgConfigurationModel initiativeBonusStatUuid(
+          String? initiativeBonusStatUuid) =>
+      this(initiativeBonusStatUuid: initiativeBonusStatUuid);
+
+  @override
+  RpgConfigurationModel initiativeBonusListEntryUuid(
+          String? initiativeBonusListEntryUuid) =>
+      this(initiativeBonusListEntryUuid: initiativeBonusListEntryUuid);
+
+  @override
+  RpgConfigurationModel initiativeBonusField(
+          InitiativeBonusField? initiativeBonusField) =>
+      this(initiativeBonusField: initiativeBonusField);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgConfigurationModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -93,6 +120,9 @@ class _$RpgConfigurationModelCWProxyImpl
     Object? itemCategories = const $CopyWithPlaceholder(),
     Object? characterStatTabsDefinition = const $CopyWithPlaceholder(),
     Object? craftingRecipes = const $CopyWithPlaceholder(),
+    Object? initiativeBonusStatUuid = const $CopyWithPlaceholder(),
+    Object? initiativeBonusListEntryUuid = const $CopyWithPlaceholder(),
+    Object? initiativeBonusField = const $CopyWithPlaceholder(),
   }) {
     return RpgConfigurationModel(
       rpgName: rpgName == const $CopyWithPlaceholder()
@@ -124,6 +154,20 @@ class _$RpgConfigurationModelCWProxyImpl
           ? _value.craftingRecipes
           // ignore: cast_nullable_to_non_nullable
           : craftingRecipes as List<CraftingRecipe>,
+      initiativeBonusStatUuid:
+          initiativeBonusStatUuid == const $CopyWithPlaceholder()
+              ? _value.initiativeBonusStatUuid
+              // ignore: cast_nullable_to_non_nullable
+              : initiativeBonusStatUuid as String?,
+      initiativeBonusListEntryUuid:
+          initiativeBonusListEntryUuid == const $CopyWithPlaceholder()
+              ? _value.initiativeBonusListEntryUuid
+              // ignore: cast_nullable_to_non_nullable
+              : initiativeBonusListEntryUuid as String?,
+      initiativeBonusField: initiativeBonusField == const $CopyWithPlaceholder()
+          ? _value.initiativeBonusField
+          // ignore: cast_nullable_to_non_nullable
+          : initiativeBonusField as InitiativeBonusField?,
     );
   }
 }
@@ -1121,6 +1165,11 @@ RpgConfigurationModel _$RpgConfigurationModelFromJson(
       craftingRecipes: (json['craftingRecipes'] as List<dynamic>)
           .map((e) => CraftingRecipe.fromJson(e as Map<String, dynamic>))
           .toList(),
+      initiativeBonusStatUuid: json['initiativeBonusStatUuid'] as String?,
+      initiativeBonusListEntryUuid:
+          json['initiativeBonusListEntryUuid'] as String?,
+      initiativeBonusField: $enumDecodeNullable(
+          _$InitiativeBonusFieldEnumMap, json['initiativeBonusField']),
     );
 
 Map<String, dynamic> _$RpgConfigurationModelToJson(
@@ -1133,7 +1182,17 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
       'characterStatTabsDefinition': instance.characterStatTabsDefinition,
       'craftingRecipes': instance.craftingRecipes,
       'currencyDefinition': instance.currencyDefinition,
+      'initiativeBonusStatUuid': instance.initiativeBonusStatUuid,
+      'initiativeBonusListEntryUuid': instance.initiativeBonusListEntryUuid,
+      'initiativeBonusField':
+          _$InitiativeBonusFieldEnumMap[instance.initiativeBonusField],
     };
+
+const _$InitiativeBonusFieldEnumMap = {
+  InitiativeBonusField.value: 'value',
+  InitiativeBonusField.otherValue: 'otherValue',
+  InitiativeBonusField.maxValue: 'maxValue',
+};
 
 ItemCategory _$ItemCategoryFromJson(Map<String, dynamic> json) => ItemCategory(
       uuid: json['uuid'] as String,

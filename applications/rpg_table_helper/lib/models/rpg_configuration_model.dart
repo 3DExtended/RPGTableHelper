@@ -6,6 +6,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'rpg_configuration_model.g.dart';
 
+@JsonEnum()
+enum InitiativeBonusField {
+  value,
+  otherValue,
+  maxValue,
+}
+
 @JsonSerializable()
 @CopyWith()
 class RpgConfigurationModel {
@@ -16,6 +23,11 @@ class RpgConfigurationModel {
   final List<CharacterStatsTabDefinition>? characterStatTabsDefinition;
   final List<CraftingRecipe> craftingRecipes;
   final CurrencyDefinition currencyDefinition;
+
+  /// Campaign-marked stat used as the initiative bonus hint for players.
+  final String? initiativeBonusStatUuid;
+  final String? initiativeBonusListEntryUuid;
+  final InitiativeBonusField? initiativeBonusField;
 
   factory RpgConfigurationModel.fromJson(Map<String, dynamic> json) =>
       _$RpgConfigurationModelFromJson(json);
@@ -28,6 +40,9 @@ class RpgConfigurationModel {
     required this.itemCategories,
     required this.characterStatTabsDefinition,
     required this.craftingRecipes,
+    this.initiativeBonusStatUuid,
+    this.initiativeBonusListEntryUuid,
+    this.initiativeBonusField,
   });
 
   Map<String, dynamic> toJson() => _$RpgConfigurationModelToJson(this);
@@ -38,6 +53,9 @@ class RpgConfigurationModel {
 
   static RpgConfigurationModel getBaseConfiguration() => RpgConfigurationModel(
         rpgName: "Maries Kampagne",
+        initiativeBonusStatUuid: "44ab4bcc-0f90-42e0-b9f5-9d4dffc9ffc3",
+        initiativeBonusListEntryUuid: "a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4",
+        initiativeBonusField: InitiativeBonusField.otherValue,
         currencyDefinition: CurrencyDefinition(
           currencyTypes: [
             CurrencyType(name: "Kupfer", multipleOfPreviousValue: null),
