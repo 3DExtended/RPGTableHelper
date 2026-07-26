@@ -218,7 +218,7 @@ List<
       variant: null,
       statUuid: "24ebc00c-7024-485f-8633-9cdc1560543f",
       serializedValue:
-          '{"level": 5, "values": [{"value":"Zwerg", "uuid": "76183b57-d6f3-4414-962c-837488ed0384"}, {"value":"Magier", "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"}]}',
+          '{"level": 5, "values": [{"value":"Zwerg", "uuid": "76183b57-d6f3-4414-962c-837488ed0384"}, {"value":"Magier", "uuid": "529d0912-e1ae-41e2-beea-55bd194bfb20"}], "imageUrl":"assets/images/drawffortest.png", "imagePrompt":"A dwarf wizard"}',
     )
   ),
   (

@@ -1484,6 +1484,18 @@ abstract class AppLocalizations {
   /// **'Generiere ein Bild'**
   String get generateLoreImageTitle;
 
+  /// No description provided for @characterPortraitImagePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait description'**
+  String get characterPortraitImagePrompt;
+
+  /// No description provided for @characterPortraitImagePromptPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your character for image generation'**
+  String get characterPortraitImagePromptPlaceholder;
+
   /// No description provided for @generatedImagesTabTitle.
   ///
   /// In de, this message translates to:

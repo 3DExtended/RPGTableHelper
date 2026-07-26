@@ -909,7 +909,7 @@ enum CharacterStatValueType {
   listOfIntWithCalculatedValues,
 
   // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "Volk"}]}
-  // => RpgCharacterStatValue.serializedValue == {"level": 12, "values":[{"uuid":"5f515750-0456-41e7-a1ee-97acb30c25c0", "value": 12}]}
+  // => RpgCharacterStatValue.serializedValue == {"level": 12, "values":[{"uuid":"5f515750-0456-41e7-a1ee-97acb30c25c0", "value": "Zwerg"}], "imageUrl": "optional", "imagePrompt": "optional"}
   characterNameWithLevelAndAdditionalDetails,
 
   // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP", "iconName": "asdf"}]}

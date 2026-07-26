@@ -16,6 +16,7 @@ import 'package:quest_keeper/components/progress_indicator_for_character_screen.
 import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_visualization_variant_widgets.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modals/show_reactivate_previous_transformation_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
@@ -27,23 +28,40 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
+/// Resolves a stored image path (asset or API-relative) to a loadable URL.
+String resolveStatImageUrl(String? imageUrl) {
+  if (imageUrl == null || imageUrl.isEmpty) {
+    return "assets/images/charactercard_placeholder.png";
+  }
+  if (imageUrl.startsWith("assets")) {
+    return imageUrl;
+  }
+  return apiBaseUrl +
+      (imageUrl.startsWith("/")
+          ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
+          : imageUrl);
+}
+
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
-    case CharacterStatValueType.singleImage:
-    case CharacterStatValueType.multiLineText:
     case CharacterStatValueType.singleLineText:
-    case CharacterStatValueType.int:
+    case CharacterStatValueType.singleImage:
+      return 1;
     case CharacterStatValueType.companionSelector:
     case CharacterStatValueType.transformIntoAlternateFormBtn:
-    case CharacterStatValueType.listOfIntWithCalculatedValues:
-    case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
-      return 1;
-    case CharacterStatValueType.multiselect:
-    case CharacterStatValueType.intWithCalculatedValue:
-    case CharacterStatValueType.listOfIntsWithIcons:
+    case CharacterStatValueType.int:
       return 2;
-    case CharacterStatValueType.intWithMaxValue:
+    case CharacterStatValueType.multiLineText:
+      return 3;
+    case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+    case CharacterStatValueType.intWithCalculatedValue:
+    case CharacterStatValueType.listOfIntWithCalculatedValues:
+    case CharacterStatValueType.multiselect:
+      return 4;
+    case CharacterStatValueType.listOfIntsWithIcons:
       return 5;
+    case CharacterStatValueType.intWithMaxValue:
+      return 9;
   }
 }
 
@@ -102,12 +120,6 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.multiselect:
       return renderMultiselectStat(onNewStatValue, characterValue, context,
           statConfiguration, characterName);
-    default:
-      return Container(
-        height: 50,
-        width: 50,
-        color: Colors.red,
-      );
   }
 }
 
@@ -157,6 +169,36 @@ Widget renderCompanionSelector(
     return Container();
   }
 
+  void openCompanion(RpgAlternateCharacterConfiguration companionConfig) {
+    navigatorKey.currentState!.pushNamed(
+      PlayerPageScreen.route,
+      arguments: PlayerPageScreenRouteSettings(
+        disableEdit: false,
+        showMoney: false,
+        characterConfigurationOverride: companionConfig,
+        showInventory: false,
+        showLore: false,
+        showRecipes: false,
+      ),
+    );
+  }
+
+  if (characterValue.variant == 1) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      alignment: WrapAlignment.center,
+      children: companionDetailsToRender
+          .map(
+            (t) => CompanionMiniCard(
+              name: t.characterName,
+              onTap: () => openCompanion(t.companionConfig),
+            ),
+          )
+          .toList(),
+    );
+  }
+
   return Column(
     children: [
       getIconForIdentifier(
@@ -173,19 +215,7 @@ Widget renderCompanionSelector(
                 padding: EdgeInsets.all(5),
                 child: CustomButton(
                     label: t.characterName,
-                    onPressed: () {
-                      // open companion page
-                      navigatorKey.currentState!.pushNamed(
-                          PlayerPageScreen.route,
-                          arguments: PlayerPageScreenRouteSettings(
-                            disableEdit: false,
-                            showMoney: false,
-                            characterConfigurationOverride: t.companionConfig,
-                            showInventory: false,
-                            showLore: false,
-                            showRecipes: false,
-                          ));
-                    }),
+                    onPressed: () => openCompanion(t.companionConfig)),
               )),
         ],
       )
@@ -205,6 +235,17 @@ Widget renderTransformIntoAlternateFormBtn(
     return Container();
   }
 
+  final transformButton = Padding(
+    padding: EdgeInsets.all(5),
+    child: CustomButtonTransformToAlternateForm(
+      characterToRenderStatFor: characterToRenderStatFor,
+    ),
+  );
+
+  if (characterValue.variant == 1) {
+    return ActiveFormBanner(transformButton: transformButton);
+  }
+
   return Column(
     children: [
       getIconForIdentifier(
@@ -216,14 +257,7 @@ Widget renderTransformIntoAlternateFormBtn(
         height: 10,
       ),
       Wrap(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(5),
-            child: CustomButtonTransformToAlternateForm(
-              characterToRenderStatFor: characterToRenderStatFor,
-            ),
-          ),
-        ],
+        children: [transformButton],
       )
     ],
   );
@@ -384,12 +418,37 @@ Widget renderMultiselectStat(
       )
       .toList();
 
-  var isVariantShowingAllOptions = characterValue.variant == 1;
+  // Variant 0: selected only. Variant 1+: show all options (different layouts).
+  final showAllOptions =
+      characterValue.variant != null && characterValue.variant! >= 1;
 
   var valueToConfigMapped = config
       .map((pv) => (parsedValue.where((es) => es == pv.$1).length, pv))
-      .where((pv) => isVariantShowingAllOptions || pv.$1 != 0)
+      .where((pv) => showAllOptions || pv.$1 != 0)
       .sortedBy((pv) => pv.$2.$2);
+
+  final mappedItems = valueToConfigMapped
+      .map(
+        (e) => (
+          label: e.$2.$2,
+          description: e.$2.$3,
+          count: e.$1,
+        ),
+      )
+      .toList();
+
+  switch (characterValue.variant) {
+    case 2:
+      return MultiselectChips(
+        title: statConfiguration.name,
+        items: mappedItems,
+      );
+    case 3:
+      return MultiselectTileGrid(
+        title: statConfiguration.name,
+        items: mappedItems,
+      );
+  }
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,36 +546,49 @@ Widget renderIntWithCalculatedValueStat(
     String characterName) {
   // characterValue.serializedValue = {"value": 12, "otherValue": 2}
   var parsedValue = jsonDecode(characterValue.serializedValue);
+  var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
+  var otherValue = int.tryParse(parsedValue["otherValue"].toString()) ?? 0;
 
-  if (characterValue.variant == 1) {
-    var value = int.tryParse(parsedValue["value"].toString()) ?? 0;
-    var maxValue = int.tryParse(parsedValue["otherValue"].toString()) ?? 1;
-    return PentagonWithLabel(
-        value: value, otherValue: maxValue, label: statConfiguration.name);
-  } else {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          "${parsedValue["otherValue"]}",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: CustomThemeProvider.of(context).theme.darkTextColor,
-              fontSize: 20),
-        ),
-        Text(
-          statConfiguration.name,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: CustomThemeProvider.of(context).theme.darkTextColor,
-              fontSize: 16),
-        ),
-        Text(
-          "${parsedValue["value"]}",
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: const Color.fromARGB(255, 135, 127, 118), fontSize: 20),
-        ),
-      ],
-    );
+  switch (characterValue.variant) {
+    case 1:
+      return PentagonWithLabel(
+          value: value, otherValue: otherValue, label: statConfiguration.name);
+    case 2:
+      return ModifierFirstBlock(
+        score: value,
+        modifier: otherValue,
+        label: statConfiguration.name,
+      );
+    case 3:
+      return ClassicAbilityBlock(
+        score: value,
+        modifier: otherValue,
+        label: statConfiguration.name,
+      );
+    default:
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "$otherValue",
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 20),
+          ),
+          Text(
+            statConfiguration.name,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 16),
+          ),
+          Text(
+            "$value",
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: const Color.fromARGB(255, 135, 127, 118), fontSize: 20),
+          ),
+        ],
+      );
   }
 }
 
@@ -744,6 +816,39 @@ Widget renderIntWithMaxValueStat(
             ),
         ],
       );
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+      Widget core;
+      switch (characterValue.variant) {
+        case 5:
+          core = HeartReservoir(
+              value: value, maxValue: maxValue, label: statConfiguration.name);
+          break;
+        case 6:
+          core = GemReservoir(
+              value: value, maxValue: maxValue, label: statConfiguration.name);
+          break;
+        case 7:
+          core = SegmentedResourceTrack(
+              value: value, maxValue: maxValue, label: statConfiguration.name);
+          break;
+        default:
+          // was V-HP-9 compact chip; wound rings (old 8) removed
+          core = CompactCombatChip(
+              value: value, maxValue: maxValue, label: statConfiguration.name);
+      }
+      if (statConfiguration.editType == CharacterStatEditType.oneTap) {
+        return statVizPlusMinusRow(
+          context: context,
+          value: value,
+          maxValue: maxValue,
+          onValueChanged: onValueChanged,
+          child: core,
+        );
+      }
+      return core;
     default:
       // variant is null or 0
       return Row(
@@ -846,6 +951,28 @@ Widget renderListOfIntsWithIconsStat(
       )
       .sortedBy((e) => e.label)
       .toList();
+
+  switch (characterValue.variant) {
+    case 2:
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        runSpacing: 10,
+        children: filledValues
+            .map(
+              (t) => IconMedallion(
+                iconName: t.iconName,
+                label: t.label,
+                value: t.value,
+              ),
+            )
+            .toList(),
+      );
+    case 3:
+      return IconStatRibbon(items: filledValues);
+    case 4:
+      return IconPrimaryHeroRow(items: filledValues);
+  }
 
   return Wrap(
     alignment: WrapAlignment.center,
@@ -951,17 +1078,65 @@ Widget renderListOfIntWithCalculatedValuesStat(
       .sortedBy((e) => e.label)
       .toList();
 
-  return Wrap(
-    alignment: WrapAlignment.center,
-    spacing: 10,
-    runSpacing: 10,
-    children: filledValues
-        .map(
-          (t) => PentagonWithLabel(
-              value: t.value, otherValue: t.otherValue, label: t.label),
-        )
-        .toList(),
-  );
+  switch (characterValue.variant) {
+    case 1:
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        runSpacing: 10,
+        children: filledValues
+            .map(
+              (t) => ModifierFirstBlock(
+                score: t.value,
+                modifier: t.otherValue,
+                label: t.label,
+              ),
+            )
+            .toList(),
+      );
+    case 2:
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        runSpacing: 10,
+        children: filledValues
+            .map(
+              (t) => HexAbilityTile(
+                score: t.value,
+                modifier: t.otherValue,
+                label: t.label,
+              ),
+            )
+            .toList(),
+      );
+    case 3:
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        runSpacing: 10,
+        children: filledValues
+            .map(
+              (t) => ClassicAbilityBlock(
+                score: t.value,
+                modifier: t.otherValue,
+                label: t.label,
+              ),
+            )
+            .toList(),
+      );
+    default:
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        runSpacing: 10,
+        children: filledValues
+            .map(
+              (t) => PentagonWithLabel(
+                  value: t.value, otherValue: t.otherValue, label: t.label),
+            )
+            .toList(),
+      );
+  }
 }
 
 Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
@@ -1005,7 +1180,48 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
       .sortedBy((e) => e.label)
       .toList();
 
+  // Optional portrait: {"imageUrl": "...", "imagePrompt": "...", "level": ..., "values": [...]}
+  final storedImageUrl = parsedCharacterValueMap["imageUrl"] as String?;
+  final resolvedPortraitUrl = (storedImageUrl == null || storedImageUrl.isEmpty)
+      ? null
+      : resolveStatImageUrl(storedImageUrl);
+
   return LayoutBuilder(builder: (context, constraints) {
+    final details = filledValues
+        .map((t) => (label: t.label, value: t.value))
+        .toList();
+
+    switch (characterValue.variant) {
+      case 1:
+        return IdentityBanner(
+          characterName: characterName,
+          level: characterLevel is int
+              ? characterLevel
+              : int.tryParse('$characterLevel') ?? 0,
+          details: details,
+          levelAbbr: S.of(context).levelAbbr,
+        );
+      case 2:
+        return IdentityPortraitCard(
+          characterName: characterName,
+          level: characterLevel is int
+              ? characterLevel
+              : int.tryParse('$characterLevel') ?? 0,
+          details: details,
+          levelAbbr: S.of(context).levelAbbr,
+          imageUrl: resolvedPortraitUrl,
+        );
+      case 3:
+        return IdentityMinimalLine(
+          characterName: characterName,
+          level: characterLevel is int
+              ? characterLevel
+              : int.tryParse('$characterLevel') ?? 0,
+          details: details,
+          levelAbbr: S.of(context).levelAbbr,
+        );
+    }
+
     var maxWidth = min(140.0 + 10 + 200, constraints.maxWidth);
 
     var firstExpandedFlex = (140 / maxWidth) * 100;
@@ -1121,12 +1337,22 @@ Column renderIntStat(
     BuildContext context,
     CharacterStatDefinition statConfiguration) {
   // characterValue.serializedValue = {"value": 1}
+  final valueStr =
+      jsonDecode(characterValue.serializedValue)["value"].toString();
+  if (characterValue.variant == 1) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        LargeNumeralTile(value: valueStr, label: statConfiguration.name),
+      ],
+    );
+  }
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisSize: MainAxisSize.min,
     children: [
       Text(
-        jsonDecode(characterValue.serializedValue)["value"].toString(),
+        valueStr,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: CustomThemeProvider.of(context).theme.darkTextColor,
             fontSize: 20),
@@ -1150,53 +1376,60 @@ Widget renderImageStat(
   var parsedValue = jsonDecode(characterValue.serializedValue);
   var imageUrl = parsedValue["imageUrl"];
 
-  var fullImageUrl = imageUrl == null
-      ? "assets/images/charactercard_placeholder.png"
-      : (imageUrl!.startsWith("assets")
-              ? imageUrl
-              : (apiBaseUrl +
-                  (imageUrl!.startsWith("/")
-                      ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
-                      : imageUrl!))) ??
-          "assets/images/charactercard_placeholder.png";
-
   return BorderedImage(
     backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
     lightColor: CustomThemeProvider.of(context).theme.darkColor,
     isGreyscale: false,
     isLoading: false,
     noPadding: true,
-    imageUrl: fullImageUrl,
+    imageUrl: resolveStatImageUrl(imageUrl as String?),
   );
 }
 
-Column renderTextStat(
+Widget renderTextStat(
     void Function(String newSerializedValue) onNewStatValue,
     CharacterStatDefinition statConfiguration,
     BuildContext context,
     RpgCharacterStatValue characterValue) {
   // characterValue.serializedValue = {"value": "asdf"}
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      if (characterValue.hideLabelOfStat != true)
-        Text(
-          statConfiguration.name,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: CustomThemeProvider.of(context).theme.darkTextColor,
-              fontSize: 20),
-        ),
-      if (characterValue.hideLabelOfStat != true)
-        SizedBox(
-          height: 10,
-        ),
-      CustomMarkdownBody(
-        text: jsonDecode(characterValue.serializedValue)["value"].toString(),
-      ),
-      SizedBox(
-        height: 10,
-      ),
-    ],
-  );
+  final body =
+      jsonDecode(characterValue.serializedValue)["value"].toString();
+  final hideTitle = characterValue.hideLabelOfStat == true;
+
+  switch (characterValue.variant) {
+    case 1:
+      return CollapsibleLorePanel(
+        title: statConfiguration.name,
+        body: body,
+        hideTitle: hideTitle,
+      );
+    case 2:
+      return ParchmentQuoteFrame(
+        title: statConfiguration.name,
+        body: body,
+        hideTitle: hideTitle,
+      );
+    default:
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!hideTitle)
+            Text(
+              statConfiguration.name,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: CustomThemeProvider.of(context).theme.darkTextColor,
+                  fontSize: 20),
+            ),
+          if (!hideTitle)
+            SizedBox(
+              height: 10,
+            ),
+          CustomMarkdownBody(text: body),
+          SizedBox(
+            height: 10,
+          ),
+        ],
+      );
+  }
 }

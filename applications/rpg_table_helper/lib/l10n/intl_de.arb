@@ -270,6 +270,8 @@
   "characterNameStatHelperText": "Wie heißt dein Charakter?",
   "generateImageBtnLabel": "Bild generieren",
   "generateLoreImageTitle": "Generiere ein Bild",
+  "characterPortraitImagePrompt": "Porträtbeschreibung",
+  "characterPortraitImagePromptPlaceholder": "Beschreibe deinen Charakter für die Bildgenerierung",
   "generatedImagesTabTitle": "Generierte Bilder",
   "noImagesInCampagne": "In dieser Kampagne sind noch keine Bilder von dir generiert worden.",
   "enterANameDefaultLabel": "Gebe Namen ein",

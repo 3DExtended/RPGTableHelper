@@ -2069,6 +2069,26 @@ class S {
     );
   }
 
+  /// `Portrait description`
+  String get characterPortraitImagePrompt {
+    return Intl.message(
+      'Portrait description',
+      name: 'characterPortraitImagePrompt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Describe your character for image generation`
+  String get characterPortraitImagePromptPlaceholder {
+    return Intl.message(
+      'Describe your character for image generation',
+      name: 'characterPortraitImagePromptPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Generierte Bilder`
   String get generatedImagesTabTitle {
     return Intl.message(

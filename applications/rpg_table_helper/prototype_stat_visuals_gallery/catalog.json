@@ -1,0 +1,371 @@
+[
+  {
+    "id": "V-HP-0",
+    "valueType": "intWithMaxValue",
+    "variant": 0,
+    "title": "Text value / max",
+    "isNew": false,
+    "src": "shots/V-HP-0.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-1",
+    "valueType": "intWithMaxValue",
+    "variant": 1,
+    "title": "Circular progress (accent)",
+    "isNew": false,
+    "src": "shots/V-HP-1.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-2",
+    "valueType": "intWithMaxValue",
+    "variant": 2,
+    "title": "Pentagon",
+    "isNew": false,
+    "src": "shots/V-HP-2.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-3",
+    "valueType": "intWithMaxValue",
+    "variant": 3,
+    "title": "Circular progress (health colors)",
+    "isNew": false,
+    "src": "shots/V-HP-3.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-4",
+    "valueType": "intWithMaxValue",
+    "variant": 4,
+    "title": "Dot pips",
+    "isNew": false,
+    "src": "shots/V-HP-4.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-5",
+    "valueType": "intWithMaxValue",
+    "variant": 5,
+    "title": "Heart reservoir",
+    "isNew": true,
+    "src": "shots/V-HP-5.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-6",
+    "valueType": "intWithMaxValue",
+    "variant": 6,
+    "title": "Gem / crystal reservoir",
+    "isNew": true,
+    "src": "shots/V-HP-6.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-7",
+    "valueType": "intWithMaxValue",
+    "variant": 7,
+    "title": "Segmented track",
+    "isNew": true,
+    "src": "shots/V-HP-7.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-HP-8",
+    "valueType": "intWithMaxValue",
+    "variant": 8,
+    "title": "Compact combat chip (was V-HP-9)",
+    "isNew": true,
+    "src": "shots/V-HP-8.png",
+    "sample": "intWithMaxValue, static"
+  },
+  {
+    "id": "V-CALC-0",
+    "valueType": "intWithCalculatedValue",
+    "variant": 0,
+    "title": "Stacked text",
+    "isNew": false,
+    "src": "shots/V-CALC-0.png",
+    "sample": "intWithCalculatedValue, static"
+  },
+  {
+    "id": "V-CALC-1",
+    "valueType": "intWithCalculatedValue",
+    "variant": 1,
+    "title": "Pentagon",
+    "isNew": false,
+    "src": "shots/V-CALC-1.png",
+    "sample": "intWithCalculatedValue, static"
+  },
+  {
+    "id": "V-CALC-2",
+    "valueType": "intWithCalculatedValue",
+    "variant": 2,
+    "title": "Modifier-first",
+    "isNew": true,
+    "src": "shots/V-CALC-2.png",
+    "sample": "intWithCalculatedValue, static"
+  },
+  {
+    "id": "V-CALC-3",
+    "valueType": "intWithCalculatedValue",
+    "variant": 3,
+    "title": "Classic ability block",
+    "isNew": true,
+    "src": "shots/V-CALC-3.png",
+    "sample": "intWithCalculatedValue, static"
+  },
+  {
+    "id": "V-ABILITY-0",
+    "valueType": "listOfIntWithCalculatedValues",
+    "variant": 0,
+    "title": "Pentagon grid",
+    "isNew": false,
+    "src": "shots/V-ABILITY-0.png",
+    "sample": "listOfIntWithCalculatedValues, static"
+  },
+  {
+    "id": "V-ABILITY-1",
+    "valueType": "listOfIntWithCalculatedValues",
+    "variant": 1,
+    "title": "Modifier-first tiles",
+    "isNew": true,
+    "src": "shots/V-ABILITY-1.png",
+    "sample": "listOfIntWithCalculatedValues, static"
+  },
+  {
+    "id": "V-ABILITY-2",
+    "valueType": "listOfIntWithCalculatedValues",
+    "variant": 2,
+    "title": "Hex / shield tiles",
+    "isNew": true,
+    "src": "shots/V-ABILITY-2.png",
+    "sample": "listOfIntWithCalculatedValues, static"
+  },
+  {
+    "id": "V-ABILITY-3",
+    "valueType": "listOfIntWithCalculatedValues",
+    "variant": 3,
+    "title": "Classic ability blocks",
+    "isNew": true,
+    "src": "shots/V-ABILITY-3.png",
+    "sample": "listOfIntWithCalculatedValues, static"
+  },
+  {
+    "id": "V-ICON-0",
+    "valueType": "listOfIntsWithIcons",
+    "variant": 0,
+    "title": "Icon + Label: value",
+    "isNew": false,
+    "src": "shots/V-ICON-0.png",
+    "sample": "listOfIntsWithIcons, static"
+  },
+  {
+    "id": "V-ICON-1",
+    "valueType": "listOfIntsWithIcons",
+    "variant": 1,
+    "title": "Icon + value over label",
+    "isNew": false,
+    "src": "shots/V-ICON-1.png",
+    "sample": "listOfIntsWithIcons, static"
+  },
+  {
+    "id": "V-ICON-2",
+    "valueType": "listOfIntsWithIcons",
+    "variant": 2,
+    "title": "Medallion / badge cluster",
+    "isNew": true,
+    "src": "shots/V-ICON-2.png",
+    "sample": "listOfIntsWithIcons, static"
+  },
+  {
+    "id": "V-ICON-3",
+    "valueType": "listOfIntsWithIcons",
+    "variant": 3,
+    "title": "Horizontal ribbon",
+    "isNew": true,
+    "src": "shots/V-ICON-3.png",
+    "sample": "listOfIntsWithIcons, static"
+  },
+  {
+    "id": "V-ICON-4",
+    "valueType": "listOfIntsWithIcons",
+    "variant": 4,
+    "title": "Primary hero + secondaries",
+    "isNew": true,
+    "src": "shots/V-ICON-4.png",
+    "sample": "listOfIntsWithIcons, static"
+  },
+  {
+    "id": "V-MULTI-0",
+    "valueType": "multiselect",
+    "variant": 0,
+    "title": "Selected-only list",
+    "isNew": false,
+    "src": "shots/V-MULTI-0.png",
+    "sample": "multiselect, static"
+  },
+  {
+    "id": "V-MULTI-1",
+    "valueType": "multiselect",
+    "variant": 1,
+    "title": "All options list",
+    "isNew": false,
+    "src": "shots/V-MULTI-1.png",
+    "sample": "multiselect, static"
+  },
+  {
+    "id": "V-MULTI-2",
+    "valueType": "multiselect",
+    "variant": 2,
+    "title": "Proficiency chips",
+    "isNew": true,
+    "src": "shots/V-MULTI-2.png",
+    "sample": "multiselect, static"
+  },
+  {
+    "id": "V-MULTI-3",
+    "valueType": "multiselect",
+    "variant": 3,
+    "title": "Icon / tile grid (was V-MULTI-4)",
+    "isNew": true,
+    "src": "shots/V-MULTI-3.png",
+    "sample": "multiselect, static"
+  },
+  {
+    "id": "V-ID-0",
+    "valueType": "characterNameWithLevelAndAdditionalDetails",
+    "variant": 0,
+    "title": "Level circle + detail grid",
+    "isNew": false,
+    "src": "shots/V-ID-0.png",
+    "sample": "characterNameWithLevelAndAdditionalDetails, static"
+  },
+  {
+    "id": "V-ID-1",
+    "valueType": "characterNameWithLevelAndAdditionalDetails",
+    "variant": 1,
+    "title": "Banner + level seal",
+    "isNew": true,
+    "src": "shots/V-ID-1.png",
+    "sample": "characterNameWithLevelAndAdditionalDetails, static"
+  },
+  {
+    "id": "V-ID-2",
+    "valueType": "characterNameWithLevelAndAdditionalDetails",
+    "variant": 2,
+    "title": "Portrait-led card (generate/save image)",
+    "isNew": true,
+    "src": "shots/V-ID-2.png",
+    "sample": "characterNameWithLevelAndAdditionalDetails, static"
+  },
+  {
+    "id": "V-ID-3",
+    "valueType": "characterNameWithLevelAndAdditionalDetails",
+    "variant": 3,
+    "title": "Minimal identity line",
+    "isNew": true,
+    "src": "shots/V-ID-3.png",
+    "sample": "characterNameWithLevelAndAdditionalDetails, static"
+  },
+  {
+    "id": "V-TEXT-0",
+    "valueType": "multiLineText",
+    "variant": 0,
+    "title": "Labeled markdown",
+    "isNew": false,
+    "src": "shots/V-TEXT-0.png",
+    "sample": "multiLineText, static"
+  },
+  {
+    "id": "V-TEXT-1",
+    "valueType": "multiLineText",
+    "variant": 1,
+    "title": "Collapsible lore panel (expanded)",
+    "isNew": true,
+    "src": "shots/V-TEXT-1.png",
+    "sample": "multiLineText, static"
+  },
+  {
+    "id": "V-TEXT-2",
+    "valueType": "multiLineText",
+    "variant": 2,
+    "title": "Parchment frame (left accent)",
+    "isNew": true,
+    "src": "shots/V-TEXT-2.png",
+    "sample": "multiLineText, static"
+  },
+  {
+    "id": "V-IMG-0",
+    "valueType": "singleImage",
+    "variant": 0,
+    "title": "Bordered image",
+    "isNew": false,
+    "src": "shots/V-IMG-0.png",
+    "sample": "singleImage, static"
+  },
+  {
+    "id": "V-SLTEXT-0",
+    "valueType": "singleLineText",
+    "variant": 0,
+    "title": "Labeled markdown",
+    "isNew": false,
+    "src": "shots/V-SLTEXT-0.png",
+    "sample": "singleLineText, static"
+  },
+  {
+    "id": "V-COMP-0",
+    "valueType": "companionSelector",
+    "variant": 0,
+    "title": "Paw + buttons",
+    "isNew": false,
+    "src": "shots/V-COMP-0.png",
+    "sample": "companionSelector, static"
+  },
+  {
+    "id": "V-COMP-1",
+    "valueType": "companionSelector",
+    "variant": 1,
+    "title": "Mini character cards",
+    "isNew": true,
+    "src": "shots/V-COMP-1.png",
+    "sample": "companionSelector, static"
+  },
+  {
+    "id": "V-FORM-0",
+    "valueType": "transformIntoAlternateFormBtn",
+    "variant": 0,
+    "title": "Wand + transform button",
+    "isNew": false,
+    "src": "shots/V-FORM-0.png",
+    "sample": "transformIntoAlternateFormBtn, fastEdit"
+  },
+  {
+    "id": "V-FORM-1",
+    "valueType": "transformIntoAlternateFormBtn",
+    "variant": 1,
+    "title": "Active-form banner",
+    "isNew": true,
+    "src": "shots/V-FORM-1.png",
+    "sample": "transformIntoAlternateFormBtn, fastEdit"
+  },
+  {
+    "id": "V-INT-0",
+    "valueType": "int",
+    "variant": 0,
+    "title": "Number over label",
+    "isNew": false,
+    "src": "shots/V-INT-0.png",
+    "sample": "int, static"
+  },
+  {
+    "id": "V-INT-1",
+    "valueType": "int",
+    "variant": 1,
+    "title": "Large numeral tile",
+    "isNew": true,
+    "src": "shots/V-INT-1.png",
+    "sample": "int, static"
+  }
+]

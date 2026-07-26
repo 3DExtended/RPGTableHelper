@@ -190,6 +190,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "generateLoreImageTitle": MessageLookupByLibrary.simpleMessage(
       "Generiere ein Bild",
     ),
+    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
+      "Porträtbeschreibung",
+    ),
+    "characterPortraitImagePromptPlaceholder":
+        MessageLookupByLibrary.simpleMessage(
+      "Beschreibe deinen Charakter für die Bildgenerierung",
+    ),
     "generatedImage": MessageLookupByLibrary.simpleMessage("Generiertes Bild"),
     "generatedImagesTabTitle": MessageLookupByLibrary.simpleMessage(
       "Generierte Bilder",

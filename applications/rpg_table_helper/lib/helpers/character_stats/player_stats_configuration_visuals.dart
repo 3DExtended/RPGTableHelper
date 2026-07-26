@@ -274,7 +274,22 @@ class _PlayerStatsConfigurationVisualsState
             uuid: "",
             value: (tempDecode["level"] as int?)?.toString() ?? "0"
           ));
+
+          // Optional portrait fields (same shape idea as singleImage)
+          // {"imageUrl": "...", "imagePrompt": "..."}
+          final imageUrl = tempDecode["imageUrl"] as String?;
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            urlsOfGeneratedImages = [imageUrl];
+            selectedGeneratedImageIndex = 0;
+          }
+          textController = TextEditingController(
+              text: (tempDecode["imagePrompt"] as String?) ?? "");
+          textController.addListener(onChanged);
         }
+      } else if (widget.statConfiguration.valueType ==
+          CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+        textController = TextEditingController();
+        textController.addListener(onChanged);
       }
       listOfSingleValueOptions = labelDefinitions.map(
         (e) {
@@ -565,6 +580,15 @@ class _PlayerStatsConfigurationVisualsState
         SizedBox(
           height: 10,
         ),
+        getGeneratedImagePickerControls(context),
+      ],
+    );
+  }
+
+  /// Shared generate / browse UI used by singleImage and identity portrait.
+  Widget getGeneratedImagePickerControls(BuildContext context) {
+    return Column(
+      children: [
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 300, maxWidth: 300),
           child: Builder(builder: (context) {
@@ -833,6 +857,11 @@ class _PlayerStatsConfigurationVisualsState
       serializedValue: jsonEncode({
         "level": (foundLevel != null ? int.tryParse(foundLevel) : null) ?? 0,
         "values": filledValuesForlistOfSingleValueOptions,
+        "imagePrompt": textController.text,
+        "imageUrl": urlsOfGeneratedImages.isEmpty ||
+                selectedGeneratedImageIndex == null
+            ? null
+            : urlsOfGeneratedImages[selectedGeneratedImageIndex ?? 0],
       }),
       statUuid: widget.statConfiguration.statUuid,
     );
@@ -1278,6 +1307,20 @@ class _PlayerStatsConfigurationVisualsState
                     ),
                   ],
                 )),
+        if (widget.statConfiguration.valueType ==
+            CharacterStatValueType
+                .characterNameWithLevelAndAdditionalDetails) ...[
+          SizedBox(height: 16),
+          CustomTextField(
+            labelText: S.of(context).characterPortraitImagePrompt,
+            placeholderText:
+                S.of(context).characterPortraitImagePromptPlaceholder,
+            textEditingController: textController,
+            keyboardType: TextInputType.multiline,
+          ),
+          SizedBox(height: 10),
+          getGeneratedImagePickerControls(context),
+        ],
       ],
     );
   }

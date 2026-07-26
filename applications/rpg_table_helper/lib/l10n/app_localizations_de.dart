@@ -743,6 +743,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get generateLoreImageTitle => 'Generiere ein Bild';
 
   @override
+  String get characterPortraitImagePrompt => 'Porträtbeschreibung';
+
+  @override
+  String get characterPortraitImagePromptPlaceholder =>
+      'Beschreibe deinen Charakter für die Bildgenerierung';
+
+  @override
   String get generatedImagesTabTitle => 'Generierte Bilder';
 
   @override
