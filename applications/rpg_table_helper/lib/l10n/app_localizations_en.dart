@@ -391,6 +391,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initiativeRollTextFieldLabel => 'Initiative roll';
 
   @override
+  String initiativeBonusHelperSentence(Object formattedBonus, Object label) {
+    return 'Add $label $formattedBonus to your roll';
+  }
+
+  @override
   String get send => 'Absenden';
 
   @override

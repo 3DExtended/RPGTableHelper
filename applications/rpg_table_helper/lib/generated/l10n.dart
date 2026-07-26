@@ -1094,6 +1094,16 @@ class S {
     );
   }
 
+  /// `Add {label} {formattedBonus} to your roll`
+  String initiativeBonusHelperSentence(Object label, Object formattedBonus) {
+    return Intl.message(
+      'Add $label $formattedBonus to your roll',
+      name: 'initiativeBonusHelperSentence',
+      desc: '',
+      args: [label, formattedBonus],
+    );
+  }
+
   /// `Absenden`
   String get send {
     return Intl.message('Absenden', name: 'send', desc: '', args: []);

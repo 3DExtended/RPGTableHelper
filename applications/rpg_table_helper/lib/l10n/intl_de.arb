@@ -144,6 +144,7 @@
   "initiativeRollForCharacterPrefix": "Kampf Reihenfolge Wurf",
   "initiativeRollText": "Ein Kampf startet: Würfel deinen Platz in der Reihenfolge!",
   "initiativeRollTextFieldLabel": "Kampf Wurf",
+  "initiativeBonusHelperSentence": "Addiere {label} {formattedBonus} zu deinem Wurf",
   "send": "Absenden",
   "editPageTitle": "Seite bearbeiten",
   "editPageModalText": "Hier kannst du sowohl den Titel als auch die Gruppierung deiner Seite verändern.",

@@ -30,6 +30,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(count) => "You own ${count} characters";
 
+  static String m5(label, formattedBonus) =>
+      "Add ${label} ${formattedBonus} to your roll";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "add": MessageLookupByLibrary.simpleMessage("Add"),
@@ -212,6 +215,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeRollTextFieldLabel": MessageLookupByLibrary.simpleMessage(
       "Initiative roll",
     ),
+    "initiativeBonusHelperSentence": m5,
     "integerValue": MessageLookupByLibrary.simpleMessage("Number value"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Number value with additional number",

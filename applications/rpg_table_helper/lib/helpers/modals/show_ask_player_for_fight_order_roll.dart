@@ -7,12 +7,14 @@ import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/initiative_bonus_resolver.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 Future<int?> showAskPlayerForFightOrderRoll(BuildContext context,
     {required String characterName,
+    InitiativeBonusHint? initiativeBonusHint,
     GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   // show error to user
   return await customShowCupertinoModalBottomSheet<int>(
@@ -32,6 +34,7 @@ Future<int?> showAskPlayerForFightOrderRoll(BuildContext context,
         return PlayerHasBeenAskedToRollForFightOrderModalContent(
           modalPadding: modalPadding,
           characterName: characterName,
+          initiativeBonusHint: initiativeBonusHint,
         );
       });
 }
@@ -41,10 +44,12 @@ class PlayerHasBeenAskedToRollForFightOrderModalContent extends StatefulWidget {
     super.key,
     required this.modalPadding,
     required this.characterName,
+    this.initiativeBonusHint,
   });
 
   final String characterName;
   final double modalPadding;
+  final InitiativeBonusHint? initiativeBonusHint;
 
   @override
   State<PlayerHasBeenAskedToRollForFightOrderModalContent> createState() =>
@@ -57,6 +62,9 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
 
   @override
   Widget build(BuildContext context) {
+    final hint = widget.initiativeBonusHint;
+    final maxHeight = hint == null ? 300.0 : 360.0;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
@@ -69,7 +77,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
         child: Center(
           child: CustomShadowWidget(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 550, maxHeight: 300),
+              constraints: BoxConstraints(maxWidth: 550, maxHeight: maxHeight),
               child: Container(
                 color: CustomThemeProvider.of(context).theme.bgColor,
                 child: Column(
@@ -117,7 +125,26 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                                       fontSize: 16,
                                     ),
                               ),
-                              SizedBox(
+                              if (hint != null) ...[
+                                const SizedBox(height: 10),
+                                Text(
+                                  S.of(context).initiativeBonusHelperSentence(
+                                        hint.label,
+                                        formatInitiativeBonus(hint.bonus),
+                                      ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: CustomThemeProvider.of(context)
+                                            .theme
+                                            .darkTextColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                              const SizedBox(
                                 height: 10,
                               ),
                               CustomTextField(

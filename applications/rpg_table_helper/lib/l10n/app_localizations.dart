@@ -824,6 +824,12 @@ abstract class AppLocalizations {
   /// **'Kampf Wurf'**
   String get initiativeRollTextFieldLabel;
 
+  /// No description provided for @initiativeBonusHelperSentence.
+  ///
+  /// In de, this message translates to:
+  /// **'Addiere {label} {formattedBonus} zu deinem Wurf'**
+  String initiativeBonusHelperSentence(Object formattedBonus, Object label);
+
   /// No description provided for @send.
   ///
   /// In de, this message translates to:

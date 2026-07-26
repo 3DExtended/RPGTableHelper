@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/initiative_bonus_resolver.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modals/show_ask_player_for_fight_order_roll.dart';
 import 'package:quest_keeper/helpers/modals/show_player_has_been_granted_items_through_dm_modal.dart';
@@ -221,10 +222,18 @@ class ServerMethodsService extends IServerMethodsService {
         navKey = navigatorKey;
       }
 
+      final rpgConfig =
+          widgetRef.read(rpgConfigurationProvider).requireValue;
+
       for (var characterAsked in charactersInQuestion) {
+        final hint = resolveInitiativeBonus(
+          rpgConfig: rpgConfig,
+          character: characterAsked,
+        );
         var roll = await showAskPlayerForFightOrderRoll(
           navKey.currentContext!,
           characterName: characterAsked.characterName,
+          initiativeBonusHint: hint,
         );
 
         if (roll == null) continue;

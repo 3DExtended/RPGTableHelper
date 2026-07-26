@@ -120,6 +120,7 @@
   "initiativeRollForCharacterPrefix": "Initiative roll",
   "initiativeRollText": "A fight has started. Please roll for initiative.",
   "initiativeRollTextFieldLabel": "Initiative roll",
+  "initiativeBonusHelperSentence": "Add {label} {formattedBonus} to your roll",
   "send": "Absenden",
   "editPageTitle": "Edit document",
   "editPageModalText": "You can edit both the title and the grouping of your document here.",

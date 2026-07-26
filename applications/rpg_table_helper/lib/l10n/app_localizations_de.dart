@@ -396,6 +396,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get initiativeRollTextFieldLabel => 'Kampf Wurf';
 
   @override
+  String initiativeBonusHelperSentence(Object formattedBonus, Object label) {
+    return 'Addiere $label $formattedBonus zu deinem Wurf';
+  }
+
+  @override
   String get send => 'Absenden';
 
   @override

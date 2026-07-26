@@ -24,4 +24,4 @@ Added optional initiative bonus fields on `RpgConfigurationModel` (stat UUID, li
 - Branch: `main`
 - Tests: `flutter test test/helpers/initiative_bonus_resolver_test.dart` — passing
 - Visual snapshots: none
-- Commit(s): pending
+- Commit(s): `cb9823c6`
