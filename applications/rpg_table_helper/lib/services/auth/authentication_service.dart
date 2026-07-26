@@ -269,14 +269,17 @@ class AuthenticationService extends IAuthenticationService {
         statusCode: loginWithAppleResult.statusCode,
       );
     } else if (loginWithAppleResult.isSuccessful) {
-      var updateJwtResult = await HRResponse.fromFuture(
-        persistTokenPair(loginWithAppleResult.result!),
-        'Could not update jwt.',
-        '58b6c194-7aaa-4fdf-810a-09ec6a684731',
-      );
-
-      if (!updateJwtResult.isSuccessful) {
-        return updateJwtResult.asT<SignInResult>();
+      // Do NOT wrap Future<void> in HRResponse.fromFuture — void completes as
+      // null and fromFuture treats that as failure (broke Apple login after
+      // token-pair auth). Await directly like password/register paths.
+      try {
+        await persistTokenPair(loginWithAppleResult.result!);
+      } catch (e) {
+        return HRResponse.error<SignInResult>(
+          'Could not update jwt.',
+          '58b6c194-7aaa-4fdf-810a-09ec6a684731',
+          caughtException: e is Exception ? e : Exception(e.toString()),
+        );
       }
 
       return HRResponse.fromResult(
