@@ -1,0 +1,9 @@
+services:
+  questkeeper_aspnet_api:
+    volumes:
+      - ./tmp/database:/app/database
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  questkeeper_cloudflare_tunnel:
+    profiles:
+      - tunnel

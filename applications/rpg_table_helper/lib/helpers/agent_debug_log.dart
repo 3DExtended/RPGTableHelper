@@ -5,12 +5,12 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 /// Active debug session id (matches Cursor debug session when used from IDE).
-const agentDebugSessionId = '7db69f';
+const agentDebugSessionId = '9eb1db';
 
 const _logFileName = 'agent_debug.ndjson';
 const _maxLogFileBytes = 512 * 1024;
 const _workspaceDebugLogPath =
-    '/Users/peteresser/Developer/projects/archive/rpgTableHelper/.cursor/debug-7db69f.log';
+    '/Users/peteresser/Developer/projects/archive/rpgTableHelper/.cursor/debug-9eb1db.log';
 const _debugIngestUrl =
     'http://127.0.0.1:7464/ingest/582d64c1-b502-4cc5-9e27-7aeb8557927c';
 
