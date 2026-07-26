@@ -13,3 +13,14 @@
 - Config fields + resolve/format helper + unit tests green
 - Next: init-02
 
+## init-02 complete
+
+- Popup helper sentence + service wiring; commit `a3a098c7`
+- Next: init-03
+
+## init-03 complete
+
+- Fight / Initiative wizard step + tests green
+- User updated goldens manually; committing initiative-related `withBonusHint` only
+- Next: init-04
+

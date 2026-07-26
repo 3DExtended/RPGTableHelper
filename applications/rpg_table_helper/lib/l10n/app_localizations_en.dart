@@ -396,6 +396,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get fightInitiativeStepTitle => 'Fight / Initiative';
+
+  @override
+  String get fightInitiativeStepTutorial =>
+      'Mark which stat counts as the initiative bonus.\n\nWhen a player is asked to roll for initiative, they will see a hint with this bonus so they don\'t have to remember it while the roll popup covers their character sheet.\n\nChoose **None** if your system doesn\'t use a bonus. Otherwise pick a stat below. If it is a group of values (e.g. abilities), also pick the entry that applies. If the value has two numbers (e.g. score and modifier, or current and max), pick which one counts as the bonus.';
+
+  @override
+  String get initiativeBonusNoneOption => 'None';
+
+  @override
+  String get initiativeBonusStatPickerLabel => 'Stat';
+
+  @override
+  String get initiativeBonusListEntryPickerLabel => 'List entry';
+
+  @override
+  String get initiativeBonusFieldPickerLabel => 'Field';
+
+  @override
   String get send => 'Absenden';
 
   @override

@@ -401,6 +401,25 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get fightInitiativeStepTitle => 'Kampf / Initiative';
+
+  @override
+  String get fightInitiativeStepTutorial =>
+      'Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.';
+
+  @override
+  String get initiativeBonusNoneOption => 'Keine';
+
+  @override
+  String get initiativeBonusStatPickerLabel => 'Eigenschaft';
+
+  @override
+  String get initiativeBonusListEntryPickerLabel => 'Listeneintrag';
+
+  @override
+  String get initiativeBonusFieldPickerLabel => 'Feld';
+
+  @override
   String get send => 'Absenden';
 
   @override

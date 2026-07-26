@@ -830,6 +830,42 @@ abstract class AppLocalizations {
   /// **'Addiere {label} {formattedBonus} zu deinem Wurf'**
   String initiativeBonusHelperSentence(Object formattedBonus, Object label);
 
+  /// No description provided for @fightInitiativeStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampf / Initiative'**
+  String get fightInitiativeStepTitle;
+
+  /// No description provided for @fightInitiativeStepTutorial.
+  ///
+  /// In de, this message translates to:
+  /// **'Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.'**
+  String get fightInitiativeStepTutorial;
+
+  /// No description provided for @initiativeBonusNoneOption.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine'**
+  String get initiativeBonusNoneOption;
+
+  /// No description provided for @initiativeBonusStatPickerLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaft'**
+  String get initiativeBonusStatPickerLabel;
+
+  /// No description provided for @initiativeBonusListEntryPickerLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Listeneintrag'**
+  String get initiativeBonusListEntryPickerLabel;
+
+  /// No description provided for @initiativeBonusFieldPickerLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Feld'**
+  String get initiativeBonusFieldPickerLabel;
+
   /// No description provided for @send.
   ///
   /// In de, this message translates to:

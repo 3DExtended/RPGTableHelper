@@ -216,6 +216,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Initiative roll",
     ),
     "initiativeBonusHelperSentence": m5,
+    "fightInitiativeStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Fight / Initiative",
+    ),
+    "fightInitiativeStepTutorial": MessageLookupByLibrary.simpleMessage(
+      "Mark which stat counts as the initiative bonus.\n\nWhen a player is asked to roll for initiative, they will see a hint with this bonus so they don\'t have to remember it while the roll popup covers their character sheet.\n\nChoose **None** if your system doesn\'t use a bonus. Otherwise pick a stat below. If it is a group of values (e.g. abilities), also pick the entry that applies. If the value has two numbers (e.g. score and modifier, or current and max), pick which one counts as the bonus.",
+    ),
+    "initiativeBonusNoneOption": MessageLookupByLibrary.simpleMessage("None"),
+    "initiativeBonusStatPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Stat",
+    ),
+    "initiativeBonusListEntryPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "List entry",
+    ),
+    "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Field",
+    ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Number value"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Number value with additional number",

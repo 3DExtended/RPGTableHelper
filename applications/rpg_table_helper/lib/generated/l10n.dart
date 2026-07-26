@@ -1104,6 +1104,66 @@ class S {
     );
   }
 
+  /// `Fight / Initiative`
+  String get fightInitiativeStepTitle {
+    return Intl.message(
+      'Fight / Initiative',
+      name: 'fightInitiativeStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mark which stat counts as the initiative bonus.\n\nWhen a player is asked to roll for initiative, they will see a hint with this bonus so they don't have to remember it while the roll popup covers their character sheet.\n\nChoose **None** if your system doesn't use a bonus. Otherwise pick a stat below. If it is a group of values (e.g. abilities), also pick the entry that applies. If the value has two numbers (e.g. score and modifier, or current and max), pick which one counts as the bonus.`
+  String get fightInitiativeStepTutorial {
+    return Intl.message(
+      'Mark which stat counts as the initiative bonus.\n\nWhen a player is asked to roll for initiative, they will see a hint with this bonus so they don\'t have to remember it while the roll popup covers their character sheet.\n\nChoose **None** if your system doesn\'t use a bonus. Otherwise pick a stat below. If it is a group of values (e.g. abilities), also pick the entry that applies. If the value has two numbers (e.g. score and modifier, or current and max), pick which one counts as the bonus.',
+      name: 'fightInitiativeStepTutorial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `None`
+  String get initiativeBonusNoneOption {
+    return Intl.message(
+      'None',
+      name: 'initiativeBonusNoneOption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stat`
+  String get initiativeBonusStatPickerLabel {
+    return Intl.message(
+      'Stat',
+      name: 'initiativeBonusStatPickerLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List entry`
+  String get initiativeBonusListEntryPickerLabel {
+    return Intl.message(
+      'List entry',
+      name: 'initiativeBonusListEntryPickerLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Field`
+  String get initiativeBonusFieldPickerLabel {
+    return Intl.message(
+      'Field',
+      name: 'initiativeBonusFieldPickerLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Absenden`
   String get send {
     return Intl.message('Absenden', name: 'send', desc: '', args: []);

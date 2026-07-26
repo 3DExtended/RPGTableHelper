@@ -11,6 +11,62 @@ class InitiativeBonusHint {
   const InitiativeBonusHint({required this.label, required this.bonus});
 }
 
+/// A selectable entry of a list-type stat (e.g. one ability row).
+class InitiativeBonusListEntry {
+  final String uuid;
+  final String label;
+
+  const InitiativeBonusListEntry({required this.uuid, required this.label});
+}
+
+/// Stat types the DM can mark as the initiative bonus source.
+const eligibleInitiativeBonusStatTypes = {
+  CharacterStatValueType.int,
+  CharacterStatValueType.intWithCalculatedValue,
+  CharacterStatValueType.intWithMaxValue,
+  CharacterStatValueType.listOfIntWithCalculatedValues,
+  CharacterStatValueType.listOfIntsWithIcons,
+};
+
+/// Stat types that require a list-entry pick (one row of the group).
+const listInitiativeBonusStatTypes = {
+  CharacterStatValueType.listOfIntWithCalculatedValues,
+  CharacterStatValueType.listOfIntsWithIcons,
+};
+
+/// Stat types where the DM has to disambiguate between two numbers.
+const fieldPickerInitiativeBonusStatTypes = {
+  CharacterStatValueType.intWithCalculatedValue,
+  CharacterStatValueType.listOfIntWithCalculatedValues,
+  CharacterStatValueType.intWithMaxValue,
+};
+
+bool isListInitiativeBonusStatType(CharacterStatValueType type) =>
+    listInitiativeBonusStatTypes.contains(type);
+
+bool hasFieldPickerForInitiativeBonusStatType(CharacterStatValueType type) =>
+    fieldPickerInitiativeBonusStatTypes.contains(type);
+
+/// Parses the selectable list entries (uuid + label) of a list-type stat.
+List<InitiativeBonusListEntry> initiativeBonusListEntriesFor(
+  CharacterStatDefinition definition,
+) {
+  final raw = definition.jsonSerializedAdditionalData;
+  if (raw == null || raw.isEmpty) return const [];
+  try {
+    final decoded = jsonDecode(raw) as Map<String, dynamic>;
+    final values = decoded['values'];
+    if (values is! List) return const [];
+    return values.whereType<Map>().map((entry) {
+      final uuid = entry['uuid']?.toString() ?? '';
+      final label = entry['label']?.toString() ?? '';
+      return InitiativeBonusListEntry(uuid: uuid, label: label);
+    }).where((entry) => entry.uuid.isNotEmpty).toList();
+  } catch (_) {
+    return const [];
+  }
+}
+
 /// Formats a bonus for the player helper sentence: `(+N)` / `(-N)` / `(0)`.
 String formatInitiativeBonus(int bonus) {
   if (bonus == 0) return '(0)';
@@ -43,8 +99,8 @@ InitiativeBonusHint? resolveInitiativeBonus({
     return null;
   }
 
-  final field =
-      rpgConfig.initiativeBonusField ?? _defaultFieldFor(definition.valueType);
+  final field = rpgConfig.initiativeBonusField ??
+      defaultInitiativeBonusFieldFor(definition.valueType);
 
   switch (definition.valueType) {
     case CharacterStatValueType.int:
@@ -90,7 +146,9 @@ CharacterStatDefinition? _findStatDefinition(
   return null;
 }
 
-InitiativeBonusField _defaultFieldFor(CharacterStatValueType type) {
+/// Default field per PRD: `otherValue` for calculated pairs, `value` (current)
+/// for HP-style max pairs, `value` for everything else.
+InitiativeBonusField defaultInitiativeBonusFieldFor(CharacterStatValueType type) {
   switch (type) {
     case CharacterStatValueType.intWithCalculatedValue:
     case CharacterStatValueType.listOfIntWithCalculatedValues:

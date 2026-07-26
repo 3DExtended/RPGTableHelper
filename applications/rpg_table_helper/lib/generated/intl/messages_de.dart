@@ -224,6 +224,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Kampf Wurf",
     ),
     "initiativeBonusHelperSentence": m5,
+    "fightInitiativeStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Kampf / Initiative",
+    ),
+    "fightInitiativeStepTutorial": MessageLookupByLibrary.simpleMessage(
+      "Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.",
+    ),
+    "initiativeBonusNoneOption": MessageLookupByLibrary.simpleMessage("Keine"),
+    "initiativeBonusStatPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Eigenschaft",
+    ),
+    "initiativeBonusListEntryPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Listeneintrag",
+    ),
+    "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Feld",
+    ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Zahlen-Wert"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Zahlen-Wert mit zusätzlicher Zahl",
