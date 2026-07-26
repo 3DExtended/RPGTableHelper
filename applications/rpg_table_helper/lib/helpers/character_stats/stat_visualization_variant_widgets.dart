@@ -968,8 +968,10 @@ class IconStatRibbon extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: StatVizTheme.dark(context), width: 1.5),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        spacing: 0,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           for (var i = 0; i < items.length; i++) ...[
             if (i > 0)
@@ -1013,9 +1015,12 @@ class IconPrimaryHeroRow extends StatelessWidget {
     if (items.isEmpty) return SizedBox.shrink();
     final primary = items.first;
     final rest = items.skip(1).toList();
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
+    // Wrap instead of Row so many secondary medallions reflow instead of
+    // overflowing narrow config-preview / tablet widths.
+    return Wrap(
+      spacing: 12,
+      runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.end,
       children: [
         IconMedallion(
           iconName: primary.iconName,
@@ -1023,20 +1028,13 @@ class IconPrimaryHeroRow extends StatelessWidget {
           value: primary.value,
           size: 110,
         ),
-        SizedBox(width: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: rest
-              .map(
-                (e) => IconMedallion(
-                  iconName: e.iconName,
-                  label: e.label,
-                  value: e.value,
-                  size: 64,
-                ),
-              )
-              .toList(),
+        ...rest.map(
+          (e) => IconMedallion(
+            iconName: e.iconName,
+            label: e.label,
+            value: e.value,
+            size: 64,
+          ),
         ),
       ],
     );
