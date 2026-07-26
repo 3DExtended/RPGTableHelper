@@ -1,7 +1,19 @@
 import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
 import 'package:quest_keeper/services/auth/token_refresher.dart';
 
-enum SessionRestoreResult { restored, needsLogin }
+enum SessionRestoreResult {
+  restored,
+
+  /// No refresh token was ever stored on this device (fresh install, or an
+  /// upgrade from an older JWT-only install). `LoginScreen` should not show
+  /// a session-expired message for this case.
+  needsLogin,
+
+  /// A refresh token was stored but the server rejected it (expired,
+  /// revoked, or logged out elsewhere). `LoginScreen` may show a
+  /// session-expired message for this case.
+  sessionExpired,
+}
 
 /// Cold-start gate deciding whether the app can skip `LoginScreen` and land
 /// straight on `SelectGameModeScreen`.
@@ -38,7 +50,7 @@ class SessionRestorer extends ISessionRestorer {
     var refreshed = await tokenRefresher.refresh();
     return refreshed
         ? SessionRestoreResult.restored
-        : SessionRestoreResult.needsLogin;
+        : SessionRestoreResult.sessionExpired;
   }
 }
 

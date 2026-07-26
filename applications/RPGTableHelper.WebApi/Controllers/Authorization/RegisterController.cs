@@ -17,6 +17,7 @@ using RPGTableHelper.DataLayer.SendGrid.Contracts.Models;
 using RPGTableHelper.DataLayer.SendGrid.Contracts.Queries;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
+using RPGTableHelper.WebApi.Services.Auth;
 
 namespace RPGTableHelper.WebApi.Controllers.Authorization
 {
@@ -29,13 +30,15 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         private readonly IQueryProcessor _queryProcessor;
         private readonly ISystemClock _systemClock;
         private readonly IJWTTokenGenerator _jwtTokenGenerator;
+        private readonly IAuthTokenPairIssuer _authTokenPairIssuer;
 
         public RegisterController(
             ILogger logger,
             IQueryProcessor queryProcessor,
             IConfiguration configuration,
             ISystemClock systemClock,
-            IJWTTokenGenerator jwtTokenGenerator
+            IJWTTokenGenerator jwtTokenGenerator,
+            IAuthTokenPairIssuer authTokenPairIssuer
         )
         {
             _logger = logger;
@@ -43,6 +46,7 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
             _configuration = configuration;
             _systemClock = systemClock;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _authTokenPairIssuer = authTokenPairIssuer;
         }
 
         /// <summary>
@@ -136,16 +140,16 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         /// </remarks>
         /// <param name="encryptedRegisterDto">The encrypted register dto</param>
         /// <param name="cancellationToken">cancellationToken</param>
-        /// <returns>When valid, the JWT.</returns>
-        /// <response code="200">Returns the JWT for the user.</response>
+        /// <returns>When valid, the access + refresh token pair.</returns>
+        /// <response code="200">Returns the access + refresh token pair for the user.</response>
         /// <response code="400">If the passed user input is invalid</response>
         /// <response code="409">If the desired username is already taken</response>
         [HttpPost("register")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthTokenPairDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> RegisterAsync(
+        public async Task<ActionResult<AuthTokenPairDto>> RegisterAsync(
             [FromBody] [Required] string encryptedRegisterDto,
             CancellationToken cancellationToken
         )
@@ -266,8 +270,16 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest("Could not send registration email to user");
             }
 
-            var token = _jwtTokenGenerator.GetJWTToken(registerDto.Username, usercreateresult.Get().Value.ToString());
-            return Ok(token);
+            var tokenPairResult = await _authTokenPairIssuer
+                .IssueAsync(usercreateresult.Get(), registerDto.Username, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (tokenPairResult.IsNone)
+            {
+                return BadRequest();
+            }
+
+            return Ok(tokenPairResult.Get());
         }
 
         /// <summary>
@@ -275,18 +287,18 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
         /// </summary>
         /// <param name="registerDto">The register dto providing apikey and username</param>
         /// <param name="cancellationToken">cancellationToken</param>
-        /// <returns>When valid, the JWT.</returns>
-        /// <response code="200">Returns the JWT for the user.</response>
+        /// <returns>When valid, the access + refresh token pair.</returns>
+        /// <response code="200">Returns the access + refresh token pair for the user.</response>
         /// <response code="400">If there was an issue</response>
         /// <response code="401">If there is no open <see cref="OpenSignInProviderRegisterRequest"/></response>
         /// <response code="409">If the open OpenSignInProviderRegisterRequest does not have an email or the username is already taken</response>
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthTokenPairDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [AllowAnonymous]
         [HttpPost("registerwithapikey")]
-        public async Task<ActionResult<string>> RegisterWithApiKeyAsync(
+        public async Task<ActionResult<AuthTokenPairDto>> RegisterWithApiKeyAsync(
             [FromBody] [Required] RegisterWithApiKeyDto registerDto,
             CancellationToken cancellationToken
         )
@@ -382,14 +394,21 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 return BadRequest("Could not send registration mail");
             }
 
-            var token = _jwtTokenGenerator.GetJWTToken(registerDto.Username, usercreateresult.Get().Value.ToString());
+            var tokenPairResult = await _authTokenPairIssuer
+                .IssueAsync(usercreateresult.Get(), registerDto.Username, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (tokenPairResult.IsNone)
+            {
+                return BadRequest();
+            }
 
             // delete request from db
             await new OpenSignInProviderRegisterRequestDeleteQuery { Id = signInProviderRegisterRequest.Get().Id }
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            return Ok(token);
+            return Ok(tokenPairResult.Get());
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
+import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
@@ -248,10 +249,23 @@ class _ThemeConfigurationForAppState
     await eventsClient.ensureConnected();
   }
 
+  /// auth-04: on resume, refresh the access token if it's already expired
+  /// or within the proactive lead window (e.g. the app was backgrounded for
+  /// a while), so REST calls right after resume don't have to rely on a
+  /// 401 round trip first. No-ops if there's no active session.
+  Future<void> _refreshSessionIfNeeded() async {
+    final getIt = DependencyProvider.getIt;
+    if (getIt == null || !getIt.isRegistered<ISessionRefreshCoordinator>()) {
+      return;
+    }
+    await getIt.get<ISessionRefreshCoordinator>().onAppResume();
+  }
+
   LifecycleEventHandler getObserver() {
     return LifecycleEventHandler(
       resumeCallBack: () async {
         log("resumeCallBack: re-ensuring SSE stream", name: "SSE");
+        await _refreshSessionIfNeeded();
         await _recoverSseSession();
       },
       suspendingCallBack: () async {

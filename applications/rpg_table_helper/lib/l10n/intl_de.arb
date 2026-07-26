@@ -267,5 +267,7 @@
   "realtimeSessionIosHint": "Auf dem iPad oder iPhone funktionieren Live-Updates am zuverlässigsten, wenn die App im Vordergrund geöffnet ist.",
   "pendingHubSyncBanner": "Einige Änderungen werden noch mit der Sitzung synchronisiert…",
   "characterConfigSaveFailedTitle": "Charakter nicht gespeichert",
-  "characterConfigSaveFailedBody": "Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert."
+  "characterConfigSaveFailedBody": "Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert.",
+  "logout": "Abmelden",
+  "sessionExpiredMessage": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
 }

@@ -118,6 +118,10 @@ public class Startup
         services.AddTransient<IUserContext, UserContextProvider>();
 
         services.AddSingleton<IJWTTokenGenerator, JWTTokenGenerator>();
+        services.AddTransient<
+            RPGTableHelper.WebApi.Services.Auth.IAuthTokenPairIssuer,
+            RPGTableHelper.WebApi.Services.Auth.AuthTokenPairIssuer
+        >();
         services.AddSingleton<IAppleClientSecretGenerator, AppleClientSecretGenerator>();
         services.AddSingleton<RPGTableHelper.WebApi.Services.Sse.ISseEventHub, RPGTableHelper.WebApi.Services.Sse.SseEventHub>();
         services.AddTransient<

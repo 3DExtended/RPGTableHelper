@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/session_restorer_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
@@ -8,6 +9,7 @@ import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
 import 'package:quest_keeper/services/auth/session_restorer.dart';
 import 'package:quest_keeper/services/auth/token_refresher.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 /// Minimal route stubs so navigation assertions do not depend on the real
 /// `LoginScreen`/`SelectGameModeScreen` widgets (and their Riverpod
@@ -18,6 +20,8 @@ const _selectGameModeStubText = 'select-game-mode-stub';
 Widget _appUnderTest() {
   return MaterialApp(
     initialRoute: SessionRestorerScreen.route,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     onGenerateRoute: (settings) {
       switch (settings.name) {
         case SessionRestorerScreen.route:
@@ -121,6 +125,51 @@ void main() {
       expect(tokenRefresher.refreshCallCount, 1);
       expect(find.text(_loginStubText), findsOneWidget);
       expect(find.text(_selectGameModeStubText), findsNothing);
+    });
+
+    testWidgets(
+        'shows a session-expired snackbar and navigates to Login when the session expired',
+        (tester) async {
+      // arrange
+      var snackBarService = MockSnackBarService();
+      DependencyProvider.getIt = GetIt.asNewInstance()
+        ..registerSingleton<ISessionRestorer>(
+          MockSessionRestorer(
+            restoreResultOverride: SessionRestoreResult.sessionExpired,
+          ),
+        )
+        ..registerSingleton<ISnackBarService>(snackBarService);
+
+      // act
+      await tester.pumpWidget(_appUnderTest());
+      await tester.pumpAndSettle();
+
+      // assert
+      expect(find.text(_loginStubText), findsOneWidget);
+      expect(find.text(_selectGameModeStubText), findsNothing);
+      expect(snackBarService.showSnackBarCallCount, 1);
+    });
+
+    testWidgets(
+        'does not show a session-expired snackbar when the user simply needs to log in',
+        (tester) async {
+      // arrange
+      var snackBarService = MockSnackBarService();
+      DependencyProvider.getIt = GetIt.asNewInstance()
+        ..registerSingleton<ISessionRestorer>(
+          MockSessionRestorer(
+            restoreResultOverride: SessionRestoreResult.needsLogin,
+          ),
+        )
+        ..registerSingleton<ISnackBarService>(snackBarService);
+
+      // act
+      await tester.pumpWidget(_appUnderTest());
+      await tester.pumpAndSettle();
+
+      // assert
+      expect(find.text(_loginStubText), findsOneWidget);
+      expect(snackBarService.showSnackBarCallCount, 0);
     });
   });
 }

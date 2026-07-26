@@ -730,4 +730,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get characterConfigSaveFailedBody =>
       'Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get sessionExpiredMessage =>
+      'Your session has expired. Please sign in again.';
 }

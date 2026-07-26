@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Tooltip;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:themed/themed.dart';
 
@@ -14,6 +16,7 @@ class Navbar extends StatelessWidget {
     required this.backInsteadOfCloseIcon,
     required this.menuOpen,
     this.subTitle,
+    this.logoutFunction,
   });
 
   final bool useTopSafePadding;
@@ -22,6 +25,10 @@ class Navbar extends StatelessWidget {
   final Widget titleWidget;
   final Widget? subTitle;
   final VoidCallback? menuOpen;
+
+  /// When set, renders a sign-out icon button (before the settings gear).
+  /// Left `null` (the default) on every screen except `SelectGameModeScreen`.
+  final VoidCallback? logoutFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +88,24 @@ class Navbar extends StatelessWidget {
                     ],
                   ),
                 )),
+                Opacity(
+                  opacity: logoutFunction == null ? 0 : 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: Tooltip(
+                      message: AppLocalizations.of(context)?.logout ?? '',
+                      child: CustomButton(
+                        variant: CustomButtonVariant.FlatButton,
+                        onPressed: logoutFunction,
+                        icon: CustomFaIcon(
+                          icon: FontAwesomeIcons.rightFromBracket,
+                          size: 20,
+                          color: textColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 Opacity(
                   opacity: menuOpen == null ? 0 : 1,
                   child: Padding(

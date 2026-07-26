@@ -73,3 +73,21 @@ class SnackBarService extends ISnackBarService {
     }
   }
 }
+
+class MockSnackBarService extends ISnackBarService {
+  MockSnackBarService() : super(isMock: true);
+
+  int showSnackBarCallCount = 0;
+  String? lastUniqueId;
+  SnackBar? lastSnack;
+
+  @override
+  void showSnackBar({required SnackBar snack, required String uniqueId}) {
+    showSnackBarCallCount++;
+    lastUniqueId = uniqueId;
+    lastSnack = snack;
+  }
+
+  @override
+  void hideSnackBar(String uniqueId) {}
+}

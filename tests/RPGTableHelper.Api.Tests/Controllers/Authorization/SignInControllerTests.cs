@@ -550,6 +550,103 @@ public class SignInControllerTests : ControllerTestBase
         }
     }
 
+    [Fact]
+    public async Task Logout_WithValidRefreshToken_ShouldRevokeSessionSoItCanNoLongerRefresh()
+    {
+        // arrange
+        var initialPair = await LoginAndGetTokenPairAsync();
+
+        // act
+        var logoutResponse = await Client.PostAsJsonAsync(
+            $"/signin/logout",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+
+        // assert
+        logoutResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var session = await context.AuthSessions.SingleAsync();
+            session.RevokedAt.Should().NotBeNull();
+        }
+
+        var refreshAfterLogoutResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = initialPair.RefreshToken }
+        );
+        refreshAfterLogoutResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Logout_WithUnknownRefreshToken_ShouldStillReturnOk()
+    {
+        // act
+        var response = await Client.PostAsJsonAsync(
+            $"/signin/logout",
+            new RefreshTokenRequestDto { RefreshToken = "totally-unknown-refresh-token" }
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task RevokeAll_WithValidAccessToken_ShouldRevokeEverySessionForThatUser()
+    {
+        // arrange
+        var (user, _, userCredential) = await RpgDbContextHelpers.CreateUserWithEncryptionChallengeAndCredentialsInDb(
+            ContextFactory!,
+            Mapper!,
+            default
+        );
+
+        var loginDto = new LoginWithUsernameAndPasswordDto
+        {
+            Username = user.Username,
+            UserSecretByEncryptionChallenge = userCredential.HashedPassword.Get(),
+        };
+
+        var firstLoginResponse = await Client.PostAsJsonAsync($"/signin/login", loginDto);
+        var secondLoginResponse = await Client.PostAsJsonAsync($"/signin/login", loginDto);
+        var pairA = await firstLoginResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        var pairB = await secondLoginResponse.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", pairA!.AccessToken);
+
+        // act
+        var revokeAllResponse = await Client.PostAsync($"/signin/revoke-all", null);
+
+        // assert
+        revokeAllResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var revokedCount = await revokeAllResponse.Content.ReadFromJsonAsync<int>();
+        revokedCount.Should().Be(2);
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var sessions = await context.AuthSessions.Where(s => s.UserId == user.Id.Value).ToListAsync();
+            sessions.Should().HaveCount(2);
+            sessions.Should().OnlyContain(s => s.RevokedAt != null);
+        }
+
+        Client.DefaultRequestHeaders.Authorization = null;
+        var refreshBResponse = await Client.PostAsJsonAsync(
+            $"/signin/refresh",
+            new RefreshTokenRequestDto { RefreshToken = pairB!.RefreshToken }
+        );
+        refreshBResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task RevokeAll_WithoutAuthentication_ShouldReturnUnauthorized()
+    {
+        // act
+        var response = await Client.PostAsync($"/signin/revoke-all", null);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
     private static (string mockedPublicAppPEM, string mockedPrivateAppPEM) GetPEMPairForMockedApp()
     {
         // some mocked 1024byte strong rsa certs

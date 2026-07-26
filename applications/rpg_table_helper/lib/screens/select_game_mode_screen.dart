@@ -29,7 +29,10 @@ import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_helpers.dart'
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
+import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
+import 'package:quest_keeper/services/auth/session_revoker.dart';
 import 'package:quest_keeper/services/config_sync/config_sync_session_controller.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -71,7 +74,25 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       await _startJoinRequestNotifications();
     });
 
+    // auth-04: every successful auth path (login, register, Apple/Google,
+    // complete-SSO) lands here, so this is the single place that covers
+    // "start proactive refresh monitoring after login" for all of them, in
+    // addition to `SessionRestorerScreen` covering cold-start restore.
+    // Idempotent: cancels/reschedules from the current persisted expiry.
+    _startSessionMonitoringIfPossible();
+
     super.initState();
+  }
+
+  /// Best-effort: some widget/golden tests wire only the services a given
+  /// screen needs onto a raw `GetIt` rather than the full
+  /// `DependencyProvider`.
+  void _startSessionMonitoringIfPossible() {
+    var getIt = DependencyProvider.getIt;
+    if (getIt == null || !getIt.isRegistered<ISessionRefreshCoordinator>()) {
+      return;
+    }
+    unawaited(getIt.get<ISessionRefreshCoordinator>().startMonitoring());
   }
 
   /// sse-05: keeps join-request notifies flowing from the app shell, even
@@ -200,6 +221,29 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     }
   }
 
+  /// Clears local JWT + refresh token, best-effort revokes this device's
+  /// session on the server, then returns to `LoginScreen`. Cold start must
+  /// not restore the session afterwards (no refresh token left to restore
+  /// from).
+  Future<void> _logout() async {
+    var sessionRevoker =
+        DependencyProvider.of(context).getService<ISessionRevoker>();
+    await sessionRevoker.logout();
+    _stopSessionMonitoringIfPossible();
+    if (!mounted) return;
+
+    navigatorKey.currentState!
+        .pushNamedAndRemoveUntil(LoginScreen.route, (r) => false);
+  }
+
+  void _stopSessionMonitoringIfPossible() {
+    var getIt = DependencyProvider.getIt;
+    if (getIt == null || !getIt.isRegistered<ISessionRefreshCoordinator>()) {
+      return;
+    }
+    getIt.get<ISessionRefreshCoordinator>().stopMonitoring();
+  }
+
   Future loadCampagnesAndPlayersFromServer() async {
     // load campagnes and players
     if (!mounted) return;
@@ -244,6 +288,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
               closeFunction: null,
               menuOpen: () =>
                   Navigator.of(context).pushNamed(UserSettingsScreen.route),
+              logoutFunction: () => _logout(),
               useTopSafePadding: true,
               titleWidget: Text(
                 S.of(context).selectGameMode,

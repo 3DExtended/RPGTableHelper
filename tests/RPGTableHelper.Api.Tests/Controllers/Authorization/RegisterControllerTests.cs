@@ -41,10 +41,13 @@ public class RegisterControllerTests : ControllerTestBase
         );
 
         // execute register as new user
-        string? jwtResult = await LoginAndReceiveJWT(QueryProcessor, Client, challengeDict);
+        AuthTokenPairDto? tokenPair = await LoginAndReceiveTokenPair(QueryProcessor, Client, challengeDict);
 
-        // verify jwt is valid for login
-        await VerifyLoginValidity(Client, jwtResult);
+        // verify token pair is valid for login
+        tokenPair.Should().NotBeNull();
+        tokenPair!.AccessToken.Should().NotBeNullOrEmpty();
+        tokenPair.RefreshToken.Should().NotBeNullOrEmpty();
+        await VerifyLoginValidity(Client, tokenPair.AccessToken);
     }
 
     [Fact]
@@ -74,9 +77,11 @@ public class RegisterControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var jwtResult = await response.Content.ReadAsStringAsync();
-        jwtResult.Should().NotBeNullOrEmpty();
-        await VerifyLoginValidity(Client, jwtResult);
+        var tokenPair = await response.Content.ReadFromJsonAsync<AuthTokenPairDto>();
+        tokenPair.Should().NotBeNull();
+        tokenPair!.AccessToken.Should().NotBeNullOrEmpty();
+        tokenPair.RefreshToken.Should().NotBeNullOrEmpty();
+        await VerifyLoginValidity(Client, tokenPair.AccessToken);
     }
 
     [Fact]
@@ -173,7 +178,7 @@ public class RegisterControllerTests : ControllerTestBase
         return challengeDict;
     }
 
-    internal static async Task<string?> LoginAndReceiveJWT(
+    internal static async Task<AuthTokenPairDto?> LoginAndReceiveTokenPair(
         IQueryProcessor queryProcessor,
         HttpClient client,
         Dictionary<string, object>? challengeDict
@@ -203,10 +208,9 @@ public class RegisterControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var jwtResult = await response.Content.ReadAsStringAsync();
-        jwtResult.Should().NotBeNullOrEmpty();
+        var tokenPair = await response.Content.ReadFromJsonAsync<AuthTokenPairDto>();
 
-        return jwtResult;
+        return tokenPair;
     }
 
     internal static async Task VerifyLoginValidity(HttpClient client, string? jwtResult)

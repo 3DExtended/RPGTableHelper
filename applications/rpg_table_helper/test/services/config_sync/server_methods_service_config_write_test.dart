@@ -52,6 +52,9 @@ class _FakeApi extends IApiConnectorService {
 
   @override
   void clearCache() {}
+
+  @override
+  void configureAuthenticator(Authenticator authenticator) {}
 }
 
 class _RecordingRpgEntity extends MockRpgEntityService {

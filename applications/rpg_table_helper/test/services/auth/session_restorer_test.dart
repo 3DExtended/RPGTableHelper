@@ -45,7 +45,7 @@ void main() {
     });
 
     test(
-        'returns needsLogin when a refresh token is stored but refresh fails (expired/revoked/unreachable)',
+        'returns sessionExpired when a refresh token is stored but refresh fails (expired/revoked/unreachable)',
         () async {
       // arrange
       var secureRefreshTokenStorage = MockSecureRefreshTokenStorage(
@@ -61,7 +61,7 @@ void main() {
       var result = await sessionRestorer.restore();
 
       // assert
-      expect(result, SessionRestoreResult.needsLogin);
+      expect(result, SessionRestoreResult.sessionExpired);
       expect(tokenRefresher.refreshCallCount, 1);
     });
   });

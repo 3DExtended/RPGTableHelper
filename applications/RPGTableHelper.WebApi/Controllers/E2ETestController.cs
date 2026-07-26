@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Prodot.Patterns.Cqrs;
+using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.E2E;
+using RPGTableHelper.WebApi.Services.Auth;
 
 namespace RPGTableHelper.WebApi.Controllers;
 
@@ -26,12 +29,19 @@ public class E2ETestController : ControllerBase
     private readonly IHostEnvironment _env;
     private readonly IDbContextFactory<RpgDbContext> _db;
     private readonly IJWTTokenGenerator _jwt;
+    private readonly IAuthTokenPairIssuer _authTokenPairIssuer;
 
-    public E2ETestController(IHostEnvironment env, IDbContextFactory<RpgDbContext> db, IJWTTokenGenerator jwt)
+    public E2ETestController(
+        IHostEnvironment env,
+        IDbContextFactory<RpgDbContext> db,
+        IJWTTokenGenerator jwt,
+        IAuthTokenPairIssuer authTokenPairIssuer
+    )
     {
         _env = env;
         _db = db;
         _jwt = jwt;
+        _authTokenPairIssuer = authTokenPairIssuer;
     }
 
     /// <summary>
@@ -66,6 +76,51 @@ public class E2ETestController : ControllerBase
 
         var token = _jwt.GetJWTToken(user.Username, user.Id.ToString());
         return Content(token, "text/plain");
+    }
+
+    /// <summary>
+    /// Returns a real access + refresh token pair for the upserted E2E user
+    /// (same mint path as password login). Used by local auth E2E scripts.
+    /// </summary>
+    [HttpGet("auth-token-pair")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAuthTokenPairAsync(CancellationToken cancellationToken)
+    {
+        if (!_env.IsEnvironment("E2ETest") && !_env.IsEnvironment("LocalSignalRE2E"))
+        {
+            return NotFound();
+        }
+
+        await using var ctx = await _db.CreateDbContextAsync(cancellationToken);
+        var user = await ctx.Users.FirstOrDefaultAsync(u => u.Username == SignalRTestUsername, cancellationToken);
+        if (user == null)
+        {
+            var now = DateTimeOffset.UtcNow;
+            user = new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                Username = SignalRTestUsername,
+                CreationDate = now,
+                LastModifiedAt = now,
+            };
+            await ctx.Users.AddAsync(user, cancellationToken);
+            await ctx.SaveChangesAsync(cancellationToken);
+        }
+
+        var pair = await _authTokenPairIssuer
+            .IssueAsync(
+                RPGTableHelper.DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(user.Id),
+                user.Username,
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+
+        if (pair.IsNone)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        return Ok(pair.Get());
     }
 
     /// <summary>

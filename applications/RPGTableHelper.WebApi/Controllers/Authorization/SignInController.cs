@@ -20,6 +20,7 @@ using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
 using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
+using RPGTableHelper.WebApi.Services.Auth;
 
 namespace RPGTableHelper.WebApi.Controllers
 {
@@ -31,18 +32,21 @@ namespace RPGTableHelper.WebApi.Controllers
         private readonly IJWTTokenGenerator _jwtTokenGenerator;
         private readonly JwtOptions _jwtOptions;
         private readonly ISystemClock _systemClock;
+        private readonly IAuthTokenPairIssuer _authTokenPairIssuer;
 
         public SignInController(
             IQueryProcessor queryProcessor,
             IJWTTokenGenerator jwtTokenGenerator,
             JwtOptions jwtOptions,
-            ISystemClock systemClock
+            ISystemClock systemClock,
+            IAuthTokenPairIssuer authTokenPairIssuer
         )
         {
             _queryProcessor = queryProcessor;
             _jwtTokenGenerator = jwtTokenGenerator;
             _jwtOptions = jwtOptions;
             _systemClock = systemClock;
+            _authTokenPairIssuer = authTokenPairIssuer;
         }
 
         /// <summary>
@@ -153,32 +157,18 @@ namespace RPGTableHelper.WebApi.Controllers
 
             if (possiblyExistingUserId.IsSome)
             {
-                var username = loginDto.Username;
                 var userId = possiblyExistingUserId.Get();
-                var userIdentityProviderId = userId.Value.ToString();
-                var stringToken = _jwtTokenGenerator.GetJWTToken(username, userIdentityProviderId);
 
-                var authSessionResult = await new CreateAuthSessionQuery
-                {
-                    UserId = userId,
-                    ExpiresAt = _systemClock.Now.AddSeconds(_jwtOptions.RefreshTokenNumberOfSecondsToExpire),
-                }
-                    .RunAsync(_queryProcessor, cancellationToken)
+                var tokenPairResult = await _authTokenPairIssuer
+                    .IssueAsync(userId, loginDto.Username, cancellationToken)
                     .ConfigureAwait(false);
 
-                if (authSessionResult.IsNone)
+                if (tokenPairResult.IsNone)
                 {
                     return BadRequest();
                 }
 
-                return Ok(
-                    new AuthTokenPairDto
-                    {
-                        AccessToken = stringToken!,
-                        RefreshToken = authSessionResult.Get().PlainRefreshToken,
-                        ExpiresIn = _jwtOptions.NumberOfSecondsToExpire,
-                    }
-                );
+                return Ok(tokenPairResult.Get());
             }
 
             return Unauthorized();
@@ -245,8 +235,81 @@ namespace RPGTableHelper.WebApi.Controllers
             );
         }
 
+        /// <summary>
+        /// Logs out this device: revokes the <c>AuthSession</c> identified by the
+        /// presented refresh token so it can no longer be used to refresh. The
+        /// client has no session id, only the refresh token, so that is what
+        /// identifies "this device's session" here.
+        /// </summary>
+        /// <remarks>
+        /// Always returns 200, whether or not the token matched a live session:
+        /// logout is idempotent from the client's perspective, and this endpoint
+        /// does not leak whether a given refresh token was known.
+        /// </remarks>
+        /// <param name="refreshDto">The refresh token identifying this device's session</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <response code="200">Always returned once the request is processed</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync(
+            [FromBody] [Required] RefreshTokenRequestDto refreshDto,
+            CancellationToken cancellationToken
+        )
+        {
+            await new RevokeAuthSessionQuery { PlainRefreshToken = refreshDto.RefreshToken }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Revokes every refresh session belonging to the authenticated user
+        /// ("sign out everywhere"). Prepared for a future UI; no client surfaces
+        /// this yet.
+        /// </summary>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>The number of sessions revoked</returns>
+        /// <response code="200">Returns the number of sessions revoked</response>
+        /// <response code="401">If the caller is not authenticated</response>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize]
+        [HttpPost("revoke-all")]
+        public async Task<ActionResult<int>> RevokeAllAsync(CancellationToken cancellationToken)
+        {
+            var identityProviderIdClaim = User.Claims.SingleOrDefault(c => c.Type == "identityproviderid");
+
+            if (identityProviderIdClaim == null || !Guid.TryParse(identityProviderIdClaim.Value, out var userIdGuid))
+            {
+                return Unauthorized();
+            }
+
+            var revokedCount = await new RevokeAllAuthSessionsForUserQuery
+            {
+                UserId = RPGTableHelper.DataLayer.Contracts.Models.Auth.User.UserIdentifier.From(userIdGuid),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Ok(revokedCount.GetOrElse(0));
+        }
+
+        /// <summary>
+        /// Performs Sign in with Apple. A fully-registered existing user gets the
+        /// same access + refresh token pair as password login. A user with no
+        /// account yet is left on the existing incomplete-registration path: a
+        /// `"redirect" + apiKey` string so the app can complete registration.
+        /// </summary>
+        /// <param name="loginDto">The Apple identity token and authorization code</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <response code="200">Returns the access + refresh token pair for an existing user, or `"redirect" + apiKey` for a new one</response>
+        /// <response code="401">If the Apple token could not be verified</response>
+        [ProducesResponseType(typeof(AuthTokenPairDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("loginwithapple")]
-        public async Task<ActionResult<string>> LoginWithAppleAsync(
+        public async Task<ActionResult> LoginWithAppleAsync(
             [FromBody] [Required] AppleLoginDetails loginDto,
             CancellationToken cancellationToken
         )
@@ -282,11 +345,16 @@ namespace RPGTableHelper.WebApi.Controllers
                     return BadRequest();
                 }
 
-                var stringToken = _jwtTokenGenerator.GetJWTToken(
-                    user.Get().Username!,
-                    possiblyExistingUserId!.Get()!.Value!.ToString()
-                );
-                return Ok(stringToken);
+                var tokenPairResult = await _authTokenPairIssuer
+                    .IssueAsync(possiblyExistingUserId.Get(), user.Get().Username!, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (tokenPairResult.IsNone)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(tokenPairResult.Get());
             }
             else
             {

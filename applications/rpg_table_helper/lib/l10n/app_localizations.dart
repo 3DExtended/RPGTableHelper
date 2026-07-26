@@ -1471,6 +1471,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert.'**
   String get characterConfigSaveFailedBody;
+
+  /// No description provided for @logout.
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden'**
+  String get logout;
+
+  /// No description provided for @sessionExpiredMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.'**
+  String get sessionExpiredMessage;
 }
 
 class _AppLocalizationsDelegate

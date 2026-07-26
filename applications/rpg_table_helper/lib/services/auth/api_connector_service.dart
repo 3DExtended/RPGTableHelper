@@ -20,12 +20,27 @@ abstract class IApiConnectorService {
   });
 
   void clearCache();
+
+  /// Wires a Chopper [Authenticator] (e.g. `JwtRefreshAuthenticator`) into
+  /// every [ChopperClient] built by [getChopperClient] from now on.
+  ///
+  /// Set from `DependencyProvider` after the authenticator's own
+  /// dependencies (which need this very service) have been constructed,
+  /// rather than through the constructor, to avoid a circular dependency
+  /// between [IApiConnectorService] and the session-refresh machinery.
+  void configureAuthenticator(Authenticator authenticator);
 }
 
 class ApiConnectorService extends IApiConnectorService {
   ApiConnectorService() : super(isMock: false);
 
   Swagger? _cachedSwaggerClient;
+  Authenticator? _authenticator;
+
+  @override
+  void configureAuthenticator(Authenticator authenticator) {
+    _authenticator = authenticator;
+  }
 
   @override
   Future<String?> getJwt() async {
@@ -68,6 +83,7 @@ class ApiConnectorService extends IApiConnectorService {
       converter: $JsonSerializableConverter(),
       interceptors: interceptorsToUse,
       baseUrl: Uri.parse(apiBaseUrl),
+      authenticator: _authenticator,
     );
 
     return chopperClient;
@@ -122,8 +138,20 @@ class MockApiConnectorService extends IApiConnectorService {
   /// The last value passed to [setJwt], for assertions in tests.
   String? lastSetJwt;
 
+  /// The number of times [deleteJwt] was called, for assertions in tests.
+  int deleteJwtCallCount = 0;
+
+  /// The last authenticator passed to [configureAuthenticator], for
+  /// assertions in tests.
+  Authenticator? configuredAuthenticator;
+
   @override
   void clearCache() {}
+
+  @override
+  void configureAuthenticator(Authenticator authenticator) {
+    configuredAuthenticator = authenticator;
+  }
 
   @override
   Future<Swagger?> getApiConnector({
@@ -145,6 +173,7 @@ class MockApiConnectorService extends IApiConnectorService {
 
   @override
   Future<bool> deleteJwt() async {
+    deleteJwtCallCount++;
     return Future.value(jwtRemoveResultOverride ?? true);
   }
 

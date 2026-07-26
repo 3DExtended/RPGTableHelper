@@ -3,11 +3,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
+import 'package:quest_keeper/services/auth/access_token_expiry_store.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
 import 'package:quest_keeper/services/auth/encryption_service.dart';
+import 'package:quest_keeper/services/auth/jwt_refresh_authenticator.dart';
 import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
+import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/auth/session_restorer.dart';
+import 'package:quest_keeper/services/auth/session_revoker.dart';
 import 'package:quest_keeper/services/auth/token_refresher.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
@@ -70,12 +76,19 @@ class DependencyProvider extends InheritedWidget {
     _registerService<ISecureRefreshTokenStorage>(() => SecureRefreshTokenStorage(),
         () => MockSecureRefreshTokenStorage());
 
+    _registerService<IAccessTokenExpiryStore>(
+        () => AccessTokenExpiryStore(), () => MockAccessTokenExpiryStore());
+
     _registerService<ITokenRefresher>(() {
       var apiConnectorService = getService<IApiConnectorService>();
       var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
+      var accessTokenExpiryStore = getService<IAccessTokenExpiryStore>();
+      var systemClockService = getService<ISystemClockService>();
       return TokenRefresher(
           apiConnectorService: apiConnectorService,
-          secureRefreshTokenStorage: secureRefreshTokenStorage);
+          secureRefreshTokenStorage: secureRefreshTokenStorage,
+          accessTokenExpiryStore: accessTokenExpiryStore,
+          systemClockService: systemClockService);
     }, () => MockTokenRefresher());
 
     _registerService<ISessionRestorer>(() {
@@ -86,6 +99,48 @@ class DependencyProvider extends InheritedWidget {
           tokenRefresher: tokenRefresher);
     }, () => MockSessionRestorer());
 
+    _registerService<ISessionRevoker>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
+      return SessionRevoker(
+          apiConnectorService: apiConnectorService,
+          secureRefreshTokenStorage: secureRefreshTokenStorage);
+    }, () => MockSessionRevoker());
+
+    // Centralizes proactive/resume/401/SSE refresh and "hard failure ->
+    // clear tokens + go to LoginScreen" behind one coordinator (auth-04).
+    // Registered after ITokenRefresher (which it wraps) but before the
+    // authenticator/EventsClient wiring below, which both depend on it.
+    _registerService<ISessionRefreshCoordinator>(() {
+      var tokenRefresher = getService<ITokenRefresher>();
+      var accessTokenExpiryStore = getService<IAccessTokenExpiryStore>();
+      var systemClockService = getService<ISystemClockService>();
+      var apiConnectorService = getService<IApiConnectorService>();
+      var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
+      return SessionRefreshCoordinator(
+        tokenRefresher: tokenRefresher,
+        accessTokenExpiryStore: accessTokenExpiryStore,
+        systemClockService: systemClockService,
+        apiConnectorService: apiConnectorService,
+        secureRefreshTokenStorage: secureRefreshTokenStorage,
+        onSessionLost: () {
+          navigatorKey.currentState
+              ?.pushNamedAndRemoveUntil(LoginScreen.route, (r) => false);
+        },
+      );
+    }, () => MockSessionRefreshCoordinator());
+
+    // IApiConnectorService is constructed above without an authenticator to
+    // avoid a circular dependency (the authenticator needs
+    // ISessionRefreshCoordinator, which needs ITokenRefresher, which needs
+    // IApiConnectorService). Configure it here, now that every dependency
+    // exists.
+    getService<IApiConnectorService>().configureAuthenticator(
+      JwtRefreshAuthenticator(
+        sessionRefreshCoordinator: getService<ISessionRefreshCoordinator>(),
+      ),
+    );
+
     _registerService<ISnackBarService>(
         () => SnackBarService(), () => SnackBarService());
 
@@ -93,19 +148,27 @@ class DependencyProvider extends InheritedWidget {
       var encryptionService = getService<IEncryptionService>();
       var apiConnectorService = getService<IApiConnectorService>();
       var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
+      var accessTokenExpiryStore = getService<IAccessTokenExpiryStore>();
+      var systemClockService = getService<ISystemClockService>();
       return AuthenticationService(
           apiConnectorService: apiConnectorService,
           encryptionService: encryptionService,
-          secureRefreshTokenStorage: secureRefreshTokenStorage);
+          secureRefreshTokenStorage: secureRefreshTokenStorage,
+          accessTokenExpiryStore: accessTokenExpiryStore,
+          systemClockService: systemClockService);
     }, () {
       var encryptionService = getService<IEncryptionService>();
       var apiConnectorService = getService<IApiConnectorService>();
       var secureRefreshTokenStorage = getService<ISecureRefreshTokenStorage>();
+      var accessTokenExpiryStore = getService<IAccessTokenExpiryStore>();
+      var systemClockService = getService<ISystemClockService>();
 
       return MockAuthenticationService(
           apiConnectorService: apiConnectorService,
           encryptionService: encryptionService,
-          secureRefreshTokenStorage: secureRefreshTokenStorage);
+          secureRefreshTokenStorage: secureRefreshTokenStorage,
+          accessTokenExpiryStore: accessTokenExpiryStore,
+          systemClockService: systemClockService);
     });
 
     _registerService<IRpgEntityService>(() {
@@ -158,7 +221,16 @@ class DependencyProvider extends InheritedWidget {
 
     _registerService<EventsClient>(() {
       final api = getService<IApiConnectorService>();
-      return EventsClient(getJwt: api.getJwt);
+      final sessionRefreshCoordinator =
+          getService<ISessionRefreshCoordinator>();
+      return EventsClient(
+        getJwt: api.getJwt,
+        // On an SSE auth failure, refresh via the same single-flight,
+        // failure-handling coordinator the 401 authenticator and proactive
+        // timer use; on failure it clears tokens and navigates to
+        // LoginScreen itself, so we just forward its result here.
+        refreshJwt: sessionRefreshCoordinator.refreshOrHandleFailure,
+      );
     }, () {
       final api = getService<IApiConnectorService>();
       return EventsClient(

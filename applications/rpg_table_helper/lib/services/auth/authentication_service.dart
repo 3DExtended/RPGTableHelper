@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.swagger.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
+import 'package:quest_keeper/services/auth/access_token_expiry_store.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/auth/encryption_service.dart';
 import 'package:quest_keeper/services/auth/rsa_key_helper.dart';
 import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
+import 'package:quest_keeper/services/systemclock_service.dart';
 
 enum SignInResultType {
   loginFailed,
@@ -27,12 +29,16 @@ abstract class IAuthenticationService {
   final IApiConnectorService apiConnectorService;
   final IEncryptionService encryptionService;
   final ISecureRefreshTokenStorage secureRefreshTokenStorage;
+  final IAccessTokenExpiryStore accessTokenExpiryStore;
+  final ISystemClockService systemClockService;
 
   const IAuthenticationService(
       {required this.isMock,
       required this.apiConnectorService,
       required this.encryptionService,
-      required this.secureRefreshTokenStorage});
+      required this.secureRefreshTokenStorage,
+      required this.accessTokenExpiryStore,
+      required this.systemClockService});
 
   /// This method tries login in to the server using the SignInWithApple functionality.
   /// Returns, whether the login was successfull and the user is a fully registered user or if there is the configuration missing
@@ -68,6 +74,8 @@ class AuthenticationService extends IAuthenticationService {
     required super.apiConnectorService,
     required super.encryptionService,
     required super.secureRefreshTokenStorage,
+    required super.accessTokenExpiryStore,
+    required super.systemClockService,
   }) : super(isMock: false);
 
   @override
@@ -129,9 +137,12 @@ class AuthenticationService extends IAuthenticationService {
   }
 
   /// Parses the `{ accessToken, refreshToken, expiresIn }` JSON body returned
-  /// by password login and persists both tokens: the access JWT via
-  /// [IApiConnectorService.setJwt] (SharedPreferences) and the refresh token
-  /// via [ISecureRefreshTokenStorage] (secure storage).
+  /// by password login and persists all three: the access JWT via
+  /// [IApiConnectorService.setJwt] (SharedPreferences), the refresh token via
+  /// [ISecureRefreshTokenStorage] (secure storage), and the absolute access
+  /// token expiry (now + `expiresIn` seconds) via [IAccessTokenExpiryStore],
+  /// which [SessionRefreshCoordinator] later uses to schedule proactive
+  /// refresh.
   Future<void> persistTokenPair(String rawTokenPairJson) async {
     var tokenPair = jsonDecode(rawTokenPairJson) as Map<String, dynamic>;
     var accessToken = tokenPair['accessToken'] as String;
@@ -139,6 +150,14 @@ class AuthenticationService extends IAuthenticationService {
 
     await apiConnectorService.setJwt(accessToken);
     await secureRefreshTokenStorage.setRefreshToken(refreshToken);
+
+    var expiresIn = tokenPair['expiresIn'];
+    if (expiresIn is num) {
+      await accessTokenExpiryStore.setExpiry(
+        systemClockService.now().add(Duration(seconds: expiresIn.toInt())),
+      );
+    }
+
     apiConnectorService.clearCache();
   }
 
@@ -205,9 +224,7 @@ class AuthenticationService extends IAuthenticationService {
       return registerResult.asT<SignInResult>();
     }
 
-    // set jwt!
-    apiConnectorService.setJwt(registerResult.result!);
-    apiConnectorService.clearCache();
+    await persistTokenPair(registerResult.result!);
 
     return HRResponse.fromResult(
       SignInResult(resultType: SignInResultType.loginSucessfull),
@@ -253,11 +270,10 @@ class AuthenticationService extends IAuthenticationService {
       );
     } else if (loginWithAppleResult.isSuccessful) {
       var updateJwtResult = await HRResponse.fromFuture(
-        apiConnectorService.setJwt(loginWithAppleResult.result!),
+        persistTokenPair(loginWithAppleResult.result!),
         'Could not update jwt.',
         '58b6c194-7aaa-4fdf-810a-09ec6a684731',
       );
-      apiConnectorService.clearCache();
 
       if (!updateJwtResult.isSuccessful) {
         return updateJwtResult.asT<SignInResult>();
@@ -320,8 +336,7 @@ class AuthenticationService extends IAuthenticationService {
 
     if (!result.isSuccessful) return result.asT();
 
-    await apiConnectorService.setJwt(result.result!);
-    apiConnectorService.clearCache();
+    await persistTokenPair(result.result!);
 
     return HRResponse.fromResult(true, statusCode: result.statusCode);
   }
@@ -333,6 +348,8 @@ class MockAuthenticationService extends IAuthenticationService {
     required super.apiConnectorService,
     required super.encryptionService,
     required super.secureRefreshTokenStorage,
+    required super.accessTokenExpiryStore,
+    required super.systemClockService,
     this.nowOverride,
   }) : super(isMock: true);
 
