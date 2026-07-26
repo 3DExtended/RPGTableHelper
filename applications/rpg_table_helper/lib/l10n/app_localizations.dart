@@ -1486,14 +1486,14 @@ abstract class AppLocalizations {
 
   /// No description provided for @characterPortraitImagePrompt.
   ///
-  /// In en, this message translates to:
-  /// **'Portrait description'**
+  /// In de, this message translates to:
+  /// **'Porträtbeschreibung'**
   String get characterPortraitImagePrompt;
 
   /// No description provided for @characterPortraitImagePromptPlaceholder.
   ///
-  /// In en, this message translates to:
-  /// **'Describe your character for image generation'**
+  /// In de, this message translates to:
+  /// **'Beschreibe deinen Charakter für die Bildgenerierung'**
   String get characterPortraitImagePromptPlaceholder;
 
   /// No description provided for @generatedImagesTabTitle.
