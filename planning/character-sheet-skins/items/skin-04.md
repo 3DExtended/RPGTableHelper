@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: AFK
-- Status: ready
+- Status: done
 
 ## Parent
 
@@ -25,14 +25,14 @@ Demoable: set/clear override; hybrid picker modes; resolve uses override over de
 
 ## Acceptance criteria
 
-- [ ] Appearance reachable from player sheet
-- [ ] Immediate-apply when required stats missing; Save/Cancel + live preview when complete
-- [ ] Save writes `skinId`; Cancel restores previous; “Use campaign default” sets null
-- [ ] Companions/alternates do not store their own skin; chrome uses main resolved skin
-- [ ] DM has no UI to set another character’s `skinId`
-- [ ] Campaign default marked in picker
-- [ ] EN/DE strings
-- [ ] Tests cover mode switch predicate, persist/clear, resolution with override
+- [x] Appearance reachable from player sheet
+- [x] Immediate-apply when required stats missing; Save/Cancel + live preview when complete
+- [x] Save writes `skinId`; Cancel restores previous; “Use campaign default” sets null
+- [x] Companions/alternates do not store their own skin; chrome uses main resolved skin
+- [x] DM has no UI to set another character’s `skinId`
+- [x] Campaign default marked in picker
+- [x] EN/DE strings
+- [x] Tests cover mode switch predicate, persist/clear, resolution with override
 
 ## Blocked by
 

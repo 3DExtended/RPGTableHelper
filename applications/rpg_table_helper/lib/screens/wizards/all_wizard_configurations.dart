@@ -1,4 +1,5 @@
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_0_character_sheet_skin.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_1_campagne_name.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_2_character_configurations_preset.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_2b_fight_initiative.dart';
@@ -11,6 +12,12 @@ import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_config
 Map<String, WizardConfiguration> allWizardConfigurations = {
   "/rpgconfigurationwizard": WizardConfiguration(
     stepBuilders: [
+      (moveToPrevious, moveToNext, setTitle) =>
+          RpgConfigurationWizardStep0CharacterSheetSkin(
+            onPreviousBtnPressed: moveToPrevious,
+            onNextBtnPressed: moveToNext,
+            setWizardTitle: setTitle,
+          ),
       (moveToPrevious, moveToNext, setTitle) =>
           RpgConfigurationWizardStep1CampagneName(
             onPreviousBtnPressed: moveToPrevious,

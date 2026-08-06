@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/character_sheet_skin_picker.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
@@ -13,6 +14,7 @@ import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
@@ -108,6 +110,33 @@ class _DmScreenCampagneManagementState
               SizedBox(
                 height: 10,
               ),
+
+              if (rpgConfig != null) ...[
+                Text(
+                  S.of(context).characterSheetAppearanceTitle,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                CharacterSheetSkinPicker(
+                  selectedSkinId: rpgConfig.defaultSkinId ??
+                      CharacterSheetSkinIds.classicDark,
+                  campaignDefaultSkinId: rpgConfig.defaultSkinId,
+                  onSelected: (id) {
+                    if (id == null) return;
+                    ref.read(rpgConfigurationProvider.notifier).updateConfiguration(
+                          rpgConfig.copyWith(defaultSkinId: id),
+                        );
+                    CustomThemeProvider.of(context).setActiveSkinId(id);
+                  },
+                ),
+                SizedBox(height: 20),
+                HorizontalLine(),
+                SizedBox(height: 10),
+              ],
 
               Text(
                 S.of(context).openJoinRequests,

@@ -39,5 +39,13 @@ void main() {
       final decoded = RpgCharacterConfiguration.fromJson(json);
       expect(decoded.skinId, CharacterSheetSkinIds.nightCartographer);
     });
+
+    test('character skinId can be cleared to inherit campaign default', () {
+      final withSkin = RpgCharacterConfiguration.getBaseConfiguration(null)
+          .copyWith(skinId: CharacterSheetSkinIds.classicLight);
+      final cleared = withSkin.copyWith(skinId: null);
+      expect(cleared.skinId, isNull);
+      expect(jsonEncode(cleared).contains('skinId'), isFalse);
+    });
   });
 }

@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: AFK
-- Status: ready
+- Status: done
 
 ## Parent
 
@@ -23,13 +23,13 @@ Demoable: create/edit campaign default; wizard steps 2+ visibly follow the selec
 
 ## Acceptance criteria
 
-- [ ] Wizard step order: skin selection is first
-- [ ] Selecting a skin persists `defaultSkinId` on campaign config via existing sync/save path
-- [ ] Later wizard steps render with campaign default skin tokens
-- [ ] DM can change default later from campagne management; inheriting characters pick it up on next resolve
-- [ ] All four skin ids offered
-- [ ] EN/DE copy for the step/controls
-- [ ] Tests: wizard/config persistence of `defaultSkinId` (widget or unit as fits prior art)
+- [x] Wizard step order: skin selection is first
+- [x] Selecting a skin persists `defaultSkinId` on campaign config via existing sync/save path
+- [x] Later wizard steps render with campaign default skin tokens
+- [x] DM can change default later from campagne management; inheriting characters pick it up on next resolve
+- [x] All four skin ids offered
+- [x] EN/DE copy for the step/controls
+- [x] Tests: wizard/config persistence of `defaultSkinId` (widget or unit as fits prior art)
 
 ## Blocked by
 

@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: AFK
-- Status: ready
+- Status: done
 
 ## Parent
 
@@ -23,12 +23,12 @@ Demoable: switch campaign default and character override; DM vs player surfaces 
 
 ## Acceptance criteria
 
-- [ ] DM pageview + representative DM modal use campaign `defaultSkinId`
-- [ ] Player page (all enabled tabs) + representative player modal use resolved character skin
-- [ ] Navbar/chrome follow active skin tokens
-- [ ] Classic Light/Dark goldens updated/passing for major player screens (iPad landscape)
-- [ ] No regression to per-stat variant selection
-- [ ] Tests/goldens green for Classic path
+- [x] DM pageview + representative DM modal use campaign `defaultSkinId`
+- [x] Player page (all enabled tabs) + representative player modal use resolved character skin
+- [x] Navbar/chrome follow active skin tokens
+- [x] Classic Light/Dark goldens updated/passing for major player screens (iPad landscape)
+- [x] No regression to per-stat variant selection
+- [x] Tests/goldens green for Classic path
 
 ## Blocked by
 

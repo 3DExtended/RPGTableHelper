@@ -8,8 +8,10 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_screen_campagne_management.dart';
@@ -82,6 +84,22 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
   Widget build(BuildContext context) {
     var dmScreensToSwipe = getDmScreens(context);
     var currentTitle = dmScreensToSwipe[_currentStep].$1;
+
+    final rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    if (rpgConfig != null) {
+      final resolved = resolveCharacterSheetSkin(
+        characterSkinId: null,
+        campaignDefaultSkinId: rpgConfig.defaultSkinId,
+      );
+      final themeProvider = CustomThemeProvider.of(context);
+      if (themeProvider.skinIdNotifier.value != resolved.renderSkinId) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !context.mounted) return;
+          CustomThemeProvider.of(context)
+              .setActiveSkinId(resolved.renderSkinId);
+        });
+      }
+    }
 
     return PreventSwipeNavigation(
       child: Scaffold(

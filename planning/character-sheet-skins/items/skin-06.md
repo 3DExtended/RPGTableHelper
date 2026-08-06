@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: HITL
-- Status: ready
+- Status: ready (HITL — waiting on user)
 
 ## Parent
 

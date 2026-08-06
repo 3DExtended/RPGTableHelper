@@ -12,9 +12,12 @@ import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
+import 'package:quest_keeper/helpers/character_stats/has_missing_required_campaign_stats.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/modals/show_character_sheet_appearance_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_tab_icon_configuration.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -314,6 +317,36 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       }
     }
 
+    // Apply resolved sheet skin (companions/alternates inherit the main sheet).
+    if (rpgConfig != null) {
+      final String? ownerSkinId;
+      final overrideChar = rpgCharacterToRender;
+      if (overrideChar is RpgCharacterConfiguration) {
+        ownerSkinId = overrideChar.skinId;
+      } else {
+        final mainChar =
+            ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
+        final localChar = charToRender;
+        if (localChar is RpgCharacterConfiguration && mainChar == null) {
+          ownerSkinId = localChar.skinId;
+        } else {
+          ownerSkinId = mainChar?.skinId ?? tempLoadedRpgCharacter?.skinId;
+        }
+      }
+      final resolved = resolveCharacterSheetSkin(
+        characterSkinId: ownerSkinId,
+        campaignDefaultSkinId: rpgConfig.defaultSkinId,
+      );
+      final themeProvider = CustomThemeProvider.of(context);
+      if (themeProvider.skinIdNotifier.value != resolved.renderSkinId) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !context.mounted) return;
+          CustomThemeProvider.of(context)
+              .setActiveSkinId(resolved.renderSkinId);
+        });
+      }
+    }
+
     var playerScreensToSwipe = rpgConfig == null || charToRender == null
         ? List<(String tabName, Widget child, String uuid)>.empty()
         : getPlayerScreens(context, charToRender, rpgConfig);
@@ -524,6 +557,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
               ),
               menuOpen: connectionDetails == null ||
                       connectionDetails.isDm ||
+                      disableEdit ||
                       (rpgConfig?.characterStatTabsDefinition ??
                                   List<CharacterStatsTabDefinition>.empty())
                               .length <=
@@ -532,17 +566,19 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                       charToRender == null
                   ? null
                   : () {
+                      // Flow analysis promotes these in the ternary arm, but the
+                      // async closure still needs non-null locals.
+                      // ignore: unnecessary_non_null_assertion
+                      final menuRpgConfig = rpgConfig!;
+                      // ignore: unnecessary_non_null_assertion
+                      final menuChar = charToRender!;
                       Future.delayed(Duration.zero, () async {
                         if (!mounted || !context.mounted) return;
-
-                        PlayerPageHelpers.handlePossiblyMissingCharacterStats(
-                            ref: ref,
-                            context: context,
-                            filterTabId: rpgConfig
-                                .characterStatTabsDefinition![_currentStep]
-                                .uuid,
-                            rpgConfig: rpgConfig,
-                            selectedCharacter: charToRender!);
+                        await _openPlayerSheetMenu(
+                          context: context,
+                          rpgConfig: menuRpgConfig,
+                          charToRender: menuChar,
+                        );
                       });
                     },
             ),
@@ -565,6 +601,88 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _openPlayerSheetMenu({
+    required BuildContext context,
+    required RpgConfigurationModel rpgConfig,
+    required RpgCharacterConfigurationBase charToRender,
+  }) async {
+    final theme = CustomThemeProvider.of(context).theme;
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: theme.bgColor,
+          title: Text(
+            S.of(ctx).configureProperties,
+            style: TextStyle(color: theme.darkTextColor),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(
+                  S.of(ctx).characterSheetAppearanceTitle,
+                  style: TextStyle(color: theme.darkTextColor),
+                ),
+                onTap: () => Navigator.of(ctx).pop('appearance'),
+              ),
+              ListTile(
+                title: Text(
+                  S.of(ctx).configureProperties,
+                  style: TextStyle(color: theme.darkTextColor),
+                ),
+                onTap: () => Navigator.of(ctx).pop('stats'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (!mounted || !context.mounted || choice == null) return;
+
+    if (choice == 'stats') {
+      PlayerPageHelpers.handlePossiblyMissingCharacterStats(
+        ref: ref,
+        context: context,
+        filterTabId: rpgConfig.characterStatTabsDefinition![_currentStep].uuid,
+        rpgConfig: rpgConfig,
+        selectedCharacter: charToRender,
+      );
+      return;
+    }
+
+    if (choice == 'appearance') {
+      // Appearance is only for the player's own main character config.
+      final mainCharacter =
+          ref.read(rpgCharacterConfigurationProvider).valueOrNull;
+      if (mainCharacter == null || rpgCharacterToRender != null) return;
+
+      final immediate = hasMissingRequiredCampaignStats(
+        rpgConfig: rpgConfig,
+        character: mainCharacter,
+      );
+      final result = await showCharacterSheetAppearanceModal(
+        context: context,
+        currentSkinId: mainCharacter.skinId,
+        campaignDefaultSkinId: rpgConfig.defaultSkinId,
+        immediateApply: immediate,
+      );
+      if (!mounted || !context.mounted) return;
+      if (result is! AppearanceModalSelection) return;
+
+      final newSkinId = result.skinId;
+      ref.read(rpgCharacterConfigurationProvider.notifier).updateConfiguration(
+            mainCharacter.copyWith(skinId: newSkinId),
+          );
+      final resolved = resolveCharacterSheetSkin(
+        characterSkinId: newSkinId,
+        campaignDefaultSkinId: rpgConfig.defaultSkinId,
+      );
+      CustomThemeProvider.of(context).setActiveSkinId(resolved.renderSkinId);
+    }
   }
 
   void openTabIconConfigurationDialog(BuildContext context,

@@ -20,10 +20,10 @@ skin-01 → skin-02 → skin-03 ─┐
 |-------|-----|--------|------|--------|------------|
 | 1 | skin-01 | Moderate golden cleanup | AFK | done | — |
 | 2 | skin-02 | Skin registry, resolution, persistence, Classic tokens, theme wiring | AFK | done | skin-01 |
-| 3 | skin-03 | DM campaign default (wizard step 1 + campagne edit) | AFK | pending | skin-02 |
-| 4 | skin-04 | Player Appearance picker + override persistence | AFK | pending | skin-02 |
-| 5 | skin-05 | Apply skins to DM/player surfaces (Classic fidelity) | AFK | pending | skin-03, skin-04 |
-| 6 | skin-06 | HITL: Arcane Ledger mocks (9 surfaces) | HITL | pending | skin-05 |
+| 3 | skin-03 | DM campaign default (wizard step 1 + campagne edit) | AFK | done | skin-02 |
+| 4 | skin-04 | Player Appearance picker + override persistence | AFK | done | skin-02 |
+| 5 | skin-05 | Apply skins to DM/player surfaces (Classic fidelity) | AFK | done | skin-03, skin-04 |
+| 6 | skin-06 | HITL: Arcane Ledger mocks (9 surfaces) | HITL | pending — needs user | skin-05 |
 | 7 | skin-07 | Implement Arcane Ledger + goldens | AFK | pending | skin-06 |
 | 8 | skin-08 | HITL: Night Cartographer mocks (9 surfaces) | HITL | pending | skin-07 |
 | 9 | skin-09 | Implement Night Cartographer + goldens | AFK | pending | skin-08 |
