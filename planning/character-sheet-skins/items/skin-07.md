@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: AFK
-- Status: ready
+- Status: in progress (tokens + seal + parchment chrome landed; deepen mock-close next)
 
 ## Parent
 

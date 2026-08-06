@@ -10,6 +10,8 @@ import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 /// Shared building blocks for new (and reused) player-stat visualization variants.
@@ -1397,33 +1399,45 @@ class IdentityBanner extends StatelessWidget {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             width: 56,
             height: 56,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: StatVizTheme.dark(context),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '$level',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: StatVizTheme.text(context),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                ),
-                Text(
-                  levelAbbr,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: StatVizTheme.text(context),
-                        fontSize: 10,
-                      ),
-                ),
-              ],
-            ),
+            child: isArcaneLedgerActive(context)
+                ? CharacterSheetLevelSeal(
+                    level: level,
+                    levelAbbr: levelAbbr,
+                    size: 56,
+                  )
+                : Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: StatVizTheme.dark(context),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '$level',
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    color: StatVizTheme.text(context),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                        ),
+                        Text(
+                          levelAbbr,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: StatVizTheme.text(context),
+                                    fontSize: 10,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
           ),
         ],
       ),
@@ -1482,23 +1496,37 @@ class IdentityPortraitCard extends StatelessWidget {
                             StatVizTheme.dark(context).withValues(alpha: 0.45),
                       ),
               ),
-              Container(
+              SizedBox(
                 width: 48,
                 height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: StatVizTheme.dark(context),
-                  border: Border.all(color: StatVizTheme.bg(context), width: 3),
-                ),
-                child: Center(
-                  child: Text(
-                    '$level',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: StatVizTheme.text(context),
-                          fontWeight: FontWeight.bold,
+                child: isArcaneLedgerActive(context)
+                    ? CharacterSheetLevelSeal(
+                        level: level,
+                        levelAbbr: levelAbbr,
+                        size: 48,
+                      )
+                    : Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: StatVizTheme.dark(context),
+                          border: Border.all(
+                              color: StatVizTheme.bg(context), width: 3),
                         ),
-                  ),
-                ),
+                        child: Center(
+                          child: Text(
+                            '$level',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: StatVizTheme.text(context),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ),
+                      ),
               ),
             ],
           ),

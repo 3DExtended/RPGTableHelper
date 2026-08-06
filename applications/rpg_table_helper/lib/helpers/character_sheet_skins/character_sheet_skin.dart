@@ -78,12 +78,13 @@ class CharacterSheetSkin {
       theme: CustomTheme.darkTheme,
       brightness: Brightness.dark,
     ),
-    // Placeholders until Ledger/Cartographer slices — Classic Dark tokens.
+    // Arcane Ledger — distinct manuscript tokens (Classic Light is warmer cream).
     CharacterSheetSkinIds.arcaneLedger: CharacterSheetSkin(
       id: CharacterSheetSkinIds.arcaneLedger,
-      theme: CustomTheme.lightTheme,
+      theme: CustomTheme.arcaneLedgerTheme,
       brightness: Brightness.light,
     ),
+    // Placeholder until Night Cartographer slice — Classic Dark tokens.
     CharacterSheetSkinIds.nightCartographer: CharacterSheetSkin(
       id: CharacterSheetSkinIds.nightCartographer,
       theme: CustomTheme.darkTheme,

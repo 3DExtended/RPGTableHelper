@@ -11,8 +11,8 @@ Parent PRD: [`docs/prd/character-sheet-skins.md`](../../docs/prd/character-sheet
 | skin-03 | DM campaign default (wizard step 1 + campagne edit) | AFK | done | skin-02 | local |
 | skin-04 | Player Appearance picker + override persistence | AFK | done | skin-02 | local |
 | skin-05 | Apply skins to DM/player surfaces (Classic fidelity) | AFK | done | skin-03, skin-04 | local |
-| skin-06 | HITL: Arcane Ledger mocks (9 surfaces) | HITL | ready | skin-05 | local |
-| skin-07 | Implement Arcane Ledger + goldens | AFK | ready | skin-06 | local |
+| skin-06 | HITL: Arcane Ledger mocks (9 surfaces) | HITL | done | skin-05 | local |
+| skin-07 | Implement Arcane Ledger + goldens | AFK | in progress | skin-06 | local |
 | skin-08 | HITL: Night Cartographer mocks (9 surfaces) | HITL | ready | skin-07 | local |
 | skin-09 | Implement Night Cartographer + goldens | AFK | ready | skin-08 | local |
 
@@ -25,4 +25,4 @@ skin-01 → skin-02 → skin-03 ─┐
 
 ## HITL pause (skin-06)
 
-AFK Classic path complete. Next requires your design approval for Arcane Ledger mocks (9 player surfaces, iPad landscape) before skin-07.
+**Approved 2026-08-06.** Seal must be flat CustomPaint + dynamic level text (not photoreal baked LVL). Skin-07 in progress.

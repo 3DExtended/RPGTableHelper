@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: HITL
-- Status: ready (HITL — waiting on user)
+- Status: done (approved 2026-08-06)
 
 ## Parent
 
@@ -12,20 +12,26 @@ PRD: `docs/prd/character-sheet-skins.md`
 
 ## What to build
 
-Human-in-the-loop design pass for **Arcane Ledger** before implementation:
-
-- Generate/refine iPad-landscape mocks for all nine player surfaces: Background, Stats, Features, Attacks, Spells, Money, Inventory, Recipes, Lore.
-- Generate high-res plates needed for hybrid assets (parchment atmosphere, wax seal, etc.).
-- User approves the set (or lists required revisions) before skin-07 starts.
-
-Demoable: approved mock set stored under project assets / agreed folder with a short approval note in planning.
+Human-in-the-loop design pass for **Arcane Ledger** before implementation.
 
 ## Acceptance criteria
 
-- [ ] Nine Ledger player-surface mocks exist (iPad landscape)
-- [ ] Asset plates listed for implementation (backgrounds/seal/etc.)
-- [ ] User explicit approval recorded (comment in index/handoff or checklist signed off)
-- [ ] Open revisions either closed or deferred with written note
+- [x] Nine Ledger player-surface mocks exist (iPad landscape)
+- [x] Asset plates listed for implementation (backgrounds/seal/etc.)
+- [x] User explicit approval recorded
+- [x] Open revisions closed or deferred with written note
+
+## Approval (2026-08-06)
+
+**Approved** full player set + DM wizard mocks.
+
+**Seal constraint (for skin-07):** middle-ground illustrated wax seal plate (empty center) + **dynamic** level/`LVL` text from character data. Match Stats mock seal depth — not photoreal photo, not flat icon.
+
+DM wizard mocks: approved as-is.
+
+## Generated assets
+
+Folder: `~/.cursor/projects/.../assets/` — see `arcane-ledger-README.md`
 
 ## Blocked by
 

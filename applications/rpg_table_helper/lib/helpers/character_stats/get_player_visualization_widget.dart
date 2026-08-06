@@ -17,6 +17,8 @@ import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_visualization_variant_widgets.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modals/show_reactivate_previous_transformation_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
@@ -1226,6 +1228,9 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
 
     var firstExpandedFlex = (140 / maxWidth) * 100;
     var secondExpandedFlex = (200 / maxWidth) * 100;
+    final levelInt = characterLevel is int
+        ? characterLevel
+        : int.tryParse('$characterLevel') ?? 0;
 
     return SizedBox(
       width: maxWidth,
@@ -1237,9 +1242,21 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
             flex: firstExpandedFlex.round(),
             child: CustomShadowWidget(
               child: LayoutBuilder(builder: (context, constrin) {
+                final side = constrin.maxWidth;
+                if (isArcaneLedgerActive(context)) {
+                  return SizedBox(
+                    width: side,
+                    height: side,
+                    child: CharacterSheetLevelSeal(
+                      level: levelInt,
+                      levelAbbr: S.of(context).levelAbbr,
+                      size: side,
+                    ),
+                  );
+                }
                 return Container(
-                  width: constrin.maxWidth,
-                  height: constrin.maxWidth,
+                  width: side,
+                  height: side,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: CustomThemeProvider.of(context).theme.darkColor),

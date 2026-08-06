@@ -8,6 +8,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -85,10 +86,14 @@ class _WizardManagerState extends State<WizardManager> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Builder(builder: (context) {
-          return Navbar(
+    return ValueListenableBuilder<String>(
+      valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
+      builder: (context, _, __) {
+        return CharacterSheetSkinChrome(
+          child: Column(
+            children: [
+              Builder(builder: (context) {
+                return Navbar(
             backInsteadOfCloseIcon: true,
             useTopSafePadding: true,
             closeFunction: () {
@@ -188,7 +193,9 @@ class _WizardManagerState extends State<WizardManager> {
         }),
         Expanded(
           child: Container(
-            color: CustomThemeProvider.of(context).theme.bgColor,
+            color: isArcaneLedgerActive(context)
+                ? Colors.transparent
+                : CustomThemeProvider.of(context).theme.bgColor,
             child: widget.stepBuilders[_currentStep](
               _goToPreviousStep,
               _goToNextStep,
@@ -196,7 +203,10 @@ class _WizardManagerState extends State<WizardManager> {
             ),
           ),
         ),
-      ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

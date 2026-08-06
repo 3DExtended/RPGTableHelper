@@ -13,6 +13,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/has_missing_required_campaign_stats.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
@@ -371,9 +372,13 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     return PreventSwipeNavigation(
       child: Scaffold(
         backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
-        body: Column(
-          children: [
-            Navbar(
+        body: ValueListenableBuilder<String>(
+          valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
+          builder: (context, _, __) {
+            return CharacterSheetSkinChrome(
+              child: Column(
+                children: [
+                  Navbar(
               backInsteadOfCloseIcon: rpgConfig?.characterStatTabsDefinition!
                       .indexWhere((tab) => tab.isDefaultTab == true) !=
                   _currentStep,
@@ -584,7 +589,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             ),
             Expanded(
               child: Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
+                color: isArcaneLedgerActive(context)
+                    ? Colors.transparent
+                    : CustomThemeProvider.of(context).theme.bgColor,
                 child: PageView(
                   controller: pageViewController,
                   onPageChanged: (value) {
@@ -597,7 +604,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                 ),
               ),
             ),
-          ],
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

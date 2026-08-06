@@ -92,6 +92,40 @@ class CustomTheme {
           Color(0xff272B36), // TODO update me
           Color(0xff2A374A), // TODO update me
         ]);
+
+  /// Arcane Ledger — warmer manuscript parchment + bronze accent (skin-07).
+  static CustomTheme arcaneLedgerTheme = CustomTheme()
+    ..darkColor = const Color(0xff3A2E24)
+    ..middleBgColor = const Color(0xffE8D7C0)
+    ..bgColor = const Color(0xffF4E6D2)
+    ..textColor = const Color(0xffF8F0E4)
+    ..accentColor = const Color(0xffC46A3A)
+    ..lightGreen = const Color(0xff3A9E4A)
+    ..lightYellow = const Color(0xffD4A017)
+    ..lightRed = const Color(0xffA8322D)
+    ..darkGreen = const Color(0xff2E7A3A)
+    ..darkRed = const Color(0xff8B1E1E)
+    ..darkTextColor = const Color(0xff3A2E24)
+    ..secondaryNavbarColor = const Color(0xff2C2521)
+    ..whiteBgTint = const Color(0x22C4A882)
+    ..borderGradient = const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xff8B7355),
+        Color(0xff3A2E24),
+        Color(0xff6B5344),
+      ],
+    )
+    ..navbarBackground = const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xff2C2521),
+        Color(0xff312A24),
+        Color(0xff3A322C),
+      ],
+    );
 }
 
 class CustomThemeProvider extends InheritedWidget {

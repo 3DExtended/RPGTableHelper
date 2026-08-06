@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 
@@ -74,6 +75,15 @@ void main() {
       final dark = CharacterSheetSkin.registry[CharacterSheetSkinIds.classicDark]!;
       expect(light.theme.bgColor, isNot(dark.theme.bgColor));
       expect(light.theme.accentColor, isNotNull);
+    });
+
+    test('arcane ledger has distinct manuscript tokens from classic light', () {
+      final ledger =
+          CharacterSheetSkin.registry[CharacterSheetSkinIds.arcaneLedger]!;
+      final light =
+          CharacterSheetSkin.registry[CharacterSheetSkinIds.classicLight]!;
+      expect(ledger.theme.bgColor, isNot(light.theme.bgColor));
+      expect(ledger.brightness, Brightness.light);
     });
   });
 }
