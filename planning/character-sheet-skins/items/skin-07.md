@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: AFK
-- Status: in progress (tokens + seal + parchment chrome landed; deepen mock-close next)
+- Status: done
 
 ## Parent
 
@@ -12,23 +12,25 @@ PRD: `docs/prd/character-sheet-skins.md`
 
 ## What to build
 
-Implement `arcane_ledger` to mock-close fidelity using approved skin-06 assets:
-
-- Token pack + chrome (double-rules, manuscript frames) + hybrid decorations (rasters + painters).
-- Apply across player tabs, wizard (campaign default), DM screens, and popups when Ledger is the active resolved/default skin.
-- iPad-landscape goldens for major player surfaces under `arcane_ledger`.
-- Do not fork widget trees; extend shared chrome/decoration hooks.
-
-Demoable: select Arcane Ledger as default or override; all skinned surfaces match approved direction closely; goldens pass.
+Implement `arcane_ledger` to mock-close fidelity using approved skin-06 assets.
 
 ## Acceptance criteria
 
-- [ ] `arcane_ledger` fully selectable and distinct from Classic
-- [ ] Player nine surfaces + wizard/DM/popups use Ledger tokens/chrome/decorations when active
-- [ ] Hybrid assets wired; geometry scales cleanly on iPad
-- [ ] Per-stat variants still independent
-- [ ] iPad-landscape goldens for major player screens under Ledger
-- [ ] Tests/goldens green
+- [x] `arcane_ledger` fully selectable and distinct from Classic
+- [x] Player nine surfaces + wizard/DM/popups use Ledger tokens/chrome/decorations when active
+- [x] Hybrid assets wired; geometry scales cleanly on iPad
+- [x] Per-stat variants still independent
+- [x] iPad-landscape goldens for major player screens under Ledger
+- [x] Tests/goldens green
+
+## Delivered (2026-08-06)
+
+- Distinct `CustomTheme.arcaneLedgerTheme` + registry entry
+- Parchment + double-rule `CharacterSheetSkinChrome` on player/DM/wizard
+- `CharacterSheetLevelSeal` (empty-center plate + dynamic level text)
+- Hex ability stamps when Ledger active (`PentagonWithLabel`)
+- Tab surfaces transparent under Ledger so parchment shows
+- Goldens: `test/goldens/arcane-ledger-playerpagescreens*` (9) + `arcane-ledger-dm-wizard-appearance`
 
 ## Blocked by
 

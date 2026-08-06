@@ -589,9 +589,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             ),
             Expanded(
               child: Container(
-                color: isArcaneLedgerActive(context)
-                    ? Colors.transparent
-                    : CustomThemeProvider.of(context).theme.bgColor,
+                color: characterSheetSurfaceColor(context),
                 child: PageView(
                   controller: pageViewController,
                   onPageChanged: (value) {

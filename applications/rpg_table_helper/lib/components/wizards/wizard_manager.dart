@@ -193,9 +193,7 @@ class _WizardManagerState extends State<WizardManager> {
         }),
         Expanded(
           child: Container(
-            color: isArcaneLedgerActive(context)
-                ? Colors.transparent
-                : CustomThemeProvider.of(context).theme.bgColor,
+            color: characterSheetSurfaceColor(context),
             child: widget.stepBuilders[_currentStep](
               _goToPreviousStep,
               _goToNextStep,

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/dynamic_height_column_layout.dart';
 import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
@@ -61,7 +62,7 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
         child: Container(
             padding: EdgeInsets.all(padding),
             clipBehavior: Clip.none,
-            color: CustomThemeProvider.of(context).theme.bgColor,
+            color: characterSheetSurfaceColor(context),
             child: DynamicHeightColumnLayout(
               spacing: padding,
               runSpacing: padding,

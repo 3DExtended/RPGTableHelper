@@ -12,7 +12,7 @@ Parent PRD: [`docs/prd/character-sheet-skins.md`](../../docs/prd/character-sheet
 | skin-04 | Player Appearance picker + override persistence | AFK | done | skin-02 | local |
 | skin-05 | Apply skins to DM/player surfaces (Classic fidelity) | AFK | done | skin-03, skin-04 | local |
 | skin-06 | HITL: Arcane Ledger mocks (9 surfaces) | HITL | done | skin-05 | local |
-| skin-07 | Implement Arcane Ledger + goldens | AFK | in progress | skin-06 | local |
+| skin-07 | Implement Arcane Ledger + goldens | AFK | done | skin-06 | local |
 | skin-08 | HITL: Night Cartographer mocks (9 surfaces) | HITL | ready | skin-07 | local |
 | skin-09 | Implement Night Cartographer + goldens | AFK | ready | skin-08 | local |
 
@@ -25,4 +25,4 @@ skin-01 → skin-02 → skin-03 ─┐
 
 ## HITL pause (skin-06)
 
-**Approved 2026-08-06.** Seal must be flat CustomPaint + dynamic level text (not photoreal baked LVL). Skin-07 in progress.
+**Approved 2026-08-06.** Skin-07 Arcane Ledger implemented + goldens under `test/goldens/arcane-ledger-*`. Next AFK after review: skin-08 HITL Night Cartographer (needs user).

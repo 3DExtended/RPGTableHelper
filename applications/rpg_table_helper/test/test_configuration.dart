@@ -22,6 +22,17 @@ const testDevices = [
   ),
 ];
 
+/// Lower DPR for heavy skin goldens (parchment textures) to keep PNGs reviewable in git.
+const testDevicesLedger = [
+  Device(
+    name: 'ipad pro 12-9 landscape',
+    size: Size(1366, 1024),
+    devicePixelRatio: 1,
+    textScale: 1.0,
+    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  ),
+];
+
 var brightnessTests = [
   Brightness.light,
   Brightness.dark,
@@ -42,9 +53,14 @@ void testConfigurations({
   bool disableAllScreenSizes = false,
   /// When true, only [Brightness.light] is snapshotted (no Darkmode suffix).
   bool disableDarkMode = false,
+  /// When set, [CustomThemeProvider] uses this skin instead of brightness mapping.
+  String? overrideSkinId,
+  /// Override golden devices (defaults to [testDevices]).
+  List<Device>? devices,
 }) {
   // Touch the flag so existing call sites stay valid without analyzer noise.
   assert(disableAllScreenSizes || !disableAllScreenSizes);
+  final goldenDevices = devices ?? testDevices;
   Widget? widgetToTest;
   var supportedLocales = S.delegate.supportedLocales;
   if (disableLocals) {
@@ -110,6 +126,7 @@ void testConfigurations({
             wrapper: (w) => Builder(builder: (context) {
               return CustomThemeProvider(
                   overrideBrightness: brightnessToTest,
+                  overrideSkinId: overrideSkinId,
                   child: Localizations(
                     delegates: const [
                       GlobalMaterialLocalizations.delegate,
@@ -135,7 +152,7 @@ void testConfigurations({
           await multiScreenGolden(
             tester,
             '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
-            devices: testDevices,
+            devices: goldenDevices,
           );
         });
       }

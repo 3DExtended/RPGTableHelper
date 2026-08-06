@@ -106,3 +106,9 @@ bool isArcaneLedgerActive(BuildContext context) {
       ).renderSkinId ==
       CharacterSheetSkinIds.arcaneLedger;
 }
+
+/// Background for tab surfaces: transparent under Ledger so parchment shows.
+Color characterSheetSurfaceColor(BuildContext context) {
+  if (isArcaneLedgerActive(context)) return Colors.transparent;
+  return CustomThemeProvider.of(context).theme.bgColor;
+}

@@ -19,9 +19,10 @@
 - Registry + resolve + JSON fields + Classic theme wiring + l10n labels committed on `main`.
 - Next: skin-03 (DM wizard default) and skin-04 (player Appearance) in parallel dependency-wise after skin-02.
 
-## 2026-08-06 — skin-06 approved; skin-07 started
+## 2026-08-06 — skin-07 done
 
-- Mocks approved; seal = illustrated empty-center plate + dynamic level text.
-- skin-07 WIP: Ledger theme tokens, parchment chrome/frame, `CharacterSheetLevelSeal`, wired into identity widgets + player/DM/wizard chrome.
+- Ledger tokens, parchment chrome, seal badge, hex stamps, tab surface transparency.
+- Goldens: `test/goldens/arcane-ledger-playerpagescreens0..8-*` + `arcane-ledger-dm-wizard-appearance`.
+- Next: skin-08 HITL Night Cartographer (user).
 
 ---

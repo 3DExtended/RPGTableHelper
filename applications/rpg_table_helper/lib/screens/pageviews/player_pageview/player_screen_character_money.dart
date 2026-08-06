@@ -9,6 +9,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_int_edit_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -62,7 +63,7 @@ class _PlayerScreenCharacterMoneyState
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-          color: CustomThemeProvider.of(context).theme.bgColor,
+          color: characterSheetSurfaceColor(context),
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
