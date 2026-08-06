@@ -1561,6 +1561,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.'**
   String get sessionExpiredMessage;
+
+  /// No description provided for @characterSheetSkinClassicLight.
+  ///
+  /// In de, this message translates to:
+  /// **'Klassisch Hell'**
+  String get characterSheetSkinClassicLight;
+
+  /// No description provided for @characterSheetSkinClassicDark.
+  ///
+  /// In de, this message translates to:
+  /// **'Klassisch Dunkel'**
+  String get characterSheetSkinClassicDark;
+
+  /// No description provided for @characterSheetSkinArcaneLedger.
+  ///
+  /// In de, this message translates to:
+  /// **'Arkanes Foliant'**
+  String get characterSheetSkinArcaneLedger;
+
+  /// No description provided for @characterSheetSkinNightCartographer.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachtkartograph'**
+  String get characterSheetSkinNightCartographer;
+
+  /// No description provided for @characterSheetSkinUseCampaignDefault.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagnen-Standard verwenden'**
+  String get characterSheetSkinUseCampaignDefault;
+
+  /// No description provided for @characterSheetAppearanceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Darstellung'**
+  String get characterSheetAppearanceTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -781,4 +781,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sessionExpiredMessage =>
       'Your session has expired. Please sign in again.';
+
+  @override
+  String get characterSheetSkinClassicLight => 'Classic Light';
+
+  @override
+  String get characterSheetSkinClassicDark => 'Classic Dark';
+
+  @override
+  String get characterSheetSkinArcaneLedger => 'Arcane Ledger';
+
+  @override
+  String get characterSheetSkinNightCartographer => 'Night Cartographer';
+
+  @override
+  String get characterSheetSkinUseCampaignDefault => 'Use campaign default';
+
+  @override
+  String get characterSheetAppearanceTitle => 'Appearance';
 }
