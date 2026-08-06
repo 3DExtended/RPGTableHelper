@@ -282,5 +282,11 @@
   "characterConfigSaveFailedTitle": "Charakter nicht gespeichert",
   "characterConfigSaveFailedBody": "Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert.",
   "logout": "Abmelden",
-  "sessionExpiredMessage": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
+  "sessionExpiredMessage": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+  "characterSheetSkinClassicLight": "Klassisch Hell",
+  "characterSheetSkinClassicDark": "Klassisch Dunkel",
+  "characterSheetSkinArcaneLedger": "Arkanes Foliant",
+  "characterSheetSkinNightCartographer": "Nachtkartograph",
+  "characterSheetSkinUseCampaignDefault": "Kampagnen-Standard verwenden",
+  "characterSheetAppearanceTitle": "Darstellung"
 }

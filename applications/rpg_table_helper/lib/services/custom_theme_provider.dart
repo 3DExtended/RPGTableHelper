@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 
 class CustomTheme {
   late Color darkColor;
@@ -96,6 +95,10 @@ class CustomTheme {
 }
 
 class CustomThemeProvider extends InheritedWidget {
+  /// Active sheet skin id (may be unknown/stored); [theme] uses render fallback.
+  final ValueNotifier<String> skinIdNotifier;
+
+  /// Derived from the active skin's brightness category for legacy UI checks.
   final ValueNotifier<Brightness> brightnessNotifier;
 
   static CustomThemeProvider of(BuildContext context) {
@@ -111,20 +114,48 @@ class CustomThemeProvider extends InheritedWidget {
   }
 
   CustomTheme get theme {
-    return brightnessNotifier.value == Brightness.light
-        ? CustomTheme.lightTheme
-        : CustomTheme.darkTheme;
+    final resolved = resolveCharacterSheetSkin(
+      characterSkinId: skinIdNotifier.value,
+      campaignDefaultSkinId: null,
+    );
+    return CharacterSheetSkin.forRenderId(resolved.renderSkinId).theme;
+  }
+
+  /// Apply a resolved/stored skin id and sync [brightnessNotifier] for callers
+  /// that still branch on light/dark.
+  void setActiveSkinId(String skinId) {
+    skinIdNotifier.value = skinId;
+    final renderId = resolveCharacterSheetSkin(
+      characterSkinId: skinId,
+      campaignDefaultSkinId: null,
+    ).renderSkinId;
+    brightnessNotifier.value =
+        CharacterSheetSkin.forRenderId(renderId).brightness;
   }
 
   CustomThemeProvider({
     super.key,
     required super.child,
     Brightness? overrideBrightness,
-  }) : brightnessNotifier = ValueNotifier(overrideBrightness ??
-            PlatformDispatcher.instance.platformBrightness) {
-    PlatformDispatcher.instance.onPlatformBrightnessChanged = () {
-      brightnessNotifier.value = PlatformDispatcher.instance.platformBrightness;
-    };
+    String? overrideSkinId,
+  })  : skinIdNotifier = ValueNotifier(
+          overrideSkinId ??
+              (overrideBrightness == Brightness.light
+                  ? CharacterSheetSkinIds.classicLight
+                  : CharacterSheetSkinIds.classicDark),
+        ),
+        brightnessNotifier = ValueNotifier(
+          overrideBrightness ??
+              (overrideSkinId != null
+                  ? CharacterSheetSkin.forRenderId(
+                      resolveCharacterSheetSkin(
+                        characterSkinId: overrideSkinId,
+                        campaignDefaultSkinId: null,
+                      ).renderSkinId,
+                    ).brightness
+                  : Brightness.dark),
+        ) {
+    // Skins own appearance; do not follow platform brightness changes.
   }
 
   @override

@@ -6,8 +6,8 @@ Parent PRD: [`docs/prd/character-sheet-skins.md`](../../docs/prd/character-sheet
 
 | ID | Title | Type | Status | Blocked by | Forge |
 |----|--------|------|--------|------------|-------|
-| skin-01 | Moderate golden cleanup | AFK | ready | — | local |
-| skin-02 | Skin registry, resolution, persistence, Classic tokens, theme wiring | AFK | ready | skin-01 | local |
+| skin-01 | Moderate golden cleanup | AFK | done | — | local |
+| skin-02 | Skin registry, resolution, persistence, Classic tokens, theme wiring | AFK | done | skin-01 | local |
 | skin-03 | DM campaign default (wizard step 1 + campagne edit) | AFK | ready | skin-02 | local |
 | skin-04 | Player Appearance picker + override persistence | AFK | ready | skin-02 | local |
 | skin-05 | Apply skins to DM/player surfaces (Classic fidelity) | AFK | ready | skin-03, skin-04 | local |

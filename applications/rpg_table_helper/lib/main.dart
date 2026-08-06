@@ -77,10 +77,12 @@ class AppRoutingShell extends ConsumerWidget {
     return CustomThemeProvider(
       child: Builder(builder: (context) {
         final themeProvider = CustomThemeProvider.of(context);
-        return ValueListenableBuilder<Brightness>(
-            valueListenable: themeProvider.brightnessNotifier,
-            builder: (context, brightness, child) {
-              print(brightness);
+        return ListenableBuilder(
+            listenable: Listenable.merge([
+              themeProvider.skinIdNotifier,
+              themeProvider.brightnessNotifier,
+            ]),
+            builder: (context, child) {
               return DependencyProvider(
                 widgetRef: ref,
                 isMocked: false,

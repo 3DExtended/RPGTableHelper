@@ -29,6 +29,10 @@ class RpgConfigurationModel {
   final String? initiativeBonusListEntryUuid;
   final InitiativeBonusField? initiativeBonusField;
 
+  /// Campaign default character-sheet skin id (`classic_light`, …).
+  @JsonKey(includeIfNull: false)
+  final String? defaultSkinId;
+
   factory RpgConfigurationModel.fromJson(Map<String, dynamic> json) =>
       _$RpgConfigurationModelFromJson(json);
 
@@ -43,6 +47,7 @@ class RpgConfigurationModel {
     this.initiativeBonusStatUuid,
     this.initiativeBonusListEntryUuid,
     this.initiativeBonusField,
+    this.defaultSkinId,
   });
 
   Map<String, dynamic> toJson() => _$RpgConfigurationModelToJson(this);

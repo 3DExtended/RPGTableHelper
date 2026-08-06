@@ -312,6 +312,8 @@ abstract class _$RpgCharacterConfigurationCWProxy {
   RpgCharacterConfiguration companionCharacters(
       List<RpgAlternateCharacterConfiguration>? companionCharacters);
 
+  RpgCharacterConfiguration skinId(String? skinId);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -330,6 +332,7 @@ abstract class _$RpgCharacterConfigurationCWProxy {
     List<RpgCharacterStatValue> characterStats,
     List<RpgCharacterOwnedItemPair> inventory,
     List<RpgAlternateCharacterConfiguration>? companionCharacters,
+    String? skinId,
   });
 }
 
@@ -392,6 +395,9 @@ class _$RpgCharacterConfigurationCWProxyImpl
       this(companionCharacters: companionCharacters);
 
   @override
+  RpgCharacterConfiguration skinId(String? skinId) => this(skinId: skinId);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgCharacterConfiguration(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -411,6 +417,7 @@ class _$RpgCharacterConfigurationCWProxyImpl
     Object? characterStats = const $CopyWithPlaceholder(),
     Object? inventory = const $CopyWithPlaceholder(),
     Object? companionCharacters = const $CopyWithPlaceholder(),
+    Object? skinId = const $CopyWithPlaceholder(),
   }) {
     return RpgCharacterConfiguration(
       uuid: uuid == const $CopyWithPlaceholder()
@@ -459,6 +466,10 @@ class _$RpgCharacterConfigurationCWProxyImpl
           ? _value.companionCharacters
           // ignore: cast_nullable_to_non_nullable
           : companionCharacters as List<RpgAlternateCharacterConfiguration>?,
+      skinId: skinId == const $CopyWithPlaceholder()
+          ? _value.skinId
+          // ignore: cast_nullable_to_non_nullable
+          : skinId as String?,
     );
   }
 }
@@ -746,6 +757,7 @@ RpgCharacterConfiguration _$RpgCharacterConfigurationFromJson(
           ?.map((e) => RpgAlternateCharacterConfiguration.fromJson(
               e as Map<String, dynamic>))
           .toList(),
+      skinId: json['skinId'] as String?,
     );
 
 Map<String, dynamic> _$RpgCharacterConfigurationToJson(
@@ -762,6 +774,7 @@ Map<String, dynamic> _$RpgCharacterConfigurationToJson(
       'inventory': instance.inventory,
       'companionCharacters': instance.companionCharacters,
       'alternateForms': instance.alternateForms,
+      if (instance.skinId case final value?) 'skinId': value,
     };
 
 RpgCharacterStatValue _$RpgCharacterStatValueFromJson(

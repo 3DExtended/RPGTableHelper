@@ -242,5 +242,11 @@
   "characterConfigSaveFailedTitle": "Character not saved",
   "characterConfigSaveFailedBody": "Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.",
   "logout": "Logout",
-  "sessionExpiredMessage": "Your session has expired. Please sign in again."
+  "sessionExpiredMessage": "Your session has expired. Please sign in again.",
+  "characterSheetSkinClassicLight": "Classic Light",
+  "characterSheetSkinClassicDark": "Classic Dark",
+  "characterSheetSkinArcaneLedger": "Arcane Ledger",
+  "characterSheetSkinNightCartographer": "Night Cartographer",
+  "characterSheetSkinUseCampaignDefault": "Use campaign default",
+  "characterSheetAppearanceTitle": "Appearance"
 }

@@ -150,6 +150,10 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
   @Deprecated("alternate Forms are now in companionCharacters")
   final List<RpgAlternateCharacterConfiguration>? alternateForms;
 
+  /// Per-character sheet skin override; null inherits campaign default.
+  @JsonKey(includeIfNull: false)
+  final String? skinId;
+
   factory RpgCharacterConfiguration.fromJson(Map<String, dynamic> json) =>
       _$RpgCharacterConfigurationFromJson(json);
 
@@ -165,6 +169,7 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
     required super.characterStats,
     required this.inventory,
     required this.companionCharacters,
+    this.skinId,
   });
 
   Map<String, dynamic> toJson() => _$RpgCharacterConfigurationToJson(this);

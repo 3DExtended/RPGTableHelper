@@ -12,7 +12,11 @@
 
 - Device matrix reduced to `ipad pro 12-9 landscape`; orphaned device PNGs deleted; README paths updated.
 - Player + DM page goldens pass.
-- CharacterStat + user_settings goldens need local `--update-goldens` (agent will not regenerate — see `golden-keep-list.md`). CharacterStat suite now only snaps **variant0 / one locale / light**.
-- Do not mark skin-01 done / do not start skin-02 until that regen is confirmed.
+- CharacterStat suite slimmed to variant0 / en / light; leftover matrix PNGs deleted. Human still needs `--update-goldens` for ~75 CharacterStat screenshots.
+
+## 2026-08-06 — skin-02 done
+
+- Registry + resolve + JSON fields + Classic theme wiring + l10n labels committed on `main`.
+- Next: skin-03 (DM wizard default) and skin-04 (player Appearance) in parallel dependency-wise after skin-02.
 
 ---

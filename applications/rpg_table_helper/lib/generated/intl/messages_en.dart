@@ -94,6 +94,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterNameStatTitle": MessageLookupByLibrary.simpleMessage(
       "Character Name",
     ),
+    "characterSheetAppearanceTitle": MessageLookupByLibrary.simpleMessage(
+      "Appearance",
+    ),
+    "characterSheetSkinArcaneLedger": MessageLookupByLibrary.simpleMessage(
+      "Arcane Ledger",
+    ),
+    "characterSheetSkinClassicDark": MessageLookupByLibrary.simpleMessage(
+      "Classic Dark",
+    ),
+    "characterSheetSkinClassicLight": MessageLookupByLibrary.simpleMessage(
+      "Classic Light",
+    ),
+    "characterSheetSkinNightCartographer": MessageLookupByLibrary.simpleMessage(
+      "Night Cartographer",
+    ),
+    "characterSheetSkinUseCampaignDefault":
+        MessageLookupByLibrary.simpleMessage("Use campaign default"),
     "characterNameWithLevelAndConfigurableDetails":
         MessageLookupByLibrary.simpleMessage(
           "Character name with level and configurable details",

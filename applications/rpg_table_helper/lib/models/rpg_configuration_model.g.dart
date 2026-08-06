@@ -32,6 +32,8 @@ abstract class _$RpgConfigurationModelCWProxy {
   RpgConfigurationModel initiativeBonusField(
       InitiativeBonusField? initiativeBonusField);
 
+  RpgConfigurationModel defaultSkinId(String? defaultSkinId);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgConfigurationModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -49,6 +51,7 @@ abstract class _$RpgConfigurationModelCWProxy {
     String? initiativeBonusStatUuid,
     String? initiativeBonusListEntryUuid,
     InitiativeBonusField? initiativeBonusField,
+    String? defaultSkinId,
   });
 }
 
@@ -105,6 +108,10 @@ class _$RpgConfigurationModelCWProxyImpl
       this(initiativeBonusField: initiativeBonusField);
 
   @override
+  RpgConfigurationModel defaultSkinId(String? defaultSkinId) =>
+      this(defaultSkinId: defaultSkinId);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgConfigurationModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -123,6 +130,7 @@ class _$RpgConfigurationModelCWProxyImpl
     Object? initiativeBonusStatUuid = const $CopyWithPlaceholder(),
     Object? initiativeBonusListEntryUuid = const $CopyWithPlaceholder(),
     Object? initiativeBonusField = const $CopyWithPlaceholder(),
+    Object? defaultSkinId = const $CopyWithPlaceholder(),
   }) {
     return RpgConfigurationModel(
       rpgName: rpgName == const $CopyWithPlaceholder()
@@ -168,6 +176,10 @@ class _$RpgConfigurationModelCWProxyImpl
           ? _value.initiativeBonusField
           // ignore: cast_nullable_to_non_nullable
           : initiativeBonusField as InitiativeBonusField?,
+      defaultSkinId: defaultSkinId == const $CopyWithPlaceholder()
+          ? _value.defaultSkinId
+          // ignore: cast_nullable_to_non_nullable
+          : defaultSkinId as String?,
     );
   }
 }
@@ -1170,6 +1182,7 @@ RpgConfigurationModel _$RpgConfigurationModelFromJson(
           json['initiativeBonusListEntryUuid'] as String?,
       initiativeBonusField: $enumDecodeNullable(
           _$InitiativeBonusFieldEnumMap, json['initiativeBonusField']),
+      defaultSkinId: json['defaultSkinId'] as String?,
     );
 
 Map<String, dynamic> _$RpgConfigurationModelToJson(
@@ -1186,6 +1199,7 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
       'initiativeBonusListEntryUuid': instance.initiativeBonusListEntryUuid,
       'initiativeBonusField':
           _$InitiativeBonusFieldEnumMap[instance.initiativeBonusField],
+      if (instance.defaultSkinId case final value?) 'defaultSkinId': value,
     };
 
 const _$InitiativeBonusFieldEnumMap = {

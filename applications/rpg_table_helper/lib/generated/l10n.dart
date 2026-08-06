@@ -2193,6 +2193,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Classic Light`
+  String get characterSheetSkinClassicLight {
+    return Intl.message(
+      'Classic Light',
+      name: 'characterSheetSkinClassicLight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic Dark`
+  String get characterSheetSkinClassicDark {
+    return Intl.message(
+      'Classic Dark',
+      name: 'characterSheetSkinClassicDark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arcane Ledger`
+  String get characterSheetSkinArcaneLedger {
+    return Intl.message(
+      'Arcane Ledger',
+      name: 'characterSheetSkinArcaneLedger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Night Cartographer`
+  String get characterSheetSkinNightCartographer {
+    return Intl.message(
+      'Night Cartographer',
+      name: 'characterSheetSkinNightCartographer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use campaign default`
+  String get characterSheetSkinUseCampaignDefault {
+    return Intl.message(
+      'Use campaign default',
+      name: 'characterSheetSkinUseCampaignDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appearance`
+  String get characterSheetAppearanceTitle {
+    return Intl.message(
+      'Appearance',
+      name: 'characterSheetAppearanceTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
