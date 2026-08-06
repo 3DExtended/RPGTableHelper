@@ -22,16 +22,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(username) => " (für ${username})";
 
-  static String m1(amount) => "Du hast ${amount} neue Items erhalten:";
-
-  static String m2(property) => "Der Wert von ${property}";
-
-  static String m3(count) => "Dir gehören ${count} Kampagnen";
-
-  static String m4(count) => "Dir gehören ${count} Charaktere";
-
-  static String m5(label, formattedBonus) =>
+  static String m1(label, formattedBonus) =>
       "Addiere ${label} ${formattedBonus} zu deinem Wurf";
+
+  static String m2(amount) => "Du hast ${amount} neue Items erhalten:";
+
+  static String m3(property) => "Der Wert von ${property}";
+
+  static String m4(count) => "Dir gehören ${count} Kampagnen";
+
+  static String m5(count) => "Dir gehören ${count} Charaktere";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -101,6 +101,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterOverview": MessageLookupByLibrary.simpleMessage(
       "Charakter Übersicht",
     ),
+    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
+      "Porträtbeschreibung",
+    ),
+    "characterPortraitImagePromptPlaceholder":
+        MessageLookupByLibrary.simpleMessage(
+          "Beschreibe deinen Charakter für die Bildgenerierung",
+        ),
     "chooseACampagne": MessageLookupByLibrary.simpleMessage(
       "Kampagne auswählen",
     ),
@@ -170,6 +177,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "enterSomeDescriptionOnTheLeft": MessageLookupByLibrary.simpleMessage(
       "Gebe eine Beschreibung auf der linken Seite ein.",
     ),
+    "fightInitiativeStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Kampf / Initiative",
+    ),
+    "fightInitiativeStepTutorial": MessageLookupByLibrary.simpleMessage(
+      "Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.",
+    ),
     "fightingOrdering": MessageLookupByLibrary.simpleMessage(
       "Kampf Reihenfolge",
     ),
@@ -189,13 +202,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "generateLoreImageTitle": MessageLookupByLibrary.simpleMessage(
       "Generiere ein Bild",
-    ),
-    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
-      "Porträtbeschreibung",
-    ),
-    "characterPortraitImagePromptPlaceholder":
-        MessageLookupByLibrary.simpleMessage(
-      "Beschreibe deinen Charakter für die Bildgenerierung",
     ),
     "generatedImage": MessageLookupByLibrary.simpleMessage("Generiertes Bild"),
     "generatedImagesTabTitle": MessageLookupByLibrary.simpleMessage(
@@ -221,6 +227,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "hourMinutesDayMonthYearFormatString": MessageLookupByLibrary.simpleMessage(
       "%H:%M %d.%m.%Y",
     ),
+    "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Feld",
+    ),
+    "initiativeBonusHelperSentence": m1,
+    "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
+      "Trotzdem verlassen",
+    ),
+    "initiativeBonusIncompleteStay": MessageLookupByLibrary.simpleMessage(
+      "Bleiben",
+    ),
+    "initiativeBonusIncompleteWarningBody": MessageLookupByLibrary.simpleMessage(
+      "Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.",
+    ),
+    "initiativeBonusIncompleteWarningTitle":
+        MessageLookupByLibrary.simpleMessage("Unvollständige Auswahl"),
+    "initiativeBonusListEntryPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Listeneintrag",
+    ),
+    "initiativeBonusNoneOption": MessageLookupByLibrary.simpleMessage("Keine"),
+    "initiativeBonusStatPickerLabel": MessageLookupByLibrary.simpleMessage(
+      "Eigenschaft",
+    ),
     "initiativeRollForCharacterPrefix": MessageLookupByLibrary.simpleMessage(
       "Kampf Reihenfolge Wurf",
     ),
@@ -229,34 +257,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "initiativeRollTextFieldLabel": MessageLookupByLibrary.simpleMessage(
       "Kampf Wurf",
-    ),
-    "initiativeBonusHelperSentence": m5,
-    "fightInitiativeStepTitle": MessageLookupByLibrary.simpleMessage(
-      "Kampf / Initiative",
-    ),
-    "fightInitiativeStepTutorial": MessageLookupByLibrary.simpleMessage(
-      "Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.",
-    ),
-    "initiativeBonusNoneOption": MessageLookupByLibrary.simpleMessage("Keine"),
-    "initiativeBonusStatPickerLabel": MessageLookupByLibrary.simpleMessage(
-      "Eigenschaft",
-    ),
-    "initiativeBonusListEntryPickerLabel": MessageLookupByLibrary.simpleMessage(
-      "Listeneintrag",
-    ),
-    "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
-      "Feld",
-    ),
-    "initiativeBonusIncompleteWarningTitle":
-        MessageLookupByLibrary.simpleMessage("Unvollständige Auswahl"),
-    "initiativeBonusIncompleteWarningBody": MessageLookupByLibrary.simpleMessage(
-      "Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.",
-    ),
-    "initiativeBonusIncompleteStay": MessageLookupByLibrary.simpleMessage(
-      "Bleiben",
-    ),
-    "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
-      "Trotzdem verlassen",
     ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Zahlen-Wert"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
@@ -316,6 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Gruppe von Zahlen-Werten mit zusätzlicher Zahl",
         ),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
+    "logout": MessageLookupByLibrary.simpleMessage("Abmelden"),
     "lore": MessageLookupByLibrary.simpleMessage("Weltgeschichte"),
     "maxValue": MessageLookupByLibrary.simpleMessage("Maximaler Wert"),
     "maxValuePlaceholder": MessageLookupByLibrary.simpleMessage(
@@ -469,7 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "Du hast ein neues Item erhalten:",
     ),
-    "receivedXNewItems": m1,
+    "receivedXNewItems": m2,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Rezept für"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -505,6 +506,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "send": MessageLookupByLibrary.simpleMessage("Absenden"),
     "sendItems": MessageLookupByLibrary.simpleMessage("Items verschicken"),
+    "sessionExpiredMessage": MessageLookupByLibrary.simpleMessage(
+      "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+    ),
     "signInWithApple": MessageLookupByLibrary.simpleMessage(
       "Mit Apple anmelden",
     ),
@@ -533,7 +537,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-    "valueOfPropertyWithName": m2,
+    "valueOfPropertyWithName": m3,
     "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
     "yes": MessageLookupByLibrary.simpleMessage("Ja"),
     "you": MessageLookupByLibrary.simpleMessage("Du"),
@@ -544,8 +548,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "youAreEditingAnAlternateFormWarningText": MessageLookupByLibrary.simpleMessage(
       "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
     ),
-    "youOwnXCampaigns": m3,
-    "youOwnXCharacters": m4,
+    "youOwnXCampaigns": m4,
+    "youOwnXCharacters": m5,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
     ),

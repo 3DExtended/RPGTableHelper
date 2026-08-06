@@ -402,26 +402,21 @@ void main() {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   group('CharacterStatValueType renderings', () {
-    // expand allConfigurationPairs for all viable widget variants
+    // skin-01: one visual variant (index 0) per value-type config is enough.
+    // Full variant matrices belong in focused variant PRDs / gallery review.
     var enrichedallConfigurationPairs = allConfigurationPairs
-        .map((el) {
-          var numberOfVariantsForConfig =
-              numberOfVariantsForValueTypes(el.$2.valueType);
-          return List.generate(
-              numberOfVariantsForConfig,
-              (index) => (
-                    "${el.$1}variant$index",
-                    el.$2,
-                    el.$3.copyWith(variant: index)
-                  ));
-        })
-        .expand((i) => i)
+        .map((el) => (
+              "${el.$1}variant0",
+              el.$2,
+              el.$3.copyWith(variant: 0),
+            ))
         .toList();
 
     for (var testConfiguration in enrichedallConfigurationPairs) {
       testConfigurations(
         disableAllScreenSizes: true,
-        disableLocals: false,
+        disableLocals: true,
+        disableDarkMode: true,
         pathPrefix: "../",
         widgetName: 'CharacterStatValueType_DMConfig_${testConfiguration.$1}',
         useMaterialAppWrapper: true,
@@ -510,7 +505,8 @@ void main() {
 
       testConfigurations(
         disableAllScreenSizes: true,
-        disableLocals: false,
+        disableLocals: true,
+        disableDarkMode: true,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}_editAlternate',
@@ -611,7 +607,8 @@ void main() {
 
       testConfigurations(
         disableAllScreenSizes: true,
-        disableLocals: false,
+        disableLocals: true,
+        disableDarkMode: true,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfig_${testConfiguration.$1}',
@@ -712,7 +709,8 @@ void main() {
 
       testConfigurations(
         disableAllScreenSizes: true,
-        disableLocals: false,
+        disableLocals: true,
+        disableDarkMode: true,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerConfigEmpty_${testConfiguration.$1}',
@@ -813,7 +811,8 @@ void main() {
 
       testConfigurations(
         disableAllScreenSizes: true,
-        disableLocals: false,
+        disableLocals: true,
+        disableDarkMode: true,
         pathPrefix: "../",
         widgetName:
             'CharacterStatValueType_PlayerStatsScreenWidget_${testConfiguration.$1}',

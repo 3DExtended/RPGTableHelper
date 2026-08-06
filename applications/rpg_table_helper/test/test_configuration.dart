@@ -9,38 +9,13 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 import 'custom_font_loader.dart';
 
+/// Canonical golden device set (skin-01 keep-list).
+/// Additional sizes/orientations were dropped to keep visual CI maintainable
+/// ahead of character-sheet skins. See planning/character-sheet-skins/golden-keep-list.md
 const testDevices = [
   Device(
     name: 'ipad pro 12-9 landscape',
     size: Size(1366, 1024),
-    devicePixelRatio: 3,
-    textScale: 1.0,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  ),
-  Device(
-    name: 'ipad pro 12-9 portrait',
-    size: Size(1024, 1366),
-    devicePixelRatio: 3,
-    textScale: 1.0,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  ),
-  Device(
-    name: 'ipad 6th gen landscape',
-    size: Size(1024, 768),
-    devicePixelRatio: 2,
-    textScale: 1.0,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  ),
-  Device(
-    name: 'ipad pro 11inch 4th gen',
-    size: Size(1210, 834),
-    devicePixelRatio: 2,
-    textScale: 1.0,
-    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
-  ),
-  Device(
-    name: 'iphone 16',
-    size: Size(852, 393),
     devicePixelRatio: 3,
     textScale: 1.0,
     safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
@@ -62,15 +37,23 @@ void testConfigurations({
   Future<void> Function(WidgetTester tester, Locale local)? testerInteractions,
   bool useMaterialAppWrapper = true,
   String? pathPrefix = "",
+  /// Retained for call-site compatibility. All goldens use [testDevices]
+  /// (single canonical iPad landscape after skin-01 cleanup).
   bool disableAllScreenSizes = false,
+  /// When true, only [Brightness.light] is snapshotted (no Darkmode suffix).
+  bool disableDarkMode = false,
 }) {
+  // Touch the flag so existing call sites stay valid without analyzer noise.
+  assert(disableAllScreenSizes || !disableAllScreenSizes);
   Widget? widgetToTest;
   var supportedLocales = S.delegate.supportedLocales;
   if (disableLocals) {
     supportedLocales = [supportedLocales[0]];
   }
-  for (var i = 0; i < brightnessTests.length; i++) {
-    var brightnessToTest = brightnessTests[i];
+  final brightnessesToTest =
+      disableDarkMode ? [Brightness.light] : brightnessTests;
+  for (var i = 0; i < brightnessesToTest.length; i++) {
+    var brightnessToTest = brightnessesToTest[i];
 
     for (var local in supportedLocales) {
       if (useMaterialAppWrapper) {
@@ -152,13 +135,7 @@ void testConfigurations({
           await multiScreenGolden(
             tester,
             '${pathPrefix ?? ""}../../goldens/$widgetName/$testName',
-            devices: disableAllScreenSizes == true
-                ? [testDevices[1]]
-                : (brightnessToTest == Brightness.light
-                    ? testDevices
-                    : testDevices.sublist(
-                        0, 1) // Only test dark mode on iPad Pro 12.9
-                ),
+            devices: testDevices,
           );
         });
       }

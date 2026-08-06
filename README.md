@@ -48,15 +48,15 @@ Below are visual examples of the app’s interface:
 
 #### DM Campaign Management Screen
 
-<img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdmcampagnemanagmentscreen/1 - dmpagescreensdmcampagnemanagmentscreen (Language de, default).ipad 6th gen landscape.png" width="768">
+<img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdmcampagnemanagmentscreen/1 - dmpagescreensdmcampagnemanagmentscreen (Language de, default).ipad pro 12-9 landscape.png" width="768">
 
 #### DM Inititive Screen
 
-<img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdminitiativescreen/1%20-%20dmpagescreensdminitiativescreen%20(Language%20de,%20default).ipad%20pro%2011inch%204th%20gen.png" width="768">
+<img src="/applications/rpg_table_helper/test/goldens/dmpagescreensdminitiativescreen/1 - dmpagescreensdminitiativescreen (Language de, default).ipad pro 12-9 landscape.png" width="768">
 
 #### Player Character Stats Screen
 
-<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens1-playerstatsscreen/1 - playerpagescreens1-playerstatsscreen (Language de, default).ipad pro 11inch 4th gen.png" width="768">
+<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens1-playerstatsscreen/1 - playerpagescreens1-playerstatsscreen (Language de, default).ipad pro 12-9 landscape.png" width="768">
 
 #### Players Inventory Screen
 
@@ -64,7 +64,7 @@ Below are visual examples of the app’s interface:
 
 #### Players Balance Calculator
 
-<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens5-playermoneyscreen/1 - playerpagescreens5-playermoneyscreen (Language en, default).ipad 6th gen landscape.png" width="768">
+<img src="/applications/rpg_table_helper/test/goldens/playerpagescreens5-playermoneyscreen/1 - playerpagescreens5-playermoneyscreen (Language en, default).ipad pro 12-9 landscape.png" width="768">
 
 ---
 

@@ -2178,6 +2178,21 @@ class S {
       args: [],
     );
   }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message('Logout', name: 'logout', desc: '', args: []);
+  }
+
+  /// `Your session has expired. Please sign in again.`
+  String get sessionExpiredMessage {
+    return Intl.message(
+      'Your session has expired. Please sign in again.',
+      name: 'sessionExpiredMessage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
