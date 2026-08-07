@@ -84,6 +84,11 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
   var _currentStep = 0;
 
+  /// Skin chrome remounts [PageView] (different wrapper trees). Re-sync to
+  /// [_currentStep] after each skin id change so navbar and content stay aligned.
+  String? _lastSyncedSkinIdForPageView;
+  bool _suppressPageChangeFromSkinRemount = false;
+
   bool showInventory = true;
   bool showMoney = true;
   bool showLore = true;
@@ -386,7 +391,27 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         backgroundColor: scaffoldBg,
         body: ValueListenableBuilder<String>(
           valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
-          builder: (context, _, __) {
+          builder: (context, skinId, __) {
+            if (_lastSyncedSkinIdForPageView != skinId) {
+              _lastSyncedSkinIdForPageView = skinId;
+              final stepToKeep = _currentStep;
+              _suppressPageChangeFromSkinRemount = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                if (pageViewController.hasClients &&
+                    pageViewController.page?.round() != stepToKeep) {
+                  pageViewController.jumpToPage(stepToKeep);
+                }
+                if (_currentStep != stepToKeep) {
+                  setState(() {
+                    _currentStep = stepToKeep;
+                    _suppressPageChangeFromSkinRemount = false;
+                  });
+                } else {
+                  _suppressPageChangeFromSkinRemount = false;
+                }
+              });
+            }
             return Column(
               children: [
                 Navbar(
@@ -611,6 +636,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                         child: PageView(
                           controller: pageViewController,
                           onPageChanged: (value) {
+                            if (_suppressPageChangeFromSkinRemount) return;
                             setState(() {
                               _currentStep = value;
                             });

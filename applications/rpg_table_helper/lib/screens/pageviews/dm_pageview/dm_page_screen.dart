@@ -41,6 +41,9 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
 
   var _currentStep = 0;
 
+  String? _lastSyncedSkinIdForPageView;
+  bool _suppressPageChangeFromSkinRemount = false;
+
   Future _goToStepId(int id) async {
     setState(() {
       _currentStep = id;
@@ -109,7 +112,27 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
         backgroundColor: scaffoldBg,
         body: ValueListenableBuilder<String>(
           valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
-          builder: (context, _, __) {
+          builder: (context, skinId, __) {
+            if (_lastSyncedSkinIdForPageView != skinId) {
+              _lastSyncedSkinIdForPageView = skinId;
+              final stepToKeep = _currentStep;
+              _suppressPageChangeFromSkinRemount = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                if (pageViewController.hasClients &&
+                    pageViewController.page?.round() != stepToKeep) {
+                  pageViewController.jumpToPage(stepToKeep);
+                }
+                if (_currentStep != stepToKeep) {
+                  setState(() {
+                    _currentStep = stepToKeep;
+                    _suppressPageChangeFromSkinRemount = false;
+                  });
+                } else {
+                  _suppressPageChangeFromSkinRemount = false;
+                }
+              });
+            }
             return Column(
               children: [
                 Navbar(
@@ -226,6 +249,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                         child: PageView(
                           controller: pageViewController,
                           onPageChanged: (value) {
+                            if (_suppressPageChangeFromSkinRemount) return;
                             setState(() {
                               _currentStep = value;
                             });
