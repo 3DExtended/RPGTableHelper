@@ -13,6 +13,8 @@ import 'package:quest_keeper/helpers/fuzzysort.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/modals/show_recipe_card_details.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/arcane_ledger_lore_chrome.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_model_helpers.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -133,6 +135,9 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
     recipesToRender =
         recipesToRender.sortBy((r) => r.createdItem.item.name).toList();
 
+    final ledger = isArcaneLedgerActive(context);
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+
     if (selectedCategory != "" && selectedCategory != null) {
       recipesToRender = recipesToRender
           .where((r) =>
@@ -165,7 +170,8 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
           curve: Curves.easeInOut,
           child: isSearchFieldShowing
               ? Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
+                  padding: EdgeInsets.fromLTRB(
+                      20.0, ledger ? 20.0 : 10.0, 20, 0.0),
                   child: CustomTextField(
                       labelText: S.of(context).searchLabel,
                       textEditingController: searchtextEditingController,
@@ -176,7 +182,8 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
 
         // category filters
         Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
+          padding: EdgeInsets.fromLTRB(
+              20.0, ledger && !isSearchFieldShowing ? 20 : 10, 20, 10),
           child: Row(
             children: [
               Expanded(
@@ -184,49 +191,46 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      CategoryFilterButton(
-                          withoutLeadingPadding: true,
-                          isSelected: craftabilityFilter ==
-                              RecipeCraftabilityFilter.craftableOnly,
-                          categoryForFilter: ItemCategory(
-                            colorCode: null,
-                            iconName: null,
-                            name: S.of(context).craftableRecipeFilter,
-                            subCategories: [],
-                            uuid: "craftable",
-                            hideInInventoryFilters: false,
-                          ),
-                          onpressedHandler: () {
-                            setState(() {
-                              craftabilityFilter = craftabilityFilter ==
-                                      RecipeCraftabilityFilter.craftableOnly
-                                  ? RecipeCraftabilityFilter.all
-                                  : RecipeCraftabilityFilter.craftableOnly;
-                            });
-                          }),
-                      CategoryFilterButton(
-                          isSelected: craftabilityFilter ==
-                              RecipeCraftabilityFilter.notCraftableOnly,
-                          categoryForFilter: ItemCategory(
-                            colorCode: null,
-                            iconName: null,
-                            name: S.of(context).notCraftableRecipeFilter,
-                            subCategories: [],
-                            uuid: "notCraftable",
-                            hideInInventoryFilters: false,
-                          ),
-                          onpressedHandler: () {
-                            setState(() {
-                              craftabilityFilter = craftabilityFilter ==
-                                      RecipeCraftabilityFilter.notCraftableOnly
-                                  ? RecipeCraftabilityFilter.all
-                                  : RecipeCraftabilityFilter.notCraftableOnly;
-                            });
-                          }),
-                      Container(
-                        height: 24,
-                        width: 1,
-                        color: CustomThemeProvider.of(context).theme.darkColor,
+                      _recipeFilterChip(
+                        context: context,
+                        ledger: ledger,
+                        withoutLeadingPadding: true,
+                        isSelected: craftabilityFilter ==
+                            RecipeCraftabilityFilter.craftableOnly,
+                        label: S.of(context).craftableRecipeFilter,
+                        onPressed: () {
+                          setState(() {
+                            craftabilityFilter = craftabilityFilter ==
+                                    RecipeCraftabilityFilter.craftableOnly
+                                ? RecipeCraftabilityFilter.all
+                                : RecipeCraftabilityFilter.craftableOnly;
+                          });
+                        },
+                      ),
+                      _recipeFilterChip(
+                        context: context,
+                        ledger: ledger,
+                        isSelected: craftabilityFilter ==
+                            RecipeCraftabilityFilter.notCraftableOnly,
+                        label: S.of(context).notCraftableRecipeFilter,
+                        onPressed: () {
+                          setState(() {
+                            craftabilityFilter = craftabilityFilter ==
+                                    RecipeCraftabilityFilter.notCraftableOnly
+                                ? RecipeCraftabilityFilter.all
+                                : RecipeCraftabilityFilter.notCraftableOnly;
+                          });
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: ledger ? 6 : 0),
+                        child: Container(
+                          height: ledger ? 28 : 24,
+                          width: 1,
+                          color: ledger
+                              ? ink.withValues(alpha: 0.35)
+                              : CustomThemeProvider.of(context).theme.darkColor,
+                        ),
                       ),
                       ...[
                         ItemCategory(
@@ -240,45 +244,91 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                         ...CustomIterableExtensions(rpgConfig.itemCategories)
                             .sortBy((e) => e.name),
                       ].map(
-                        (e) => CategoryFilterButton(
-                            isSelected: (selectedCategory == e.uuid ||
-                                (e.uuid == "" && selectedCategory == null)),
+                        (e) {
+                          final selected = selectedCategory == e.uuid ||
+                              (e.uuid == "" && selectedCategory == null);
+                          if (ledger) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: LedgerFilterChip(
+                                label: e.name,
+                                selected: selected,
+                                onPressed: () {
+                                  setState(() {
+                                    selectedCategory = e.uuid;
+                                  });
+                                },
+                              ),
+                            );
+                          }
+                          return CategoryFilterButton(
+                            isSelected: selected,
                             categoryForFilter: e,
                             onpressedHandler: () {
                               setState(() {
                                 selectedCategory = e.uuid;
                               });
-                            }),
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(
-                width: 20,
-              ),
-              CustomButton(
-                  variant: isSearchFieldShowing
-                      ? CustomButtonVariant.DarkButton
-                      : CustomButtonVariant.Default,
-                  icon: CustomFaIcon(
-                    icon: FontAwesomeIcons.magnifyingGlass,
-                    color: isSearchFieldShowing
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkColor,
-                    size: 21,
-                    noPadding: true,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isSearchFieldShowing = !isSearchFieldShowing;
-                      searchtextEditingController.text = "";
-                      onTextEditControllerChange();
-                    });
-                  }),
+              SizedBox(width: ledger ? 10 : 20),
+              if (ledger)
+                Container(
+                  width: 1,
+                  height: 28,
+                  color: ink.withValues(alpha: 0.35),
+                ),
+              if (ledger) const SizedBox(width: 10),
+              ledger
+                  ? CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      onPressed: () {
+                        setState(() {
+                          isSearchFieldShowing = !isSearchFieldShowing;
+                          searchtextEditingController.text = "";
+                          onTextEditControllerChange();
+                        });
+                      },
+                      child: CustomFaIcon(
+                        icon: FontAwesomeIcons.magnifyingGlass,
+                        color: ink,
+                        size: 20,
+                        noPadding: true,
+                      ),
+                    )
+                  : CustomButton(
+                      variant: isSearchFieldShowing
+                          ? CustomButtonVariant.DarkButton
+                          : CustomButtonVariant.Default,
+                      icon: CustomFaIcon(
+                        icon: FontAwesomeIcons.magnifyingGlass,
+                        color: isSearchFieldShowing
+                            ? CustomThemeProvider.of(context).theme.textColor
+                            : CustomThemeProvider.of(context).theme.darkColor,
+                        size: 21,
+                        noPadding: true,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isSearchFieldShowing = !isSearchFieldShowing;
+                          searchtextEditingController.text = "";
+                          onTextEditControllerChange();
+                        });
+                      }),
             ],
           ),
         ),
+        if (ledger)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: LedgerStarRule(height: 16, horizontalInset: 0),
+          ),
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -503,6 +553,39 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
           .toList(),
     );
   }
+}
+
+Widget _recipeFilterChip({
+  required BuildContext context,
+  required bool ledger,
+  required bool isSelected,
+  required String label,
+  required VoidCallback onPressed,
+  bool withoutLeadingPadding = false,
+}) {
+  if (ledger) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: LedgerFilterChip(
+        label: label,
+        selected: isSelected,
+        onPressed: onPressed,
+      ),
+    );
+  }
+  return CategoryFilterButton(
+    withoutLeadingPadding: withoutLeadingPadding,
+    isSelected: isSelected,
+    categoryForFilter: ItemCategory(
+      colorCode: null,
+      iconName: null,
+      name: label,
+      subCategories: [],
+      uuid: label,
+      hideInInventoryFilters: false,
+    ),
+    onpressedHandler: onPressed,
+  );
 }
 
 class CategoryFilterButton extends StatelessWidget {

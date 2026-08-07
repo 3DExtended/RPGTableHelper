@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
@@ -102,134 +99,142 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
       }
     }
 
+    final ledger = isArcaneLedgerActive(context);
+    final scaffoldBg = ledger
+        ? CustomThemeProvider.of(context).theme.secondaryNavbarColor
+        : CustomThemeProvider.of(context).theme.bgColor;
+
     return PreventSwipeNavigation(
       child: Scaffold(
-        backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
+        backgroundColor: scaffoldBg,
         body: ValueListenableBuilder<String>(
           valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
           builder: (context, _, __) {
-            return CharacterSheetSkinChrome(
-              child: Column(
-                children: [
-                  Navbar(
-              backInsteadOfCloseIcon: false,
-              useTopSafePadding: true,
-              closeFunction: () {
-                // close connection
-                ref
-                    .read(connectionDetailsProvider.notifier)
-                    .updateConfiguration(ref
-                        .read(connectionDetailsProvider)
-                        .requireValue
-                        .copyWith(
-                          isInSession: false,
-                          isDm: false,
-                        ));
-                navigatorKey.currentState!.pop();
-              },
-              titleWidget: Builder(builder: (context) {
-                var selectedIconColor =
-                    CustomThemeProvider.of(context).theme.accentColor;
-                var unselectedIconColor =
-                    CustomThemeProvider.of(context).brightnessNotifier.value ==
-                            Brightness.light
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkTextColor;
-                var textColor =
-                    CustomThemeProvider.of(context).brightnessNotifier.value ==
-                            Brightness.light
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkTextColor;
-
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Spacer(),
-                    ...List.generate(
-                      _currentStep + 1,
-                      (index) => CupertinoButton(
-                        minSize: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: () async {
-                          await _goToStepId(index);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Transform.rotate(
-                            alignment: Alignment.center,
-                            angle: pi / 4, // 45 deg
-                            child: CustomFaIcon(
-                                icon: index == _currentStep
-                                    ? FontAwesomeIcons.solidSquare
-                                    : FontAwesomeIcons.square,
-                                color: index == _currentStep
-                                    ? selectedIconColor
-                                    : unselectedIconColor),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (context.isTablet)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                        child: Text(
-                          currentTitle,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: textColor,
-                                fontSize: 24,
-                              ),
-                        ),
-                      ),
-                    ...List.generate(
-                      dmScreensToSwipe.length - (_currentStep + 1),
-                      (index) => CupertinoButton(
-                        minSize: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          _goToStepId(index + _currentStep + 1);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Transform.rotate(
-                            alignment: Alignment.center,
-                            angle: pi / 4, // 45 deg
-                            child: CustomFaIcon(
-                                icon: FontAwesomeIcons.square,
-                                color: unselectedIconColor),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                  ],
-                );
-              }),
-              menuOpen: () {
-                Navigator.of(context)
-                    .pushNamed(allWizardConfigurations.entries.first.key);
-              },
-            ),
-            Expanded(
-              child: Container(
-                color: characterSheetSurfaceColor(context),
-                child: PageView(
-                  controller: pageViewController,
-                  onPageChanged: (value) {
-                    setState(() {
-                      _currentStep = value;
-                    });
+            return Column(
+              children: [
+                Navbar(
+                  backInsteadOfCloseIcon: false,
+                  useTopSafePadding: true,
+                  closeFunction: () {
+                    // close connection
+                    ref
+                        .read(connectionDetailsProvider.notifier)
+                        .updateConfiguration(ref
+                            .read(connectionDetailsProvider)
+                            .requireValue
+                            .copyWith(
+                              isInSession: false,
+                              isDm: false,
+                            ));
+                    navigatorKey.currentState!.pop();
                   },
-                  scrollDirection: Axis.horizontal,
-                  children: dmScreensToSwipe.map((e) => e.$2).toList(),
+                  titleWidget: Builder(builder: (context) {
+                    final ledger = isArcaneLedgerActive(context);
+                    var selectedIconColor = ledger
+                        ? ledgerNavbarAccent(context)
+                        : CustomThemeProvider.of(context).theme.accentColor;
+                    var unselectedIconColor = ledger
+                        ? const Color(0xffEDE3D4)
+                        : (CustomThemeProvider.of(context)
+                                    .brightnessNotifier
+                                    .value ==
+                                Brightness.light
+                            ? CustomThemeProvider.of(context).theme.textColor
+                            : CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor);
+                    var textColor = CustomThemeProvider.of(context)
+                                .brightnessNotifier
+                                .value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkTextColor;
+                    final titleColor =
+                        ledger ? ledgerNavbarAccent(context) : textColor;
+
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Spacer(),
+                        ...List.generate(
+                          _currentStep + 1,
+                          (index) => CupertinoButton(
+                            minSize: 0,
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              await _goToStepId(index);
+                            },
+                            child: ColoredRotatedSquare(
+                              isSolidSquare: index == _currentStep,
+                              color: index == _currentStep
+                                  ? selectedIconColor
+                                  : unselectedIconColor,
+                            ),
+                          ),
+                        ),
+                        if (context.isTablet)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: ledger ? 10.0 : 4.0,
+                              right: ledger ? 14.0 : 20.0,
+                            ),
+                            child: Text(
+                              currentTitle,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    color: titleColor,
+                                    fontSize: ledger ? 26 : 24,
+                                    fontFamily: ledger ? 'Ruwudu' : null,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: ledger ? 0.4 : null,
+                                    height: 1.0,
+                                  ),
+                            ),
+                          ),
+                        ...List.generate(
+                          dmScreensToSwipe.length - (_currentStep + 1),
+                          (index) => CupertinoButton(
+                            minSize: 0,
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              _goToStepId(index + _currentStep + 1);
+                            },
+                            child: ColoredRotatedSquare(
+                              isSolidSquare: false,
+                              color: unselectedIconColor,
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                      ],
+                    );
+                  }),
+                  menuOpen: () {
+                    Navigator.of(context)
+                        .pushNamed(allWizardConfigurations.entries.first.key);
+                  },
                 ),
-              ),
-            ),
-                ],
-              ),
+                Expanded(
+                  child: CharacterSheetSkinChrome(
+                    child: Container(
+                      color: characterSheetSurfaceColor(context),
+                      child: PageView(
+                        controller: pageViewController,
+                        onPageChanged: (value) {
+                          setState(() {
+                            _currentStep = value;
+                          });
+                        },
+                        scrollDirection: Axis.horizontal,
+                        children: dmScreensToSwipe.map((e) => e.$2).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         ),

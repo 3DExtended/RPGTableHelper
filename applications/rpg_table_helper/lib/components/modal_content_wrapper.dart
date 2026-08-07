@@ -3,6 +3,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -48,8 +49,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                   child: child,
                 );
               },
-              child: Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
+              child: SkinnedModalPanel(
                 child: Column(
                   mainAxisSize:
                       isFullscreen ? MainAxisSize.max : MainAxisSize.min,
@@ -94,7 +94,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                       height: 0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 20),
+                      padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 24),
                       child: Row(
                         children: [
                           CustomButton(
@@ -128,3 +128,4 @@ class ModalContentWrapper<T> extends StatelessWidget {
     });
   }
 }
+

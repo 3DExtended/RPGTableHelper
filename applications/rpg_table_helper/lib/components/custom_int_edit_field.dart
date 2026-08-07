@@ -7,6 +7,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomIntEditField extends StatefulWidget {
@@ -63,6 +64,81 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
 
   @override
   Widget build(BuildContext context) {
+    if (isArcaneLedgerActive(context)) {
+      return _buildLedger(context);
+    }
+    return _buildClassic(context);
+  }
+
+  Widget _buildLedger(BuildContext context) {
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _LedgerStepButton(
+          ink: ink,
+          icon: FontAwesomeIcons.minus,
+          enabled:
+              widget.minValue == null || currentValue > widget.minValue!,
+          onPressed: () {
+            setState(() {
+              currentValue = widget.minValue == null
+                  ? currentValue - 1
+                  : max(widget.minValue!, currentValue - 1);
+              textEditingController.text = currentValue.toString();
+            });
+            widget.onValueChange(currentValue);
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: CustomPaint(
+            painter: _LedgerValueBoxPainter(ink: ink),
+            child: SizedBox(
+              width: 64,
+              height: 36,
+              child: Center(
+                child: TextField(
+                  controller: textEditingController,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: ink,
+                        fontSize: 18,
+                        fontFamily: 'Ruwudu',
+                        fontWeight: FontWeight.w600,
+                      ),
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        _LedgerStepButton(
+          ink: ink,
+          icon: FontAwesomeIcons.plus,
+          enabled:
+              widget.maxValue == null || currentValue < widget.maxValue!,
+          onPressed: () {
+            setState(() {
+              currentValue = widget.maxValue == null
+                  ? currentValue + 1
+                  : min(widget.maxValue!, currentValue + 1);
+              textEditingController.text = currentValue.toString();
+            });
+            widget.onValueChange(currentValue);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildClassic(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -141,4 +217,82 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
       widget.onValueChange(currentValue);
     });
   }
+}
+
+class _LedgerStepButton extends StatelessWidget {
+  final Color ink;
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onPressed;
+
+  const _LedgerStepButton({
+    required this.ink,
+    required this.icon,
+    required this.enabled,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      onPressed: enabled ? onPressed : null,
+      minSize: 0,
+      padding: EdgeInsets.zero,
+      child: Opacity(
+        opacity: enabled ? 1 : 0.35,
+        child: CustomPaint(
+          painter: _LedgerValueBoxPainter(ink: ink),
+          child: SizedBox(
+            width: 34,
+            height: 34,
+            child: Center(
+              child: CustomFaIcon(
+                icon: icon,
+                size: 14,
+                color: ink,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LedgerValueBoxPainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerValueBoxPainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final outer = Paint()
+      ..color = ink.withValues(alpha: 0.75)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.3;
+    final inner = Paint()
+      ..color = ink.withValues(alpha: 0.35)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.9;
+    final fill = Paint()
+      ..color = const Color(0x66F8F0E4)
+      ..style = PaintingStyle.fill;
+    final r = RRect.fromRectAndRadius(
+      Rect.fromLTWH(1, 1, size.width - 2, size.height - 2),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(r, fill);
+    canvas.drawRRect(r, outer);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(4, 4, size.width - 8, size.height - 8),
+        const Radius.circular(1.5),
+      ),
+      inner,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerValueBoxPainter oldDelegate) =>
+      oldDelegate.ink != ink;
 }

@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/colored_rotated_square.dart';
-import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
@@ -355,255 +352,275 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ? ""
         : playerScreensToSwipe[_currentStep].$1;
 
-    var selectedIconColor = CustomThemeProvider.of(context).theme.accentColor;
-    var unselectedIconColor =
-        CustomThemeProvider.of(context).brightnessNotifier.value ==
+    final ledger = isArcaneLedgerActive(context);
+    var selectedIconColor = ledger
+        ? ledgerNavbarAccent(context)
+        : CustomThemeProvider.of(context).theme.accentColor;
+    // Mock inactive diamonds are parchment-cream outlines, not accent gold.
+    var unselectedIconColor = ledger
+        ? const Color(0xffEDE3D4)
+        : (CustomThemeProvider.of(context).brightnessNotifier.value ==
                 Brightness.light
             ? CustomThemeProvider.of(context).theme.textColor
-            : CustomThemeProvider.of(context).theme.darkTextColor;
+            : CustomThemeProvider.of(context).theme.darkTextColor);
     var textColor = CustomThemeProvider.of(context).brightnessNotifier.value ==
             Brightness.light
         ? CustomThemeProvider.of(context).theme.textColor
         : CustomThemeProvider.of(context).theme.darkTextColor;
 
-    var isDarkMode = CustomThemeProvider.of(context).brightnessNotifier.value ==
-        Brightness.dark;
+    // Ledger mock: champagne-bronze title (not classic accent terracotta).
+    final titleColor = ledger
+        ? ledgerNavbarAccent(context)
+        : (CustomThemeProvider.of(context).brightnessNotifier.value ==
+                Brightness.dark
+            ? CustomThemeProvider.of(context).theme.accentColor
+            : textColor);
+
+    // Mock: near-black leather bar sits above parchment chrome (not inside it).
+    final scaffoldBg = ledger
+        ? CustomThemeProvider.of(context).theme.secondaryNavbarColor
+        : CustomThemeProvider.of(context).theme.bgColor;
 
     return PreventSwipeNavigation(
       child: Scaffold(
-        backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
+        backgroundColor: scaffoldBg,
         body: ValueListenableBuilder<String>(
           valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
           builder: (context, _, __) {
-            return CharacterSheetSkinChrome(
-              child: Column(
-                children: [
-                  Navbar(
-              backInsteadOfCloseIcon: rpgConfig?.characterStatTabsDefinition!
-                      .indexWhere((tab) => tab.isDefaultTab == true) !=
-                  _currentStep,
-              useTopSafePadding: true,
-              closeFunction: () {
-                if (rpgConfig?.characterStatTabsDefinition!
-                        .indexWhere((tab) => tab.isDefaultTab == true) !=
-                    _currentStep) {
-                  setState(() {
-                    _goToStepId(rpgConfig!.characterStatTabsDefinition!
-                        .indexWhere((tab) => tab.isDefaultTab == true));
-                  });
-                } else {
-                  // Player leaving their own live session: mark out of session.
-                  // Do NOT clear isDm when the DM is only previewing another
-                  // character via characterConfigurationOverride — that would
-                  // make the next open look like a player session and crash on
-                  // AsyncLoading character provider.
-                  final details =
-                      ref.read(connectionDetailsProvider).requireValue;
-                  final isPreviewOnly = rpgCharacterToRender != null ||
-                      details.isDm ||
-                      disableEdit;
-                  if (!isPreviewOnly) {
-                    ref
-                        .read(connectionDetailsProvider.notifier)
-                        .updateConfiguration(details.copyWith(
-                          isInSession: false,
-                          isDm: false,
-                        ));
-                  }
-
-                  navigatorKey.currentState!.pop();
-                }
-              },
-              titleWidget: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...List.generate(
-                      _currentStep + 1,
-                      (index) => LongPressScaleWidget(
-                        onLongPress: () {
-                          // if dm, return early
-                          if (connectionDetails == null ||
-                              connectionDetails.isDm ||
-                              rpgConfig == null ||
-                              tempLoadedRpgCharacter == null) {
-                            return;
-                          }
-
-                          openTabIconConfigurationDialog(
-                              context, rpgConfig, tempLoadedRpgCharacter);
-                        },
-                        child: CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            await _goToStepId(index);
-                          },
-                          minimumSize: Size(0, 0),
-                          child: Builder(builder: (context) {
-                            // if tempLoadedRpgCharacter has tab icon configuration, use it
-                            var tabIcon2 = tempLoadedRpgCharacter
-                                ?.tabConfigurations
-                                ?.firstWhereOrNull((e) =>
-                                    e.tabUuid == playerScreensToSwipe[index].$3)
-                                ?.tabIcon;
-
-                            return tabIcon2 != null && tabIcon2 != "square"
-                                ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: getIconForIdentifier(
-                                      name: tempLoadedRpgCharacter!
-                                          .tabConfigurations!
-                                          .firstWhereOrNull((e) =>
-                                              e.tabUuid ==
-                                              playerScreensToSwipe[index].$3)!
-                                          .tabIcon,
-                                      color: index == _currentStep
-                                          ? selectedIconColor
-                                          : unselectedIconColor,
-                                      size: 24,
-                                    ).$2,
-                                  )
-                                : ColoredRotatedSquare(
-                                    isSolidSquare: index == _currentStep,
-                                    color: index == _currentStep
-                                        ? selectedIconColor
-                                        : unselectedIconColor);
-                          }),
-                        ),
-                      ),
-                    ),
-                    if (context.isTablet)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                        child: Text(
-                          currentTitle,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: isDarkMode
-                                    ? CustomThemeProvider.of(context)
-                                        .theme
-                                        .accentColor
-                                    : textColor,
-                                fontSize: 24,
-                              ),
-                        ),
-                      ),
-                    ...List.generate(
-                      playerScreensToSwipe.isEmpty
-                          ? 0
-                          : playerScreensToSwipe.length - (_currentStep + 1),
-                      (index) => LongPressScaleWidget(
-                        onLongPress: () {
-                          // if dm, return early
-                          if (connectionDetails == null ||
-                              connectionDetails.isDm ||
-                              rpgConfig == null ||
-                              tempLoadedRpgCharacter == null) {
-                            return;
-                          }
-
-                          openTabIconConfigurationDialog(
-                              context, rpgConfig, tempLoadedRpgCharacter);
-                        },
-                        child: CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              _goToStepId(index + _currentStep + 1);
-                            },
-                            minimumSize: Size(0, 0),
-                            child: Builder(builder: (context) {
-                              var tabIcon2 = tempLoadedRpgCharacter
-                                  ?.tabConfigurations
-                                  ?.firstWhereOrNull((e) =>
-                                      e.tabUuid ==
-                                      playerScreensToSwipe[
-                                              index + _currentStep + 1]
-                                          .$3)
-                                  ?.tabIcon;
-                              return // if tempLoadedRpgCharacter has tab icon configuration, use it
-                                  tabIcon2 != null && tabIcon2 != "square"
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: getIconForIdentifier(
-                                            name: tempLoadedRpgCharacter!
-                                                .tabConfigurations!
-                                                .firstWhereOrNull((e) =>
-                                                    e.tabUuid ==
-                                                    playerScreensToSwipe[index +
-                                                            _currentStep +
-                                                            1]
-                                                        .$3)!
-                                                .tabIcon,
-                                            color: unselectedIconColor,
-                                            size: 24,
-                                          ).$2,
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 4.0),
-                                          child: Transform.rotate(
-                                            alignment: Alignment.center,
-                                            angle: pi / 4, // 45 deg
-                                            child: CustomFaIcon(
-                                                icon: FontAwesomeIcons.square,
-                                                color: unselectedIconColor),
-                                          ),
-                                        );
-                            })),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              menuOpen: connectionDetails == null ||
-                      connectionDetails.isDm ||
-                      disableEdit ||
-                      (rpgConfig?.characterStatTabsDefinition ??
-                                  List<CharacterStatsTabDefinition>.empty())
-                              .length <=
-                          _currentStep ||
-                      rpgConfig == null ||
-                      charToRender == null
-                  ? null
-                  : () {
-                      // Flow analysis promotes these in the ternary arm, but the
-                      // async closure still needs non-null locals.
-                      // ignore: unnecessary_non_null_assertion
-                      final menuRpgConfig = rpgConfig!;
-                      // ignore: unnecessary_non_null_assertion
-                      final menuChar = charToRender!;
-                      Future.delayed(Duration.zero, () async {
-                        if (!mounted || !context.mounted) return;
-                        await _openPlayerSheetMenu(
-                          context: context,
-                          rpgConfig: menuRpgConfig,
-                          charToRender: menuChar,
-                        );
+            return Column(
+              children: [
+                Navbar(
+                  backInsteadOfCloseIcon: rpgConfig
+                              ?.characterStatTabsDefinition!
+                              .indexWhere((tab) => tab.isDefaultTab == true) !=
+                          _currentStep,
+                  useTopSafePadding: true,
+                  closeFunction: () {
+                    if (rpgConfig?.characterStatTabsDefinition!.indexWhere(
+                            (tab) => tab.isDefaultTab == true) !=
+                        _currentStep) {
+                      setState(() {
+                        _goToStepId(rpgConfig!.characterStatTabsDefinition!
+                            .indexWhere((tab) => tab.isDefaultTab == true));
                       });
-                    },
-            ),
-            Expanded(
-              child: Container(
-                color: characterSheetSurfaceColor(context),
-                child: PageView(
-                  controller: pageViewController,
-                  onPageChanged: (value) {
-                    setState(() {
-                      _currentStep = value;
-                    });
+                    } else {
+                      // Player leaving their own live session: mark out of session.
+                      // Do NOT clear isDm when the DM is only previewing another
+                      // character via characterConfigurationOverride — that would
+                      // make the next open look like a player session and crash on
+                      // AsyncLoading character provider.
+                      final details =
+                          ref.read(connectionDetailsProvider).requireValue;
+                      final isPreviewOnly = rpgCharacterToRender != null ||
+                          details.isDm ||
+                          disableEdit;
+                      if (!isPreviewOnly) {
+                        ref
+                            .read(connectionDetailsProvider.notifier)
+                            .updateConfiguration(details.copyWith(
+                              isInSession: false,
+                              isDm: false,
+                            ));
+                      }
+
+                      navigatorKey.currentState!.pop();
+                    }
                   },
-                  scrollDirection: Axis.horizontal,
-                  children: playerScreensToSwipe.map((e) => e.$2).toList(),
+                  titleWidget: Center(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                        ...List.generate(
+                          _currentStep + 1,
+                          (index) => LongPressScaleWidget(
+                            onLongPress: () {
+                              // if dm, return early
+                              if (connectionDetails == null ||
+                                  connectionDetails.isDm ||
+                                  rpgConfig == null ||
+                                  tempLoadedRpgCharacter == null) {
+                                return;
+                              }
+
+                              openTabIconConfigurationDialog(
+                                  context, rpgConfig, tempLoadedRpgCharacter);
+                            },
+                            child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                await _goToStepId(index);
+                              },
+                              minimumSize: Size(0, 0),
+                              child: Builder(builder: (context) {
+                                // if tempLoadedRpgCharacter has tab icon configuration, use it
+                                var tabIcon2 = tempLoadedRpgCharacter
+                                    ?.tabConfigurations
+                                    ?.firstWhereOrNull((e) =>
+                                        e.tabUuid ==
+                                        playerScreensToSwipe[index].$3)
+                                    ?.tabIcon;
+
+                                return tabIcon2 != null && tabIcon2 != "square"
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: getIconForIdentifier(
+                                          name: tempLoadedRpgCharacter!
+                                              .tabConfigurations!
+                                              .firstWhereOrNull((e) =>
+                                                  e.tabUuid ==
+                                                  playerScreensToSwipe[index]
+                                                      .$3)!
+                                              .tabIcon,
+                                          color: index == _currentStep
+                                              ? selectedIconColor
+                                              : unselectedIconColor,
+                                          size: 24,
+                                        ).$2,
+                                      )
+                                    : ColoredRotatedSquare(
+                                        isSolidSquare: index == _currentStep,
+                                        color: index == _currentStep
+                                            ? selectedIconColor
+                                            : unselectedIconColor);
+                              }),
+                            ),
+                          ),
+                        ),
+                        if (context.isTablet)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: ledger ? 10.0 : 4.0,
+                              right: ledger ? 14.0 : 20.0,
+                            ),
+                            child: Text(
+                              currentTitle,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    color: titleColor,
+                                    fontSize: ledger ? 26 : 24,
+                                    fontFamily: ledger ? 'Ruwudu' : null,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: ledger ? 0.4 : null,
+                                    height: 1.0,
+                                  ),
+                            ),
+                          ),
+                        ...List.generate(
+                          playerScreensToSwipe.isEmpty
+                              ? 0
+                              : playerScreensToSwipe.length -
+                                  (_currentStep + 1),
+                          (index) => LongPressScaleWidget(
+                            onLongPress: () {
+                              // if dm, return early
+                              if (connectionDetails == null ||
+                                  connectionDetails.isDm ||
+                                  rpgConfig == null ||
+                                  tempLoadedRpgCharacter == null) {
+                                return;
+                              }
+
+                              openTabIconConfigurationDialog(
+                                  context, rpgConfig, tempLoadedRpgCharacter);
+                            },
+                            child: CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  _goToStepId(index + _currentStep + 1);
+                                },
+                                minimumSize: Size(0, 0),
+                                child: Builder(builder: (context) {
+                                  var tabIcon2 = tempLoadedRpgCharacter
+                                      ?.tabConfigurations
+                                      ?.firstWhereOrNull((e) =>
+                                          e.tabUuid ==
+                                          playerScreensToSwipe[
+                                                  index + _currentStep + 1]
+                                              .$3)
+                                      ?.tabIcon;
+                                  return // if tempLoadedRpgCharacter has tab icon configuration, use it
+                                      tabIcon2 != null && tabIcon2 != "square"
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: getIconForIdentifier(
+                                                name: tempLoadedRpgCharacter!
+                                                    .tabConfigurations!
+                                                    .firstWhereOrNull((e) =>
+                                                        e.tabUuid ==
+                                                        playerScreensToSwipe[
+                                                                index +
+                                                                    _currentStep +
+                                                                    1]
+                                                            .$3)!
+                                                    .tabIcon,
+                                                color: unselectedIconColor,
+                                                size: 24,
+                                              ).$2,
+                                            )
+                                          : ColoredRotatedSquare(
+                                              isSolidSquare: false,
+                                              color: unselectedIconColor,
+                                            );
+                                })),
+                          ),
+                        ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  menuOpen: connectionDetails == null ||
+                          connectionDetails.isDm ||
+                          disableEdit ||
+                          (rpgConfig?.characterStatTabsDefinition ??
+                                      List<CharacterStatsTabDefinition>.empty())
+                                  .length <=
+                              _currentStep ||
+                          rpgConfig == null ||
+                          charToRender == null
+                      ? null
+                      : () {
+                          // Flow analysis promotes these in the ternary arm, but the
+                          // async closure still needs non-null locals.
+                          // ignore: unnecessary_non_null_assertion
+                          final menuRpgConfig = rpgConfig!;
+                          // ignore: unnecessary_non_null_assertion
+                          final menuChar = charToRender!;
+                          Future.delayed(Duration.zero, () async {
+                            if (!mounted || !context.mounted) return;
+                            await _openPlayerSheetMenu(
+                              context: context,
+                              rpgConfig: menuRpgConfig,
+                              charToRender: menuChar,
+                            );
+                          });
+                        },
                 ),
-              ),
-            ),
-                ],
-              ),
+                Expanded(
+                  child: CharacterSheetSkinChrome(
+                    child: Container(
+                      color: characterSheetSurfaceColor(context),
+                      child: PageView(
+                        controller: pageViewController,
+                        onPageChanged: (value) {
+                          setState(() {
+                            _currentStep = value;
+                          });
+                        },
+                        scrollDirection: Axis.horizontal,
+                        children:
+                            playerScreensToSwipe.map((e) => e.$2).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -620,30 +637,45 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     final choice = await showDialog<String>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: theme.bgColor,
-          title: Text(
-            S.of(ctx).configureProperties,
-            style: TextStyle(color: theme.darkTextColor),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(
-                  S.of(ctx).characterSheetAppearanceTitle,
-                  style: TextStyle(color: theme.darkTextColor),
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: SkinnedModalPanel(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 18, 12, 12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      S.of(ctx).configureProperties,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(ctx).textTheme.titleLarge!.copyWith(
+                            color: theme.darkTextColor,
+                            fontSize: 24,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    ListTile(
+                      title: Text(
+                        S.of(ctx).characterSheetAppearanceTitle,
+                        style: TextStyle(color: theme.darkTextColor),
+                      ),
+                      onTap: () => Navigator.of(ctx).pop('appearance'),
+                    ),
+                    ListTile(
+                      title: Text(
+                        S.of(ctx).configureProperties,
+                        style: TextStyle(color: theme.darkTextColor),
+                      ),
+                      onTap: () => Navigator.of(ctx).pop('stats'),
+                    ),
+                  ],
                 ),
-                onTap: () => Navigator.of(ctx).pop('appearance'),
               ),
-              ListTile(
-                title: Text(
-                  S.of(ctx).configureProperties,
-                  style: TextStyle(color: theme.darkTextColor),
-                ),
-                onTap: () => Navigator.of(ctx).pop('stats'),
-              ),
-            ],
+            ),
           ),
         );
       },

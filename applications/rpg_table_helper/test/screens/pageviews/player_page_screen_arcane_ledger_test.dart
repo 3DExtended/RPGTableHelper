@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +20,52 @@ import 'package:quest_keeper/services/dependency_provider.dart';
 
 import '../../custom_font_loader.dart';
 import '../../test_configuration.dart';
+
+/// Spell tab values matching `arcane-ledger-mock-spells.png` for Ledger goldens.
+RpgCharacterConfiguration _ledgerCharacterWithSpells() {
+  final base = RpgCharacterConfiguration.getBaseConfiguration(
+    RpgConfigurationModel.getBaseConfiguration(),
+    variant: 0,
+  );
+  return base.copyWith(
+    skinId: CharacterSheetSkinIds.arcaneLedger,
+    characterStats: [
+      ...base.characterStats,
+      RpgCharacterStatValue(
+        statUuid: '2438aac8-4a67-41ca-aad9-3c838b7c5cf3', // Zauberpunkte
+        serializedValue: jsonEncode({'value': 4, 'maxValue': 8}),
+        hideFromCharacterScreen: false,
+        hideLabelOfStat: false,
+        variant: 0,
+      ),
+      RpgCharacterStatValue(
+        statUuid: 'c1b7a131-c239-4d56-8008-b3d4b654189d', // Zaubertricks
+        serializedValue: jsonEncode({
+          'values': [
+            '1e720492-1520-4bf3-86a3-98c4f61be329', // Botschaft
+            'bc6ddcc2-ccf5-4a70-9b0f-afbf17c7be47', // Magierhand
+            '4ee11bf7-1f97-4209-b2e4-d05346b04ed9', // Flammen erzeugen
+          ],
+        }),
+        hideFromCharacterScreen: false,
+        hideLabelOfStat: false,
+        variant: 0,
+      ),
+      RpgCharacterStatValue(
+        statUuid: '31a52ed2-3e7b-42ac-8f3e-490b3a04027a', // Zauber 1. Stufe
+        serializedValue: jsonEncode({
+          'values': [
+            'f28e6faa-1cce-4f99-8f4f-30e9b89defd7', // Magisches Geschoss
+            'e79adcb9-4d57-45e6-9d05-29aeb2bbfe1a', // Brennende Hände
+          ],
+        }),
+        hideFromCharacterScreen: false,
+        hideLabelOfStat: false,
+        variant: 0,
+      ),
+    ],
+  );
+}
 
 /// iPad-landscape goldens for the Arcane Ledger skin (skin-07).
 /// English + light only — Ledger is a light manuscript pack.
@@ -71,12 +119,7 @@ void main() {
             }),
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
-                decks: AsyncValue.data(
-                  RpgCharacterConfiguration.getBaseConfiguration(
-                    RpgConfigurationModel.getBaseConfiguration(),
-                    variant: 0,
-                  ).copyWith(skinId: CharacterSheetSkinIds.arcaneLedger),
-                ),
+                decks: AsyncValue.data(_ledgerCharacterWithSpells()),
                 ref: ref,
                 runningInTests: true,
               );
@@ -133,11 +176,8 @@ void main() {
                         playerCharacterId: PlayerCharacterIdentifier(
                           $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
                         ),
-                        configuration:
-                            RpgCharacterConfiguration.getBaseConfiguration(
-                          RpgConfigurationModel.getBaseConfiguration(),
-                          variant: 0,
-                        ).copyWith(characterName: "Gandalf"),
+                        configuration: _ledgerCharacterWithSpells()
+                            .copyWith(characterName: 'Gandalf'),
                       ),
                     ],
                   ),

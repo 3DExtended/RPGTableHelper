@@ -12,6 +12,7 @@ import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
@@ -89,8 +90,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-            child: Container(
-              color: CustomThemeProvider.of(context).theme.bgColor,
+            child: SkinnedModalPanel(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -174,7 +174,7 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                     height: 20,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                    padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
                     child: Row(
                       children: [
                         const Spacer(),

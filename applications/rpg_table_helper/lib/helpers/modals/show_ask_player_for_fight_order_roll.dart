@@ -7,6 +7,7 @@ import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/initiative_bonus_resolver.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
@@ -78,8 +79,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
           child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 550, maxHeight: maxHeight),
-              child: Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
+              child: SkinnedModalPanel(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -162,7 +162,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                       height: 20,
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
                       child: Row(
                         children: [
                           const Spacer(),

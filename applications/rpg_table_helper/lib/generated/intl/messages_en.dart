@@ -94,6 +94,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterNameStatTitle": MessageLookupByLibrary.simpleMessage(
       "Character Name",
     ),
+    "characterNameWithLevelAndConfigurableDetails":
+        MessageLookupByLibrary.simpleMessage(
+          "Character name with level and configurable details",
+        ),
+    "characterOverview": MessageLookupByLibrary.simpleMessage(
+      "Charakter overview",
+    ),
+    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
+      "Portrait description",
+    ),
+    "characterPortraitImagePromptPlaceholder":
+        MessageLookupByLibrary.simpleMessage(
+          "Describe your character for image generation",
+        ),
     "characterSheetAppearanceTitle": MessageLookupByLibrary.simpleMessage(
       "Appearance",
     ),
@@ -111,20 +125,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "characterSheetSkinUseCampaignDefault":
         MessageLookupByLibrary.simpleMessage("Use campaign default"),
-    "characterNameWithLevelAndConfigurableDetails":
-        MessageLookupByLibrary.simpleMessage(
-          "Character name with level and configurable details",
-        ),
-    "characterOverview": MessageLookupByLibrary.simpleMessage(
-      "Charakter overview",
-    ),
-    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
-      "Portrait description",
-    ),
-    "characterPortraitImagePromptPlaceholder":
-        MessageLookupByLibrary.simpleMessage(
-          "Describe your character for image generation",
-        ),
     "chooseACampagne": MessageLookupByLibrary.simpleMessage(
       "Choose a campaign",
     ),

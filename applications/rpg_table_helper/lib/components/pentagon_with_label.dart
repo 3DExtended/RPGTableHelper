@@ -96,7 +96,7 @@ class PentagonWithLabel extends StatelessWidget {
             height: 84,
             child: CustomPaint(
               painter: _LedgerHexStampPainter(
-                fill: theme.middleBgColor.withValues(alpha: 0.85),
+                fill: theme.bgColor,
                 ink: theme.darkColor,
               ),
               child: Center(
@@ -106,7 +106,7 @@ class PentagonWithLabel extends StatelessWidget {
                     Text(
                       value.toString(),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontSize: 20,
+                            fontSize: 22,
                             color: theme.darkTextColor,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Ruwudu',
@@ -132,14 +132,16 @@ class PentagonWithLabel extends StatelessWidget {
           AutoSizeText(
             label,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: theme.darkTextColor,
                   fontFamily: 'Ruwudu',
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
                 ),
             textAlign: TextAlign.center,
             maxLines: 1,
-            maxFontSize: 13,
-            minFontSize: 11,
+            maxFontSize: 12,
+            minFontSize: 10,
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -196,7 +198,16 @@ class _LedgerHexStampPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final outer = _hex(size, inset: 1);
-    final inner = _hex(size, inset: 4.5);
+    final mid = _hex(size, inset: 3.5);
+    final inner = _hex(size, inset: 6.5);
+    // Soft drop shadow
+    canvas.drawPath(
+      outer.shift(const Offset(1.5, 2)),
+      Paint()
+        ..color = const Color(0x33000000)
+        ..style = PaintingStyle.fill
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2),
+    );
     canvas.drawPath(
       outer,
       Paint()
@@ -206,16 +217,23 @@ class _LedgerHexStampPainter extends CustomPainter {
     canvas.drawPath(
       outer,
       Paint()
-        ..color = ink.withValues(alpha: 0.75)
+        ..color = ink.withValues(alpha: 0.8)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.6,
+        ..strokeWidth = 1.8,
+    );
+    canvas.drawPath(
+      mid,
+      Paint()
+        ..color = ink.withValues(alpha: 0.35)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
     );
     canvas.drawPath(
       inner,
       Paint()
-        ..color = ink.withValues(alpha: 0.4)
+        ..color = ink.withValues(alpha: 0.2)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0,
+        ..strokeWidth = 0.8,
     );
   }
 

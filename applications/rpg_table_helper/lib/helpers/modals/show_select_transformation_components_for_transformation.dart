@@ -12,6 +12,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -87,8 +88,7 @@ class _SelectTransformationComponentsForTransformationModalContentState
           child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 800, maxHeight: 500),
-              child: Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
+              child: SkinnedModalPanel(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -218,7 +218,7 @@ class _SelectTransformationComponentsForTransformationModalContentState
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
                       child: Row(
                         children: [
                           const Spacer(flex: 1),

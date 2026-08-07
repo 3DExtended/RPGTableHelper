@@ -94,6 +94,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterNameStatTitle": MessageLookupByLibrary.simpleMessage(
       "Charakter-Name",
     ),
+    "characterNameWithLevelAndConfigurableDetails":
+        MessageLookupByLibrary.simpleMessage(
+          "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)",
+        ),
+    "characterOverview": MessageLookupByLibrary.simpleMessage(
+      "Charakter Übersicht",
+    ),
+    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
+      "Porträtbeschreibung",
+    ),
+    "characterPortraitImagePromptPlaceholder":
+        MessageLookupByLibrary.simpleMessage(
+          "Beschreibe deinen Charakter für die Bildgenerierung",
+        ),
     "characterSheetAppearanceTitle": MessageLookupByLibrary.simpleMessage(
       "Darstellung",
     ),
@@ -109,23 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterSheetSkinNightCartographer": MessageLookupByLibrary.simpleMessage(
       "Nachtkartograph",
     ),
-    "characterSheetSkinUseCampaignDefault": MessageLookupByLibrary.simpleMessage(
-      "Kampagnen-Standard verwenden",
-    ),
-    "characterNameWithLevelAndConfigurableDetails":
-        MessageLookupByLibrary.simpleMessage(
-          "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)",
-        ),
-    "characterOverview": MessageLookupByLibrary.simpleMessage(
-      "Charakter Übersicht",
-    ),
-    "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
-      "Porträtbeschreibung",
-    ),
-    "characterPortraitImagePromptPlaceholder":
-        MessageLookupByLibrary.simpleMessage(
-          "Beschreibe deinen Charakter für die Bildgenerierung",
-        ),
+    "characterSheetSkinUseCampaignDefault":
+        MessageLookupByLibrary.simpleMessage("Kampagnen-Standard verwenden"),
     "chooseACampagne": MessageLookupByLibrary.simpleMessage(
       "Kampagne auswählen",
     ),

@@ -11,6 +11,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -131,9 +132,8 @@ class _TabIconConfigurationModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-              child: Container(
-            color: CustomThemeProvider.of(context).theme.bgColor,
-            child: Column(
+              child: SkinnedModalPanel(
+                child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Navbar(
@@ -309,7 +309,7 @@ class _TabIconConfigurationModalContentState
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                  padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
                   child: Row(
                     children: [
                       const Spacer(),

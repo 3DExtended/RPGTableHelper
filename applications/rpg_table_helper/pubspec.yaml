@@ -55,6 +55,12 @@ dependencies:
   json_patch: ^3.0.0
   flutter_secure_storage: ^10.3.1
 
+# Flutter 3.41 + path_provider_foundation 2.6 FFI embeds the wrong
+# objective_c.framework arch when alternating device/simulator builds
+# (have iOS / need iOS-simulator). Stay on the method-channel release.
+dependency_overrides:
+  path_provider_foundation: 2.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

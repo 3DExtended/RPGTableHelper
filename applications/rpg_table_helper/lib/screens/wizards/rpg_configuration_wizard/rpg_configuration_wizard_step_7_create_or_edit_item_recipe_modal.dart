@@ -13,6 +13,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -115,9 +116,8 @@ class _CreateOrEditCraftingRecipeModalContentState
                 bottom: 20, top: 20, left: modalPadding, right: modalPadding),
             child: Center(
               child: CustomShadowWidget(
-                child: Container(
-                  color: CustomThemeProvider.of(context).theme.bgColor,
-                  child: Column(
+                child: SkinnedModalPanel(
+                child: Column(
                     children: [
                       Navbar(
                         backInsteadOfCloseIcon: false,
@@ -488,7 +488,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
+                        padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
                         child: Row(
                           children: [
                             CustomButton(

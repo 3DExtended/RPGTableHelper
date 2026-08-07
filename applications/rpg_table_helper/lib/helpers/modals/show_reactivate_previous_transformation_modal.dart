@@ -9,6 +9,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -67,8 +68,7 @@ class _ShowReactivatePreviousTransformationModalContentState
           child: CustomShadowWidget(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 600, maxHeight: 400),
-              child: Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
+              child: SkinnedModalPanel(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -104,7 +104,7 @@ class _ShowReactivatePreviousTransformationModalContentState
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 0, 30, 10),
+                      padding: const EdgeInsets.fromLTRB(30.0, 0, 30, 24),
                       child: Row(
                         children: [
                           const Spacer(flex: 1),

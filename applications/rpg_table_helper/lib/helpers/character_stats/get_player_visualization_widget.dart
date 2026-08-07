@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -82,8 +83,8 @@ Widget getPlayerVisualizationWidget({
           onNewStatValue, statConfiguration, context, characterValue);
 
     case CharacterStatValueType.singleImage:
-      return renderImageStat(
-          onNewStatValue, statConfiguration, context, characterValue);
+      return renderImageStat(onNewStatValue, statConfiguration, context,
+          characterValue, characterName);
 
     case CharacterStatValueType.int:
       return renderIntStat(
@@ -452,6 +453,37 @@ Widget renderMultiselectStat(
       );
   }
 
+  final ledger = isArcaneLedgerActive(context);
+  if (ledger &&
+      statConfiguration.name.toLowerCase().contains('zauber')) {
+    // Preserve selection order (mock Spells layout), not alpha sort.
+    final byUuid = {
+      for (final e in valueToConfigMapped) e.$2.$1: e,
+    };
+    final ordered = <(int, (String, String, String))>[];
+    for (final id in parsedValue) {
+      final hit = byUuid[id];
+      if (hit != null && !ordered.any((o) => o.$2.$1 == id)) {
+        ordered.add(hit);
+      }
+    }
+    for (final e in valueToConfigMapped) {
+      if (!ordered.any((o) => o.$2.$1 == e.$2.$1)) {
+        ordered.add(e);
+      }
+    }
+    return _LedgerSpellMultiselect(
+      title: statConfiguration.name,
+      items: ordered
+          .map((e) => (
+                selected: e.$1 != 0,
+                label: e.$2.$2,
+                description: e.$2.$3,
+              ))
+          .toList(),
+    );
+  }
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
@@ -463,9 +495,7 @@ Widget renderMultiselectStat(
               fontSize: 24,
             ),
       ),
-      SizedBox(
-        height: 10,
-      ),
+      const SizedBox(height: 10),
       if (valueToConfigMapped.isEmpty)
         Text(
           S.of(context).nothingSelected,
@@ -474,70 +504,191 @@ Widget renderMultiselectStat(
         ),
       ...valueToConfigMapped.map(
         (e) => Builder(builder: (context) {
-          var isSelected = e.$1 != 0;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 15,
-                    height: 15,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected
-                            ? CustomThemeProvider.of(context).theme.darkColor
-                            : CustomThemeProvider.of(context).theme.bgColor,
-                        border: Border.all(
+            var isSelected = e.$1 != 0;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 15,
+                      height: 15,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected
+                              ? CustomThemeProvider.of(context).theme.darkColor
+                              : CustomThemeProvider.of(context).theme.bgColor,
+                          border: Border.all(
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkColor)),
+                    ),
+                    if (multiselectIsAllowedToBeSelectedMultipleTimes)
+                      ...List.filled(
+                        max(0, e.$1 - 1),
+                        Container(
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkColor,
+                              border: Border.all(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor)),
+                        ),
+                      ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      e.$2.$2,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
+                if (e.$2.$3.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25, top: 2, bottom: 6),
+                    child: Text(
+                      e.$2.$3,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: CustomThemeProvider.of(context)
                                 .theme
-                                .darkColor)),
-                  ),
-                  if (multiselectIsAllowedToBeSelectedMultipleTimes)
-                    ...List.filled(
-                      max(0, e.$1 - 1),
-                      Container(
-                        width: 15,
-                        height: 15,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                                CustomThemeProvider.of(context).theme.darkColor,
-                            border: Border.all(
-                                color: CustomThemeProvider.of(context)
-                                    .theme
-                                    .darkColor)),
-                      ),
+                                .darkTextColor
+                                .withValues(alpha: 0.75),
+                            fontSize: 12,
+                          ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  SizedBox(
-                    width: 10,
                   ),
-                  Text(
-                    e.$2.$2,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color:
-                            CustomThemeProvider.of(context).theme.darkTextColor,
-                        fontSize: 16),
-                  ),
-                ],
-              ),
-              if (e.$2.$3.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0, bottom: 20),
-                  child: Text(
-                    e.$2.$3,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color:
-                            CustomThemeProvider.of(context).theme.darkTextColor,
-                        fontSize: 16),
-                  ),
-                ),
-            ],
-          );
-        }),
-      )
+              ],
+            );
+          }),
+      ),
     ],
   );
+}
+
+/// Ledger spell list: section header + checked rows with short blurbs (mock Spells).
+class _LedgerSpellMultiselect extends StatelessWidget {
+  final String title;
+  final List<({bool selected, String label, String description})> items;
+
+  const _LedgerSpellMultiselect({
+    required this.title,
+    required this.items,
+  });
+
+  static String _shortBlurb(String description) {
+    final lines = description
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+    for (final line in lines) {
+      final lower = line.toLowerCase();
+      if (lower.startsWith('zeitaufwand') ||
+          lower.startsWith('reichweite') ||
+          lower.startsWith('komponenten') ||
+          lower.startsWith('wirkungsdauer') ||
+          lower.contains('grades') ||
+          lower.contains('zaubertrick') ||
+          lower.contains('(ritual)')) {
+        continue;
+      }
+      final sentence = line.split('.').first.trim();
+      if (sentence.isEmpty) continue;
+      if (sentence.length > 90) {
+        return '${sentence.substring(0, 87)}…';
+      }
+      return '$sentence.';
+    }
+    return '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: ink,
+                    fontSize: 22,
+                    fontFamily: 'Ruwudu',
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Container(
+                height: 1,
+                color: ink.withValues(alpha: 0.45),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (items.isEmpty)
+          Text(
+            S.of(context).nothingSelected,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: ink.withValues(alpha: 0.45),
+                  fontSize: 15,
+                  fontFamily: 'Ruwudu',
+                ),
+          ),
+        ...items.map((item) {
+          final blurb = _shortBlurb(item.description);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.label,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: ink,
+                        fontSize: 17,
+                        fontFamily: 'Ruwudu',
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                if (blurb.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    blurb,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: ink.withValues(alpha: 0.78),
+                          fontSize: 14,
+                          fontFamily: 'Ruwudu',
+                          height: 1.3,
+                        ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        }),
+        CustomPaint(
+          painter: _LedgerStarRulePainter(ink: ink),
+          child: const SizedBox(width: double.infinity, height: 18),
+        ),
+      ],
+    );
+  }
 }
 
 Widget renderIntWithCalculatedValueStat(
@@ -639,36 +790,26 @@ Widget renderIntWithMaxValueStat(
             Row(
               children: [
                 Spacer(),
-                CustomButton(
-                  isSubbutton: true,
-                  variant: CustomButtonVariant.DarkButton,
+                _ledgerOrClassicStatButton(
+                  context: context,
                   onPressed: value <= 0
                       ? null
                       : () {
                           onValueChanged(max(0, value - 1));
                         },
-                  icon: CustomFaIcon(
-                    icon: FontAwesomeIcons.minus,
-                    size: iconSizeInlineButtons,
-                    color: CustomThemeProvider.of(context).theme.textColor,
-                  ),
+                  icon: FontAwesomeIcons.minus,
                 ),
                 Spacer(
                   flex: 6,
                 ),
-                CustomButton(
-                  isSubbutton: true,
-                  variant: CustomButtonVariant.DarkButton,
+                _ledgerOrClassicStatButton(
+                  context: context,
                   onPressed: maxValue == value
                       ? null
                       : () {
                           onValueChanged(min(value + 1, maxValue));
                         },
-                  icon: CustomFaIcon(
-                    icon: FontAwesomeIcons.plus,
-                    size: iconSizeInlineButtons,
-                    color: CustomThemeProvider.of(context).theme.textColor,
-                  ),
+                  icon: FontAwesomeIcons.plus,
                 ),
                 Spacer(),
               ],
@@ -853,6 +994,69 @@ Widget renderIntWithMaxValueStat(
       return core;
     default:
       // variant is null or 0
+      if (isArcaneLedgerActive(context) &&
+          statConfiguration.name.toLowerCase().contains('zauberpunkt')) {
+        final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 96,
+              height: 96,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    ArcaneLedgerAssets.waxSeal,
+                    width: 96,
+                    height: 96,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
+                  ),
+                  Text(
+                    '$value/$maxValue',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: const Color(0xFFF5E6D3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      height: 1.0,
+                      fontFamily: 'Ruwudu',
+                      shadows: const [
+                        Shadow(
+                          color: Color(0x88000000),
+                          blurRadius: 2,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              statConfiguration.name,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: ink,
+                    fontSize: 20,
+                    fontFamily: 'Ruwudu',
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            Text(
+              'Verfügbare ${statConfiguration.name}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: ink.withValues(alpha: 0.7),
+                    fontSize: 13,
+                    fontFamily: 'Ruwudu',
+                  ),
+            ),
+          ],
+        );
+      }
       return Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -918,6 +1122,82 @@ Widget renderIntWithMaxValueStat(
   }
 }
 
+Widget _ledgerOrClassicStatButton({
+  required BuildContext context,
+  required VoidCallback? onPressed,
+  required IconData icon,
+}) {
+  final ink = CustomThemeProvider.of(context).theme.darkColor;
+  if (isArcaneLedgerActive(context)) {
+    return CupertinoButton(
+      onPressed: onPressed,
+      minSize: 0,
+      padding: EdgeInsets.zero,
+      child: Opacity(
+        opacity: onPressed == null ? 0.35 : 1,
+        child: CustomPaint(
+          painter: _LedgerInkSquarePainter(ink: ink),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: Center(
+              child: CustomFaIcon(
+                icon: icon,
+                size: iconSizeInlineButtons,
+                color: ink,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  return CustomButton(
+    isSubbutton: true,
+    variant: CustomButtonVariant.DarkButton,
+    onPressed: onPressed,
+    icon: CustomFaIcon(
+      icon: icon,
+      size: iconSizeInlineButtons,
+      color: CustomThemeProvider.of(context).theme.textColor,
+    ),
+  );
+}
+
+class _LedgerInkSquarePainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerInkSquarePainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final outer = Paint()
+      ..color = ink.withValues(alpha: 0.7)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
+    final inner = Paint()
+      ..color = ink.withValues(alpha: 0.35)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.9;
+    final r = RRect.fromRectAndRadius(
+      Rect.fromLTWH(1, 1, size.width - 2, size.height - 2),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(r, outer);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(4, 4, size.width - 8, size.height - 8),
+        const Radius.circular(1.5),
+      ),
+      inner,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerInkSquarePainter oldDelegate) =>
+      oldDelegate.ink != ink;
+}
+
 Widget renderListOfIntsWithIconsStat(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
@@ -951,8 +1231,10 @@ Widget renderListOfIntsWithIconsStat(
           );
         },
       )
-      .sortedBy((e) => e.label)
       .toList();
+  if (!isArcaneLedgerActive(context)) {
+    filledValues = filledValues.sortedBy((e) => e.label).toList();
+  }
 
   switch (characterValue.variant) {
     case 2:
@@ -982,66 +1264,135 @@ Widget renderListOfIntsWithIconsStat(
     runSpacing: 10,
     children: filledValues
         .map(
-          (t) => SizedBox(
-            width: characterValue.variant == 0 ? 100 : 80,
-            child: Column(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          (t) {
+            if (isArcaneLedgerActive(context)) {
+              final ink = CustomThemeProvider.of(context).theme.darkColor;
+              return SizedBox(
+                width: 76,
+                child: Column(
                   children: [
-                    getIconForIdentifier(
-                            name: t.iconName,
-                            color:
-                                CustomThemeProvider.of(context).theme.darkColor,
-                            size: 32)
-                        .$2,
-                    SizedBox(
-                      height: 5,
+                    CustomPaint(
+                      painter: _LedgerInkIconRingPainter(ink: ink),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: getIconForIdentifier(
+                          name: t.iconName,
+                          color: ink,
+                          size: 26,
+                        ).$2,
+                      ),
                     ),
-                    if (characterValue.variant == 0)
-                      Text(
-                        "${t.label}: ${t.value}",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontSize: 18,
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .darkTextColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    if (characterValue.variant == 1)
-                      Text(
-                        "${t.value}",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontSize: 18,
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .darkTextColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    if (characterValue.variant == 1)
-                      SizedBox(
-                        height: 1,
-                      ),
-                    if (characterValue.variant == 1)
-                      Text(
-                        t.label,
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontSize: 12,
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .darkTextColor,
-                            ),
-                      ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${t.value}',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 18,
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    Text(
+                      t.label,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 11,
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
+                          ),
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
+              );
+            }
+            return SizedBox(
+              width: characterValue.variant == 0 ? 100 : 80,
+              child: Column(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      getIconForIdentifier(
+                              name: t.iconName,
+                              color:
+                                  CustomThemeProvider.of(context).theme.darkColor,
+                              size: 32)
+                          .$2,
+                      SizedBox(
+                        height: 5,
+                      ),
+                      if (characterValue.variant == 0)
+                        Text(
+                          "${t.label}: ${t.value}",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                fontSize: 18,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      if (characterValue.variant == 1)
+                        Text(
+                          "${t.value}",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                fontSize: 18,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      if (characterValue.variant == 1)
+                        SizedBox(
+                          height: 1,
+                        ),
+                      if (characterValue.variant == 1)
+                        Text(
+                          t.label,
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                fontSize: 12,
+                                color: CustomThemeProvider.of(context)
+                                    .theme
+                                    .darkTextColor,
+                              ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
         )
         .toList(),
   );
+}
+
+class _LedgerInkIconRingPainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerInkIconRingPainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = Offset(size.width / 2, size.height / 2);
+    final r = min(size.width, size.height) / 2 - 1;
+    final outer = Paint()
+      ..color = ink.withValues(alpha: 0.7)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
+    final inner = Paint()
+      ..color = ink.withValues(alpha: 0.35)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.9;
+    canvas.drawCircle(c, r, outer);
+    canvas.drawCircle(c, r - 3.5, inner);
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerInkIconRingPainter oldDelegate) =>
+      oldDelegate.ink != ink;
 }
 
 Widget renderListOfIntWithCalculatedValuesStat(
@@ -1240,8 +1591,8 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
         children: [
           Expanded(
             flex: firstExpandedFlex.round(),
-            child: CustomShadowWidget(
-              child: LayoutBuilder(builder: (context, constrin) {
+            child: Builder(builder: (context) {
+              final sealChild = LayoutBuilder(builder: (context, constrin) {
                 final side = constrin.maxWidth;
                 if (isArcaneLedgerActive(context)) {
                   return SizedBox(
@@ -1289,8 +1640,11 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                     ],
                   ),
                 );
-              }),
-            ),
+              });
+              // Rectangular ShadowWidget casts a white/grey box on parchment.
+              if (isArcaneLedgerActive(context)) return sealChild;
+              return CustomShadowWidget(child: sealChild);
+            }),
           ),
           SizedBox(
             width: 10,
@@ -1388,12 +1742,16 @@ Widget renderImageStat(
     void Function(String newSerializedValue) onNewStatValue,
     CharacterStatDefinition statConfiguration,
     BuildContext context,
-    RpgCharacterStatValue characterValue) {
+    RpgCharacterStatValue characterValue,
+    String characterName) {
   //  {"imageUrl": "someUrl", "value": "some text"}
   var parsedValue = jsonDecode(characterValue.serializedValue);
   var imageUrl = parsedValue["imageUrl"];
+  final quote = parsedValue["value"]?.toString();
+  final ledger = isArcaneLedgerActive(context);
+  final showQuote = ledger && quote != null && quote.trim().isNotEmpty;
 
-  return BorderedImage(
+  final image = BorderedImage(
     backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
     lightColor: CustomThemeProvider.of(context).theme.darkColor,
     isGreyscale: false,
@@ -1401,6 +1759,86 @@ Widget renderImageStat(
     noPadding: true,
     imageUrl: resolveStatImageUrl(imageUrl as String?),
   );
+
+  if (!showQuote) return image;
+
+  final ink = CustomThemeProvider.of(context).theme.darkColor;
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      CustomPaint(
+        painter: _LedgerStarRulePainter(ink: ink),
+        child: const SizedBox(width: double.infinity, height: 18),
+      ),
+      image,
+      const SizedBox(height: 12),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Text(
+          '„$quote“',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 15,
+                fontStyle: FontStyle.italic,
+                height: 1.35,
+              ),
+        ),
+      ),
+      const SizedBox(height: 6),
+      Text(
+        '— $characterName',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 12,
+            ),
+      ),
+      const SizedBox(height: 8),
+      CustomPaint(
+        painter: _LedgerStarRulePainter(ink: ink),
+        child: const SizedBox(width: double.infinity, height: 18),
+      ),
+    ],
+  );
+}
+
+class _LedgerStarRulePainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerStarRulePainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = ink.withValues(alpha: 0.4)
+      ..strokeWidth = 1.0;
+    final midY = size.height / 2;
+    canvas.drawLine(Offset(8, midY), Offset(size.width / 2 - 14, midY), paint);
+    canvas.drawLine(
+        Offset(size.width / 2 + 14, midY), Offset(size.width - 8, midY), paint);
+    final star = Paint()
+      ..color = ink.withValues(alpha: 0.55)
+      ..style = PaintingStyle.fill;
+    final c = Offset(size.width / 2, midY);
+    final path = Path();
+    for (var i = 0; i < 8; i++) {
+      final angle = -pi / 2 + i * pi / 4;
+      final radius = i.isEven ? 5.0 : 2.0;
+      final p = Offset(c.dx + cos(angle) * radius, c.dy + sin(angle) * radius);
+      if (i == 0) {
+        path.moveTo(p.dx, p.dy);
+      } else {
+        path.lineTo(p.dx, p.dy);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, star);
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerStarRulePainter oldDelegate) =>
+      oldDelegate.ink != ink;
 }
 
 Widget renderTextStat(
@@ -1412,6 +1850,41 @@ Widget renderTextStat(
   final body =
       jsonDecode(characterValue.serializedValue)["value"].toString();
   final hideTitle = characterValue.hideLabelOfStat == true;
+
+  if (isArcaneLedgerActive(context)) {
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!hideTitle) ...[
+            Text(
+              statConfiguration.name,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: ink,
+                    fontSize: 20,
+                    fontFamily: 'Ruwudu',
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            Container(
+              height: 1,
+              margin: const EdgeInsets.only(top: 4, bottom: 10),
+              color: ink.withValues(alpha: 0.55),
+            ),
+          ],
+          CustomMarkdownBody(text: body),
+          const SizedBox(height: 10),
+          CustomPaint(
+            painter: _LedgerStarRulePainter(ink: ink),
+            child: const SizedBox(width: double.infinity, height: 18),
+          ),
+        ],
+      ),
+    );
+  }
 
   switch (characterValue.variant) {
     case 1:

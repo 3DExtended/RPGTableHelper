@@ -3,6 +3,7 @@ import 'package:quest_keeper/components/character_sheet_skin_picker.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 /// Dismissed without saving (Cancel or barrier).
@@ -29,28 +30,66 @@ Future<Object?> showCharacterSheetAppearanceModal({
   required bool immediateApply,
 }) async {
   var draft = currentSkinId;
-  final theme = CustomThemeProvider.of(context).theme;
+
+  Widget dialogShell({
+    required BuildContext ctx,
+    required Widget body,
+    required List<Widget> actions,
+  }) {
+    final theme = CustomThemeProvider.of(ctx).theme;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: SkinnedModalPanel(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  S.of(ctx).characterSheetAppearanceTitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(ctx).textTheme.titleLarge!.copyWith(
+                        color: theme.darkTextColor,
+                        fontSize: 24,
+                      ),
+                ),
+                const SizedBox(height: 16),
+                body,
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    for (var i = 0; i < actions.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 10),
+                      actions[i],
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   if (immediateApply) {
     return showDialog<Object?>(
       context: context,
       builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: theme.bgColor,
-          title: Text(
-            S.of(ctx).characterSheetAppearanceTitle,
-            style: TextStyle(color: theme.darkTextColor),
-          ),
-          content: SizedBox(
-            width: 520,
-            child: CharacterSheetSkinPicker(
-              selectedSkinId: draft,
-              campaignDefaultSkinId: campaignDefaultSkinId,
-              showUseCampaignDefault: true,
-              onSelected: (id) {
-                Navigator.of(ctx).pop(AppearanceModalSelection(id));
-              },
-            ),
+        return dialogShell(
+          ctx: ctx,
+          body: CharacterSheetSkinPicker(
+            selectedSkinId: draft,
+            campaignDefaultSkinId: campaignDefaultSkinId,
+            showUseCampaignDefault: true,
+            onSelected: (id) {
+              Navigator.of(ctx).pop(AppearanceModalSelection(id));
+            },
           ),
           actions: [
             CustomButton(
@@ -71,27 +110,20 @@ Future<Object?> showCharacterSheetAppearanceModal({
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setLocal) {
-          return AlertDialog(
-            backgroundColor: theme.bgColor,
-            title: Text(
-              S.of(ctx).characterSheetAppearanceTitle,
-              style: TextStyle(color: theme.darkTextColor),
-            ),
-            content: SizedBox(
-              width: 520,
-              child: CharacterSheetSkinPicker(
-                selectedSkinId: draft,
-                campaignDefaultSkinId: campaignDefaultSkinId,
-                showUseCampaignDefault: true,
-                onSelected: (id) {
-                  setLocal(() => draft = id);
-                  final preview = resolveCharacterSheetSkin(
-                    characterSkinId: id,
-                    campaignDefaultSkinId: campaignDefaultSkinId,
-                  ).renderSkinId;
-                  CustomThemeProvider.of(context).setActiveSkinId(preview);
-                },
-              ),
+          return dialogShell(
+            ctx: ctx,
+            body: CharacterSheetSkinPicker(
+              selectedSkinId: draft,
+              campaignDefaultSkinId: campaignDefaultSkinId,
+              showUseCampaignDefault: true,
+              onSelected: (id) {
+                setLocal(() => draft = id);
+                final preview = resolveCharacterSheetSkin(
+                  characterSkinId: id,
+                  campaignDefaultSkinId: campaignDefaultSkinId,
+                ).renderSkinId;
+                CustomThemeProvider.of(context).setActiveSkinId(preview);
+              },
             ),
             actions: [
               CustomButton(

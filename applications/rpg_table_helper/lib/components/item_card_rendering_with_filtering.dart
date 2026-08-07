@@ -9,6 +9,8 @@ import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/arcane_ledger_lore_chrome.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/fuzzysort.dart';
@@ -165,6 +167,9 @@ class _ItemCardRenderingWithFilteringState
 
   @override
   Widget build(BuildContext context) {
+    final ledger = isArcaneLedgerActive(context);
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+
     return Column(
       children: [
         AnimatedSize(
@@ -172,7 +177,8 @@ class _ItemCardRenderingWithFilteringState
           curve: Curves.easeInOut,
           child: isSearchFieldShowing
               ? Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20, 0.0),
+                  padding: EdgeInsets.fromLTRB(
+                      20.0, ledger ? 20.0 : 10.0, 20, 0.0),
                   child: CustomTextField(
                       labelText: S.of(context).searchLabel,
                       textEditingController: searchtextEditingController,
@@ -181,7 +187,8 @@ class _ItemCardRenderingWithFilteringState
               : SizedBox.shrink(),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 10),
+          padding: EdgeInsets.fromLTRB(
+              20.0, ledger && !isSearchFieldShowing ? 20 : 10, 20, 10),
           child: Row(
             children: [
               Expanded(
@@ -201,38 +208,48 @@ class _ItemCardRenderingWithFilteringState
                         ...CustomIterableExtensions(widget._allItemCategories)
                             .sortBy((e) => e.name),
                       ].map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.only(right: 25),
-                          child: CustomButton(
-                            variant: (widget.selectedItemCategoryId == e.uuid ||
-                                    (e.uuid == "" &&
-                                        widget.selectedItemCategoryId == null))
-                                ? CustomButtonVariant.DarkButton
-                                : CustomButtonVariant.Default,
-                            onPressed: () {
-                              widget.onSelectNewFilterCategory(e);
-                            },
-                            label: e.name,
-                            icon: e.iconName == null
-                                ? null
-                                : getIconForIdentifier(
-                                        name: e.iconName!,
-                                        size: 20,
-                                        color: (widget
-                                                        .selectedItemCategoryId ==
-                                                    e.uuid ||
-                                                (e.uuid == "" &&
-                                                    widget
-                                                            .selectedItemCategoryId ==
-                                                        null))
-                                            ? (e.colorCode
-                                                ?.parseHexColorRepresentation())
-                                            : CustomThemeProvider.of(context)
-                                                .theme
-                                                .darkColor)
-                                    .$2,
-                          ),
-                        ),
+                        (e) {
+                          final selected =
+                              widget.selectedItemCategoryId == e.uuid ||
+                                  (e.uuid == "" &&
+                                      widget.selectedItemCategoryId == null);
+                          if (ledger) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: LedgerFilterChip(
+                                label: e.name,
+                                selected: selected,
+                                onPressed: () {
+                                  widget.onSelectNewFilterCategory(e);
+                                },
+                              ),
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 25),
+                            child: CustomButton(
+                              variant: selected
+                                  ? CustomButtonVariant.DarkButton
+                                  : CustomButtonVariant.Default,
+                              onPressed: () {
+                                widget.onSelectNewFilterCategory(e);
+                              },
+                              label: e.name,
+                              icon: e.iconName == null
+                                  ? null
+                                  : getIconForIdentifier(
+                                          name: e.iconName!,
+                                          size: 20,
+                                          color: selected
+                                              ? (e.colorCode
+                                                  ?.parseHexColorRepresentation())
+                                              : CustomThemeProvider.of(context)
+                                                  .theme
+                                                  .darkColor)
+                                      .$2,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -241,50 +258,98 @@ class _ItemCardRenderingWithFilteringState
               SizedBox(
                 width: 10,
               ),
+              if (ledger)
+                Container(
+                  width: 1,
+                  height: 28,
+                  color: ink.withValues(alpha: 0.35),
+                ),
+              if (ledger) const SizedBox(width: 10),
               Tooltip(
                 message: sortModeTooltip(context),
-                child: CustomButton(
-                  variant: sortMode != ItemInventorySortMode.nameAscending
-                      ? CustomButtonVariant.DarkButton
-                      : CustomButtonVariant.Default,
-                  icon: CustomFaIcon(
-                    icon: sortModeIcon(),
-                    color: sortMode != ItemInventorySortMode.nameAscending
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkColor,
-                    size: 21,
-                    noPadding: true,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      sortMode = nextItemInventorySortMode(sortMode);
-                      onTextEditControllerChange();
-                    });
-                  },
-                ),
+                child: ledger
+                    ? CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        onPressed: () {
+                          setState(() {
+                            sortMode = nextItemInventorySortMode(sortMode);
+                            onTextEditControllerChange();
+                          });
+                        },
+                        child: CustomFaIcon(
+                          icon: sortModeIcon(),
+                          color: ink,
+                          size: 20,
+                          noPadding: true,
+                        ),
+                      )
+                    : CustomButton(
+                        variant:
+                            sortMode != ItemInventorySortMode.nameAscending
+                                ? CustomButtonVariant.DarkButton
+                                : CustomButtonVariant.Default,
+                        icon: CustomFaIcon(
+                          icon: sortModeIcon(),
+                          color:
+                              sortMode != ItemInventorySortMode.nameAscending
+                                  ? CustomThemeProvider.of(context)
+                                      .theme
+                                      .textColor
+                                  : CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor,
+                          size: 21,
+                          noPadding: true,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            sortMode = nextItemInventorySortMode(sortMode);
+                            onTextEditControllerChange();
+                          });
+                        },
+                      ),
               ),
               SizedBox(
                 width: 10,
               ),
-              CustomButton(
-                  variant: isSearchFieldShowing
-                      ? CustomButtonVariant.DarkButton
-                      : CustomButtonVariant.Default,
-                  icon: CustomFaIcon(
-                    icon: FontAwesomeIcons.magnifyingGlass,
-                    color: isSearchFieldShowing
-                        ? CustomThemeProvider.of(context).theme.textColor
-                        : CustomThemeProvider.of(context).theme.darkColor,
-                    size: 21,
-                    noPadding: true,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isSearchFieldShowing = !isSearchFieldShowing;
-                      searchtextEditingController.text = "";
-                      onTextEditControllerChange();
-                    });
-                  }),
+              ledger
+                  ? CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      onPressed: () {
+                        setState(() {
+                          isSearchFieldShowing = !isSearchFieldShowing;
+                          searchtextEditingController.text = "";
+                          onTextEditControllerChange();
+                        });
+                      },
+                      child: CustomFaIcon(
+                        icon: FontAwesomeIcons.magnifyingGlass,
+                        color: ink,
+                        size: 20,
+                        noPadding: true,
+                      ),
+                    )
+                  : CustomButton(
+                      variant: isSearchFieldShowing
+                          ? CustomButtonVariant.DarkButton
+                          : CustomButtonVariant.Default,
+                      icon: CustomFaIcon(
+                        icon: FontAwesomeIcons.magnifyingGlass,
+                        color: isSearchFieldShowing
+                            ? CustomThemeProvider.of(context).theme.textColor
+                            : CustomThemeProvider.of(context).theme.darkColor,
+                        size: 21,
+                        noPadding: true,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isSearchFieldShowing = !isSearchFieldShowing;
+                          searchtextEditingController.text = "";
+                          onTextEditControllerChange();
+                        });
+                      }),
               if (widget.renderCreateButton &&
                   widget.onAddNewItemPressed != null)
                 SizedBox(
@@ -292,19 +357,54 @@ class _ItemCardRenderingWithFilteringState
                 ),
               if (widget.renderCreateButton &&
                   widget.onAddNewItemPressed != null)
-                CustomButton(
-                  variant: CustomButtonVariant.AccentButton,
-                  onPressed: widget.onAddNewItemPressed,
-                  label: S.of(context).add,
-                  icon: CustomFaIcon(
-                    icon: FontAwesomeIcons.plus,
-                    size: iconSizeInlineButtons,
-                    color: CustomThemeProvider.of(context).theme.textColor,
-                  ),
-                )
+                ledger
+                    ? CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        onPressed: widget.onAddNewItemPressed,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '+ ${S.of(context).add}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                                  color: CustomThemeProvider.of(context)
+                                      .theme
+                                      .textColor,
+                                  fontFamily: 'Ruwudu',
+                                  fontSize: 15,
+                                ),
+                          ),
+                        ),
+                      )
+                    : CustomButton(
+                        variant: CustomButtonVariant.AccentButton,
+                        onPressed: widget.onAddNewItemPressed,
+                        label: S.of(context).add,
+                        icon: CustomFaIcon(
+                          icon: FontAwesomeIcons.plus,
+                          size: iconSizeInlineButtons,
+                          color:
+                              CustomThemeProvider.of(context).theme.textColor,
+                        ),
+                      )
             ],
           ),
         ),
+        if (ledger)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: LedgerStarRule(height: 16, horizontalInset: 0),
+          ),
         SizedBox(
           height: 0,
         ),
@@ -314,12 +414,12 @@ class _ItemCardRenderingWithFilteringState
   }
 
   Widget getListOfItemCardsAsColumns(context, constraints) {
+    final ledger = isArcaneLedgerActive(context);
     var layoutWidth = constraints.maxWidth;
     const scalar = 1.0;
 
-    const cardWidth = 289 * scalar;
-
-    const targetedCardWidth = cardWidth;
+    final cardWidth = ledger ? 260.0 * scalar : 289 * scalar;
+    final targetedCardWidth = cardWidth;
     const itemCardPadding = 9.0;
 
     var numberOfColumnsOnScreen = 1;
@@ -389,6 +489,9 @@ class _ItemCardRenderingWithFilteringState
                     categoryForItem
                 : categoryForItem;
 
+            final amountLabel =
+                "${S.of(context).amountHeaderLabel} ${itemToRender.value.amount}";
+
             return [
               Column(
                 children: [
@@ -408,17 +511,24 @@ class _ItemCardRenderingWithFilteringState
                       categoryIconColor: parentCategoryOfItem?.colorCode
                           ?.parseHexColorRepresentation(),
                       categoryIconName: parentCategoryOfItem?.iconName,
+                      amountText: ledger &&
+                              widget.hideAmount != true &&
+                              widget.onEditItemAmount == null
+                          ? amountLabel
+                          : null,
                     ),
                   ),
-                  if (widget.hideAmount != true &&
+                  if (!ledger &&
+                      widget.hideAmount != true &&
                       widget.onEditItemAmount == null)
                     SizedBox(
                       height: 5,
                     ),
-                  if (widget.hideAmount != true &&
+                  if (!ledger &&
+                      widget.hideAmount != true &&
                       widget.onEditItemAmount == null)
                     Text(
-                      "${S.of(context).amountHeaderLabel} ${itemToRender.value.amount}",
+                      amountLabel,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                             color: CustomThemeProvider.of(context)
                                 .theme

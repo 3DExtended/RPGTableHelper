@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/border_corner_stone.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/card_border.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -20,6 +24,10 @@ class CustomItemCard extends StatelessWidget {
 
   final String? categoryIconName;
   final Color? categoryIconColor;
+
+  /// When set (Ledger inventory), amount is drawn inside the plate footer.
+  final String? amountText;
+
   const CustomItemCard({
     super.key,
     required this.title,
@@ -31,10 +39,164 @@ class CustomItemCard extends StatelessWidget {
     this.categoryIconName,
     this.categoryIconColor,
     this.isGreyscale,
+    this.amountText,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (isArcaneLedgerActive(context)) {
+      return _buildLedgerPlate(context);
+    }
+    return _buildClassicCard(context);
+  }
+
+  Widget _buildLedgerPlate(BuildContext context) {
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+    final scalar = scalarOverride ?? 1.0;
+    final fullImageUrl = imageUrl == null
+        ? null
+        : (imageUrl!.startsWith("assets")
+            ? imageUrl
+            : (apiBaseUrl +
+                (imageUrl!.startsWith("/")
+                    ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
+                    : imageUrl!)));
+    final icon = getIconForIdentifier(
+      name: categoryIconName ?? "flask-laboratory-svgrepo-com",
+      color: categoryIconColor ?? ink,
+      size: 18 * scalar,
+    ).$2;
+
+    return SizedBox(
+      height: 400 * scalar,
+      width: 260 * scalar,
+      child: CustomPaint(
+        painter: _LedgerItemPlatePainter(ink: ink),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 6,
+              top: 6,
+              child: Opacity(
+                opacity: 0.55,
+                child: Image.asset(
+                  ArcaneLedgerAssets.cornerFlourish,
+                  width: 28 * scalar,
+                  height: 28 * scalar,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 6,
+              top: 6,
+              child: Opacity(
+                opacity: 0.55,
+                child: RotatedBox(
+                  quarterTurns: 1,
+                  child: Image.asset(
+                    ArcaneLedgerAssets.cornerFlourish,
+                    width: 28 * scalar,
+                    height: 28 * scalar,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  14 * scalar, 16 * scalar, 14 * scalar, 12 * scalar),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 28 * scalar,
+                        height: 28 * scalar,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: ink.withValues(alpha: 0.7)),
+                        ),
+                        alignment: Alignment.center,
+                        child: icon,
+                      ),
+                      SizedBox(width: 8 * scalar),
+                      Expanded(
+                        child: AutoSizeText(
+                          title,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          minFontSize: 11,
+                          maxFontSize: 20,
+                          style:
+                              Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                    color: ink,
+                                    fontFamily: 'Ruwudu',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 20,
+                                  ),
+                        ),
+                      ),
+                      SizedBox(width: 28 * scalar),
+                    ],
+                  ),
+                  SizedBox(height: 10 * scalar),
+                  Expanded(
+                    flex: 5,
+                    child: BorderedImage(
+                      lightColor: ink,
+                      backgroundColor: Colors.transparent,
+                      imageUrl: fullImageUrl,
+                      isLoading: isLoading,
+                      isGreyscale: true,
+                      noPadding: true,
+                    ),
+                  ),
+                  SizedBox(height: 8 * scalar),
+                  Expanded(
+                    flex: 3,
+                    child: AutoSizeText(
+                      description,
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                      minFontSize: 10,
+                      maxFontSize: 13,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: ink,
+                            fontFamily: 'Ruwudu',
+                            fontSize: 12,
+                            height: 1.25,
+                          ),
+                    ),
+                  ),
+                  if (amountText != null) ...[
+                    SizedBox(height: 6 * scalar),
+                    CustomPaint(
+                      painter: _LedgerMiniStarRulePainter(ink: ink),
+                      child: SizedBox(width: double.infinity, height: 14 * scalar),
+                    ),
+                    SizedBox(height: 4 * scalar),
+                    Text(
+                      amountText!,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                            color: ink,
+                            fontFamily: 'Ruwudu',
+                            fontSize: 14,
+                          ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClassicCard(BuildContext context) {
     var fullImageUrl = imageUrl == null
         ? null
         : (imageUrl!.startsWith("assets")
@@ -179,6 +341,88 @@ class CustomItemCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LedgerItemPlatePainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerItemPlatePainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final outer = Paint()
+      ..color = ink.withValues(alpha: 0.55)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    final inner = Paint()
+      ..color = ink.withValues(alpha: 0.35)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    const inset = 3.0;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(inset, inset, size.width - inset * 2, size.height - inset * 2),
+        const Radius.circular(2),
+      ),
+      outer,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          inset + 3.5,
+          inset + 3.5,
+          size.width - (inset + 3.5) * 2,
+          size.height - (inset + 3.5) * 2,
+        ),
+        const Radius.circular(1.5),
+      ),
+      inner,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerItemPlatePainter oldDelegate) =>
+      oldDelegate.ink != ink;
+}
+
+class _LedgerMiniStarRulePainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerMiniStarRulePainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = ink.withValues(alpha: 0.4)
+      ..strokeWidth = 1.0;
+    final midY = size.height / 2;
+    canvas.drawLine(Offset(8, midY), Offset(size.width / 2 - 10, midY), paint);
+    canvas.drawLine(
+        Offset(size.width / 2 + 10, midY), Offset(size.width - 8, midY), paint);
+    final c = Offset(size.width / 2, midY);
+    final path = Path();
+    for (var i = 0; i < 8; i++) {
+      final angle = -3.14159265 / 2 + i * 3.14159265 / 4;
+      final radius = i.isEven ? 3.5 : 1.4;
+      final p = Offset(c.dx + cos(angle) * radius, c.dy + sin(angle) * radius);
+      if (i == 0) {
+        path.moveTo(p.dx, p.dy);
+      } else {
+        path.lineTo(p.dx, p.dy);
+      }
+    }
+    path.close();
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = ink.withValues(alpha: 0.55)
+        ..style = PaintingStyle.fill,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerMiniStarRulePainter oldDelegate) =>
+      oldDelegate.ink != ink;
 }
 
 class _CardTitleWithIcon extends StatelessWidget {

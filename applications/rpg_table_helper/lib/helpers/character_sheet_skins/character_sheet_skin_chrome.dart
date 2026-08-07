@@ -8,10 +8,15 @@ class CharacterSheetSkinChrome extends StatelessWidget {
   final Widget child;
   final bool showFrame;
 
+  /// When true (pages), fills the parent. When false (modal cards), sizes to
+  /// [child] so shrink-wrapped dialogs keep their intrinsic height.
+  final bool expand;
+
   const CharacterSheetSkinChrome({
     super.key,
     required this.child,
     this.showFrame = true,
+    this.expand = true,
   });
 
   @override
@@ -26,13 +31,15 @@ class CharacterSheetSkinChrome extends StatelessWidget {
       return child;
     }
 
+    final ink = CustomThemeProvider.of(context).theme.darkColor;
+
     return Stack(
-      fit: StackFit.expand,
+      fit: expand ? StackFit.expand : StackFit.passthrough,
       children: [
         Positioned.fill(
           child: IgnorePointer(
             child: Opacity(
-              opacity: 0.55,
+              opacity: 0.82,
               child: Image.asset(
                 ArcaneLedgerAssets.parchment,
                 fit: BoxFit.cover,
@@ -42,19 +49,60 @@ class CharacterSheetSkinChrome extends StatelessWidget {
             ),
           ),
         ),
+        // Content first so opaque chrome (e.g. modal navbar) does not cover
+        // the double-rule frame / corner flourishes.
+        child,
         if (showFrame)
           Positioned.fill(
             child: IgnorePointer(
               child: CustomPaint(
-                painter: _LedgerDoubleRuleFramePainter(
-                  ink: CustomThemeProvider.of(context).theme.darkColor,
-                ),
+                painter: _LedgerDoubleRuleFramePainter(ink: ink),
               ),
             ),
           ),
-        child,
+        if (showFrame) ..._pageCornerFlourishes(),
       ],
     );
+  }
+
+  List<Widget> _pageCornerFlourishes() {
+    const size = 72.0;
+    Widget flourish({
+      required double? left,
+      required double? top,
+      required double? right,
+      required double? bottom,
+      required int turns,
+    }) {
+      return Positioned(
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+        child: IgnorePointer(
+          child: RotatedBox(
+            quarterTurns: turns,
+            child: Opacity(
+              opacity: 0.88,
+              child: Image.asset(
+                ArcaneLedgerAssets.cornerFlourish,
+                width: size,
+                height: size,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.high,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return [
+      flourish(left: 2, top: 2, right: null, bottom: null, turns: 0),
+      flourish(left: null, top: 2, right: 2, bottom: null, turns: 1),
+      flourish(left: null, top: null, right: 2, bottom: 2, turns: 2),
+      flourish(left: 2, top: null, right: null, bottom: 2, turns: 3),
+    ];
   }
 }
 
@@ -111,4 +159,28 @@ bool isArcaneLedgerActive(BuildContext context) {
 Color characterSheetSurfaceColor(BuildContext context) {
   if (isArcaneLedgerActive(context)) return Colors.transparent;
   return CustomThemeProvider.of(context).theme.bgColor;
+}
+
+/// Modal card shell: classic solid panel, or Ledger parchment + frame.
+class SkinnedModalPanel extends StatelessWidget {
+  final Widget child;
+  final bool showFrame;
+
+  const SkinnedModalPanel({
+    super.key,
+    required this.child,
+    this.showFrame = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CharacterSheetSkinChrome(
+      expand: false,
+      showFrame: showFrame,
+      child: ColoredBox(
+        color: characterSheetSurfaceColor(context),
+        child: child,
+      ),
+    );
+  }
 }

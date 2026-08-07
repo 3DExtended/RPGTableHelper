@@ -6,6 +6,36 @@ abstract final class ArcaneLedgerAssets {
       'assets/images/character_sheet_skins/arcane_ledger_wax_seal.png';
   static const parchment =
       'assets/images/character_sheet_skins/arcane_ledger_parchment.png';
+  static const cornerFlourish =
+      'assets/images/character_sheet_skins/arcane_ledger_corner_flourish.png';
+  static const navbarLeather =
+      'assets/images/character_sheet_skins/arcane_ledger_navbar_leather.png';
+  static const moneyBagHero =
+      'assets/images/character_sheet_skins/arcane_ledger_money_bag_hero.png';
+  static const moneyBagPlatin =
+      'assets/images/character_sheet_skins/arcane_ledger_money_bag_platin.png';
+  static const moneyBagGold =
+      'assets/images/character_sheet_skins/arcane_ledger_money_bag_gold.png';
+  static const moneyBagSilber =
+      'assets/images/character_sheet_skins/arcane_ledger_money_bag_silber.png';
+  static const moneyBagKupfer =
+      'assets/images/character_sheet_skins/arcane_ledger_money_bag_kupfer.png';
+
+  /// Illustrated denomination bag for Ledger currency columns.
+  static String moneyBagForLabel(String label) {
+    switch (label) {
+      case 'Platin':
+        return moneyBagPlatin;
+      case 'Gold':
+        return moneyBagGold;
+      case 'Silber':
+        return moneyBagSilber;
+      case 'Kupfer':
+        return moneyBagKupfer;
+      default:
+        return moneyBagHero;
+    }
+  }
 }
 
 /// Illustrated wax seal with dynamic level text overlaid in the empty center.
@@ -33,6 +63,7 @@ class CharacterSheetLevelSeal extends StatelessWidget {
       height: size,
       child: Stack(
         alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: [
           Image.asset(
             ArcaneLedgerAssets.waxSeal,
@@ -41,7 +72,6 @@ class CharacterSheetLevelSeal extends StatelessWidget {
             fit: BoxFit.contain,
             filterQuality: FilterQuality.high,
           ),
-          // Keep text inside the recessed center disc (~50% of seal diameter).
           SizedBox(
             width: size * 0.52,
             child: Column(
@@ -58,7 +88,7 @@ class CharacterSheetLevelSeal extends StatelessWidget {
                     fontFamily: 'Ruwudu',
                     shadows: const [
                       Shadow(
-                        color: Color(0x66000000),
+                        color: Color(0x88000000),
                         blurRadius: 2,
                         offset: Offset(0, 1),
                       ),
@@ -77,7 +107,7 @@ class CharacterSheetLevelSeal extends StatelessWidget {
                     letterSpacing: 0.5,
                     shadows: const [
                       Shadow(
-                        color: Color(0x66000000),
+                        color: Color(0x88000000),
                         blurRadius: 2,
                         offset: Offset(0, 1),
                       ),

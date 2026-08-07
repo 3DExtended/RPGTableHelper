@@ -1,10 +1,6 @@
-import 'dart:math' as math;
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
@@ -89,120 +85,119 @@ class _WizardManagerState extends State<WizardManager> {
     return ValueListenableBuilder<String>(
       valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
       builder: (context, _, __) {
-        return CharacterSheetSkinChrome(
-          child: Column(
-            children: [
-              Builder(builder: (context) {
-                return Navbar(
-            backInsteadOfCloseIcon: true,
-            useTopSafePadding: true,
-            closeFunction: () {
-              _goToPreviousStep();
-            },
-            menuOpen: () {
-              // TODO make me
-            },
-            titleWidget: Builder(builder: (context) {
-              var selectedIconColor =
-                  CustomThemeProvider.of(context).theme.accentColor;
-              var unselectedIconColor =
-                  CustomThemeProvider.of(context).brightnessNotifier.value ==
-                          Brightness.light
-                      ? CustomThemeProvider.of(context).theme.textColor
-                      : CustomThemeProvider.of(context).theme.darkTextColor;
-              var textColor =
-                  CustomThemeProvider.of(context).brightnessNotifier.value ==
-                          Brightness.light
-                      ? CustomThemeProvider.of(context).theme.textColor
-                      : CustomThemeProvider.of(context).theme.darkTextColor;
+        return Column(
+          children: [
+            Navbar(
+              backInsteadOfCloseIcon: true,
+              useTopSafePadding: true,
+              closeFunction: () {
+                _goToPreviousStep();
+              },
+              menuOpen: () {
+                // TODO make me
+              },
+              titleWidget: Builder(builder: (context) {
+                final ledger = isArcaneLedgerActive(context);
+                var selectedIconColor = ledger
+                    ? ledgerNavbarAccent(context)
+                    : CustomThemeProvider.of(context).theme.accentColor;
+                var unselectedIconColor = ledger
+                    ? const Color(0xffEDE3D4)
+                    : (CustomThemeProvider.of(context)
+                                .brightnessNotifier
+                                .value ==
+                            Brightness.light
+                        ? CustomThemeProvider.of(context).theme.textColor
+                        : CustomThemeProvider.of(context).theme.darkTextColor);
+                var textColor = CustomThemeProvider.of(context)
+                            .brightnessNotifier
+                            .value ==
+                        Brightness.light
+                    ? CustomThemeProvider.of(context).theme.textColor
+                    : CustomThemeProvider.of(context).theme.darkTextColor;
+                final titleColor =
+                    ledger ? ledgerNavbarAccent(context) : textColor;
 
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  ...List.generate(
-                    _currentStep + 1,
-                    (index) => CupertinoButton(
-                      minSize: 0,
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        _goToStepId(index);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Transform.rotate(
-                          alignment: Alignment.center,
-                          angle: math.pi / 4, // 45 deg
-                          child: CustomFaIcon(
-                              icon: index == _currentStep
-                                  ? FontAwesomeIcons.solidSquare
-                                  : FontAwesomeIcons.square,
-                              color: index == _currentStep
-                                  ? selectedIconColor
-                                  : unselectedIconColor),
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    ...List.generate(
+                      _currentStep + 1,
+                      (index) => CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          _goToStepId(index);
+                        },
+                        child: ColoredRotatedSquare(
+                          isSolidSquare: index == _currentStep,
+                          color: index == _currentStep
+                              ? selectedIconColor
+                              : unselectedIconColor,
                         ),
                       ),
                     ),
-                  ),
-                  if (context.isTablet)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0, right: 20.0),
-                      child: Stack(children: [
-                        AnimatedOpacity(
-                          opacity: _currentTitleOverride != null ? 1 : 0,
-                          duration: Durations.short2,
-                          child: Text(
-                            _currentTitleOverride ?? "",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
-                                .copyWith(
-                                  color: textColor,
-                                  fontSize: 24,
-                                ),
+                    if (context.isTablet)
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: ledger ? 10.0 : 4.0,
+                          right: ledger ? 14.0 : 20.0,
+                        ),
+                        child: Stack(children: [
+                          AnimatedOpacity(
+                            opacity: _currentTitleOverride != null ? 1 : 0,
+                            duration: Durations.short2,
+                            child: Text(
+                              _currentTitleOverride ?? "",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(
+                                    color: titleColor,
+                                    fontSize: ledger ? 26 : 24,
+                                    fontFamily: ledger ? 'Ruwudu' : null,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: ledger ? 0.4 : null,
+                                    height: 1.0,
+                                  ),
+                            ),
                           ),
-                        ),
-                      ]),
-                    ),
-                  ...List.generate(
-                    widget.stepBuilders.length - (_currentStep + 1),
-                    (index) => CupertinoButton(
-                      minSize: 0,
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        _goToStepId(index + _currentStep + 1);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Transform.rotate(
-                          alignment: Alignment.center,
-                          angle: pi / 4, // 45 deg
-                          child: CustomFaIcon(
-                              icon: FontAwesomeIcons.square,
-                              color: unselectedIconColor),
+                        ]),
+                      ),
+                    ...List.generate(
+                      widget.stepBuilders.length - (_currentStep + 1),
+                      (index) => CupertinoButton(
+                        minSize: 0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          _goToStepId(index + _currentStep + 1);
+                        },
+                        child: ColoredRotatedSquare(
+                          isSolidSquare: false,
+                          color: unselectedIconColor,
                         ),
                       ),
                     ),
-                  ),
-                  Spacer(),
-                ],
-              );
-            }),
-          );
-        }),
-        Expanded(
-          child: Container(
-            color: characterSheetSurfaceColor(context),
-            child: widget.stepBuilders[_currentStep](
-              _goToPreviousStep,
-              _goToNextStep,
-              _setStepTitle,
+                    const Spacer(),
+                  ],
+                );
+              }),
             ),
-          ),
-        ),
-            ],
-          ),
+            Expanded(
+              child: CharacterSheetSkinChrome(
+                child: Container(
+                  color: characterSheetSurfaceColor(context),
+                  child: widget.stepBuilders[_currentStep](
+                    _goToPreviousStep,
+                    _goToNextStep,
+                    _setStepTitle,
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

@@ -23,6 +23,7 @@ import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -194,8 +195,7 @@ class _CreateOrEditItemModalContentState
               bottom: 20, top: 20, left: modalPadding, right: modalPadding),
           child: Center(
             child: CustomShadowWidget(
-              child: Container(
-                color: CustomThemeProvider.of(context).theme.bgColor,
+              child: SkinnedModalPanel(
                 child: Column(
                   children: [
                     Navbar(
@@ -841,7 +841,7 @@ class _CreateOrEditItemModalContentState
         ),
         Center(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 24),
             child: CustomButton(
               variant: CustomButtonVariant.AccentButton,
               label: S.of(context).save,

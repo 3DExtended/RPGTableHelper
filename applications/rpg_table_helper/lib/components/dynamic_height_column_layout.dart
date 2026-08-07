@@ -11,12 +11,17 @@ class DynamicHeightColumnLayout extends StatefulWidget {
   final double spacing;
   final double runSpacing;
 
+  /// When set, children are placed by this map and height-balancing is skipped.
+  /// Keys are child indices; values are column indices.
+  final Map<int, int>? fixedChildMapping;
+
   const DynamicHeightColumnLayout({
     super.key,
     required this.children,
     this.numberOfColumns = 2,
     this.spacing = 10.0,
     this.runSpacing = 10.0,
+    this.fixedChildMapping,
   });
 
   @override
@@ -35,6 +40,7 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
   void initState() {
     childrenKeys =
         List.generate(widget.children.length, (index) => GlobalKey());
+    childMapping = widget.fixedChildMapping;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _retryCounter = 0;
@@ -48,7 +54,9 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
   void didUpdateWidget(covariant DynamicHeightColumnLayout oldWidget) {
     Future.delayed(Duration.zero, () {
       _retryCounter = 0;
-
+      if (widget.fixedChildMapping != null) {
+        childMapping = widget.fixedChildMapping;
+      }
       assignChildrenToCorrectColumn();
     });
     super.didUpdateWidget(oldWidget);
@@ -65,8 +73,9 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
       var child = widget.children[i];
 
       var targetColumnIndex = i % widget.numberOfColumns;
-      if (childMapping != null && childMapping!.containsKey(i)) {
-        targetColumnIndex = childMapping![i]! % widget.numberOfColumns;
+      final mapping = widget.fixedChildMapping ?? childMapping;
+      if (mapping != null && mapping.containsKey(i)) {
+        targetColumnIndex = mapping[i]! % widget.numberOfColumns;
       }
 
       // Add the child to the target column.
@@ -100,6 +109,14 @@ class DynamicHeightColumnLayoutState extends State<DynamicHeightColumnLayout> {
 
   var _retryCounter = 0;
   void assignChildrenToCorrectColumn() {
+    if (widget.fixedChildMapping != null) {
+      if (!mounted) return;
+      setState(() {
+        childMapping = widget.fixedChildMapping;
+        childrenPaddingTops = {};
+      });
+      return;
+    }
     if (_retryCounter >= 5) return;
     _retryCounter++;
 

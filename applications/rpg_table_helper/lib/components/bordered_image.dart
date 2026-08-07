@@ -5,10 +5,43 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:quest_keeper/components/card_border.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:themed/themed.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+List<Widget> _ledgerCornerFlourishOverlays() {
+  const size = 48.0;
+  Widget flourish({required double? left, required double? top, required double? right, required double? bottom, required int turns}) {
+    return Positioned(
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+      child: RotatedBox(
+        quarterTurns: turns,
+        child: Opacity(
+          opacity: 0.78,
+          child: Image.asset(
+            ArcaneLedgerAssets.cornerFlourish,
+            width: size,
+            height: size,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.high,
+          ),
+        ),
+      ),
+    );
+  }
+
+  return [
+    flourish(left: -6, top: -6, right: null, bottom: null, turns: 0),
+    flourish(left: null, top: -6, right: -6, bottom: null, turns: 1),
+    flourish(left: null, top: null, right: -6, bottom: -6, turns: 2),
+    flourish(left: -6, top: null, right: null, bottom: -6, turns: 3),
+  ];
+}
 class BorderedImage extends StatelessWidget {
   const BorderedImage({
     super.key,
@@ -36,6 +69,38 @@ class BorderedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isArcaneLedgerActive(context)) {
+      return Padding(
+        padding: noPadding == true
+            ? EdgeInsets.zero
+            : const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            CustomPaint(
+              painter: _LedgerPortraitFramePainter(ink: lightColor),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: CustomImage(
+                    aspectRatio: aspectRatio,
+                    isGreyscale: isGreyscale,
+                    imageUrl: imageUrl,
+                    hideLoadingImage: hideLoadingImage,
+                    isClickableForZoom: isClickableForZoom,
+                    isLoading: isLoading,
+                  ),
+                ),
+              ),
+            ),
+            // Corner flourish plates (mock ornament).
+            ..._ledgerCornerFlourishOverlays(),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: noPadding == true
           ? EdgeInsets.zero
@@ -67,6 +132,68 @@ class BorderedImage extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LedgerPortraitFramePainter extends CustomPainter {
+  final Color ink;
+
+  _LedgerPortraitFramePainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final outer = Paint()
+      ..color = ink.withValues(alpha: 0.75)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.6;
+    final inner = Paint()
+      ..color = ink.withValues(alpha: 0.4)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    const inset = 2.0;
+    final r = RRect.fromRectAndRadius(
+      Rect.fromLTWH(inset, inset, size.width - inset * 2, size.height - inset * 2),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(r, outer);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          inset + 4,
+          inset + 4,
+          size.width - (inset + 4) * 2,
+          size.height - (inset + 4) * 2,
+        ),
+        const Radius.circular(2),
+      ),
+      inner,
+    );
+
+    // Corner flourishes (double L-marks matching mock ornament weight).
+    final f = Paint()
+      ..color = ink.withValues(alpha: 0.6)
+      ..strokeWidth = 1.4
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    const len = 16.0;
+    void corner(double x, double y, double dx, double dy) {
+      canvas.drawLine(Offset(x, y), Offset(x + dx * len, y), f);
+      canvas.drawLine(Offset(x, y), Offset(x, y + dy * len), f);
+      canvas.drawLine(
+          Offset(x + dx * 3, y + dy * 3), Offset(x + dx * (len - 2), y + dy * 3), f);
+      canvas.drawLine(
+          Offset(x + dx * 3, y + dy * 3), Offset(x + dx * 3, y + dy * (len - 2)), f);
+    }
+
+    corner(inset + 2, inset + 2, 1, 1);
+    corner(size.width - inset - 2, inset + 2, -1, 1);
+    corner(inset + 2, size.height - inset - 2, 1, -1);
+    corner(size.width - inset - 2, size.height - inset - 2, -1, -1);
+  }
+
+  @override
+  bool shouldRepaint(covariant _LedgerPortraitFramePainter oldDelegate) =>
+      oldDelegate.ink != ink;
 }
 
 class CustomImage extends StatelessWidget {

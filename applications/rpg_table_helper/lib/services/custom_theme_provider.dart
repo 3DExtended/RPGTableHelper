@@ -106,7 +106,8 @@ class CustomTheme {
     ..darkGreen = const Color(0xff2E7A3A)
     ..darkRed = const Color(0xff8B1E1E)
     ..darkTextColor = const Color(0xff3A2E24)
-    ..secondaryNavbarColor = const Color(0xff2C2521)
+    // Near-black leather header matching approved Stats mock.
+    ..secondaryNavbarColor = const Color(0xff15100C)
     ..whiteBgTint = const Color(0x22C4A882)
     ..borderGradient = const LinearGradient(
       begin: Alignment.topLeft,
@@ -118,12 +119,12 @@ class CustomTheme {
       ],
     )
     ..navbarBackground = const LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
       colors: [
-        Color(0xff2C2521),
-        Color(0xff312A24),
-        Color(0xff3A322C),
+        Color(0xff1A140E),
+        Color(0xff120E0A),
+        Color(0xff1C1510),
       ],
     );
 }
