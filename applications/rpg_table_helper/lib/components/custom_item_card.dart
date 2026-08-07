@@ -110,7 +110,7 @@ class CustomItemCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(2)),
         child: CustomPaint(
-          painter: _LedgerItemPlatePainter(
+          painter: LedgerItemPlatePainter(
             ink: ink,
             fill: cardBgColorOverride,
           ),
@@ -346,11 +346,11 @@ class CustomItemCard extends StatelessWidget {
   }
 }
 
-class _LedgerItemPlatePainter extends CustomPainter {
+class LedgerItemPlatePainter extends CustomPainter {
   final Color ink;
   final Color? fill;
 
-  _LedgerItemPlatePainter({required this.ink, this.fill});
+  LedgerItemPlatePainter({required this.ink, this.fill});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -386,7 +386,7 @@ class _LedgerItemPlatePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LedgerItemPlatePainter oldDelegate) =>
+  bool shouldRepaint(covariant LedgerItemPlatePainter oldDelegate) =>
       oldDelegate.ink != ink || oldDelegate.fill != fill;
 }
 

@@ -6,6 +6,9 @@ import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/card_border.dart';
 import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/night_cartographer_ornaments.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -34,18 +37,144 @@ class CustomCharacterCard extends StatelessWidget {
     required this.characterSingleNumberStats,
   });
 
+  String get _fullImageUrl => imageUrl == null
+      ? "assets/images/charactercard_placeholder.png"
+      : (imageUrl!.startsWith("assets")
+              ? imageUrl
+              : (apiBaseUrl +
+                  (imageUrl!.startsWith("/")
+                      ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
+                      : imageUrl!))) ??
+          "assets/images/charactercard_placeholder.png";
+
   @override
   Widget build(BuildContext context) {
-    var fullImageUrl = imageUrl == null
-        ? "assets/images/charactercard_placeholder.png"
-        : (imageUrl!.startsWith("assets")
-                ? imageUrl
-                : (apiBaseUrl +
-                    (imageUrl!.startsWith("/")
-                        ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
-                        : imageUrl!))) ??
-            "assets/images/charactercard_placeholder.png";
+    if (isDecoratedSheetSkinActive(context)) {
+      return _buildLedgerPlate(context);
+    }
+    return _buildClassicCard(context);
+  }
 
+  Widget _buildLedgerPlate(BuildContext context) {
+    final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+    final cartographer = isNightCartographerActive(context);
+
+    Widget corner({required Alignment alignment, required int turns}) {
+      const size = 28.0;
+      if (cartographer) {
+        return Align(
+          alignment: alignment,
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: CartographerCornerBracket(
+              size: size,
+              color: ink,
+              opacity: 0.7,
+              quarterTurns: turns,
+            ),
+          ),
+        );
+      }
+      return Align(
+        alignment: alignment,
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Opacity(
+            opacity: 0.55,
+            child: RotatedBox(
+              quarterTurns: turns,
+              child: Image.asset(
+                ArcaneLedgerAssets.cornerFlourish,
+                width: size,
+                height: size,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 423,
+      width: 289,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(2)),
+        child: CustomPaint(
+          painter: LedgerItemPlatePainter(ink: ink),
+          child: Stack(
+            children: [
+              corner(alignment: Alignment.topLeft, turns: 0),
+              corner(alignment: Alignment.topRight, turns: 1),
+              corner(alignment: Alignment.bottomLeft, turns: 3),
+              corner(alignment: Alignment.bottomRight, turns: 2),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 16, 14, 14),
+                child: Column(
+                  children: [
+                    AutoSizeText(
+                      characterName,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      minFontSize: 11,
+                      maxFontSize: 20,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                            color: ink,
+                            fontFamily: 'Ruwudu',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                          ),
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      flex: 5,
+                      child: BorderedImage(
+                        lightColor: ink,
+                        backgroundColor: Colors.transparent,
+                        imageUrl: _fullImageUrl,
+                        isLoading: isLoading,
+                        isGreyscale: isGreyscale,
+                        noPadding: true,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    if (characterStatWithMaxValueForBarVisuals != null)
+                      renderProgressBarForStat(
+                        context,
+                        characterStatWithMaxValueForBarVisuals!,
+                        inkColor: ink,
+                      ),
+                    if (characterStatWithMaxValueForBarVisuals != null)
+                      const SizedBox(height: 10),
+                    Expanded(
+                      flex: 2,
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 8,
+                        alignment: WrapAlignment.spaceAround,
+                        children: characterSingleNumberStats
+                            .map((statTuple) => getTextForStatTuple(
+                                  context,
+                                  statTuple,
+                                  inkColor: ink,
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClassicCard(BuildContext context) {
     var backgroundColor = CustomThemeProvider.of(context).theme.darkColor;
     var lightColor = CustomThemeProvider.of(context).theme.bgColor;
 
@@ -72,8 +201,6 @@ class CustomCharacterCard extends StatelessWidget {
                 borderRadius: 4,
                 color: backgroundColor,
                 borderSize: 6,
-
-                // This border has to be interrupted
                 child: InterruptedBorder(
                   scalar: 1,
                   lightColor: lightColor,
@@ -82,19 +209,17 @@ class CustomCharacterCard extends StatelessWidget {
                     color: backgroundColor,
                     child: Column(
                       children: [
-                        // image
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 10),
                           child: BorderedImage(
                             noPadding: true,
                             lightColor: lightColor,
                             backgroundColor: backgroundColor,
-                            imageUrl: fullImageUrl,
+                            imageUrl: _fullImageUrl,
                             isLoading: isLoading,
                             isGreyscale: isGreyscale,
                           ),
                         ),
-
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -138,7 +263,6 @@ class CustomCharacterCard extends StatelessWidget {
                             )
                           ],
                         ),
-
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(
@@ -151,9 +275,7 @@ class CustomCharacterCard extends StatelessWidget {
                                       characterStatWithMaxValueForBarVisuals!),
                                 if (characterStatWithMaxValueForBarVisuals !=
                                     null)
-                                  SizedBox(
-                                    height: 10,
-                                  ),
+                                  const SizedBox(height: 10),
                                 Expanded(
                                   child: Row(
                                     children: [
@@ -189,11 +311,13 @@ class CustomCharacterCard extends StatelessWidget {
   }
 
   Widget renderProgressBarForStat(
-      BuildContext context,
-      (
-        CharacterStatDefinition,
-        RpgCharacterStatValue
-      ) characterStatWithMaxValueForBarVisuals) {
+    BuildContext context,
+    (
+      CharacterStatDefinition,
+      RpgCharacterStatValue
+    ) characterStatWithMaxValueForBarVisuals, {
+    Color? inkColor,
+  }) {
     assert(characterStatWithMaxValueForBarVisuals.$1.valueType ==
         CharacterStatValueType.intWithMaxValue);
     var nameOfStat = characterStatWithMaxValueForBarVisuals.$1.name;
@@ -203,6 +327,53 @@ class CustomCharacterCard extends StatelessWidget {
     var maxIntValue = int.parse(deserializedValues["maxValue"].toString());
     if (maxIntValue == 0) {
       maxIntValue = 1;
+    }
+
+    final labelColor =
+        inkColor ?? CustomThemeProvider.of(context).theme.bgColor;
+
+    if (inkColor != null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "$nameOfStat: $currentIntValue/$maxIntValue",
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Ruwudu',
+                  color: labelColor,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            height: 12,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(
+                color: inkColor.withValues(alpha: 0.55),
+                width: 1.5,
+              ),
+            ),
+            child: LayoutBuilder(builder: (context, constraints) {
+              final filledWidth = constraints.maxWidth *
+                  (currentIntValue.toDouble() / maxIntValue.toDouble());
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: filledWidth,
+                  decoration: BoxDecoration(
+                    color: inkColor.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(1),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      );
     }
 
     return Column(
@@ -215,11 +386,9 @@ class CustomCharacterCard extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: CustomThemeProvider.of(context).theme.bgColor),
+              color: labelColor),
         ),
-        SizedBox(
-          height: 4,
-        ),
+        const SizedBox(height: 4),
         CardBorder(
             borderRadius: 2,
             borderSize: 2,
@@ -248,16 +417,21 @@ class CustomCharacterCard extends StatelessWidget {
   }
 
   Widget getTextForStatTuple(
-      BuildContext context, ({String label, int value}) statTuple) {
+    BuildContext context,
+    ({String label, int value}) statTuple, {
+    Color? inkColor,
+  }) {
     var nameOfStat = statTuple.label;
     var currentIntValue = statTuple.value;
 
     return Text(
       "$nameOfStat: $currentIntValue",
       style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: CustomThemeProvider.of(context).theme.bgColor),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            fontFamily: inkColor != null ? 'Ruwudu' : null,
+            color: inkColor ?? CustomThemeProvider.of(context).theme.bgColor,
+          ),
     );
   }
 }
