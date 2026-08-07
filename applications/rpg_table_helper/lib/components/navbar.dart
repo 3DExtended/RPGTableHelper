@@ -83,7 +83,9 @@ class Navbar extends StatelessWidget {
           );
 
     final barContent = Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: ledger
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.only(left: ledger ? 10 : 0),
@@ -134,7 +136,7 @@ class Navbar extends StatelessWidget {
         Opacity(
           opacity: menuOpen == null ? 0 : 1,
           child: Padding(
-            padding: const EdgeInsets.only(top: 2.0, right: 4),
+            padding: EdgeInsets.only(top: 2.0, right: ledger ? 4 : 0),
             child: CustomButton(
               variant: CustomButtonVariant.FlatButton,
               onPressed: menuOpen,

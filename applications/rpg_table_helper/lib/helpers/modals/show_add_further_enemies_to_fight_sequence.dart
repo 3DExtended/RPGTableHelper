@@ -210,7 +210,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
+                                EdgeInsets.fromLTRB(30.0, 30, 30, modalFooterBottomPadding(context)),
                             child: Row(
                               children: [
                                 const Spacer(),

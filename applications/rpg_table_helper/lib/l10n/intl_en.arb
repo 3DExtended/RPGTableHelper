@@ -248,5 +248,6 @@
   "characterSheetSkinArcaneLedger": "Arcane Ledger",
   "characterSheetSkinNightCartographer": "Night Cartographer",
   "characterSheetSkinUseCampaignDefault": "Use campaign default",
+  "characterSheetSkinCampaignDefaultLabel": "Campaign default",
   "characterSheetAppearanceTitle": "Appearance"
 }

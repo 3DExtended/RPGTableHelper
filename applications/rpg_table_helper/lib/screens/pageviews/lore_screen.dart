@@ -232,7 +232,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     }
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
     );
   }
@@ -829,8 +829,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       }
 
       if (documentsResponse.result?.isNotEmpty == true) {
-        // Prefer Skadi in golden fixtures so Ledger lore matches the approved mock.
-        final preferredSkadi = isInTestEnvironment
+        // Prefer Skadi in Ledger golden fixtures so lore matches the approved mock.
+        final preferredSkadi = isInTestEnvironment &&
+                isArcaneLedgerActive(context)
             ? documentsResponse.result!
                 .firstWhereOrNull((d) => d.title == 'Skadi')
             : null;

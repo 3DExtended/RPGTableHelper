@@ -1592,6 +1592,12 @@ abstract class AppLocalizations {
   /// **'Kampagnen-Standard verwenden'**
   String get characterSheetSkinUseCampaignDefault;
 
+  /// No description provided for @characterSheetSkinCampaignDefaultLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagnen-Standard'**
+  String get characterSheetSkinCampaignDefaultLabel;
+
   /// No description provided for @characterSheetAppearanceTitle.
   ///
   /// In de, this message translates to:

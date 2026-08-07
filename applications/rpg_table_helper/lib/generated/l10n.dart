@@ -2244,6 +2244,16 @@ class S {
     );
   }
 
+  /// `Campaign default`
+  String get characterSheetSkinCampaignDefaultLabel {
+    return Intl.message(
+      'Campaign default',
+      name: 'characterSheetSkinCampaignDefaultLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Appearance`
   String get characterSheetAppearanceTitle {
     return Intl.message(

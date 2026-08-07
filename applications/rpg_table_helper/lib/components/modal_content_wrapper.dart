@@ -94,7 +94,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                       height: 0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 10, 30, 24),
+                      padding: EdgeInsets.fromLTRB(30.0, 10, 30, modalFooterBottomPadding(context, classic: 20)),
                       child: Row(
                         children: [
                           CustomButton(

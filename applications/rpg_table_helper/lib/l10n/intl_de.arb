@@ -288,5 +288,6 @@
   "characterSheetSkinArcaneLedger": "Arkanes Foliant",
   "characterSheetSkinNightCartographer": "Nachtkartograph",
   "characterSheetSkinUseCampaignDefault": "Kampagnen-Standard verwenden",
+  "characterSheetSkinCampaignDefaultLabel": "Kampagnen-Standard",
   "characterSheetAppearanceTitle": "Darstellung"
 }

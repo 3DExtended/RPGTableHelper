@@ -218,7 +218,7 @@ class _SelectTransformationComponentsForTransformationModalContentState
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 24),
+                      padding: EdgeInsets.fromLTRB(30.0, 30, 30, modalFooterBottomPadding(context)),
                       child: Row(
                         children: [
                           const Spacer(flex: 1),

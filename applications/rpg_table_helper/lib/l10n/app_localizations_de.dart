@@ -805,5 +805,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kampagnen-Standard verwenden';
 
   @override
+  String get characterSheetSkinCampaignDefaultLabel => 'Kampagnen-Standard';
+
+  @override
   String get characterSheetAppearanceTitle => 'Darstellung';
 }

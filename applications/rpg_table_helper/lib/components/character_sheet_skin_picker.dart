@@ -71,7 +71,9 @@ class CharacterSheetSkinPicker extends StatelessWidget {
               width: 160,
               child: _SkinOptionTile(
                 title: localizedCharacterSheetSkinName(context, id),
-                subtitle: isCampaignDefault ? '★' : null,
+                subtitle: isCampaignDefault
+                    ? S.of(context).characterSheetSkinCampaignDefaultLabel
+                    : null,
                 swatch: skin.theme.bgColor,
                 selected: selectedSkinId == id,
                 accent: theme.accentColor,
@@ -141,11 +143,17 @@ class _SkinOptionTile extends StatelessWidget {
                     ),
               ),
               if (subtitle != null)
-                Text(
-                  subtitle!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: ink.withValues(alpha: 0.7),
-                      ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    subtitle!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: ink.withValues(alpha: 0.55),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
+                        ),
+                  ),
                 ),
             ],
           ),

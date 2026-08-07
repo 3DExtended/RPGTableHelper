@@ -184,3 +184,9 @@ class SkinnedModalPanel extends StatelessWidget {
     );
   }
 }
+
+/// Bottom inset for modal action rows. Extra clearance only under Ledger so
+/// buttons clear the parchment frame without shifting classic chrome.
+double modalFooterBottomPadding(BuildContext context, {double classic = 10}) {
+  return isArcaneLedgerActive(context) ? 24.0 : classic;
+}

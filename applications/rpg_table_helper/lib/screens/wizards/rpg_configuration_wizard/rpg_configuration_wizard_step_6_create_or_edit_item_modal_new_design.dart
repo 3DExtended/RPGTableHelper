@@ -841,7 +841,7 @@ class _CreateOrEditItemModalContentState
         ),
         Center(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 10, 20, 24),
+            padding: EdgeInsets.fromLTRB(20.0, 10, 20, modalFooterBottomPadding(context, classic: 20)),
             child: CustomButton(
               variant: CustomButtonVariant.AccentButton,
               label: S.of(context).save,

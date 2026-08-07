@@ -220,6 +220,10 @@ class NoteDocumentService extends INoteDocumentService {
 class MockNoteDocumentService extends INoteDocumentService {
   HRResponse<List<NoteDocumentDto>>? getDocumentsForCampagneOverride;
 
+  /// When true (Arcane Ledger golden tests), use manuscript-oriented lore fixtures.
+  /// Classic goldens keep the default mock documents unchanged.
+  static bool preferArcaneLedgerLoreFixtures = false;
+
   MockNoteDocumentService({
     required super.apiConnectorService,
     this.getDocumentsForCampagneOverride,
@@ -228,10 +232,222 @@ class MockNoteDocumentService extends INoteDocumentService {
   @override
   Future<HRResponse<List<NoteDocumentDto>>> getDocumentsForCampagne(
       {required CampagneIdentifier campagneId}) {
-    return Future.value(
-      getDocumentsForCampagneOverride ??
-          HRResponse.fromResult(
-            [
+    if (getDocumentsForCampagneOverride != null) {
+      return Future.value(getDocumentsForCampagneOverride);
+    }
+    final docs = preferArcaneLedgerLoreFixtures
+        ? _arcaneLedgerLoreDocuments(campagneId)
+        : _classicLoreDocuments(campagneId);
+    return Future.value(HRResponse.fromResult(docs));
+  }
+
+  List<NoteDocumentDto> _classicLoreDocuments(CampagneIdentifier campagneId) {
+    return [
+
+              NoteDocumentDto(
+                groupName: "Götter",
+                createdForCampagneId: campagneId,
+                title: "Skadi",
+                creatingUserId: UserIdentifier(
+                  $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                ),
+                id: NoteDocumentIdentifier(
+                    $value: "0d866abf-8659-4e86-963d-049ee30bb4ed"),
+                isDeleted: false,
+                creationDate: DateTime(2024, 12, 09, 11, 34),
+                lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                textBlocks: [
+                  TextBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 34),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "cea440c4-ea51-41ea-9cf4-b6602f9a5356"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    markdownText:
+                        "# Zusammenfassung\n\nSkadi ist der Gott der Erde und verstarb vor kurzem. Seine Anhänger waren gering und er wanderte die letzten Jahre scheinbar ohne Ziel im Kreis durch die Wüste. Nachdem er verstarb traten merkwürdige Phänomene auf. Ob die Party herausfindet, woran es liegt?",
+                  ),
+                  TextBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 34),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "b585ee5e-0cd9-495b-a76c-d45c44d255b0"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [
+                      UserIdentifier(
+                          $value: "f59df7f4-7189-4435-9759-081c11bd887b")
+                    ],
+                    markdownText:
+                        "# Geheimnisse\n\n- Skadis Verschwinden sorgt überall für kleine Probleme und hat die Welt aus dem Gleichgewicht gestürzt.\n- Skadis Amulett ist die einzige Möglichkeit wieder einen Erdgott zu beschwören.\n",
+                  ),
+                ],
+                imageBlocks: [
+                  ImageBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 36),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "c0792fc0-d2e4-40e4-bfb7-7745fee5c925"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    imageMetaDataId: ImageMetaDataIdentifier(
+                      $value: "103df1ac-f15d-4eac-9591-738963377294",
+                    ),
+                    publicImageUrl:
+                        "http://localhost:5012/public/getimage/c2c55b14-3219-4503-92c6-3ab42a805828/UDnlBY0EA9XZxlfm2HdEbwAQM7ym5amQOTTL3Ivl008=",
+                  ),
+                ],
+              ),
+              NoteDocumentDto(
+                groupName: "Session Notes",
+                createdForCampagneId: campagneId,
+                title: "Session #1",
+                creatingUserId: UserIdentifier(
+                  $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                ),
+                id: NoteDocumentIdentifier(
+                    $value: "653862b7-d16e-491d-a4e9-2a3b5321f3a3"),
+                isDeleted: false,
+                creationDate: DateTime(2024, 12, 09, 11, 34),
+                lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                textBlocks: [
+                  TextBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 34),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "87f6b71c-ea8c-4401-81dd-d05c218a731e"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    markdownText:
+                        "# Zusammenfassung\n\nWir stecken in starken Schwierigkeiten.",
+                  ),
+                ],
+                imageBlocks: [
+                  ImageBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 36),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "56204fda-b632-415c-a458-d8c1f6b77c5f"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    imageMetaDataId: ImageMetaDataIdentifier(
+                      $value: "103df1ac-f15d-4eac-9591-738963377294",
+                    ),
+                    publicImageUrl:
+                        "http://localhost:5012/public/getimage/c2c55b14-3219-4503-92c6-3ab42a805828/UDnlBY0EA9XZxlfm2HdEbwAQM7ym5amQOTTL3Ivl008=",
+                  ),
+                ],
+              ),
+              NoteDocumentDto(
+                groupName: "Session Notes",
+                createdForCampagneId: campagneId,
+                title: "Session #2",
+                creatingUserId: UserIdentifier(
+                  $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                ),
+                id: NoteDocumentIdentifier(
+                    $value: "d66468af-6b88-441c-b3ee-71e94aa31d95"),
+                isDeleted: false,
+                creationDate: DateTime(2024, 12, 09, 11, 34),
+                lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                textBlocks: [
+                  TextBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 34),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "9d73e7a6-3ad2-48c6-9d07-31966544a238"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    markdownText: "Alles mist...",
+                  ),
+                ],
+                imageBlocks: [
+                  ImageBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 36),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "8a4f729a-b173-4e91-95a8-1c43664a8ed9"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    imageMetaDataId: ImageMetaDataIdentifier(
+                      $value: "103df1ac-f15d-4eac-9591-738963377294",
+                    ),
+                    publicImageUrl:
+                        "http://localhost:5012/public/getimage/c2c55b14-3219-4503-92c6-3ab42a805828/UDnlBY0EA9XZxlfm2HdEbwAQM7ym5amQOTTL3Ivl008=",
+                  ),
+                ],
+              ),
+              NoteDocumentDto(
+                groupName: "Session Notes",
+                createdForCampagneId: campagneId,
+                title: "Session #3 - Was ein crazy ride, junge junge junge",
+                creatingUserId: UserIdentifier(
+                  $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                ),
+                id: NoteDocumentIdentifier(
+                    $value: "8cf96452-bd2e-4385-b18d-50d174e8d5a5"),
+                isDeleted: false,
+                creationDate: DateTime(2024, 12, 09, 11, 34),
+                lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                textBlocks: [
+                  TextBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 34),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "ac3f1595-3ac4-414e-95f7-ef993eb077f3"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    markdownText: "Alles mist...",
+                  ),
+                ],
+                imageBlocks: [
+                  ImageBlock(
+                    creatingUserId: UserIdentifier(
+                      $value: "42f36572-e7f4-4bd4-aebc-d06c4bba0818",
+                    ),
+                    creationDate: DateTime(2024, 12, 09, 11, 36),
+                    id: NoteBlockModelBaseIdentifier(
+                        $value: "e8f81849-c552-4750-99ba-37a8bdeceec2"),
+                    isDeleted: false,
+                    lastModifiedAt: DateTime(2024, 12, 09, 13, 34),
+                    permittedUsers: [],
+                    imageMetaDataId: ImageMetaDataIdentifier(
+                      $value: "103df1ac-f15d-4eac-9591-738963377294",
+                    ),
+                    publicImageUrl:
+                        "http://localhost:5012/public/getimage/c2c55b14-3219-4503-92c6-3ab42a805828/UDnlBY0EA9XZxlfm2HdEbwAQM7ym5amQOTTL3Ivl008=",
+                  ),
+                ],
+              ),
+    ];
+  }
+
+  List<NoteDocumentDto> _arcaneLedgerLoreDocuments(CampagneIdentifier campagneId) {
+    return [
+
               NoteDocumentDto(
                 groupName: "Götter",
                 createdForCampagneId: campagneId,
@@ -386,9 +602,7 @@ class MockNoteDocumentService extends INoteDocumentService {
                   ),
                 ],
               ),
-            ],
-          ),
-    );
+    ];
   }
 
   List<NoteDocumentDto> _mockLoreIndexEntries(CampagneIdentifier campagneId) {
@@ -461,6 +675,8 @@ class MockNoteDocumentService extends INoteDocumentService {
           textBlockId: '77777777-aaaa-4777-8777-777777777777'),
     ];
   }
+
+  
 
   @override
   Future<HRResponse<NoteDocumentIdentifier>> createNewDocumentForCampagne({

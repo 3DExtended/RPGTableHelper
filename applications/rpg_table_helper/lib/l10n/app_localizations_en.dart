@@ -798,5 +798,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get characterSheetSkinUseCampaignDefault => 'Use campaign default';
 
   @override
+  String get characterSheetSkinCampaignDefaultLabel => 'Campaign default';
+
+  @override
   String get characterSheetAppearanceTitle => 'Appearance';
 }

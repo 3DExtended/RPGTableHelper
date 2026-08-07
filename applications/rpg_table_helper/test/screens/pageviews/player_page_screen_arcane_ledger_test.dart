@@ -17,6 +17,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/note_documents_service.dart';
 
 import '../../custom_font_loader.dart';
 import '../../test_configuration.dart';
@@ -84,6 +85,13 @@ void main() {
 
   group('arcane ledger playerpagescreens', () {
     final navigatorKey = GlobalKey<NavigatorState>();
+
+    setUp(() {
+      MockNoteDocumentService.preferArcaneLedgerLoreFixtures = true;
+    });
+    tearDown(() {
+      MockNoteDocumentService.preferArcaneLedgerLoreFixtures = false;
+    });
 
     for (final testcase in testCases) {
       testConfigurations(

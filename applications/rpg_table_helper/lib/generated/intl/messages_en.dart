@@ -123,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterSheetSkinNightCartographer": MessageLookupByLibrary.simpleMessage(
       "Night Cartographer",
     ),
+    "characterSheetSkinCampaignDefaultLabel":
+        MessageLookupByLibrary.simpleMessage("Campaign default"),
     "characterSheetSkinUseCampaignDefault":
         MessageLookupByLibrary.simpleMessage("Use campaign default"),
     "chooseACampagne": MessageLookupByLibrary.simpleMessage(
