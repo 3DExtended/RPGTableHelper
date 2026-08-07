@@ -173,8 +173,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                     password:
                                                         passwordTextEditingController
                                                             .text);
-                                            if (!mounted || !context.mounted)
+                                            if (!mounted || !context.mounted) {
                                               return;
+                                            }
 
                                             await signinResponse
                                                 .possiblyHandleError(context);
@@ -219,8 +220,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         height: 55,
                                         onPressed: () async {
                                           setState(() {
-                                            if (!mounted || !context.mounted)
+                                            if (!mounted || !context.mounted) {
                                               return;
+                                            }
                                             isLoading = true;
                                           });
                                           AuthorizationCredentialAppleID?
@@ -238,15 +240,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             );
                                           } catch (e) {
                                             setState(() {
-                                              if (!mounted || !context.mounted)
+                                              if (!mounted ||
+                                                  !context.mounted) {
                                                 return;
+                                              }
                                               isLoading = false;
                                             });
                                             return;
                                           } finally {}
 
-                                          if (!mounted || !context.mounted)
+                                          if (!mounted || !context.mounted) {
                                             return;
+                                          }
 
                                           var service =
                                               DependencyProvider.of(context)
@@ -260,15 +265,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                   authorizationCode: credential
                                                       .authorizationCode);
 
-                                          if (!context.mounted || !mounted)
+                                          if (!context.mounted || !mounted) {
                                             return;
+                                          }
 
                                           await signInResult
                                               .possiblyHandleError(context);
 
                                           setState(() {
-                                            if (!mounted || !context.mounted)
+                                            if (!mounted || !context.mounted) {
                                               return;
+                                            }
                                             isLoading = false;
                                           });
 
@@ -348,8 +355,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                 await googleAccount
                                                     .authentication;
 
-                                            if (!mounted || !context.mounted)
+                                            if (!mounted || !context.mounted) {
                                               return;
+                                            }
 
                                             var service = DependencyProvider.of(
                                                     context)
@@ -365,8 +373,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                         googleAuthentication
                                                             .serverAuthCode!);
 
-                                            if (!mounted || !context.mounted)
+                                            if (!mounted || !context.mounted) {
                                               return;
+                                            }
 
                                             await signInResult
                                                 .possiblyHandleError(context);

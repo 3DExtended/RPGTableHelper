@@ -11,7 +11,6 @@ import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
-import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -90,8 +89,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
 
       for (var stat in tab.statsInTab) {
         if (stat.groupId != lastGroupIndicator) {
-          statsUnderTab.putIfAbsent(tab.uuid, () => []).add(StatOrGroupIndicator(
-              stat: null, groupHandleId: UuidV7().generate()));
+          statsUnderTab.putIfAbsent(tab.uuid, () => []).add(
+              StatOrGroupIndicator(
+                  stat: null, groupHandleId: UuidV7().generate()));
           lastGroupIndicator = stat.groupId;
         }
 

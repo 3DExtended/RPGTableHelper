@@ -75,8 +75,7 @@ class _AgentDebugLogScreenState extends State<AgentDebugLogScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel',
-                style: TextStyle(color: theme.darkTextColor)),
+            child: Text('Cancel', style: TextStyle(color: theme.darkTextColor)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -160,7 +159,8 @@ class _AgentDebugLogScreenState extends State<AgentDebugLogScreen> {
                         context,
                         icon: FontAwesomeIcons.copy,
                         label: 'Copy all',
-                        onTap: _displayText.isEmpty || _loading ? null : _copyAll,
+                        onTap:
+                            _displayText.isEmpty || _loading ? null : _copyAll,
                       ),
                       _actionChip(
                         context,
@@ -187,14 +187,12 @@ class _AgentDebugLogScreenState extends State<AgentDebugLogScreen> {
                         child: SingleChildScrollView(
                           child: SelectableText(
                             _displayText,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                  fontFamily: 'monospace',
-                                  color: theme.darkTextColor,
-                                  height: 1.35,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontFamily: 'monospace',
+                                      color: theme.darkTextColor,
+                                      height: 1.35,
+                                    ),
                           ),
                         ),
                       ),
@@ -215,10 +213,10 @@ class _AgentDebugLogScreenState extends State<AgentDebugLogScreen> {
     final theme = CustomThemeProvider.of(context).theme;
     return CupertinoButton(
       onPressed: onTap,
-      minSize: 0,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       color: theme.darkColor.withValues(alpha: 0.15),
       borderRadius: BorderRadius.circular(5),
+      minimumSize: Size(0, 0),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

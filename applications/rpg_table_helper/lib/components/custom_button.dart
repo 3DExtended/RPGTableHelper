@@ -61,8 +61,8 @@ class CustomButton extends StatelessWidget {
 
     return CupertinoButton(
       onPressed: onPressed,
-      minSize: 0,
       padding: EdgeInsets.zero,
+      minimumSize: Size(0, 0),
       child: Container(
         height: height,
         width: width,

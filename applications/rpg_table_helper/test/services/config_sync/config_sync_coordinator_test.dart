@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/services/config_sync/config_sync_coordinator.dart';
@@ -146,7 +144,8 @@ void main() {
         read: (sinceRevision) async {
           getCount++;
           return HRResponse.fromResult(
-            ConfigSnapshot(kind: 'full', revision: getCount + 1, fullConfig: '{}'),
+            ConfigSnapshot(
+                kind: 'full', revision: getCount + 1, fullConfig: '{}'),
           );
         },
         applyFull: (json, revision) {},
@@ -167,8 +166,7 @@ void main() {
       List<dynamic>? appliedOps;
       int? appliedRevision;
       final coordinator = ConfigSyncCoordinator(
-        write: (fromRevision, json) async =>
-            fail('write should not be called'),
+        write: (fromRevision, json) async => fail('write should not be called'),
         read: (sinceRevision) async {
           expect(sinceRevision, 3);
           return HRResponse.fromResult(
@@ -197,12 +195,12 @@ void main() {
       expect(coordinator.revision, 4);
     });
 
-    test('onRemoteChanged applies a full document via applyFull when kind is full',
+    test(
+        'onRemoteChanged applies a full document via applyFull when kind is full',
         () async {
       String? appliedJson;
       final coordinator = ConfigSyncCoordinator(
-        write: (fromRevision, json) async =>
-            fail('write should not be called'),
+        write: (fromRevision, json) async => fail('write should not be called'),
         read: (sinceRevision) async => HRResponse.fromResult(
           const ConfigSnapshot(
             kind: 'full',
@@ -225,8 +223,7 @@ void main() {
         () async {
       var readCalls = 0;
       final coordinator = ConfigSyncCoordinator(
-        write: (fromRevision, json) async =>
-            fail('write should not be called'),
+        write: (fromRevision, json) async => fail('write should not be called'),
         read: (sinceRevision) async {
           readCalls++;
           return HRResponse.error('unused', 'unused-code');

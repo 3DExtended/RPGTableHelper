@@ -89,13 +89,13 @@ class _LoreBlockRenderingEditableState
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: CupertinoButton(
-              minSize: 0,
               padding: EdgeInsets.all(0),
               onPressed: () async {
                 setState(() {
                   isEditEnabled = !isEditEnabled;
                 });
               },
+              minimumSize: Size(0, 0),
               child: CustomFaIcon(
                 icon: FontAwesomeIcons.penToSquare,
                 size: 20,
@@ -107,12 +107,12 @@ class _LoreBlockRenderingEditableState
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: CupertinoButton(
-              minSize: 0,
               padding: EdgeInsets.all(0),
               onPressed: () async {
                 // TODO make me ask the user if they really want to discard changes
                 await widget.deleteBlock();
               },
+              minimumSize: Size(0, 0),
               child: CustomFaIcon(
                 icon: FontAwesomeIcons.trashCan,
                 size: 20,
@@ -158,9 +158,9 @@ class _LoreBlockRenderingEditableState
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: CupertinoButton(
-              minSize: 0,
               padding: EdgeInsets.all(0),
               onPressed: widget.toggleIsVisibleForBarCollapsed,
+              minimumSize: Size(0, 0),
               child: CustomFaIcon(
                 icon: FontAwesomeIcons.users,
                 size: 20,
@@ -238,7 +238,6 @@ class _LoreBlockRenderingEditableState
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: CupertinoButton(
-        minSize: 0,
         padding: EdgeInsets.zero,
         onPressed: () {
           // find correct block to update
@@ -256,6 +255,7 @@ class _LoreBlockRenderingEditableState
 
           updatePermittedUsersOnBlock(newPermittedUsers, block);
         },
+        minimumSize: Size(0, 0),
         child: Row(
           children: [
             Expanded(

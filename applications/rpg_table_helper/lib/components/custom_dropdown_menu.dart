@@ -53,7 +53,7 @@ class CustomDropdownMenu extends StatelessWidget {
                 )),
         ),
         dropdownColor: CustomThemeProvider.of(context).theme.bgColor,
-        value: selectedValueTemp,
+        initialValue: selectedValueTemp,
         isDense: true,
         onChanged: setter,
         items: items,

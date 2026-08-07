@@ -63,6 +63,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   var showLoadingSpinner = true;
 
   JoinRequestNotificationController? _joinRequestController;
+
   /// Character ids for which we already showed join-accepted UI (SSE or poll).
   final Set<String> _joinAcceptNotifiedCharacterIds = {};
 
@@ -121,8 +122,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   void _onJoinRequestCreated(JoinRequestCreatedEvent event) {
     if (!mounted) return;
 
-    final connectionDetails =
-        ref.read(connectionDetailsProvider).valueOrNull;
+    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
     if (connectionDetails != null &&
         connectionDetails.isDm &&
         connectionDetails.campagneId == event.campagneId) {
@@ -395,8 +395,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 onPressed: () async {
                   await onCampagneSelected(campagne);
                 },
-                minSize: 0,
                 padding: EdgeInsets.zero,
+                minimumSize: Size(0, 0),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -448,11 +448,11 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         .map((character) => ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 500),
               child: CupertinoButton(
-                minSize: 0,
                 padding: EdgeInsets.zero,
                 onPressed: () async {
                   await onCharacterSelected(character);
                 },
+                minimumSize: Size(0, 0),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -565,8 +565,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     return ConfigSyncSessionController(
       rpgEntityService: rpgService,
       eventsClient: DependencyProvider.of(context).getService<EventsClient>(),
-      applyCampagneConfig: (config) =>
-          ref.read(rpgConfigurationProvider.notifier).updateConfiguration(config),
+      applyCampagneConfig: (config) => ref
+          .read(rpgConfigurationProvider.notifier)
+          .updateConfiguration(config),
       readCampagneConfig: () =>
           ref.read(rpgConfigurationProvider).valueOrNull ??
           RpgConfigurationModel.getBaseConfiguration(),
@@ -661,8 +662,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       campagneConfig: ref.read(rpgConfigurationProvider).valueOrNull,
     );
 
-    ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-        latest.copyWith(connectedPlayers: updated));
+    ref
+        .read(connectionDetailsProvider.notifier)
+        .updateConfiguration(latest.copyWith(connectedPlayers: updated));
   }
 
   /// sse-06: builds a fresh [SessionCommandNotificationController] wired to
@@ -672,8 +674,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   /// `grantPlayerItems`) so the roll-modal and grant-toast UX is driven purely
   /// over SSE. Started/stopped per session-entry, like
   /// [_buildConfigSyncSessionController].
-  SessionCommandNotificationController _buildSessionCommandNotificationController() {
-    final eventsClient = DependencyProvider.of(context).getService<EventsClient>();
+  SessionCommandNotificationController
+      _buildSessionCommandNotificationController() {
+    final eventsClient =
+        DependencyProvider.of(context).getService<EventsClient>();
     final serverMethodsService =
         DependencyProvider.of(context).getService<IServerMethodsService>();
 
@@ -768,7 +772,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         _onParticipantPresenceForDm(userId, online: false);
       },
     );
-    var campagneSnapshotResponse = await rpgService.getCampagneRpgConfigSnapshot(
+    var campagneSnapshotResponse =
+        await rpgService.getCampagneRpgConfigSnapshot(
       campagneId: campagne.id!,
     );
     if (!mounted) return;
@@ -882,8 +887,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         return;
       }
 
-      Map<String, dynamic> map = jsonDecode(
-          hydrationResponse.result!.campagne.rpgConfiguration!);
+      Map<String, dynamic> map =
+          jsonDecode(hydrationResponse.result!.campagne.rpgConfiguration!);
 
       var receivedConfig = RpgConfigurationModel.fromJson(map);
       ref
@@ -917,7 +922,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       // sse-04: start listening for campagneConfigChanged / characterConfigChanged
       // SSE notifies so this client catches up on config edits made by other
       // session participants (e.g. the DM).
-      var configSyncSessionController = _buildConfigSyncSessionController(rpgService);
+      var configSyncSessionController =
+          _buildConfigSyncSessionController(rpgService);
       var campagneSnapshotResponse =
           await rpgService.getCampagneRpgConfigSnapshot(
         campagneId: character.campagneId!,
@@ -944,7 +950,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       }
 
       // sse-06: session-scoped fight/roll and item-grant SSE notifies.
-      var sessionCommandController = _buildSessionCommandNotificationController();
+      var sessionCommandController =
+          _buildSessionCommandNotificationController();
       sessionCommandController.start();
 
       if (!mounted) return;

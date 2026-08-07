@@ -98,10 +98,10 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
           ),
           CupertinoButton(
             onPressed: () => Navigator.pop(context, true),
-            minSize: 0,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: Colors.red,
             borderRadius: BorderRadius.circular(5),
+            minimumSize: Size(0, 0),
             child: const Text(
               'Revoke',
               style: TextStyle(
@@ -190,10 +190,11 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
               ),
               CupertinoButton(
                 onPressed: () => Navigator.pop(context, nameController.text),
-                minSize: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 color: CustomThemeProvider.of(context).theme.darkColor,
                 borderRadius: BorderRadius.circular(5),
+                minimumSize: Size(0, 0),
                 child: Text(
                   'Generate',
                   style: TextStyle(
@@ -295,7 +296,8 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                       color: CustomThemeProvider.of(context).theme.textColor,
                     ),
                   ),
-                  backgroundColor: CustomThemeProvider.of(context).theme.darkColor,
+                  backgroundColor:
+                      CustomThemeProvider.of(context).theme.darkColor,
                 ),
               );
             },
@@ -312,10 +314,10 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
           ),
           CupertinoButton(
             onPressed: () => Navigator.pop(context),
-            minSize: 0,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: CustomThemeProvider.of(context).theme.darkColor,
             borderRadius: BorderRadius.circular(5),
+            minimumSize: Size(0, 0),
             child: Text(
               'Done',
               style: TextStyle(
@@ -418,10 +420,10 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                             .textTheme
                                             .bodyMedium!
                                             .copyWith(
-                                              color:
-                                                  CustomThemeProvider.of(context)
-                                                      .theme
-                                                      .darkTextColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkTextColor,
                                             ),
                                       ),
                                       const SizedBox(height: 16),
@@ -435,13 +437,13 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                     .externalApplication);
                                           }
                                         },
-                                        minSize: 0,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16, vertical: 12),
                                         color: CustomThemeProvider.of(context)
                                             .theme
                                             .darkColor,
                                         borderRadius: BorderRadius.circular(5),
+                                        minimumSize: Size(0, 0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -449,20 +451,19 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                               icon: FontAwesomeIcons
                                                   .arrowUpRightFromSquare,
                                               size: 14,
-                                              color:
-                                                  CustomThemeProvider.of(context)
-                                                      .theme
-                                                      .textColor,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .textColor,
                                             ),
                                             const SizedBox(width: 8),
                                             Text(
                                               'View API Documentation',
                                               style: TextStyle(
-                                                color:
-                                                    CustomThemeProvider.of(
-                                                            context)
-                                                        .theme
-                                                        .textColor,
+                                                color: CustomThemeProvider.of(
+                                                        context)
+                                                    .theme
+                                                    .textColor,
                                               ),
                                             ),
                                           ],
@@ -479,8 +480,8 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                               constraints: const BoxConstraints(maxWidth: 500),
                               child: CupertinoButton(
                                 onPressed: _generateKey,
-                                minSize: 0,
                                 padding: EdgeInsets.zero,
+                                minimumSize: Size(0, 0),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
@@ -510,11 +511,10 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                               .titleMedium!
                                               .copyWith(
                                                 fontWeight: FontWeight.bold,
-                                                color:
-                                                    CustomThemeProvider.of(
-                                                            context)
-                                                        .theme
-                                                        .darkTextColor,
+                                                color: CustomThemeProvider.of(
+                                                        context)
+                                                    .theme
+                                                    .darkTextColor,
                                               ),
                                         ),
                                       ],
@@ -607,12 +607,12 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                   CupertinoButton(
                                                     onPressed: () =>
                                                         _revokeKey(key.id!),
-                                                    minSize: 0,
                                                     padding:
                                                         const EdgeInsets.all(8),
+                                                    minimumSize: Size(0, 0),
                                                     child: CustomFaIcon(
-                                                      icon:
-                                                          FontAwesomeIcons.trash,
+                                                      icon: FontAwesomeIcons
+                                                          .trash,
                                                       size: 16,
                                                       color: Colors.red,
                                                     ),
@@ -626,10 +626,11 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                   .textTheme
                                                   .bodyMedium!
                                                   .copyWith(
-                                                    color: CustomThemeProvider
-                                                            .of(context)
-                                                        .theme
-                                                        .darkTextColor,
+                                                    color:
+                                                        CustomThemeProvider.of(
+                                                                context)
+                                                            .theme
+                                                            .darkTextColor,
                                                     fontFamily: 'Courier',
                                                   ),
                                             ),
@@ -652,7 +653,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                     ),
                                   ),
                                 );
-                              }).toList(),
+                              }),
                           ],
                         ),
                       ),

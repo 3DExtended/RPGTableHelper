@@ -44,9 +44,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   _RecordingRpgEntityService({
     super.saveCampagneRpgConfigOverride,
     super.getCampagneRpgConfigSnapshotOverride,
-    super.saveCharacterRpgConfigOverride,
     super.getCharacterRpgConfigSnapshotOverride,
-    super.getPlayerCharacterByIdOverride,
     super.getPlayerCharactersForCampagneOverride,
   }) : super(apiConnectorService: _FakeApi());
 
@@ -222,7 +220,8 @@ void main() {
       await sut.stop();
     });
 
-    test('ignores campagneConfigChanged notifications for a different campagne id',
+    test(
+        'ignores campagneConfigChanged notifications for a different campagne id',
         () async {
       final rpgEntityService = _RecordingRpgEntityService();
       final sut = ConfigSyncSessionController(
@@ -262,7 +261,8 @@ void main() {
             kind: 'patch',
             revision: 3,
             fromRevision: 2,
-            patch: '[{"op":"replace","path":"/characterName","value":"Renamed"}]',
+            patch:
+                '[{"op":"replace","path":"/characterName","value":"Renamed"}]',
           ),
         ),
       );
@@ -376,7 +376,8 @@ void main() {
         applyCharacterConfig: (_) {},
         readCharacterConfig: () =>
             RpgCharacterConfiguration.getBaseConfiguration(null),
-        onRemoteCharacterConfig: (_, __) => onRemoteCharacterConfigCalled = true,
+        onRemoteCharacterConfig: (_, __) =>
+            onRemoteCharacterConfigCalled = true,
       );
       await eventsClient.start();
 
@@ -462,8 +463,7 @@ void main() {
       await sut.stop();
     });
 
-    test(
-        'participantOffline SSE for the active campagne forwards the userId',
+    test('participantOffline SSE for the active campagne forwards the userId',
         () async {
       final rpgEntityService = _RecordingRpgEntityService();
       String? offlineUserId;

@@ -65,7 +65,8 @@ class UserSettingsScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: Text(
-                            AppLocalizations.of(context)!.realtimeSessionIosHint,
+                            AppLocalizations.of(context)!
+                                .realtimeSessionIosHint,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -119,8 +120,8 @@ class UserSettingsScreen extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 500),
       child: CupertinoButton(
         onPressed: onTap,
-        minSize: 0,
         padding: EdgeInsets.zero,
+        minimumSize: Size(0, 0),
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(

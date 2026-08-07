@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,9 +21,9 @@ import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/session_restorer_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
-import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
+import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
