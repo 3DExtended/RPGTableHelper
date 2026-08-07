@@ -148,7 +148,7 @@ class CustomItemCard extends StatelessWidget {
                             cardBgColorOverride ?? Colors.transparent,
                         imageUrl: fullImageUrl,
                         isLoading: isLoading,
-                        isGreyscale: true,
+                        isGreyscale: isGreyscale,
                         noPadding: true,
                       ),
                     ),
