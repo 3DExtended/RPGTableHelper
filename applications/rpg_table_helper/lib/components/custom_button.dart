@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 enum CustomButtonVariant {
@@ -58,6 +59,15 @@ class CustomButton extends StatelessWidget {
 
     var useLightTextColor = variantToUse == CustomButtonVariant.AccentButton ||
         variantToUse == CustomButtonVariant.DarkButton;
+    final cartographerAccentLabel = variantToUse ==
+            CustomButtonVariant.AccentButton &&
+        isNightCartographerActive(context);
+    // Champagne-gold accent on Night Cartographer needs dark navy label text.
+    final labelColor = cartographerAccentLabel
+        ? CustomThemeProvider.of(context).theme.bgColor
+        : (useLightTextColor
+            ? CustomThemeProvider.of(context).theme.textColor
+            : CustomThemeProvider.of(context).theme.darkTextColor);
 
     return CupertinoButton(
       onPressed: onPressed,
@@ -93,11 +103,7 @@ class CustomButton extends StatelessWidget {
                   child: Text(
                     label!,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          color: (useLightTextColor
-                              ? CustomThemeProvider.of(context).theme.textColor
-                              : CustomThemeProvider.of(context)
-                                  .theme
-                                  .darkTextColor),
+                          color: labelColor,
                           fontSize: 16,
                         ),
                   ),

@@ -358,34 +358,42 @@ class _ItemCardRenderingWithFilteringState
               if (widget.renderCreateButton &&
                   widget.onAddNewItemPressed != null)
                 ledger
-                    ? CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        onPressed: widget.onAddNewItemPressed,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: CustomThemeProvider.of(context)
-                                .theme
-                                .darkColor,
-                            borderRadius: BorderRadius.circular(20),
+                    ? Builder(builder: (context) {
+                        final theme =
+                            CustomThemeProvider.of(context).theme;
+                        final cartographer =
+                            isNightCartographerActive(context);
+                        // Match active filter chip: gold fill + dark label.
+                        final fill = cartographer
+                            ? theme.accentColor
+                            : theme.darkColor;
+                        final labelColor =
+                            cartographer ? theme.bgColor : theme.textColor;
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          onPressed: widget.onAddNewItemPressed,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: fill,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '+ ${S.of(context).add}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(
+                                    color: labelColor,
+                                    fontFamily: 'Ruwudu',
+                                    fontSize: 15,
+                                  ),
+                            ),
                           ),
-                          child: Text(
-                            '+ ${S.of(context).add}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .copyWith(
-                                  color: CustomThemeProvider.of(context)
-                                      .theme
-                                      .textColor,
-                                  fontFamily: 'Ruwudu',
-                                  fontSize: 15,
-                                ),
-                          ),
-                        ),
-                      )
+                        );
+                      })
                     : CustomButton(
                         variant: CustomButtonVariant.AccentButton,
                         onPressed: widget.onAddNewItemPressed,

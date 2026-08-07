@@ -222,10 +222,10 @@ class _PlayerScreenCharacterMoneyState
   Widget _buildSegmentedControl(BuildContext context, {required bool ledger}) {
     final theme = CustomThemeProvider.of(context).theme;
     final cartographer = isNightCartographerActive(context);
-    // Cartographer: cream thumb + navy label (gold fill reads as muddy mustard).
+    // Cartographer: match inventory active-filter gold + dark label.
     // Ledger / classic: dark thumb + light label.
     final thumbColor =
-        cartographer ? theme.darkTextColor : theme.darkColor;
+        cartographer ? theme.accentColor : theme.darkColor;
     final selectedLabelColor =
         cartographer ? theme.bgColor : theme.textColor;
     final unselectedLabelColor = theme.darkTextColor;
