@@ -67,11 +67,6 @@ class CustomItemCard extends StatelessWidget {
                 (imageUrl!.startsWith("/")
                     ? (imageUrl!.length > 1 ? imageUrl!.substring(1) : '')
                     : imageUrl!)));
-    final icon = getIconForIdentifier(
-      name: categoryIconName ?? "flask-laboratory-svgrepo-com",
-      color: categoryIconColor ?? ink,
-      size: 18 * scalar,
-    ).$2;
 
     Widget corner({required Alignment alignment, required int turns}) {
       final size = 28 * scalar;
@@ -128,40 +123,21 @@ class CustomItemCard extends StatelessWidget {
                     14 * scalar, 16 * scalar, 14 * scalar, 12 * scalar),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 28 * scalar,
-                          height: 28 * scalar,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border:
-                                Border.all(color: ink.withValues(alpha: 0.7)),
+                    AutoSizeText(
+                      title,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      minFontSize: 11,
+                      maxFontSize: 20,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                            color: ink,
+                            fontFamily: 'Ruwudu',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
                           ),
-                          alignment: Alignment.center,
-                          child: icon,
-                        ),
-                        SizedBox(width: 8 * scalar),
-                        Expanded(
-                          child: AutoSizeText(
-                            title,
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            minFontSize: 11,
-                            maxFontSize: 20,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
-                                .copyWith(
-                                  color: ink,
-                                  fontFamily: 'Ruwudu',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
-                                ),
-                          ),
-                        ),
-                        SizedBox(width: 28 * scalar),
-                      ],
                     ),
                     SizedBox(height: 10 * scalar),
                     Expanded(
