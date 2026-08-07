@@ -6,6 +6,7 @@ import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/initiative_bonus_resolver.dart';
 import 'package:quest_keeper/helpers/initiative_bonus_wizard_draft_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -172,7 +173,9 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
     return showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: CustomThemeProvider.of(dialogContext).theme.bgColor,
+        backgroundColor: isDecoratedSheetSkinActive(dialogContext)
+            ? CustomThemeProvider.of(dialogContext).theme.middleBgColor
+            : CustomThemeProvider.of(dialogContext).theme.bgColor,
         title: Text(
           S.of(dialogContext).initiativeBonusIncompleteWarningTitle,
           style: Theme.of(dialogContext).textTheme.titleLarge!.copyWith(

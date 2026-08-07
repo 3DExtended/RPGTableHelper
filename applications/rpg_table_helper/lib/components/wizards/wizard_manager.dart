@@ -187,12 +187,15 @@ class _WizardManagerState extends State<WizardManager> {
             ),
             Expanded(
               child: CharacterSheetSkinChrome(
-                child: Container(
-                  color: characterSheetSurfaceColor(context),
-                  child: widget.stepBuilders[_currentStep](
-                    _goToPreviousStep,
-                    _goToNextStep,
-                    _setStepTitle,
+                child: Padding(
+                  padding: characterSheetContentInsets(context),
+                  child: Container(
+                    color: characterSheetSurfaceColor(context),
+                    child: widget.stepBuilders[_currentStep](
+                      _goToPreviousStep,
+                      _goToNextStep,
+                      _setStepTitle,
+                    ),
                   ),
                 ),
               ),

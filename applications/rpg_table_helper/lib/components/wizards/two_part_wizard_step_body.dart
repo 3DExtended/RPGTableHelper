@@ -5,6 +5,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/row_column_flipper.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class TwoPartWizardStepBody extends StatelessWidget {
@@ -35,6 +36,11 @@ class TwoPartWizardStepBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Night Cartographer content insets shrink the sidebar; keep footer chevrons
+    // from overflowing the padded row.
+    final footerHorizontal =
+        isNightCartographerActive(context) ? 24.0 : 50.0;
+
     return Column(
       children: [
         Expanded(
@@ -73,8 +79,8 @@ class TwoPartWizardStepBody extends StatelessWidget {
                       ),
                       const HorizontalLine(),
                       Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 20.0),
+                        padding: EdgeInsets.fromLTRB(
+                            footerHorizontal, 20.0, footerHorizontal, 20.0),
                         child: Row(
                           children: [
                             CustomButton(
@@ -85,7 +91,7 @@ class TwoPartWizardStepBody extends StatelessWidget {
                                   icon: FontAwesomeIcons.chevronLeft),
                               onPressed: onPreviousBtnPressed,
                             ),
-                            Spacer(),
+                            const Spacer(),
                             CustomButton(
                               icon: CustomFaIcon(
                                   color: CustomThemeProvider.of(context)

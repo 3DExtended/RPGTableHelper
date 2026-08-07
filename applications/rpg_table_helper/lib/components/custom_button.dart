@@ -51,6 +51,8 @@ class CustomButton extends StatelessWidget {
         if (variant == CustomButtonVariant.DarkButton) {
           return theme.darkColor.withValues(alpha: 0.35);
         }
+        // Default: outlined on parchment/atlas (no cream/navy plate).
+        return Colors.transparent;
       }
       return theme.middleBgColor;
     }
@@ -67,6 +69,10 @@ class CustomButton extends StatelessWidget {
       case CustomButtonVariant.DarkButton:
         return theme.darkColor;
       default:
+        // Decorated: transparent outlined control (wizard chevrons, "+ …").
+        if (isDecoratedSheetSkinActive(context)) {
+          return Colors.transparent;
+        }
         return theme.bgColor;
     }
   }

@@ -12,6 +12,7 @@ import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -232,7 +233,13 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                           width: 20,
                           height: 20,
                           color: tab.value.$4
-                              ? CustomThemeProvider.of(context).theme.darkColor
+                              ? (isNightCartographerActive(context)
+                                  ? CustomThemeProvider.of(context)
+                                      .theme
+                                      .accentColor
+                                  : CustomThemeProvider.of(context)
+                                      .theme
+                                      .darkColor)
                               : Colors.transparent,
                         ),
                       ),
@@ -322,9 +329,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                   ),
                                 )
                               : Container(
-                                  color: CustomThemeProvider.of(context)
-                                      .theme
-                                      .bgColor,
+                                  color: characterSheetSurfaceColor(context),
                                   key: ValueKey(e.value),
                                   child: Row(
                                     crossAxisAlignment:
