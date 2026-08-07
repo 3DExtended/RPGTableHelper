@@ -5,6 +5,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_add_further_enemies_to_fight_sequence.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -35,7 +36,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
     var _ = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
-      color: CustomThemeProvider.of(context).theme.bgColor,
+      color: characterSheetSurfaceColor(context),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -138,22 +139,26 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
                                                                     10),
                                                             child: Row(
                                                               children: [
-                                                                Text(
-                                                                  e.value.$2,
-                                                                  style: Theme.of(
-                                                                          context)
-                                                                      .textTheme
-                                                                      .labelMedium!
-                                                                      .copyWith(
-                                                                          color: CustomThemeProvider.of(context)
-                                                                              .theme
-                                                                              .darkTextColor,
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    e.value.$2,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .labelMedium!
+                                                                        .copyWith(
+                                                                            color: CustomThemeProvider.of(context)
+                                                                                .theme
+                                                                                .darkTextColor,
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                  ),
                                                                 ),
-                                                                Spacer(),
                                                                 CustomFaIcon(
                                                                   icon:
                                                                       FontAwesomeIcons

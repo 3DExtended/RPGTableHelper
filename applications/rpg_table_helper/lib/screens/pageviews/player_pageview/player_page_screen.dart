@@ -78,9 +78,7 @@ class PlayerPageScreen extends ConsumerStatefulWidget {
 }
 
 class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
-  var pageViewController = PageController(
-    initialPage: 0,
-  );
+  late final PageController pageViewController;
 
   var _currentStep = 0;
 
@@ -98,7 +96,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     setState(() {
       _currentStep = id;
     });
-    pageViewController.jumpToPage(id);
+    if (pageViewController.hasClients) {
+      pageViewController.jumpToPage(id);
+    }
   }
 
   List<(String title, Widget child, String uuid)> getPlayerScreens(
@@ -231,44 +231,64 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
   RpgCharacterConfigurationBase? rpgCharacterToRender;
   bool disableEdit = false;
+  bool _routeSettingsApplied = false;
+
+  void _applyRouteSettings(PlayerPageScreenRouteSettings settings) {
+    rpgCharacterToRender = settings.characterConfigurationOverride;
+    _alreadyCheckedForMissingStats = false;
+    showInventory = settings.showInventory;
+    showLore = settings.showLore;
+    showRecipes = settings.showRecipes;
+    showMoney = settings.showMoney;
+    disableEdit = settings.disableEdit ?? false;
+    _routeSettingsApplied = true;
+  }
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () async {
-      // open default screen
-      var rpgConfig = ref.read(rpgConfigurationProvider).requireValue;
+    super.initState();
 
-      if (widget.startScreenOverride != null) {
-        _goToStepId(widget.startScreenOverride!);
-      } else {
-        if (rpgConfig.characterStatTabsDefinition != null) {
-          _goToStepId(rpgConfig.characterStatTabsDefinition!
-              .indexWhere((tab) => tab.isDefaultTab == true));
-        }
-      }
+    // Honor startScreenOverride on the controller itself so the first paint
+    // (and golden captures) land on the intended tab without a post-frame jump.
+    final initialStep = widget.startScreenOverride ?? 0;
+    _currentStep = initialStep;
+    pageViewController = PageController(initialPage: initialStep);
 
-      // check route settings
+    // Constructor-injected settings (preferred) — available before first paint so
+    // DM character preview does not flash an empty/wrong chrome layer.
+    if (widget.routeSettings != null) {
+      _applyRouteSettings(widget.routeSettings!);
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !context.mounted) return;
 
-      final currentRouteSettings = ModalRoute.of(context)!.settings;
+      if (!_routeSettingsApplied) {
+        final args = ModalRoute.of(context)?.settings.arguments;
+        _applyRouteSettings(
+          args is PlayerPageScreenRouteSettings
+              ? args
+              : PlayerPageScreenRouteSettings.defaultValue(),
+        );
+        setState(() {});
+      }
 
-      var applicableRouteSettings = currentRouteSettings.arguments == null
-          ? (widget.routeSettings ??
-              PlayerPageScreenRouteSettings.defaultValue())
-          : currentRouteSettings.arguments as PlayerPageScreenRouteSettings;
-
-      rpgCharacterToRender =
-          applicableRouteSettings.characterConfigurationOverride;
-      _alreadyCheckedForMissingStats = false;
-
-      showInventory = applicableRouteSettings.showInventory;
-      showLore = applicableRouteSettings.showLore;
-      showRecipes = applicableRouteSettings.showRecipes;
-      showMoney = applicableRouteSettings.showMoney;
-
-      disableEdit = applicableRouteSettings.disableEdit ?? false;
+      // Live player sessions without startScreenOverride open the default tab.
+      if (widget.startScreenOverride != null) return;
+      final rpgConfig = ref.read(rpgConfigurationProvider).valueOrNull;
+      if (rpgConfig?.characterStatTabsDefinition == null) return;
+      final defaultIdx = rpgConfig!.characterStatTabsDefinition!
+          .indexWhere((tab) => tab.isDefaultTab == true);
+      if (defaultIdx >= 0 && defaultIdx != _currentStep) {
+        _goToStepId(defaultIdx);
+      }
     });
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pageViewController.dispose();
+    super.dispose();
   }
 
   bool? _alreadyCheckedForMissingStats;
@@ -321,7 +341,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     }
 
     // Apply resolved sheet skin (companions/alternates inherit the main sheet).
-    if (rpgConfig != null) {
+    // Only while this route is current — avoid fighting a pushed companion/
+    // alternate sheet's skin (same double-chrome remount as DM → player).
+    final routeIsCurrent = ModalRoute.of(context)?.isCurrent ?? true;
+    if (rpgConfig != null && routeIsCurrent) {
       final String? ownerSkinId;
       final overrideChar = rpgCharacterToRender;
       if (overrideChar is RpgCharacterConfiguration) {
@@ -344,6 +367,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       if (themeProvider.skinIdNotifier.value != resolved.renderSkinId) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted || !context.mounted) return;
+          if (!(ModalRoute.of(context)?.isCurrent ?? false)) return;
           CustomThemeProvider.of(context)
               .setActiveSkinId(resolved.renderSkinId);
         });

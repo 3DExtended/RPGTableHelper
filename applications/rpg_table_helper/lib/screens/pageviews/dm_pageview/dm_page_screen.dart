@@ -35,9 +35,7 @@ class DmPageScreen extends ConsumerStatefulWidget {
 }
 
 class _DmPageScreenState extends ConsumerState<DmPageScreen> {
-  var pageViewController = PageController(
-    initialPage: 0,
-  );
+  late final PageController pageViewController;
 
   var _currentStep = 0;
 
@@ -48,7 +46,9 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
     setState(() {
       _currentStep = id;
     });
-    pageViewController.jumpToPage(id);
+    if (pageViewController.hasClients) {
+      pageViewController.jumpToPage(id);
+    }
   }
 
   List<(String title, Widget child)> getDmScreens(BuildContext context) {
@@ -73,12 +73,16 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      if (widget.startScreenOverride != null) {
-        _goToStepId(widget.startScreenOverride!);
-      }
-    });
     super.initState();
+    final initialStep = widget.startScreenOverride ?? 0;
+    _currentStep = initialStep;
+    pageViewController = PageController(initialPage: initialStep);
+  }
+
+  @override
+  void dispose() {
+    pageViewController.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,7 +91,11 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
     var currentTitle = dmScreensToSwipe[_currentStep].$1;
 
     final rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
-    if (rpgConfig != null) {
+    // Only drive the global skin while this route is on top. Otherwise the DM
+    // shell fights a pushed character preview's skin and remounts chrome under
+    // the sheet (looks like a double-rendered parchment/frame).
+    final routeIsCurrent = ModalRoute.of(context)?.isCurrent ?? true;
+    if (rpgConfig != null && routeIsCurrent) {
       final resolved = resolveCharacterSheetSkin(
         characterSkinId: null,
         campaignDefaultSkinId: rpgConfig.defaultSkinId,
@@ -96,6 +104,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
       if (themeProvider.skinIdNotifier.value != resolved.renderSkinId) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted || !context.mounted) return;
+          if (!(ModalRoute.of(context)?.isCurrent ?? false)) return;
           CustomThemeProvider.of(context)
               .setActiveSkinId(resolved.renderSkinId);
         });

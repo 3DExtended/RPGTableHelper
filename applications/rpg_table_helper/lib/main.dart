@@ -134,7 +134,13 @@ class AppRoutingShell extends ConsumerWidget {
                         );
                       case PlayerPageScreen.route:
                         return MaterialWithModalsPageRoute(
-                          builder: (_) => PlayerPageScreen(),
+                          builder: (_) => PlayerPageScreen(
+                            routeSettings: settings.arguments
+                                    is PlayerPageScreenRouteSettings
+                                ? settings.arguments
+                                    as PlayerPageScreenRouteSettings
+                                : null,
+                          ),
                           settings: settings,
                         );
                       case LoginScreen.route:

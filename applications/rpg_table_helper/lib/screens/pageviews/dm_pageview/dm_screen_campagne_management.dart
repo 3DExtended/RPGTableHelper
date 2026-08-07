@@ -13,6 +13,7 @@ import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
@@ -76,7 +77,7 @@ class _DmScreenCampagneManagementState
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
-      color: CustomThemeProvider.of(context).theme.bgColor,
+      color: characterSheetSurfaceColor(context),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

@@ -6,6 +6,7 @@ import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -84,7 +85,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
     var placesOfFindings = getAllPlaceOfFindingsWithItemsWithin(rpgConfig);
 
     return Container(
-      color: CustomThemeProvider.of(context).theme.bgColor,
+      color: characterSheetSurfaceColor(context),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Row(

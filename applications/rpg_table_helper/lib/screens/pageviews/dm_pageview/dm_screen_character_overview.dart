@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/render_characters_as_cards.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
@@ -29,7 +30,7 @@ class _DmScreenCharacterOverviewState
     var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
 
     return Container(
-        color: CustomThemeProvider.of(context).theme.bgColor,
+        color: characterSheetSurfaceColor(context),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
