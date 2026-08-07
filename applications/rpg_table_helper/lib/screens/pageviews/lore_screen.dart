@@ -935,9 +935,6 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     List<Widget> result = [];
 
     for (var block in blocks) {
-      // Ledger lore mock is a text manuscript; skip broken remote image plates.
-      if (ledger && block is ImageBlock) continue;
-
       result.add(Builder(builder: (context) {
         assert(block.id != null);
 
