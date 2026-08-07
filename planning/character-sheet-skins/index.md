@@ -13,8 +13,8 @@ Parent PRD: [`docs/prd/character-sheet-skins.md`](../../docs/prd/character-sheet
 | skin-05 | Apply skins to DM/player surfaces (Classic fidelity) | AFK | done | skin-03, skin-04 | local |
 | skin-06 | HITL: Arcane Ledger mocks (9 surfaces) | HITL | done | skin-05 | local |
 | skin-07 | Implement Arcane Ledger + goldens | AFK | done | skin-06 | local |
-| skin-08 | HITL: Night Cartographer mocks (9 surfaces) | HITL | ready | skin-07 | local |
-| skin-09 | Implement Night Cartographer + goldens | AFK | ready | skin-08 | local |
+| skin-08 | HITL: Night Cartographer mocks (9 surfaces) | HITL | done | skin-07 | local |
+| skin-09 | Implement Night Cartographer + goldens | AFK | done | skin-08 | local |
 
 ## Dependency graph
 
@@ -23,6 +23,6 @@ skin-01 → skin-02 → skin-03 ─┐
                   ↘ skin-04 ─┴→ skin-05 → skin-06 → skin-07 → skin-08 → skin-09
 ```
 
-## HITL pause (skin-06)
+## HITL pause (skin-08)
 
-**Approved 2026-08-06.** Skin-07 Arcane Ledger implemented + goldens under `test/goldens/arcane-ledger-*`. Next AFK after review: skin-08 HITL Night Cartographer (needs user).
+**Approved 2026-08-07.** Skin-09 Night Cartographer implemented + goldens under `test/goldens/night-cartographer-*`. Four-skin catalog complete.

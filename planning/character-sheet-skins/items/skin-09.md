@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: AFK
-- Status: ready
+- Status: done
 
 ## Parent
 
@@ -22,12 +22,21 @@ Demoable: select Night Cartographer as default or override; surfaces match appro
 
 ## Acceptance criteria
 
-- [ ] `night_cartographer` fully selectable and distinct from Classic and Ledger
-- [ ] Player nine surfaces + wizard/DM/popups use Cartographer look when active
-- [ ] Hybrid assets wired; readable on iPad landscape
-- [ ] Per-stat variants still independent
-- [ ] iPad-landscape goldens for major player screens under Cartographer
-- [ ] Full four-skin catalog shippable; tests/goldens green
+- [x] `night_cartographer` fully selectable and distinct from Classic and Ledger
+- [x] Player nine surfaces + wizard/DM/popups use Cartographer look when active
+- [x] Hybrid assets wired; readable on iPad landscape
+- [x] Per-stat variants still independent
+- [x] iPad-landscape goldens for major player screens under Cartographer
+- [x] Full four-skin catalog shippable; tests/goldens green
+
+## Delivered (2026-08-07)
+
+- Distinct `CustomTheme.nightCartographerTheme` + registry entry
+- Constellation + double-rule `CharacterSheetSkinChrome` for Cartographer
+- Compass-ring level seal via `CharacterSheetLevelSeal.forSkin`
+- House-shaped ability stamps; champagne navbar accents; shared decorated layout with Ledger
+- Assets: `night_cartographer_{constellation,compass_rings,corner_ticks}.png`
+- Goldens: `test/goldens/night-cartographer-playerpagescreens*` (9) + `night-cartographer-dm-wizard-appearance`
 
 ## Blocked by
 

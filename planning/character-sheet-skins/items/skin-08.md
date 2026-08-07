@@ -4,7 +4,7 @@
 
 - Forge: local (TBD)
 - Type: HITL
-- Status: ready
+- Status: done
 
 ## Parent
 
@@ -15,17 +15,21 @@ PRD: `docs/prd/character-sheet-skins.md`
 Human-in-the-loop design pass for **Night Cartographer** before implementation:
 
 - Generate/refine iPad-landscape mocks for all nine player surfaces.
-- Generate high-res plates (constellation/atmosphere, gold line motifs as needed).
+- Generate DM surfaces (wizard + campaign management / initiative / grant items).
+- Generate high-res plates (constellation/atmosphere, compass rings, corner ticks).
 - User approves before skin-09.
 
 Demoable: approved mock set + plates + approval note.
 
+Assets: `~/.cursor/projects/.../assets/night-cartographer-README.md`
+
 ## Acceptance criteria
 
-- [ ] Nine Cartographer player-surface mocks exist (iPad landscape)
-- [ ] Asset plates listed for implementation
-- [ ] User explicit approval recorded
-- [ ] Open revisions closed or deferred in writing
+- [x] Nine Cartographer player-surface mocks exist (iPad landscape)
+- [x] DM surface mocks exist (wizard + core DM chrome)
+- [x] Asset plates listed for implementation
+- [x] User explicit approval recorded (2026-08-07 — proceed to implement)
+- [x] Open revisions closed or deferred in writing
 
 ## Blocked by
 
