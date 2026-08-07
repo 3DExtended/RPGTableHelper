@@ -54,7 +54,7 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
       }
 
       final ledger = isDecoratedSheetSkinActive(context) && !onlyTextTab;
-      // Mock Arcane Ledger Stats is a fixed 3-column composition — only on default Stats tab.
+      // Decorated default Stats: cap at 3 columns + star rules; height-autosort fills them.
       final ledgerStatsLayout = ledger && tabDef.isDefaultTab == true;
       if (ledgerStatsLayout && numberOfColumns > 3) {
         numberOfColumns = 3;
@@ -65,19 +65,11 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
           (constraints.maxWidth - padding * (numberOfColumns + 1)) /
               numberOfColumns.toDouble();
 
-      final widgetsAndTypes = getStatWidgetsForCurrentTab(
+      final children = getStatWidgetsForCurrentTab(
         context,
         ref,
         columnWidth: columnWidth,
       );
-      final children = widgetsAndTypes.map((e) => e.widget).toList();
-      Map<int, int>? fixedMapping;
-      if (ledgerStatsLayout && numberOfColumns == 3) {
-        fixedMapping = {
-          for (var i = 0; i < widgetsAndTypes.length; i++)
-            i: _ledgerColumnFor(widgetsAndTypes[i].valueType),
-        };
-      }
 
       return Stack(
         children: [
@@ -90,11 +82,10 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
                   spacing: padding,
                   runSpacing: padding,
                   numberOfColumns: numberOfColumns,
-                  fixedChildMapping: fixedMapping,
                   children: children,
                 )),
           ),
-          if (ledgerStatsLayout && fixedMapping != null && numberOfColumns >= 2)
+          if (ledgerStatsLayout && numberOfColumns >= 2)
             Positioned.fill(
               child: IgnorePointer(
                 child: CustomPaint(
@@ -111,29 +102,9 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
     });
   }
 
-  /// Mock Stats columns:
-  /// 0 = identity / combat icons / lists
-  /// 1 = portrait (+ quote)
-  /// 2 = ability hexes / HP
-  static int _ledgerColumnFor(CharacterStatValueType type) {
-    switch (type) {
-      case CharacterStatValueType.singleImage:
-        return 1;
-      case CharacterStatValueType.listOfIntWithCalculatedValues:
-      case CharacterStatValueType.intWithMaxValue:
-        return 2;
-      case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
-      case CharacterStatValueType.listOfIntsWithIcons:
-      case CharacterStatValueType.multiselect:
-      default:
-        return 0;
-    }
-  }
-
-  List<({Widget widget, CharacterStatValueType valueType})>
-      getStatWidgetsForCurrentTab(BuildContext context, WidgetRef ref,
-          {required double columnWidth}) {
-    List<({Widget widget, CharacterStatValueType valueType})> result = [];
+  List<Widget> getStatWidgetsForCurrentTab(BuildContext context, WidgetRef ref,
+      {required double columnWidth}) {
+    List<Widget> result = [];
 
     var statsInTab = tabDef.statsInTab;
     var statsOfCharacterInTab = statsInTab
@@ -151,9 +122,8 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
 
       if (matchingPlayerCharacterStat == null) continue;
 
-      result.add((
-        valueType: statToRender.valueType,
-        widget: LongPressScaleWidget(
+      result.add(
+        LongPressScaleWidget(
           onLongPress: () {
             // Preview / DM views may not have hydrated the player character
             // provider; missing-stats edits only apply to the live player session.
@@ -195,7 +165,7 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
                   statConfiguration: statToRender,
                   characterValue: matchingPlayerCharacterStat)),
         ),
-      ));
+      );
     }
 
     return result;
