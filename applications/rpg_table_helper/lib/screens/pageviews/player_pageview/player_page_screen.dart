@@ -352,7 +352,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ? ""
         : playerScreensToSwipe[_currentStep].$1;
 
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     var selectedIconColor = ledger
         ? ledgerNavbarAccent(context)
         : CustomThemeProvider.of(context).theme.accentColor;
@@ -604,18 +604,21 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                 ),
                 Expanded(
                   child: CharacterSheetSkinChrome(
-                    child: Container(
-                      color: characterSheetSurfaceColor(context),
-                      child: PageView(
-                        controller: pageViewController,
-                        onPageChanged: (value) {
-                          setState(() {
-                            _currentStep = value;
-                          });
-                        },
-                        scrollDirection: Axis.horizontal,
-                        children:
-                            playerScreensToSwipe.map((e) => e.$2).toList(),
+                    child: Padding(
+                      padding: characterSheetContentInsets(context),
+                      child: Container(
+                        color: characterSheetSurfaceColor(context),
+                        child: PageView(
+                          controller: pageViewController,
+                          onPageChanged: (value) {
+                            setState(() {
+                              _currentStep = value;
+                            });
+                          },
+                          scrollDirection: Axis.horizontal,
+                          children:
+                              playerScreensToSwipe.map((e) => e.$2).toList(),
+                        ),
                       ),
                     ),
                   ),
@@ -641,9 +644,12 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
           backgroundColor: Colors.transparent,
           insetPadding:
               const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: SkinnedModalPanel(
+          child: SkinnedModalPanel(
+            child: ConstrainedBox(
+              constraints: skinnedModalContentConstraints(
+                ctx,
+                maxWidth: 420,
+              ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 18, 12, 12),
                 child: Column(

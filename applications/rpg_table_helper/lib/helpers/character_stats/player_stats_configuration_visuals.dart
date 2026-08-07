@@ -686,8 +686,8 @@ class _PlayerStatsConfigurationVisualsState
                         isLoading = false;
                       });
                     },
-              minSize: 0,
               padding: EdgeInsets.zero,
+              minimumSize: Size(0, 0),
               child: Text(
                 S.of(context).newImageBtnLabel,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -858,10 +858,10 @@ class _PlayerStatsConfigurationVisualsState
         "level": (foundLevel != null ? int.tryParse(foundLevel) : null) ?? 0,
         "values": filledValuesForlistOfSingleValueOptions,
         "imagePrompt": textController.text,
-        "imageUrl": urlsOfGeneratedImages.isEmpty ||
-                selectedGeneratedImageIndex == null
-            ? null
-            : urlsOfGeneratedImages[selectedGeneratedImageIndex ?? 0],
+        "imageUrl":
+            urlsOfGeneratedImages.isEmpty || selectedGeneratedImageIndex == null
+                ? null
+                : urlsOfGeneratedImages[selectedGeneratedImageIndex ?? 0],
       }),
       statUuid: widget.statConfiguration.statUuid,
     );

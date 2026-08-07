@@ -65,11 +65,12 @@ class _AskForCampagneJoinCodeModalContentState
         padding: EdgeInsets.fromLTRB(modalPadding, 20, modalPadding, 20),
         child: Center(
           child: CustomShadowWidget(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 800.0,
-              ),
-              child: SkinnedModalPanel(
+            child: SkinnedModalPanel(
+              child: ConstrainedBox(
+                constraints: skinnedModalContentConstraints(
+                  context,
+                  maxWidth: 800,
+                ),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

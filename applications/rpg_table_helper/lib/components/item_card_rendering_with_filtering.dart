@@ -167,7 +167,7 @@ class _ItemCardRenderingWithFilteringState
 
   @override
   Widget build(BuildContext context) {
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final ink = CustomThemeProvider.of(context).theme.darkTextColor;
 
     return Column(
@@ -414,7 +414,7 @@ class _ItemCardRenderingWithFilteringState
   }
 
   Widget getListOfItemCardsAsColumns(context, constraints) {
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     var layoutWidth = constraints.maxWidth;
     const scalar = 1.0;
 

@@ -20,6 +20,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_visualization_variant_widgets.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/night_cartographer_ornaments.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modals/show_reactivate_previous_transformation_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
@@ -453,7 +454,7 @@ Widget renderMultiselectStat(
       );
   }
 
-  final ledger = isArcaneLedgerActive(context);
+  final ledger = isDecoratedSheetSkinActive(context);
   if (ledger &&
       statConfiguration.name.toLowerCase().contains('zauber')) {
     // Preserve selection order (mock Spells layout), not alpha sort.
@@ -994,9 +995,13 @@ Widget renderIntWithMaxValueStat(
       return core;
     default:
       // variant is null or 0
-      if (isArcaneLedgerActive(context) &&
+      if (isDecoratedSheetSkinActive(context) &&
           statConfiguration.name.toLowerCase().contains('zauberpunkt')) {
         final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+        final nightCartographer = isNightCartographerActive(context);
+        final sealTextColor = nightCartographer
+            ? const Color(0xFFF0E6D4)
+            : const Color(0xFFF5E6D3);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -1006,18 +1011,24 @@ Widget renderIntWithMaxValueStat(
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.asset(
-                    ArcaneLedgerAssets.waxSeal,
-                    width: 96,
-                    height: 96,
-                    fit: BoxFit.contain,
-                    filterQuality: FilterQuality.high,
-                  ),
+                  if (nightCartographer)
+                    const CartographerCompassRings(
+                      size: 96,
+                      color: Color(0xffD4AF77),
+                    )
+                  else
+                    Image.asset(
+                      ArcaneLedgerAssets.waxSeal,
+                      width: 96,
+                      height: 96,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                    ),
                   Text(
                     '$value/$maxValue',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: const Color(0xFFF5E6D3),
+                      color: sealTextColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
                       height: 1.0,
@@ -1128,7 +1139,7 @@ Widget _ledgerOrClassicStatButton({
   required IconData icon,
 }) {
   final ink = CustomThemeProvider.of(context).theme.darkColor;
-  if (isArcaneLedgerActive(context)) {
+  if (isDecoratedSheetSkinActive(context)) {
     return CupertinoButton(
       onPressed: onPressed,
       minSize: 0,
@@ -1232,7 +1243,7 @@ Widget renderListOfIntsWithIconsStat(
         },
       )
       .toList();
-  if (!isArcaneLedgerActive(context)) {
+  if (!isDecoratedSheetSkinActive(context)) {
     filledValues = filledValues.sortedBy((e) => e.label).toList();
   }
 
@@ -1265,7 +1276,7 @@ Widget renderListOfIntsWithIconsStat(
     children: filledValues
         .map(
           (t) {
-            if (isArcaneLedgerActive(context)) {
+            if (isDecoratedSheetSkinActive(context)) {
               final ink = CustomThemeProvider.of(context).theme.darkColor;
               return SizedBox(
                 width: 76,
@@ -1594,6 +1605,13 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
             child: Builder(builder: (context) {
               final sealChild = LayoutBuilder(builder: (context, constrin) {
                 final side = constrin.maxWidth;
+                if (isNightCartographerActive(context)) {
+                  return CartographerLevelBadge(
+                    level: levelInt,
+                    levelAbbr: S.of(context).levelAbbr,
+                    size: side,
+                  );
+                }
                 if (isArcaneLedgerActive(context)) {
                   return SizedBox(
                     width: side,
@@ -1642,7 +1660,7 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
                 );
               });
               // Rectangular ShadowWidget casts a white/grey box on parchment.
-              if (isArcaneLedgerActive(context)) return sealChild;
+              if (isDecoratedSheetSkinActive(context)) return sealChild;
               return CustomShadowWidget(child: sealChild);
             }),
           ),
@@ -1748,7 +1766,7 @@ Widget renderImageStat(
   var parsedValue = jsonDecode(characterValue.serializedValue);
   var imageUrl = parsedValue["imageUrl"];
   final quote = parsedValue["value"]?.toString();
-  final ledger = isArcaneLedgerActive(context);
+  final ledger = isDecoratedSheetSkinActive(context);
   final showQuote = ledger && quote != null && quote.trim().isNotEmpty;
 
   final image = BorderedImage(
@@ -1851,7 +1869,7 @@ Widget renderTextStat(
       jsonDecode(characterValue.serializedValue)["value"].toString();
   final hideTitle = characterValue.hideLabelOfStat == true;
 
-  if (isArcaneLedgerActive(context)) {
+  if (isDecoratedSheetSkinActive(context)) {
     final ink = CustomThemeProvider.of(context).theme.darkTextColor;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),

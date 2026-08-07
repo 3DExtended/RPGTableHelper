@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/wizards/wizard_manager.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 
 class WizardConfiguration {
   final List<
@@ -23,6 +24,8 @@ class WizardRendererForConfiguration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Skin chrome paints its own surface; default Material scaffold is light.
+      backgroundColor: characterSheetSurfaceColor(context),
       resizeToAvoidBottomInset: true,
       body: WizardManager(
         startStepIndex: startStepIndex,

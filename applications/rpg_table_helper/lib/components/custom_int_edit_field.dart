@@ -64,7 +64,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
 
   @override
   Widget build(BuildContext context) {
-    if (isArcaneLedgerActive(context)) {
+    if (isDecoratedSheetSkinActive(context)) {
       return _buildLedger(context);
     }
     return _buildClassic(context);

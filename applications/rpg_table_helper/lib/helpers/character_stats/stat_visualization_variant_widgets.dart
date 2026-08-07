@@ -1402,8 +1402,9 @@ class IdentityBanner extends StatelessWidget {
           SizedBox(
             width: 56,
             height: 56,
-            child: isArcaneLedgerActive(context)
-                ? CharacterSheetLevelSeal(
+            child: isDecoratedSheetSkinActive(context)
+                ? CharacterSheetLevelSeal.forSkin(
+                    nightCartographer: isNightCartographerActive(context),
                     level: level,
                     levelAbbr: levelAbbr,
                     size: 56,
@@ -1499,8 +1500,9 @@ class IdentityPortraitCard extends StatelessWidget {
               SizedBox(
                 width: 48,
                 height: 48,
-                child: isArcaneLedgerActive(context)
-                    ? CharacterSheetLevelSeal(
+                child: isDecoratedSheetSkinActive(context)
+                    ? CharacterSheetLevelSeal.forSkin(
+                        nightCartographer: isNightCartographerActive(context),
                         level: level,
                         levelAbbr: levelAbbr,
                         size: 48,

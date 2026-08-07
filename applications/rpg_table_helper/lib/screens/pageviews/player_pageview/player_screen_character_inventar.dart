@@ -8,7 +8,6 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/add_new_item_modal.dart';
-import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class PlayerScreenCharacterInventory extends ConsumerStatefulWidget {
   const PlayerScreenCharacterInventory({

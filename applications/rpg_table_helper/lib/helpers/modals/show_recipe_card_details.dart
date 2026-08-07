@@ -352,7 +352,7 @@ class _RecipeCardDetailsModalContentState
                       height: 20,
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(30.0, 30, 30, modalFooterBottomPadding(context)),
+                      padding: const EdgeInsets.fromLTRB(30.0, 30, 30, 10),
                       child: Row(
                         children: [
                           const Spacer(),
@@ -442,7 +442,9 @@ class _RecipeCardDetailsModalContentState
   bool isCraftButtonDisabled() {
     if (!areRecipeRequirementsMet()) return true;
     if (widget.recipe.ingredients
-        .any((i) => !doesInventoryHaveEnoughItemsOfIngredient(i))) return true;
+        .any((i) => !doesInventoryHaveEnoughItemsOfIngredient(i))) {
+      return true;
+    }
 
     return false;
   }

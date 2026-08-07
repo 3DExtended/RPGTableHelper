@@ -271,6 +271,11 @@ class _PlayerHasBeenGrantedItemsThroughDmModalContentState
                         categoryIconColor: categoryForItem?.colorCode
                             ?.parseHexColorRepresentation(),
                         categoryIconName: categoryForItem?.iconName,
+                        // Stacked reveal cards need an opaque plate so lower
+                        // cards don't show through (Ledger + Cartographer).
+                        cardBgColorOverride: isDecoratedSheetSkinActive(context)
+                            ? CustomThemeProvider.of(context).theme.middleBgColor
+                            : null,
                       ),
                     ),
                   ),

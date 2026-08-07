@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 /// Thin horizontal rule with centered 8-point star (Ledger manuscript chrome).
@@ -42,23 +43,28 @@ class LedgerFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeInk = CustomThemeProvider.of(context).theme.darkTextColor;
-    final cream = CustomThemeProvider.of(context).theme.bgColor;
+    final theme = CustomThemeProvider.of(context).theme;
+    final cartographer = isNightCartographerActive(context);
+    // Ledger: dark ink on parchment. Cartographer: champagne gold on navy.
+    final ink = cartographer ? theme.accentColor : theme.darkTextColor;
+    final selectedText = theme.bgColor;
+    final unselectedText =
+        cartographer ? theme.darkTextColor : ink;
     return CupertinoButton(
       padding: EdgeInsets.zero,
       minimumSize: Size.zero,
       onPressed: onPressed,
       child: CustomPaint(
         painter: _LedgerChipBorderPainter(
-          ink: selected ? themeInk : themeInk.withValues(alpha: 0.7),
-          fill: selected ? themeInk : null,
+          ink: selected ? ink : ink.withValues(alpha: 0.7),
+          fill: selected ? ink : null,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: selected ? cream : themeInk,
+                  color: selected ? selectedText : unselectedText,
                   fontFamily: 'Ruwudu',
                   fontSize: 14,
                 ),
@@ -398,6 +404,85 @@ class _LedgerBinderSpinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _LedgerBinderSpinePainter oldDelegate) =>
       oldDelegate.ink != ink || oldDelegate.ringCount != ringCount;
+}
+
+/// Night Cartographer lore divider: thin gold rule with star caps (mock atlas
+/// separator — not the Ledger binder rings).
+class CartographerLoreDivider extends StatelessWidget {
+  const CartographerLoreDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final gold = CustomThemeProvider.of(context).theme.accentColor;
+    return SizedBox(
+      width: 28,
+      child: CustomPaint(
+        painter: _CartographerLoreDividerPainter(ink: gold),
+        child: const SizedBox.expand(),
+      ),
+    );
+  }
+}
+
+class _CartographerLoreDividerPainter extends CustomPainter {
+  final Color ink;
+
+  _CartographerLoreDividerPainter({required this.ink});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final top = 10.0;
+    final bottom = size.height - 10.0;
+
+    final rule = Paint()
+      ..color = ink.withValues(alpha: 0.75)
+      ..strokeWidth = 1.2
+      ..strokeCap = StrokeCap.round;
+
+    // Leave gaps for the end ornaments.
+    const ornamentGap = 14.0;
+    canvas.drawLine(
+      Offset(cx, top + ornamentGap),
+      Offset(cx, bottom - ornamentGap),
+      rule,
+    );
+
+    _drawStarCap(canvas, Offset(cx, top + 6), ink);
+    _drawStarCap(canvas, Offset(cx, bottom - 6), ink);
+  }
+
+  void _drawStarCap(Canvas canvas, Offset c, Color color) {
+    final fill = Paint()
+      ..color = color.withValues(alpha: 0.9)
+      ..style = PaintingStyle.fill;
+    final path = Path();
+    const points = 8;
+    const outer = 5.5;
+    const inner = 2.2;
+    for (var i = 0; i < points * 2; i++) {
+      final a = -pi / 2 + i * pi / points;
+      final r = i.isEven ? outer : inner;
+      final p = Offset(c.dx + cos(a) * r, c.dy + sin(a) * r);
+      if (i == 0) {
+        path.moveTo(p.dx, p.dy);
+      } else {
+        path.lineTo(p.dx, p.dy);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, fill);
+    // Tiny center diamond node.
+    canvas.drawCircle(
+      c,
+      1.4,
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CartographerLoreDividerPainter oldDelegate) =>
+      oldDelegate.ink != ink;
 }
 
 /// Outlined manuscript "+ New" — dark ink for readability on parchment.

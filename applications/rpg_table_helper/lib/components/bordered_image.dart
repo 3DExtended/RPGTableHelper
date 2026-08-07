@@ -7,13 +7,33 @@ import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/night_cartographer_ornaments.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:themed/themed.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-List<Widget> _ledgerCornerFlourishOverlays() {
+List<Widget> _decoratedCornerOverlays(
+  BuildContext context, {
+  required Color ink,
+}) {
+  if (isNightCartographerActive(context)) {
+    return cartographerPageCorners(
+      color: ink,
+      size: 40,
+      opacity: 0.85,
+      inset: -4,
+    );
+  }
+
   const size = 48.0;
-  Widget flourish({required double? left, required double? top, required double? right, required double? bottom, required int turns}) {
+  const asset = ArcaneLedgerAssets.cornerFlourish;
+  Widget flourish({
+    required double? left,
+    required double? top,
+    required double? right,
+    required double? bottom,
+    required int turns,
+  }) {
     return Positioned(
       left: left,
       top: top,
@@ -24,7 +44,7 @@ List<Widget> _ledgerCornerFlourishOverlays() {
         child: Opacity(
           opacity: 0.78,
           child: Image.asset(
-            ArcaneLedgerAssets.cornerFlourish,
+            asset,
             width: size,
             height: size,
             fit: BoxFit.contain,
@@ -69,7 +89,7 @@ class BorderedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isArcaneLedgerActive(context)) {
+    if (isDecoratedSheetSkinActive(context)) {
       return Padding(
         padding: noPadding == true
             ? EdgeInsets.zero
@@ -94,8 +114,7 @@ class BorderedImage extends StatelessWidget {
                 ),
               ),
             ),
-            // Corner flourish plates (mock ornament).
-            ..._ledgerCornerFlourishOverlays(),
+            ..._decoratedCornerOverlays(context, ink: lightColor),
           ],
         ),
       );

@@ -84,10 +84,9 @@ class CharacterSheetSkin {
       theme: CustomTheme.arcaneLedgerTheme,
       brightness: Brightness.light,
     ),
-    // Placeholder until Night Cartographer slice — Classic Dark tokens.
     CharacterSheetSkinIds.nightCartographer: CharacterSheetSkin(
       id: CharacterSheetSkinIds.nightCartographer,
-      theme: CustomTheme.darkTheme,
+      theme: CustomTheme.nightCartographerTheme,
       brightness: Brightness.dark,
     ),
   };

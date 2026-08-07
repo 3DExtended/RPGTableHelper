@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -132,10 +133,11 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                 _allRecipes.firstWhere((i) => id.contains(i.recipeUuid)))
             .distinct(by: (r) => r.recipeUuid);
 
-    recipesToRender =
-        recipesToRender.sortBy((r) => r.createdItem.item.name).toList();
+    recipesToRender = recipesToRender.toList()
+      ..sort((a, b) =>
+          a.createdItem.item.name.compareTo(b.createdItem.item.name));
 
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final ink = CustomThemeProvider.of(context).theme.darkTextColor;
 
     if (selectedCategory != "" && selectedCategory != null) {
@@ -402,6 +404,22 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                           var recipeToRender =
                               craftableFilteredRecipes[indexOfRecipeToRender];
 
+                          final flattenedCategories =
+                              ItemCategory.flattenCategoriesRecursive(
+                                  categories: rpgConfig.itemCategories);
+                          final categoryForItem =
+                              flattenedCategories.firstWhereOrNull((e) =>
+                                  e.uuid ==
+                                  recipeToRender
+                                      .recipe.createdItem.item.categoryId);
+                          final parentCategoryOfItem = categoryForItem != null
+                              ? flattenedCategories.firstWhereOrNull((fc) => fc
+                                      .subCategories
+                                      .any((sub) =>
+                                          sub.uuid == categoryForItem.uuid)) ??
+                                  categoryForItem
+                              : categoryForItem;
+
                           return [
                             Column(
                               children: [
@@ -446,6 +464,11 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
                                         .item.imageUrlWithoutBasePath,
                                     title: recipeToRender
                                         .recipe.createdItem.item.name,
+                                    categoryIconName:
+                                        parentCategoryOfItem?.iconName,
+                                    categoryIconColor: parentCategoryOfItem
+                                        ?.colorCode
+                                        ?.parseHexColorRepresentation(),
                                     requirements: recipeToRender
                                         .recipe.requiredItems
                                         .map((req) => CustomRecipeCardItemPair(

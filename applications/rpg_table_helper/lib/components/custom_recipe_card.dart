@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/border_corner_stone_round.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/card_border.dart';
+import 'package:quest_keeper/components/custom_item_card.dart';
 import 'package:quest_keeper/components/quarter_circle_cutout.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomRecipeCardItemPair {
@@ -23,6 +25,11 @@ class CustomRecipeCard extends StatelessWidget {
   final List<CustomRecipeCardItemPair> ingedients;
   final Color? cardBgColorOverride;
 
+  /// Same plate chrome as [CustomItemCard] on decorated skins.
+  final String? categoryIconName;
+  final Color? categoryIconColor;
+  final double? scalarOverride;
+
   const CustomRecipeCard({
     super.key,
     this.imageUrl,
@@ -30,10 +37,30 @@ class CustomRecipeCard extends StatelessWidget {
     required this.requirements,
     required this.ingedients,
     this.cardBgColorOverride,
+    this.categoryIconName,
+    this.categoryIconColor,
+    this.scalarOverride,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Decorated skins: reuse item plate so recipe cards match inventory cards.
+    if (isDecoratedSheetSkinActive(context)) {
+      return CustomItemCard(
+        title: title,
+        description: getMarkdownText(context).$1,
+        imageUrl: imageUrl,
+        cardBgColorOverride: cardBgColorOverride,
+        categoryIconName: categoryIconName,
+        categoryIconColor: categoryIconColor,
+        scalarOverride: scalarOverride ?? 1.0,
+        descriptionMaxLines: 7,
+      );
+    }
+    return _buildClassicCard(context);
+  }
+
+  Widget _buildClassicCard(BuildContext context) {
     var fullImageUrl = imageUrl == null
         ? null
         : (imageUrl!.startsWith("assets")

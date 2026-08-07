@@ -127,6 +127,40 @@ class CustomTheme {
         Color(0xff1C1510),
       ],
     );
+
+  /// Night Cartographer — midnight navy atlas, champagne-gold linework, cream legend.
+  static CustomTheme nightCartographerTheme = CustomTheme()
+    ..darkColor = const Color(0xffC9A86A)
+    ..middleBgColor = const Color(0xff152038)
+    ..bgColor = const Color(0xff0B1220)
+    ..textColor = const Color(0xffF0E6D4)
+    ..accentColor = const Color(0xffD4AF77)
+    ..lightGreen = const Color(0xff3A9E5A)
+    ..lightYellow = const Color(0xffD4A017)
+    ..lightRed = const Color(0xffA8322D)
+    ..darkGreen = const Color(0xff2E7A3A)
+    ..darkRed = const Color(0xff8B1E1E)
+    ..darkTextColor = const Color(0xffF0E6D4)
+    ..secondaryNavbarColor = const Color(0xff070B14)
+    ..whiteBgTint = const Color(0x22C9A86A)
+    ..borderGradient = const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xffC9A86A),
+        Color(0xff0B1220),
+        Color(0xff8B7355),
+      ],
+    )
+    ..navbarBackground = const LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xff0E1528),
+        Color(0xff070B14),
+        Color(0xff101828),
+      ],
+    );
 }
 
 class CustomThemeProvider extends InheritedWidget {

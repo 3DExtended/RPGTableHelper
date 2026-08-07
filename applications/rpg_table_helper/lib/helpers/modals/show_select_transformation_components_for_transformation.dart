@@ -86,9 +86,13 @@ class _SelectTransformationComponentsForTransformationModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 800, maxHeight: 500),
-              child: SkinnedModalPanel(
+            child: SkinnedModalPanel(
+              child: ConstrainedBox(
+                constraints: skinnedModalContentConstraints(
+                  context,
+                  maxWidth: 800,
+                  maxHeight: 500,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [

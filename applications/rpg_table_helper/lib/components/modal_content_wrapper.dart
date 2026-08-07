@@ -41,91 +41,103 @@ class ModalContentWrapper<T> extends StatelessWidget {
               bottom: 20, top: 20, left: modalPadding, right: modalPadding),
           child: Center(
             child: CustomShadowWidget(
-                child: ConditionalWidgetWrapper(
-              condition: !isFullscreen,
-              wrapper: (context, child) {
-                return ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 800),
-                  child: child,
-                );
-              },
+              // Constraints inside SkinnedModalPanel so skin insets grow the card.
               child: SkinnedModalPanel(
-                child: Column(
-                  mainAxisSize:
-                      isFullscreen ? MainAxisSize.max : MainAxisSize.min,
-                  children: [
-                    Navbar(
-                      backInsteadOfCloseIcon: false,
-                      closeFunction: () {
-                        navigatorKey.currentState!.pop(null);
-                      },
-                      menuOpen: null,
-                      useTopSafePadding: false,
-                      titleWidget: Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: CustomThemeProvider.of(context)
-                                        .brightnessNotifier
-                                        .value ==
-                                    Brightness.light
-                                ? CustomThemeProvider.of(context)
-                                    .theme
-                                    .textColor
-                                : CustomThemeProvider.of(context)
-                                    .theme
-                                    .darkTextColor,
-                            fontSize: 24),
+                child: ConditionalWidgetWrapper(
+                  condition: !isFullscreen,
+                  wrapper: (context, child) {
+                    return ConstrainedBox(
+                      constraints: skinnedModalContentConstraints(
+                        context,
+                        maxWidth: 800,
+                        classicFooterPadding: 20,
                       ),
-                    ),
-                    if (isFullscreen)
-                      Expanded(
-                        child: Padding(
+                      child: child,
+                    );
+                  },
+                  child: Column(
+                    mainAxisSize:
+                        isFullscreen ? MainAxisSize.max : MainAxisSize.min,
+                    children: [
+                      Navbar(
+                        backInsteadOfCloseIcon: false,
+                        closeFunction: () {
+                          navigatorKey.currentState!.pop(null);
+                        },
+                        menuOpen: null,
+                        useTopSafePadding: false,
+                        titleWidget: Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
+                                  color: CustomThemeProvider.of(context)
+                                              .brightnessNotifier
+                                              .value ==
+                                          Brightness.light
+                                      ? CustomThemeProvider.of(context)
+                                          .theme
+                                          .textColor
+                                      : CustomThemeProvider.of(context)
+                                          .theme
+                                          .darkTextColor,
+                                  fontSize: 24),
+                        ),
+                      ),
+                      if (isFullscreen)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: SingleChildScrollView(child: child),
+                          ),
+                        )
+                      else
+                        Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: SingleChildScrollView(child: child),
                         ),
-                      )
-                    else
+                      const SizedBox(
+                        height: 0,
+                      ),
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: SingleChildScrollView(child: child),
-                      ),
-                    const SizedBox(
-                      height: 0,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(30.0, 10, 30, modalFooterBottomPadding(context, classic: 20)),
-                      child: Row(
-                        children: [
-                          CustomButton(
-                            label: S.of(context).cancel,
-                            onPressed: () async {
-                              await onCancel();
-                              navigatorKey.currentState!.pop(null);
-                            },
-                          ),
-                          const Spacer(),
-                          CustomButton(
-                            label: S.of(context).save,
-                            onPressed: onSave == null
-                                ? null
-                                : () async {
-                                    var result = await onSave!();
+                        padding: EdgeInsets.fromLTRB(
+                            30.0,
+                            10,
+                            30,
+                            modalFooterBottomPadding(context, classic: 20)),
+                        child: Row(
+                          children: [
+                            CustomButton(
+                              label: S.of(context).cancel,
+                              onPressed: () async {
+                                await onCancel();
+                                navigatorKey.currentState!.pop(null);
+                              },
+                            ),
+                            const Spacer(),
+                            CustomButton(
+                              label: S.of(context).save,
+                              onPressed: onSave == null
+                                  ? null
+                                  : () async {
+                                      var result = await onSave!();
 
-                                    navigatorKey.currentState!.pop(result);
-                                  },
-                          ),
-                        ],
+                                      navigatorKey.currentState!.pop(result);
+                                    },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            )),
+            ),
           ),
         ),
       );
     });
   }
 }
-

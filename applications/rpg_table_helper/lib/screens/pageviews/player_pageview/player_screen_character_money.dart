@@ -76,7 +76,7 @@ class _PlayerScreenCharacterMoneyState
   @override
   Widget build(BuildContext context) {
     final theme = CustomThemeProvider.of(context).theme;
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final ink = theme.darkTextColor;
 
     return SingleChildScrollView(
@@ -221,6 +221,15 @@ class _PlayerScreenCharacterMoneyState
 
   Widget _buildSegmentedControl(BuildContext context, {required bool ledger}) {
     final theme = CustomThemeProvider.of(context).theme;
+    final cartographer = isNightCartographerActive(context);
+    // Cartographer: cream thumb + navy label (gold fill reads as muddy mustard).
+    // Ledger / classic: dark thumb + light label.
+    final thumbColor =
+        cartographer ? theme.darkTextColor : theme.darkColor;
+    final selectedLabelColor =
+        cartographer ? theme.bgColor : theme.textColor;
+    final unselectedLabelColor = theme.darkTextColor;
+
     return CupertinoSlidingSegmentedControl<MoneyChangeMode>(
       backgroundColor: ledger
           ? Colors.transparent
@@ -228,7 +237,7 @@ class _PlayerScreenCharacterMoneyState
                   Brightness.light
               ? theme.middleBgColor
               : theme.middleBgColor.darker(0.4)),
-      thumbColor: theme.darkColor,
+      thumbColor: thumbColor,
       groupValue: _selectedMoneyChangeMode,
       onValueChanged: (MoneyChangeMode? value) {
         if (value != null) {
@@ -246,8 +255,8 @@ class _PlayerScreenCharacterMoneyState
                   fontSize: 16,
                   fontFamily: ledger ? 'Ruwudu' : null,
                   color: _selectedMoneyChangeMode == MoneyChangeMode.addMoney
-                      ? theme.textColor
-                      : theme.darkTextColor,
+                      ? selectedLabelColor
+                      : unselectedLabelColor,
                 ),
           ),
         ),
@@ -259,8 +268,8 @@ class _PlayerScreenCharacterMoneyState
                   fontSize: 16,
                   fontFamily: ledger ? 'Ruwudu' : null,
                   color: _selectedMoneyChangeMode == MoneyChangeMode.spendMoney
-                      ? theme.textColor
-                      : theme.darkTextColor,
+                      ? selectedLabelColor
+                      : unselectedLabelColor,
                 ),
           ),
         ),

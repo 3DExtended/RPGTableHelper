@@ -18,7 +18,7 @@ class ColoredRotatedSquare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isArcaneLedgerActive(context)) {
+    if (isDecoratedSheetSkinActive(context)) {
       final diamondColor =
           isSolidSquare ? ledgerNavbarAccent(context) : color;
       // Mock: tight, delicate diamonds.

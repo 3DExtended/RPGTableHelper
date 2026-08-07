@@ -96,9 +96,12 @@ class _AddNewItemModalContentState
         padding: EdgeInsets.fromLTRB(modalPadding, 20, modalPadding, 20),
         child: Center(
           child: CustomShadowWidget(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1200),
-              child: SkinnedModalPanel(
+            child: SkinnedModalPanel(
+              child: ConstrainedBox(
+                constraints: skinnedModalContentConstraints(
+                  context,
+                  maxWidth: 1200,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [

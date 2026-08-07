@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_recipe_card.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_create_or_edit_item_recipe_modal.dart';
@@ -194,6 +196,25 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                                   itemName: ingredItem?.name ?? "");
                             }).toList();
 
+                            final itemCategories = ref
+                                    .read(rpgConfigurationProvider)
+                                    .valueOrNull
+                                    ?.itemCategories ??
+                                const <ItemCategory>[];
+                            final flattenedCategories =
+                                ItemCategory.flattenCategoriesRecursive(
+                                    categories: itemCategories);
+                            final categoryForItem =
+                                flattenedCategories.firstWhereOrNull(
+                                    (e) => e.uuid == createdItem.categoryId);
+                            final parentCategoryOfItem = categoryForItem != null
+                                ? flattenedCategories.firstWhereOrNull((fc) =>
+                                        fc.subCategories.any((sub) =>
+                                            sub.uuid ==
+                                            categoryForItem.uuid)) ??
+                                    categoryForItem
+                                : categoryForItem;
+
                             return [
                               CupertinoContextMenu(
                                 actions: [
@@ -286,6 +307,11 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                                     imageUrl:
                                         createdItem.imageUrlWithoutBasePath,
                                     title: createdItem.name,
+                                    categoryIconName:
+                                        parentCategoryOfItem?.iconName,
+                                    categoryIconColor: parentCategoryOfItem
+                                        ?.colorCode
+                                        ?.parseHexColorRepresentation(),
                                     requirements: requirements,
                                     ingedients: ingredients,
                                   ),

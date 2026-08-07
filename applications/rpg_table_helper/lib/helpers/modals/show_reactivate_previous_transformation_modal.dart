@@ -66,9 +66,13 @@ class _ShowReactivatePreviousTransformationModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 600, maxHeight: 400),
-              child: SkinnedModalPanel(
+            child: SkinnedModalPanel(
+              child: ConstrainedBox(
+                constraints: skinnedModalContentConstraints(
+                  context,
+                  maxWidth: 600,
+                  maxHeight: 400,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [

@@ -103,9 +103,13 @@ class _ItemCardDetailsModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1000, maxHeight: 700),
-              child: SkinnedModalPanel(
+            child: SkinnedModalPanel(
+              child: ConstrainedBox(
+                constraints: skinnedModalContentConstraints(
+                  context,
+                  maxWidth: 1000,
+                  maxHeight: 700,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [

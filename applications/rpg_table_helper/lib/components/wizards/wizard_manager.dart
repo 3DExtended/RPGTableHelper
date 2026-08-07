@@ -97,7 +97,7 @@ class _WizardManagerState extends State<WizardManager> {
                 // TODO make me
               },
               titleWidget: Builder(builder: (context) {
-                final ledger = isArcaneLedgerActive(context);
+                final ledger = isDecoratedSheetSkinActive(context);
                 var selectedIconColor = ledger
                     ? ledgerNavbarAccent(context)
                     : CustomThemeProvider.of(context).theme.accentColor;

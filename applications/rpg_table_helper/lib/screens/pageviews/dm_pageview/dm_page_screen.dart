@@ -99,7 +99,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
       }
     }
 
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final scaffoldBg = ledger
         ? CustomThemeProvider.of(context).theme.secondaryNavbarColor
         : CustomThemeProvider.of(context).theme.bgColor;
@@ -129,7 +129,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                     navigatorKey.currentState!.pop();
                   },
                   titleWidget: Builder(builder: (context) {
-                    final ledger = isArcaneLedgerActive(context);
+                    final ledger = isDecoratedSheetSkinActive(context);
                     var selectedIconColor = ledger
                         ? ledgerNavbarAccent(context)
                         : CustomThemeProvider.of(context).theme.accentColor;
@@ -219,17 +219,20 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                 ),
                 Expanded(
                   child: CharacterSheetSkinChrome(
-                    child: Container(
-                      color: characterSheetSurfaceColor(context),
-                      child: PageView(
-                        controller: pageViewController,
-                        onPageChanged: (value) {
-                          setState(() {
-                            _currentStep = value;
-                          });
-                        },
-                        scrollDirection: Axis.horizontal,
-                        children: dmScreensToSwipe.map((e) => e.$2).toList(),
+                    child: Padding(
+                      padding: characterSheetContentInsets(context),
+                      child: Container(
+                        color: characterSheetSurfaceColor(context),
+                        child: PageView(
+                          controller: pageViewController,
+                          onPageChanged: (value) {
+                            setState(() {
+                              _currentStep = value;
+                            });
+                          },
+                          scrollDirection: Axis.horizontal,
+                          children: dmScreensToSwipe.map((e) => e.$2).toList(),
+                        ),
                       ),
                     ),
                   ),

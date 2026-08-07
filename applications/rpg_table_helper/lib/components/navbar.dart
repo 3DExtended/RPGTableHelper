@@ -36,10 +36,14 @@ class Navbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = CustomThemeProvider.of(context).theme;
     final ledger = isArcaneLedgerActive(context);
+    final cartographer = isNightCartographerActive(context);
+    final decorated = ledger || cartographer;
 
     final Color backgroundColor;
     if (ledger) {
       backgroundColor = const Color(0xff15100C);
+    } else if (cartographer) {
+      backgroundColor = theme.secondaryNavbarColor;
     } else if (CustomThemeProvider.of(context).brightnessNotifier.value ==
         Brightness.light) {
       backgroundColor = theme.darkColor;
@@ -53,13 +57,15 @@ class Navbar extends StatelessWidget {
             ? theme.textColor
             : theme.darkTextColor;
 
+    // Ledger: bone cream on leather. Cartographer: parchment cream on navy.
+    final creamIconColor =
+        cartographer ? const Color(0xffF0E6D4) : const Color(0xffEDE3D4);
+
     // Mock close/back: large thin cream strokes.
-    final closeIcon = ledger
+    final closeIcon = decorated
         ? CustomPaint(
             size: const Size(28, 28),
-            painter: _LedgerNavbarXPainter(
-              color: const Color(0xffEDE3D4),
-            ),
+            painter: _LedgerNavbarXPainter(color: creamIconColor),
           )
         : CustomFaIcon(
             size: 20,
@@ -69,12 +75,10 @@ class Navbar extends StatelessWidget {
             color: textColor,
           );
 
-    final backIcon = ledger
+    final backIcon = decorated
         ? CustomPaint(
             size: const Size(28, 28),
-            painter: _LedgerNavbarChevronPainter(
-              color: const Color(0xffEDE3D4),
-            ),
+            painter: _LedgerNavbarChevronPainter(color: creamIconColor),
           )
         : CustomFaIcon(
             size: 20,
@@ -83,12 +87,12 @@ class Navbar extends StatelessWidget {
           );
 
     final barContent = Row(
-      crossAxisAlignment: ledger
+      crossAxisAlignment: decorated
           ? CrossAxisAlignment.center
           : CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: ledger ? 10 : 0),
+          padding: EdgeInsets.only(left: decorated ? 10 : 0),
           child: Opacity(
             opacity: closeFunction == null ? 0 : 1,
             child: CustomButton(
@@ -100,7 +104,7 @@ class Navbar extends StatelessWidget {
         ),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.only(top: ledger ? 0 : 9.0),
+            padding: EdgeInsets.only(top: decorated ? 0 : 9.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -126,7 +130,7 @@ class Navbar extends StatelessWidget {
                 onPressed: logoutFunction,
                 icon: CustomFaIcon(
                   icon: FontAwesomeIcons.rightFromBracket,
-                  size: ledger ? 20 : 20,
+                  size: 20,
                   color: textColor,
                 ),
               ),
@@ -136,15 +140,15 @@ class Navbar extends StatelessWidget {
         Opacity(
           opacity: menuOpen == null ? 0 : 1,
           child: Padding(
-            padding: EdgeInsets.only(top: 2.0, right: ledger ? 4 : 0),
+            padding: EdgeInsets.only(top: 2.0, right: decorated ? 4 : 0),
             child: CustomButton(
               variant: CustomButtonVariant.FlatButton,
               onPressed: menuOpen,
               icon: CustomFaIcon(
                 icon: FontAwesomeIcons.gears,
-                size: ledger ? 18 : 20,
-                color: ledger
-                    ? const Color(0xffE8DCC8).withValues(alpha: 0.7)
+                size: decorated ? 18 : 20,
+                color: decorated
+                    ? creamIconColor.withValues(alpha: 0.7)
                     : textColor,
               ),
             ),
@@ -210,6 +214,54 @@ class Navbar extends StatelessWidget {
           ],
         ),
       );
+    } else if (cartographer) {
+      final topPad =
+          useTopSafePadding ? MediaQuery.of(context).padding.top : 0.0;
+      final gold = theme.accentColor;
+      barBody = SizedBox(
+        height: topPad + 68,
+        width: double.infinity,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: ColoredBox(color: backgroundColor),
+            ),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Opacity(
+                  opacity: 0.35,
+                  child: Image.asset(
+                    NightCartographerAssets.constellation,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                    filterQuality: FilterQuality.medium,
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                if (topPad > 0) SizedBox(height: topPad),
+                SizedBox(
+                  height: 68,
+                  width: double.infinity,
+                  child: barContent,
+                ),
+              ],
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                height: 1,
+                color: gold.withValues(alpha: 0.55),
+              ),
+            ),
+          ],
+        ),
+      );
     } else {
       barBody = Column(
         children: [
@@ -234,8 +286,13 @@ class Navbar extends StatelessWidget {
   }
 }
 
+/// Navbar title / active diamond accent.
+/// Ledger → copper champagne sample; Cartographer → theme champagne gold.
 Color ledgerNavbarAccent(BuildContext context) {
   if (isArcaneLedgerActive(context)) return kLedgerNavbarAccent;
+  if (isNightCartographerActive(context)) {
+    return CustomThemeProvider.of(context).theme.accentColor;
+  }
   return CustomThemeProvider.of(context).theme.accentColor;
 }
 

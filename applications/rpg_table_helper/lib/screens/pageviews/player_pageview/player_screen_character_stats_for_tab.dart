@@ -53,14 +53,14 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
         numberOfColumns = min(tabDef.statsInTab.length, numberOfColumns);
       }
 
-      final ledger = isArcaneLedgerActive(context) && !onlyTextTab;
+      final ledger = isDecoratedSheetSkinActive(context) && !onlyTextTab;
       // Mock Arcane Ledger Stats is a fixed 3-column composition — only on default Stats tab.
       final ledgerStatsLayout = ledger && tabDef.isDefaultTab == true;
       if (ledgerStatsLayout && numberOfColumns > 3) {
         numberOfColumns = 3;
       }
 
-      var padding = 20.0;
+      var padding = isNightCartographerActive(context) ? 16.0 : 20.0;
       var columnWidth =
           (constraints.maxWidth - padding * (numberOfColumns + 1)) /
               numberOfColumns.toDouble();

@@ -20,6 +20,9 @@ class PentagonWithLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isNightCartographerActive(context)) {
+      return _cartographerHouseStamp(context);
+    }
     if (isArcaneLedgerActive(context)) {
       return _ledgerHexStamp(context);
     }
@@ -76,6 +79,73 @@ class PentagonWithLabel extends StatelessWidget {
             maxLines: 1,
             maxFontSize: 14,
             minFontSize: 14,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Night Cartographer: gold-outline house/pentagon stamp on navy fill.
+  Widget _cartographerHouseStamp(BuildContext context) {
+    final theme = CustomThemeProvider.of(context).theme;
+    final mod = otherValue >= 0 ? '+$otherValue' : '$otherValue';
+    return SizedBox(
+      width: 100,
+      child: Column(
+        children: [
+          SizedBox(
+            width: 84,
+            height: 84,
+            child: CustomPaint(
+              painter: _CartographerHouseStampPainter(
+                fill: theme.bgColor,
+                gold: theme.accentColor,
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 4),
+                    Text(
+                      value.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 22,
+                            color: theme.darkTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Ruwudu',
+                            height: 1.0,
+                          ),
+                    ),
+                    Text(
+                      mod,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 13,
+                            color: theme.darkTextColor.withValues(alpha: 0.85),
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Ruwudu',
+                            height: 1.1,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          AutoSizeText(
+            label,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  fontSize: 12,
+                  color: theme.darkTextColor,
+                  fontFamily: 'Ruwudu',
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            maxFontSize: 12,
+            minFontSize: 10,
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -167,6 +237,71 @@ class _PentagonClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+Path _housePentagonPath(Size size, {double inset = 0}) {
+  final w = size.width;
+  final h = size.height;
+  final path = Path();
+  path.moveTo(w * 0.5, inset);
+  path.lineTo(w - inset, h * 0.38);
+  path.lineTo(w * 0.82 - inset * 0.3, h - inset);
+  path.lineTo(w * 0.18 + inset * 0.3, h - inset);
+  path.lineTo(inset, h * 0.38);
+  path.close();
+  return path;
+}
+
+class _CartographerHouseStampPainter extends CustomPainter {
+  final Color fill;
+  final Color gold;
+
+  _CartographerHouseStampPainter({required this.fill, required this.gold});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final outer = _housePentagonPath(size, inset: 2);
+    final mid = _housePentagonPath(size, inset: 5.5);
+    final inner = _housePentagonPath(size, inset: 9);
+    canvas.drawPath(
+      outer.shift(const Offset(1.5, 2)),
+      Paint()
+        ..color = const Color(0x33000000)
+        ..style = PaintingStyle.fill
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2),
+    );
+    canvas.drawPath(
+      outer,
+      Paint()
+        ..color = fill
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawPath(
+      outer,
+      Paint()
+        ..color = gold.withValues(alpha: 0.92)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.8,
+    );
+    canvas.drawPath(
+      mid,
+      Paint()
+        ..color = gold.withValues(alpha: 0.4)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
+    canvas.drawPath(
+      inner,
+      Paint()
+        ..color = gold.withValues(alpha: 0.22)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CartographerHouseStampPainter oldDelegate) =>
+      oldDelegate.fill != fill || oldDelegate.gold != gold;
 }
 
 class _LedgerHexStampPainter extends CustomPainter {

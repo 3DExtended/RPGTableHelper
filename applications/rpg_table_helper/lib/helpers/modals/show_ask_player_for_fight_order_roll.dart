@@ -64,7 +64,8 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
   @override
   Widget build(BuildContext context) {
     final hint = widget.initiativeBonusHint;
-    final maxHeight = hint == null ? 300.0 : 360.0;
+    // Cartographer chrome needs a bit more vertical room; other skins keep classic sizes.
+    final maxHeight = (hint == null ? 300.0 : 360.0);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -77,9 +78,15 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
             right: widget.modalPadding),
         child: Center(
           child: CustomShadowWidget(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 550, maxHeight: maxHeight),
-              child: SkinnedModalPanel(
+            // Constraints must sit *inside* SkinnedModalPanel so frame insets
+            // grow the card instead of stealing height from the body.
+            child: SkinnedModalPanel(
+              child: ConstrainedBox(
+                constraints: skinnedModalContentConstraints(
+                  context,
+                  maxWidth: 550,
+                  maxHeight: maxHeight,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -162,7 +169,8 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                       height: 20,
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(30.0, 30, 30, modalFooterBottomPadding(context)),
+                      padding: EdgeInsets.fromLTRB(
+                          30.0, 30, 30, modalFooterBottomPadding(context)),
                       child: Row(
                         children: [
                           const Spacer(),

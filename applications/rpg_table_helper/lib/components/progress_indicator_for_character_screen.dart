@@ -24,17 +24,17 @@ class ProgressIndicatorForCharacterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ledger = isArcaneLedgerActive(context);
+    final decorated = isDecoratedSheetSkinActive(context);
     return LayoutBuilder(builder: (context, constraints) {
       var width = max(350, min(constraints.maxWidth, constraints.maxHeight)) -
           2.0 * 60.0;
-      var strokeWidth = width * (ledger ? .07 : .1);
+      var strokeWidth = width * (decorated ? .07 : .1);
 
       var containerWidth = width - 2.5 * strokeWidth;
       var fontSize = containerWidth * 0.2;
       final theme = CustomThemeProvider.of(context).theme;
 
-      if (ledger) {
+      if (decorated) {
         return Center(
           child: SizedBox(
             width: width,

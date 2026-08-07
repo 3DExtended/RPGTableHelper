@@ -203,15 +203,17 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   Widget build(BuildContext context) {
     // the navbar is rendered on top of the content if this setting is true
     var useStackOption = !context.isTablet;
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
 
     var children = [
       // collapsable navbar
       _getCollapsableNavbar(),
 
-      // Mock: binder rings sit between index page and content page.
+      // Mock: binder rings (Ledger) or thin atlas rule (Cartographer) between panes.
       if (!useStackOption && ledger && !_isNavbarCollapsed)
-        const LedgerBinderSpine(),
+        isNightCartographerActive(context)
+            ? const CartographerLoreDivider()
+            : const LedgerBinderSpine(),
 
       // content
       if (!useStackOption)
@@ -238,7 +240,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _getCollapsableNavbar() {
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final Color sidebarColor;
     if (ledger) {
       // Parchment chrome shows through — no solid classic sidebar panel.
@@ -499,7 +501,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _getDocumentDragChild(NoteDocumentDto doc, BuildContext context) {
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final selected = selectedDocumentId?.$value == doc.id?.$value;
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -552,7 +554,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       );
     }
 
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     final ink = CustomThemeProvider.of(context).theme.darkTextColor;
     final authorName = selectedDocument == null
         ? ''
@@ -710,7 +712,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   Widget _getCollapseButton(Duration duration) {
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     return AnimatedPadding(
       duration: duration,
       padding: EdgeInsets.fromLTRB(
@@ -799,7 +801,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
       // Ledger lore mock uses curated order (Skadi first, not alpha).
       // Classic skins keep alphabetical index lists.
-      if (!isArcaneLedgerActive(context)) {
+      if (!isDecoratedSheetSkinActive(context)) {
         groupedDocuments.forEach((key, list) {
           list.sort((a, b) => a.title.compareTo(b.title));
         });
@@ -809,7 +811,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       groupLabels = [...groupedDocuments.keys, otherGroupName]
           .distinct(by: (e) => e)
           .toList();
-      if (isArcaneLedgerActive(context)) {
+      if (isDecoratedSheetSkinActive(context)) {
         // Match mock section order: Götter → Other → Session Notes.
         const preferred = ['Götter', 'Other', 'Session Notes'];
         groupLabels.sort((a, b) {
@@ -877,14 +879,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           min(index, groupedDocuments[targetGroup]!.length),
           doc.copyWith(groupName: targetGroup));
 
-      if (!isArcaneLedgerActive(context)) {
+      if (!isDecoratedSheetSkinActive(context)) {
         groupedDocuments[targetGroup]!.sortBy((e) => e.title);
       }
     });
   }
 
   Widget _buildNavItem(String label) {
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
     if (_isNavbarCollapsed) {
       return Padding(
         padding: const EdgeInsets.only(left: 12),
@@ -946,7 +948,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   List<Widget> _renderContentBlocks() {
     if (selectedDocument == null) return [];
     List<dynamic> blocks = getBlocksOfSelectedDocument;
-    final ledger = isArcaneLedgerActive(context);
+    final ledger = isDecoratedSheetSkinActive(context);
 
     List<Widget> result = [];
 
@@ -1258,7 +1260,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     }
 
     return result.insertBetween(
-      isArcaneLedgerActive(context)
+      isDecoratedSheetSkinActive(context)
           ? const Padding(
               padding: EdgeInsets.symmetric(vertical: 14),
               child: LedgerDoubleRule(),
@@ -1410,14 +1412,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           selectedDocument = updatedDocument;
 
           groupedDocuments[value.groupName]!.add(updatedDocument);
-          if (!isArcaneLedgerActive(context)) {
+          if (!isDecoratedSheetSkinActive(context)) {
             groupedDocuments[value.groupName]!.sortBy((e) => e.title);
           }
 
           groupLabels = [...groupedDocuments.keys, otherGroupName]
               .distinct(by: (e) => e)
               .toList();
-          if (!isArcaneLedgerActive(context)) {
+          if (!isDecoratedSheetSkinActive(context)) {
             groupLabels.sort();
           }
         }

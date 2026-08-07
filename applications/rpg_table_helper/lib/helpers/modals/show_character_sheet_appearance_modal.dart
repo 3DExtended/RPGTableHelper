@@ -40,9 +40,12 @@ Future<Object?> showCharacterSheetAppearanceModal({
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: SkinnedModalPanel(
+      child: SkinnedModalPanel(
+        child: ConstrainedBox(
+          constraints: skinnedModalContentConstraints(
+            ctx,
+            maxWidth: 560,
+          ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
             child: Column(

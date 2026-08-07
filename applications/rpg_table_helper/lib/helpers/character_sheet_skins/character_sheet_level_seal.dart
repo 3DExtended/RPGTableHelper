@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/night_cartographer_ornaments.dart';
 
 /// Asset paths for Arcane Ledger hybrid decorations (skin-07).
 abstract final class ArcaneLedgerAssets {
@@ -38,14 +39,25 @@ abstract final class ArcaneLedgerAssets {
   }
 }
 
-/// Illustrated wax seal with dynamic level text overlaid in the empty center.
+/// Asset paths for Night Cartographer hybrid decorations (skin-09).
 ///
-/// Level is never baked into the raster — always passed from character data.
+/// Level seal + corners are drawn (see [night_cartographer_ornaments]).
+abstract final class NightCartographerAssets {
+  static const constellation =
+      'assets/images/character_sheet_skins/night_cartographer_constellation.png';
+}
+
+/// Illustrated level badge with dynamic level text.
+///
+/// Ledger uses the wax-seal raster. Cartographer uses [CartographerLevelBadge]
+/// (CustomPainter rings — no seal image).
 class CharacterSheetLevelSeal extends StatelessWidget {
   final int level;
   final String levelAbbr;
   final double size;
   final Color? textColor;
+  final String assetPath;
+  final bool drawCartographerCompass;
 
   const CharacterSheetLevelSeal({
     super.key,
@@ -53,11 +65,42 @@ class CharacterSheetLevelSeal extends StatelessWidget {
     required this.levelAbbr,
     this.size = 72,
     this.textColor,
+    this.assetPath = ArcaneLedgerAssets.waxSeal,
+    this.drawCartographerCompass = false,
   });
+
+  factory CharacterSheetLevelSeal.forSkin({
+    required bool nightCartographer,
+    required int level,
+    required String levelAbbr,
+    double size = 72,
+    Color? textColor,
+  }) {
+    return CharacterSheetLevelSeal(
+      level: level,
+      levelAbbr: levelAbbr,
+      size: size,
+      textColor: textColor ??
+          (nightCartographer
+              ? const Color(0xFFF0E6D4)
+              : const Color(0xFFF5E6D3)),
+      assetPath: ArcaneLedgerAssets.waxSeal,
+      drawCartographerCompass: nightCartographer,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final ink = textColor ?? const Color(0xFFF5E6D3);
+    if (drawCartographerCompass) {
+      return CartographerLevelBadge(
+        level: level,
+        levelAbbr: levelAbbr,
+        size: size,
+        textColor: ink,
+      );
+    }
+
     return SizedBox(
       width: size,
       height: size,
@@ -66,7 +109,7 @@ class CharacterSheetLevelSeal extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Image.asset(
-            ArcaneLedgerAssets.waxSeal,
+            assetPath,
             width: size,
             height: size,
             fit: BoxFit.contain,
