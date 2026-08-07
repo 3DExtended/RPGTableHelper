@@ -342,19 +342,16 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                       '{"value": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr."}',
                 );
               case CharacterStatValueType.multiselect:
+                final options = jsonDecode(
+                        stat.jsonSerializedAdditionalData!)["options"]
+                    as List<dynamic>;
                 return RpgCharacterStatValue(
                   hideFromCharacterScreen: false,
                   hideLabelOfStat: false,
-                  variant:
-                      (jsonDecode(stat.jsonSerializedAdditionalData!)["options"]
-                                      as List<dynamic>)
-                                  .length >
-                              6
-                          ? 1
-                          : null,
+                  variant: null,
                   statUuid: stat.statUuid,
                   serializedValue:
-                      '${'${'{"values": ["' + jsonDecode(stat.jsonSerializedAdditionalData!)["options"][0]["uuid"]}", "' + jsonDecode(stat.jsonSerializedAdditionalData!)["options"][2]["uuid"]}"]}',
+                      '${'${'{"values": ["' + options[0]["uuid"]}", "' + options[2]["uuid"]}"]}',
                 );
 
               default:

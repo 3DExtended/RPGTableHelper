@@ -574,6 +574,26 @@ class S {
     );
   }
 
+  /// `Summary:`
+  String get multiselectOptionSummary {
+    return Intl.message(
+      'Summary:',
+      name: 'multiselectOptionSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional, ~90 characters; shown on the sheet. Full text stays in Description.`
+  String get multiselectOptionSummaryHelper {
+    return Intl.message(
+      'Optional, ~90 characters; shown on the sheet. Full text stays in Description.',
+      name: 'multiselectOptionSummaryHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add element`
   String get additionalElement {
     return Intl.message(

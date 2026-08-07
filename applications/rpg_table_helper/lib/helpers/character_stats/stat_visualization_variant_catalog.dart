@@ -199,6 +199,13 @@ class StatVisualizationVariantCatalog {
       title: 'Icon / tile grid (was V-MULTI-4; checklist+grouped removed)',
       isNew: true,
     ),
+    StatVisualizationVariantEntry(
+      id: 'V-MULTI-4',
+      valueType: 'multiselect',
+      variant: 4,
+      title: 'Summary list (tap for details)',
+      isNew: true,
+    ),
 
     // --- characterNameWithLevelAndAdditionalDetails ---
     StatVisualizationVariantEntry(

@@ -17,11 +17,13 @@ import 'package:quest_keeper/components/progress_indicator_for_character_screen.
 import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/multiselect_option_list_text.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_visualization_variant_widgets.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/night_cartographer_ornaments.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
+import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/modals/show_reactivate_previous_transformation_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_select_transformation_components_for_transformation.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
@@ -60,8 +62,9 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
     case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
     case CharacterStatValueType.intWithCalculatedValue:
     case CharacterStatValueType.listOfIntWithCalculatedValues:
-    case CharacterStatValueType.multiselect:
       return 4;
+    case CharacterStatValueType.multiselect:
+      return 5;
     case CharacterStatValueType.listOfIntsWithIcons:
       return 5;
     case CharacterStatValueType.intWithMaxValue:
@@ -412,19 +415,22 @@ Widget renderMultiselectStat(
     statConfigValues = json["options"] as List<dynamic>;
   }
 
-  var config = statConfigValues
-      .map(
-        (e) => (
-          e["uuid"] as String,
-          e["label"] as String,
-          e["description"] as String
-        ),
-      )
-      .toList();
+  var config = statConfigValues.map((e) {
+    final map = e as Map<String, dynamic>;
+    final summaryRaw = map['summary'];
+    return (
+      map['uuid'] as String,
+      map['label'] as String,
+      map['description'] as String? ?? '',
+      summaryRaw is String ? summaryRaw : null,
+    );
+  }).toList();
 
-  // Variant 0: selected only. Variant 1+: show all options (different layouts).
-  final showAllOptions =
-      characterValue.variant != null && characterValue.variant! >= 1;
+  // 0 / 4: selected only. 1–3: show all options (list / chips / tiles).
+  final showAllOptions = switch (characterValue.variant) {
+    1 || 2 || 3 => true,
+    _ => false,
+  };
 
   var valueToConfigMapped = config
       .map((pv) => (parsedValue.where((es) => es == pv.$1).length, pv))
@@ -452,37 +458,22 @@ Widget renderMultiselectStat(
         title: statConfiguration.name,
         items: mappedItems,
       );
-  }
-
-  final ledger = isDecoratedSheetSkinActive(context);
-  if (ledger &&
-      statConfiguration.name.toLowerCase().contains('zauber')) {
-    // Preserve selection order (mock Spells layout), not alpha sort.
-    final byUuid = {
-      for (final e in valueToConfigMapped) e.$2.$1: e,
-    };
-    final ordered = <(int, (String, String, String))>[];
-    for (final id in parsedValue) {
-      final hit = byUuid[id];
-      if (hit != null && !ordered.any((o) => o.$2.$1 == id)) {
-        ordered.add(hit);
-      }
-    }
-    for (final e in valueToConfigMapped) {
-      if (!ordered.any((o) => o.$2.$1 == e.$2.$1)) {
-        ordered.add(e);
-      }
-    }
-    return _LedgerSpellMultiselect(
-      title: statConfiguration.name,
-      items: ordered
-          .map((e) => (
-                selected: e.$1 != 0,
+    case 4:
+      return _MultiselectSummaryList(
+        title: statConfiguration.name,
+        multiselectIsAllowedToBeSelectedMultipleTimes:
+            multiselectIsAllowedToBeSelectedMultipleTimes,
+        items: valueToConfigMapped
+            .map(
+              (e) => (
+                count: e.$1,
                 label: e.$2.$2,
                 description: e.$2.$3,
-              ))
-          .toList(),
-    );
+                summary: e.$2.$4,
+              ),
+            )
+            .toList(),
+      );
   }
 
   return Column(
@@ -578,115 +569,262 @@ Widget renderMultiselectStat(
   );
 }
 
-/// Ledger spell list: section header + checked rows with short blurbs (mock Spells).
-class _LedgerSpellMultiselect extends StatelessWidget {
-  final String title;
-  final List<({bool selected, String label, String description})> items;
-
-  const _LedgerSpellMultiselect({
+class _MultiselectSummaryList extends StatelessWidget {
+  const _MultiselectSummaryList({
     required this.title,
     required this.items,
+    required this.multiselectIsAllowedToBeSelectedMultipleTimes,
   });
 
-  static String _shortBlurb(String description) {
-    final lines = description
-        .split('\n')
-        .map((l) => l.trim())
-        .where((l) => l.isNotEmpty)
-        .toList();
-    for (final line in lines) {
-      final lower = line.toLowerCase();
-      if (lower.startsWith('zeitaufwand') ||
-          lower.startsWith('reichweite') ||
-          lower.startsWith('komponenten') ||
-          lower.startsWith('wirkungsdauer') ||
-          lower.contains('grades') ||
-          lower.contains('zaubertrick') ||
-          lower.contains('(ritual)')) {
-        continue;
-      }
-      final sentence = line.split('.').first.trim();
-      if (sentence.isEmpty) continue;
-      if (sentence.length > 90) {
-        return '${sentence.substring(0, 87)}…';
-      }
-      return '$sentence.';
-    }
-    return '';
+  final String title;
+  final bool multiselectIsAllowedToBeSelectedMultipleTimes;
+  final List<
+      ({
+        int count,
+        String label,
+        String description,
+        String? summary,
+      })> items;
+
+  Future<void> _openDetails(
+    BuildContext context, {
+    required String label,
+    required String description,
+  }) async {
+    final theme = CustomThemeProvider.of(context).theme;
+    await customShowCupertinoModalBottomSheet<void>(
+      context: context,
+      isDismissible: true,
+      expand: true,
+      enableDrag: false,
+      closeProgressThreshold: -50000,
+      backgroundColor: const Color.fromARGB(192, 21, 21, 21),
+      builder: (ctx) {
+        final padding =
+            MediaQuery.of(ctx).size.width < 800 ? 20.0 : 80.0;
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(padding, 20, padding, 20),
+            child: Center(
+              child: CustomShadowWidget(
+                child: SkinnedModalPanel(
+                  child: ConstrainedBox(
+                    constraints: skinnedModalContentConstraints(
+                      ctx,
+                      maxWidth: 700,
+                      maxHeight: 560,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 14, 8, 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  label,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(ctx)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                        color: theme.darkTextColor,
+                                        fontSize: 22,
+                                      ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () =>
+                                    Navigator.of(ctx).maybePop(),
+                                icon: Icon(Icons.close,
+                                    color: theme.darkTextColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                            child: Text(
+                              description,
+                              style: Theme.of(ctx)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: theme.darkTextColor,
+                                    fontSize: 16,
+                                    height: 1.35,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+    final dark = CustomThemeProvider.of(context).theme.darkColor;
+    final bg = CustomThemeProvider.of(context).theme.bgColor;
+    final decorated = isDecoratedSheetSkinActive(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: ink,
-                    fontSize: 22,
-                    fontFamily: 'Ruwudu',
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Container(
-                height: 1,
-                color: ink.withValues(alpha: 0.45),
+        if (decorated)
+          Row(
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: ink,
+                      fontSize: 22,
+                      fontFamily: 'Ruwudu',
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: ink.withValues(alpha: 0.45),
+                ),
+              ),
+            ],
+          )
+        else
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: ink,
+                  fontSize: 24,
+                ),
+          ),
+        SizedBox(height: decorated ? 12 : 10),
         if (items.isEmpty)
           Text(
             S.of(context).nothingSelected,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: ink.withValues(alpha: 0.45),
-                  fontSize: 15,
-                  fontFamily: 'Ruwudu',
+                  color: decorated
+                      ? ink.withValues(alpha: 0.45)
+                      : const Color.fromARGB(255, 193, 193, 193),
+                  fontSize: decorated ? 15 : 16,
+                  fontFamily: decorated ? 'Ruwudu' : null,
                 ),
           ),
-        ...items.map((item) {
-          final blurb = _shortBlurb(item.description);
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
+        ...items.map((e) {
+          final isSelected = e.count != 0;
+          final listText = resolveMultiselectListText(
+            summary: e.summary,
+            description: e.description,
+          );
+          final canOpenDetails = e.description.trim().isNotEmpty;
+
+          final row = Padding(
+            padding: EdgeInsets.only(bottom: decorated ? 14 : 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.label,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: ink,
-                        fontSize: 17,
-                        fontFamily: 'Ruwudu',
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                if (blurb.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    blurb,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: ink.withValues(alpha: 0.78),
-                          fontSize: 14,
-                          fontFamily: 'Ruwudu',
-                          height: 1.3,
+                Row(
+                  children: [
+                    if (!decorated) ...[
+                      Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected ? dark : bg,
+                          border: Border.all(color: dark),
                         ),
+                      ),
+                      if (multiselectIsAllowedToBeSelectedMultipleTimes)
+                        ...List.filled(
+                          max(0, e.count - 1),
+                          Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: dark,
+                              border: Border.all(color: dark),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(width: 10),
+                    ],
+                    Expanded(
+                      child: Text(
+                        e.label,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: ink,
+                              fontSize: decorated ? 17 : 16,
+                              fontFamily: decorated ? 'Ruwudu' : null,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ),
+                    if (canOpenDetails)
+                      Icon(
+                        Icons.chevron_right,
+                        color: ink.withValues(alpha: 0.7),
+                        size: 22,
+                      ),
+                  ],
+                ),
+                if (listText.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: decorated ? 0 : 25,
+                      top: 2,
+                      bottom: decorated ? 0 : 4,
+                    ),
+                    child: Text(
+                      listText,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: ink.withValues(alpha: decorated ? 0.78 : 0.75),
+                            fontSize: decorated ? 14 : 12,
+                            fontFamily: decorated ? 'Ruwudu' : null,
+                            height: 1.3,
+                          ),
+                    ),
                   ),
-                ],
               ],
             ),
           );
+
+          final tappable = !canOpenDetails
+              ? row
+              : Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _openDetails(
+                      context,
+                      label: e.label,
+                      description: e.description,
+                    ),
+                    child: row,
+                  ),
+                );
+
+          return tappable;
         }),
-        CustomPaint(
-          painter: _LedgerStarRulePainter(ink: ink),
-          child: const SizedBox(width: double.infinity, height: 18),
-        ),
+        if (decorated)
+          CustomPaint(
+            painter: _LedgerStarRulePainter(ink: ink),
+            child: const SizedBox(width: double.infinity, height: 18),
+          ),
       ],
     );
   }

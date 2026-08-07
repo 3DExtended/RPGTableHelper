@@ -114,6 +114,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterSheetSkinArcaneLedger": MessageLookupByLibrary.simpleMessage(
       "Arcane Ledger",
     ),
+    "characterSheetSkinCampaignDefaultLabel":
+        MessageLookupByLibrary.simpleMessage("Campaign default"),
     "characterSheetSkinClassicDark": MessageLookupByLibrary.simpleMessage(
       "Classic Dark",
     ),
@@ -123,8 +125,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterSheetSkinNightCartographer": MessageLookupByLibrary.simpleMessage(
       "Night Cartographer",
     ),
-    "characterSheetSkinCampaignDefaultLabel":
-        MessageLookupByLibrary.simpleMessage("Campaign default"),
     "characterSheetSkinUseCampaignDefault":
         MessageLookupByLibrary.simpleMessage("Use campaign default"),
     "chooseACampagne": MessageLookupByLibrary.simpleMessage(
@@ -336,6 +336,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Description:",
     ),
     "multiselectOptionName": MessageLookupByLibrary.simpleMessage("Name:"),
+    "multiselectOptionSummary": MessageLookupByLibrary.simpleMessage(
+      "Summary:",
+    ),
+    "multiselectOptionSummaryHelper": MessageLookupByLibrary.simpleMessage(
+      "Optional, ~90 characters; shown on the sheet. Full text stays in Description.",
+    ),
     "multiselectOptionsAreSelectableMultipleTimes":
         MessageLookupByLibrary.simpleMessage(
           "Multiselect options are selectable multiple times",

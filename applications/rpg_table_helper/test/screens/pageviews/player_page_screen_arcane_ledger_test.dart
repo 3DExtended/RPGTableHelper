@@ -23,6 +23,8 @@ import '../../custom_font_loader.dart';
 import '../../test_configuration.dart';
 
 /// Spell tab values matching `arcane-ledger-mock-spells.png` for Ledger goldens.
+/// Skills (Fertigkeiten) use multiselect variant 1 so the Stats golden shows
+/// the full proficiency list, not only selected rows.
 RpgCharacterConfiguration _ledgerCharacterWithSpells() {
   final base = RpgCharacterConfiguration.getBaseConfiguration(
     RpgConfigurationModel.getBaseConfiguration(),
@@ -31,7 +33,13 @@ RpgCharacterConfiguration _ledgerCharacterWithSpells() {
   return base.copyWith(
     skinId: CharacterSheetSkinIds.arcaneLedger,
     characterStats: [
-      ...base.characterStats,
+      ...base.characterStats.map((stat) {
+        // Show-all multiselect (variant 1) for the skills list on Stats.
+        if (stat.statUuid == 'c5ef782a-8d8b-4a88-98b2-be277f741e4c') {
+          return stat.copyWith(variant: 1);
+        }
+        return stat;
+      }),
       RpgCharacterStatValue(
         statUuid: '2438aac8-4a67-41ca-aad9-3c838b7c5cf3', // Zauberpunkte
         serializedValue: jsonEncode({'value': 4, 'maxValue': 8}),
@@ -50,7 +58,7 @@ RpgCharacterConfiguration _ledgerCharacterWithSpells() {
         }),
         hideFromCharacterScreen: false,
         hideLabelOfStat: false,
-        variant: 0,
+        variant: 4,
       ),
       RpgCharacterStatValue(
         statUuid: '31a52ed2-3e7b-42ac-8f3e-490b3a04027a', // Zauber 1. Stufe
@@ -62,7 +70,7 @@ RpgCharacterConfiguration _ledgerCharacterWithSpells() {
         }),
         hideFromCharacterScreen: false,
         hideLabelOfStat: false,
-        variant: 0,
+        variant: 4,
       ),
     ],
   );

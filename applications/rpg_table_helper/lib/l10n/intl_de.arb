@@ -72,6 +72,8 @@
   "optionsForMultiselect": "Optionen für Mehrfach-Auswahl",
   "multiselectOptionName": "Name:",
   "multiselectOptionDescription": "Beschreibung:",
+  "multiselectOptionSummary": "Kurzfassung:",
+  "multiselectOptionSummaryHelper": "Optional, ca. 90 Zeichen; erscheint auf dem Charakterbogen. Der volle Text bleibt in der Beschreibung.",
   "additionalElement": "Neues Element",
   "moreValues": "Weitere Werte",
   "forIntegerValueWithName": "für Zahlen-Wert",

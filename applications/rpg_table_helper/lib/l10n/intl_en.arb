@@ -56,6 +56,8 @@
   "optionsForMultiselect": "Options for multiselect",
   "multiselectOptionName": "Name:",
   "multiselectOptionDescription": "Description:",
+  "multiselectOptionSummary": "Summary:",
+  "multiselectOptionSummaryHelper": "Optional, ~90 characters; shown on the sheet. Full text stays in Description.",
   "additionalElement": "Add element",
   "moreValues": "More values",
   "forIntegerValueWithName": "for number value",

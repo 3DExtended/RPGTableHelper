@@ -114,6 +114,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterSheetSkinArcaneLedger": MessageLookupByLibrary.simpleMessage(
       "Arkanes Foliant",
     ),
+    "characterSheetSkinCampaignDefaultLabel":
+        MessageLookupByLibrary.simpleMessage("Kampagnen-Standard"),
     "characterSheetSkinClassicDark": MessageLookupByLibrary.simpleMessage(
       "Klassisch Dunkel",
     ),
@@ -123,8 +125,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "characterSheetSkinNightCartographer": MessageLookupByLibrary.simpleMessage(
       "Nachtkartograph",
     ),
-    "characterSheetSkinCampaignDefaultLabel":
-        MessageLookupByLibrary.simpleMessage("Kampagnen-Standard"),
     "characterSheetSkinUseCampaignDefault":
         MessageLookupByLibrary.simpleMessage("Kampagnen-Standard verwenden"),
     "chooseACampagne": MessageLookupByLibrary.simpleMessage(
@@ -350,6 +350,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Beschreibung:",
     ),
     "multiselectOptionName": MessageLookupByLibrary.simpleMessage("Name:"),
+    "multiselectOptionSummary": MessageLookupByLibrary.simpleMessage(
+      "Kurzfassung:",
+    ),
+    "multiselectOptionSummaryHelper": MessageLookupByLibrary.simpleMessage(
+      "Optional, ca. 90 Zeichen; erscheint auf dem Charakterbogen. Der volle Text bleibt in der Beschreibung.",
+    ),
     "multiselectOptionsAreSelectableMultipleTimes":
         MessageLookupByLibrary.simpleMessage(
           "Optionen können mehrmals ausgewählt werden",

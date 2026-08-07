@@ -58,12 +58,13 @@ class _ShowGetDmConfigurationModalContentState
   var nameTextEditor = TextEditingController();
   var helperTextEditor = TextEditingController();
 
-  // stored as [{"label": "asdf", "description": "asdf"}] in additionalValues
+  // stored as options with label/description(/summary) in additionalValues
   List<
       (
         String uuid,
         TextEditingController label,
-        TextEditingController description
+        TextEditingController description,
+        TextEditingController summary,
       )> multiselectOptions = [];
 
   List<({String uuid, TextEditingController label, String? iconName})>
@@ -131,11 +132,14 @@ class _ShowGetDmConfigurationModalContentState
               var label = (item as Map<String, dynamic>)["label"];
               var uuid = (item)["uuid"];
               var description = (item)["description"];
+              var summary = (item)["summary"];
 
               multiselectOptions.add((
                 uuid,
                 TextEditingController(text: label),
-                TextEditingController(text: description)
+                TextEditingController(text: description ?? ''),
+                TextEditingController(
+                    text: summary is String ? summary : ''),
               ));
             }
           } else if (selectedValueType ==
@@ -198,13 +202,18 @@ class _ShowGetDmConfigurationModalContentState
 
           if (selectedValueType == CharacterStatValueType.multiselect) {
             var serializedAdditionalData = jsonEncode({
-              "options": multiselectOptions
-                  .map((e) => {
-                        "uuid": e.$1,
-                        "label": e.$2.text,
-                        "description": e.$3.text
-                      })
-                  .toList(),
+              "options": multiselectOptions.map((e) {
+                final map = <String, dynamic>{
+                  "uuid": e.$1,
+                  "label": e.$2.text,
+                  "description": e.$3.text,
+                };
+                final summary = e.$4.text.trim();
+                if (summary.isNotEmpty) {
+                  map["summary"] = summary;
+                }
+                return map;
+              }).toList(),
               "multiselectIsAllowedToBeSelectedMultipleTimes":
                   multiselectIsAllowedToBeSelectedMultipleTimes,
             });
@@ -508,47 +517,68 @@ class _ShowGetDmConfigurationModalContentState
           height: 20,
         ),
 
-        // we should have tuples of "option label" and "option description"
+        // Option name, description, optional summary
         ...multiselectOptions.asMap().entries.map(
               (tuple) => Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
                   children: [
-                    Expanded(
-                      child: CustomTextField(
-                        labelText: S.of(context).multiselectOptionName,
-                        textEditingController: tuple.value.$2,
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: CustomTextField(
-                        labelText: S.of(context).multiselectOptionDescription,
-                        textEditingController: tuple.value.$3,
-                        keyboardType: TextInputType.multiline,
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 70,
-                      clipBehavior: Clip.none,
-                      child: CustomButton(
-                        variant: CustomButtonVariant.FlatButton,
-                        onPressed: () {
-                          setState(() {
-                            multiselectOptions.removeAt(tuple.key);
-                          });
-                        },
-                        icon: CustomFaIcon(
-                          icon: FontAwesomeIcons.trashCan,
-                          color:
-                              CustomThemeProvider.of(context).theme.darkColor,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            labelText: S.of(context).multiselectOptionName,
+                            textEditingController: tuple.value.$2,
+                            keyboardType: TextInputType.text,
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              CustomTextField(
+                                labelText: S
+                                    .of(context)
+                                    .multiselectOptionDescription,
+                                textEditingController: tuple.value.$3,
+                                keyboardType: TextInputType.multiline,
+                              ),
+                              CustomTextField(
+                                labelText:
+                                    S.of(context).multiselectOptionSummary,
+                                placeholderText: S
+                                    .of(context)
+                                    .multiselectOptionSummaryHelper,
+                                textEditingController: tuple.value.$4,
+                                keyboardType: TextInputType.text,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          width: 70,
+                          clipBehavior: Clip.none,
+                          child: CustomButton(
+                            variant: CustomButtonVariant.FlatButton,
+                            onPressed: () {
+                              setState(() {
+                                multiselectOptions.removeAt(tuple.key);
+                              });
+                            },
+                            icon: CustomFaIcon(
+                              icon: FontAwesomeIcons.trashCan,
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -564,7 +594,8 @@ class _ShowGetDmConfigurationModalContentState
                 multiselectOptions.add((
                   UuidV7().generate(),
                   TextEditingController(),
-                  TextEditingController()
+                  TextEditingController(),
+                  TextEditingController(),
                 ));
               });
             },

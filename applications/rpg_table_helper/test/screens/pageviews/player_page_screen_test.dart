@@ -19,6 +19,25 @@ import 'package:quest_keeper/services/dependency_provider.dart';
 import '../../custom_font_loader.dart';
 import '../../test_configuration.dart';
 
+/// Stats golden needs Fertigkeiten on show-all variant 1 (selected + unselected).
+const _fertigkeitenStatUuid = 'c5ef782a-8d8b-4a88-98b2-be277f741e4c';
+
+RpgCharacterConfiguration _classicCharacterForGoldens() {
+  final base = RpgCharacterConfiguration.getBaseConfiguration(
+    RpgConfigurationModel.getBaseConfiguration(),
+    variant: 0,
+  );
+  return base.copyWith(
+    characterStats: [
+      for (final stat in base.characterStats)
+        if (stat.statUuid == _fertigkeitenStatUuid)
+          stat.copyWith(variant: 1)
+        else
+          stat,
+    ],
+  );
+}
+
 void main() {
   const testCases = [
     (0, "playerbackgroundscreen"),
@@ -67,11 +86,7 @@ void main() {
             }),
             rpgCharacterConfigurationProvider.overrideWith((ref) {
               return RpgCharacterConfigurationNotifier(
-                decks: AsyncValue.data(
-                  RpgCharacterConfiguration.getBaseConfiguration(
-                      RpgConfigurationModel.getBaseConfiguration(),
-                      variant: 0),
-                ),
+                decks: AsyncValue.data(_classicCharacterForGoldens()),
                 ref: ref,
                 runningInTests: true,
               );
@@ -131,12 +146,8 @@ void main() {
                             $value: "9a709402-5620-479c-85b7-718ae01e0a83"),
                         playerCharacterId: PlayerCharacterIdentifier(
                             $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d"),
-                        configuration:
-                            RpgCharacterConfiguration.getBaseConfiguration(
-                                    RpgConfigurationModel
-                                        .getBaseConfiguration(),
-                                    variant: 0)
-                                .copyWith(characterName: "Gandalf"),
+                        configuration: _classicCharacterForGoldens()
+                            .copyWith(characterName: "Gandalf"),
                       ),
                     ],
                   )),
