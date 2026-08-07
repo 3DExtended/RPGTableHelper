@@ -35,7 +35,6 @@ class _FakeApi extends IApiConnectorService {
 class _RecordingRpgEntityService extends MockRpgEntityService {
   _RecordingRpgEntityService({
     super.enterSessionOverride,
-    super.leaveSessionOverride,
     this.getCampagneByIdOverride,
     this.getAllCharactersOverride,
     super.getPlayerCharacterByIdOverride,
@@ -98,8 +97,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
 
 void main() {
   group('SessionEntryCoordinator', () {
-    test(
-        'enterAsDm calls enterSession then hydrates campagne + all characters',
+    test('enterAsDm calls enterSession then hydrates campagne + all characters',
         () async {
       final characters = [
         PlayerCharacter(
@@ -110,8 +108,7 @@ void main() {
       final rpgEntityService = _RecordingRpgEntityService(
         getAllCharactersOverride: HRResponse.fromResult(characters),
       );
-      final sut =
-          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+      final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
       final campagneId = CampagneIdentifier($value: 'campagne-1');
 
       final result = await sut.enterAsDm(campagneId: campagneId);
@@ -135,16 +132,14 @@ void main() {
             HRResponse.fromResult(const ['user-online-1', 'user-online-2']),
         getAllCharactersOverride: HRResponse.fromResult(<PlayerCharacter>[]),
       );
-      final sut =
-          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+      final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
 
       final result = await sut.enterAsDm(
         campagneId: CampagneIdentifier($value: 'campagne-1'),
       );
 
       expect(result.isSuccessful, isTrue);
-      expect(result.result!.onlineUserIds,
-          ['user-online-1', 'user-online-2']);
+      expect(result.result!.onlineUserIds, ['user-online-1', 'user-online-2']);
     });
 
     test('enterAsDm propagates error and skips hydration when enter fails',
@@ -152,8 +147,7 @@ void main() {
       final rpgEntityService = _RecordingRpgEntityService(
         enterSessionOverride: HRResponse.error('nope', 'test-enter-fail'),
       );
-      final sut =
-          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+      final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
       final campagneId = CampagneIdentifier($value: 'campagne-1');
 
       final result = await sut.enterAsDm(campagneId: campagneId);
@@ -172,8 +166,7 @@ void main() {
       final rpgEntityService = _RecordingRpgEntityService(
         getPlayerCharacterByIdOverride: HRResponse.fromResult(ownCharacter),
       );
-      final sut =
-          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+      final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
       final campagneId = CampagneIdentifier($value: 'campagne-1');
       final playerCharacterId = PlayerCharacterIdentifier($value: 'pc-1');
 
@@ -193,14 +186,12 @@ void main() {
       ]);
     });
 
-    test(
-        'enterAsPlayer propagates error and skips hydration when enter fails',
+    test('enterAsPlayer propagates error and skips hydration when enter fails',
         () async {
       final rpgEntityService = _RecordingRpgEntityService(
         enterSessionOverride: HRResponse.error('nope', 'test-enter-fail'),
       );
-      final sut =
-          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+      final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
       final campagneId = CampagneIdentifier($value: 'campagne-1');
       final playerCharacterId = PlayerCharacterIdentifier($value: 'pc-1');
 
@@ -215,8 +206,7 @@ void main() {
 
     test('leave calls leaveSession on the rpg entity service', () async {
       final rpgEntityService = _RecordingRpgEntityService();
-      final sut =
-          SessionEntryCoordinator(rpgEntityService: rpgEntityService);
+      final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
       final campagneId = CampagneIdentifier($value: 'campagne-1');
 
       await sut.leave(campagneId: campagneId);
