@@ -440,6 +440,18 @@ abstract class AppLocalizations {
   /// **'Beschreibung:'**
   String get multiselectOptionDescription;
 
+  /// No description provided for @multiselectOptionSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurzfassung:'**
+  String get multiselectOptionSummary;
+
+  /// No description provided for @multiselectOptionSummaryHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'Optional, ca. 90 Zeichen; erscheint auf dem Charakterbogen. Der volle Text bleibt in der Beschreibung.'**
+  String get multiselectOptionSummaryHelper;
+
   /// No description provided for @additionalElement.
   ///
   /// In de, this message translates to:

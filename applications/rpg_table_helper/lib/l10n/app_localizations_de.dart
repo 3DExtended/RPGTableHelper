@@ -196,6 +196,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get multiselectOptionDescription => 'Beschreibung:';
 
   @override
+  String get multiselectOptionSummary => 'Kurzfassung:';
+
+  @override
+  String get multiselectOptionSummaryHelper =>
+      'Optional, ca. 90 Zeichen; erscheint auf dem Charakterbogen. Der volle Text bleibt in der Beschreibung.';
+
+  @override
   String get additionalElement => 'Neues Element';
 
   @override

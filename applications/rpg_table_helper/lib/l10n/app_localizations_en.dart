@@ -194,6 +194,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get multiselectOptionDescription => 'Description:';
 
   @override
+  String get multiselectOptionSummary => 'Summary:';
+
+  @override
+  String get multiselectOptionSummaryHelper =>
+      'Optional, ~90 characters; shown on the sheet. Full text stays in Description.';
+
+  @override
   String get additionalElement => 'Add element';
 
   @override
