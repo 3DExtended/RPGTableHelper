@@ -4,6 +4,10 @@ import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level
 import 'package:quest_keeper/helpers/character_sheet_skins/night_cartographer_ornaments.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
+/// Matches [_DoubleRuleFramePainter] outer rule — content clips here when framed.
+const _frameOuterInset = 10.0;
+const _frameCornerRadius = Radius.circular(2);
+
 /// Soft atmosphere + optional double-rule frame for hybrid skins.
 class CharacterSheetSkinChrome extends StatelessWidget {
   final Widget child;
@@ -33,6 +37,15 @@ class CharacterSheetSkinChrome extends StatelessWidget {
     return child;
   }
 
+  /// Clip scroll/paint to the frame interior; layout/padding unchanged.
+  Widget _framedContent() {
+    if (!showFrame) return child;
+    return ClipPath(
+      clipper: const _FrameInteriorClipper(),
+      child: child,
+    );
+  }
+
   Widget _ledgerChrome(BuildContext context) {
     final ink = CustomThemeProvider.of(context).theme.darkColor;
 
@@ -52,7 +65,7 @@ class CharacterSheetSkinChrome extends StatelessWidget {
             ),
           ),
         ),
-        child,
+        _framedContent(),
         if (showFrame)
           Positioned.fill(
             child: IgnorePointer(
@@ -93,7 +106,7 @@ class CharacterSheetSkinChrome extends StatelessWidget {
             ),
           ),
         ),
-        child,
+        _framedContent(),
         if (showFrame)
           Positioned.fill(
             child: IgnorePointer(
@@ -157,6 +170,27 @@ class CharacterSheetSkinChrome extends StatelessWidget {
   }
 }
 
+/// Clips to the outer double-rule rect so scrolled content cannot paint past
+/// the decorative frame.
+class _FrameInteriorClipper extends CustomClipper<Path> {
+  const _FrameInteriorClipper();
+
+  @override
+  Path getClip(Size size) {
+    final rect = Rect.fromLTWH(
+      _frameOuterInset,
+      _frameOuterInset,
+      size.width - _frameOuterInset * 2,
+      size.height - _frameOuterInset * 2,
+    );
+    return Path()
+      ..addRRect(RRect.fromRectAndRadius(rect, _frameCornerRadius));
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
 class _DoubleRuleFramePainter extends CustomPainter {
   final Color ink;
 
@@ -173,19 +207,23 @@ class _DoubleRuleFramePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
-    const inset = 10.0;
     final outerR = RRect.fromRectAndRadius(
-      Rect.fromLTWH(inset, inset, size.width - inset * 2, size.height - inset * 2),
-      const Radius.circular(2),
+      Rect.fromLTWH(
+        _frameOuterInset,
+        _frameOuterInset,
+        size.width - _frameOuterInset * 2,
+        size.height - _frameOuterInset * 2,
+      ),
+      _frameCornerRadius,
     );
     final innerR = RRect.fromRectAndRadius(
       Rect.fromLTWH(
-        inset + 4,
-        inset + 4,
-        size.width - (inset + 4) * 2,
-        size.height - (inset + 4) * 2,
+        _frameOuterInset + 4,
+        _frameOuterInset + 4,
+        size.width - (_frameOuterInset + 4) * 2,
+        size.height - (_frameOuterInset + 4) * 2,
       ),
-      const Radius.circular(2),
+      _frameCornerRadius,
     );
     canvas.drawRRect(outerR, outer);
     canvas.drawRRect(innerR, inner);
