@@ -799,39 +799,23 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       groupedDocuments =
           (documentsResponse.result ?? []).groupListsBy((d) => d.groupName);
 
-      // Ledger lore mock uses curated order (Skadi first, not alpha).
-      // Classic skins keep alphabetical index lists.
-      if (!isDecoratedSheetSkinActive(context)) {
-        groupedDocuments.forEach((key, list) {
-          list.sort((a, b) => a.title.compareTo(b.title));
-        });
-      }
+      // Groups A→Z, then titles A→Z within each group.
+      groupedDocuments.forEach((key, list) {
+        list.sort((a, b) => a.title.compareTo(b.title));
+      });
 
       // TODO maybe show "sonstiges" only when needed?
       groupLabels = [...groupedDocuments.keys, otherGroupName]
           .distinct(by: (e) => e)
           .toList();
-      if (isDecoratedSheetSkinActive(context)) {
-        // Match mock section order: Götter → Other → Session Notes.
-        const preferred = ['Götter', 'Other', 'Session Notes'];
-        groupLabels.sort((a, b) {
-          final ai = preferred.indexOf(a);
-          final bi = preferred.indexOf(b);
-          if (ai >= 0 || bi >= 0) {
-            return (ai < 0 ? 999 : ai).compareTo(bi < 0 ? 999 : bi);
-          }
-          return a.compareTo(b);
-        });
-      } else {
-        groupLabels.sort();
-      }
+      groupLabels.sort();
 
       if (!groupedDocuments.containsKey(otherGroupName)) {
         groupedDocuments[otherGroupName] = [];
       }
 
       if (documentsResponse.result?.isNotEmpty == true) {
-        // Prefer Skadi in Ledger golden fixtures so lore matches the approved mock.
+        // Prefer Skadi in Ledger golden fixtures so lore content matches the mock.
         final preferredSkadi = isInTestEnvironment &&
                 isArcaneLedgerActive(context)
             ? documentsResponse.result!
@@ -879,9 +863,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           min(index, groupedDocuments[targetGroup]!.length),
           doc.copyWith(groupName: targetGroup));
 
-      if (!isDecoratedSheetSkinActive(context)) {
-        groupedDocuments[targetGroup]!.sortBy((e) => e.title);
-      }
+      groupedDocuments[targetGroup]!.sortBy((e) => e.title);
     });
   }
 
@@ -1412,16 +1394,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           selectedDocument = updatedDocument;
 
           groupedDocuments[value.groupName]!.add(updatedDocument);
-          if (!isDecoratedSheetSkinActive(context)) {
-            groupedDocuments[value.groupName]!.sortBy((e) => e.title);
-          }
+          groupedDocuments[value.groupName]!.sortBy((e) => e.title);
 
           groupLabels = [...groupedDocuments.keys, otherGroupName]
               .distinct(by: (e) => e)
               .toList();
-          if (!isDecoratedSheetSkinActive(context)) {
-            groupLabels.sort();
-          }
+          groupLabels.sort();
         }
       });
     });
