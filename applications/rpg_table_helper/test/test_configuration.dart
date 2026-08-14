@@ -33,6 +33,29 @@ const testDevicesLedger = [
   ),
 ];
 
+/// Smallest current iPad (6th-gen mini, landscape) — added to catch overflow
+/// regressions that only show up on narrower tablet widths.
+const testDevicesIpadMini = [
+  Device(
+    name: 'ipad mini landscape',
+    size: Size(1133, 744),
+    devicePixelRatio: 3,
+    textScale: 1.0,
+    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  ),
+];
+
+/// Lower-DPR iPad mini variant for heavy skin goldens (parchment textures).
+const testDevicesIpadMiniLedger = [
+  Device(
+    name: 'ipad mini landscape',
+    size: Size(1133, 744),
+    devicePixelRatio: 1,
+    textScale: 1.0,
+    safeArea: EdgeInsets.fromLTRB(0.0, 59.0, 0.0, 60.0),
+  ),
+];
+
 var brightnessTests = [
   Brightness.light,
   Brightness.dark,

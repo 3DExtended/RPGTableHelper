@@ -60,6 +60,12 @@ void main() {
         pathPrefix: "../",
         widgetName: 'playerpagescreens${testcase.$1}-${testcase.$2}',
         useMaterialAppWrapper: true,
+        // Lore screen also gets an iPad mini pass — its collapsible sidebar
+        // is the one place on this screen prone to overflow at narrower
+        // tablet widths.
+        devices: testcase.$1 == 8
+            ? [...testDevices, ...testDevicesIpadMini]
+            : testDevices,
         testerInteractions: (tester, local) async {
           await tester.pumpAndSettle();
           await customLoadAppFonts();

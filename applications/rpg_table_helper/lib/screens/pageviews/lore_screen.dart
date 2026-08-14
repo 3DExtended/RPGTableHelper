@@ -84,6 +84,21 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   double collapsedWidth = 64.0;
   double expandedWidth = 256.0;
 
+  /// Decorated skins (Ledger/Cartographer) draw a frame ~10px inset from the
+  /// sidebar edge; the plain [collapsedWidth] only leaves ~3px of clearance
+  /// for the collapse button once centered, so give it more breathing room.
+  double get _collapsedNavbarWidth =>
+      isDecoratedSheetSkinActive(context) ? 96.0 : collapsedWidth;
+
+  /// Width of [_getCollapsableNavbar]'s AnimatedContainer for the current
+  /// collapsed/expanded state. On narrow (`useStackOption`) layouts the
+  /// navbar overlays the content in a [Stack], so content must reserve
+  /// exactly this much left padding — otherwise an expanded navbar draws
+  /// over the content instead of the content sitting beside/below it.
+  double get _currentNavbarWidth => _isNavbarCollapsed
+      ? _collapsedNavbarWidth
+      : (isDecoratedSheetSkinActive(context) ? 320.0 : expandedWidth);
+
   String get otherGroupName => S.of(context).defaultGroupNameForDocuments;
 
   var refreshController = RefreshController(
@@ -222,7 +237,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         ),
       if (useStackOption)
         Padding(
-          padding: EdgeInsets.only(left: useStackOption ? collapsedWidth : 0),
+          padding: EdgeInsets.only(left: _currentNavbarWidth),
           child: _getContent(),
         )
     ];
@@ -255,9 +270,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
     return AnimatedContainer(
       duration: duration,
-      width: _isNavbarCollapsed
-          ? collapsedWidth
-          : (ledger ? 320.0 : expandedWidth),
+      width: _currentNavbarWidth,
       color: sidebarColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -396,24 +409,29 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           ),
           Padding(
             padding: EdgeInsets.only(
-              left: ledger ? 8 : 0,
-              right: ledger ? 8 : 0,
+              left: ledger && !_isNavbarCollapsed ? 8 : 0,
+              right: ledger && !_isNavbarCollapsed ? 8 : 0,
               bottom: ledger ? 22 : 0,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (!_isNavbarCollapsed)
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: ledger ? 20.0 : 20.0,
-                      bottom: ledger ? 0 : 10,
-                    ),
-                    child: _buildNewDocumentButton(ledger),
+            // Collapsed: only the chevron remains, so center it explicitly —
+            // a single child in a spaceBetween Row sits flush at the start
+            // instead of centering, which let it collide with the
+            // CharacterSheetSkinChrome frame border on decorated skins.
+            child: _isNavbarCollapsed
+                ? Center(child: _getCollapseButton(duration))
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: ledger ? 20.0 : 20.0,
+                          bottom: ledger ? 0 : 10,
+                        ),
+                        child: _buildNewDocumentButton(ledger),
+                      ),
+                      _getCollapseButton(duration),
+                    ],
                   ),
-                _getCollapseButton(duration),
-              ],
-            ),
           ),
         ],
       ),
