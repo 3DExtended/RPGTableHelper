@@ -117,6 +117,7 @@ class PentagonWithLabel extends StatelessWidget {
                             height: 1.0,
                           ),
                     ),
+                    const SizedBox(height: 8),
                     Text(
                       mod,
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
