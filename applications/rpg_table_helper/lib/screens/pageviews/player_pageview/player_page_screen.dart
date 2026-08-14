@@ -308,7 +308,26 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
           ?.map((p) => p.configuration)
           .where((c) => c.uuid == rpgCharacterToRender!.uuid)
           .firstOrNull;
-      charToRender = liveFromRoster ?? rpgCharacterToRender;
+
+      // Own alt form/companion: resolve against the live provider state too,
+      // otherwise this stays a frozen snapshot forever and every edit after
+      // the first is a silent no-op (recomputes the same target value, which
+      // trips the json-equality skip in updateConfiguration).
+      RpgCharacterConfigurationBase? liveOwnMatch;
+      if (tempLoadedRpgCharacter != null) {
+        if (tempLoadedRpgCharacter.uuid == rpgCharacterToRender!.uuid) {
+          liveOwnMatch = tempLoadedRpgCharacter;
+        } else if (tempLoadedRpgCharacter.alternateForm?.uuid ==
+            rpgCharacterToRender!.uuid) {
+          liveOwnMatch = tempLoadedRpgCharacter.alternateForm;
+        } else {
+          liveOwnMatch = tempLoadedRpgCharacter.companionCharacters
+              ?.where((c) => c.uuid == rpgCharacterToRender!.uuid)
+              .firstOrNull;
+        }
+      }
+
+      charToRender = liveFromRoster ?? liveOwnMatch ?? rpgCharacterToRender;
     } else {
       charToRender = tempLoadedRpgCharacter;
     }
