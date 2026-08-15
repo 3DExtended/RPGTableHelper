@@ -106,7 +106,7 @@ class PentagonWithLabel extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       value.toString(),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -117,7 +117,7 @@ class PentagonWithLabel extends StatelessWidget {
                             height: 1.0,
                           ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       mod,
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
