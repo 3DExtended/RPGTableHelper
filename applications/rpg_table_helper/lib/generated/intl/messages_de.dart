@@ -284,6 +284,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "integerValueWithMaxValue": MessageLookupByLibrary.simpleMessage(
       "Zahlen-Wert mit maximal Wert",
     ),
+    "invalidImageFileSelected": MessageLookupByLibrary.simpleMessage(
+      "Ungültige Bilddatei ausgewählt.",
+    ),
     "item": MessageLookupByLibrary.simpleMessage("Item"),
     "itemCardDescRequires": MessageLookupByLibrary.simpleMessage("Braucht:"),
     "itemCategoryFilterAll": MessageLookupByLibrary.simpleMessage("Alles"),
@@ -559,6 +562,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transformationName": MessageLookupByLibrary.simpleMessage(
       "Verwandlungsname",
+    ),
+    "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Bild hochladen",
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),

@@ -940,6 +940,7 @@ class MockRpgEntityService extends IRpgEntityService {
   final HRResponse<bool>? askPlayersForRollsOverride;
   final HRResponse<bool>? sendFightSequenceRollsToDmOverride;
   final HRResponse<ConfigWriteResult>? grantItemsToCharacterOverride;
+  final HRResponse<String>? uploadImageToCampagneStorageOverride;
 
   MockRpgEntityService({
     this.getCampagnesWithPlayerAsDmOverride,
@@ -959,6 +960,7 @@ class MockRpgEntityService extends IRpgEntityService {
     this.askPlayersForRollsOverride,
     this.sendFightSequenceRollsToDmOverride,
     this.grantItemsToCharacterOverride,
+    this.uploadImageToCampagneStorageOverride,
     required super.apiConnectorService,
   }) : super(isMock: true);
 
@@ -1109,8 +1111,11 @@ class MockRpgEntityService extends IRpgEntityService {
     required CampagneIdentifier campagneId,
     required MultipartFile image,
   }) {
-    // TODO: implement uploadImageToCampagneStorage
-    throw UnimplementedError();
+    return Future.value(
+      uploadImageToCampagneStorageOverride ??
+          HRResponse.fromResult(
+              "/public/getimage/00000000-0000-0000-0000-000000000000/mockapikey?metadataid=00000000-0000-0000-0000-000000000000"),
+    );
   }
 
   @override

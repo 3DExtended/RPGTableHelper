@@ -39,6 +39,8 @@
   "petDefaultNamePrefix": "Begleiter",
   "preview": "Vorschau",
   "newImageBtnLabel": "Neues Bild",
+  "uploadImageBtnLabel": "Bild hochladen",
+  "invalidImageFileSelected": "Ungültige Bilddatei ausgewählt.",
   "additionalSettings": "Erweiterte Optionen",
   "hidePropertyForCharacter": "Eigenschaft für meinen Charakter ausblenden",
   "hideHeading": "Überschrift ausblenden",

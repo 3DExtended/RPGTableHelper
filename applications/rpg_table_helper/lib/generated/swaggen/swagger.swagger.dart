@@ -544,6 +544,20 @@ abstract class Swagger extends ChopperService {
   @GET(path: '/Public/getminimalversion')
   Future<chopper.Response<String>> _publicGetminimalversionGet();
 
+  ///Advertises the optional features this backend supports so newer and older frontends/backends stay compatible. Purely additive; an older backend without this endpoint is treated by the client as "baseline capabilities only".
+  Future<chopper.Response<BackendCapabilitiesDto>> publicCapabilitiesGet() {
+    generatedMapping.putIfAbsent(
+      BackendCapabilitiesDto,
+      () => BackendCapabilitiesDto.fromJsonFactory,
+    );
+
+    return _publicCapabilitiesGet();
+  }
+
+  ///Advertises the optional features this backend supports so newer and older frontends/backends stay compatible. Purely additive; an older backend without this endpoint is treated by the client as "baseline capabilities only".
+  @GET(path: '/Public/capabilities')
+  Future<chopper.Response<BackendCapabilitiesDto>> _publicCapabilitiesGet();
+
   ///
   ///@param uuid
   ///@param apikey

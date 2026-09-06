@@ -2683,6 +2683,36 @@
         }
       }
     },
+    "/Public/capabilities": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Advertises the optional features this backend supports so newer and older frontends/backends stay compatible. Purely additive; an older backend without this endpoint is treated by the client as \"baseline capabilities only\".",
+        "responses": {
+          "200": {
+            "description": "The supported backend capabilities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackendCapabilitiesDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackendCapabilitiesDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackendCapabilitiesDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Public/getimage/{uuid}/{apikey}": {
       "get": {
         "tags": [
@@ -3763,6 +3793,24 @@
           }
         },
         "additionalProperties": false
+      },
+      "BackendCapabilitiesDto": {
+        "type": "object",
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "apiVersion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Advertises the optional features this backend supports so that a newer frontend can degrade gracefully when talking to an older backend (and vice versa). The list is purely additive: capabilities are only ever added, never removed, and a missing endpoint (older backend) is treated by the client as \"baseline capabilities only\"."
       },
       "Campagne": {
         "allOf": [

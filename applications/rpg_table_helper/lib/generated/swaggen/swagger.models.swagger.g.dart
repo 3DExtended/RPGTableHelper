@@ -38,6 +38,23 @@ Map<String, dynamic> _$AppleLoginDetailsToJson(AppleLoginDetails instance) =>
       'identityToken': instance.identityToken,
     };
 
+BackendCapabilitiesDto _$BackendCapabilitiesDtoFromJson(
+        Map<String, dynamic> json) =>
+    BackendCapabilitiesDto(
+      capabilities: (json['capabilities'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      apiVersion: json['apiVersion'] as String?,
+    );
+
+Map<String, dynamic> _$BackendCapabilitiesDtoToJson(
+        BackendCapabilitiesDto instance) =>
+    <String, dynamic>{
+      'capabilities': instance.capabilities,
+      'apiVersion': instance.apiVersion,
+    };
+
 Campagne _$CampagneFromJson(Map<String, dynamic> json) => Campagne(
       rpgConfiguration: json['rpgConfiguration'] as String?,
       campagneName: json['campagneName'] as String?,

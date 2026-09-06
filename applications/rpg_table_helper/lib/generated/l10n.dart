@@ -249,6 +249,26 @@ class S {
     );
   }
 
+  /// `Upload image`
+  String get uploadImageBtnLabel {
+    return Intl.message(
+      'Upload image',
+      name: 'uploadImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid image file selected.`
+  String get invalidImageFileSelected {
+    return Intl.message(
+      'Invalid image file selected.',
+      name: 'invalidImageFileSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Additional settings`
   String get additionalSettings {
     return Intl.message(

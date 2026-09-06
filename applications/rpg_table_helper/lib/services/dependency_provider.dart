@@ -15,6 +15,7 @@ import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/auth/session_restorer.dart';
 import 'package:quest_keeper/services/auth/session_revoker.dart';
 import 'package:quest_keeper/services/auth/token_refresher.dart';
+import 'package:quest_keeper/services/backend_capabilities_service.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
@@ -205,6 +206,19 @@ class DependencyProvider extends InheritedWidget {
       var apiConnectorService = getService<IApiConnectorService>();
 
       return MockImageGenerationService(
+        apiConnectorService: apiConnectorService,
+      );
+    });
+
+    _registerService<IBackendCapabilitiesService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return BackendCapabilitiesService(
+        apiConnectorService: apiConnectorService,
+      );
+    }, () {
+      var apiConnectorService = getService<IApiConnectorService>();
+
+      return MockBackendCapabilitiesService(
         apiConnectorService: apiConnectorService,
       );
     });

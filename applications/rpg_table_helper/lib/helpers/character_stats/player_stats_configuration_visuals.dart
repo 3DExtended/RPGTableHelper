@@ -6,6 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/custom_button.dart';
@@ -24,9 +27,12 @@ import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/backend_capabilities_service.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:themed/themed.dart';
 import 'package:uuid/v7.dart';
 
@@ -65,6 +71,13 @@ class _PlayerStatsConfigurationVisualsState
   int? selectedGeneratedImageIndex;
   bool isLoading = false;
 
+  /// Whether the connected backend supports uploading a device image for a
+  /// character portrait. Defaults to the baseline (the upload endpoint predates
+  /// the capabilities endpoint, so it is guaranteed even on older backends);
+  /// refined once [IBackendCapabilitiesService] has loaded.
+  bool supportsCharacterImageUpload =
+      kBaselineBackendCapabilities.contains(BackendCapability.characterImageUpload);
+
   bool hideStatFromCharacterScreens = false;
   bool hideLabelOfStat = false;
   bool showTransformationConfiguration = false;
@@ -100,7 +113,35 @@ class _PlayerStatsConfigurationVisualsState
     );
 
     Future.delayed(Duration.zero, delayedInitState);
+    Future.delayed(Duration.zero, _loadBackendCapabilities);
     super.initState();
+  }
+
+  Future<void> _loadBackendCapabilities() async {
+    if (!mounted) return;
+
+    // Only the image-bearing stat types render the upload control, so there is
+    // nothing to gate for the others.
+    final valueType = widget.statConfiguration.valueType;
+    if (valueType != CharacterStatValueType.singleImage &&
+        valueType !=
+            CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+      return;
+    }
+
+    try {
+      final service = DependencyProvider.of(context)
+          .getService<IBackendCapabilitiesService>();
+      final capabilities = await service.ensureCapabilitiesLoaded();
+      if (!mounted) return;
+      setState(() {
+        supportsCharacterImageUpload =
+            capabilities.contains(BackendCapability.characterImageUpload);
+      });
+    } catch (_) {
+      // DependencyProvider may be unavailable in some harnesses; keep the
+      // baseline default (upload supported) rather than crashing.
+    }
   }
 
   bool isWidgetLoadingComplete = false;
@@ -375,6 +416,15 @@ class _PlayerStatsConfigurationVisualsState
     setState(() {
       isWidgetLoadingComplete = true;
     });
+
+    // Seed the baseline value now that loading is complete. Without this,
+    // newestStatValue in the enclosing modal stays null for a stat the user
+    // opens but does not touch (e.g. the singleImage portrait, which players
+    // routinely skip). Save would then return null, and the first-time stat
+    // wizard treats null as "cancelled" and aborts configuring every
+    // remaining stat. Seeding makes Save reflect the real (default/empty)
+    // form state, so null is reserved for the explicit Cancel/close buttons.
+    onChanged();
   }
 
   bool get showPreview =>
@@ -621,7 +671,6 @@ class _PlayerStatsConfigurationVisualsState
         Row(
           children: [
             Spacer(),
-            Spacer(),
             CustomButton(
                 variant: CustomButtonVariant.FlatButton,
                 icon: CustomFaIcon(
@@ -642,66 +691,20 @@ class _PlayerStatsConfigurationVisualsState
                         });
                       }),
             Spacer(),
-            CupertinoButton(
-              onPressed: isLoading == true
-                  ? null
-                  : () async {
-                      if (textController.text == "" ||
-                          textController.text.length < 5) {
-                        return;
-                      }
-
-                      var connectionDetails =
-                          ref.read(connectionDetailsProvider).requireValue;
-                      var campagneId = connectionDetails.campagneId;
-                      if (campagneId == null) return;
-
-                      setState(() {
-                        isLoading = true;
-                      });
-
-                      var service = DependencyProvider.of(context)
-                          .getService<IImageGenerationService>();
-
-                      var generationResult =
-                          await service.createNewImageAndGetUrl(
-                        prompt: textController.text,
-                        campagneId: CampagneIdentifier($value: campagneId),
-                      );
-
-                      if (!context.mounted || !mounted) return;
-                      await generationResult.possiblyHandleError(context);
-                      if (!context.mounted || !mounted) return;
-
-                      if (generationResult.isSuccessful &&
-                          generationResult.result != null) {
-                        setState(() {
-                          urlsOfGeneratedImages.add(generationResult.result!);
-                          selectedGeneratedImageIndex =
-                              urlsOfGeneratedImages.length - 1;
-                          onChanged();
-                        });
-                      }
-                      setState(() {
-                        isLoading = false;
-                      });
-                    },
-              padding: EdgeInsets.zero,
-              minimumSize: Size(0, 0),
-              child: Text(
-                S.of(context).newImageBtnLabel,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: isLoading
-                          ? CustomThemeProvider.of(context).theme.middleBgColor
-                          : CustomThemeProvider.of(context).theme.accentColor,
-                      decoration: TextDecoration.underline,
-                      decorationColor: isLoading
-                          ? CustomThemeProvider.of(context).theme.middleBgColor
-                          : CustomThemeProvider.of(context).theme.accentColor,
-                      fontSize: 16,
-                    ),
-              ),
+            _buildImageActionButton(
+              context,
+              label: S.of(context).newImageBtnLabel,
+              onPressed: isLoading == true ? null : () => _generateImage(context),
             ),
+            if (supportsCharacterImageUpload) ...[
+              SizedBox(width: 20),
+              _buildImageActionButton(
+                context,
+                label: S.of(context).uploadImageBtnLabel,
+                onPressed:
+                    isLoading == true ? null : () => _pickAndUploadImage(context),
+              ),
+            ],
             Spacer(),
             CustomButton(
                 variant: CustomButtonVariant.FlatButton,
@@ -724,11 +727,153 @@ class _PlayerStatsConfigurationVisualsState
                         });
                       }),
             Spacer(),
-            Spacer(),
           ],
         ),
       ],
     );
+  }
+
+  /// A flat, underlined text action (matches the original "New image" button)
+  /// used for both the generate and upload portrait actions.
+  Widget _buildImageActionButton(
+    BuildContext context, {
+    required String label,
+    required Future<void> Function()? onPressed,
+  }) {
+    final disabled = onPressed == null;
+    return CupertinoButton(
+      onPressed: onPressed,
+      padding: EdgeInsets.zero,
+      minimumSize: Size(0, 0),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              color: disabled
+                  ? CustomThemeProvider.of(context).theme.middleBgColor
+                  : CustomThemeProvider.of(context).theme.accentColor,
+              decoration: TextDecoration.underline,
+              decorationColor: disabled
+                  ? CustomThemeProvider.of(context).theme.middleBgColor
+                  : CustomThemeProvider.of(context).theme.accentColor,
+              fontSize: 16,
+            ),
+      ),
+    );
+  }
+
+  /// Generates a portrait via the AI image service and appends it to the
+  /// browsable list of images.
+  Future<void> _generateImage(BuildContext context) async {
+    if (textController.text == "" || textController.text.length < 5) {
+      return;
+    }
+
+    var connectionDetails = ref.read(connectionDetailsProvider).requireValue;
+    var campagneId = connectionDetails.campagneId;
+    if (campagneId == null) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    var service =
+        DependencyProvider.of(context).getService<IImageGenerationService>();
+
+    var generationResult = await service.createNewImageAndGetUrl(
+      prompt: textController.text,
+      campagneId: CampagneIdentifier($value: campagneId),
+    );
+
+    if (!context.mounted || !mounted) return;
+    await generationResult.possiblyHandleError(context);
+    if (!context.mounted || !mounted) return;
+
+    if (generationResult.isSuccessful && generationResult.result != null) {
+      setState(() {
+        urlsOfGeneratedImages.add(generationResult.result!);
+        selectedGeneratedImageIndex = urlsOfGeneratedImages.length - 1;
+        onChanged();
+      });
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  /// Lets the player pick an image from their device and uploads it to the
+  /// campagne image storage, then appends the returned url to the browsable
+  /// list of portrait images. Mirrors the lore-screen upload flow.
+  Future<void> _pickAndUploadImage(BuildContext context) async {
+    var connectionDetails = ref.read(connectionDetailsProvider).requireValue;
+    var campagneId = connectionDetails.campagneId;
+    if (campagneId == null) return;
+
+    final ImagePicker picker = ImagePicker();
+    try {
+      var pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 4196 * 2,
+        maxHeight: 4196 * 2,
+        requestFullMetadata: false,
+      );
+      if (pickedFile == null) return;
+
+      setState(() {
+        isLoading = true;
+      });
+
+      final mimeType = lookupMimeType(pickedFile.path);
+      if (mimeType == null || !(mimeType.startsWith('image/'))) {
+        if (!context.mounted || !mounted) return;
+        DependencyProvider.of(context).getService<ISnackBarService>().showSnackBar(
+              uniqueId:
+                  "invalidImageFileSelected-c1f0a3d2-6b7e-4c9a-8d2f-9e0b1a2c3d4e",
+              snack: SnackBar(
+                content: Text(S.of(context).invalidImageFileSelected),
+              ),
+            );
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+      final fileName = pickedFile.path.split('/').last;
+      final multipartFile = await MultipartFile.fromPath(
+        'image',
+        pickedFile.path,
+        contentType: MediaType.parse(mimeType),
+        filename: fileName,
+      );
+
+      if (!context.mounted || !mounted) return;
+      var service =
+          DependencyProvider.of(context).getService<IRpgEntityService>();
+      var response = await service.uploadImageToCampagneStorage(
+        campagneId: CampagneIdentifier($value: campagneId),
+        image: multipartFile,
+      );
+
+      if (!context.mounted || !mounted) return;
+      await response.possiblyHandleError(context);
+      if (!context.mounted || !mounted) return;
+
+      if (response.isSuccessful && response.result != null) {
+        setState(() {
+          urlsOfGeneratedImages.add(response.result!);
+          selectedGeneratedImageIndex = urlsOfGeneratedImages.length - 1;
+          onChanged();
+        });
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   ThemeConfigurationForApp getAdditionalSettingsTile() {

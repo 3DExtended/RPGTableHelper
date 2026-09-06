@@ -23,6 +23,8 @@
   "petDefaultNamePrefix": "Pet",
   "preview": "Preview",
   "newImageBtnLabel": "New image",
+  "uploadImageBtnLabel": "Upload image",
+  "invalidImageFileSelected": "Invalid image file selected.",
   "additionalSettings": "Additional settings",
   "hidePropertyForCharacter": "Hide property for my character",
   "hideHeading": "Hide heading",

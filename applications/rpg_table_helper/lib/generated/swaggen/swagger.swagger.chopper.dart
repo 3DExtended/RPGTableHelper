@@ -415,6 +415,18 @@ final class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<BackendCapabilitiesDto>> _publicCapabilitiesGet() {
+    final Uri $url = Uri.parse('/Public/capabilities');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client
+        .send<BackendCapabilitiesDto, BackendCapabilitiesDto>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _publicGetimageUuidApikeyGet({
     required String? uuid,
     required String? apikey,

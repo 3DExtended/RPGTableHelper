@@ -177,6 +177,72 @@ extension $AppleLoginDetailsExtension on AppleLoginDetails {
 }
 
 @JsonSerializable(explicitToJson: true)
+class BackendCapabilitiesDto {
+  const BackendCapabilitiesDto({this.capabilities, this.apiVersion});
+
+  factory BackendCapabilitiesDto.fromJson(Map<String, dynamic> json) =>
+      _$BackendCapabilitiesDtoFromJson(json);
+
+  static const toJsonFactory = _$BackendCapabilitiesDtoToJson;
+  Map<String, dynamic> toJson() => _$BackendCapabilitiesDtoToJson(this);
+
+  @JsonKey(name: 'capabilities', defaultValue: <String>[])
+  final List<String>? capabilities;
+  @JsonKey(name: 'apiVersion')
+  final String? apiVersion;
+  static const fromJsonFactory = _$BackendCapabilitiesDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is BackendCapabilitiesDto &&
+            (identical(other.capabilities, capabilities) ||
+                const DeepCollectionEquality().equals(
+                  other.capabilities,
+                  capabilities,
+                )) &&
+            (identical(other.apiVersion, apiVersion) ||
+                const DeepCollectionEquality().equals(
+                  other.apiVersion,
+                  apiVersion,
+                )));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(capabilities) ^
+      const DeepCollectionEquality().hash(apiVersion) ^
+      runtimeType.hashCode;
+}
+
+extension $BackendCapabilitiesDtoExtension on BackendCapabilitiesDto {
+  BackendCapabilitiesDto copyWith({
+    List<String>? capabilities,
+    String? apiVersion,
+  }) {
+    return BackendCapabilitiesDto(
+      capabilities: capabilities ?? this.capabilities,
+      apiVersion: apiVersion ?? this.apiVersion,
+    );
+  }
+
+  BackendCapabilitiesDto copyWithWrapped({
+    Wrapped<List<String>?>? capabilities,
+    Wrapped<String?>? apiVersion,
+  }) {
+    return BackendCapabilitiesDto(
+      capabilities: (capabilities != null
+          ? capabilities.value
+          : this.capabilities),
+      apiVersion: (apiVersion != null ? apiVersion.value : this.apiVersion),
+    );
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class Campagne {
   const Campagne({
     this.rpgConfiguration,
