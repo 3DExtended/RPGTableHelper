@@ -239,6 +239,21 @@ class S {
     return Intl.message('Preview', name: 'preview', desc: '', args: []);
   }
 
+  /// `Try the controls — changes here aren't saved.`
+  String get previewTestHint {
+    return Intl.message(
+      'Try the controls — changes here aren\'t saved.',
+      name: 'previewTestHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset`
+  String get previewTestReset {
+    return Intl.message('Reset', name: 'previewTestReset', desc: '', args: []);
+  }
+
   /// `New image`
   String get newImageBtnLabel {
     return Intl.message(

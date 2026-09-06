@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
@@ -292,6 +293,85 @@ void main() {
       final decoded = jsonDecode(result!.serializedValue) as Map<String, dynamic>;
       expect(decoded['value'], '',
           reason: 'an untouched text stat defaults to an empty string');
+    },
+  );
+
+  CharacterStatDefinition healthBarStat() => CharacterStatDefinition(
+        groupId: null,
+        isOptionalForAlternateForms: false,
+        isOptionalForCompanionCharacters: null,
+        valueType: CharacterStatValueType.intWithMaxValue,
+        editType: CharacterStatEditType.oneTap,
+        name: "HP",
+        statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+        helperText: "How many health points do you have?",
+        jsonSerializedAdditionalData: null,
+      );
+
+  testWidgets(
+    'testing the health bar in the preview (tapping +) does NOT leak into the '
+    'saved value on Save (the preview is an ephemeral sandbox)',
+    (tester) async {
+      final navigatorKey = GlobalKey<NavigatorState>();
+      RpgCharacterStatValue? result;
+
+      await tester.pumpWidget(buildHarness(
+        navigatorKey: navigatorKey,
+        onPressed: (context) async {
+          result = await showGetPlayerConfigurationModal(
+            context: context,
+            statConfiguration: healthBarStat(),
+            characterValue: RpgCharacterStatValue(
+              variant: 0,
+              statUuid: healthBarStat().statUuid,
+              hideFromCharacterScreen: false,
+              hideLabelOfStat: false,
+              serializedValue: jsonEncode({"value": 5, "maxValue": 10}),
+            ),
+            characterName: "Frodo",
+            isEditingAlternateForm: false,
+            // Keep the live preview so its interactive +/- controls render.
+            hideVariantSelection: false,
+            characterToRenderStatFor:
+                RpgCharacterConfiguration.getBaseConfiguration(
+                    RpgConfigurationModel.getBaseConfiguration()),
+            overrideNavigatorKey: navigatorKey,
+          );
+        },
+      ));
+
+      await tester.tap(find.text("open"));
+      await tester.pumpAndSettle();
+
+      // Drive the health bar in the preview, as a player "testing" it would.
+      // hitTestable() picks the button on the visible page (adjacent pages are
+      // built offstage and would not receive the tap).
+      final previewPlus = find
+          .descendant(
+            of: find.byType(PageView),
+            matching: find.byIcon(FontAwesomeIcons.plus),
+          )
+          .hitTestable()
+          .first;
+      await tester.ensureVisible(previewPlus);
+      await tester.tap(previewPlus);
+      await tester.pumpAndSettle();
+
+      // The reset affordance only appears once the sandbox is dirty, so this
+      // confirms the test tap actually registered (making the no-leak check
+      // below meaningful rather than trivially true).
+      expect(find.text(S.current.previewTestReset), findsOneWidget,
+          reason: 'the + tap should have activated the preview sandbox');
+
+      await tester.tap(find.text("Save").last);
+      await tester.pumpAndSettle();
+
+      expect(result, isNotNull);
+      final decoded = jsonDecode(result!.serializedValue) as Map<String, dynamic>;
+      expect(decoded['value'], 5,
+          reason: 'the saved value must be the configured value, not the '
+              'sandbox value the player test-drove in the preview');
+      expect(decoded['maxValue'], 10);
     },
   );
 }

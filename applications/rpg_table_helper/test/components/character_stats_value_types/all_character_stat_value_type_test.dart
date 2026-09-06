@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
@@ -859,5 +860,140 @@ void main() {
         ]),
       );
     }
+
+    // Interaction golden: a player "testing" the health bar in the preview
+    // (tapping +) puts it into the sandbox state, which reveals the Reset
+    // affordance. Locks the dirty-preview layout that the resting-state
+    // PlayerConfig goldens above do not capture.
+    final healthBarConfig = CharacterStatDefinition(
+      groupId: null,
+      isOptionalForAlternateForms: false,
+      isOptionalForCompanionCharacters: null,
+      valueType: CharacterStatValueType.intWithMaxValue,
+      editType: CharacterStatEditType.oneTap,
+      name: "HP",
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      helperText: "How many health points do you have?",
+      jsonSerializedAdditionalData: null,
+    );
+    final healthBarValue = RpgCharacterStatValue(
+      hideFromCharacterScreen: false,
+      hideLabelOfStat: false,
+      variant: 0,
+      statUuid: "df25675c-d989-4a63-92b3-e395ef4b5769",
+      serializedValue: '{"value": 4, "maxValue": 10}',
+    );
+
+    testConfigurations(
+      disableAllScreenSizes: true,
+      disableLocals: true,
+      disableDarkMode: true,
+      pathPrefix: "../",
+      widgetName:
+          'CharacterStatValueType_PlayerConfig_intWithMaxValue_previewSandboxActive',
+      useMaterialAppWrapper: true,
+      testerInteractions: (tester, local) async {
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pumpAndSettle();
+        await customLoadAppFonts();
+        await customLoadAppFonts();
+        await tester.pumpAndSettle();
+
+        // Test-drive the health bar so the sandbox (and Reset) is shown.
+        final previewPlus = find
+            .descendant(
+              of: find.byType(PageView),
+              matching: find.byIcon(FontAwesomeIcons.plus),
+            )
+            .hitTestable()
+            .first;
+        await tester.ensureVisible(previewPlus);
+        await tester.tap(previewPlus);
+        await tester.pumpAndSettle();
+        await customLoadAppFonts();
+        await tester.pumpAndSettle();
+      },
+      screenFactory: (Locale locale, Brightness brightnessToTest) =>
+          ProviderScope(
+        overrides: [
+          rpgCharacterConfigurationProvider.overrideWith((ref) {
+            return RpgCharacterConfigurationNotifier(
+              decks: AsyncValue.data(
+                RpgCharacterConfiguration.getBaseConfiguration(null),
+              ),
+              ref: ref,
+              runningInTests: true,
+            );
+          }),
+          rpgConfigurationProvider.overrideWith((ref) {
+            return RpgConfigurationNotifier(
+              decks: AsyncValue.data(
+                RpgConfigurationModel.getBaseConfiguration(),
+              ),
+              ref: ref,
+              runningInTests: true,
+            );
+          }),
+        ],
+        child: ThemeConfigurationForApp(
+          child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                ...AppLocalizations.localizationsDelegates,
+                S.delegate
+              ],
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                fontFamily: 'Ruwudu',
+                useMaterial3: true,
+                iconTheme: IconThemeData(
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              home: ThemeConfigurationForApp(
+                child: CustomThemeProvider(
+                  overrideBrightness: brightnessToTest,
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: Builder(builder: (context) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            await showGetPlayerConfigurationModal(
+                                characterToRenderStatFor:
+                                    RpgCharacterConfiguration.getBaseConfiguration(
+                                        RpgConfigurationModel
+                                            .getBaseConfiguration()),
+                                context: context,
+                                statConfiguration: healthBarConfig,
+                                isEditingAlternateForm: false,
+                                characterValue: healthBarValue,
+                                characterName: "Frodo",
+                                overrideNavigatorKey: navigatorKey);
+                          },
+                          child: const Text("Click me"));
+                    }),
+                  ),
+                ),
+              )),
+        ),
+      ),
+      getTestConfigurations: (Widget widgetToTest, Brightness brightness) =>
+          Map.fromEntries([
+        MapEntry(
+            'default',
+            CustomThemeProvider(
+              overrideBrightness: brightness,
+              child: DependencyProvider.getMockedDependecyProvider(
+                child: widgetToTest,
+              ),
+            )),
+      ]),
+    );
   });
 }

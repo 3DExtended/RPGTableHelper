@@ -473,6 +473,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "player": MessageLookupByLibrary.simpleMessage("Spieler"),
     "playerRolls": MessageLookupByLibrary.simpleMessage("Spieler Würfe"),
     "preview": MessageLookupByLibrary.simpleMessage("Vorschau"),
+    "previewTestHint": MessageLookupByLibrary.simpleMessage(
+      "Probiere die Steuerung aus — Änderungen hier werden nicht gespeichert.",
+    ),
+    "previewTestReset": MessageLookupByLibrary.simpleMessage("Zurücksetzen"),
     "previousTransformationSelectionBtn": MessageLookupByLibrary.simpleMessage(
       "Alte Gestalt",
     ),

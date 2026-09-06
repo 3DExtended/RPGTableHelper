@@ -22,6 +22,8 @@
   "newPetBtnLabel": "New pet",
   "petDefaultNamePrefix": "Pet",
   "preview": "Preview",
+  "previewTestHint": "Try the controls — changes here aren't saved.",
+  "previewTestReset": "Reset",
   "newImageBtnLabel": "New image",
   "uploadImageBtnLabel": "Upload image",
   "invalidImageFileSelected": "Invalid image file selected.",

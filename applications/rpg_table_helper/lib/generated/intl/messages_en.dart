@@ -455,6 +455,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "player": MessageLookupByLibrary.simpleMessage("Player"),
     "playerRolls": MessageLookupByLibrary.simpleMessage("Player rolls"),
     "preview": MessageLookupByLibrary.simpleMessage("Preview"),
+    "previewTestHint": MessageLookupByLibrary.simpleMessage(
+      "Try the controls — changes here aren\'t saved.",
+    ),
+    "previewTestReset": MessageLookupByLibrary.simpleMessage("Reset"),
     "previousTransformationSelectionBtn": MessageLookupByLibrary.simpleMessage(
       "Previous transformation",
     ),

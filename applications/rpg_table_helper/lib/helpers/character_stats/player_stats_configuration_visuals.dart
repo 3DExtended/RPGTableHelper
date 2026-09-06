@@ -106,6 +106,15 @@ class _PlayerStatsConfigurationVisualsState
 
   int currentlyVisibleVariant = 0;
 
+  /// Throwaway value the player is "test-driving" in the interactive preview
+  /// (e.g. tapping the health bar's +/- buttons). Null means the preview shows
+  /// the configured value from [getCurrentStatValueOrDefault]. This is never
+  /// persisted: preview interactions update this field only and deliberately
+  /// bypass [widget.onNewStatValue], so a test tap can never leak into the
+  /// saved character value. It is cleared whenever the config form changes so
+  /// stale test state cannot mask the real configuration.
+  String? _previewTestSerializedValue;
+
   @override
   void initState() {
     pageController = PageController(
@@ -150,6 +159,19 @@ class _PlayerStatsConfigurationVisualsState
     var newStatValue = getCurrentStatValueOrDefault();
     newStatValue = newStatValue.copyWith(variant: currentlyVisibleVariant);
     widget.onNewStatValue(newStatValue);
+  }
+
+  /// Drops any throwaway preview test state when the configured value changes,
+  /// so the interactive preview reflects the new baseline rather than a stale
+  /// tap. Attached to the value-bearing fields; a no-op unless the sandbox is
+  /// currently dirty. Distinct from a variant swipe, which must keep the
+  /// tested value (the value is shared across variants).
+  void clearPreviewSandboxOnConfigEdit() {
+    if (!isWidgetLoadingComplete) return;
+    if (_previewTestSerializedValue == null) return;
+    setState(() {
+      _previewTestSerializedValue = null;
+    });
   }
 
   void delayedInitState() {
@@ -411,6 +433,11 @@ class _PlayerStatsConfigurationVisualsState
           selectedGeneratedImageIndex = 0;
         }
       }
+
+      // Editing the configured value(s) invalidates any in-progress preview
+      // test, so drop the throwaway sandbox when these fields change.
+      textController.addListener(clearPreviewSandboxOnConfigEdit);
+      textController2.addListener(clearPreviewSandboxOnConfigEdit);
     }
 
     setState(() {
@@ -514,13 +541,42 @@ class _PlayerStatsConfigurationVisualsState
         SizedBox(
           height: 10,
         ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                "${S.of(context).preview}:",
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color: CustomThemeProvider.of(context).theme.darkTextColor,
+                      fontSize: 24,
+                    ),
+              ),
+            ),
+            if (_previewTestSerializedValue != null)
+              CustomButton(
+                isSubbutton: true,
+                variant: CustomButtonVariant.FlatButton,
+                label: S.of(context).previewTestReset,
+                onPressed: () {
+                  setState(() {
+                    _previewTestSerializedValue = null;
+                  });
+                },
+                icon: CustomFaIcon(
+                  icon: FontAwesomeIcons.arrowRotateLeft,
+                  color: CustomThemeProvider.of(context).theme.darkColor,
+                ),
+              ),
+          ],
+        ),
         Align(
           alignment: Alignment.topLeft,
           child: Text(
-            "${S.of(context).preview}:",
+            S.of(context).previewTestHint,
             style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   color: CustomThemeProvider.of(context).theme.darkTextColor,
-                  fontSize: 24,
+                  fontSize: 14,
                 ),
           ),
         ),
@@ -553,8 +609,12 @@ class _PlayerStatsConfigurationVisualsState
                 numberOfVariantsForValueTypes(
                     widget.statConfiguration.valueType),
                 (index) {
-                  var statValue =
-                      getCurrentStatValueOrDefault().copyWith(variant: index);
+                  var baseValue = getCurrentStatValueOrDefault();
+                  var testValue = _previewTestSerializedValue;
+                  var statValue = (testValue != null
+                          ? baseValue.copyWith(serializedValue: testValue)
+                          : baseValue)
+                      .copyWith(variant: index);
                   return Align(
                     key: ValueKey(statValue),
                     alignment: Alignment.topCenter,
@@ -567,7 +627,15 @@ class _PlayerStatsConfigurationVisualsState
                           characterToRenderStatFor:
                               widget.characterToRenderStatFor,
                           onNewStatValue: (newSerializedValue) {
-                            // The player should not be allowed to edit their character from the preview and hence we ignore this callback
+                            // Sandbox only: let the player test the widget's
+                            // interactions (e.g. the health bar's +/- buttons)
+                            // by capturing the result in throwaway test state.
+                            // This deliberately does NOT call
+                            // widget.onNewStatValue, so a test tap never edits
+                            // or leaks into the saved character value.
+                            setState(() {
+                              _previewTestSerializedValue = newSerializedValue;
+                            });
                           },
                           context: context,
                           statConfiguration: widget.statConfiguration,

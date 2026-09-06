@@ -38,6 +38,8 @@
   "newPetBtnLabel": "Neuer Begleiter",
   "petDefaultNamePrefix": "Begleiter",
   "preview": "Vorschau",
+  "previewTestHint": "Probiere die Steuerung aus — Änderungen hier werden nicht gespeichert.",
+  "previewTestReset": "Zurücksetzen",
   "newImageBtnLabel": "Neues Bild",
   "uploadImageBtnLabel": "Bild hochladen",
   "invalidImageFileSelected": "Ungültige Bilddatei ausgewählt.",
