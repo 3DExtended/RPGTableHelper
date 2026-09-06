@@ -106,7 +106,7 @@ class PentagonWithLabel extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 6),
                     Text(
                       value.toString(),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
