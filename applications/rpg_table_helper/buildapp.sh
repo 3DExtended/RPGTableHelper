@@ -5,6 +5,11 @@ set -euo pipefail
 
 # Allow globs like build/ios/ipa/*.ipa to expand to an empty list if nothing matches.
 shopt -s nullglob
+
+# CocoaPods (Ruby) crashes with an encoding error on the non-ASCII Podfile unless the locale is UTF-8.
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 start=`date +%s`
 
 dart run build_runner build --delete-conflicting-outputs
