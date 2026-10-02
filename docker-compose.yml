@@ -13,7 +13,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
-      - /mnt/user/appdata/rpgtablehelper_questkeeper:/app/database
+      # array disk on purpose: the appdata share is cache-only, and images written there were lost when the cache pool was rebuilt
+      - /mnt/disk2/appdata/rpgtablehelper_questkeeper:/app/database
 
   questkeeper_cloudflare_tunnel:
     image: cloudflare/cloudflared:latest
