@@ -82,7 +82,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview => 'Preview';
 
   @override
+  String get previewTestHint =>
+      'Try the controls — changes here aren\'t saved.';
+
+  @override
+  String get previewTestReset => 'Reset';
+
+  @override
   String get newImageBtnLabel => 'New image';
+
+  @override
+  String get uploadImageBtnLabel => 'Upload image';
+
+  @override
+  String get invalidImageFileSelected => 'Invalid image file selected.';
 
   @override
   String get additionalSettings => 'Additional settings';

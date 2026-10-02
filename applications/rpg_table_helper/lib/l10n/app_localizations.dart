@@ -236,11 +236,35 @@ abstract class AppLocalizations {
   /// **'Vorschau'**
   String get preview;
 
+  /// No description provided for @previewTestHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Probiere die Steuerung aus — Änderungen hier werden nicht gespeichert.'**
+  String get previewTestHint;
+
+  /// No description provided for @previewTestReset.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurücksetzen'**
+  String get previewTestReset;
+
   /// No description provided for @newImageBtnLabel.
   ///
   /// In de, this message translates to:
   /// **'Neues Bild'**
   String get newImageBtnLabel;
+
+  /// No description provided for @uploadImageBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild hochladen'**
+  String get uploadImageBtnLabel;
+
+  /// No description provided for @invalidImageFileSelected.
+  ///
+  /// In de, this message translates to:
+  /// **'Ungültige Bilddatei ausgewählt.'**
+  String get invalidImageFileSelected;
 
   /// No description provided for @additionalSettings.
   ///

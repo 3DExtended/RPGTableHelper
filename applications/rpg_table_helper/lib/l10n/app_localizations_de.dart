@@ -83,7 +83,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get preview => 'Vorschau';
 
   @override
+  String get previewTestHint =>
+      'Probiere die Steuerung aus — Änderungen hier werden nicht gespeichert.';
+
+  @override
+  String get previewTestReset => 'Zurücksetzen';
+
+  @override
   String get newImageBtnLabel => 'Neues Bild';
+
+  @override
+  String get uploadImageBtnLabel => 'Bild hochladen';
+
+  @override
+  String get invalidImageFileSelected => 'Ungültige Bilddatei ausgewählt.';
 
   @override
   String get additionalSettings => 'Erweiterte Optionen';
