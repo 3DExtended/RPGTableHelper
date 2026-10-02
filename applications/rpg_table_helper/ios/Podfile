@@ -44,6 +44,11 @@ post_install do |installer|
     # Ensure symbol files are generated for archives (App Store upload / crash symbolication).
     # Some pod targets default to plain DWARF, which can cause "missing dSYM" warnings/errors.
     target.build_configurations.each do |config|
+      # Xcode 27 rejects deployment targets below 15.0; many pods still declare 9.0–13.0.
+      if Gem::Version.new(config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] || '0') < Gem::Version.new('15.0')
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      end
+
       next unless ['Release', 'Profile'].include?(config.name)
       config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
     end
