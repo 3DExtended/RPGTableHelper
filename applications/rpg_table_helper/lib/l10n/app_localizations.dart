@@ -422,6 +422,24 @@ abstract class AppLocalizations {
   /// **'Begleiter Übersicht'**
   String get companionOverview;
 
+  /// No description provided for @companionSelectorIconHeadline.
+  ///
+  /// In de, this message translates to:
+  /// **'Icon'**
+  String get companionSelectorIconHeadline;
+
+  /// No description provided for @companionSelectorIconHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird auf dem Charakterbogen über diesen Begleitern angezeigt, z. B. ein Schiff für Fahrzeuge.'**
+  String get companionSelectorIconHint;
+
+  /// No description provided for @forCompanionSelector.
+  ///
+  /// In de, this message translates to:
+  /// **'für Begleiter'**
+  String get forCompanionSelector;
+
   /// No description provided for @kindOfProperty.
   ///
   /// In de, this message translates to:
@@ -697,6 +715,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Keine Items in dieser Runde'**
   String get noItemsGrantedToPlayerThisRound;
+
+  /// No description provided for @grantItemsFailedForPlayers.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Items konnten nicht an {characterNames} verteilt werden. Bitte versuche es erneut.'**
+  String grantItemsFailedForPlayers(String characterNames);
 
   /// No description provided for @login.
   ///

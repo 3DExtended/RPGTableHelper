@@ -9,6 +9,7 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
@@ -70,6 +71,9 @@ class _ShowGetDmConfigurationModalContentState
   List<({String uuid, TextEditingController label, String? iconName})>
       groupOfLabeledValues = [];
 
+  // companionSelector: icon shown above the selected companions
+  String companionSelectorIconName = defaultCompanionSelectorIconName;
+
   CharacterStatEditType? selectedEditType = CharacterStatEditType.static;
   CharacterStatValueType? selectedValueType =
       CharacterStatValueType.singleLineText;
@@ -101,7 +105,12 @@ class _ShowGetDmConfigurationModalContentState
               false;
 
           // what to do about additionaldetails
-          if (selectedValueType == CharacterStatValueType.multiselect) {
+          if (selectedValueType == CharacterStatValueType.companionSelector) {
+            companionSelectorIconName = configuredCompanionSelectorIconName(
+                    widget.predefinedConfiguration!) ??
+                defaultCompanionSelectorIconName;
+          } else if (selectedValueType ==
+              CharacterStatValueType.multiselect) {
             // Decode JSON string to a list of dynamic maps
             // TODO remove migration
             List<dynamic> jsonList = [];
@@ -236,6 +245,11 @@ class _ShowGetDmConfigurationModalContentState
 
             tempResult = tempResult.copyWith(
                 jsonSerializedAdditionalData: serializedAdditionalData);
+          } else if (selectedValueType ==
+              CharacterStatValueType.companionSelector) {
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData:
+                    jsonEncode({"iconName": companionSelectorIconName}));
           } else if (selectedValueType ==
               CharacterStatValueType.listOfIntsWithIcons) {
             var serializedAdditionalData = jsonEncode({
@@ -490,11 +504,76 @@ class _ShowGetDmConfigurationModalContentState
       CharacterStatValueType.listOfIntWithCalculatedValues,
       CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
       CharacterStatValueType.listOfIntsWithIcons,
+      CharacterStatValueType.companionSelector,
     ];
 
     if (selectedValueType == null) return [];
     if (!typesWithAdditionalConfigurationRequired.contains(selectedValueType)) {
       return [];
+    }
+
+    if (selectedValueType == CharacterStatValueType.companionSelector) {
+      return [
+        SizedBox(
+          height: 20,
+        ),
+        HorizontalLine(),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          S.of(context).companionSelectorIconHeadline,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 20,
+              ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            CustomButton(
+              isSubbutton: true,
+              variant: CustomButtonVariant.Default,
+              onPressed: () async {
+                final selected = await showSelectIconWithColorModal(
+                  context,
+                  alreadySelectedIcoName: companionSelectorIconName,
+                  alreadySelectedIconColor:
+                      CustomThemeProvider.of(context).theme.darkColor,
+                  disableColorSelect: true,
+                  titleSuffix: " ${S.of(context).forCompanionSelector}",
+                );
+                if (selected == null || !mounted) return;
+                setState(() {
+                  companionSelectorIconName = selected.$1;
+                });
+              },
+              icon: Padding(
+                padding: const EdgeInsets.all(4.5),
+                child: getIconForIdentifier(
+                  name: companionSelectorIconName,
+                  color: CustomThemeProvider.of(context).theme.darkColor,
+                  size: 32,
+                ).$2,
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: Text(
+                S.of(context).companionSelectorIconHint,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ];
     }
 
     if (selectedValueType == CharacterStatValueType.multiselect) {

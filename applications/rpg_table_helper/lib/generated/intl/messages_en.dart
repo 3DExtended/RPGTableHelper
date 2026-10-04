@@ -22,16 +22,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(username) => " (for ${username})";
 
-  static String m1(label, formattedBonus) =>
+  static String m1(characterNames) =>
+      "Could not grant the items to ${characterNames}. Please try again.";
+
+  static String m2(label, formattedBonus) =>
       "Add ${label} ${formattedBonus} to your roll";
 
-  static String m2(amount) => "You received ${amount} new items:";
+  static String m3(amount) => "You received ${amount} new items:";
 
-  static String m3(property) => "The value of ${property}";
+  static String m4(property) => "The value of ${property}";
 
-  static String m4(count) => "You own ${count} campaigns";
+  static String m5(count) => "You own ${count} campaigns";
 
-  static String m5(count) => "You own ${count} characters";
+  static String m6(count) => "You own ${count} characters";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -63,9 +66,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "amount": MessageLookupByLibrary.simpleMessage("Amount"),
     "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Amount:"),
     "amountToCraftFieldLabel": MessageLookupByLibrary.simpleMessage("Amount"),
-    "assignCharacterToCampagneModalContent": MessageLookupByLibrary.simpleMessage(
-      "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
-    ),
+    "assignCharacterToCampagneModalContent":
+        MessageLookupByLibrary.simpleMessage(
+          "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
+        ),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Author:"),
     "back": MessageLookupByLibrary.simpleMessage("Back"),
     "calculatedValue": MessageLookupByLibrary.simpleMessage("Calculated value"),
@@ -135,6 +139,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "companionOverview": MessageLookupByLibrary.simpleMessage(
       "Companion overview",
+    ),
+    "companionSelectorIconHeadline": MessageLookupByLibrary.simpleMessage(
+      "Icon",
+    ),
+    "companionSelectorIconHint": MessageLookupByLibrary.simpleMessage(
+      "Shown above these companions on the character sheet, e.g. a ship for vehicles.",
     ),
     "completeRegistration": MessageLookupByLibrary.simpleMessage(
       "Complete registration",
@@ -207,6 +217,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "The following items are possible at the place of finding:",
         ),
+    "forCompanionSelector": MessageLookupByLibrary.simpleMessage(
+      "for companions",
+    ),
     "forIntegerValueWithName": MessageLookupByLibrary.simpleMessage(
       "for number value",
     ),
@@ -228,6 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technical details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Grant items"),
+    "grantItemsFailedForPlayers": m1,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "The name of the campaign",
     ),
@@ -241,16 +255,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Field",
     ),
-    "initiativeBonusHelperSentence": m1,
+    "initiativeBonusHelperSentence": m2,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Leave anyway",
     ),
     "initiativeBonusIncompleteStay": MessageLookupByLibrary.simpleMessage(
       "Stay",
     ),
-    "initiativeBonusIncompleteWarningBody": MessageLookupByLibrary.simpleMessage(
-      "Your initiative bonus selection is incomplete and will be cleared if you leave.",
-    ),
+    "initiativeBonusIncompleteWarningBody":
+        MessageLookupByLibrary.simpleMessage(
+          "Your initiative bonus selection is incomplete and will be cleared if you leave.",
+        ),
     "initiativeBonusIncompleteWarningTitle":
         MessageLookupByLibrary.simpleMessage("Incomplete selection"),
     "initiativeBonusListEntryPickerLabel": MessageLookupByLibrary.simpleMessage(
@@ -484,7 +499,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "You received one new item:",
     ),
-    "receivedXNewItems": m2,
+    "receivedXNewItems": m3,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Recipe for"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Ingredients:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -504,9 +519,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "rollOfInititive": MessageLookupByLibrary.simpleMessage(
       "Roll of initiative",
     ),
-    "rpgConfigurationDmWizardStep2Tutorial": MessageLookupByLibrary.simpleMessage(
-      "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:",
-    ),
+    "rpgConfigurationDmWizardStep2Tutorial":
+        MessageLookupByLibrary.simpleMessage(
+          "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:",
+        ),
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "searchLabel": MessageLookupByLibrary.simpleMessage("Search"),
     "secondValue": MessageLookupByLibrary.simpleMessage("Second value"),
@@ -552,7 +568,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage("Upload image"),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "valueOfPropertyWithName": m3,
+    "valueOfPropertyWithName": m4,
     "warning": MessageLookupByLibrary.simpleMessage("Warning"),
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "you": MessageLookupByLibrary.simpleMessage("You"),
@@ -560,11 +576,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You are editing a copied property. Changes will not affect the original property.",
         ),
-    "youAreEditingAnAlternateFormWarningText": MessageLookupByLibrary.simpleMessage(
-      "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
-    ),
-    "youOwnXCampaigns": m4,
-    "youOwnXCharacters": m5,
+    "youAreEditingAnAlternateFormWarningText":
+        MessageLookupByLibrary.simpleMessage(
+          "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
+        ),
+    "youOwnXCampaigns": m5,
+    "youOwnXCharacters": m6,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Your are disconnected... Either you or the DM has lost the connection.",
     ),

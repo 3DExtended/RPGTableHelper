@@ -1843,10 +1843,14 @@ class CompanionMiniCard extends StatelessWidget {
     super.key,
     required this.name,
     required this.onTap,
+    this.iconName,
   });
 
   final String name;
   final VoidCallback onTap;
+
+  /// [getIconForIdentifier] name; the default paw when null.
+  final String? iconName;
 
   @override
   Widget build(BuildContext context) {
@@ -1871,11 +1875,18 @@ class CompanionMiniCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: StatVizTheme.dark(context),
               ),
-              child: Icon(
-                Icons.pets,
-                color: StatVizTheme.text(context),
-                size: 28,
-              ),
+              alignment: Alignment.center,
+              child: iconName == null
+                  ? Icon(
+                      Icons.pets,
+                      color: StatVizTheme.text(context),
+                      size: 28,
+                    )
+                  : getIconForIdentifier(
+                      name: iconName!,
+                      color: StatVizTheme.text(context),
+                      size: 28,
+                    ).$2,
             ),
             SizedBox(height: 6),
             Text(

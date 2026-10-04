@@ -173,7 +173,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         break;
       case NoteAccessChangeKind.granted:
       case NoteAccessChangeKind.updated:
-        _reloadAllPages();
+        // Background refresh: keep the editors mounted so text the user is
+        // currently typing survives someone else sharing/updating a note.
+        _reloadAllPages(showLoadingSpinner: false);
         break;
     }
   }
@@ -561,7 +563,20 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     );
   }
 
+  /// Below this height (e.g. iPad landscape with the software keyboard open)
+  /// the decorative document header and footer are dropped so the text
+  /// editor keeps enough room.
+  static const double _compactContentMaxHeight = 480;
+
   Widget _getContent() {
+    return LayoutBuilder(
+      builder: (context, constraints) => _getContentForHeight(
+        compact: constraints.maxHeight < _compactContentMaxHeight,
+      ),
+    );
+  }
+
+  Widget _getContentForHeight({required bool compact}) {
     if (isLoading) {
       return Column(
         children: [
@@ -590,7 +605,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         Padding(
           padding: EdgeInsets.fromLTRB(
             ledger ? 28.0 : 20.0,
-            ledger ? 24.0 : 20.0,
+            compact ? 8.0 : (ledger ? 24.0 : 20.0),
             ledger ? 28.0 : 20.0,
             ledger ? 6 : 3,
           ),
@@ -609,6 +624,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                         Flexible(
                           child: Text(
                             selectedDocument?.title ?? "",
+                            maxLines: compact ? 1 : null,
+                            overflow: compact ? TextOverflow.ellipsis : null,
                             textAlign:
                                 ledger ? TextAlign.center : TextAlign.start,
                             style: Theme.of(context)
@@ -616,7 +633,9 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                 .labelLarge!
                                 .copyWith(
                                   color: ink,
-                                  fontSize: ledger ? 34 : 24,
+                                  fontSize: ledger
+                                      ? (compact ? 22 : 34)
+                                      : (compact ? 18 : 24),
                                   fontFamily: ledger ? 'Ruwudu' : null,
                                   fontWeight:
                                       ledger ? FontWeight.w600 : FontWeight.w500,
@@ -643,7 +662,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                   ),
                 ],
               ),
-              if (selectedDocument != null) ...[
+              if (selectedDocument != null && !compact) ...[
                 SizedBox(height: ledger ? 10 : 4),
                 if (ledger)
                   Column(
@@ -699,10 +718,14 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             ],
           ),
         ),
+        // Always one child here (no `if`): changing the child count before
+        // the Expanded below would remount it and kill an open editor.
         Padding(
           padding: EdgeInsets.symmetric(horizontal: ledger ? 28 : 20),
           child: ledger
-              ? const LedgerStarRule(height: 22, horizontalInset: 0)
+              ? (compact
+                  ? const SizedBox(height: 4)
+                  : const LedgerStarRule(height: 22, horizontalInset: 0))
               : const HorizontalLine(
                   useDarkColor: true,
                 ),
@@ -724,7 +747,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             ),
           ),
         ),
-        if (ledger && selectedDocument != null) const LedgerLorePageFooter(),
+        if (ledger && selectedDocument != null && !compact)
+          const LedgerLorePageFooter(),
       ],
     );
   }
@@ -776,16 +800,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     );
   }
 
-  Future _reloadAllPages() async {
+  Future _reloadAllPages({bool showLoadingSpinner = true}) async {
     var campagneId =
         ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
     if (campagneId == null) {
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
+    if (showLoadingSpinner) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     var service =
         DependencyProvider.of(context).getService<INoteDocumentService>();
     var documentsResponse = await service.getDocumentsForCampagne(
@@ -832,20 +858,32 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         groupedDocuments[otherGroupName] = [];
       }
 
-      if (documentsResponse.result?.isNotEmpty == true) {
+      // Stay on the document the user is looking at (it may be open in an
+      // editor) - only fall back to a default when it is gone.
+      final previouslySelected = selectedDocumentId == null
+          ? null
+          : documentsResponse.result?.firstWhereOrNull(
+              (d) => d.id?.$value == selectedDocumentId!.$value);
+      if (previouslySelected != null) {
+        selectedDocument = previouslySelected;
+      } else if (documentsResponse.result?.isNotEmpty == true) {
         // Prefer Skadi in Ledger golden fixtures so lore content matches the mock.
         final preferredSkadi = isInTestEnvironment &&
                 isArcaneLedgerActive(context)
             ? documentsResponse.result!
                 .firstWhereOrNull((d) => d.title == 'Skadi')
             : null;
-        if (preferredSkadi != null) {
-          selectedDocumentId = preferredSkadi.id;
-          selectedDocument = preferredSkadi;
-        } else {
-          selectedDocumentId = groupedDocuments[groupLabels.first]![0].id;
-          selectedDocument = groupedDocuments[groupLabels.first]![0];
-        }
+        // The first group label can be the (possibly empty) default group.
+        final firstDocument = preferredSkadi ??
+            groupLabels
+                .map((label) => groupedDocuments[label] ?? const [])
+                .firstWhere((docs) => docs.isNotEmpty)
+                .first;
+        selectedDocumentId = firstDocument.id;
+        selectedDocument = firstDocument;
+      } else {
+        selectedDocumentId = null;
+        selectedDocument = null;
       }
 
       isLoading = false;
@@ -953,11 +991,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     List<Widget> result = [];
 
     for (var block in blocks) {
-      result.add(Builder(builder: (context) {
+      // Keyed on the list's direct child so a block keeps its editor state
+      // (unsaved text, edit mode) when other blocks are added or removed.
+      result.add(Builder(key: ValueKey(block.id), builder: (context) {
         assert(block.id != null);
 
         return LoreBlockRenderingEditable(
-            key: ValueKey(block.id),
             block: block,
             usersInCampagne: usersInCampagne,
             updatePermittedUsersOnBlock: _updatePermittedUsersOnBlock,

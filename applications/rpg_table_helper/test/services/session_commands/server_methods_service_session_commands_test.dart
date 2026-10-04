@@ -65,6 +65,10 @@ class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
   final List<(String playerCharacterId, List<RpgCharacterOwnedItemPair> items)>
       grantItemsToCharacterCalls = [];
 
+  /// Character ids the fake server rejects (like the real endpoint does for
+  /// ids it cannot find).
+  final Set<String> rejectedPlayerCharacterIds = {};
+
   @override
   Future<HRResponse<bool>> askPlayersForRolls({
     required CampagneIdentifier campagneId,
@@ -90,6 +94,13 @@ class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
     required List<RpgCharacterOwnedItemPair> items,
   }) async {
     grantItemsToCharacterCalls.add((playerCharacterId.$value!, items));
+    if (rejectedPlayerCharacterIds.contains(playerCharacterId.$value)) {
+      return HRResponse.error(
+        'Could not verify character or its campagne',
+        'bad-request',
+        statusCode: 400,
+      );
+    }
     return HRResponse.fromResult(const ConfigWriteResult(revision: 2));
   }
 }
@@ -185,15 +196,45 @@ void main() {
       ),
     ];
 
-    await h.svc.sendGrantedItemsToPlayers(
+    final failed = await h.svc.sendGrantedItemsToPlayers(
       campagneId: 'campagne-1',
       grantedItems: grantedItems,
     );
 
+    expect(failed, isEmpty);
     expect(h.rpgEntity.grantItemsToCharacterCalls, hasLength(2));
     expect(
       h.rpgEntity.grantItemsToCharacterCalls.map((c) => c.$1),
       containsAll(['pc-1', 'pc-2']),
     );
+  });
+
+  testWidgets(
+      'sendGrantedItemsToPlayers reports the grants the server rejected',
+      (tester) async {
+    final h = await _setup(tester);
+    h.rpgEntity.rejectedPlayerCharacterIds.add('pc-2');
+
+    final failed = await h.svc.sendGrantedItemsToPlayers(
+      campagneId: 'campagne-1',
+      grantedItems: [
+        GrantedItemsForPlayer(
+          characterName: 'Frodo',
+          playerId: 'pc-1',
+          grantedItems: [
+            RpgCharacterOwnedItemPair(itemUuid: 'item-1', amount: 2),
+          ],
+        ),
+        GrantedItemsForPlayer(
+          characterName: 'Gandalf',
+          playerId: 'pc-2',
+          grantedItems: [
+            RpgCharacterOwnedItemPair(itemUuid: 'item-2', amount: 1),
+          ],
+        ),
+      ],
+    );
+
+    expect(failed.map((g) => g.characterName), ['Gandalf']);
   });
 }

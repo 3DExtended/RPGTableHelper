@@ -22,16 +22,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(username) => " (für ${username})";
 
-  static String m1(label, formattedBonus) =>
+  static String m1(characterNames) =>
+      "Die Items konnten nicht an ${characterNames} verteilt werden. Bitte versuche es erneut.";
+
+  static String m2(label, formattedBonus) =>
       "Addiere ${label} ${formattedBonus} zu deinem Wurf";
 
-  static String m2(amount) => "Du hast ${amount} neue Items erhalten:";
+  static String m3(amount) => "Du hast ${amount} neue Items erhalten:";
 
-  static String m3(property) => "Der Wert von ${property}";
+  static String m4(property) => "Der Wert von ${property}";
 
-  static String m4(count) => "Dir gehören ${count} Kampagnen";
+  static String m5(count) => "Dir gehören ${count} Kampagnen";
 
-  static String m5(count) => "Dir gehören ${count} Charaktere";
+  static String m6(count) => "Dir gehören ${count} Charaktere";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -63,9 +66,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "amount": MessageLookupByLibrary.simpleMessage("Anzahl"),
     "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Anzahl:"),
     "amountToCraftFieldLabel": MessageLookupByLibrary.simpleMessage("Anzahl"),
-    "assignCharacterToCampagneModalContent": MessageLookupByLibrary.simpleMessage(
-      "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
-    ),
+    "assignCharacterToCampagneModalContent":
+        MessageLookupByLibrary.simpleMessage(
+          "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
+        ),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Autor:"),
     "back": MessageLookupByLibrary.simpleMessage("Zurück"),
     "calculatedValue": MessageLookupByLibrary.simpleMessage("Berechneter Wert"),
@@ -135,6 +139,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "companionOverview": MessageLookupByLibrary.simpleMessage(
       "Begleiter Übersicht",
+    ),
+    "companionSelectorIconHeadline": MessageLookupByLibrary.simpleMessage(
+      "Icon",
+    ),
+    "companionSelectorIconHint": MessageLookupByLibrary.simpleMessage(
+      "Wird auf dem Charakterbogen über diesen Begleitern angezeigt, z. B. ein Schiff für Fahrzeuge.",
     ),
     "completeRegistration": MessageLookupByLibrary.simpleMessage(
       "Registrierung abschließen",
@@ -213,6 +223,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Diese Items gibt es am/im Fundort:",
         ),
+    "forCompanionSelector": MessageLookupByLibrary.simpleMessage(
+      "für Begleiter",
+    ),
     "forIntegerValueWithName": MessageLookupByLibrary.simpleMessage(
       "für Zahlen-Wert",
     ),
@@ -234,6 +247,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technische Details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Items verteilen"),
+    "grantItemsFailedForPlayers": m1,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "Wie soll die Kampagne heißen?",
     ),
@@ -249,16 +263,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Feld",
     ),
-    "initiativeBonusHelperSentence": m1,
+    "initiativeBonusHelperSentence": m2,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Trotzdem verlassen",
     ),
     "initiativeBonusIncompleteStay": MessageLookupByLibrary.simpleMessage(
       "Bleiben",
     ),
-    "initiativeBonusIncompleteWarningBody": MessageLookupByLibrary.simpleMessage(
-      "Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.",
-    ),
+    "initiativeBonusIncompleteWarningBody":
+        MessageLookupByLibrary.simpleMessage(
+          "Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.",
+        ),
     "initiativeBonusIncompleteWarningTitle":
         MessageLookupByLibrary.simpleMessage("Unvollständige Auswahl"),
     "initiativeBonusListEntryPickerLabel": MessageLookupByLibrary.simpleMessage(
@@ -502,7 +517,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "Du hast ein neues Item erhalten:",
     ),
-    "receivedXNewItems": m2,
+    "receivedXNewItems": m3,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Rezept für"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -520,9 +535,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Kampfreihenfolge würfeln",
     ),
     "rollOfInititive": MessageLookupByLibrary.simpleMessage("Reihenfolgenwurf"),
-    "rpgConfigurationDmWizardStep2Tutorial": MessageLookupByLibrary.simpleMessage(
-      "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:",
-    ),
+    "rpgConfigurationDmWizardStep2Tutorial":
+        MessageLookupByLibrary.simpleMessage(
+          "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:",
+        ),
     "save": MessageLookupByLibrary.simpleMessage("Speichern"),
     "searchLabel": MessageLookupByLibrary.simpleMessage("Suche"),
     "secondValue": MessageLookupByLibrary.simpleMessage("Zweiter Wert"),
@@ -572,7 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-    "valueOfPropertyWithName": m3,
+    "valueOfPropertyWithName": m4,
     "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
     "yes": MessageLookupByLibrary.simpleMessage("Ja"),
     "you": MessageLookupByLibrary.simpleMessage("Du"),
@@ -580,11 +596,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf den Haupt-Charakter übertragen.",
         ),
-    "youAreEditingAnAlternateFormWarningText": MessageLookupByLibrary.simpleMessage(
-      "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
-    ),
-    "youOwnXCampaigns": m4,
-    "youOwnXCharacters": m5,
+    "youAreEditingAnAlternateFormWarningText":
+        MessageLookupByLibrary.simpleMessage(
+          "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
+        ),
+    "youOwnXCampaigns": m5,
+    "youOwnXCharacters": m6,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
     ),

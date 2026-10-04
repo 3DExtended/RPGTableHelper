@@ -130,6 +130,25 @@ Widget getPlayerVisualizationWidget({
   }
 }
 
+const defaultCompanionSelectorIconName = "paw";
+
+/// Icon the DM picked for a `companionSelector` stat (e.g. a ship for a
+/// "vehicle" stat), stored as `{"iconName": ...}` in its additional data.
+/// Null when none was picked.
+String? configuredCompanionSelectorIconName(CharacterStatDefinition stat) {
+  final data = stat.jsonSerializedAdditionalData;
+  if (data == null || data.isEmpty) return null;
+  try {
+    final decoded = jsonDecode(data);
+    if (decoded is Map<String, dynamic> && decoded["iconName"] is String) {
+      return decoded["iconName"] as String;
+    }
+  } on FormatException {
+    // no valid configuration stored
+  }
+  return null;
+}
+
 Widget renderCompanionSelector(
     void Function(String newSerializedValue) onNewStatValue,
     RpgCharacterStatValue characterValue,
@@ -190,6 +209,9 @@ Widget renderCompanionSelector(
     );
   }
 
+  final configuredIconName =
+      configuredCompanionSelectorIconName(statConfiguration);
+
   if (characterValue.variant == 1) {
     return Wrap(
       spacing: 10,
@@ -199,6 +221,7 @@ Widget renderCompanionSelector(
           .map(
             (t) => CompanionMiniCard(
               name: t.characterName,
+              iconName: configuredIconName,
               onTap: () => openCompanion(t.companionConfig),
             ),
           )
@@ -209,7 +232,7 @@ Widget renderCompanionSelector(
   return Column(
     children: [
       getIconForIdentifier(
-        name: "paw",
+        name: configuredIconName ?? defaultCompanionSelectorIconName,
         color: CustomThemeProvider.of(context).theme.darkColor,
         size: 50,
       ).$2,

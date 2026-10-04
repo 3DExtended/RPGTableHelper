@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -539,6 +540,36 @@ class S {
     );
   }
 
+  /// `Icon`
+  String get companionSelectorIconHeadline {
+    return Intl.message(
+      'Icon',
+      name: 'companionSelectorIconHeadline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shown above these companions on the character sheet, e.g. a ship for vehicles.`
+  String get companionSelectorIconHint {
+    return Intl.message(
+      'Shown above these companions on the character sheet, e.g. a ship for vehicles.',
+      name: 'companionSelectorIconHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `for companions`
+  String get forCompanionSelector {
+    return Intl.message(
+      'for companions',
+      name: 'forCompanionSelector',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Kind of property`
   String get kindOfProperty {
     return Intl.message(
@@ -921,6 +952,16 @@ class S {
       name: 'noItemsGrantedToPlayerThisRound',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Could not grant the items to {characterNames}. Please try again.`
+  String grantItemsFailedForPlayers(String characterNames) {
+    return Intl.message(
+      'Could not grant the items to $characterNames. Please try again.',
+      name: 'grantItemsFailedForPlayers',
+      desc: '',
+      args: [characterNames],
     );
   }
 

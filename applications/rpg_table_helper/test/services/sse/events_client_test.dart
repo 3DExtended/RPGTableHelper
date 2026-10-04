@@ -114,5 +114,59 @@ void main() {
 
       await client.dispose();
     });
+      test('connected fires on the first open and on every reconnect',
+        () async {
+      StreamController<List<int>>? current;
+      final client = EventsClient(
+        getJwt: () async => 't',
+        baseUrl: 'http://example.test/',
+        openStream: ({required uri, required jwt}) async {
+          current = StreamController<List<int>>();
+          return http.ByteStream(current!.stream);
+        },
+        sleep: (_) async {},
+      );
+      var connectedCount = 0;
+      final sub = client.connected.listen((_) => connectedCount++);
+
+      await client.start();
+      await Future<void>.delayed(Duration.zero);
+      expect(connectedCount, 1);
+
+      await current!.close();
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      expect(connectedCount, 2);
+
+      await sub.cancel();
+      await client.dispose();
+    });
+
+    test('ensureConnected replaces a stream that went silent', () async {
+      var opens = 0;
+      var clock = DateTime(2026, 10, 3, 12);
+      final client = EventsClient(
+        getJwt: () async => 't',
+        baseUrl: 'http://example.test/',
+        openStream: ({required uri, required jwt}) async {
+          opens++;
+          return http.ByteStream(StreamController<List<int>>().stream);
+        },
+        sleep: (_) async {},
+        now: () => clock,
+      );
+
+      await client.start();
+      expect(opens, 1);
+
+      clock = clock.add(const Duration(seconds: 10));
+      await client.ensureConnected();
+      expect(opens, 1, reason: 'a fresh stream is kept');
+
+      clock = clock.add(const Duration(minutes: 5));
+      await client.ensureConnected();
+      expect(opens, 2, reason: 'no keepalive for minutes means the stream is dead');
+
+      await client.dispose();
+    });
   });
 }

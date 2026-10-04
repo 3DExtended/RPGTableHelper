@@ -69,6 +69,9 @@
   "characterNameWithLevelAndConfigurableDetails": "Charakter Basis Eigenschaften (LVL, Name und weitere optionale)",
   "multiselectOption": "Mehrfach-Auswahl",
   "companionOverview": "Begleiter Übersicht",
+  "companionSelectorIconHeadline": "Icon",
+  "companionSelectorIconHint": "Wird auf dem Charakterbogen über diesen Begleitern angezeigt, z. B. ein Schiff für Fahrzeuge.",
+  "forCompanionSelector": "für Begleiter",
   "kindOfProperty": "Art der Eigenschaft",
   "multiselectOptionsAreSelectableMultipleTimes": "Optionen können mehrmals ausgewählt werden",
   "optionalPropertyForCompanions": "Optionale Eigenschaft für Begleiter",
@@ -115,6 +118,15 @@
   "diceChallengeAbbr": "SG",
   "lastGrantedItemsMarkdownPrefix": "Zuletzt wurden diese Items verteilt:",
   "noItemsGrantedToPlayerThisRound": "Keine Items in dieser Runde",
+  "grantItemsFailedForPlayers": "Die Items konnten nicht an {characterNames} verteilt werden. Bitte versuche es erneut.",
+  "@grantItemsFailedForPlayers": {
+    "placeholders": {
+      "characterNames": {
+        "type": "String",
+        "example": "Frodo, Gandalf"
+      }
+    }
+  },
   "login": "Login",
   "signInWithApple": "Mit Apple anmelden",
   "signInWithGoogle": "Mit Google anmelden",

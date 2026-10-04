@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' show Tooltip;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/keyboard_visibility_builder.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
@@ -22,6 +23,7 @@ class Navbar extends StatelessWidget {
     required this.menuOpen,
     this.subTitle,
     this.logoutFunction,
+    this.hideWhileKeyboardVisible = false,
   });
 
   final bool useTopSafePadding;
@@ -32,24 +34,48 @@ class Navbar extends StatelessWidget {
   final VoidCallback? menuOpen;
   final VoidCallback? logoutFunction;
 
+  /// Collapses the bar to just the status bar strip while the software
+  /// keyboard is open, so text editors below get the room (TestFlight
+  /// feedback 262, #3).
+  final bool hideWhileKeyboardVisible;
+
   @override
   Widget build(BuildContext context) {
+    if (!hideWhileKeyboardVisible) return _buildBar(context);
+
+    return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
+      // A modal on top (e.g. a stat editor) owns the keyboard - leave the
+      // page underneath alone.
+      final isTopRoute = ModalRoute.of(context)?.isCurrent ?? true;
+      if (!isKeyboardVisible || !isTopRoute) return _buildBar(context);
+
+      return Container(
+        color: _backgroundColor(context),
+        height: useTopSafePadding ? MediaQuery.of(context).padding.top : 0.0,
+      );
+    });
+  }
+
+  Color _backgroundColor(BuildContext context) {
+    final theme = CustomThemeProvider.of(context).theme;
+    if (isArcaneLedgerActive(context)) {
+      return const Color(0xff15100C);
+    } else if (isNightCartographerActive(context)) {
+      return theme.secondaryNavbarColor;
+    } else if (CustomThemeProvider.of(context).brightnessNotifier.value ==
+        Brightness.light) {
+      return theme.darkColor;
+    }
+    return theme.bgColor.darker(0.4);
+  }
+
+  Widget _buildBar(BuildContext context) {
     final theme = CustomThemeProvider.of(context).theme;
     final ledger = isArcaneLedgerActive(context);
     final cartographer = isNightCartographerActive(context);
     final decorated = ledger || cartographer;
 
-    final Color backgroundColor;
-    if (ledger) {
-      backgroundColor = const Color(0xff15100C);
-    } else if (cartographer) {
-      backgroundColor = theme.secondaryNavbarColor;
-    } else if (CustomThemeProvider.of(context).brightnessNotifier.value ==
-        Brightness.light) {
-      backgroundColor = theme.darkColor;
-    } else {
-      backgroundColor = theme.bgColor.darker(0.4);
-    }
+    final backgroundColor = _backgroundColor(context);
 
     final textColor =
         CustomThemeProvider.of(context).brightnessNotifier.value ==

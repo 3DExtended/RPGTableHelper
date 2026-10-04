@@ -125,6 +125,16 @@ class ConfigSyncCoordinator {
     await _catchUp();
   }
 
+  /// Fetches and applies whatever changed on the server since the last known
+  /// revision, e.g. after a reconnect during which `*ConfigChanged` notifies
+  /// may have been missed. No-op while a write is in flight (it rebases).
+  Future<void> catchUpNow() async {
+    if (_disposed || _writeInFlight) {
+      return;
+    }
+    await _catchUp();
+  }
+
   void dispose() {
     _disposed = true;
     _debounceTimer?.cancel();

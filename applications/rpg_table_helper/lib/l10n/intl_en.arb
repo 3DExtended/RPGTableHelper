@@ -53,6 +53,9 @@
   "characterNameWithLevelAndConfigurableDetails": "Character name with level and configurable details",
   "multiselectOption": "Multiselect",
   "companionOverview": "Companion overview",
+  "companionSelectorIconHeadline": "Icon",
+  "companionSelectorIconHint": "Shown above these companions on the character sheet, e.g. a ship for vehicles.",
+  "forCompanionSelector": "for companions",
   "kindOfProperty": "Kind of property",
   "multiselectOptionsAreSelectableMultipleTimes": "Multiselect options are selectable multiple times",
   "optionalPropertyForCompanions": "Optional property for companions",
@@ -99,6 +102,15 @@
   "diceChallengeAbbr": "DC",
   "lastGrantedItemsMarkdownPrefix": "Last granted items:",
   "noItemsGrantedToPlayerThisRound": "No items granted this round",
+  "grantItemsFailedForPlayers": "Could not grant the items to {characterNames}. Please try again.",
+  "@grantItemsFailedForPlayers": {
+    "placeholders": {
+      "characterNames": {
+        "type": "String",
+        "example": "Frodo, Gandalf"
+      }
+    }
+  },
   "login": "Login",
   "signInWithApple": "Sign in with Apple",
   "signInWithGoogle": "Sign in with Google",

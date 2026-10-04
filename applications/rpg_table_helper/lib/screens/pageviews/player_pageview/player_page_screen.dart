@@ -458,6 +458,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             return Column(
               children: [
                 Navbar(
+                  hideWhileKeyboardVisible: true,
                   backInsteadOfCloseIcon: rpgConfig
                               ?.characterStatTabsDefinition!
                               .indexWhere((tab) => tab.isDefaultTab == true) !=

@@ -40,6 +40,7 @@ import 'package:quest_keeper/services/join_requests/join_request_notification_co
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/session/connected_players_mapper.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
+import 'package:quest_keeper/services/session/session_presence_keeper.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
@@ -698,10 +699,15 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         );
       },
       onItemsGranted: (event) {
+        // event.playerCharacterId is the character's server id - compare it
+        // against the session's character id, not the config's local uuid.
+        final ownCharacterId =
+            ref.read(connectionDetailsProvider).valueOrNull?.playerCharacterId;
         final currentCharacter =
             ref.read(rpgCharacterConfigurationProvider).valueOrNull;
         if (currentCharacter == null ||
-            currentCharacter.uuid != event.playerCharacterId) {
+            ownCharacterId == null ||
+            ownCharacterId != event.playerCharacterId) {
           return;
         }
         final grant = GrantedItemsForPlayer(
@@ -717,6 +723,21 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         serverMethodsService.grantPlayerItems(jsonEncode([grant]));
       },
     );
+  }
+
+  /// Re-enters the table session whenever the SSE stream reconnects, then
+  /// catches up on config changes missed while disconnected.
+  SessionPresenceKeeper _buildSessionPresenceKeeper(
+    IRpgEntityService rpgService,
+    CampagneIdentifier campagneId,
+    ConfigSyncSessionController configSyncSessionController,
+  ) {
+    return SessionPresenceKeeper(
+      eventsClient: DependencyProvider.of(context).getService<EventsClient>(),
+      rpgEntityService: rpgService,
+      campagneId: campagneId,
+      onReentered: configSyncSessionController.catchUpAfterReconnect,
+    )..start();
   }
 
   Future onCampagneSelected(Campagne campagne) async {
@@ -835,6 +856,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     // sse-06: session-scoped fight/roll and item-grant SSE notifies.
     var sessionCommandController = _buildSessionCommandNotificationController();
     sessionCommandController.start();
+    var sessionPresenceKeeper = _buildSessionPresenceKeeper(
+        rpgService, campagne.id!, configSyncSessionController);
 
     if (!mounted || !context.mounted) return;
 
@@ -852,6 +875,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       com.activeConfigSyncSessionController = null;
       await configSyncSessionController.stop();
       await sessionCommandController.stop();
+      await sessionPresenceKeeper.stop();
       await sessionEntryCoordinator.leave(campagneId: campagne.id!);
 
       await loadCampagnesAndPlayersFromServer();
@@ -953,6 +977,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       var sessionCommandController =
           _buildSessionCommandNotificationController();
       sessionCommandController.start();
+      var sessionPresenceKeeper = _buildSessionPresenceKeeper(
+          rpgService, character.campagneId!, configSyncSessionController);
 
       if (!mounted) return;
 
@@ -971,6 +997,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         com.activeConfigSyncSessionController = null;
         await configSyncSessionController.stop();
         await sessionCommandController.stop();
+        await sessionPresenceKeeper.stop();
         await sessionEntryCoordinator.leave(campagneId: character.campagneId!);
 
         await loadCampagnesAndPlayersFromServer();

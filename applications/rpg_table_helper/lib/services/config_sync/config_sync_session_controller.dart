@@ -164,6 +164,13 @@ class ConfigSyncSessionController {
     await coordinator.flushNow();
   }
 
+  /// Catches both documents up with the server after the SSE stream was
+  /// re-established, since notifies sent while disconnected are lost.
+  Future<void> catchUpAfterReconnect() async {
+    await _campagneCoordinator?.catchUpNow();
+    await _characterCoordinator?.catchUpNow();
+  }
+
   /// Stops both coordinators and the SSE subscription (e.g. on table leave).
   ///
   /// Flushes any pending local edits before dispose so a navigate-away cannot

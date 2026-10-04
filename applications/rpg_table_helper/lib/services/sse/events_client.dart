@@ -21,6 +21,7 @@ class EventsClient {
     this.openStream,
     this.sleep,
     this.maxReconnectAttempts = 8,
+    this.now,
   });
 
   final JwtGetter getJwt;
@@ -29,8 +30,15 @@ class EventsClient {
   final EventsStreamOpener? openStream;
   final Future<void> Function(Duration delay)? sleep;
   final int maxReconnectAttempts;
+  final DateTime Function()? now;
+
+  /// The backend writes a keepalive comment every 15s; a stream that has been
+  /// silent for much longer than that is dead even if it was never closed
+  /// (typical after the iPad was locked or the proxy dropped the connection).
+  static const staleAfter = Duration(seconds: 45);
 
   final _controller = StreamController<SseEvent>.broadcast();
+  final _connectedController = StreamController<void>.broadcast();
   final _parser = SseParser();
 
   StreamSubscription<List<int>>? _subscription;
@@ -39,6 +47,11 @@ class EventsClient {
   int _reconnectAttempt = 0;
 
   Stream<SseEvent> get events => _controller.stream;
+
+  /// Fires every time the `/events` stream has been (re)opened. The backend
+  /// drops table-session presence after a longer disconnect, so session
+  /// owners listen to this to re-enter their session.
+  Stream<void> get connected => _connectedController.stream;
   bool get isConnected => _subscription != null;
 
   /// Last time any SSE bytes (including keepalive comments) were received.
@@ -66,10 +79,17 @@ class EventsClient {
     await _connect();
   }
 
-  /// Re-open after app resume (no-op if stop() was called).
+  /// Re-open after app resume or when the network comes back. Also replaces
+  /// a stream that still looks open but has gone silent (see [staleAfter]),
+  /// and retries even if the automatic reconnects had already given up.
   Future<void> ensureConnected() async {
     if (!_wanted) {
       await start();
+      return;
+    }
+    _reconnectAttempt = 0;
+    if (_subscription != null && !_connecting && _isStale) {
+      await forceReconnect();
       return;
     }
     if (_subscription == null && !_connecting) {
@@ -77,9 +97,16 @@ class EventsClient {
     }
   }
 
+  bool get _isStale {
+    final last = lastActivityAt;
+    if (last == null) return false;
+    return (now ?? DateTime.now)().difference(last) > staleAfter;
+  }
+
   Future<void> dispose() async {
     await stop();
     await _controller.close();
+    await _connectedController.close();
   }
 
   Future<void> _connect() async {
@@ -103,9 +130,10 @@ class EventsClient {
         );
         _reconnectAttempt = 0;
         await _subscription?.cancel();
+        lastActivityAt = (now ?? DateTime.now)();
         _subscription = stream.listen(
           (bytes) {
-            lastActivityAt = DateTime.now();
+            lastActivityAt = (now ?? DateTime.now)();
             final chunk = utf8.decode(bytes);
             for (final event in _parser.addChunk(chunk)) {
               if (!_controller.isClosed) {
@@ -121,6 +149,9 @@ class EventsClient {
           },
           cancelOnError: true,
         );
+        if (!_connectedController.isClosed) {
+          _connectedController.add(null);
+        }
       } on SseAuthFailure {
         final refreshed = refreshJwt == null ? null : await refreshJwt!();
         shouldReconnect = true;

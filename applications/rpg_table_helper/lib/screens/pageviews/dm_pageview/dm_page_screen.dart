@@ -145,6 +145,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
             return Column(
               children: [
                 Navbar(
+                  hideWhileKeyboardVisible: true,
                   backInsteadOfCloseIcon: false,
                   useTopSafePadding: true,
                   closeFunction: () {

@@ -61,7 +61,9 @@ abstract class IServerMethodsService {
       {required String campagneId, required FightSequence fightSequence});
   Future sendFightSequenceRollsToDm(
       {required String playerId, required FightSequence fightSequence});
-  Future sendGrantedItemsToPlayers(
+
+  /// Returns the grants the server rejected (empty when all went through).
+  Future<List<GrantedItemsForPlayer>> sendGrantedItemsToPlayers(
       {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems});
 
@@ -165,21 +167,27 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
-  Future sendGrantedItemsToPlayers(
+  Future<List<GrantedItemsForPlayer>> sendGrantedItemsToPlayers(
       {required String campagneId,
       required List<GrantedItemsForPlayer> grantedItems}) async {
     // sse-06: REST grant-items (revisioned config write) + itemsGranted SSE.
-    // One REST call per granted player character.
+    // One REST call per granted player character, addressed by the
+    // character's server id ([GrantedItemsForPlayer.playerId]).
     final rpgEntityService = _rpgEntityService;
     if (rpgEntityService == null) {
-      return;
+      return grantedItems;
     }
+    final failedGrants = <GrantedItemsForPlayer>[];
     for (final grant in grantedItems) {
-      await rpgEntityService.grantItemsToCharacter(
+      final response = await rpgEntityService.grantItemsToCharacter(
         playerCharacterId: PlayerCharacterIdentifier($value: grant.playerId),
         items: grant.grantedItems,
       );
+      if (!response.isSuccessful) {
+        failedGrants.add(grant);
+      }
     }
+    return failedGrants;
   }
 
   @override
@@ -285,19 +293,23 @@ class ServerMethodsService extends IServerMethodsService {
         .map((e) => GrantedItemsForPlayer.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    var currentCharacter =
-        widgetRef.read(rpgCharacterConfigurationProvider).requireValue;
+    // Grants are addressed to the character's server id, not to the
+    // client-generated RpgCharacterConfiguration.uuid.
+    var ownCharacterId =
+        widgetRef.read(connectionDetailsProvider).valueOrNull?.playerCharacterId;
+    if (ownCharacterId == null) {
+      return;
+    }
 
-    var myNewItems = castedList
-        .where((el) => el.playerId == currentCharacter.uuid)
-        .singleOrNull;
+    var myNewItems =
+        castedList.where((el) => el.playerId == ownCharacterId).singleOrNull;
     if (myNewItems == null) {
       return;
     }
 
-    widgetRef
-        .read(rpgCharacterConfigurationProvider.notifier)
-        .grantItems(myNewItems.grantedItems);
+    // No local inventory update here: the server already merged the grant
+    // into the character config and announces it via characterConfigChanged,
+    // which ConfigSync applies. Adding the items again would double them.
 
     var rpgConfig = widgetRef.read(rpgConfigurationProvider).requireValue;
 

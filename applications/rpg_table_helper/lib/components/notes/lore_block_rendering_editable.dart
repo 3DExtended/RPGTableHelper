@@ -62,6 +62,12 @@ class _LoreBlockRenderingEditableState
   }
 
   @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget? blockRendering;
 

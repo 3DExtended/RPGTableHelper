@@ -183,6 +183,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get companionOverview => 'Companion overview';
 
   @override
+  String get companionSelectorIconHeadline => 'Icon';
+
+  @override
+  String get companionSelectorIconHint =>
+      'Shown above these companions on the character sheet, e.g. a ship for vehicles.';
+
+  @override
+  String get forCompanionSelector => 'for companions';
+
+  @override
   String get kindOfProperty => 'Kind of property';
 
   @override
@@ -324,6 +334,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noItemsGrantedToPlayerThisRound => 'No items granted this round';
+
+  @override
+  String grantItemsFailedForPlayers(String characterNames) {
+    return 'Could not grant the items to $characterNames. Please try again.';
+  }
 
   @override
   String get login => 'Login';

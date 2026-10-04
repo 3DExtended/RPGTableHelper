@@ -16,6 +16,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
+import 'package:quest_keeper/services/snack_bar_service.dart';
 
 class DmScreenGrantItems extends ConsumerStatefulWidget {
   const DmScreenGrantItems({
@@ -28,7 +29,8 @@ class DmScreenGrantItems extends ConsumerStatefulWidget {
 
 class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
   String? selectedPlaceOfFindingId;
-  List<(String uuid, String playerName, TextEditingController)> playerRolls =
+  List<(String playerCharacterId, String playerName, TextEditingController)>
+      playerRolls =
       [];
   var isSendItemsButtonDisabled = true;
   List<String> excludedItems = [];
@@ -59,7 +61,8 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
 
     ref.watch(connectionDetailsProvider).whenData((cb) {
       var playerIds = (cb.connectedPlayers ?? [])
-          .map((p) => (p.configuration.uuid, p.configuration.characterName))
+          .map((p) =>
+              (p.playerCharacterId.$value!, p.configuration.characterName))
           .toList();
 
       for (var playerId in playerIds) {
@@ -248,8 +251,8 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
     );
   }
 
-  void grantItemsToPlayerForPlaceOfFindingRoll(
-      RpgConfigurationModel? rpgConfig, BuildContext context) {
+  Future<void> grantItemsToPlayerForPlaceOfFindingRoll(
+      RpgConfigurationModel? rpgConfig, BuildContext context) async {
     List<GrantedItemsForPlayer> result = [];
 
     List<(RpgItem, int)> itemsInPlaceOfFinding =
@@ -300,9 +303,22 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
     var com =
         DependencyProvider.of(context).getService<IServerMethodsService>();
     if (connectionDetails.sessionConnectionNumberForPlayers != null) {
-      com.sendGrantedItemsToPlayers(
+      final snackBarService =
+          DependencyProvider.of(context).getService<ISnackBarService>();
+      final failedGrants = await com.sendGrantedItemsToPlayers(
         campagneId: connectionDetails.campagneId!,
         grantedItems: result,
+      );
+      if (failedGrants.isEmpty || !context.mounted) return;
+
+      snackBarService.showSnackBar(
+        snack: SnackBar(
+          content: Text(S.of(context).grantItemsFailedForPlayers(
+              failedGrants.map((g) => g.characterName).join(', '))),
+          duration: const Duration(seconds: 8),
+          showCloseIcon: true,
+        ),
+        uniqueId: 'grantItemsFailed-${DateTime.now().millisecondsSinceEpoch}',
       );
     }
   }

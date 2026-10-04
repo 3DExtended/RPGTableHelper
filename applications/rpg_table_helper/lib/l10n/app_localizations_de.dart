@@ -185,6 +185,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get companionOverview => 'Begleiter Übersicht';
 
   @override
+  String get companionSelectorIconHeadline => 'Icon';
+
+  @override
+  String get companionSelectorIconHint =>
+      'Wird auf dem Charakterbogen über diesen Begleitern angezeigt, z. B. ein Schiff für Fahrzeuge.';
+
+  @override
+  String get forCompanionSelector => 'für Begleiter';
+
+  @override
   String get kindOfProperty => 'Art der Eigenschaft';
 
   @override
@@ -329,6 +339,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noItemsGrantedToPlayerThisRound => 'Keine Items in dieser Runde';
+
+  @override
+  String grantItemsFailedForPlayers(String characterNames) {
+    return 'Die Items konnten nicht an $characterNames verteilt werden. Bitte versuche es erneut.';
+  }
 
   @override
   String get login => 'Login';
