@@ -65,7 +65,7 @@ internal sealed class HealthTestHost : IAsyncDisposable
                     {
                         ["Jwt:Issuer"] = "api",
                         ["Jwt:Audience"] = "api",
-                        ["Jwt:Key"] = string.Join(string.Empty, Enumerable.Repeat("asdfasdf", 200)),
+                        ["Jwt:Key"] = "unused",
                         ["SendGrid:IsDisabled"] = "true",
                         ["RSA:PrivateRsaKeyAsPEM"] = "unused",
                         ["RSA:PublicRsaKeyAsPEM"] = "unused",
@@ -105,8 +105,6 @@ internal sealed class HealthTestHost : IAsyncDisposable
     public RecordingCommandInterceptor Commands { get; } = new();
 
     public CapturingLoggerProvider Logs { get; } = new();
-
-    public IServiceProvider Services => _factory.Services;
 
     private string ConnectionString => $"Data Source={DatabasePath}";
 
@@ -158,6 +156,31 @@ internal sealed class HealthTestHost : IAsyncDisposable
         {
             File.Delete(file);
         }
+    }
+
+    /// <summary>
+    /// Leaves an empty file where the database was, as a volume that lost its contents would. SQLite reads an empty
+    /// file as an empty database.
+    /// </summary>
+    public void EmptyDatabaseFile()
+    {
+        DeleteDatabaseFile();
+        File.WriteAllBytes(DatabasePath, []);
+    }
+
+    /// <summary>
+    /// Holds an exclusive lock on the database until disposed, the way a long write from elsewhere would. Under the
+    /// rollback journal a reader then gets SQLITE_BUSY and retries until its command timeout.
+    /// </summary>
+    public IDisposable LockDatabase()
+    {
+        CloseDatabaseConnections();
+        var connection = new SqliteConnection($"{ConnectionString};Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA journal_mode=DELETE; BEGIN EXCLUSIVE;";
+        command.ExecuteNonQuery();
+        return connection;
     }
 
     /// <summary>
@@ -324,21 +347,24 @@ internal sealed class CapturingLoggerProvider : ILoggerProvider
             Func<TState, Exception?, string> formatter
         )
         {
-            _entries.Enqueue(new CapturedLogEntry(_category, logLevel, formatter(state, exception)));
+            _entries.Enqueue(new CapturedLogEntry(_category, logLevel, formatter(state, exception), exception));
         }
     }
 }
 
 internal sealed class CapturedLogEntry
 {
-    public CapturedLogEntry(string category, LogLevel level, string message)
+    public CapturedLogEntry(string category, LogLevel level, string message, Exception? exception)
     {
         Category = category;
         Level = level;
         Message = message;
+        Exception = exception;
     }
 
     public string Category { get; }
+
+    public Exception? Exception { get; }
 
     public LogLevel Level { get; }
 

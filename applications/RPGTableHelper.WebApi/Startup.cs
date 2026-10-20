@@ -109,7 +109,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapApiHealthEndpoint();
+            MapHealthEndpoint(endpoints);
         });
     }
 
@@ -247,7 +247,7 @@ public class Startup
                 j.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
             });
 
-        services.AddApiHealthChecks();
+        services.AddHealthChecks().AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
@@ -367,6 +367,20 @@ public class Startup
                         )
                 )
         );
+    }
+
+    /// <summary>
+    /// GET and HEAD /health for the uptime check in uhs-cockpit, asked every minute: 200 "Healthy" when the API can
+    /// read its database, 503 "Unhealthy" when it cannot. Plain text with the status word only (never a check's
+    /// description or exception), no caching, and no login: it is anonymous on its own, so no default or fallback
+    /// policy reaches it.
+    /// </summary>
+    private static void MapHealthEndpoint(IEndpointRouteBuilder endpoints)
+    {
+        endpoints
+            .MapHealthChecks("/health")
+            .WithMetadata(new HttpMethodMetadata(new[] { HttpMethods.Get, HttpMethods.Head }))
+            .AllowAnonymous();
     }
 
     private static void ApplyMigrations(IApplicationBuilder app)
