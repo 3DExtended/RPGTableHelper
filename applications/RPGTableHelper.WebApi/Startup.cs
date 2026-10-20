@@ -30,6 +30,7 @@ using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
 using RPGTableHelper.WebApi.Services.Auth;
+using RPGTableHelper.WebApi.Services.Health;
 using RPGTableHelper.WebApi.Swagger;
 
 namespace RPGTableHelper.WebApi;
@@ -108,6 +109,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapApiHealthEndpoint();
         });
     }
 
@@ -244,6 +246,8 @@ public class Startup
                 j.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None;
                 j.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
             });
+
+        services.AddApiHealthChecks();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
