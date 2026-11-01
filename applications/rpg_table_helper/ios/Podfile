@@ -38,6 +38,10 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  # The plugins come in through Swift Package Manager now, so this only reaches the Flutter pod
+  # and any plugin that has to fall back to CocoaPods. SPM plugins need neither setting: they
+  # build at the Runner target's deployment target (15.0) and link statically into Runner,
+  # so their symbols end up in Runner.app.dSYM.
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 

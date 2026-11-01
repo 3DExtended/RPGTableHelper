@@ -78,11 +78,6 @@ dev_dependencies:
   fake_async: ^1.3.3
 
 flutter:
-  # Flutter 3.47 moves iOS plugins to Swift Package Manager by default. Stay on
-  # CocoaPods until a release archive has been tested with SPM: the Podfile's
-  # post_install (deployment target 15.0, dSYMs) would not apply to SPM plugins.
-  config:
-    enable-swift-package-manager: false
   uses-material-design: true
   generate: true
   assets:
