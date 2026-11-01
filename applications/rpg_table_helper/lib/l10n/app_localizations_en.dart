@@ -997,4 +997,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get apiKeyDone => 'Done';
+
+  @override
+  String get endFight => 'End fight';
+
+  @override
+  String get endFightConfirmation =>
+      'End the fight? Whoever has not rolled yet will not be asked any more.';
+
+  @override
+  String get waitingForInitiative => 'Waiting for initiative';
+
+  @override
+  String get notAtTheTable => 'not at the table';
+
+  @override
+  String get noCharactersInCampagne => 'No characters in this campaign yet';
 }

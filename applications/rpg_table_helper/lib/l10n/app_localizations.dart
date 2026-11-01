@@ -1951,6 +1951,36 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Fertig'**
   String get apiKeyDone;
+
+  /// No description provided for @endFight.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampf beenden'**
+  String get endFight;
+
+  /// No description provided for @endFightConfirmation.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.'**
+  String get endFightConfirmation;
+
+  /// No description provided for @waitingForInitiative.
+  ///
+  /// In de, this message translates to:
+  /// **'Wartet auf Initiative'**
+  String get waitingForInitiative;
+
+  /// No description provided for @notAtTheTable.
+  ///
+  /// In de, this message translates to:
+  /// **'nicht am Tisch'**
+  String get notAtTheTable;
+
+  /// No description provided for @noCharactersInCampagne.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Charaktere in dieser Kampagne'**
+  String get noCharactersInCampagne;
 }
 
 class _AppLocalizationsDelegate

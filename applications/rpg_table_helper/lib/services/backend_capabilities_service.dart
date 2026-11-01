@@ -10,6 +10,11 @@ class BackendCapability {
   /// Uploading a device image for a character portrait / singleImage stat.
   /// Backed by `POST /Image/streamimageupload`.
   static const String characterImageUpload = 'character-image-upload';
+
+  /// Fights live on the server (`/Fight/*`): players who were away are asked
+  /// to roll when they come back, and the DM can end a fight. Without it the
+  /// app keeps the old SSE-only fight flow.
+  static const String persistedFights = 'persisted-fights';
 }
 
 /// Capabilities guaranteed by the OLDEST backend we still support — i.e. those

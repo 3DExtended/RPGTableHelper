@@ -17,6 +17,7 @@ import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/current_fight_provider.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
@@ -722,21 +723,29 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         );
         serverMethodsService.grantPlayerItems(jsonEncode([grant]));
       },
+      onInitiativeRequested: serverMethodsService.initiativeRequested,
+      onFightUpdated: serverMethodsService.fightUpdated,
+      onFightEnded: serverMethodsService.fightEnded,
     );
   }
 
   /// Re-enters the table session whenever the SSE stream reconnects, then
-  /// catches up on config changes missed while disconnected.
+  /// catches up on config changes and the fight missed while disconnected.
   SessionPresenceKeeper _buildSessionPresenceKeeper(
     IRpgEntityService rpgService,
     CampagneIdentifier campagneId,
     ConfigSyncSessionController configSyncSessionController,
   ) {
+    final serverMethodsService =
+        DependencyProvider.of(context).getService<IServerMethodsService>();
     return SessionPresenceKeeper(
       eventsClient: DependencyProvider.of(context).getService<EventsClient>(),
       rpgEntityService: rpgService,
       campagneId: campagneId,
-      onReentered: configSyncSessionController.catchUpAfterReconnect,
+      onReentered: () async {
+        await configSyncSessionController.catchUpAfterReconnect();
+        await serverMethodsService.catchUpOnFight();
+      },
     )..start();
   }
 
@@ -877,9 +886,13 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       await sessionCommandController.stop();
       await sessionPresenceKeeper.stop();
       await sessionEntryCoordinator.leave(campagneId: campagne.id!);
+      ref.read(currentFightProvider.notifier).state = null;
 
       await loadCampagnesAndPlayersFromServer();
     });
+
+    // A fight stored on the server goes on where the DM left it.
+    unawaited(com.catchUpOnFight());
   }
 
   Future onCharacterSelected(PlayerCharacter character) async {
@@ -1002,6 +1015,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
         await loadCampagnesAndPlayersFromServer();
       });
+
+      // Asks for the rolls of a fight the DM started while this player was away.
+      unawaited(com.catchUpOnFight());
     } else {
       // 1. show modal for entering a join code
       await askForCampagneJoinCode(context).then((joinCode) async {

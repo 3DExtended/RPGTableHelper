@@ -387,5 +387,10 @@
   "apiKeyCreatedBody": "Kopiere den neuen Schlüssel jetzt. Er wird dir nicht noch einmal angezeigt.",
   "apiKeyCopy": "Kopieren",
   "apiKeyCopied": "In die Zwischenablage kopiert",
-  "apiKeyDone": "Fertig"
+  "apiKeyDone": "Fertig",
+  "endFight": "Kampf beenden",
+  "endFightConfirmation": "Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.",
+  "waitingForInitiative": "Wartet auf Initiative",
+  "notAtTheTable": "nicht am Tisch",
+  "noCharactersInCampagne": "Noch keine Charaktere in dieser Kampagne"
 }

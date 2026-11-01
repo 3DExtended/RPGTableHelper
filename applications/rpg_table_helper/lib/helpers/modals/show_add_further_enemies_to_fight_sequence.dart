@@ -8,12 +8,12 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
-import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
-import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:themed/themed.dart';
 
 Future showAddFurtherEnemiesToFightSequence(
@@ -68,7 +68,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
         child: Center(
           child: CustomShadowWidget(
               child: SkinnedModalPanel(
-                child: Column(
+            child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Navbar(
@@ -209,8 +209,8 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                             height: 20,
                           ),
                           Padding(
-                            padding:
-                                EdgeInsets.fromLTRB(30.0, 30, 30, modalFooterBottomPadding(context)),
+                            padding: EdgeInsets.fromLTRB(30.0, 30, 30,
+                                modalFooterBottomPadding(context)),
                             child: Row(
                               children: [
                                 const Spacer(),
@@ -223,33 +223,20 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                 const Spacer(),
                                 CustomButton(
                                   label: S.of(context).add,
-                                  onPressed: () {
-                                    // add enemies to connectiondetails
-                                    var connectionDetails = ref
-                                        .read(connectionDetailsProvider)
-                                        .requireValue;
-
-                                    var modifiedSequence = connectionDetails
-                                        .fightSequence!.sequence;
-
-                                    modifiedSequence.addAllIntoSortedList(
-                                        enemiesToAdd.map((tu) => (
-                                              null,
-                                              tu.$1.text,
-                                              int.parse(tu.$2.text)
-                                            )),
-                                        (a, b) => b.$3.compareTo(a.$3));
-
-                                    ref
-                                        .read(
-                                            connectionDetailsProvider.notifier)
-                                        .updateConfiguration(
-                                            connectionDetails.copyWith(
-                                                fightSequence: connectionDetails
-                                                    .fightSequence!
-                                                    .copyWith(
-                                                        sequence:
-                                                            modifiedSequence)));
+                                  onPressed: () async {
+                                    // add enemies to the fight (on the server
+                                    // when it keeps the fight)
+                                    var response =
+                                        await DependencyProvider.of(context)
+                                            .getService<IServerMethodsService>()
+                                            .addEnemiesToFight(enemiesToAdd
+                                                .map((tu) => (
+                                                      tu.$1.text,
+                                                      int.parse(tu.$2.text)
+                                                    ))
+                                                .toList());
+                                    if (!context.mounted) return;
+                                    await response.possiblyHandleError(context);
 
                                     navigatorKey.currentState!.pop(null);
                                   },

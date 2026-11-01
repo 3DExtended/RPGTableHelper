@@ -2814,6 +2814,51 @@ class S {
   String get apiKeyDone {
     return Intl.message('Done', name: 'apiKeyDone', desc: '', args: []);
   }
+
+  /// `End fight`
+  String get endFight {
+    return Intl.message('End fight', name: 'endFight', desc: '', args: []);
+  }
+
+  /// `End the fight? Whoever has not rolled yet will not be asked any more.`
+  String get endFightConfirmation {
+    return Intl.message(
+      'End the fight? Whoever has not rolled yet will not be asked any more.',
+      name: 'endFightConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for initiative`
+  String get waitingForInitiative {
+    return Intl.message(
+      'Waiting for initiative',
+      name: 'waitingForInitiative',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `not at the table`
+  String get notAtTheTable {
+    return Intl.message(
+      'not at the table',
+      name: 'notAtTheTable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No characters in this campaign yet`
+  String get noCharactersInCampagne {
+    return Intl.message(
+      'No characters in this campaign yet',
+      name: 'noCharactersInCampagne',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

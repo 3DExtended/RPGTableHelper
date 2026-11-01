@@ -16,6 +16,7 @@ import 'package:quest_keeper/services/auth/session_restorer.dart';
 import 'package:quest_keeper/services/auth/session_revoker.dart';
 import 'package:quest_keeper/services/auth/token_refresher.dart';
 import 'package:quest_keeper/services/backend_capabilities_service.dart';
+import 'package:quest_keeper/services/fights/fight_api_service.dart';
 import 'package:quest_keeper/services/image_generation_service.dart';
 import 'package:quest_keeper/services/navigation_service.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
@@ -221,6 +222,13 @@ class DependencyProvider extends InheritedWidget {
       return MockBackendCapabilitiesService(
         apiConnectorService: apiConnectorService,
       );
+    });
+
+    _registerService<IFightApiService>(() {
+      var apiConnectorService = getService<IApiConnectorService>();
+      return FightApiService(apiConnectorService: apiConnectorService);
+    }, () {
+      return const MockFightApiService();
     });
 
     _registerService<IApiKeyService>(() {

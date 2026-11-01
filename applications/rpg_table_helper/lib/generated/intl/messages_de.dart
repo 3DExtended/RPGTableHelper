@@ -310,6 +310,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "editPageTitle": MessageLookupByLibrary.simpleMessage("Seite bearbeiten"),
     "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
+    "endFight": MessageLookupByLibrary.simpleMessage("Kampf beenden"),
+    "endFightConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.",
+    ),
     "enemy": MessageLookupByLibrary.simpleMessage("Gegner"),
     "enemyName": MessageLookupByLibrary.simpleMessage("Gegnername"),
     "enterANameDefaultLabel": MessageLookupByLibrary.simpleMessage(
@@ -525,6 +529,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "next": MessageLookupByLibrary.simpleMessage("Weiter"),
     "no": MessageLookupByLibrary.simpleMessage("Nein"),
+    "noCharactersInCampagne": MessageLookupByLibrary.simpleMessage(
+      "Noch keine Charaktere in dieser Kampagne",
+    ),
     "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
       "Aktuell kein Kampf gestartet",
     ),
@@ -559,6 +566,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
       "Aktuell keine Spieler online",
     ),
+    "notAtTheTable": MessageLookupByLibrary.simpleMessage("nicht am Tisch"),
     "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
       "Nicht herstellbar",
     ),
@@ -701,6 +709,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
     "valueOfPropertyWithName": m8,
+    "waitingForInitiative": MessageLookupByLibrary.simpleMessage(
+      "Wartet auf Initiative",
+    ),
     "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
     "yes": MessageLookupByLibrary.simpleMessage("Ja"),
     "you": MessageLookupByLibrary.simpleMessage("Du"),

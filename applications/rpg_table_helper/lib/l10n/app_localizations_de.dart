@@ -1006,4 +1006,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get apiKeyDone => 'Fertig';
+
+  @override
+  String get endFight => 'Kampf beenden';
+
+  @override
+  String get endFightConfirmation =>
+      'Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.';
+
+  @override
+  String get waitingForInitiative => 'Wartet auf Initiative';
+
+  @override
+  String get notAtTheTable => 'nicht am Tisch';
+
+  @override
+  String get noCharactersInCampagne =>
+      'Noch keine Charaktere in dieser Kampagne';
 }

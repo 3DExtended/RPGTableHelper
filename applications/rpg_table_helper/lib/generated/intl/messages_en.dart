@@ -296,6 +296,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "editPageTitle": MessageLookupByLibrary.simpleMessage("Edit document"),
     "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
+    "endFight": MessageLookupByLibrary.simpleMessage("End fight"),
+    "endFightConfirmation": MessageLookupByLibrary.simpleMessage(
+      "End the fight? Whoever has not rolled yet will not be asked any more.",
+    ),
     "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
     "enemyName": MessageLookupByLibrary.simpleMessage("Enemy name"),
     "enterANameDefaultLabel": MessageLookupByLibrary.simpleMessage(
@@ -499,6 +503,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "no": MessageLookupByLibrary.simpleMessage("No"),
+    "noCharactersInCampagne": MessageLookupByLibrary.simpleMessage(
+      "No characters in this campaign yet",
+    ),
     "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
       "No fight started yet",
     ),
@@ -533,6 +540,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
       "Currently no players are online",
     ),
+    "notAtTheTable": MessageLookupByLibrary.simpleMessage("not at the table"),
     "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
       "Not craftable",
     ),
@@ -671,6 +679,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
     "valueOfPropertyWithName": m8,
+    "waitingForInitiative": MessageLookupByLibrary.simpleMessage(
+      "Waiting for initiative",
+    ),
     "warning": MessageLookupByLibrary.simpleMessage("Warning"),
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "you": MessageLookupByLibrary.simpleMessage("You"),

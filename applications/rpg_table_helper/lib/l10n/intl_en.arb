@@ -347,5 +347,10 @@
   "apiKeyCreatedBody": "Copy your new key now. You won't see it again.",
   "apiKeyCopy": "Copy",
   "apiKeyCopied": "Copied to clipboard",
-  "apiKeyDone": "Done"
+  "apiKeyDone": "Done",
+  "endFight": "End fight",
+  "endFightConfirmation": "End the fight? Whoever has not rolled yet will not be asked any more.",
+  "waitingForInitiative": "Waiting for initiative",
+  "notAtTheTable": "not at the table",
+  "noCharactersInCampagne": "No characters in this campaign yet"
 }

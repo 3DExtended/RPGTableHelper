@@ -33,6 +33,10 @@ namespace RPGTableHelper.WebApi.Controllers
             // stat. Backed by POST /Image/streamimageupload, which predates this
             // endpoint, so it is also in the frontend baseline set.
             "character-image-upload",
+
+            // Fights live on the server (/Fight/*): players who were away are asked to
+            // roll when they come back, and the DM can end a fight.
+            "persisted-fights",
         };
 
         private readonly IQueryProcessor _queryProcessor;
