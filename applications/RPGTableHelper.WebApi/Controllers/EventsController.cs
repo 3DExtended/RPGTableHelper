@@ -3,13 +3,14 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.WebApi.Services.Auth;
 using RPGTableHelper.WebApi.Services.Presence;
 using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = ApiKeyAuthorization.EventsStreamPolicy)]
 [Route("events")]
 public class EventsController : ControllerBase
 {

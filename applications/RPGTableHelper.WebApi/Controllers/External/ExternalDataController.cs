@@ -12,13 +12,18 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services;
+using RPGTableHelper.WebApi.Services.Auth;
 
-namespace RPGTableHelper.WebApi.Controllers
+namespace RPGTableHelper.WebApi.Controllers.External
 {
+    /// <summary>
+    /// Read access to the caller's characters, campaigns and notes for the external player API.
+    /// </summary>
     [ApiController]
-    [Route("api/external")]
-    [Authorize(AuthenticationSchemes = "ApiKey")]
-    [ApiExplorerSettings(GroupName = "external")]
+    [Route(ExternalApiRoutes.V1)]
+    [Route(ExternalApiRoutes.Legacy)]
+    [Authorize(Policy = ApiKeyAuthorization.ExternalApiPolicy)]
+    [ApiExplorerSettings(GroupName = ExternalApiRoutes.SwaggerGroupName)]
     public class ExternalDataController : ControllerBase
     {
         private readonly IQueryProcessor _queryProcessor;
@@ -42,6 +47,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves all characters for the authenticated user (where they are the player).
         /// </summary>
+        [RequireScope(ApiKeyScopes.CharactersRead)]
         [HttpGet("characters")]
         public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetCharacters()
         {
@@ -62,6 +68,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves a specific character by ID, if the user is authorized to view it.
         /// </summary>
+        [RequireScope(ApiKeyScopes.CharactersRead)]
         [HttpGet("characters/{id}")]
         public async Task<ActionResult<PlayerCharacter>> GetCharacter(Guid id)
         {
@@ -93,6 +100,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves all campaigns accessible to the authenticated user (as DM or Player).
         /// </summary>
+        [RequireScope(ApiKeyScopes.CampaignsRead)]
         [HttpGet("campaigns")]
         public async Task<ActionResult<IEnumerable<Campagne>>> GetCampaigns()
         {
@@ -147,6 +155,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves a specific campaign by ID, if the user is authorized to view it (as DM or Player).
         /// </summary>
+        [RequireScope(ApiKeyScopes.CampaignsRead)]
         [HttpGet("campaigns/{id}")]
         public async Task<ActionResult<Campagne>> GetCampaign(Guid id)
         {
@@ -189,6 +198,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves all characters assigned to a specific campaign, if the user is the DM of that campaign.
         /// </summary>
+        [RequireScope(ApiKeyScopes.CampaignsRead)]
         [HttpGet("campaigns/{id}/characters")]
         public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetCampaignCharacters(Guid id)
         {
@@ -229,6 +239,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves all note documents for a specific campaign, if the user is authorized.
         /// </summary>
+        [RequireScope(ApiKeyScopes.NotesRead)]
         [HttpGet("campaigns/{id}/documents")]
         public async Task<ActionResult<IEnumerable<NoteDocumentDto>>> GetDocuments(Guid id)
         {
@@ -248,6 +259,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves a specific note document by ID, if the user is authorized.
         /// </summary>
+        [RequireScope(ApiKeyScopes.NotesRead)]
         [HttpGet("documents/{id}")]
         public async Task<ActionResult<NoteDocumentDto>> GetDocument(Guid id)
         {

@@ -26,11 +26,17 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Property<DateTimeOffset>("CreationDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTimeOffset?>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("KeyHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("LastUsedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -42,6 +48,10 @@ namespace RPGTableHelper.DataLayer.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Scopes")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("UserId")

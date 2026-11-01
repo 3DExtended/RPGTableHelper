@@ -9,5 +9,9 @@ namespace RPGTableHelper.DataLayer.Contracts.Queries.ApiKeys
     {
         public User.UserIdentifier UserId { get; set; } = default!;
         public string Name { get; set; } = default!;
+        public IReadOnlyCollection<string> Scopes { get; set; } = Array.Empty<string>();
+
+        /// <summary>When the key stops working; none for a key that never expires.</summary>
+        public Option<DateTimeOffset> ExpiresAt { get; set; } = Option.None;
     }
 }

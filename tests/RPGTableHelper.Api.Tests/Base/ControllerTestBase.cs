@@ -14,6 +14,7 @@ using Prodot.Patterns.Cqrs;
 
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Queries.ApiKeys;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
@@ -129,6 +130,30 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
     /// </summary>
     protected string CreateJwtForUser(User user) =>
         JwtTokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString())!;
+
+    /// <summary>
+    /// Creates an API key for <paramref name="user"/> with <paramref name="scopes"/> and returns a fresh client
+    /// that sends it in the <c>X-Api-Key</c> header.
+    /// </summary>
+    protected async Task<HttpClient> CreateApiKeyClientAsync(User user, params string[] scopes)
+    {
+        var plainKey = await CreateApiKeyAsync(user, scopes);
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Add("X-Api-Key", plainKey);
+        return client;
+    }
+
+    protected async Task<string> CreateApiKeyAsync(User user, params string[] scopes)
+    {
+        var created = await new CreateApiKeyQuery
+        {
+            UserId = user.Id,
+            Name = "test key",
+            Scopes = scopes,
+        }.RunAsync(QueryProcessor, CancellationToken.None);
+
+        return created.Get().PlainKey;
+    }
 
     protected virtual void Dispose(bool disposing)
     {

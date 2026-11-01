@@ -26,6 +26,7 @@ using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
+using RPGTableHelper.WebApi.Controllers.External;
 using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
@@ -229,15 +230,21 @@ public class Startup
                     ValidateIssuerSigningKey = true,
                 };
             })
-            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(ApiKeyClaimTypes.AuthenticationScheme, null);
 
         services.AddAuthorization(options =>
         {
+            // API keys are deliberately NOT part of the default policy: a key only reaches the external
+            // player API and the event stream, each gated by scope (see ApiKeyAuthorization).
             options.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes("Bearer", "ApiKey")
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                 .Build();
+
+            options.AddApiKeyPolicies();
         });
+        services.AddSingleton<IAuthorizationHandler, ApiKeyScopeRequirementHandler>();
+        services.AddSingleton<IAuthorizationMiddlewareResultHandler, InsufficientScopeResultHandler>();
 
         services
             .AddControllers()
@@ -264,20 +271,32 @@ public class Startup
                 c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
             }
 
-            c.SwaggerDoc("external", new OpenApiInfo { Title = "External API", Version = "v1" });
+            c.SwaggerDoc(
+                ExternalApiRoutes.SwaggerGroupName,
+                new OpenApiInfo
+                {
+                    Title = "Questkeeper Player API",
+                    Version = "v1",
+                    Description =
+                        "Player-side access for third-party apps. Authenticate with an API key in the X-Api-Key header; "
+                        + "each endpoint names the scope it needs. Guide: docs/external-api in the repository.",
+                }
+            );
 
             // Separate endpoints by group
             c.DocInclusionPredicate(
                 (docName, apiDesc) =>
                 {
                     var groupName = apiDesc.GroupName;
-                    if (docName == "external")
+                    if (docName == ExternalApiRoutes.SwaggerGroupName)
                     {
-                        return groupName == "external";
+                        // Only document v1; the pre-v1 read routes stay reachable as aliases.
+                        return groupName == ExternalApiRoutes.SwaggerGroupName
+                            && apiDesc.RelativePath?.StartsWith(ExternalApiRoutes.V1, StringComparison.Ordinal) == true;
                     }
                     else if (docName == "v1.0")
                     {
-                        return groupName != "external";
+                        return groupName != ExternalApiRoutes.SwaggerGroupName;
                     }
 
                     return false;
