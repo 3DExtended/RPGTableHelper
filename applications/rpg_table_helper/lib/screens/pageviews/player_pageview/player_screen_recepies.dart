@@ -99,9 +99,9 @@ class _PlayerScreenRecepiesState extends ConsumerState<PlayerScreenRecepies> {
 
   @override
   Widget build(BuildContext context) {
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var rpgConfig = ref.watch(rpgConfigurationProvider).value;
     var rpgCharacterConfig =
-        ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
+        ref.watch(rpgCharacterConfigurationProvider).value;
 
     if (rpgConfig == null || rpgCharacterConfig == null) {
       return Container(); // TODO show error

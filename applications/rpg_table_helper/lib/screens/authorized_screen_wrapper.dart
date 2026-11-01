@@ -200,7 +200,7 @@ class _AuthorizedScreenWrapperState
                 return routeChild;
               } else {
                 var connectionDetails =
-                    ref.watch(connectionDetailsProvider).valueOrNull;
+                    ref.watch(connectionDetailsProvider).value;
 
                 return MainTwoBlockLayout(
                     showIsConnectedButton: true,

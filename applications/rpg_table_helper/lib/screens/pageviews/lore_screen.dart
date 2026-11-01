@@ -162,7 +162,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     if (!mounted) return;
 
     final currentCampagneId =
-        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+        ref.read(connectionDetailsProvider).value?.campagneId;
     if (currentCampagneId == null || currentCampagneId != event.campagneId) {
       return;
     }
@@ -443,7 +443,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   Widget _buildNewDocumentButton(bool ledger) {
     Future<void> onPressed() async {
       var campagneId =
-          ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+          ref.read(connectionDetailsProvider).value?.campagneId;
       if (campagneId == null) {
         return;
       }
@@ -802,7 +802,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
   Future _reloadAllPages({bool showLoadingSpinner = true}) async {
     var campagneId =
-        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+        ref.read(connectionDetailsProvider).value?.campagneId;
     if (campagneId == null) {
       return;
     }

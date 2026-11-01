@@ -198,7 +198,7 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
 
                             final itemCategories = ref
                                     .read(rpgConfigurationProvider)
-                                    .valueOrNull
+                                    .value
                                     ?.itemCategories ??
                                 const <ItemCategory>[];
                             final flattenedCategories =

@@ -292,7 +292,9 @@ class SkinnedModalPanel extends StatelessWidget {
     return CharacterSheetSkinChrome(
       expand: false,
       showFrame: showFrame,
-      child: ColoredBox(
+      // A Material, not a ColoredBox, so list tiles in the modal paint their
+      // ink on this surface instead of underneath it.
+      child: Material(
         color: characterSheetSurfaceColor(context),
         child: Padding(
           padding: characterSheetContentInsets(context, forModal: true),
