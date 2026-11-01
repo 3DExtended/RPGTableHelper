@@ -31,7 +31,7 @@ class ImageGenerationService extends IImageGenerationService {
 
     var imageGenerationResult = await HRResponse.fromApiFuture(
         api.imageGenerateimageCampagneidPost(
-            campagneid: campagneId.$value!, body: prompt),
+            campagneid: campagneId.value!, body: prompt),
         'Could not generate new image.',
         '780630d1-94c6-4016-8a11-fd7645cc26f4');
 
@@ -49,7 +49,7 @@ class ImageGenerationService extends IImageGenerationService {
     }
 
     var imagesResult = await HRResponse.fromApiFuture(
-        api.imageGetimagesCampagneIdGet(campagneId: campagneId.$value!),
+        api.imageGetimagesCampagneIdGet(campagneId: campagneId.value!),
         'Could not load images.',
         'cbdd8cdc-16cd-4a92-aa65-42976752d372');
 

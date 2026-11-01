@@ -1,4 +1,6 @@
+// coverage:ignore-file
 // ignore_for_file: type=lint
+// ignore_for_file: unused_element_parameter
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
@@ -14,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart' show MultipartFile;
 import 'package:chopper/chopper.dart' as chopper;
 import 'swagger.enums.swagger.dart' as enums;
+import 'swagger.metadata.swagger.dart';
 export 'swagger.enums.swagger.dart';
 export 'swagger.models.swagger.dart';
 
@@ -68,6 +71,19 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/api/ApiKeys', optionalBody: true)
   Future<chopper.Response<CreateApiKeyResponse>> _apiApiKeysPost({
     @Body() required CreateApiKeyRequestDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          '''Creates a new API key with the given scopes. Only callable with a normal login (JWT): an API key can
+never create, list or revoke keys.''',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["ApiKeys"],
+      deprecated: false,
+    ),
   });
 
   ///Gets all API keys for the current user.
@@ -79,7 +95,19 @@ abstract class Swagger extends ChopperService {
 
   ///Gets all API keys for the current user.
   @GET(path: '/api/ApiKeys')
-  Future<chopper.Response<List<ApiKeyDto>>> _apiApiKeysGet();
+  Future<chopper.Response<List<ApiKeyDto>>> _apiApiKeysGet({
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Gets all API keys for the current user.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["ApiKeys"],
+      deprecated: false,
+    ),
+  });
 
   ///Revokes an API key.
   ///@param id
@@ -92,6 +120,17 @@ abstract class Swagger extends ChopperService {
   @DELETE(path: '/api/ApiKeys/{id}')
   Future<chopper.Response> _apiApiKeysIdDelete({
     @Path('id') required String? id,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Revokes an API key.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["ApiKeys"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a new campagne with the calling user as dm.
@@ -110,6 +149,17 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/Campagne/createcampagne', optionalBody: true)
   Future<chopper.Response<CampagneIdentifier>> _campagneCreatecampagnePost({
     @Body() required CampagneCreateDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Creates a new campagne with the calling user as dm.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Campagne"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a list of campagnes this user is the dm of.
@@ -121,7 +171,19 @@ abstract class Swagger extends ChopperService {
 
   ///Returns a list of campagnes this user is the dm of.
   @GET(path: '/Campagne/getcampagnes')
-  Future<chopper.Response<List<Campagne>>> _campagneGetcampagnesGet();
+  Future<chopper.Response<List<Campagne>>> _campagneGetcampagnesGet({
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Returns a list of campagnes this user is the dm of.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Campagne"],
+      deprecated: false,
+    ),
+  });
 
   ///Returns a single of campagne.
   ///@param campagneid The id of the desired campagne
@@ -138,6 +200,17 @@ abstract class Swagger extends ChopperService {
   @GET(path: '/Campagne/getcampagne/{campagneid}')
   Future<chopper.Response<Campagne>> _campagneGetcampagneCampagneidGet({
     @Path('campagneid') required String? campagneid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the dm or a player in this campagne',
+      summary: 'Returns a single of campagne.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Campagne"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a new campagneJoinRequest with the calling user as dm.
@@ -161,6 +234,17 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<CampagneJoinRequestIdentifier>>
   _campagneJoinRequestCreatecampagneJoinRequestPost({
     @Body() required CampagneJoinRequestCreateDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Creates a new campagneJoinRequest with the calling user as dm.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["CampagneJoinRequest"],
+      deprecated: false,
+    ),
   });
 
   ///Accepts or denies a campagneJoinRequest with the calling user as dm.
@@ -174,6 +258,18 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/CampagneJoinRequest/handlejoinrequest', optionalBody: true)
   Future<chopper.Response> _campagneJoinRequestHandlejoinrequestPost({
     @Body() required HandleJoinRequestDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Accepts or denies a campagneJoinRequest with the calling user as dm.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["CampagneJoinRequest"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a list of campagneJoinRequests for a campagne this user is the dm of.
@@ -198,6 +294,18 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<List<JoinRequestForCampagneDto>>>
   _campagneJoinRequestGetcampagneJoinRequestsCampagneIdGet({
     @Path('campagneId') required String? campagneId,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Returns a list of campagneJoinRequests for a campagne this user is the dm of.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["CampagneJoinRequest"],
+      deprecated: false,
+    ),
   });
 
   ///
@@ -218,6 +326,17 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<String>> _imageGenerateimageCampagneidPost({
     @Path('campagneid') required String? campagneid,
     @Body() required String? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: '',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Image"],
+      deprecated: false,
+    ),
   });
 
   ///Streams an image upload directly to the server.
@@ -236,6 +355,17 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<String>> _imageStreamimageuploadPost({
     @Query('campagneId') required String? campagneId,
     @PartFile() List<int>? image,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Streams an image upload directly to the server.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Image"],
+      deprecated: false,
+    ),
   });
 
   ///Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.
@@ -256,6 +386,18 @@ abstract class Swagger extends ChopperService {
   @GET(path: '/Image/getimages/{campagneId}')
   Future<chopper.Response<List<ImageMetaData>>> _imageGetimagesCampagneIdGet({
     @Path('campagneId') required String? campagneId,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Returns all images (their metadata urls) for a specific campagne where the creator is the requesting user.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Image"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a list of documents this user can see for a given campagne.
@@ -276,6 +418,18 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<List<NoteDocumentDto>>>
   _notesGetdocumentsCampagneidGet({
     @Path('campagneid') required String? campagneid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be within the correct campagne',
+      summary:
+          'Returns a list of documents this user can see for a given campagne.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a single document.
@@ -296,6 +450,18 @@ abstract class Swagger extends ChopperService {
   @GET(path: '/Notes/getdocument/{notedocumentid}')
   Future<chopper.Response<NoteDocumentDto>> _notesGetdocumentNotedocumentidGet({
     @Path('notedocumentid') required String? notedocumentid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description:
+          'You must be within the correct campagne and the document has to be your own or shared with you',
+      summary: 'Returns a single document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Deletes a single document.
@@ -318,6 +484,18 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<NoteDocumentDto>>
   _notesDeletedocumentNotedocumentidDelete({
     @Path('notedocumentid') required String? notedocumentid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description:
+          'You must be within the correct campagne and the document has to be your own',
+      summary: 'Deletes a single document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a single document.
@@ -336,6 +514,17 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/Notes/createdocument', optionalBody: true)
   Future<chopper.Response<NoteDocumentIdentifier>> _notesCreatedocumentPost({
     @Body() required NoteDocumentDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be within the correct campagne',
+      summary: 'Creates a single document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a single text block for a given document.
@@ -358,6 +547,17 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required TextBlock? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the document',
+      summary: 'Creates a single text block for a given document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a single image block for a given document.
@@ -381,6 +581,17 @@ abstract class Swagger extends ChopperService {
   _notesCreateimageblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
     @Body() required ImageBlock? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the document',
+      summary: 'Creates a single image block for a given document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Updates a single text block for a given document.
@@ -392,6 +603,17 @@ abstract class Swagger extends ChopperService {
   @PUT(path: '/Notes/updatetextblock', optionalBody: true)
   Future<chopper.Response> _notesUpdatetextblockPut({
     @Body() required TextBlock? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the document',
+      summary: 'Updates a single text block for a given document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Updates a single image block for a given document.
@@ -405,6 +627,17 @@ abstract class Swagger extends ChopperService {
   @PUT(path: '/Notes/updateimageblock', optionalBody: true)
   Future<chopper.Response> _notesUpdateimageblockPut({
     @Body() required ImageBlock? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the document',
+      summary: 'Updates a single image block for a given document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Updates a document.
@@ -418,19 +651,41 @@ abstract class Swagger extends ChopperService {
   @PUT(path: '/Notes/updatenote', optionalBody: true)
   Future<chopper.Response> _notesUpdatenotePut({
     @Body() required NoteDocumentDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the document',
+      summary: 'Updates a document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Deletes a single note block for a given document.
   ///@param Value
-  Future<chopper.Response> notesDeleteblockDelete({String? $Value}) {
-    return _notesDeleteblockDelete($Value: $Value);
+  Future<chopper.Response> notesDeleteblockDelete({String? value}) {
+    return _notesDeleteblockDelete(value: value);
   }
 
   ///Deletes a single note block for a given document.
   ///@param Value
   @DELETE(path: '/Notes/deleteblock')
   Future<chopper.Response> _notesDeleteblockDelete({
-    @Query('Value') String? $Value,
+    @Query('Value') String? value,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the document',
+      summary: 'Deletes a single note block for a given document.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a new player character with the calling user as owner.
@@ -451,6 +706,17 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<PlayerCharacterIdentifier>>
   _playerCharacterCreatecharacterPost({
     @Body() required PlayerCharacterCreateDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Creates a new player character with the calling user as owner.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["PlayerCharacter"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a list of player characters for the calling user.
@@ -467,7 +733,19 @@ abstract class Swagger extends ChopperService {
   ///Returns a list of player characters for the calling user.
   @GET(path: '/PlayerCharacter/getplayercharacters')
   Future<chopper.Response<List<PlayerCharacter>>>
-  _playerCharacterGetplayercharactersGet();
+  _playerCharacterGetplayercharactersGet({
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Returns a list of player characters for the calling user.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["PlayerCharacter"],
+      deprecated: false,
+    ),
+  });
 
   ///Returns a single playerCharacter.
   ///@param playercharacterid The id of the desired playerCharacter
@@ -491,18 +769,29 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<PlayerCharacter>>
   _playerCharacterGetplayercharacterPlayercharacteridGet({
     @Path('playercharacterid') required String? playercharacterid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of this playerCharacter',
+      summary: 'Returns a single playerCharacter.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["PlayerCharacter"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a list of player characters for a given campagne.
   ///@param Value
   Future<chopper.Response<List<PlayerCharacter>>>
-  playerCharacterGetplayercharactersincampagneGet({String? $Value}) {
+  playerCharacterGetplayercharactersincampagneGet({String? value}) {
     generatedMapping.putIfAbsent(
       PlayerCharacter,
       () => PlayerCharacter.fromJsonFactory,
     );
 
-    return _playerCharacterGetplayercharactersincampagneGet($Value: $Value);
+    return _playerCharacterGetplayercharactersincampagneGet(value: value);
   }
 
   ///Returns a list of player characters for a given campagne.
@@ -510,14 +799,26 @@ abstract class Swagger extends ChopperService {
   @GET(path: '/PlayerCharacter/getplayercharactersincampagne')
   Future<chopper.Response<List<PlayerCharacter>>>
   _playerCharacterGetplayercharactersincampagneGet({
-    @Query('Value') String? $Value,
+    @Query('Value') String? value,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description:
+          'Please note that only the dm is allowed to retrieve the rpg character configs of the players. if you are not the dm, those configs will be empty!',
+      summary: 'Returns a list of player characters for a given campagne.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["PlayerCharacter"],
+      deprecated: false,
+    ),
   });
 
   ///Returns a list of all users assigned to the campagne with meta information.
   ///@param Value
   Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
   playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet({
-    String? $Value,
+    String? value,
   }) {
     generatedMapping.putIfAbsent(
       NoteDocumentPlayerDescriptorDto,
@@ -525,7 +826,7 @@ abstract class Swagger extends ChopperService {
     );
 
     return _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet(
-      $Value: $Value,
+      value: value,
     );
   }
 
@@ -534,7 +835,19 @@ abstract class Swagger extends ChopperService {
   @GET(path: '/PlayerCharacter/getnoteDocumentPlayerDescriptorDtosincampagne')
   Future<chopper.Response<List<NoteDocumentPlayerDescriptorDto>>>
   _playerCharacterGetnoteDocumentPlayerDescriptorDtosincampagneGet({
-    @Query('Value') String? $Value,
+    @Query('Value') String? value,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Returns a list of all users assigned to the campagne with meta information.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["PlayerCharacter"],
+      deprecated: false,
+    ),
   });
 
   ///Returns the minimal app version supported by this api.
@@ -544,7 +857,19 @@ abstract class Swagger extends ChopperService {
 
   ///Returns the minimal app version supported by this api.
   @GET(path: '/Public/getminimalversion')
-  Future<chopper.Response<String>> _publicGetminimalversionGet();
+  Future<chopper.Response<String>> _publicGetminimalversionGet({
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Returns the minimal app version supported by this api.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Public"],
+      deprecated: false,
+    ),
+  });
 
   ///Advertises the optional features this backend supports so newer and older frontends/backends stay compatible. Purely additive; an older backend without this endpoint is treated by the client as "baseline capabilities only".
   Future<chopper.Response<BackendCapabilitiesDto>> publicCapabilitiesGet() {
@@ -558,7 +883,20 @@ abstract class Swagger extends ChopperService {
 
   ///Advertises the optional features this backend supports so newer and older frontends/backends stay compatible. Purely additive; an older backend without this endpoint is treated by the client as "baseline capabilities only".
   @GET(path: '/Public/capabilities')
-  Future<chopper.Response<BackendCapabilitiesDto>> _publicCapabilitiesGet();
+  Future<chopper.Response<BackendCapabilitiesDto>> _publicCapabilitiesGet({
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Advertises the optional features this backend supports so newer and older frontends/backends stay compatible. Purely additive; an older backend without this endpoint is treated by the client as "baseline capabilities only".',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Public"],
+      deprecated: false,
+    ),
+  });
 
   ///
   ///@param uuid
@@ -577,6 +915,17 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _publicGetimageUuidApikeyGet({
     @Path('uuid') required String? uuid,
     @Path('apikey') required String? apikey,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: '',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Public"],
+      deprecated: false,
+    ),
   });
 
   ///This method generates a new encryptionChallenge and stores it in the db.
@@ -592,6 +941,23 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/Register/createencryptionchallenge', optionalBody: true)
   Future<chopper.Response<String>> _registerCreateencryptionchallengePost({
     @Body() required String? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description:
+          '''Additionally, it uses rsa encryption to comunicate: the client has to provide a public pem
+certificate encrypted with the public pem of this server and receives the encryption challenge
+RSA encrypted with the provided public cert.
+This way, no man in the middle can pretend to be the server as each client has a copy of the public cert of the server.''',
+      summary:
+          '''This method generates a new encryptionChallenge and stores it in the db.
+Use this method as first start point for a register operation.''',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Register"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a new user with "username and password" sign in.
@@ -605,6 +971,20 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/Register/register', optionalBody: true)
   Future<chopper.Response<String>> _registerRegisterPost({
     @Body() required String? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description:
+          '''In order to signup the provided body must be RSA encrypted with
+the public certificate of this server. The dto must be of type
+RPGTableHelper.WebApi.Dtos.RegisterWithUsernamePasswordDto.''',
+      summary: 'Creates a new user with "username and password" sign in.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Register"],
+      deprecated: false,
+    ),
   });
 
   ///Creates a new user for an open sign OpenSignInProviderRegisterRequest.
@@ -618,6 +998,18 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/Register/registerwithapikey', optionalBody: true)
   Future<chopper.Response<String>> _registerRegisterwithapikeyPost({
     @Body() required RegisterWithApiKeyDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Creates a new user for an open sign OpenSignInProviderRegisterRequest.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Register"],
+      deprecated: false,
+    ),
   });
 
   ///Lets the user verify their email.
@@ -642,6 +1034,18 @@ abstract class Swagger extends ChopperService {
   _registerVerifyemailUseridbase64Signaturebase64Get({
     @Path('useridbase64') required String? useridbase64,
     @Path('signaturebase64') required String? signaturebase64,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description:
+          'This link is send via email to the user after registration (and only if the user used username and password login).',
+      summary: 'Lets the user verify their email.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Register"],
+      deprecated: false,
+    ),
   });
 
   ///This method returns "Welcome" when the provided JWT is valid.
@@ -651,7 +1055,19 @@ abstract class Swagger extends ChopperService {
 
   ///This method returns "Welcome" when the provided JWT is valid.
   @GET(path: '/SignIn/testlogin')
-  Future<chopper.Response<String>> _signInTestloginGet();
+  Future<chopper.Response<String>> _signInTestloginGet({
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'This method returns "Welcome" when the provided JWT is valid.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
+  });
 
   ///Returns the encryption challenge for a given username.
   ///@param username The username of the desired encryption challenge
@@ -676,6 +1092,18 @@ abstract class Swagger extends ChopperService {
   _signInGetloginchallengeforusernameUsernamePost({
     @Path('username') required String? username,
     @Body() required EncryptedMessageWrapperDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '''Please note that the client has to provide an RSA public
+key in order to receive the encrypted challenge dictionary.''',
+      summary: 'Returns the encryption challenge for a given username.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
   });
 
   ///Performs the login with username and password.
@@ -689,6 +1117,17 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/SignIn/login', optionalBody: true)
   Future<chopper.Response<String>> _signInLoginPost({
     @Body() required LoginWithUsernameAndPasswordDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Performs the login with username and password.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
   });
 
   ///
@@ -702,6 +1141,17 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/SignIn/loginwithapple', optionalBody: true)
   Future<chopper.Response<String>> _signInLoginwithapplePost({
     @Body() required AppleLoginDetails? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: '',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
   });
 
   ///
@@ -715,6 +1165,17 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/SignIn/loginwithgoogle', optionalBody: true)
   Future<chopper.Response<String>> _signInLoginwithgooglePost({
     @Body() required GoogleLoginDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: '',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
   });
 
   ///Requests an reset password email for the user.
@@ -728,6 +1189,17 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/SignIn/requestresetpassword', optionalBody: true)
   Future<chopper.Response<String>> _signInRequestresetpasswordPost({
     @Body() required ResetPasswordRequestDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary: 'Requests an reset password email for the user.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
   });
 
   ///Completes the password reset requests by providing the reset code from the email.
@@ -741,6 +1213,18 @@ abstract class Swagger extends ChopperService {
   @POST(path: '/SignIn/resetpassword', optionalBody: true)
   Future<chopper.Response<String>> _signInResetpasswordPost({
     @Body() required ResetPasswordDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: '',
+      summary:
+          'Completes the password reset requests by providing the reset code from the email.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["SignIn"],
+      deprecated: false,
+    ),
   });
 }
 

@@ -206,7 +206,7 @@ class ServerMethodsService extends IServerMethodsService {
     }
     // Fallback (no active session controller): best-effort direct REST PUT.
     await _rpgEntityService?.updateCampagneRpgConfiguration(
-      campagneId: CampagneIdentifier($value: campagneId),
+      campagneId: CampagneIdentifier(value: campagneId),
       rpgConfigurationJson: jsonEncode(rpgConfig),
     );
   }
@@ -222,7 +222,7 @@ class ServerMethodsService extends IServerMethodsService {
     }
     // Fallback (no active session controller): best-effort direct REST PUT.
     await _rpgEntityService?.updatePlayerCharacterRpgConfiguration(
-      playerCharacterId: PlayerCharacterIdentifier($value: playercharacterid),
+      playerCharacterId: PlayerCharacterIdentifier(value: playercharacterid),
       rpgCharacterConfigurationJson: jsonEncode(charConfig),
     );
   }
@@ -236,7 +236,7 @@ class ServerMethodsService extends IServerMethodsService {
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
     await _rpgEntityService?.askPlayersForRolls(
-      campagneId: CampagneIdentifier($value: campagneId),
+      campagneId: CampagneIdentifier(value: campagneId),
       fightSequence: strippedFightSequence,
     );
   }
@@ -249,7 +249,7 @@ class ServerMethodsService extends IServerMethodsService {
         sequence: fightSequence.sequence.where((e) => e.$1 != null).toList());
 
     await _rpgEntityService?.sendFightSequenceRollsToDm(
-      playerCharacterId: PlayerCharacterIdentifier($value: playerId),
+      playerCharacterId: PlayerCharacterIdentifier(value: playerId),
       fightSequence: strippedFightSequence,
     );
   }
@@ -268,7 +268,7 @@ class ServerMethodsService extends IServerMethodsService {
     final failedGrants = <GrantedItemsForPlayer>[];
     for (final grant in grantedItems) {
       final response = await rpgEntityService.grantItemsToCharacter(
-        playerCharacterId: PlayerCharacterIdentifier($value: grant.playerId),
+        playerCharacterId: PlayerCharacterIdentifier(value: grant.playerId),
         items: grant.grantedItems,
       );
       if (!response.isSuccessful) {

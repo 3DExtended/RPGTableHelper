@@ -18,7 +18,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<List<String>>> enterSession({
     required CampagneIdentifier campagneId,
   }) async {
-    enteredCampagneIds.add(campagneId.$value!);
+    enteredCampagneIds.add(campagneId.value!);
     return HRResponse.fromResult(['me']);
   }
 }
@@ -49,7 +49,7 @@ void main() {
     final keeper = SessionPresenceKeeper(
       eventsClient: eventsClient,
       rpgEntityService: rpg,
-      campagneId: CampagneIdentifier($value: 'campagne-1'),
+      campagneId: CampagneIdentifier(value: 'campagne-1'),
       onReentered: () async => catchUps++,
     )..start();
 
@@ -69,7 +69,7 @@ void main() {
     final keeper = SessionPresenceKeeper(
       eventsClient: eventsClient,
       rpgEntityService: rpg,
-      campagneId: CampagneIdentifier($value: 'campagne-1'),
+      campagneId: CampagneIdentifier(value: 'campagne-1'),
     )..start();
     await keeper.stop();
 

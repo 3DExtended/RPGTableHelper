@@ -256,7 +256,7 @@ class _LoreBlockRenderingEditableState
           } else {
             // remove user from permitted users
             newPermittedUsers
-                .removeWhere((u) => u.$value == permitteddUser.userId.$value);
+                .removeWhere((u) => u.value == permitteddUser.userId.value);
           }
 
           updatePermittedUsersOnBlock(newPermittedUsers, block);

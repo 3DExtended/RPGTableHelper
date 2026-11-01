@@ -19,12 +19,14 @@ abstract class _$_ItemCategoryEditCWProxy {
 
   _ItemCategoryEdit hideInInventoryFilters(bool hideInInventoryFilters);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `_ItemCategoryEdit(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `_ItemCategoryEdit(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// _ItemCategoryEdit(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   _ItemCategoryEdit call({
     String uuid,
     TextEditingController nameController,
@@ -35,41 +37,43 @@ abstract class _$_ItemCategoryEditCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOf_ItemCategoryEdit.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOf_ItemCategoryEdit.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOf_ItemCategoryEdit.copyWith(...)` or call `instanceOf_ItemCategoryEdit.copyWith.fieldName(value)` for a single field.
 class _$_ItemCategoryEditCWProxyImpl implements _$_ItemCategoryEditCWProxy {
   const _$_ItemCategoryEditCWProxyImpl(this._value);
 
   final _ItemCategoryEdit _value;
 
   @override
-  _ItemCategoryEdit uuid(String uuid) => this(uuid: uuid);
+  _ItemCategoryEdit uuid(String uuid) => call(uuid: uuid);
 
   @override
   _ItemCategoryEdit nameController(TextEditingController nameController) =>
-      this(nameController: nameController);
+      call(nameController: nameController);
 
   @override
-  _ItemCategoryEdit iconName(String? iconName) => this(iconName: iconName);
+  _ItemCategoryEdit iconName(String? iconName) => call(iconName: iconName);
 
   @override
-  _ItemCategoryEdit iconColor(Color? iconColor) => this(iconColor: iconColor);
+  _ItemCategoryEdit iconColor(Color? iconColor) => call(iconColor: iconColor);
 
   @override
   _ItemCategoryEdit subCategories(List<_ItemCategoryEdit> subCategories) =>
-      this(subCategories: subCategories);
+      call(subCategories: subCategories);
 
   @override
   _ItemCategoryEdit hideInInventoryFilters(bool hideInInventoryFilters) =>
-      this(hideInInventoryFilters: hideInInventoryFilters);
+      call(hideInInventoryFilters: hideInInventoryFilters);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `_ItemCategoryEdit(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `_ItemCategoryEdit(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// _ItemCategoryEdit(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   _ItemCategoryEdit call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? nameController = const $CopyWithPlaceholder(),
@@ -79,11 +83,13 @@ class _$_ItemCategoryEditCWProxyImpl implements _$_ItemCategoryEditCWProxy {
     Object? hideInInventoryFilters = const $CopyWithPlaceholder(),
   }) {
     return _ItemCategoryEdit(
-      uuid: uuid == const $CopyWithPlaceholder()
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      nameController: nameController == const $CopyWithPlaceholder()
+      nameController:
+          nameController == const $CopyWithPlaceholder() ||
+              nameController == null
           ? _value.nameController
           // ignore: cast_nullable_to_non_nullable
           : nameController as TextEditingController,
@@ -95,21 +101,24 @@ class _$_ItemCategoryEditCWProxyImpl implements _$_ItemCategoryEditCWProxy {
           ? _value.iconColor
           // ignore: cast_nullable_to_non_nullable
           : iconColor as Color?,
-      subCategories: subCategories == const $CopyWithPlaceholder()
+      subCategories:
+          subCategories == const $CopyWithPlaceholder() || subCategories == null
           ? _value.subCategories
           // ignore: cast_nullable_to_non_nullable
           : subCategories as List<_ItemCategoryEdit>,
       hideInInventoryFilters:
-          hideInInventoryFilters == const $CopyWithPlaceholder()
-              ? _value.hideInInventoryFilters
-              // ignore: cast_nullable_to_non_nullable
-              : hideInInventoryFilters as bool,
+          hideInInventoryFilters == const $CopyWithPlaceholder() ||
+              hideInInventoryFilters == null
+          ? _value.hideInInventoryFilters
+          // ignore: cast_nullable_to_non_nullable
+          : hideInInventoryFilters as bool,
     );
   }
 }
 
 extension _$_ItemCategoryEditCopyWith on _ItemCategoryEdit {
-  /// Returns a callable class that can be used as follows: `instanceOf_ItemCategoryEdit.copyWith(...)` or like so:`instanceOf_ItemCategoryEdit.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOf_ItemCategoryEdit.copyWith(...)` or `instanceOf_ItemCategoryEdit.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$_ItemCategoryEditCWProxy get copyWith =>
       _$_ItemCategoryEditCWProxyImpl(this);

@@ -42,7 +42,7 @@ List<OpenPlayerConnection> mapCharactersToOpenPlayerConnections(
       continue;
     }
 
-    final userIdValue = userId.$value;
+    final userIdValue = userId.value;
     final isOnline = userIdValue != null && online.contains(userIdValue);
 
     result.add(
@@ -73,7 +73,7 @@ List<OpenPlayerConnection> applyParticipantPresence({
   List<PlayerCharacter>? allCharacters,
   RpgConfigurationModel? campagneConfig,
 }) {
-  final known = connectedPlayers.any((p) => p.userId.$value == userId);
+  final known = connectedPlayers.any((p) => p.userId.value == userId);
   if (!known) {
     if (!online || allCharacters == null) {
       return connectedPlayers;
@@ -81,7 +81,7 @@ List<OpenPlayerConnection> applyParticipantPresence({
 
     final previousPings = <String, DateTime?>{
       for (final p in connectedPlayers)
-        if (p.userId.$value != null) p.userId.$value!: p.lastPing,
+        if (p.userId.value != null) p.userId.value!: p.lastPing,
     };
     previousPings[userId] = DateTime.now();
 
@@ -96,7 +96,7 @@ List<OpenPlayerConnection> applyParticipantPresence({
     // Preserve exact lastPing timestamps for users that were already online.
     return remapped
         .map((p) {
-          final id = p.userId.$value;
+          final id = p.userId.value;
           if (id == null) return p;
           final previous = previousPings[id];
           if (previous == null && p.lastPing == null) return p;
@@ -109,7 +109,7 @@ List<OpenPlayerConnection> applyParticipantPresence({
   }
 
   return connectedPlayers
-      .map((p) => p.userId.$value == userId
+      .map((p) => p.userId.value == userId
           ? p.copyWith(lastPing: online ? DateTime.now() : null)
           : p)
       .toList();

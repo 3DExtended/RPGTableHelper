@@ -1,3 +1,4 @@
+// coverage:ignore-file
 // ignore_for_file: type=lint
 
 import 'package:json_annotation/json_annotation.dart';
@@ -482,7 +483,7 @@ extension $CampagneCreateDtoExtension on CampagneCreateDto {
 
 @JsonSerializable(explicitToJson: true)
 class CampagneIdentifier {
-  const CampagneIdentifier({this.$value});
+  const CampagneIdentifier({this.value});
 
   factory CampagneIdentifier.fromJson(Map<String, dynamic> json) =>
       _$CampagneIdentifierFromJson(json);
@@ -491,15 +492,15 @@ class CampagneIdentifier {
   Map<String, dynamic> toJson() => _$CampagneIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$CampagneIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is CampagneIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -507,17 +508,17 @@ class CampagneIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $CampagneIdentifierExtension on CampagneIdentifier {
-  CampagneIdentifier copyWith({String? $value}) {
-    return CampagneIdentifier($value: $value ?? this.$value);
+  CampagneIdentifier copyWith({String? value}) {
+    return CampagneIdentifier(value: value ?? this.value);
   }
 
-  CampagneIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  CampagneIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return CampagneIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -797,7 +798,7 @@ extension $CampagneJoinRequestCreateDtoExtension
 
 @JsonSerializable(explicitToJson: true)
 class CampagneJoinRequestIdentifier {
-  const CampagneJoinRequestIdentifier({this.$value});
+  const CampagneJoinRequestIdentifier({this.value});
 
   factory CampagneJoinRequestIdentifier.fromJson(Map<String, dynamic> json) =>
       _$CampagneJoinRequestIdentifierFromJson(json);
@@ -806,15 +807,15 @@ class CampagneJoinRequestIdentifier {
   Map<String, dynamic> toJson() => _$CampagneJoinRequestIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$CampagneJoinRequestIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is CampagneJoinRequestIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -822,18 +823,18 @@ class CampagneJoinRequestIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $CampagneJoinRequestIdentifierExtension
     on CampagneJoinRequestIdentifier {
-  CampagneJoinRequestIdentifier copyWith({String? $value}) {
-    return CampagneJoinRequestIdentifier($value: $value ?? this.$value);
+  CampagneJoinRequestIdentifier copyWith({String? value}) {
+    return CampagneJoinRequestIdentifier(value: value ?? this.value);
   }
 
-  CampagneJoinRequestIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  CampagneJoinRequestIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return CampagneJoinRequestIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -1106,7 +1107,7 @@ extension $EncryptedMessageWrapperDtoExtension on EncryptedMessageWrapperDto {
 
 @JsonSerializable(explicitToJson: true)
 class EncryptionChallengeIdentifier {
-  const EncryptionChallengeIdentifier({this.$value});
+  const EncryptionChallengeIdentifier({this.value});
 
   factory EncryptionChallengeIdentifier.fromJson(Map<String, dynamic> json) =>
       _$EncryptionChallengeIdentifierFromJson(json);
@@ -1115,15 +1116,15 @@ class EncryptionChallengeIdentifier {
   Map<String, dynamic> toJson() => _$EncryptionChallengeIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$EncryptionChallengeIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is EncryptionChallengeIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -1131,18 +1132,18 @@ class EncryptionChallengeIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $EncryptionChallengeIdentifierExtension
     on EncryptionChallengeIdentifier {
-  EncryptionChallengeIdentifier copyWith({String? $value}) {
-    return EncryptionChallengeIdentifier($value: $value ?? this.$value);
+  EncryptionChallengeIdentifier copyWith({String? value}) {
+    return EncryptionChallengeIdentifier(value: value ?? this.value);
   }
 
-  EncryptionChallengeIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  EncryptionChallengeIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return EncryptionChallengeIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -1726,7 +1727,7 @@ extension $ImageMetaDataExtension on ImageMetaData {
 
 @JsonSerializable(explicitToJson: true)
 class ImageMetaDataIdentifier {
-  const ImageMetaDataIdentifier({this.$value});
+  const ImageMetaDataIdentifier({this.value});
 
   factory ImageMetaDataIdentifier.fromJson(Map<String, dynamic> json) =>
       _$ImageMetaDataIdentifierFromJson(json);
@@ -1735,15 +1736,15 @@ class ImageMetaDataIdentifier {
   Map<String, dynamic> toJson() => _$ImageMetaDataIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$ImageMetaDataIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is ImageMetaDataIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -1751,17 +1752,17 @@ class ImageMetaDataIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $ImageMetaDataIdentifierExtension on ImageMetaDataIdentifier {
-  ImageMetaDataIdentifier copyWith({String? $value}) {
-    return ImageMetaDataIdentifier($value: $value ?? this.$value);
+  ImageMetaDataIdentifier copyWith({String? value}) {
+    return ImageMetaDataIdentifier(value: value ?? this.value);
   }
 
-  ImageMetaDataIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  ImageMetaDataIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return ImageMetaDataIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -2150,7 +2151,7 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
 
 @JsonSerializable(explicitToJson: true)
 class NoteBlockModelBaseIdentifier {
-  const NoteBlockModelBaseIdentifier({this.$value});
+  const NoteBlockModelBaseIdentifier({this.value});
 
   factory NoteBlockModelBaseIdentifier.fromJson(Map<String, dynamic> json) =>
       _$NoteBlockModelBaseIdentifierFromJson(json);
@@ -2159,15 +2160,15 @@ class NoteBlockModelBaseIdentifier {
   Map<String, dynamic> toJson() => _$NoteBlockModelBaseIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$NoteBlockModelBaseIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is NoteBlockModelBaseIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -2175,18 +2176,18 @@ class NoteBlockModelBaseIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $NoteBlockModelBaseIdentifierExtension
     on NoteBlockModelBaseIdentifier {
-  NoteBlockModelBaseIdentifier copyWith({String? $value}) {
-    return NoteBlockModelBaseIdentifier($value: $value ?? this.$value);
+  NoteBlockModelBaseIdentifier copyWith({String? value}) {
+    return NoteBlockModelBaseIdentifier(value: value ?? this.value);
   }
 
-  NoteBlockModelBaseIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  NoteBlockModelBaseIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return NoteBlockModelBaseIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -2452,7 +2453,7 @@ extension $NoteDocumentDtoExtension on NoteDocumentDto {
 
 @JsonSerializable(explicitToJson: true)
 class NoteDocumentIdentifier {
-  const NoteDocumentIdentifier({this.$value});
+  const NoteDocumentIdentifier({this.value});
 
   factory NoteDocumentIdentifier.fromJson(Map<String, dynamic> json) =>
       _$NoteDocumentIdentifierFromJson(json);
@@ -2461,15 +2462,15 @@ class NoteDocumentIdentifier {
   Map<String, dynamic> toJson() => _$NoteDocumentIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$NoteDocumentIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is NoteDocumentIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -2477,17 +2478,17 @@ class NoteDocumentIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $NoteDocumentIdentifierExtension on NoteDocumentIdentifier {
-  NoteDocumentIdentifier copyWith({String? $value}) {
-    return NoteDocumentIdentifier($value: $value ?? this.$value);
+  NoteDocumentIdentifier copyWith({String? value}) {
+    return NoteDocumentIdentifier(value: value ?? this.value);
   }
 
-  NoteDocumentIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  NoteDocumentIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return NoteDocumentIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -2813,7 +2814,7 @@ extension $PlayerCharacterCreateDtoExtension on PlayerCharacterCreateDto {
 
 @JsonSerializable(explicitToJson: true)
 class PlayerCharacterIdentifier {
-  const PlayerCharacterIdentifier({this.$value});
+  const PlayerCharacterIdentifier({this.value});
 
   factory PlayerCharacterIdentifier.fromJson(Map<String, dynamic> json) =>
       _$PlayerCharacterIdentifierFromJson(json);
@@ -2822,15 +2823,15 @@ class PlayerCharacterIdentifier {
   Map<String, dynamic> toJson() => _$PlayerCharacterIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$PlayerCharacterIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is PlayerCharacterIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -2838,17 +2839,17 @@ class PlayerCharacterIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $PlayerCharacterIdentifierExtension on PlayerCharacterIdentifier {
-  PlayerCharacterIdentifier copyWith({String? $value}) {
-    return PlayerCharacterIdentifier($value: $value ?? this.$value);
+  PlayerCharacterIdentifier copyWith({String? value}) {
+    return PlayerCharacterIdentifier(value: value ?? this.value);
   }
 
-  PlayerCharacterIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
+  PlayerCharacterIdentifier copyWithWrapped({Wrapped<String?>? value}) {
     return PlayerCharacterIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
+      value: (value != null ? value.value : this.value),
     );
   }
 }
@@ -3495,7 +3496,7 @@ extension $TextBlockExtension on TextBlock {
 
 @JsonSerializable(explicitToJson: true)
 class UserIdentifier {
-  const UserIdentifier({this.$value});
+  const UserIdentifier({this.value});
 
   factory UserIdentifier.fromJson(Map<String, dynamic> json) =>
       _$UserIdentifierFromJson(json);
@@ -3504,15 +3505,15 @@ class UserIdentifier {
   Map<String, dynamic> toJson() => _$UserIdentifierToJson(this);
 
   @JsonKey(name: 'value')
-  final String? $value;
+  final String? value;
   static const fromJsonFactory = _$UserIdentifierFromJson;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other is UserIdentifier &&
-            (identical(other.$value, $value) ||
-                const DeepCollectionEquality().equals(other.$value, $value)));
+            (identical(other.value, value) ||
+                const DeepCollectionEquality().equals(other.value, value)));
   }
 
   @override
@@ -3520,18 +3521,16 @@ class UserIdentifier {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash($value) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(value) ^ runtimeType.hashCode;
 }
 
 extension $UserIdentifierExtension on UserIdentifier {
-  UserIdentifier copyWith({String? $value}) {
-    return UserIdentifier($value: $value ?? this.$value);
+  UserIdentifier copyWith({String? value}) {
+    return UserIdentifier(value: value ?? this.value);
   }
 
-  UserIdentifier copyWithWrapped({Wrapped<String?>? $value}) {
-    return UserIdentifier(
-      $value: ($value != null ? $value.value : this.$value),
-    );
+  UserIdentifier copyWithWrapped({Wrapped<String?>? value}) {
+    return UserIdentifier(value: (value != null ? value.value : this.value));
   }
 }
 

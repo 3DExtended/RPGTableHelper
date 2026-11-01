@@ -192,10 +192,10 @@ void main() {
                       OpenPlayerConnection(
                         lastPing: DateTime(2025, 02, 26, 12, 00),
                         userId: UserIdentifier(
-                          $value: "9a709402-5620-479c-85b7-718ae01e0a83",
+                          value: "9a709402-5620-479c-85b7-718ae01e0a83",
                         ),
                         playerCharacterId: PlayerCharacterIdentifier(
-                          $value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
+                          value: "575fb9d9-c2a0-47df-bec4-5de1b3d5ca4d",
                         ),
                         configuration: _ledgerCharacterWithSpells()
                             .copyWith(characterName: 'Gandalf'),

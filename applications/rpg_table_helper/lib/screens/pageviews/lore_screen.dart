@@ -115,8 +115,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       usersInCampagne.firstWhereOrNull((u) => u.isYou)?.userId;
 
   bool get _isAllowedToEdit =>
-      selectedDocument?.creatingUserId?.$value != null &&
-      selectedDocument?.creatingUserId?.$value == _myUser?.$value &&
+      selectedDocument?.creatingUserId?.value != null &&
+      selectedDocument?.creatingUserId?.value == _myUser?.value &&
       context.isTablet; // disable editing on mobile
 
   @override
@@ -188,10 +188,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         // document-level revoke (document deleted, or all its blocks lost)
         for (final group in groupedDocuments.keys.toList()) {
           groupedDocuments[group]
-              ?.removeWhere((d) => d.id?.$value == event.documentId);
+              ?.removeWhere((d) => d.id?.value == event.documentId);
         }
 
-        if (selectedDocument?.id?.$value == event.documentId) {
+        if (selectedDocument?.id?.value == event.documentId) {
           selectedDocument = null;
           selectedDocumentId = null;
         }
@@ -200,18 +200,18 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
       for (final group in groupedDocuments.keys) {
         final doc = groupedDocuments[group]
-            ?.firstWhereOrNull((d) => d.id?.$value == event.documentId);
+            ?.firstWhereOrNull((d) => d.id?.value == event.documentId);
         if (doc == null) continue;
 
-        doc.textBlocks.removeWhere((b) => b.id?.$value == event.blockId);
-        doc.imageBlocks.removeWhere((b) => b.id?.$value == event.blockId);
+        doc.textBlocks.removeWhere((b) => b.id?.value == event.blockId);
+        doc.imageBlocks.removeWhere((b) => b.id?.value == event.blockId);
       }
 
-      if (selectedDocument?.id?.$value == event.documentId) {
+      if (selectedDocument?.id?.value == event.documentId) {
         selectedDocument!.textBlocks
-            .removeWhere((b) => b.id?.$value == event.blockId);
+            .removeWhere((b) => b.id?.value == event.blockId);
         selectedDocument!.imageBlocks
-            .removeWhere((b) => b.id?.$value == event.blockId);
+            .removeWhere((b) => b.id?.value == event.blockId);
       }
     });
   }
@@ -348,7 +348,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                                 LongPressDraggable<
                                                     NoteDocumentDto>(
                                               hapticFeedbackOnStart: true,
-                                              key: ValueKey(doc.id!.$value!),
+                                              key: ValueKey(doc.id!.value!),
                                               data: doc,
                                               feedback: SizedBox(
                                                 width: expandedWidth,
@@ -461,7 +461,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             S.of(context).defaultGroupNameForDocuments,
         title:
             "${S.of(context).documentDefaultNamePrefix} #${numberOfDocumentsForThisPlayer + 1}",
-        createdForCampagneId: CampagneIdentifier($value: campagneId),
+        createdForCampagneId: CampagneIdentifier(value: campagneId),
         lastModifiedAt: systemClock.now(),
         creationDate: systemClock.now(),
         creatingUserId: _myUser,
@@ -469,7 +469,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         imageBlocks: [],
         textBlocks: [],
         id: NoteDocumentIdentifier(
-            $value: "00000000-0000-0000-0000-000000000000"),
+            value: "00000000-0000-0000-0000-000000000000"),
       );
 
       var service =
@@ -522,7 +522,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
   Widget _getDocumentDragChild(NoteDocumentDto doc, BuildContext context) {
     final ledger = isDecoratedSheetSkinActive(context);
-    final selected = selectedDocumentId?.$value == doc.id?.$value;
+    final selected = selectedDocumentId?.value == doc.id?.value;
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: ledger ? 32 : 5,
@@ -534,12 +534,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
         children: [
           if (ledger)
             LedgerLoreListDiamond(
-              key: ValueKey("ColoredRotatedSquare${doc.id!.$value!}"),
+              key: ValueKey("ColoredRotatedSquare${doc.id!.value!}"),
               selected: selected,
             )
           else
             ColoredRotatedSquare(
-              key: ValueKey("ColoredRotatedSquare${doc.id!.$value!}"),
+              key: ValueKey("ColoredRotatedSquare${doc.id!.value!}"),
               isSolidSquare: selected,
               color: CustomThemeProvider.of(context).theme.accentColor,
             ),
@@ -591,12 +591,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     final ink = CustomThemeProvider.of(context).theme.darkTextColor;
     final authorName = selectedDocument == null
         ? ''
-        : (_myUser?.$value == selectedDocument!.creatingUserId!.$value!
+        : (_myUser?.value == selectedDocument!.creatingUserId!.value!
             ? S.of(context).you
             : (usersInCampagne
                     .firstWhereOrNull((u) =>
-                        u.userId.$value ==
-                        selectedDocument!.creatingUserId!.$value!)
+                        u.userId.value ==
+                        selectedDocument!.creatingUserId!.value!)
                     ?.playerCharacterName ??
                 S.of(context).dm));
 
@@ -815,13 +815,13 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     var service =
         DependencyProvider.of(context).getService<INoteDocumentService>();
     var documentsResponse = await service.getDocumentsForCampagne(
-        campagneId: CampagneIdentifier($value: campagneId));
+        campagneId: CampagneIdentifier(value: campagneId));
 
     if (!mounted) return;
     var rpgservice =
         DependencyProvider.of(context).getService<IRpgEntityService>();
     var loadedCharsResponse = await rpgservice.getUserDetailsForCampagne(
-        campagneId: CampagneIdentifier($value: campagneId));
+        campagneId: CampagneIdentifier(value: campagneId));
 
     if (!mounted) return;
     await loadedCharsResponse.possiblyHandleError(context);
@@ -863,7 +863,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       final previouslySelected = selectedDocumentId == null
           ? null
           : documentsResponse.result?.firstWhereOrNull(
-              (d) => d.id?.$value == selectedDocumentId!.$value);
+              (d) => d.id?.value == selectedDocumentId!.value);
       if (previouslySelected != null) {
         selectedDocument = previouslySelected;
       } else if (documentsResponse.result?.isNotEmpty == true) {
@@ -1108,7 +1108,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                             lastModifiedAt: DateTime.now(),
                             creatingUserId: _myUser,
                             id: NoteBlockModelBaseIdentifier(
-                                $value: "00000000-0000-0000-0000-000000000000"),
+                                value: "00000000-0000-0000-0000-000000000000"),
                             isDeleted: false,
                             permittedUsers: [],
                             markdownText: "",
@@ -1177,7 +1177,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     var service = DependencyProvider.of(context)
                         .getService<IRpgEntityService>();
                     var response = await service.uploadImageToCampagneStorage(
-                        campagneId: CampagneIdentifier($value: campagneId),
+                        campagneId: CampagneIdentifier(value: campagneId),
                         image: multipartFile);
 
                     if (!context.mounted || !mounted) return;
@@ -1202,13 +1202,13 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                 lastModifiedAt: DateTime.now(),
                                 creatingUserId: _myUser,
                                 id: NoteBlockModelBaseIdentifier(
-                                    $value:
+                                    value:
                                         "00000000-0000-0000-0000-000000000000"),
                                 isDeleted: false,
                                 permittedUsers: [],
                                 noteDocumentId: selectedDocument!.id,
                                 imageMetaDataId:
-                                    ImageMetaDataIdentifier($value: metadataId),
+                                    ImageMetaDataIdentifier(value: metadataId),
                                 publicImageUrl: publicUrl,
                               ),
                               notedocumentid: selectedDocument!.id!);
@@ -1264,12 +1264,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                             lastModifiedAt: DateTime.now(),
                             creatingUserId: _myUser,
                             id: NoteBlockModelBaseIdentifier(
-                                $value: "00000000-0000-0000-0000-000000000000"),
+                                value: "00000000-0000-0000-0000-000000000000"),
                             isDeleted: false,
                             permittedUsers: [],
                             noteDocumentId: selectedDocument!.id,
                             imageMetaDataId:
-                                ImageMetaDataIdentifier($value: metadataId),
+                                ImageMetaDataIdentifier(value: metadataId),
                             publicImageUrl: publicUrl,
                           ),
                           notedocumentid: selectedDocument!.id!);
@@ -1321,7 +1321,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     if (updateResult.isSuccessful == false) return false;
 
     var indexOfTextBlockToUpdate = selectedDocument!.textBlocks
-        .indexWhere((tb) => tb.id!.$value == textBlockCopy.id!.$value);
+        .indexWhere((tb) => tb.id!.value == textBlockCopy.id!.value);
 
     assert(indexOfTextBlockToUpdate >= 0);
     setState(() {
@@ -1354,7 +1354,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     if (updateResult.isSuccessful == false) return false;
 
     var indexOfImageBlockToUpdate = selectedDocument!.imageBlocks
-        .indexWhere((tb) => tb.id!.$value == imageBlockCopy.id!.$value);
+        .indexWhere((tb) => tb.id!.value == imageBlockCopy.id!.value);
 
     assert(indexOfImageBlockToUpdate >= 0);
     setState(() {
@@ -1378,7 +1378,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       List<UserIdentifier> newPermittedUsers, dynamic block) async {
     newPermittedUsers = newPermittedUsers
         .where(
-            (u) => usersInCampagne.any((uic) => uic.userId.$value == u.$value))
+            (u) => usersInCampagne.any((uic) => uic.userId.value == u.value))
         .toList();
 
     if (block is TextBlock) {

@@ -68,8 +68,8 @@ class _FakeFightApi extends MockFightApiService {
 OpenPlayerConnection _player(String name, String id, {required bool online}) {
   return OpenPlayerConnection(
     lastPing: online ? DateTime(2026, 11, 1, 12) : null,
-    userId: UserIdentifier($value: 'user-$id'),
-    playerCharacterId: PlayerCharacterIdentifier($value: 'pc-$id'),
+    userId: UserIdentifier(value: 'user-$id'),
+    playerCharacterId: PlayerCharacterIdentifier(value: 'pc-$id'),
     configuration: RpgCharacterConfiguration.getBaseConfiguration(
             RpgConfigurationModel.getBaseConfiguration())
         .copyWith(uuid: id, characterName: name, companionCharacters: []),

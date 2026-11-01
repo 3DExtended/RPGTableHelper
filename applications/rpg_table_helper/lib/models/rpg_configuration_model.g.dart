@@ -14,32 +14,39 @@ abstract class _$RpgConfigurationModelCWProxy {
   RpgConfigurationModel placesOfFindings(List<PlaceOfFinding> placesOfFindings);
 
   RpgConfigurationModel currencyDefinition(
-      CurrencyDefinition currencyDefinition);
+    CurrencyDefinition currencyDefinition,
+  );
 
   RpgConfigurationModel itemCategories(List<ItemCategory> itemCategories);
 
   RpgConfigurationModel characterStatTabsDefinition(
-      List<CharacterStatsTabDefinition>? characterStatTabsDefinition);
+    List<CharacterStatsTabDefinition>? characterStatTabsDefinition,
+  );
 
   RpgConfigurationModel craftingRecipes(List<CraftingRecipe> craftingRecipes);
 
   RpgConfigurationModel initiativeBonusStatUuid(
-      String? initiativeBonusStatUuid);
+    String? initiativeBonusStatUuid,
+  );
 
   RpgConfigurationModel initiativeBonusListEntryUuid(
-      String? initiativeBonusListEntryUuid);
+    String? initiativeBonusListEntryUuid,
+  );
 
   RpgConfigurationModel initiativeBonusField(
-      InitiativeBonusField? initiativeBonusField);
+    InitiativeBonusField? initiativeBonusField,
+  );
 
   RpgConfigurationModel defaultSkinId(String? defaultSkinId);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgConfigurationModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgConfigurationModel(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// RpgConfigurationModel(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   RpgConfigurationModel call({
     String rpgName,
     List<RpgItem> allItems,
@@ -55,7 +62,8 @@ abstract class _$RpgConfigurationModelCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfRpgConfigurationModel.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfRpgConfigurationModel.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfRpgConfigurationModel.copyWith(...)` or call `instanceOfRpgConfigurationModel.copyWith.fieldName(value)` for a single field.
 class _$RpgConfigurationModelCWProxyImpl
     implements _$RpgConfigurationModelCWProxy {
   const _$RpgConfigurationModelCWProxyImpl(this._value);
@@ -63,62 +71,63 @@ class _$RpgConfigurationModelCWProxyImpl
   final RpgConfigurationModel _value;
 
   @override
-  RpgConfigurationModel rpgName(String rpgName) => this(rpgName: rpgName);
+  RpgConfigurationModel rpgName(String rpgName) => call(rpgName: rpgName);
 
   @override
   RpgConfigurationModel allItems(List<RpgItem> allItems) =>
-      this(allItems: allItems);
+      call(allItems: allItems);
 
   @override
   RpgConfigurationModel placesOfFindings(
-          List<PlaceOfFinding> placesOfFindings) =>
-      this(placesOfFindings: placesOfFindings);
+    List<PlaceOfFinding> placesOfFindings,
+  ) => call(placesOfFindings: placesOfFindings);
 
   @override
   RpgConfigurationModel currencyDefinition(
-          CurrencyDefinition currencyDefinition) =>
-      this(currencyDefinition: currencyDefinition);
+    CurrencyDefinition currencyDefinition,
+  ) => call(currencyDefinition: currencyDefinition);
 
   @override
   RpgConfigurationModel itemCategories(List<ItemCategory> itemCategories) =>
-      this(itemCategories: itemCategories);
+      call(itemCategories: itemCategories);
 
   @override
   RpgConfigurationModel characterStatTabsDefinition(
-          List<CharacterStatsTabDefinition>? characterStatTabsDefinition) =>
-      this(characterStatTabsDefinition: characterStatTabsDefinition);
+    List<CharacterStatsTabDefinition>? characterStatTabsDefinition,
+  ) => call(characterStatTabsDefinition: characterStatTabsDefinition);
 
   @override
   RpgConfigurationModel craftingRecipes(List<CraftingRecipe> craftingRecipes) =>
-      this(craftingRecipes: craftingRecipes);
+      call(craftingRecipes: craftingRecipes);
 
   @override
   RpgConfigurationModel initiativeBonusStatUuid(
-          String? initiativeBonusStatUuid) =>
-      this(initiativeBonusStatUuid: initiativeBonusStatUuid);
+    String? initiativeBonusStatUuid,
+  ) => call(initiativeBonusStatUuid: initiativeBonusStatUuid);
 
   @override
   RpgConfigurationModel initiativeBonusListEntryUuid(
-          String? initiativeBonusListEntryUuid) =>
-      this(initiativeBonusListEntryUuid: initiativeBonusListEntryUuid);
+    String? initiativeBonusListEntryUuid,
+  ) => call(initiativeBonusListEntryUuid: initiativeBonusListEntryUuid);
 
   @override
   RpgConfigurationModel initiativeBonusField(
-          InitiativeBonusField? initiativeBonusField) =>
-      this(initiativeBonusField: initiativeBonusField);
+    InitiativeBonusField? initiativeBonusField,
+  ) => call(initiativeBonusField: initiativeBonusField);
 
   @override
   RpgConfigurationModel defaultSkinId(String? defaultSkinId) =>
-      this(defaultSkinId: defaultSkinId);
+      call(defaultSkinId: defaultSkinId);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgConfigurationModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgConfigurationModel(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// RpgConfigurationModel(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   RpgConfigurationModel call({
     Object? rpgName = const $CopyWithPlaceholder(),
     Object? allItems = const $CopyWithPlaceholder(),
@@ -133,45 +142,53 @@ class _$RpgConfigurationModelCWProxyImpl
     Object? defaultSkinId = const $CopyWithPlaceholder(),
   }) {
     return RpgConfigurationModel(
-      rpgName: rpgName == const $CopyWithPlaceholder()
+      rpgName: rpgName == const $CopyWithPlaceholder() || rpgName == null
           ? _value.rpgName
           // ignore: cast_nullable_to_non_nullable
           : rpgName as String,
-      allItems: allItems == const $CopyWithPlaceholder()
+      allItems: allItems == const $CopyWithPlaceholder() || allItems == null
           ? _value.allItems
           // ignore: cast_nullable_to_non_nullable
           : allItems as List<RpgItem>,
-      placesOfFindings: placesOfFindings == const $CopyWithPlaceholder()
+      placesOfFindings:
+          placesOfFindings == const $CopyWithPlaceholder() ||
+              placesOfFindings == null
           ? _value.placesOfFindings
           // ignore: cast_nullable_to_non_nullable
           : placesOfFindings as List<PlaceOfFinding>,
-      currencyDefinition: currencyDefinition == const $CopyWithPlaceholder()
+      currencyDefinition:
+          currencyDefinition == const $CopyWithPlaceholder() ||
+              currencyDefinition == null
           ? _value.currencyDefinition
           // ignore: cast_nullable_to_non_nullable
           : currencyDefinition as CurrencyDefinition,
-      itemCategories: itemCategories == const $CopyWithPlaceholder()
+      itemCategories:
+          itemCategories == const $CopyWithPlaceholder() ||
+              itemCategories == null
           ? _value.itemCategories
           // ignore: cast_nullable_to_non_nullable
           : itemCategories as List<ItemCategory>,
-      characterStatTabsDefinition: characterStatTabsDefinition ==
-              const $CopyWithPlaceholder()
+      characterStatTabsDefinition:
+          characterStatTabsDefinition == const $CopyWithPlaceholder()
           ? _value.characterStatTabsDefinition
           // ignore: cast_nullable_to_non_nullable
           : characterStatTabsDefinition as List<CharacterStatsTabDefinition>?,
-      craftingRecipes: craftingRecipes == const $CopyWithPlaceholder()
+      craftingRecipes:
+          craftingRecipes == const $CopyWithPlaceholder() ||
+              craftingRecipes == null
           ? _value.craftingRecipes
           // ignore: cast_nullable_to_non_nullable
           : craftingRecipes as List<CraftingRecipe>,
       initiativeBonusStatUuid:
           initiativeBonusStatUuid == const $CopyWithPlaceholder()
-              ? _value.initiativeBonusStatUuid
-              // ignore: cast_nullable_to_non_nullable
-              : initiativeBonusStatUuid as String?,
+          ? _value.initiativeBonusStatUuid
+          // ignore: cast_nullable_to_non_nullable
+          : initiativeBonusStatUuid as String?,
       initiativeBonusListEntryUuid:
           initiativeBonusListEntryUuid == const $CopyWithPlaceholder()
-              ? _value.initiativeBonusListEntryUuid
-              // ignore: cast_nullable_to_non_nullable
-              : initiativeBonusListEntryUuid as String?,
+          ? _value.initiativeBonusListEntryUuid
+          // ignore: cast_nullable_to_non_nullable
+          : initiativeBonusListEntryUuid as String?,
       initiativeBonusField: initiativeBonusField == const $CopyWithPlaceholder()
           ? _value.initiativeBonusField
           // ignore: cast_nullable_to_non_nullable
@@ -185,7 +202,8 @@ class _$RpgConfigurationModelCWProxyImpl
 }
 
 extension $RpgConfigurationModelCopyWith on RpgConfigurationModel {
-  /// Returns a callable class that can be used as follows: `instanceOfRpgConfigurationModel.copyWith(...)` or like so:`instanceOfRpgConfigurationModel.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfRpgConfigurationModel.copyWith(...)` or `instanceOfRpgConfigurationModel.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$RpgConfigurationModelCWProxy get copyWith =>
       _$RpgConfigurationModelCWProxyImpl(this);
@@ -204,12 +222,14 @@ abstract class _$ItemCategoryCWProxy {
 
   ItemCategory hideInInventoryFilters(bool hideInInventoryFilters);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ItemCategory(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `ItemCategory(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// ItemCategory(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   ItemCategory call({
     String uuid,
     String name,
@@ -220,40 +240,42 @@ abstract class _$ItemCategoryCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfItemCategory.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfItemCategory.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfItemCategory.copyWith(...)` or call `instanceOfItemCategory.copyWith.fieldName(value)` for a single field.
 class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
   const _$ItemCategoryCWProxyImpl(this._value);
 
   final ItemCategory _value;
 
   @override
-  ItemCategory uuid(String uuid) => this(uuid: uuid);
+  ItemCategory uuid(String uuid) => call(uuid: uuid);
 
   @override
-  ItemCategory name(String name) => this(name: name);
+  ItemCategory name(String name) => call(name: name);
 
   @override
-  ItemCategory colorCode(String? colorCode) => this(colorCode: colorCode);
+  ItemCategory colorCode(String? colorCode) => call(colorCode: colorCode);
 
   @override
-  ItemCategory iconName(String? iconName) => this(iconName: iconName);
+  ItemCategory iconName(String? iconName) => call(iconName: iconName);
 
   @override
   ItemCategory subCategories(List<ItemCategory> subCategories) =>
-      this(subCategories: subCategories);
+      call(subCategories: subCategories);
 
   @override
   ItemCategory hideInInventoryFilters(bool hideInInventoryFilters) =>
-      this(hideInInventoryFilters: hideInInventoryFilters);
+      call(hideInInventoryFilters: hideInInventoryFilters);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ItemCategory(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `ItemCategory(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// ItemCategory(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   ItemCategory call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
@@ -263,11 +285,11 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
     Object? hideInInventoryFilters = const $CopyWithPlaceholder(),
   }) {
     return ItemCategory(
-      uuid: uuid == const $CopyWithPlaceholder()
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      name: name == const $CopyWithPlaceholder()
+      name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -279,21 +301,24 @@ class _$ItemCategoryCWProxyImpl implements _$ItemCategoryCWProxy {
           ? _value.iconName
           // ignore: cast_nullable_to_non_nullable
           : iconName as String?,
-      subCategories: subCategories == const $CopyWithPlaceholder()
+      subCategories:
+          subCategories == const $CopyWithPlaceholder() || subCategories == null
           ? _value.subCategories
           // ignore: cast_nullable_to_non_nullable
           : subCategories as List<ItemCategory>,
       hideInInventoryFilters:
-          hideInInventoryFilters == const $CopyWithPlaceholder()
-              ? _value.hideInInventoryFilters
-              // ignore: cast_nullable_to_non_nullable
-              : hideInInventoryFilters as bool,
+          hideInInventoryFilters == const $CopyWithPlaceholder() ||
+              hideInInventoryFilters == null
+          ? _value.hideInInventoryFilters
+          // ignore: cast_nullable_to_non_nullable
+          : hideInInventoryFilters as bool,
     );
   }
 }
 
 extension $ItemCategoryCopyWith on ItemCategory {
-  /// Returns a callable class that can be used as follows: `instanceOfItemCategory.copyWith(...)` or like so:`instanceOfItemCategory.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfItemCategory.copyWith(...)` or `instanceOfItemCategory.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$ItemCategoryCWProxy get copyWith => _$ItemCategoryCWProxyImpl(this);
 }
@@ -303,59 +328,61 @@ abstract class _$CurrencyTypeCWProxy {
 
   CurrencyType multipleOfPreviousValue(int? multipleOfPreviousValue);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CurrencyType(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CurrencyType(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CurrencyType(...).copyWith(id: 12, name: "My name")
-  /// ````
-  CurrencyType call({
-    String name,
-    int? multipleOfPreviousValue,
-  });
+  /// ```
+  CurrencyType call({String name, int? multipleOfPreviousValue});
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCurrencyType.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCurrencyType.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfCurrencyType.copyWith(...)` or call `instanceOfCurrencyType.copyWith.fieldName(value)` for a single field.
 class _$CurrencyTypeCWProxyImpl implements _$CurrencyTypeCWProxy {
   const _$CurrencyTypeCWProxyImpl(this._value);
 
   final CurrencyType _value;
 
   @override
-  CurrencyType name(String name) => this(name: name);
+  CurrencyType name(String name) => call(name: name);
 
   @override
   CurrencyType multipleOfPreviousValue(int? multipleOfPreviousValue) =>
-      this(multipleOfPreviousValue: multipleOfPreviousValue);
+      call(multipleOfPreviousValue: multipleOfPreviousValue);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CurrencyType(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CurrencyType(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CurrencyType(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   CurrencyType call({
     Object? name = const $CopyWithPlaceholder(),
     Object? multipleOfPreviousValue = const $CopyWithPlaceholder(),
   }) {
     return CurrencyType(
-      name: name == const $CopyWithPlaceholder()
+      name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
       multipleOfPreviousValue:
           multipleOfPreviousValue == const $CopyWithPlaceholder()
-              ? _value.multipleOfPreviousValue
-              // ignore: cast_nullable_to_non_nullable
-              : multipleOfPreviousValue as int?,
+          ? _value.multipleOfPreviousValue
+          // ignore: cast_nullable_to_non_nullable
+          : multipleOfPreviousValue as int?,
     );
   }
 }
 
 extension $CurrencyTypeCopyWith on CurrencyType {
-  /// Returns a callable class that can be used as follows: `instanceOfCurrencyType.copyWith(...)` or like so:`instanceOfCurrencyType.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfCurrencyType.copyWith(...)` or `instanceOfCurrencyType.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$CurrencyTypeCWProxy get copyWith => _$CurrencyTypeCWProxyImpl(this);
 }
@@ -363,18 +390,19 @@ extension $CurrencyTypeCopyWith on CurrencyType {
 abstract class _$CurrencyDefinitionCWProxy {
   CurrencyDefinition currencyTypes(List<CurrencyType> currencyTypes);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CurrencyDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CurrencyDefinition(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CurrencyDefinition(...).copyWith(id: 12, name: "My name")
-  /// ````
-  CurrencyDefinition call({
-    List<CurrencyType> currencyTypes,
-  });
+  /// ```
+  CurrencyDefinition call({List<CurrencyType> currencyTypes});
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCurrencyDefinition.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCurrencyDefinition.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfCurrencyDefinition.copyWith(...)` or call `instanceOfCurrencyDefinition.copyWith.fieldName(value)` for a single field.
 class _$CurrencyDefinitionCWProxyImpl implements _$CurrencyDefinitionCWProxy {
   const _$CurrencyDefinitionCWProxyImpl(this._value);
 
@@ -382,21 +410,23 @@ class _$CurrencyDefinitionCWProxyImpl implements _$CurrencyDefinitionCWProxy {
 
   @override
   CurrencyDefinition currencyTypes(List<CurrencyType> currencyTypes) =>
-      this(currencyTypes: currencyTypes);
+      call(currencyTypes: currencyTypes);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CurrencyDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CurrencyDefinition(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CurrencyDefinition(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   CurrencyDefinition call({
     Object? currencyTypes = const $CopyWithPlaceholder(),
   }) {
     return CurrencyDefinition(
-      currencyTypes: currencyTypes == const $CopyWithPlaceholder()
+      currencyTypes:
+          currencyTypes == const $CopyWithPlaceholder() || currencyTypes == null
           ? _value.currencyTypes
           // ignore: cast_nullable_to_non_nullable
           : currencyTypes as List<CurrencyType>,
@@ -405,7 +435,8 @@ class _$CurrencyDefinitionCWProxyImpl implements _$CurrencyDefinitionCWProxy {
 }
 
 extension $CurrencyDefinitionCopyWith on CurrencyDefinition {
-  /// Returns a callable class that can be used as follows: `instanceOfCurrencyDefinition.copyWith(...)` or like so:`instanceOfCurrencyDefinition.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfCurrencyDefinition.copyWith(...)` or `instanceOfCurrencyDefinition.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$CurrencyDefinitionCWProxy get copyWith =>
       _$CurrencyDefinitionCWProxyImpl(this);
@@ -416,19 +447,19 @@ abstract class _$CraftingRecipeIngredientPairCWProxy {
 
   CraftingRecipeIngredientPair amountOfUsedItem(int amountOfUsedItem);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CraftingRecipeIngredientPair(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CraftingRecipeIngredientPair(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CraftingRecipeIngredientPair(...).copyWith(id: 12, name: "My name")
-  /// ````
-  CraftingRecipeIngredientPair call({
-    String itemUuid,
-    int amountOfUsedItem,
-  });
+  /// ```
+  CraftingRecipeIngredientPair call({String itemUuid, int amountOfUsedItem});
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCraftingRecipeIngredientPair.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCraftingRecipeIngredientPair.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfCraftingRecipeIngredientPair.copyWith(...)` or call `instanceOfCraftingRecipeIngredientPair.copyWith.fieldName(value)` for a single field.
 class _$CraftingRecipeIngredientPairCWProxyImpl
     implements _$CraftingRecipeIngredientPairCWProxy {
   const _$CraftingRecipeIngredientPairCWProxyImpl(this._value);
@@ -437,30 +468,33 @@ class _$CraftingRecipeIngredientPairCWProxyImpl
 
   @override
   CraftingRecipeIngredientPair itemUuid(String itemUuid) =>
-      this(itemUuid: itemUuid);
+      call(itemUuid: itemUuid);
 
   @override
   CraftingRecipeIngredientPair amountOfUsedItem(int amountOfUsedItem) =>
-      this(amountOfUsedItem: amountOfUsedItem);
+      call(amountOfUsedItem: amountOfUsedItem);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CraftingRecipeIngredientPair(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CraftingRecipeIngredientPair(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CraftingRecipeIngredientPair(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   CraftingRecipeIngredientPair call({
     Object? itemUuid = const $CopyWithPlaceholder(),
     Object? amountOfUsedItem = const $CopyWithPlaceholder(),
   }) {
     return CraftingRecipeIngredientPair(
-      itemUuid: itemUuid == const $CopyWithPlaceholder()
+      itemUuid: itemUuid == const $CopyWithPlaceholder() || itemUuid == null
           ? _value.itemUuid
           // ignore: cast_nullable_to_non_nullable
           : itemUuid as String,
-      amountOfUsedItem: amountOfUsedItem == const $CopyWithPlaceholder()
+      amountOfUsedItem:
+          amountOfUsedItem == const $CopyWithPlaceholder() ||
+              amountOfUsedItem == null
           ? _value.amountOfUsedItem
           // ignore: cast_nullable_to_non_nullable
           : amountOfUsedItem as int,
@@ -470,7 +504,8 @@ class _$CraftingRecipeIngredientPairCWProxyImpl
 
 extension $CraftingRecipeIngredientPairCopyWith
     on CraftingRecipeIngredientPair {
-  /// Returns a callable class that can be used as follows: `instanceOfCraftingRecipeIngredientPair.copyWith(...)` or like so:`instanceOfCraftingRecipeIngredientPair.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfCraftingRecipeIngredientPair.copyWith(...)` or `instanceOfCraftingRecipeIngredientPair.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$CraftingRecipeIngredientPairCWProxy get copyWith =>
       _$CraftingRecipeIngredientPairCWProxyImpl(this);
@@ -485,12 +520,14 @@ abstract class _$CraftingRecipeCWProxy {
 
   CraftingRecipe createdItem(CraftingRecipeIngredientPair createdItem);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CraftingRecipe(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CraftingRecipe(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CraftingRecipe(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   CraftingRecipe call({
     String recipeUuid,
     List<CraftingRecipeIngredientPair> ingredients,
@@ -499,35 +536,37 @@ abstract class _$CraftingRecipeCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCraftingRecipe.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCraftingRecipe.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfCraftingRecipe.copyWith(...)` or call `instanceOfCraftingRecipe.copyWith.fieldName(value)` for a single field.
 class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
   const _$CraftingRecipeCWProxyImpl(this._value);
 
   final CraftingRecipe _value;
 
   @override
-  CraftingRecipe recipeUuid(String recipeUuid) => this(recipeUuid: recipeUuid);
+  CraftingRecipe recipeUuid(String recipeUuid) => call(recipeUuid: recipeUuid);
 
   @override
   CraftingRecipe ingredients(List<CraftingRecipeIngredientPair> ingredients) =>
-      this(ingredients: ingredients);
+      call(ingredients: ingredients);
 
   @override
   CraftingRecipe requiredItemIds(List<String> requiredItemIds) =>
-      this(requiredItemIds: requiredItemIds);
+      call(requiredItemIds: requiredItemIds);
 
   @override
   CraftingRecipe createdItem(CraftingRecipeIngredientPair createdItem) =>
-      this(createdItem: createdItem);
+      call(createdItem: createdItem);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CraftingRecipe(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CraftingRecipe(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CraftingRecipe(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   CraftingRecipe call({
     Object? recipeUuid = const $CopyWithPlaceholder(),
     Object? ingredients = const $CopyWithPlaceholder(),
@@ -535,19 +574,24 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
     Object? createdItem = const $CopyWithPlaceholder(),
   }) {
     return CraftingRecipe(
-      recipeUuid: recipeUuid == const $CopyWithPlaceholder()
+      recipeUuid:
+          recipeUuid == const $CopyWithPlaceholder() || recipeUuid == null
           ? _value.recipeUuid
           // ignore: cast_nullable_to_non_nullable
           : recipeUuid as String,
-      ingredients: ingredients == const $CopyWithPlaceholder()
+      ingredients:
+          ingredients == const $CopyWithPlaceholder() || ingredients == null
           ? _value.ingredients
           // ignore: cast_nullable_to_non_nullable
           : ingredients as List<CraftingRecipeIngredientPair>,
-      requiredItemIds: requiredItemIds == const $CopyWithPlaceholder()
+      requiredItemIds:
+          requiredItemIds == const $CopyWithPlaceholder() ||
+              requiredItemIds == null
           ? _value.requiredItemIds
           // ignore: cast_nullable_to_non_nullable
           : requiredItemIds as List<String>,
-      createdItem: createdItem == const $CopyWithPlaceholder()
+      createdItem:
+          createdItem == const $CopyWithPlaceholder() || createdItem == null
           ? _value.createdItem
           // ignore: cast_nullable_to_non_nullable
           : createdItem as CraftingRecipeIngredientPair,
@@ -556,7 +600,8 @@ class _$CraftingRecipeCWProxyImpl implements _$CraftingRecipeCWProxy {
 }
 
 extension $CraftingRecipeCopyWith on CraftingRecipe {
-  /// Returns a callable class that can be used as follows: `instanceOfCraftingRecipe.copyWith(...)` or like so:`instanceOfCraftingRecipe.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfCraftingRecipe.copyWith(...)` or `instanceOfCraftingRecipe.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$CraftingRecipeCWProxy get copyWith => _$CraftingRecipeCWProxyImpl(this);
 }
@@ -575,20 +620,25 @@ abstract class _$CharacterStatDefinitionCWProxy {
   CharacterStatDefinition editType(CharacterStatEditType editType);
 
   CharacterStatDefinition isOptionalForAlternateForms(
-      bool? isOptionalForAlternateForms);
+    bool? isOptionalForAlternateForms,
+  );
 
   CharacterStatDefinition isOptionalForCompanionCharacters(
-      bool? isOptionalForCompanionCharacters);
+    bool? isOptionalForCompanionCharacters,
+  );
 
   CharacterStatDefinition jsonSerializedAdditionalData(
-      String? jsonSerializedAdditionalData);
+    String? jsonSerializedAdditionalData,
+  );
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CharacterStatDefinition(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CharacterStatDefinition(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   CharacterStatDefinition call({
     String statUuid,
     String name,
@@ -602,7 +652,8 @@ abstract class _$CharacterStatDefinitionCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCharacterStatDefinition.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCharacterStatDefinition.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfCharacterStatDefinition.copyWith(...)` or call `instanceOfCharacterStatDefinition.copyWith.fieldName(value)` for a single field.
 class _$CharacterStatDefinitionCWProxyImpl
     implements _$CharacterStatDefinitionCWProxy {
   const _$CharacterStatDefinitionCWProxyImpl(this._value);
@@ -610,49 +661,50 @@ class _$CharacterStatDefinitionCWProxyImpl
   final CharacterStatDefinition _value;
 
   @override
-  CharacterStatDefinition statUuid(String statUuid) => this(statUuid: statUuid);
+  CharacterStatDefinition statUuid(String statUuid) => call(statUuid: statUuid);
 
   @override
-  CharacterStatDefinition name(String name) => this(name: name);
+  CharacterStatDefinition name(String name) => call(name: name);
 
   @override
-  CharacterStatDefinition groupId(int? groupId) => this(groupId: groupId);
+  CharacterStatDefinition groupId(int? groupId) => call(groupId: groupId);
 
   @override
   CharacterStatDefinition helperText(String helperText) =>
-      this(helperText: helperText);
+      call(helperText: helperText);
 
   @override
   CharacterStatDefinition valueType(CharacterStatValueType valueType) =>
-      this(valueType: valueType);
+      call(valueType: valueType);
 
   @override
   CharacterStatDefinition editType(CharacterStatEditType editType) =>
-      this(editType: editType);
+      call(editType: editType);
 
   @override
   CharacterStatDefinition isOptionalForAlternateForms(
-          bool? isOptionalForAlternateForms) =>
-      this(isOptionalForAlternateForms: isOptionalForAlternateForms);
+    bool? isOptionalForAlternateForms,
+  ) => call(isOptionalForAlternateForms: isOptionalForAlternateForms);
 
   @override
   CharacterStatDefinition isOptionalForCompanionCharacters(
-          bool? isOptionalForCompanionCharacters) =>
-      this(isOptionalForCompanionCharacters: isOptionalForCompanionCharacters);
+    bool? isOptionalForCompanionCharacters,
+  ) => call(isOptionalForCompanionCharacters: isOptionalForCompanionCharacters);
 
   @override
   CharacterStatDefinition jsonSerializedAdditionalData(
-          String? jsonSerializedAdditionalData) =>
-      this(jsonSerializedAdditionalData: jsonSerializedAdditionalData);
+    String? jsonSerializedAdditionalData,
+  ) => call(jsonSerializedAdditionalData: jsonSerializedAdditionalData);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CharacterStatDefinition(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CharacterStatDefinition(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   CharacterStatDefinition call({
     Object? statUuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
@@ -665,11 +717,11 @@ class _$CharacterStatDefinitionCWProxyImpl
     Object? jsonSerializedAdditionalData = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatDefinition(
-      statUuid: statUuid == const $CopyWithPlaceholder()
+      statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
           ? _value.statUuid
           // ignore: cast_nullable_to_non_nullable
           : statUuid as String,
-      name: name == const $CopyWithPlaceholder()
+      name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -677,39 +729,41 @@ class _$CharacterStatDefinitionCWProxyImpl
           ? _value.groupId
           // ignore: cast_nullable_to_non_nullable
           : groupId as int?,
-      helperText: helperText == const $CopyWithPlaceholder()
+      helperText:
+          helperText == const $CopyWithPlaceholder() || helperText == null
           ? _value.helperText
           // ignore: cast_nullable_to_non_nullable
           : helperText as String,
-      valueType: valueType == const $CopyWithPlaceholder()
+      valueType: valueType == const $CopyWithPlaceholder() || valueType == null
           ? _value.valueType
           // ignore: cast_nullable_to_non_nullable
           : valueType as CharacterStatValueType,
-      editType: editType == const $CopyWithPlaceholder()
+      editType: editType == const $CopyWithPlaceholder() || editType == null
           ? _value.editType
           // ignore: cast_nullable_to_non_nullable
           : editType as CharacterStatEditType,
       isOptionalForAlternateForms:
           isOptionalForAlternateForms == const $CopyWithPlaceholder()
-              ? _value.isOptionalForAlternateForms
-              // ignore: cast_nullable_to_non_nullable
-              : isOptionalForAlternateForms as bool?,
+          ? _value.isOptionalForAlternateForms
+          // ignore: cast_nullable_to_non_nullable
+          : isOptionalForAlternateForms as bool?,
       isOptionalForCompanionCharacters:
           isOptionalForCompanionCharacters == const $CopyWithPlaceholder()
-              ? _value.isOptionalForCompanionCharacters
-              // ignore: cast_nullable_to_non_nullable
-              : isOptionalForCompanionCharacters as bool?,
+          ? _value.isOptionalForCompanionCharacters
+          // ignore: cast_nullable_to_non_nullable
+          : isOptionalForCompanionCharacters as bool?,
       jsonSerializedAdditionalData:
           jsonSerializedAdditionalData == const $CopyWithPlaceholder()
-              ? _value.jsonSerializedAdditionalData
-              // ignore: cast_nullable_to_non_nullable
-              : jsonSerializedAdditionalData as String?,
+          ? _value.jsonSerializedAdditionalData
+          // ignore: cast_nullable_to_non_nullable
+          : jsonSerializedAdditionalData as String?,
     );
   }
 }
 
 extension $CharacterStatDefinitionCopyWith on CharacterStatDefinition {
-  /// Returns a callable class that can be used as follows: `instanceOfCharacterStatDefinition.copyWith(...)` or like so:`instanceOfCharacterStatDefinition.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfCharacterStatDefinition.copyWith(...)` or `instanceOfCharacterStatDefinition.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$CharacterStatDefinitionCWProxy get copyWith =>
       _$CharacterStatDefinitionCWProxyImpl(this);
@@ -723,16 +777,19 @@ abstract class _$CharacterStatsTabDefinitionCWProxy {
   CharacterStatsTabDefinition isOptional(bool isOptional);
 
   CharacterStatsTabDefinition statsInTab(
-      List<CharacterStatDefinition> statsInTab);
+    List<CharacterStatDefinition> statsInTab,
+  );
 
   CharacterStatsTabDefinition isDefaultTab(bool isDefaultTab);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CharacterStatsTabDefinition(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   CharacterStatsTabDefinition call({
     String uuid,
     String tabName,
@@ -742,7 +799,8 @@ abstract class _$CharacterStatsTabDefinitionCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCharacterStatsTabDefinition.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCharacterStatsTabDefinition.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfCharacterStatsTabDefinition.copyWith(...)` or call `instanceOfCharacterStatsTabDefinition.copyWith.fieldName(value)` for a single field.
 class _$CharacterStatsTabDefinitionCWProxyImpl
     implements _$CharacterStatsTabDefinitionCWProxy {
   const _$CharacterStatsTabDefinitionCWProxyImpl(this._value);
@@ -750,32 +808,33 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
   final CharacterStatsTabDefinition _value;
 
   @override
-  CharacterStatsTabDefinition uuid(String uuid) => this(uuid: uuid);
+  CharacterStatsTabDefinition uuid(String uuid) => call(uuid: uuid);
 
   @override
-  CharacterStatsTabDefinition tabName(String tabName) => this(tabName: tabName);
+  CharacterStatsTabDefinition tabName(String tabName) => call(tabName: tabName);
 
   @override
   CharacterStatsTabDefinition isOptional(bool isOptional) =>
-      this(isOptional: isOptional);
+      call(isOptional: isOptional);
 
   @override
   CharacterStatsTabDefinition statsInTab(
-          List<CharacterStatDefinition> statsInTab) =>
-      this(statsInTab: statsInTab);
+    List<CharacterStatDefinition> statsInTab,
+  ) => call(statsInTab: statsInTab);
 
   @override
   CharacterStatsTabDefinition isDefaultTab(bool isDefaultTab) =>
-      this(isDefaultTab: isDefaultTab);
+      call(isDefaultTab: isDefaultTab);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CharacterStatsTabDefinition(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `CharacterStatsTabDefinition(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// CharacterStatsTabDefinition(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   CharacterStatsTabDefinition call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? tabName = const $CopyWithPlaceholder(),
@@ -784,23 +843,26 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
     Object? isDefaultTab = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatsTabDefinition(
-      uuid: uuid == const $CopyWithPlaceholder()
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      tabName: tabName == const $CopyWithPlaceholder()
+      tabName: tabName == const $CopyWithPlaceholder() || tabName == null
           ? _value.tabName
           // ignore: cast_nullable_to_non_nullable
           : tabName as String,
-      isOptional: isOptional == const $CopyWithPlaceholder()
+      isOptional:
+          isOptional == const $CopyWithPlaceholder() || isOptional == null
           ? _value.isOptional
           // ignore: cast_nullable_to_non_nullable
           : isOptional as bool,
-      statsInTab: statsInTab == const $CopyWithPlaceholder()
+      statsInTab:
+          statsInTab == const $CopyWithPlaceholder() || statsInTab == null
           ? _value.statsInTab
           // ignore: cast_nullable_to_non_nullable
           : statsInTab as List<CharacterStatDefinition>,
-      isDefaultTab: isDefaultTab == const $CopyWithPlaceholder()
+      isDefaultTab:
+          isDefaultTab == const $CopyWithPlaceholder() || isDefaultTab == null
           ? _value.isDefaultTab
           // ignore: cast_nullable_to_non_nullable
           : isDefaultTab as bool,
@@ -809,7 +871,8 @@ class _$CharacterStatsTabDefinitionCWProxyImpl
 }
 
 extension $CharacterStatsTabDefinitionCopyWith on CharacterStatsTabDefinition {
-  /// Returns a callable class that can be used as follows: `instanceOfCharacterStatsTabDefinition.copyWith(...)` or like so:`instanceOfCharacterStatsTabDefinition.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfCharacterStatsTabDefinition.copyWith(...)` or `instanceOfCharacterStatsTabDefinition.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$CharacterStatsTabDefinitionCWProxy get copyWith =>
       _$CharacterStatsTabDefinitionCWProxyImpl(this);
@@ -820,48 +883,49 @@ abstract class _$PlaceOfFindingCWProxy {
 
   PlaceOfFinding name(String name);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PlaceOfFinding(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `PlaceOfFinding(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// PlaceOfFinding(...).copyWith(id: 12, name: "My name")
-  /// ````
-  PlaceOfFinding call({
-    String uuid,
-    String name,
-  });
+  /// ```
+  PlaceOfFinding call({String uuid, String name});
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfPlaceOfFinding.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfPlaceOfFinding.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfPlaceOfFinding.copyWith(...)` or call `instanceOfPlaceOfFinding.copyWith.fieldName(value)` for a single field.
 class _$PlaceOfFindingCWProxyImpl implements _$PlaceOfFindingCWProxy {
   const _$PlaceOfFindingCWProxyImpl(this._value);
 
   final PlaceOfFinding _value;
 
   @override
-  PlaceOfFinding uuid(String uuid) => this(uuid: uuid);
+  PlaceOfFinding uuid(String uuid) => call(uuid: uuid);
 
   @override
-  PlaceOfFinding name(String name) => this(name: name);
+  PlaceOfFinding name(String name) => call(name: name);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PlaceOfFinding(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `PlaceOfFinding(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// PlaceOfFinding(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   PlaceOfFinding call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
   }) {
     return PlaceOfFinding(
-      uuid: uuid == const $CopyWithPlaceholder()
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      name: name == const $CopyWithPlaceholder()
+      name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
@@ -870,7 +934,8 @@ class _$PlaceOfFindingCWProxyImpl implements _$PlaceOfFindingCWProxy {
 }
 
 extension $PlaceOfFindingCopyWith on PlaceOfFinding {
-  /// Returns a callable class that can be used as follows: `instanceOfPlaceOfFinding.copyWith(...)` or like so:`instanceOfPlaceOfFinding.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfPlaceOfFinding.copyWith(...)` or `instanceOfPlaceOfFinding.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$PlaceOfFindingCWProxy get copyWith => _$PlaceOfFindingCWProxyImpl(this);
 }
@@ -880,19 +945,19 @@ abstract class _$RpgItemRarityCWProxy {
 
   RpgItemRarity diceChallenge(int diceChallenge);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItemRarity(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgItemRarity(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// RpgItemRarity(...).copyWith(id: 12, name: "My name")
-  /// ````
-  RpgItemRarity call({
-    String placeOfFindingId,
-    int diceChallenge,
-  });
+  /// ```
+  RpgItemRarity call({String placeOfFindingId, int diceChallenge});
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfRpgItemRarity.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfRpgItemRarity.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfRpgItemRarity.copyWith(...)` or call `instanceOfRpgItemRarity.copyWith.fieldName(value)` for a single field.
 class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
   const _$RpgItemRarityCWProxyImpl(this._value);
 
@@ -900,30 +965,34 @@ class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
 
   @override
   RpgItemRarity placeOfFindingId(String placeOfFindingId) =>
-      this(placeOfFindingId: placeOfFindingId);
+      call(placeOfFindingId: placeOfFindingId);
 
   @override
   RpgItemRarity diceChallenge(int diceChallenge) =>
-      this(diceChallenge: diceChallenge);
+      call(diceChallenge: diceChallenge);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItemRarity(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgItemRarity(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// RpgItemRarity(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   RpgItemRarity call({
     Object? placeOfFindingId = const $CopyWithPlaceholder(),
     Object? diceChallenge = const $CopyWithPlaceholder(),
   }) {
     return RpgItemRarity(
-      placeOfFindingId: placeOfFindingId == const $CopyWithPlaceholder()
+      placeOfFindingId:
+          placeOfFindingId == const $CopyWithPlaceholder() ||
+              placeOfFindingId == null
           ? _value.placeOfFindingId
           // ignore: cast_nullable_to_non_nullable
           : placeOfFindingId as String,
-      diceChallenge: diceChallenge == const $CopyWithPlaceholder()
+      diceChallenge:
+          diceChallenge == const $CopyWithPlaceholder() || diceChallenge == null
           ? _value.diceChallenge
           // ignore: cast_nullable_to_non_nullable
           : diceChallenge as int,
@@ -932,7 +1001,8 @@ class _$RpgItemRarityCWProxyImpl implements _$RpgItemRarityCWProxy {
 }
 
 extension $RpgItemRarityCopyWith on RpgItemRarity {
-  /// Returns a callable class that can be used as follows: `instanceOfRpgItemRarity.copyWith(...)` or like so:`instanceOfRpgItemRarity.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfRpgItemRarity.copyWith(...)` or `instanceOfRpgItemRarity.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$RpgItemRarityCWProxy get copyWith => _$RpgItemRarityCWProxyImpl(this);
 }
@@ -956,12 +1026,14 @@ abstract class _$RpgItemCWProxy {
 
   RpgItem placeOfFindings(List<RpgItemRarity> placeOfFindings);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItem(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgItem(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// RpgItem(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
   RpgItem call({
     String uuid,
     String name,
@@ -975,51 +1047,53 @@ abstract class _$RpgItemCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfRpgItem.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfRpgItem.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfRpgItem.copyWith(...)` or call `instanceOfRpgItem.copyWith.fieldName(value)` for a single field.
 class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
   const _$RpgItemCWProxyImpl(this._value);
 
   final RpgItem _value;
 
   @override
-  RpgItem uuid(String uuid) => this(uuid: uuid);
+  RpgItem uuid(String uuid) => call(uuid: uuid);
 
   @override
-  RpgItem name(String name) => this(name: name);
+  RpgItem name(String name) => call(name: name);
 
   @override
   RpgItem imageUrlWithoutBasePath(String? imageUrlWithoutBasePath) =>
-      this(imageUrlWithoutBasePath: imageUrlWithoutBasePath);
+      call(imageUrlWithoutBasePath: imageUrlWithoutBasePath);
 
   @override
-  RpgItem patchSize(DiceRoll? patchSize) => this(patchSize: patchSize);
+  RpgItem patchSize(DiceRoll? patchSize) => call(patchSize: patchSize);
 
   @override
-  RpgItem categoryId(String categoryId) => this(categoryId: categoryId);
+  RpgItem categoryId(String categoryId) => call(categoryId: categoryId);
 
   @override
-  RpgItem description(String description) => this(description: description);
+  RpgItem description(String description) => call(description: description);
 
   @override
   RpgItem imageDescription(String? imageDescription) =>
-      this(imageDescription: imageDescription);
+      call(imageDescription: imageDescription);
 
   @override
   RpgItem baseCurrencyPrice(int baseCurrencyPrice) =>
-      this(baseCurrencyPrice: baseCurrencyPrice);
+      call(baseCurrencyPrice: baseCurrencyPrice);
 
   @override
   RpgItem placeOfFindings(List<RpgItemRarity> placeOfFindings) =>
-      this(placeOfFindings: placeOfFindings);
+      call(placeOfFindings: placeOfFindings);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `RpgItem(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgItem(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// RpgItem(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   RpgItem call({
     Object? uuid = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
@@ -1032,28 +1106,30 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
     Object? placeOfFindings = const $CopyWithPlaceholder(),
   }) {
     return RpgItem(
-      uuid: uuid == const $CopyWithPlaceholder()
+      uuid: uuid == const $CopyWithPlaceholder() || uuid == null
           ? _value.uuid
           // ignore: cast_nullable_to_non_nullable
           : uuid as String,
-      name: name == const $CopyWithPlaceholder()
+      name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
       imageUrlWithoutBasePath:
           imageUrlWithoutBasePath == const $CopyWithPlaceholder()
-              ? _value.imageUrlWithoutBasePath
-              // ignore: cast_nullable_to_non_nullable
-              : imageUrlWithoutBasePath as String?,
+          ? _value.imageUrlWithoutBasePath
+          // ignore: cast_nullable_to_non_nullable
+          : imageUrlWithoutBasePath as String?,
       patchSize: patchSize == const $CopyWithPlaceholder()
           ? _value.patchSize
           // ignore: cast_nullable_to_non_nullable
           : patchSize as DiceRoll?,
-      categoryId: categoryId == const $CopyWithPlaceholder()
+      categoryId:
+          categoryId == const $CopyWithPlaceholder() || categoryId == null
           ? _value.categoryId
           // ignore: cast_nullable_to_non_nullable
           : categoryId as String,
-      description: description == const $CopyWithPlaceholder()
+      description:
+          description == const $CopyWithPlaceholder() || description == null
           ? _value.description
           // ignore: cast_nullable_to_non_nullable
           : description as String,
@@ -1061,11 +1137,15 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
           ? _value.imageDescription
           // ignore: cast_nullable_to_non_nullable
           : imageDescription as String?,
-      baseCurrencyPrice: baseCurrencyPrice == const $CopyWithPlaceholder()
+      baseCurrencyPrice:
+          baseCurrencyPrice == const $CopyWithPlaceholder() ||
+              baseCurrencyPrice == null
           ? _value.baseCurrencyPrice
           // ignore: cast_nullable_to_non_nullable
           : baseCurrencyPrice as int,
-      placeOfFindings: placeOfFindings == const $CopyWithPlaceholder()
+      placeOfFindings:
+          placeOfFindings == const $CopyWithPlaceholder() ||
+              placeOfFindings == null
           ? _value.placeOfFindings
           // ignore: cast_nullable_to_non_nullable
           : placeOfFindings as List<RpgItemRarity>,
@@ -1074,7 +1154,8 @@ class _$RpgItemCWProxyImpl implements _$RpgItemCWProxy {
 }
 
 extension $RpgItemCopyWith on RpgItem {
-  /// Returns a callable class that can be used as follows: `instanceOfRpgItem.copyWith(...)` or like so:`instanceOfRpgItem.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfRpgItem.copyWith(...)` or `instanceOfRpgItem.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$RpgItemCWProxy get copyWith => _$RpgItemCWProxyImpl(this);
 }
@@ -1086,57 +1167,57 @@ abstract class _$DiceRollCWProxy {
 
   DiceRoll modifier(int modifier);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `DiceRoll(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `DiceRoll(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// DiceRoll(...).copyWith(id: 12, name: "My name")
-  /// ````
-  DiceRoll call({
-    int numDice,
-    int diceSides,
-    int modifier,
-  });
+  /// ```
+  DiceRoll call({int numDice, int diceSides, int modifier});
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfDiceRoll.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfDiceRoll.copyWith.fieldName(...)`
+/// Callable proxy for `copyWith` functionality.
+/// Use as `instanceOfDiceRoll.copyWith(...)` or call `instanceOfDiceRoll.copyWith.fieldName(value)` for a single field.
 class _$DiceRollCWProxyImpl implements _$DiceRollCWProxy {
   const _$DiceRollCWProxyImpl(this._value);
 
   final DiceRoll _value;
 
   @override
-  DiceRoll numDice(int numDice) => this(numDice: numDice);
+  DiceRoll numDice(int numDice) => call(numDice: numDice);
 
   @override
-  DiceRoll diceSides(int diceSides) => this(diceSides: diceSides);
+  DiceRoll diceSides(int diceSides) => call(diceSides: diceSides);
 
   @override
-  DiceRoll modifier(int modifier) => this(modifier: modifier);
+  DiceRoll modifier(int modifier) => call(modifier: modifier);
 
-  @override
-
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `DiceRoll(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// Creates a new instance with the provided field values.
+  /// Omitted fields keep their values; explicit `null` clears nullable fields.
+  /// The public API rejects `null` for non-nullable fields. To update a single field use `DiceRoll(...).copyWith.fieldName(value)`.
   ///
-  /// Usage
+  /// Example:
   /// ```dart
   /// DiceRoll(...).copyWith(id: 12, name: "My name")
-  /// ````
+  /// ```
+  @override
   DiceRoll call({
     Object? numDice = const $CopyWithPlaceholder(),
     Object? diceSides = const $CopyWithPlaceholder(),
     Object? modifier = const $CopyWithPlaceholder(),
   }) {
     return DiceRoll(
-      numDice: numDice == const $CopyWithPlaceholder()
+      numDice: numDice == const $CopyWithPlaceholder() || numDice == null
           ? _value.numDice
           // ignore: cast_nullable_to_non_nullable
           : numDice as int,
-      diceSides: diceSides == const $CopyWithPlaceholder()
+      diceSides: diceSides == const $CopyWithPlaceholder() || diceSides == null
           ? _value.diceSides
           // ignore: cast_nullable_to_non_nullable
           : diceSides as int,
-      modifier: modifier == const $CopyWithPlaceholder()
+      modifier: modifier == const $CopyWithPlaceholder() || modifier == null
           ? _value.modifier
           // ignore: cast_nullable_to_non_nullable
           : modifier as int,
@@ -1145,7 +1226,8 @@ class _$DiceRollCWProxyImpl implements _$DiceRollCWProxy {
 }
 
 extension $DiceRollCopyWith on DiceRoll {
-  /// Returns a callable class that can be used as follows: `instanceOfDiceRoll.copyWith(...)` or like so:`instanceOfDiceRoll.copyWith.fieldName(...)`.
+  /// Returns a callable class used to build a new instance with modified fields.
+  /// Example: `instanceOfDiceRoll.copyWith(...)` or `instanceOfDiceRoll.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
   _$DiceRollCWProxy get copyWith => _$DiceRollCWProxyImpl(this);
 }
@@ -1155,52 +1237,56 @@ extension $DiceRollCopyWith on DiceRoll {
 // **************************************************************************
 
 RpgConfigurationModel _$RpgConfigurationModelFromJson(
-        Map<String, dynamic> json) =>
-    RpgConfigurationModel(
-      rpgName: json['rpgName'] as String,
-      allItems: (json['allItems'] as List<dynamic>)
-          .map((e) => RpgItem.fromJson(e as Map<String, dynamic>))
+  Map<String, dynamic> json,
+) => RpgConfigurationModel(
+  rpgName: json['rpgName'] as String,
+  allItems: (json['allItems'] as List<dynamic>)
+      .map((e) => RpgItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  placesOfFindings: (json['placesOfFindings'] as List<dynamic>)
+      .map((e) => PlaceOfFinding.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  currencyDefinition: CurrencyDefinition.fromJson(
+    json['currencyDefinition'] as Map<String, dynamic>,
+  ),
+  itemCategories: (json['itemCategories'] as List<dynamic>)
+      .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  characterStatTabsDefinition:
+      (json['characterStatTabsDefinition'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                CharacterStatsTabDefinition.fromJson(e as Map<String, dynamic>),
+          )
           .toList(),
-      placesOfFindings: (json['placesOfFindings'] as List<dynamic>)
-          .map((e) => PlaceOfFinding.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      currencyDefinition: CurrencyDefinition.fromJson(
-          json['currencyDefinition'] as Map<String, dynamic>),
-      itemCategories: (json['itemCategories'] as List<dynamic>)
-          .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      characterStatTabsDefinition: (json['characterStatTabsDefinition']
-              as List<dynamic>?)
-          ?.map((e) =>
-              CharacterStatsTabDefinition.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      craftingRecipes: (json['craftingRecipes'] as List<dynamic>)
-          .map((e) => CraftingRecipe.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      initiativeBonusStatUuid: json['initiativeBonusStatUuid'] as String?,
-      initiativeBonusListEntryUuid:
-          json['initiativeBonusListEntryUuid'] as String?,
-      initiativeBonusField: $enumDecodeNullable(
-          _$InitiativeBonusFieldEnumMap, json['initiativeBonusField']),
-      defaultSkinId: json['defaultSkinId'] as String?,
-    );
+  craftingRecipes: (json['craftingRecipes'] as List<dynamic>)
+      .map((e) => CraftingRecipe.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  initiativeBonusStatUuid: json['initiativeBonusStatUuid'] as String?,
+  initiativeBonusListEntryUuid: json['initiativeBonusListEntryUuid'] as String?,
+  initiativeBonusField: $enumDecodeNullable(
+    _$InitiativeBonusFieldEnumMap,
+    json['initiativeBonusField'],
+  ),
+  defaultSkinId: json['defaultSkinId'] as String?,
+);
 
 Map<String, dynamic> _$RpgConfigurationModelToJson(
-        RpgConfigurationModel instance) =>
-    <String, dynamic>{
-      'rpgName': instance.rpgName,
-      'allItems': instance.allItems,
-      'placesOfFindings': instance.placesOfFindings,
-      'itemCategories': instance.itemCategories,
-      'characterStatTabsDefinition': instance.characterStatTabsDefinition,
-      'craftingRecipes': instance.craftingRecipes,
-      'currencyDefinition': instance.currencyDefinition,
-      'initiativeBonusStatUuid': instance.initiativeBonusStatUuid,
-      'initiativeBonusListEntryUuid': instance.initiativeBonusListEntryUuid,
-      'initiativeBonusField':
-          _$InitiativeBonusFieldEnumMap[instance.initiativeBonusField],
-      if (instance.defaultSkinId case final value?) 'defaultSkinId': value,
-    };
+  RpgConfigurationModel instance,
+) => <String, dynamic>{
+  'rpgName': instance.rpgName,
+  'allItems': instance.allItems,
+  'placesOfFindings': instance.placesOfFindings,
+  'itemCategories': instance.itemCategories,
+  'characterStatTabsDefinition': instance.characterStatTabsDefinition,
+  'craftingRecipes': instance.craftingRecipes,
+  'currencyDefinition': instance.currencyDefinition,
+  'initiativeBonusStatUuid': instance.initiativeBonusStatUuid,
+  'initiativeBonusListEntryUuid': instance.initiativeBonusListEntryUuid,
+  'initiativeBonusField':
+      _$InitiativeBonusFieldEnumMap[instance.initiativeBonusField],
+  'defaultSkinId': ?instance.defaultSkinId,
+};
 
 const _$InitiativeBonusFieldEnumMap = {
   InitiativeBonusField.value: 'value',
@@ -1209,15 +1295,15 @@ const _$InitiativeBonusFieldEnumMap = {
 };
 
 ItemCategory _$ItemCategoryFromJson(Map<String, dynamic> json) => ItemCategory(
-      uuid: json['uuid'] as String,
-      name: json['name'] as String,
-      colorCode: json['colorCode'] as String?,
-      iconName: json['iconName'] as String?,
-      subCategories: (json['subCategories'] as List<dynamic>)
-          .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      hideInInventoryFilters: json['hideInInventoryFilters'] as bool? ?? false,
-    );
+  uuid: json['uuid'] as String,
+  name: json['name'] as String,
+  colorCode: json['colorCode'] as String?,
+  iconName: json['iconName'] as String?,
+  subCategories: (json['subCategories'] as List<dynamic>)
+      .map((e) => ItemCategory.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  hideInInventoryFilters: json['hideInInventoryFilters'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$ItemCategoryToJson(ItemCategory instance) =>
     <String, dynamic>{
@@ -1230,10 +1316,9 @@ Map<String, dynamic> _$ItemCategoryToJson(ItemCategory instance) =>
     };
 
 CurrencyType _$CurrencyTypeFromJson(Map<String, dynamic> json) => CurrencyType(
-      name: json['name'] as String,
-      multipleOfPreviousValue:
-          (json['multipleOfPreviousValue'] as num?)?.toInt(),
-    );
+  name: json['name'] as String,
+  multipleOfPreviousValue: (json['multipleOfPreviousValue'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$CurrencyTypeToJson(CurrencyType instance) =>
     <String, dynamic>{
@@ -1249,36 +1334,38 @@ CurrencyDefinition _$CurrencyDefinitionFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$CurrencyDefinitionToJson(CurrencyDefinition instance) =>
-    <String, dynamic>{
-      'currencyTypes': instance.currencyTypes,
-    };
+    <String, dynamic>{'currencyTypes': instance.currencyTypes};
 
 CraftingRecipeIngredientPair _$CraftingRecipeIngredientPairFromJson(
-        Map<String, dynamic> json) =>
-    CraftingRecipeIngredientPair(
-      itemUuid: json['itemUuid'] as String,
-      amountOfUsedItem: (json['amountOfUsedItem'] as num).toInt(),
-    );
+  Map<String, dynamic> json,
+) => CraftingRecipeIngredientPair(
+  itemUuid: json['itemUuid'] as String,
+  amountOfUsedItem: (json['amountOfUsedItem'] as num).toInt(),
+);
 
 Map<String, dynamic> _$CraftingRecipeIngredientPairToJson(
-        CraftingRecipeIngredientPair instance) =>
-    <String, dynamic>{
-      'itemUuid': instance.itemUuid,
-      'amountOfUsedItem': instance.amountOfUsedItem,
-    };
+  CraftingRecipeIngredientPair instance,
+) => <String, dynamic>{
+  'itemUuid': instance.itemUuid,
+  'amountOfUsedItem': instance.amountOfUsedItem,
+};
 
 CraftingRecipe _$CraftingRecipeFromJson(Map<String, dynamic> json) =>
     CraftingRecipe(
       recipeUuid: json['recipeUuid'] as String,
       ingredients: (json['ingredients'] as List<dynamic>)
-          .map((e) =>
-              CraftingRecipeIngredientPair.fromJson(e as Map<String, dynamic>))
+          .map(
+            (e) => CraftingRecipeIngredientPair.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
           .toList(),
       requiredItemIds: (json['requiredItemIds'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
       createdItem: CraftingRecipeIngredientPair.fromJson(
-          json['createdItem'] as Map<String, dynamic>),
+        json['createdItem'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$CraftingRecipeToJson(CraftingRecipe instance) =>
@@ -1290,36 +1377,33 @@ Map<String, dynamic> _$CraftingRecipeToJson(CraftingRecipe instance) =>
     };
 
 CharacterStatDefinition _$CharacterStatDefinitionFromJson(
-        Map<String, dynamic> json) =>
-    CharacterStatDefinition(
-      statUuid: json['statUuid'] as String,
-      name: json['name'] as String,
-      groupId: (json['groupId'] as num?)?.toInt(),
-      helperText: json['helperText'] as String,
-      valueType:
-          $enumDecode(_$CharacterStatValueTypeEnumMap, json['valueType']),
-      editType: $enumDecode(_$CharacterStatEditTypeEnumMap, json['editType']),
-      isOptionalForAlternateForms: json['isOptionalForAlternateForms'] as bool?,
-      isOptionalForCompanionCharacters:
-          json['isOptionalForCompanionCharacters'] as bool?,
-      jsonSerializedAdditionalData:
-          json['jsonSerializedAdditionalData'] as String?,
-    );
+  Map<String, dynamic> json,
+) => CharacterStatDefinition(
+  statUuid: json['statUuid'] as String,
+  name: json['name'] as String,
+  groupId: (json['groupId'] as num?)?.toInt(),
+  helperText: json['helperText'] as String,
+  valueType: $enumDecode(_$CharacterStatValueTypeEnumMap, json['valueType']),
+  editType: $enumDecode(_$CharacterStatEditTypeEnumMap, json['editType']),
+  isOptionalForAlternateForms: json['isOptionalForAlternateForms'] as bool?,
+  isOptionalForCompanionCharacters:
+      json['isOptionalForCompanionCharacters'] as bool?,
+  jsonSerializedAdditionalData: json['jsonSerializedAdditionalData'] as String?,
+);
 
 Map<String, dynamic> _$CharacterStatDefinitionToJson(
-        CharacterStatDefinition instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'statUuid': instance.statUuid,
-      'helperText': instance.helperText,
-      'groupId': instance.groupId,
-      'valueType': _$CharacterStatValueTypeEnumMap[instance.valueType]!,
-      'editType': _$CharacterStatEditTypeEnumMap[instance.editType]!,
-      'isOptionalForAlternateForms': instance.isOptionalForAlternateForms,
-      'isOptionalForCompanionCharacters':
-          instance.isOptionalForCompanionCharacters,
-      'jsonSerializedAdditionalData': instance.jsonSerializedAdditionalData,
-    };
+  CharacterStatDefinition instance,
+) => <String, dynamic>{
+  'name': instance.name,
+  'statUuid': instance.statUuid,
+  'helperText': instance.helperText,
+  'groupId': instance.groupId,
+  'valueType': _$CharacterStatValueTypeEnumMap[instance.valueType]!,
+  'editType': _$CharacterStatEditTypeEnumMap[instance.editType]!,
+  'isOptionalForAlternateForms': instance.isOptionalForAlternateForms,
+  'isOptionalForCompanionCharacters': instance.isOptionalForCompanionCharacters,
+  'jsonSerializedAdditionalData': instance.jsonSerializedAdditionalData,
+};
 
 const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.multiLineText: 'multiLineText',
@@ -1345,39 +1429,32 @@ const _$CharacterStatEditTypeEnumMap = {
 };
 
 CharacterStatsTabDefinition _$CharacterStatsTabDefinitionFromJson(
-        Map<String, dynamic> json) =>
-    CharacterStatsTabDefinition(
-      uuid: json['uuid'] as String,
-      tabName: json['tabName'] as String,
-      isOptional: json['isOptional'] as bool,
-      statsInTab: (json['statsInTab'] as List<dynamic>)
-          .map((e) =>
-              CharacterStatDefinition.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      isDefaultTab: json['isDefaultTab'] as bool,
-    );
+  Map<String, dynamic> json,
+) => CharacterStatsTabDefinition(
+  uuid: json['uuid'] as String,
+  tabName: json['tabName'] as String,
+  isOptional: json['isOptional'] as bool,
+  statsInTab: (json['statsInTab'] as List<dynamic>)
+      .map((e) => CharacterStatDefinition.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  isDefaultTab: json['isDefaultTab'] as bool,
+);
 
 Map<String, dynamic> _$CharacterStatsTabDefinitionToJson(
-        CharacterStatsTabDefinition instance) =>
-    <String, dynamic>{
-      'uuid': instance.uuid,
-      'tabName': instance.tabName,
-      'isOptional': instance.isOptional,
-      'isDefaultTab': instance.isDefaultTab,
-      'statsInTab': instance.statsInTab,
-    };
+  CharacterStatsTabDefinition instance,
+) => <String, dynamic>{
+  'uuid': instance.uuid,
+  'tabName': instance.tabName,
+  'isOptional': instance.isOptional,
+  'isDefaultTab': instance.isDefaultTab,
+  'statsInTab': instance.statsInTab,
+};
 
 PlaceOfFinding _$PlaceOfFindingFromJson(Map<String, dynamic> json) =>
-    PlaceOfFinding(
-      uuid: json['uuid'] as String,
-      name: json['name'] as String,
-    );
+    PlaceOfFinding(uuid: json['uuid'] as String, name: json['name'] as String);
 
 Map<String, dynamic> _$PlaceOfFindingToJson(PlaceOfFinding instance) =>
-    <String, dynamic>{
-      'uuid': instance.uuid,
-      'name': instance.name,
-    };
+    <String, dynamic>{'uuid': instance.uuid, 'name': instance.name};
 
 RpgItemRarity _$RpgItemRarityFromJson(Map<String, dynamic> json) =>
     RpgItemRarity(
@@ -1392,41 +1469,41 @@ Map<String, dynamic> _$RpgItemRarityToJson(RpgItemRarity instance) =>
     };
 
 RpgItem _$RpgItemFromJson(Map<String, dynamic> json) => RpgItem(
-      uuid: json['uuid'] as String,
-      name: json['name'] as String,
-      imageUrlWithoutBasePath: json['imageUrlWithoutBasePath'] as String?,
-      patchSize: json['patchSize'] == null
-          ? null
-          : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
-      categoryId: json['categoryId'] as String,
-      description: json['description'] as String,
-      imageDescription: json['imageDescription'] as String?,
-      baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
-      placeOfFindings: (json['placeOfFindings'] as List<dynamic>)
-          .map((e) => RpgItemRarity.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  uuid: json['uuid'] as String,
+  name: json['name'] as String,
+  imageUrlWithoutBasePath: json['imageUrlWithoutBasePath'] as String?,
+  patchSize: json['patchSize'] == null
+      ? null
+      : DiceRoll.fromJson(json['patchSize'] as Map<String, dynamic>),
+  categoryId: json['categoryId'] as String,
+  description: json['description'] as String,
+  imageDescription: json['imageDescription'] as String?,
+  baseCurrencyPrice: (json['baseCurrencyPrice'] as num).toInt(),
+  placeOfFindings: (json['placeOfFindings'] as List<dynamic>)
+      .map((e) => RpgItemRarity.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$RpgItemToJson(RpgItem instance) => <String, dynamic>{
-      'uuid': instance.uuid,
-      'name': instance.name,
-      'description': instance.description,
-      'categoryId': instance.categoryId,
-      'imageUrlWithoutBasePath': instance.imageUrlWithoutBasePath,
-      'imageDescription': instance.imageDescription,
-      'placeOfFindings': instance.placeOfFindings,
-      'patchSize': instance.patchSize,
-      'baseCurrencyPrice': instance.baseCurrencyPrice,
-    };
+  'uuid': instance.uuid,
+  'name': instance.name,
+  'description': instance.description,
+  'categoryId': instance.categoryId,
+  'imageUrlWithoutBasePath': instance.imageUrlWithoutBasePath,
+  'imageDescription': instance.imageDescription,
+  'placeOfFindings': instance.placeOfFindings,
+  'patchSize': instance.patchSize,
+  'baseCurrencyPrice': instance.baseCurrencyPrice,
+};
 
 DiceRoll _$DiceRollFromJson(Map<String, dynamic> json) => DiceRoll(
-      numDice: (json['numDice'] as num).toInt(),
-      diceSides: (json['diceSides'] as num).toInt(),
-      modifier: (json['modifier'] as num).toInt(),
-    );
+  numDice: (json['numDice'] as num).toInt(),
+  diceSides: (json['diceSides'] as num).toInt(),
+  modifier: (json['modifier'] as num).toInt(),
+);
 
 Map<String, dynamic> _$DiceRollToJson(DiceRoll instance) => <String, dynamic>{
-      'numDice': instance.numDice,
-      'diceSides': instance.diceSides,
-      'modifier': instance.modifier,
-    };
+  'numDice': instance.numDice,
+  'diceSides': instance.diceSides,
+  'modifier': instance.modifier,
+};

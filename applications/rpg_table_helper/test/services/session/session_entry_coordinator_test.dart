@@ -49,7 +49,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<List<String>>> enterSession({
     required CampagneIdentifier campagneId,
   }) {
-    calls.add('enterSession:${campagneId.$value}');
+    calls.add('enterSession:${campagneId.value}');
     return super.enterSession(campagneId: campagneId);
   }
 
@@ -57,7 +57,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<bool>> leaveSession({
     required CampagneIdentifier campagneId,
   }) {
-    calls.add('leaveSession:${campagneId.$value}');
+    calls.add('leaveSession:${campagneId.value}');
     return super.leaveSession(campagneId: campagneId);
   }
 
@@ -65,7 +65,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<Campagne>> getCampagneById({
     required CampagneIdentifier campagneId,
   }) {
-    calls.add('getCampagneById:${campagneId.$value}');
+    calls.add('getCampagneById:${campagneId.value}');
     return Future.value(
       getCampagneByIdOverride ??
           HRResponse.fromResult(Campagne(
@@ -80,7 +80,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne({
     required CampagneIdentifier campagneId,
   }) {
-    calls.add('getPlayerCharactersForCampagne:${campagneId.$value}');
+    calls.add('getPlayerCharactersForCampagne:${campagneId.value}');
     return Future.value(
       getAllCharactersOverride ?? HRResponse.fromResult(<PlayerCharacter>[]),
     );
@@ -90,7 +90,7 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<PlayerCharacter>> getPlayerCharacterById({
     required PlayerCharacterIdentifier playerCharacterId,
   }) {
-    calls.add('getPlayerCharacterById:${playerCharacterId.$value}');
+    calls.add('getPlayerCharacterById:${playerCharacterId.value}');
     return super.getPlayerCharacterById(playerCharacterId: playerCharacterId);
   }
 }
@@ -101,7 +101,7 @@ void main() {
         () async {
       final characters = [
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-1'),
+          id: PlayerCharacterIdentifier(value: 'pc-1'),
           characterName: 'Frodo',
         ),
       ];
@@ -109,12 +109,12 @@ void main() {
         getAllCharactersOverride: HRResponse.fromResult(characters),
       );
       final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
 
       final result = await sut.enterAsDm(campagneId: campagneId);
 
       expect(result.isSuccessful, isTrue);
-      expect(result.result!.campagne.id!.$value, 'campagne-1');
+      expect(result.result!.campagne.id!.value, 'campagne-1');
       expect(result.result!.allCharacters, characters);
       expect(result.result!.ownCharacter, isNull);
       expect(result.result!.onlineUserIds, isEmpty);
@@ -135,7 +135,7 @@ void main() {
       final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
 
       final result = await sut.enterAsDm(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
       );
 
       expect(result.isSuccessful, isTrue);
@@ -148,7 +148,7 @@ void main() {
         enterSessionOverride: HRResponse.error('nope', 'test-enter-fail'),
       );
       final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
 
       final result = await sut.enterAsDm(campagneId: campagneId);
 
@@ -160,15 +160,15 @@ void main() {
         'enterAsPlayer calls enterSession then hydrates campagne + own character',
         () async {
       final ownCharacter = PlayerCharacter(
-        id: PlayerCharacterIdentifier($value: 'pc-1'),
+        id: PlayerCharacterIdentifier(value: 'pc-1'),
         characterName: 'Frodo',
       );
       final rpgEntityService = _RecordingRpgEntityService(
         getPlayerCharacterByIdOverride: HRResponse.fromResult(ownCharacter),
       );
       final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
-      final playerCharacterId = PlayerCharacterIdentifier($value: 'pc-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
+      final playerCharacterId = PlayerCharacterIdentifier(value: 'pc-1');
 
       final result = await sut.enterAsPlayer(
         campagneId: campagneId,
@@ -176,7 +176,7 @@ void main() {
       );
 
       expect(result.isSuccessful, isTrue);
-      expect(result.result!.campagne.id!.$value, 'campagne-1');
+      expect(result.result!.campagne.id!.value, 'campagne-1');
       expect(result.result!.ownCharacter, ownCharacter);
       expect(result.result!.allCharacters, isNull);
       expect(rpgEntityService.calls, [
@@ -192,8 +192,8 @@ void main() {
         enterSessionOverride: HRResponse.error('nope', 'test-enter-fail'),
       );
       final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
-      final playerCharacterId = PlayerCharacterIdentifier($value: 'pc-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
+      final playerCharacterId = PlayerCharacterIdentifier(value: 'pc-1');
 
       final result = await sut.enterAsPlayer(
         campagneId: campagneId,
@@ -207,7 +207,7 @@ void main() {
     test('leave calls leaveSession on the rpg entity service', () async {
       final rpgEntityService = _RecordingRpgEntityService();
       final sut = SessionEntryCoordinator(rpgEntityService: rpgEntityService);
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
 
       await sut.leave(campagneId: campagneId);
 
