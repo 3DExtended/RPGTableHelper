@@ -19,6 +19,24 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+// The reversed client ID has to be registered as URL scheme in ios/Runner/Info.plist.
+const _googleClientId =
+    '301126660357-ro64929c9et8ome57r0vmk53vrn4754b.apps.googleusercontent.com'; // TODO update me
+const _googleScopes = ['email'];
+
+// google_sign_in 7 must be initialized exactly once per app run.
+Future<void>? _googleSignInInitialization;
+
+Future<void> _ensureGoogleSignInInitialized() async {
+  try {
+    await (_googleSignInInitialization ??=
+        GoogleSignIn.instance.initialize(clientId: _googleClientId));
+  } catch (_) {
+    _googleSignInInitialization = null;
+    rethrow;
+  }
+}
+
 class LoginScreen extends ConsumerStatefulWidget {
   static const route = 'login';
 
@@ -333,27 +351,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                               40, 7, 40, 7),
                                           text: S.of(context).signInWithGoogle,
                                           onPressed: () async {
-                                            // Default definition
-                                            GoogleSignIn googleSignIn =
-                                                GoogleSignIn(
-                                              clientId:
-                                                  '301126660357-ro64929c9et8ome57r0vmk53vrn4754b.apps.googleusercontent.com', // TODO update me
-                                              scopes: [
-                                                'email',
-                                              ],
-                                            );
+                                            final GoogleSignInAccount
+                                                googleAccount;
+                                            final GoogleSignInServerAuthorization?
+                                                serverAuthorization;
+                                            try {
+                                              await _ensureGoogleSignInInitialized();
+                                              googleAccount = await GoogleSignIn
+                                                  .instance
+                                                  .authenticate(
+                                                      scopeHint: _googleScopes);
+                                              // since google_sign_in 7 the server auth code is no longer part of the sign in result
+                                              serverAuthorization =
+                                                  await googleAccount
+                                                      .authorizationClient
+                                                      .authorizeServer(
+                                                          _googleScopes);
+                                            } on GoogleSignInException {
+                                              // includes the user cancelling the sign in
+                                              return;
+                                            }
 
-                                            final GoogleSignInAccount?
-                                                googleAccount =
-                                                await googleSignIn.signIn();
-
-                                            if (googleAccount == null) return;
-
-                                            // If you want further information about Google accounts, such as authentication, use this.
-                                            final GoogleSignInAuthentication
-                                                googleAuthentication =
-                                                await googleAccount
-                                                    .authentication;
+                                            final idToken = googleAccount
+                                                .authentication.idToken;
+                                            if (idToken == null ||
+                                                serverAuthorization == null) {
+                                              return;
+                                            }
 
                                             if (!mounted || !context.mounted) {
                                               return;
@@ -366,12 +390,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                                             var signInResult =
                                                 await service.signInWithGoogle(
-                                                    identityToken:
-                                                        googleAuthentication
-                                                            .idToken!,
+                                                    identityToken: idToken,
                                                     authorizationCode:
-                                                        googleAuthentication
-                                                            .serverAuthCode!);
+                                                        serverAuthorization
+                                                            .serverAuthCode);
 
                                             if (!mounted || !context.mounted) {
                                               return;
