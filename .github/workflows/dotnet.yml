@@ -46,6 +46,10 @@ jobs:
     - name: Build
       run: dotnet build RPGTableHelper.Backend.slnf --no-restore -c Release
     - name: Test
+      # Every Api test builds its own host, and each one watches appsettings*.json for changes.
+      # On Linux that exhausts the 128 inotify instances, so don't watch config files in CI.
+      env:
+        DOTNET_hostBuilder__reloadConfigOnChange: "false"
       run: dotnet test RPGTableHelper.Backend.slnf --no-build --verbosity normal -c Release --collect:"XPlat Code Coverage" --results-directory cobertura
     - name: Report Generation
       run: |
