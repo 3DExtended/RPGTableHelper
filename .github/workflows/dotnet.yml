@@ -39,12 +39,18 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 10.0.x
+    # The filter leaves out the Prodot.Patterns.Cqrs submodule's own tests and examples,
+    # whose restore fails NuGet audit (NU1903) in a repository we don't change here.
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore RPGTableHelper.Backend.slnf
     - name: Build
-      run: dotnet build --no-restore -c Release
+      run: dotnet build RPGTableHelper.Backend.slnf --no-restore -c Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal -c Release --collect:"XPlat Code Coverage" --results-directory cobertura
+      # Every Api test builds its own host, and each one watches appsettings*.json for changes.
+      # On Linux that exhausts the 128 inotify instances, so don't watch config files in CI.
+      env:
+        DOTNET_hostBuilder__reloadConfigOnChange: "false"
+      run: dotnet test RPGTableHelper.Backend.slnf --no-build --verbosity normal -c Release --collect:"XPlat Code Coverage" --results-directory cobertura
     - name: Report Generation
       run: |
         dotnet tool install -g dotnet-reportgenerator-globaltool

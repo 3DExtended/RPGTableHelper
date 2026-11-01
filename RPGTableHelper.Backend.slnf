@@ -1,0 +1,28 @@
+{
+  "solution": {
+    "path": "RPGTableHelper.sln",
+    "projects": [
+      "applications\\RPGTableHelper.WebApi\\RPGTableHelper.WebApi.csproj",
+      "libraries\\RPGTableHelper.BusinessLayer.Contracts\\RPGTableHelper.BusinessLayer.Contracts.csproj",
+      "libraries\\RPGTableHelper.BusinessLayer.Encryption.Contracts\\RPGTableHelper.BusinessLayer.Encryption.Contracts.csproj",
+      "libraries\\RPGTableHelper.BusinessLayer.Encryption\\RPGTableHelper.BusinessLayer.Encryption.csproj",
+      "libraries\\RPGTableHelper.BusinessLayer\\RPGTableHelper.BusinessLayer.csproj",
+      "libraries\\RPGTableHelper.DataLayer.Contracts\\RPGTableHelper.DataLayer.Contracts.csproj",
+      "libraries\\RPGTableHelper.DataLayer.OpenAI.Contracts\\RPGTableHelper.DataLayer.OpenAI.Contracts.csproj",
+      "libraries\\RPGTableHelper.DataLayer.OpenAI\\RPGTableHelper.DataLayer.OpenAI.csproj",
+      "libraries\\RPGTableHelper.DataLayer.SendGrid.Contracts\\RPGTableHelper.DataLayer.SendGrid.Contracts.csproj",
+      "libraries\\RPGTableHelper.DataLayer.SendGrid\\RPGTableHelper.DataLayer.SendGrid.csproj",
+      "libraries\\RPGTableHelper.DataLayer\\RPGTableHelper.DataLayer.csproj",
+      "libraries\\RPGTableHelper.Shared\\RPGTableHelper.Shared.csproj",
+      "extern\\Prodot.Patterns.Cqrs\\Prodot.Patterns.Cqrs.Abstractions\\Prodot.Patterns.Cqrs.Abstractions.csproj",
+      "extern\\Prodot.Patterns.Cqrs\\Prodot.Patterns.Cqrs.EfCore.Abstractions\\Prodot.Patterns.Cqrs.EfCore.Abstractions.csproj",
+      "extern\\Prodot.Patterns.Cqrs\\Prodot.Patterns.Cqrs.EfCore\\Prodot.Patterns.Cqrs.EfCore.csproj",
+      "extern\\Prodot.Patterns.Cqrs\\Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection\\Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.csproj",
+      "extern\\Prodot.Patterns.Cqrs\\Prodot.Patterns.Cqrs\\Prodot.Patterns.Cqrs.csproj",
+      "tests\\RPGTableHelper.Api.Tests\\RPGTableHelper.Api.Tests.csproj",
+      "tests\\RPGTableHelper.BusinessLayer.Tests\\RPGTableHelper.BusinessLayer.Tests.csproj",
+      "tests\\RPGTableHelper.DataLayer.Tests\\RPGTableHelper.DataLayer.Tests.csproj",
+      "tests\\RPGTableHelper.Shared.Tests\\RPGTableHelper.Shared.Tests.csproj"
+    ]
+  }
+}
