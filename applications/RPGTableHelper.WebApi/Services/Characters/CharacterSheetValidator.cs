@@ -101,6 +101,18 @@ public static class CharacterSheetValidator
             }
         }
 
+        if (sheet.TryGetPropertyValue("alternateForm", out var form) && form != null)
+        {
+            if (form is JsonObject activeForm)
+            {
+                CheckStats(activeForm, "characterStats", "/alternateForm", statTypes, problems, required: true);
+            }
+            else
+            {
+                problems.Add("/alternateForm: must be an object.");
+            }
+        }
+
         return problems;
     }
 

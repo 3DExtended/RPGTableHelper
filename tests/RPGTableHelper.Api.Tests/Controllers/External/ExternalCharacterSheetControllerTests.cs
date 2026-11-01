@@ -272,6 +272,41 @@ public class ExternalCharacterSheetControllerTests : ExternalApiTestBase
     }
 
     [Fact]
+    public async Task SetStat_WhileTransformed_ChangesTheActiveForm()
+    {
+        // arrange
+        var (_, campagne) = await CreateTableAsync();
+        var hero = await AddPlayerAsync(campagne, "Hero");
+        await UpdateStoredSheetAsync(
+            hero.CharacterId,
+            sheet =>
+            {
+                sheet["isAlternateFormActive"] = true;
+                sheet["alternateForm"] = new JsonObject
+                {
+                    ["uuid"] = "bear-form",
+                    ["characterName"] = "Bear",
+                    ["characterStats"] = new JsonArray(Stat(HpStat, HpValue(30, 30))),
+                };
+            }
+        );
+        var key = await CreateApiKeyClientAsync(hero.User, ApiKeyScopes.CharactersWrite);
+
+        // act
+        var response = await key.PutAsync(
+            $"{V1}/characters/{hero.CharacterId}/sheet/stats/{HpStat}",
+            Json(new { value = new { value = 22, maxValue = 30 } })
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK, await response.Content.ReadAsStringAsync());
+        var stored = await LoadStoredSheetAsync(hero.CharacterId);
+        stored["alternateForm"]!["characterStats"]![0]!["serializedValue"]!.GetValue<string>()
+            .Should().Be("{\"value\":22,\"maxValue\":30}");
+        stored["characterStats"]![1]!["serializedValue"]!.GetValue<string>().Should().Be(HpValue(10, 20));
+    }
+
+    [Fact]
     public async Task SetStat_WithAValueOfTheWrongType_IsRejected()
     {
         // arrange

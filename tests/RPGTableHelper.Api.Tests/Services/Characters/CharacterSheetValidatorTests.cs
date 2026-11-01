@@ -125,6 +125,22 @@ public class CharacterSheetValidatorTests
             .Should().ContainSingle(p => p.StartsWith("/companionCharacters[uuid=wolf]"));
     }
 
+    [Fact]
+    public void FindNewProblems_FindsABrokenStatOfTheActiveForm()
+    {
+        var before = Sheet();
+        var after = JsonNode.Parse(before)!.AsObject();
+        after["alternateForm"] = new JsonObject
+        {
+            ["uuid"] = "bear",
+            ["characterName"] = "Bear",
+            ["characterStats"] = new JsonArray(Stat("hp", new JsonObject { ["value"] = "big" })),
+        };
+
+        CharacterSheetValidator.FindNewProblems(before, after.ToJsonString(), Config)
+            .Should().ContainSingle(p => p.StartsWith("/alternateForm/characterStats[statUuid=hp]"));
+    }
+
     private static JsonObject Stat(string statUuid, JsonObject value) =>
         new() { ["statUuid"] = statUuid, ["serializedValue"] = value.ToJsonString() };
 

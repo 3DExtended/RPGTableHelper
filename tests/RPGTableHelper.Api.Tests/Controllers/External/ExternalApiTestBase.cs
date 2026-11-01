@@ -65,6 +65,9 @@ public abstract class ExternalApiTestBase : ControllerTestBase
     protected static StringContent Json(object body) =>
         new(JsonSerializer.Serialize(body, JsonOptions), Encoding.UTF8, "application/json");
 
+    protected static JsonObject Stat(string statUuid, string serializedValue) =>
+        new() { ["statUuid"] = statUuid, ["serializedValue"] = serializedValue };
+
     protected async Task<(User Dm, Campagne Campagne)> CreateTableAsync()
     {
         var dm = await ConfigureLoggedInUser();
@@ -183,8 +186,15 @@ public abstract class ExternalApiTestBase : ControllerTestBase
         return JsonNode.Parse(character.RpgCharacterConfiguration!)!.AsObject();
     }
 
-    private static JsonObject Stat(string statUuid, string serializedValue) =>
-        new() { ["statUuid"] = statUuid, ["serializedValue"] = serializedValue };
+    protected async Task UpdateStoredSheetAsync(Guid characterId, Action<JsonObject> change)
+    {
+        using var context = ContextFactory!.CreateDbContext();
+        var character = context.PlayerCharacters.Single(c => c.Id == characterId);
+        var sheet = JsonNode.Parse(character.RpgCharacterConfiguration!)!.AsObject();
+        change(sheet);
+        character.RpgCharacterConfiguration = sheet.ToJsonString();
+        await context.SaveChangesAsync();
+    }
 
     /// <summary>A player at the table with their app client (JWT) and character.</summary>
     protected sealed class TablePlayer

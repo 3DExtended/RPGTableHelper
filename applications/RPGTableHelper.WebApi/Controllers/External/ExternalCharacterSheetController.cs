@@ -115,7 +115,9 @@ namespace RPGTableHelper.WebApi.Controllers.External
 
         /// <summary>
         /// Sets one stat, e.g. hit points: send the decoded value object, the server encodes it into
-        /// <c>serializedValue</c>. With <c>companionUuid</c> the stat of that companion is set instead.
+        /// <c>serializedValue</c>. With <c>companionUuid</c> the stat of that companion is set instead. While the
+        /// character is transformed (<c>isAlternateFormActive</c>), the active form's stat is set, because that
+        /// is what the table sees.
         /// </summary>
         /// <response code="200">Saved; the body holds the new revision</response>
         /// <response code="404">If the character is not yours, or the sheet has no value for this stat yet</response>
@@ -203,6 +205,14 @@ namespace RPGTableHelper.WebApi.Controllers.External
 
                 owner = (JObject)companions[index];
                 ownerPath = $"/companionCharacters/{index}";
+            }
+            else if (sheet["isAlternateFormActive"]?.Type == JTokenType.Boolean
+                && sheet.Value<bool>("isAlternateFormActive")
+                && sheet["alternateForm"] is JObject activeForm)
+            {
+                // Transformed: the table sees the active form's stats, so that is what changes.
+                owner = activeForm;
+                ownerPath = "/alternateForm";
             }
 
             if (owner["characterStats"] is not JArray stats)

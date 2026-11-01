@@ -327,6 +327,9 @@ public class Startup
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             c.IncludeXmlComments(xmlPath);
 
+            // After the XML comments, so it can add to the response texts they set.
+            c.OperationFilter<ExternalApiOperationFilter>();
+
             c.AddSecurityDefinition(
                 "Bearer",
                 new OpenApiSecurityScheme
