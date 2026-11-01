@@ -375,6 +375,7 @@
   "apiKeyScopeFightsPlay": "Initiative würfeln, wenn der DM einen Kampf startet",
   "apiKeyScopeEvents": "Live-Updates empfangen",
   "apiKeyExpiryLabel": "Gültig für",
+  "apiKeyPermissionsNeedServerUpdate": "Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.",
   "apiKeyExpiryNever": "Unbegrenzt",
   "apiKeyExpiry30Days": "30 Tage",
   "apiKeyExpiry90Days": "90 Tage",

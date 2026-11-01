@@ -111,6 +111,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "apiKeyPermissionsLabel": MessageLookupByLibrary.simpleMessage(
       "Permissions",
     ),
+    "apiKeyPermissionsNeedServerUpdate": MessageLookupByLibrary.simpleMessage(
+      "This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.",
+    ),
     "apiKeyPrefix": m2,
     "apiKeyPresetCompanion": MessageLookupByLibrary.simpleMessage(
       "Player companion app",

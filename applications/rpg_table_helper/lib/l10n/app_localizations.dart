@@ -1874,6 +1874,12 @@ abstract class AppLocalizations {
   /// **'Gültig für'**
   String get apiKeyExpiryLabel;
 
+  /// No description provided for @apiKeyPermissionsNeedServerUpdate.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.'**
+  String get apiKeyPermissionsNeedServerUpdate;
+
   /// No description provided for @apiKeyExpiryNever.
   ///
   /// In de, this message translates to:

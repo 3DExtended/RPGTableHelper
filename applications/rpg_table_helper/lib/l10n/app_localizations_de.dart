@@ -967,6 +967,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get apiKeyExpiryLabel => 'Gültig für';
 
   @override
+  String get apiKeyPermissionsNeedServerUpdate =>
+      'Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.';
+
+  @override
   String get apiKeyExpiryNever => 'Unbegrenzt';
 
   @override

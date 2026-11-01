@@ -115,6 +115,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wähle mindestens ein Recht aus.",
     ),
     "apiKeyPermissionsLabel": MessageLookupByLibrary.simpleMessage("Rechte"),
+    "apiKeyPermissionsNeedServerUpdate": MessageLookupByLibrary.simpleMessage(
+      "Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.",
+    ),
     "apiKeyPrefix": m2,
     "apiKeyPresetCompanion": MessageLookupByLibrary.simpleMessage(
       "Begleit-App für Spieler",

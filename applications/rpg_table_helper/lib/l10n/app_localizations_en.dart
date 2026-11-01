@@ -959,6 +959,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiKeyExpiryLabel => 'Valid for';
 
   @override
+  String get apiKeyPermissionsNeedServerUpdate =>
+      'This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.';
+
+  @override
   String get apiKeyExpiryNever => 'Unlimited';
 
   @override

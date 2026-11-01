@@ -2695,6 +2695,16 @@ class S {
     );
   }
 
+  /// `This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.`
+  String get apiKeyPermissionsNeedServerUpdate {
+    return Intl.message(
+      'This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.',
+      name: 'apiKeyPermissionsNeedServerUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unlimited`
   String get apiKeyExpiryNever {
     return Intl.message(

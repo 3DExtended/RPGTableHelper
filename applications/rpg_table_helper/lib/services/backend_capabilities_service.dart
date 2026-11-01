@@ -15,6 +15,11 @@ class BackendCapability {
   /// to roll when they come back, and the DM can end a fight. Without it the
   /// app keeps the old SSE-only fight flow.
   static const String persistedFights = 'persisted-fights';
+
+  /// API keys carry permissions and an optional expiry. Older backends ignore
+  /// both and give every key read access, so the app only offers the choice
+  /// when this is advertised.
+  static const String scopedApiKeys = 'scoped-api-keys';
 }
 
 /// Capabilities guaranteed by the OLDEST backend we still support — i.e. those

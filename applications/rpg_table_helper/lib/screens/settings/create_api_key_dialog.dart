@@ -20,12 +20,18 @@ class CreateApiKeyDialogResult {
 /// Asks for a name, the permissions and the lifetime of a new API key.
 /// Pops with a [CreateApiKeyDialogResult], or null when cancelled.
 class CreateApiKeyDialog extends StatefulWidget {
-  const CreateApiKeyDialog({super.key});
+  /// False against a server without scoped keys: it ignores permissions and
+  /// lifetime, so the dialog only asks for a name and says what the key can do.
+  final bool canChoosePermissions;
 
-  static Future<CreateApiKeyDialogResult?> show(BuildContext context) =>
+  const CreateApiKeyDialog({super.key, this.canChoosePermissions = true});
+
+  static Future<CreateApiKeyDialogResult?> show(BuildContext context,
+          {bool canChoosePermissions = true}) =>
       showDialog<CreateApiKeyDialogResult>(
         context: context,
-        builder: (context) => const CreateApiKeyDialog(),
+        builder: (context) =>
+            CreateApiKeyDialog(canChoosePermissions: canChoosePermissions),
       );
 
   @override
@@ -77,11 +83,17 @@ class _CreateApiKeyDialogState extends State<CreateApiKeyDialog> {
 
     Navigator.pop(
       context,
-      CreateApiKeyDialogResult(
-        name: name,
-        scopes: ApiKeyScopes.normalize(_scopes),
-        lifetime: _lifetime,
-      ),
+      widget.canChoosePermissions
+          ? CreateApiKeyDialogResult(
+              name: name,
+              scopes: ApiKeyScopes.normalize(_scopes),
+              lifetime: _lifetime,
+            )
+          : CreateApiKeyDialogResult(
+              name: name,
+              scopes: ApiKeyScopes.readOnly,
+              lifetime: ApiKeyLifetime.unlimited,
+            ),
     );
   }
 
@@ -132,73 +144,81 @@ class _CreateApiKeyDialogState extends State<CreateApiKeyDialog> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  l10n.apiKeyPermissionsLabel,
-                  style: textStyle.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: ApiKeyPreset.values
-                      .map((preset) => ChoiceChip(
-                            key: ValueKey('apiKeyPreset_${preset.name}'),
-                            label: Text(preset.label(l10n)),
-                            selected: preset == selectedPreset,
-                            onSelected: (_) => _selectPreset(preset),
-                            labelStyle: TextStyle(
-                              color: preset == selectedPreset
-                                  ? theme.textColor
-                                  : theme.darkTextColor,
-                            ),
-                            selectedColor: theme.darkColor,
-                            backgroundColor: theme.bgColor,
-                            showCheckmark: false,
-                            side: BorderSide(color: theme.darkColor),
-                          ))
-                      .toList(),
-                ),
-                const SizedBox(height: 8),
-                ...ApiKeyScopes.all.map((scope) => CheckboxListTile(
-                      key: ValueKey('apiKeyScope_$scope'),
-                      value: _scopes.contains(scope),
-                      onChanged: (value) => _toggleScope(scope, value == true),
-                      title: Text(ApiKeyScopes.label(l10n, scope),
-                          style: textStyle),
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      activeColor: theme.darkColor,
-                      checkColor: theme.textColor,
-                      side: BorderSide(color: theme.darkColor),
-                    )),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.apiKeyExpiryLabel,
-                        style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                if (!widget.canChoosePermissions)
+                  Text(l10n.apiKeyPermissionsNeedServerUpdate,
+                      key: const ValueKey('apiKeyPermissionsNeedServerUpdate'),
+                      style: textStyle),
+                if (widget.canChoosePermissions) ...[
+                  Text(
+                    l10n.apiKeyPermissionsLabel,
+                    style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: ApiKeyPreset.values
+                        .map((preset) => ChoiceChip(
+                              key: ValueKey('apiKeyPreset_${preset.name}'),
+                              label: Text(preset.label(l10n)),
+                              selected: preset == selectedPreset,
+                              onSelected: (_) => _selectPreset(preset),
+                              labelStyle: TextStyle(
+                                color: preset == selectedPreset
+                                    ? theme.textColor
+                                    : theme.darkTextColor,
+                              ),
+                              selectedColor: theme.darkColor,
+                              backgroundColor: theme.bgColor,
+                              showCheckmark: false,
+                              side: BorderSide(color: theme.darkColor),
+                            ))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 8),
+                  ...ApiKeyScopes.all.map((scope) => CheckboxListTile(
+                        key: ValueKey('apiKeyScope_$scope'),
+                        value: _scopes.contains(scope),
+                        onChanged: (value) =>
+                            _toggleScope(scope, value == true),
+                        title: Text(ApiKeyScopes.label(l10n, scope),
+                            style: textStyle),
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        activeColor: theme.darkColor,
+                        checkColor: theme.textColor,
+                        side: BorderSide(color: theme.darkColor),
+                      )),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.apiKeyExpiryLabel,
+                          style:
+                              textStyle.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    DropdownButton<ApiKeyLifetime>(
-                      key: const ValueKey('apiKeyLifetime'),
-                      value: _lifetime,
-                      dropdownColor: theme.bgColor,
-                      style: textStyle,
-                      underline: Container(height: 1, color: theme.darkColor),
-                      onChanged: (value) {
-                        if (value != null) setState(() => _lifetime = value);
-                      },
-                      items: ApiKeyLifetime.values
-                          .map((lifetime) => DropdownMenuItem(
-                                value: lifetime,
-                                child: Text(lifetime.label(l10n)),
-                              ))
-                          .toList(),
-                    ),
-                  ],
-                ),
+                      DropdownButton<ApiKeyLifetime>(
+                        key: const ValueKey('apiKeyLifetime'),
+                        value: _lifetime,
+                        dropdownColor: theme.bgColor,
+                        style: textStyle,
+                        underline: Container(height: 1, color: theme.darkColor),
+                        onChanged: (value) {
+                          if (value != null) setState(() => _lifetime = value);
+                        },
+                        items: ApiKeyLifetime.values
+                            .map((lifetime) => DropdownMenuItem(
+                                  value: lifetime,
+                                  child: Text(lifetime.label(l10n)),
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ],
                 if (_error != null) ...[
                   const SizedBox(height: 12),
                   Text(_error!, style: const TextStyle(color: Colors.red)),

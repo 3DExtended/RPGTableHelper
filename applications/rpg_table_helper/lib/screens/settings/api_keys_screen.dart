@@ -11,6 +11,7 @@ import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/models/api_key_scopes.dart';
 import 'package:quest_keeper/screens/settings/create_api_key_dialog.dart';
 import 'package:quest_keeper/services/api_key_service.dart';
+import 'package:quest_keeper/services/backend_capabilities_service.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -138,7 +139,15 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
 
   Future<void> _generateKey() async {
     var l10n = AppLocalizations.of(context)!;
-    var choice = await CreateApiKeyDialog.show(context);
+    var capabilities = await DependencyProvider.of(context)
+        .getService<IBackendCapabilitiesService>()
+        .ensureCapabilitiesLoaded();
+    if (!mounted) return;
+    var choice = await CreateApiKeyDialog.show(
+      context,
+      canChoosePermissions:
+          capabilities.contains(BackendCapability.scopedApiKeys),
+    );
     if (choice == null || !mounted) return;
 
     try {
@@ -291,7 +300,8 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
         Theme.of(context).textTheme.bodyMedium!.copyWith(color: textColor);
     var smallStyle =
         Theme.of(context).textTheme.bodySmall!.copyWith(color: textColor);
-    var scopes = ApiKeyScopes.normalize(key.scopes ?? const []);
+    // A server without scoped keys does not send scopes; its keys can read.
+    var scopes = ApiKeyScopes.normalize(key.scopes ?? ApiKeyScopes.readOnly);
     var preset = ApiKeyPreset.forScopes(scopes);
 
     return [

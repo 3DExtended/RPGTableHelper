@@ -335,6 +335,7 @@
   "apiKeyScopeFightsPlay": "Roll initiative when the DM starts a fight",
   "apiKeyScopeEvents": "Receive live updates",
   "apiKeyExpiryLabel": "Valid for",
+  "apiKeyPermissionsNeedServerUpdate": "This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.",
   "apiKeyExpiryNever": "Unlimited",
   "apiKeyExpiry30Days": "30 days",
   "apiKeyExpiry90Days": "90 days",

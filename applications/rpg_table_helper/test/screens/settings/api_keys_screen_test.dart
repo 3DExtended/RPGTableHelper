@@ -8,7 +8,9 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/api_key_scopes.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
+import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/api_key_service.dart';
+import 'package:quest_keeper/services/backend_capabilities_service.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
@@ -48,8 +50,8 @@ class _RecordingApiKeyService implements IApiKeyService {
       HRResponse.fromResult(true);
 }
 
-Future<void> _pumpScreen(
-    WidgetTester tester, _RecordingApiKeyService service) async {
+Future<void> _pumpScreen(WidgetTester tester, _RecordingApiKeyService service,
+    {bool serverHasScopedKeys = true}) async {
   tester.view.physicalSize = const Size(1200, 2400);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -57,7 +59,17 @@ Future<void> _pumpScreen(
   await tester.pumpWidget(
     ProviderScope(
       child: DependencyProvider.getMockedDependecyProvider(
-        mockOverrides: {IApiKeyService: () => service},
+        mockOverrides: {
+          IApiKeyService: () => service,
+          IBackendCapabilitiesService: () => MockBackendCapabilitiesService(
+                apiConnectorService:
+                    DependencyProvider.getIt!.get<IApiConnectorService>(),
+                capabilitiesOverride: {
+                  ...kBaselineBackendCapabilities,
+                  if (serverHasScopedKeys) BackendCapability.scopedApiKeys,
+                },
+              ),
+        },
         child: CustomThemeProvider(
           overrideBrightness: Brightness.light,
           child: ThemeConfigurationForApp(
@@ -232,5 +244,43 @@ void main() {
     expect(find.text('Wähle mindestens ein Recht aus.'), findsOneWidget);
 
     expect(service.creates, isEmpty);
+  });
+
+  testWidgets(
+      'on a server without scoped keys the dialog only asks for a name and '
+      'says the key can read', (tester) async {
+    final service = _RecordingApiKeyService([]);
+    await _pumpScreen(tester, service, serverHasScopedKeys: false);
+
+    await tester.tap(find.text('Neuen API-Schlüssel erstellen'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('apiKeyPermissionsNeedServerUpdate')),
+        findsOneWidget);
+    expect(
+        find.byKey(const ValueKey('apiKeyPreset_companionApp')), findsNothing);
+    expect(find.byKey(const ValueKey('apiKeyScope_${ApiKeyScopes.notesWrite}')),
+        findsNothing);
+    expect(find.byKey(const ValueKey('apiKeyLifetime')), findsNothing);
+
+    await tester.enterText(
+        find.byKey(const ValueKey('apiKeyNameField')), 'Export');
+    await tester.tap(find.byKey(const ValueKey('apiKeyCreateConfirm')));
+    await tester.pumpAndSettle();
+
+    expect(service.creates.single.scopes, ApiKeyScopes.readOnly);
+    expect(service.creates.single.expiresAt, isNull);
+  });
+
+  testWidgets('a key from a server without scopes shows read access',
+      (tester) async {
+    final service = _RecordingApiKeyService([
+      ApiKeyDto(id: '1', name: 'Alt', prefix: 'sk-old1', createdAt: now),
+    ]);
+
+    await _pumpScreen(tester, service, serverHasScopedKeys: false);
+
+    expect(find.text('Rechte: Nur lesen'), findsOneWidget);
+    expect(find.text('Läuft nie ab'), findsOneWidget);
   });
 }
