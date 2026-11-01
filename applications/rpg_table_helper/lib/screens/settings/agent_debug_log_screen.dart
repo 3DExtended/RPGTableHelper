@@ -206,7 +206,7 @@ class _AgentDebugLogScreenState extends State<AgentDebugLogScreen> {
 
   Widget _actionChip(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required VoidCallback? onTap,
   }) {

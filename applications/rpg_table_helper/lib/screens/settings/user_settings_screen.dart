@@ -111,7 +111,7 @@ class UserSettingsScreen extends StatelessWidget {
 
   Widget _buildSettingsCard(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,

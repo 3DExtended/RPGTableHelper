@@ -1297,7 +1297,7 @@ Widget renderIntWithMaxValueStat(
 Widget _ledgerOrClassicStatButton({
   required BuildContext context,
   required VoidCallback? onPressed,
-  required IconData icon,
+  required FaIconData icon,
 }) {
   final ink = CustomThemeProvider.of(context).theme.darkColor;
   if (isDecoratedSheetSkinActive(context)) {

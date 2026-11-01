@@ -320,7 +320,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
         : CustomThemeProvider.of(context).theme.bgColor.lighter(0.1);
   }
 
-  Widget _iconButton(IconData icon, VoidCallback onPressed, {Key? key}) {
+  Widget _iconButton(FaIconData icon, VoidCallback onPressed, {Key? key}) {
     return CustomButton(
         key: key,
         icon: CustomFaIcon(

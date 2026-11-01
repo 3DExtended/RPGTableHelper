@@ -99,17 +99,17 @@ void main() {
         ));
         await tester.pumpAndSettle();
 
-        expect(find.byIcon(FontAwesomeIcons.plus), findsOneWidget,
+        expect(find.byIcon(FontAwesomeIcons.plus.data), findsOneWidget,
             reason: 'variant $variant should render a + control when editable');
-        expect(find.byIcon(FontAwesomeIcons.minus), findsOneWidget);
+        expect(find.byIcon(FontAwesomeIcons.minus.data), findsOneWidget);
 
-        await tester.tap(find.byIcon(FontAwesomeIcons.plus));
+        await tester.tap(find.byIcon(FontAwesomeIcons.plus.data));
         await tester.pump();
         expect(decodeValue(captured!), 6,
             reason: 'variant $variant + should increment the value');
 
         captured = null;
-        await tester.tap(find.byIcon(FontAwesomeIcons.minus));
+        await tester.tap(find.byIcon(FontAwesomeIcons.minus.data));
         await tester.pump();
         expect(decodeValue(captured!), 4,
             reason: 'variant $variant - should decrement the value');
@@ -127,8 +127,8 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(FontAwesomeIcons.plus), findsNothing);
-    expect(find.byIcon(FontAwesomeIcons.minus), findsNothing);
+    expect(find.byIcon(FontAwesomeIcons.plus.data), findsNothing);
+    expect(find.byIcon(FontAwesomeIcons.minus.data), findsNothing);
     expect(emitted, isFalse);
   });
 
@@ -142,7 +142,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(FontAwesomeIcons.plus));
+    await tester.tap(find.byIcon(FontAwesomeIcons.plus.data));
     await tester.pump();
     expect(captured, isNull, reason: '+ at max must not emit a change');
   });
@@ -157,7 +157,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(FontAwesomeIcons.minus));
+    await tester.tap(find.byIcon(FontAwesomeIcons.minus.data));
     await tester.pump();
     expect(captured, isNull, reason: '- at zero must not emit a change');
   });
