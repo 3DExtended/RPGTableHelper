@@ -20,21 +20,29 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
-  static String m0(username) => " (für ${username})";
+  static String m0(date) => "Läuft ab: ${date}";
 
-  static String m1(characterNames) =>
+  static String m1(date) => "Zuletzt benutzt: ${date}";
+
+  static String m2(prefix) => "Präfix: ${prefix}";
+
+  static String m3(date) => "Widerrufen: ${date}";
+
+  static String m4(username) => " (für ${username})";
+
+  static String m5(characterNames) =>
       "Die Items konnten nicht an ${characterNames} verteilt werden. Bitte versuche es erneut.";
 
-  static String m2(label, formattedBonus) =>
+  static String m6(label, formattedBonus) =>
       "Addiere ${label} ${formattedBonus} zu deinem Wurf";
 
-  static String m3(amount) => "Du hast ${amount} neue Items erhalten:";
+  static String m7(amount) => "Du hast ${amount} neue Items erhalten:";
 
-  static String m4(property) => "Der Wert von ${property}";
+  static String m8(property) => "Der Wert von ${property}";
 
-  static String m5(count) => "Dir gehören ${count} Kampagnen";
+  static String m9(count) => "Dir gehören ${count} Kampagnen";
 
-  static String m6(count) => "Dir gehören ${count} Charaktere";
+  static String m10(count) => "Dir gehören ${count} Charaktere";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -66,6 +74,113 @@ class MessageLookup extends MessageLookupByLibrary {
     "amount": MessageLookupByLibrary.simpleMessage("Anzahl"),
     "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Anzahl:"),
     "amountToCraftFieldLabel": MessageLookupByLibrary.simpleMessage("Anzahl"),
+    "apiKeyCopied": MessageLookupByLibrary.simpleMessage(
+      "In die Zwischenablage kopiert",
+    ),
+    "apiKeyCopy": MessageLookupByLibrary.simpleMessage("Kopieren"),
+    "apiKeyCreateConfirm": MessageLookupByLibrary.simpleMessage("Erstellen"),
+    "apiKeyCreateFailed": MessageLookupByLibrary.simpleMessage(
+      "Der API-Schlüssel konnte nicht erstellt werden.",
+    ),
+    "apiKeyCreateHint": MessageLookupByLibrary.simpleMessage(
+      "Gib Schlüssel nur an Apps, denen du vertraust. Sie handeln in deinem Namen.",
+    ),
+    "apiKeyCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Neuer API-Schlüssel",
+    ),
+    "apiKeyCreatedBody": MessageLookupByLibrary.simpleMessage(
+      "Kopiere den neuen Schlüssel jetzt. Er wird dir nicht noch einmal angezeigt.",
+    ),
+    "apiKeyCreatedTitle": MessageLookupByLibrary.simpleMessage(
+      "API-Schlüssel erstellt",
+    ),
+    "apiKeyDone": MessageLookupByLibrary.simpleMessage("Fertig"),
+    "apiKeyExpired": MessageLookupByLibrary.simpleMessage("Abgelaufen"),
+    "apiKeyExpiresAt": m0,
+    "apiKeyExpiry1Year": MessageLookupByLibrary.simpleMessage("1 Jahr"),
+    "apiKeyExpiry30Days": MessageLookupByLibrary.simpleMessage("30 Tage"),
+    "apiKeyExpiry90Days": MessageLookupByLibrary.simpleMessage("90 Tage"),
+    "apiKeyExpiryLabel": MessageLookupByLibrary.simpleMessage("Gültig für"),
+    "apiKeyExpiryNever": MessageLookupByLibrary.simpleMessage("Unbegrenzt"),
+    "apiKeyLastUsedAt": m1,
+    "apiKeyNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Name, z. B. die App, die ihn nutzt",
+    ),
+    "apiKeyNameRequired": MessageLookupByLibrary.simpleMessage(
+      "Gib einen Namen ein.",
+    ),
+    "apiKeyNeverExpires": MessageLookupByLibrary.simpleMessage("Läuft nie ab"),
+    "apiKeyNeverUsed": MessageLookupByLibrary.simpleMessage("Noch nie benutzt"),
+    "apiKeyNoScopeSelected": MessageLookupByLibrary.simpleMessage(
+      "Wähle mindestens ein Recht aus.",
+    ),
+    "apiKeyPermissionsLabel": MessageLookupByLibrary.simpleMessage("Rechte"),
+    "apiKeyPermissionsNeedServerUpdate": MessageLookupByLibrary.simpleMessage(
+      "Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.",
+    ),
+    "apiKeyPrefix": m2,
+    "apiKeyPresetCompanion": MessageLookupByLibrary.simpleMessage(
+      "Begleit-App für Spieler",
+    ),
+    "apiKeyPresetCustom": MessageLookupByLibrary.simpleMessage(
+      "Benutzerdefiniert",
+    ),
+    "apiKeyPresetReadOnly": MessageLookupByLibrary.simpleMessage("Nur lesen"),
+    "apiKeyRevokeBody": MessageLookupByLibrary.simpleMessage(
+      "Das lässt sich nicht rückgängig machen. Jede App, die diesen Schlüssel nutzt, verliert sofort den Zugriff.",
+    ),
+    "apiKeyRevokeConfirm": MessageLookupByLibrary.simpleMessage("Widerrufen"),
+    "apiKeyRevokeFailed": MessageLookupByLibrary.simpleMessage(
+      "Der API-Schlüssel konnte nicht widerrufen werden.",
+    ),
+    "apiKeyRevokeTitle": MessageLookupByLibrary.simpleMessage(
+      "API-Schlüssel widerrufen?",
+    ),
+    "apiKeyRevoked": MessageLookupByLibrary.simpleMessage("Widerrufen"),
+    "apiKeyRevokedAt": m3,
+    "apiKeyScopeCampaignsRead": MessageLookupByLibrary.simpleMessage(
+      "Deine Kampagnen und Mitspieler sehen",
+    ),
+    "apiKeyScopeCharactersRead": MessageLookupByLibrary.simpleMessage(
+      "Deine Charakterbögen lesen",
+    ),
+    "apiKeyScopeCharactersWrite": MessageLookupByLibrary.simpleMessage(
+      "Deine Charakterbögen ändern, z. B. Lebenspunkte",
+    ),
+    "apiKeyScopeEvents": MessageLookupByLibrary.simpleMessage(
+      "Live-Updates empfangen",
+    ),
+    "apiKeyScopeFightsPlay": MessageLookupByLibrary.simpleMessage(
+      "Initiative würfeln, wenn der DM einen Kampf startet",
+    ),
+    "apiKeyScopeNotesRead": MessageLookupByLibrary.simpleMessage(
+      "Die Notizen lesen, die du sehen darfst",
+    ),
+    "apiKeyScopeNotesWrite": MessageLookupByLibrary.simpleMessage(
+      "Eigene Notizen schreiben und festlegen, wer sie sieht",
+    ),
+    "apiKeyUnnamed": MessageLookupByLibrary.simpleMessage(
+      "Unbenannter Schlüssel",
+    ),
+    "apiKeysDocsDescription": MessageLookupByLibrary.simpleMessage(
+      "Mit API-Schlüsseln kann eine andere App, etwa eine Begleit-App aus deiner Gruppe, für dich als Spieler handeln. Jeder Schlüssel darf nur, was du ihm erlaubst.",
+    ),
+    "apiKeysDocsTitle": MessageLookupByLibrary.simpleMessage(
+      "API-Dokumentation",
+    ),
+    "apiKeysEmpty": MessageLookupByLibrary.simpleMessage(
+      "Noch keine API-Schlüssel.",
+    ),
+    "apiKeysGenerate": MessageLookupByLibrary.simpleMessage(
+      "Neuen API-Schlüssel erstellen",
+    ),
+    "apiKeysLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Deine API-Schlüssel konnten nicht geladen werden.",
+    ),
+    "apiKeysTitle": MessageLookupByLibrary.simpleMessage("API-Schlüssel"),
+    "apiKeysViewDocs": MessageLookupByLibrary.simpleMessage(
+      "API-Dokumentation öffnen",
+    ),
     "assignCharacterToCampagneModalContent":
         MessageLookupByLibrary.simpleMessage(
           "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
@@ -152,7 +267,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "configureProperties": MessageLookupByLibrary.simpleMessage(
       "Eigenschaften konfigurieren",
     ),
-    "configurePropertiesForCharacterNameSuffix": m0,
+    "configurePropertiesForCharacterNameSuffix": m4,
     "count": MessageLookupByLibrary.simpleMessage("Anzahl"),
     "craft": MessageLookupByLibrary.simpleMessage("Herstellen"),
     "craftableAmountText": MessageLookupByLibrary.simpleMessage("Herstellbar:"),
@@ -198,6 +313,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "editPageTitle": MessageLookupByLibrary.simpleMessage("Seite bearbeiten"),
     "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
+    "endFight": MessageLookupByLibrary.simpleMessage("Kampf beenden"),
+    "endFightConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.",
+    ),
     "enemy": MessageLookupByLibrary.simpleMessage("Gegner"),
     "enemyName": MessageLookupByLibrary.simpleMessage("Gegnername"),
     "enterANameDefaultLabel": MessageLookupByLibrary.simpleMessage(
@@ -247,7 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technische Details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Items verteilen"),
-    "grantItemsFailedForPlayers": m1,
+    "grantItemsFailedForPlayers": m5,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "Wie soll die Kampagne heißen?",
     ),
@@ -263,7 +382,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Feld",
     ),
-    "initiativeBonusHelperSentence": m2,
+    "initiativeBonusHelperSentence": m6,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Trotzdem verlassen",
     ),
@@ -413,6 +532,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "next": MessageLookupByLibrary.simpleMessage("Weiter"),
     "no": MessageLookupByLibrary.simpleMessage("Nein"),
+    "noCharactersInCampagne": MessageLookupByLibrary.simpleMessage(
+      "Noch keine Charaktere in dieser Kampagne",
+    ),
     "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
       "Aktuell kein Kampf gestartet",
     ),
@@ -447,6 +569,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
       "Aktuell keine Spieler online",
     ),
+    "notAtTheTable": MessageLookupByLibrary.simpleMessage("nicht am Tisch"),
     "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
       "Nicht herstellbar",
     ),
@@ -517,7 +640,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "Du hast ein neues Item erhalten:",
     ),
-    "receivedXNewItems": m3,
+    "receivedXNewItems": m7,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Rezept für"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -588,7 +711,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-    "valueOfPropertyWithName": m4,
+    "valueOfPropertyWithName": m8,
+    "waitingForInitiative": MessageLookupByLibrary.simpleMessage(
+      "Wartet auf Initiative",
+    ),
     "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
     "yes": MessageLookupByLibrary.simpleMessage("Ja"),
     "you": MessageLookupByLibrary.simpleMessage("Du"),
@@ -600,8 +726,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
         ),
-    "youOwnXCampaigns": m5,
-    "youOwnXCharacters": m6,
+    "youOwnXCampaigns": m9,
+    "youOwnXCharacters": m10,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
     ),

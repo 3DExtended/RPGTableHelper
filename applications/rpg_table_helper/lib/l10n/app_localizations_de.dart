@@ -844,4 +844,187 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get characterSheetAppearanceTitle => 'Darstellung';
+
+  @override
+  String get apiKeysTitle => 'API-Schlüssel';
+
+  @override
+  String get apiKeysDocsTitle => 'API-Dokumentation';
+
+  @override
+  String get apiKeysDocsDescription =>
+      'Mit API-Schlüsseln kann eine andere App, etwa eine Begleit-App aus deiner Gruppe, für dich als Spieler handeln. Jeder Schlüssel darf nur, was du ihm erlaubst.';
+
+  @override
+  String get apiKeysViewDocs => 'API-Dokumentation öffnen';
+
+  @override
+  String get apiKeysGenerate => 'Neuen API-Schlüssel erstellen';
+
+  @override
+  String get apiKeysEmpty => 'Noch keine API-Schlüssel.';
+
+  @override
+  String get apiKeysLoadFailed =>
+      'Deine API-Schlüssel konnten nicht geladen werden.';
+
+  @override
+  String get apiKeyUnnamed => 'Unbenannter Schlüssel';
+
+  @override
+  String get apiKeyRevoked => 'Widerrufen';
+
+  @override
+  String get apiKeyExpired => 'Abgelaufen';
+
+  @override
+  String apiKeyPrefix(String prefix) {
+    return 'Präfix: $prefix';
+  }
+
+  @override
+  String apiKeyRevokedAt(String date) {
+    return 'Widerrufen: $date';
+  }
+
+  @override
+  String apiKeyLastUsedAt(String date) {
+    return 'Zuletzt benutzt: $date';
+  }
+
+  @override
+  String get apiKeyNeverUsed => 'Noch nie benutzt';
+
+  @override
+  String apiKeyExpiresAt(String date) {
+    return 'Läuft ab: $date';
+  }
+
+  @override
+  String get apiKeyNeverExpires => 'Läuft nie ab';
+
+  @override
+  String get apiKeyRevokeTitle => 'API-Schlüssel widerrufen?';
+
+  @override
+  String get apiKeyRevokeBody =>
+      'Das lässt sich nicht rückgängig machen. Jede App, die diesen Schlüssel nutzt, verliert sofort den Zugriff.';
+
+  @override
+  String get apiKeyRevokeConfirm => 'Widerrufen';
+
+  @override
+  String get apiKeyRevokeFailed =>
+      'Der API-Schlüssel konnte nicht widerrufen werden.';
+
+  @override
+  String get apiKeyCreateTitle => 'Neuer API-Schlüssel';
+
+  @override
+  String get apiKeyCreateHint =>
+      'Gib Schlüssel nur an Apps, denen du vertraust. Sie handeln in deinem Namen.';
+
+  @override
+  String get apiKeyNameLabel => 'Name, z. B. die App, die ihn nutzt';
+
+  @override
+  String get apiKeyPermissionsLabel => 'Rechte';
+
+  @override
+  String get apiKeyPresetReadOnly => 'Nur lesen';
+
+  @override
+  String get apiKeyPresetCompanion => 'Begleit-App für Spieler';
+
+  @override
+  String get apiKeyPresetCustom => 'Benutzerdefiniert';
+
+  @override
+  String get apiKeyScopeCampaignsRead => 'Deine Kampagnen und Mitspieler sehen';
+
+  @override
+  String get apiKeyScopeCharactersRead => 'Deine Charakterbögen lesen';
+
+  @override
+  String get apiKeyScopeCharactersWrite =>
+      'Deine Charakterbögen ändern, z. B. Lebenspunkte';
+
+  @override
+  String get apiKeyScopeNotesRead => 'Die Notizen lesen, die du sehen darfst';
+
+  @override
+  String get apiKeyScopeNotesWrite =>
+      'Eigene Notizen schreiben und festlegen, wer sie sieht';
+
+  @override
+  String get apiKeyScopeFightsPlay =>
+      'Initiative würfeln, wenn der DM einen Kampf startet';
+
+  @override
+  String get apiKeyScopeEvents => 'Live-Updates empfangen';
+
+  @override
+  String get apiKeyExpiryLabel => 'Gültig für';
+
+  @override
+  String get apiKeyPermissionsNeedServerUpdate =>
+      'Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.';
+
+  @override
+  String get apiKeyExpiryNever => 'Unbegrenzt';
+
+  @override
+  String get apiKeyExpiry30Days => '30 Tage';
+
+  @override
+  String get apiKeyExpiry90Days => '90 Tage';
+
+  @override
+  String get apiKeyExpiry1Year => '1 Jahr';
+
+  @override
+  String get apiKeyCreateConfirm => 'Erstellen';
+
+  @override
+  String get apiKeyNameRequired => 'Gib einen Namen ein.';
+
+  @override
+  String get apiKeyNoScopeSelected => 'Wähle mindestens ein Recht aus.';
+
+  @override
+  String get apiKeyCreateFailed =>
+      'Der API-Schlüssel konnte nicht erstellt werden.';
+
+  @override
+  String get apiKeyCreatedTitle => 'API-Schlüssel erstellt';
+
+  @override
+  String get apiKeyCreatedBody =>
+      'Kopiere den neuen Schlüssel jetzt. Er wird dir nicht noch einmal angezeigt.';
+
+  @override
+  String get apiKeyCopy => 'Kopieren';
+
+  @override
+  String get apiKeyCopied => 'In die Zwischenablage kopiert';
+
+  @override
+  String get apiKeyDone => 'Fertig';
+
+  @override
+  String get endFight => 'Kampf beenden';
+
+  @override
+  String get endFightConfirmation =>
+      'Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.';
+
+  @override
+  String get waitingForInitiative => 'Wartet auf Initiative';
+
+  @override
+  String get notAtTheTable => 'nicht am Tisch';
+
+  @override
+  String get noCharactersInCampagne =>
+      'Noch keine Charaktere in dieser Kampagne';
 }

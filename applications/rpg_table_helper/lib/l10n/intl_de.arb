@@ -307,5 +307,91 @@
   "characterSheetSkinNightCartographer": "Nachtkartograph",
   "characterSheetSkinUseCampaignDefault": "Kampagnen-Standard verwenden",
   "characterSheetSkinCampaignDefaultLabel": "Kampagnen-Standard",
-  "characterSheetAppearanceTitle": "Darstellung"
+  "characterSheetAppearanceTitle": "Darstellung",
+  "apiKeysTitle": "API-Schlüssel",
+  "apiKeysDocsTitle": "API-Dokumentation",
+  "apiKeysDocsDescription": "Mit API-Schlüsseln kann eine andere App, etwa eine Begleit-App aus deiner Gruppe, für dich als Spieler handeln. Jeder Schlüssel darf nur, was du ihm erlaubst.",
+  "apiKeysViewDocs": "API-Dokumentation öffnen",
+  "apiKeysGenerate": "Neuen API-Schlüssel erstellen",
+  "apiKeysEmpty": "Noch keine API-Schlüssel.",
+  "apiKeysLoadFailed": "Deine API-Schlüssel konnten nicht geladen werden.",
+  "apiKeyUnnamed": "Unbenannter Schlüssel",
+  "apiKeyRevoked": "Widerrufen",
+  "apiKeyExpired": "Abgelaufen",
+  "apiKeyPrefix": "Präfix: {prefix}",
+  "@apiKeyPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String",
+        "example": "sk-AbC1"
+      }
+    }
+  },
+  "apiKeyRevokedAt": "Widerrufen: {date}",
+  "@apiKeyRevokedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12.10.2026 18:30"
+      }
+    }
+  },
+  "apiKeyLastUsedAt": "Zuletzt benutzt: {date}",
+  "@apiKeyLastUsedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12.10.2026 18:30"
+      }
+    }
+  },
+  "apiKeyNeverUsed": "Noch nie benutzt",
+  "apiKeyExpiresAt": "Läuft ab: {date}",
+  "@apiKeyExpiresAt": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12.10.2026 18:30"
+      }
+    }
+  },
+  "apiKeyNeverExpires": "Läuft nie ab",
+  "apiKeyRevokeTitle": "API-Schlüssel widerrufen?",
+  "apiKeyRevokeBody": "Das lässt sich nicht rückgängig machen. Jede App, die diesen Schlüssel nutzt, verliert sofort den Zugriff.",
+  "apiKeyRevokeConfirm": "Widerrufen",
+  "apiKeyRevokeFailed": "Der API-Schlüssel konnte nicht widerrufen werden.",
+  "apiKeyCreateTitle": "Neuer API-Schlüssel",
+  "apiKeyCreateHint": "Gib Schlüssel nur an Apps, denen du vertraust. Sie handeln in deinem Namen.",
+  "apiKeyNameLabel": "Name, z. B. die App, die ihn nutzt",
+  "apiKeyPermissionsLabel": "Rechte",
+  "apiKeyPresetReadOnly": "Nur lesen",
+  "apiKeyPresetCompanion": "Begleit-App für Spieler",
+  "apiKeyPresetCustom": "Benutzerdefiniert",
+  "apiKeyScopeCampaignsRead": "Deine Kampagnen und Mitspieler sehen",
+  "apiKeyScopeCharactersRead": "Deine Charakterbögen lesen",
+  "apiKeyScopeCharactersWrite": "Deine Charakterbögen ändern, z. B. Lebenspunkte",
+  "apiKeyScopeNotesRead": "Die Notizen lesen, die du sehen darfst",
+  "apiKeyScopeNotesWrite": "Eigene Notizen schreiben und festlegen, wer sie sieht",
+  "apiKeyScopeFightsPlay": "Initiative würfeln, wenn der DM einen Kampf startet",
+  "apiKeyScopeEvents": "Live-Updates empfangen",
+  "apiKeyExpiryLabel": "Gültig für",
+  "apiKeyPermissionsNeedServerUpdate": "Dieser Server gibt jedem Schlüssel Lesezugriff auf deine Kampagnen, Charaktere und Notizen. Rechte und Laufzeit kannst du wählen, sobald der Server aktualisiert ist.",
+  "apiKeyExpiryNever": "Unbegrenzt",
+  "apiKeyExpiry30Days": "30 Tage",
+  "apiKeyExpiry90Days": "90 Tage",
+  "apiKeyExpiry1Year": "1 Jahr",
+  "apiKeyCreateConfirm": "Erstellen",
+  "apiKeyNameRequired": "Gib einen Namen ein.",
+  "apiKeyNoScopeSelected": "Wähle mindestens ein Recht aus.",
+  "apiKeyCreateFailed": "Der API-Schlüssel konnte nicht erstellt werden.",
+  "apiKeyCreatedTitle": "API-Schlüssel erstellt",
+  "apiKeyCreatedBody": "Kopiere den neuen Schlüssel jetzt. Er wird dir nicht noch einmal angezeigt.",
+  "apiKeyCopy": "Kopieren",
+  "apiKeyCopied": "In die Zwischenablage kopiert",
+  "apiKeyDone": "Fertig",
+  "endFight": "Kampf beenden",
+  "endFightConfirmation": "Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.",
+  "waitingForInitiative": "Wartet auf Initiative",
+  "notAtTheTable": "nicht am Tisch",
+  "noCharactersInCampagne": "Noch keine Charaktere in dieser Kampagne"
 }

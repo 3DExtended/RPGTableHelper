@@ -3,28 +3,40 @@ using System.Text;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Prodot.Patterns.Cqrs;
+using RPGTableHelper.DataLayer.Contracts.Models.ApiKeys;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Queries.ApiKeys;
 using RPGTableHelper.DataLayer.EfCore;
+using RPGTableHelper.Shared.Auth;
+using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.ApiKeys
 {
-    public class VerifyApiKeyQueryHandler : IQueryHandler<VerifyApiKeyQuery, User>
+    public class VerifyApiKeyQueryHandler : IQueryHandler<VerifyApiKeyQuery, VerifiedApiKey>
     {
+        /// <summary>
+        /// <see cref="Entities.ApiKeyEntity.LastUsedAt"/> is only written when older than this, so a busy key
+        /// does not cause a database write per request.
+        /// </summary>
+        public static readonly TimeSpan LastUsedUpdateInterval = TimeSpan.FromMinutes(1);
+
         private readonly IMapper _mapper;
         private readonly IDbContextFactory<RpgDbContext> _contextFactory;
+        private readonly ISystemClock _clock;
 
         public VerifyApiKeyQueryHandler(
             IMapper mapper,
-            IDbContextFactory<RpgDbContext> contextFactory)
+            IDbContextFactory<RpgDbContext> contextFactory,
+            ISystemClock systemClock)
         {
             _mapper = mapper;
             _contextFactory = contextFactory;
+            _clock = systemClock;
         }
 
-        public IQueryHandler<VerifyApiKeyQuery, User> Successor { get; set; } = default!;
+        public IQueryHandler<VerifyApiKeyQuery, VerifiedApiKey> Successor { get; set; } = default!;
 
-        public async Task<Option<User>> RunQueryAsync(VerifyApiKeyQuery query, CancellationToken cancellationToken)
+        public async Task<Option<VerifiedApiKey>> RunQueryAsync(VerifyApiKeyQuery query, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(query.PlainApiKey))
             {
@@ -48,9 +60,26 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.ApiKeys
                 return Option.None;
             }
 
-            // Return the associated User
-            var userDto = _mapper.Map<User>(apiKeyEntity.User);
-            return Option.From(userDto);
+            var now = _clock.Now;
+            if (apiKeyEntity.ExpiresAt.HasValue && apiKeyEntity.ExpiresAt.Value <= now)
+            {
+                return Option.None;
+            }
+
+            if (!apiKeyEntity.LastUsedAt.HasValue || now - apiKeyEntity.LastUsedAt.Value >= LastUsedUpdateInterval)
+            {
+                await context.ApiKeys
+                    .Where(k => k.Id == apiKeyEntity.Id)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(k => k.LastUsedAt, now), cancellationToken);
+            }
+
+            return Option.From(new VerifiedApiKey
+            {
+                User = _mapper.Map<User>(apiKeyEntity.User),
+                ApiKeyId = apiKeyEntity.Id,
+                Prefix = apiKeyEntity.Prefix,
+                Scopes = ApiKeyScopes.Parse(apiKeyEntity.Scopes),
+            });
         }
     }
 }

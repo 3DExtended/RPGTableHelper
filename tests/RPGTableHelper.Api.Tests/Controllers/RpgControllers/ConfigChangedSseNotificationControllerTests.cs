@@ -82,6 +82,9 @@ public class ConfigChangedSseNotificationControllerTests : ControllerTestBase
         await playerReader.ReadLineAsync();
         await playerReader.ReadLineAsync();
 
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+        using var playerLiveEvents = await KeepEventsStreamOpenAsync(playerClient);
+
         (await playerClient.PostAsync($"/Session/enter/{entity.Id}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
         (await Client.PostAsync($"/Session/enter/{entity.Id}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -170,6 +173,9 @@ public class ConfigChangedSseNotificationControllerTests : ControllerTestBase
         await playerReader.ReadLineAsync();
         await playerReader.ReadLineAsync();
         await playerReader.ReadLineAsync();
+
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+        using var playerLiveEvents = await KeepEventsStreamOpenAsync(playerClient);
 
         await playerClient.PostAsync($"/Session/enter/{entity.Id}", null);
         await Client.PostAsync($"/Session/enter/{entity.Id}", null);
@@ -312,6 +318,9 @@ public class ConfigChangedSseNotificationControllerTests : ControllerTestBase
         await dmReader.ReadLineAsync();
         await dmReader.ReadLineAsync();
 
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+        using var playerLiveEvents = await KeepEventsStreamOpenAsync(playerClient);
+
         (await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
         (await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -383,6 +392,9 @@ public class ConfigChangedSseNotificationControllerTests : ControllerTestBase
         await dmReader.ReadLineAsync();
         await dmReader.ReadLineAsync();
         await dmReader.ReadLineAsync();
+
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+        using var playerLiveEvents = await KeepEventsStreamOpenAsync(playerClient);
 
         await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null);
         await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null);

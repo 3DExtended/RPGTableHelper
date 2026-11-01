@@ -26,6 +26,7 @@ using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Options;
 using RPGTableHelper.Shared.Services;
+using RPGTableHelper.WebApi.Controllers.External;
 using RPGTableHelper.WebApi.Dtos;
 using RPGTableHelper.WebApi.Options;
 using RPGTableHelper.WebApi.Services;
@@ -106,6 +107,9 @@ public class Startup
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        // After authorization: only then does the request carry the API key's claims to partition by.
+        app.UseRateLimiter();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -147,6 +151,21 @@ public class Startup
             RPGTableHelper.WebApi.Services.ConfigRevisions.IConfigRevisionHistoryStore,
             RPGTableHelper.WebApi.Services.ConfigRevisions.ConfigRevisionHistoryStore
         >();
+
+        // Singleton: the fight service serializes fight writes with an in-process lock.
+        services.AddSingleton<
+            RPGTableHelper.WebApi.Services.Fights.IFightService,
+            RPGTableHelper.WebApi.Services.Fights.FightService
+        >();
+        services.AddSingleton<
+            RPGTableHelper.WebApi.Services.Fights.IFightNotifier,
+            RPGTableHelper.WebApi.Services.Fights.FightNotifier
+        >();
+        services.AddScoped<
+            RPGTableHelper.WebApi.Services.Characters.ICharacterSheetWriter,
+            RPGTableHelper.WebApi.Services.Characters.CharacterSheetWriter
+        >();
+        services.AddExternalApiRateLimiting(Configuration);
 
         services.AddTransient(provider =>
         {
@@ -229,15 +248,21 @@ public class Startup
                     ValidateIssuerSigningKey = true,
                 };
             })
-            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(ApiKeyClaimTypes.AuthenticationScheme, null);
 
         services.AddAuthorization(options =>
         {
+            // API keys are deliberately NOT part of the default policy: a key only reaches the external
+            // player API and the event stream, each gated by scope (see ApiKeyAuthorization).
             options.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes("Bearer", "ApiKey")
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                 .Build();
+
+            options.AddApiKeyPolicies();
         });
+        services.AddSingleton<IAuthorizationHandler, ApiKeyScopeRequirementHandler>();
+        services.AddSingleton<IAuthorizationMiddlewareResultHandler, InsufficientScopeResultHandler>();
 
         services
             .AddControllers()
@@ -258,26 +283,39 @@ public class Startup
 
             c.SchemaFilter<EnumSchemaFilter>();
 
-            // In production, only generate External API documentation
-            if (Environment.IsDevelopment())
+            // In production, only generate External API documentation. The local E2E environment also serves
+            // the app's API so the Flutter client can be regenerated from a local run.
+            if (Environment.IsDevelopment() || Environment.IsEnvironment("LocalSignalRE2E"))
             {
                 c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
             }
 
-            c.SwaggerDoc("external", new OpenApiInfo { Title = "External API", Version = "v1" });
+            c.SwaggerDoc(
+                ExternalApiRoutes.SwaggerGroupName,
+                new OpenApiInfo
+                {
+                    Title = "Questkeeper Player API",
+                    Version = "v1",
+                    Description =
+                        "Player-side access for third-party apps. Authenticate with an API key in the X-Api-Key header; "
+                        + "each endpoint names the scope it needs. Guide: docs/external-api in the repository.",
+                }
+            );
 
             // Separate endpoints by group
             c.DocInclusionPredicate(
                 (docName, apiDesc) =>
                 {
                     var groupName = apiDesc.GroupName;
-                    if (docName == "external")
+                    if (docName == ExternalApiRoutes.SwaggerGroupName)
                     {
-                        return groupName == "external";
+                        // Only document v1; the pre-v1 read routes stay reachable as aliases.
+                        return groupName == ExternalApiRoutes.SwaggerGroupName
+                            && apiDesc.RelativePath?.StartsWith(ExternalApiRoutes.V1, StringComparison.Ordinal) == true;
                     }
                     else if (docName == "v1.0")
                     {
-                        return groupName != "external";
+                        return groupName != ExternalApiRoutes.SwaggerGroupName;
                     }
 
                     return false;
@@ -288,6 +326,9 @@ public class Startup
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             c.IncludeXmlComments(xmlPath);
+
+            // After the XML comments, so it can add to the response texts they set.
+            c.OperationFilter<ExternalApiOperationFilter>();
 
             c.AddSecurityDefinition(
                 "Bearer",
@@ -325,7 +366,12 @@ public class Startup
                 "CorsPolicy",
                 builder =>
                 {
-                    builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed((host) => true).AllowCredentials();
+                    builder
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowCredentials()
+                        .WithExposedHeaders("Retry-After");
                 }
             )
         );

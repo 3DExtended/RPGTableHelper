@@ -16,6 +16,16 @@ ApiKeyDto _$ApiKeyDtoFromJson(Map<String, dynamic> json) => ApiKeyDto(
       revokedAt: json['revokedAt'] == null
           ? null
           : DateTime.parse(json['revokedAt'] as String),
+      scopes: (json['scopes'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      lastUsedAt: json['lastUsedAt'] == null
+          ? null
+          : DateTime.parse(json['lastUsedAt'] as String),
+      expiresAt: json['expiresAt'] == null
+          ? null
+          : DateTime.parse(json['expiresAt'] as String),
     );
 
 Map<String, dynamic> _$ApiKeyDtoToJson(ApiKeyDto instance) => <String, dynamic>{
@@ -24,6 +34,9 @@ Map<String, dynamic> _$ApiKeyDtoToJson(ApiKeyDto instance) => <String, dynamic>{
       'prefix': instance.prefix,
       'createdAt': instance.createdAt?.toIso8601String(),
       'revokedAt': instance.revokedAt?.toIso8601String(),
+      'scopes': instance.scopes,
+      'lastUsedAt': instance.lastUsedAt?.toIso8601String(),
+      'expiresAt': instance.expiresAt?.toIso8601String(),
     };
 
 AppleLoginDetails _$AppleLoginDetailsFromJson(Map<String, dynamic> json) =>
@@ -217,12 +230,21 @@ CreateApiKeyRequestDto _$CreateApiKeyRequestDtoFromJson(
         Map<String, dynamic> json) =>
     CreateApiKeyRequestDto(
       name: json['name'] as String?,
+      scopes: (json['scopes'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      expiresAt: json['expiresAt'] == null
+          ? null
+          : DateTime.parse(json['expiresAt'] as String),
     );
 
 Map<String, dynamic> _$CreateApiKeyRequestDtoToJson(
         CreateApiKeyRequestDto instance) =>
     <String, dynamic>{
       'name': instance.name,
+      'scopes': instance.scopes,
+      'expiresAt': instance.expiresAt?.toIso8601String(),
     };
 
 CreateApiKeyResponse _$CreateApiKeyResponseFromJson(

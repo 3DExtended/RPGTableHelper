@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:quest_keeper/models/fight_state.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
 import 'package:quest_keeper/services/sse/sse_parser.dart';
 
@@ -14,12 +15,19 @@ import 'package:quest_keeper/services/sse/sse_parser.dart';
 /// stream used by [ConfigSyncSessionController] and
 /// [JoinRequestNotificationController]. Callers should start this once the
 /// table session UI is active and stop it when leaving the session.
+///
+/// Fights kept on the server add `initiativeRequested`, `initiativeSettled`,
+/// `fightUpdated` and `fightEnded`.
 class SessionCommandNotificationController {
   SessionCommandNotificationController({
     required this.eventsClient,
     required this.onPlayersAreAskedForRolls,
     required this.onDmReceivedFightSequenceAnswer,
     required this.onItemsGranted,
+    this.onInitiativeRequested,
+    this.onInitiativeSettled,
+    this.onFightUpdated,
+    this.onFightEnded,
   });
 
   final EventsClient eventsClient;
@@ -28,6 +36,14 @@ class SessionCommandNotificationController {
   final void Function(FightSequenceNotification event)
       onDmReceivedFightSequenceAnswer;
   final void Function(ItemsGrantedNotification event) onItemsGranted;
+  final void Function(InitiativeRequest event)? onInitiativeRequested;
+  final void Function(InitiativeSettlement event)? onInitiativeSettled;
+
+  /// Called with the fight id.
+  final void Function(String fightId)? onFightUpdated;
+
+  /// Called with the fight id.
+  final void Function(String fightId)? onFightEnded;
 
   StreamSubscription<SseEvent>? _subscription;
 
@@ -60,6 +76,88 @@ class SessionCommandNotificationController {
           onItemsGranted(parsed);
         }
         break;
+      case 'initiativeRequested':
+        final parsed = _tryParseInitiativeRequest(event.data);
+        if (parsed != null) {
+          onInitiativeRequested?.call(parsed);
+        }
+        break;
+      case 'initiativeSettled':
+        final parsed = _tryParseInitiativeSettlement(event.data);
+        if (parsed != null) {
+          onInitiativeSettled?.call(parsed);
+        }
+        break;
+      case 'fightUpdated':
+        final fightId = _tryParseFightId(event.data);
+        if (fightId != null) {
+          onFightUpdated?.call(fightId);
+        }
+        break;
+      case 'fightEnded':
+        final fightId = _tryParseFightId(event.data);
+        if (fightId != null) {
+          onFightEnded?.call(fightId);
+        }
+        break;
+    }
+  }
+
+  InitiativeRequest? _tryParseInitiativeRequest(String data) {
+    try {
+      final json = jsonDecode(data) as Map<String, dynamic>;
+      final fightId = json['fightId'] as String?;
+      final campagneId = json['campagneId'] as String?;
+      final participantsRaw = json['participants'] as List<dynamic>?;
+      if (fightId == null || campagneId == null || participantsRaw == null) {
+        return null;
+      }
+      final participants = participantsRaw.map((raw) {
+        final p = raw as Map<String, dynamic>;
+        return FightParticipantState.fromJson({
+          ...p,
+          'id': p['participantId'],
+          'isPending': true,
+        });
+      }).toList();
+      return InitiativeRequest(
+        fightId: fightId,
+        campagneId: campagneId,
+        participants: participants,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  InitiativeSettlement? _tryParseInitiativeSettlement(String data) {
+    try {
+      final json = jsonDecode(data) as Map<String, dynamic>;
+      final fightId = json['fightId'] as String?;
+      final campagneId = json['campagneId'] as String?;
+      final participantsRaw = json['participants'] as List<dynamic>?;
+      if (fightId == null || campagneId == null || participantsRaw == null) {
+        return null;
+      }
+      return InitiativeSettlement(
+        fightId: fightId,
+        campagneId: campagneId,
+        characterUuids: participantsRaw
+            .map((raw) => (raw as Map<String, dynamic>)['characterUuid'])
+            .whereType<String>()
+            .toList(),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _tryParseFightId(String data) {
+    try {
+      final json = jsonDecode(data) as Map<String, dynamic>;
+      return json['fightId'] as String?;
+    } catch (_) {
+      return null;
     }
   }
 
@@ -79,7 +177,8 @@ class SessionCommandNotificationController {
           (entry['roll'] as num).toInt(),
         );
       }).toList();
-      return FightSequenceNotification(fightUuid: fightUuid, sequence: sequence);
+      return FightSequenceNotification(
+          fightUuid: fightUuid, sequence: sequence);
     } catch (_) {
       return null;
     }

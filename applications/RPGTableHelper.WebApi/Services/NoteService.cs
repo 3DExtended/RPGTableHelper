@@ -96,6 +96,11 @@ namespace RPGTableHelper.WebApi.Services
                 {
                     return Option.None;
                 }
+
+                // Like the document list: someone else's document only shows the blocks shared with the reader.
+                noteDocument.NoteBlocks = noteDocument
+                    .NoteBlocks.Where(b => b.PermittedUsers.Contains(userIdentifier))
+                    .ToList();
             }
 
             return noteDocument;

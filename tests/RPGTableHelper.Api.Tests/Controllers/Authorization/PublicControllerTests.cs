@@ -44,5 +44,12 @@ public class PublicControllerTests : ControllerTestBase
         // The character portrait upload feature must stay advertised; the
         // frontend gates the upload button on this exact identifier.
         content.Capabilities.Should().Contain("character-image-upload");
+
+        // The app only uses /Fight/* when this is advertised and keeps the old
+        // fight flow against older backends.
+        content.Capabilities.Should().Contain("persisted-fights");
+
+        // The app only offers permissions and expiry for new API keys when this is advertised.
+        content.Capabilities.Should().Contain("scoped-api-keys");
     }
 }

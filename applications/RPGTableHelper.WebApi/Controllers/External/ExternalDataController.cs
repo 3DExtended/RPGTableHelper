@@ -12,36 +12,33 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services;
+using RPGTableHelper.WebApi.Services.Auth;
 
-namespace RPGTableHelper.WebApi.Controllers
+namespace RPGTableHelper.WebApi.Controllers.External
 {
+    /// <summary>
+    /// Read access to the caller's characters and campaigns for the external player API.
+    /// </summary>
     [ApiController]
-    [Route("api/external")]
-    [Authorize(AuthenticationSchemes = "ApiKey")]
-    [ApiExplorerSettings(GroupName = "external")]
+    [Route(ExternalApiRoutes.V1)]
+    [Route(ExternalApiRoutes.Legacy)]
+    [Authorize(Policy = ApiKeyAuthorization.ExternalApiPolicy)]
+    [ApiExplorerSettings(GroupName = ExternalApiRoutes.SwaggerGroupName)]
     public class ExternalDataController : ControllerBase
     {
         private readonly IQueryProcessor _queryProcessor;
         private readonly IUserContext _userContext;
-        private readonly INoteService _noteService;
-        private readonly IMapper _mapper;
 
-        public ExternalDataController(
-            IQueryProcessor queryProcessor,
-            IUserContext userContext,
-            INoteService noteService,
-            IMapper mapper
-        )
+        public ExternalDataController(IQueryProcessor queryProcessor, IUserContext userContext)
         {
             _queryProcessor = queryProcessor;
             _userContext = userContext;
-            _noteService = noteService;
-            _mapper = mapper;
         }
 
         /// <summary>
         /// Retrieves all characters for the authenticated user (where they are the player).
         /// </summary>
+        [RequireScope(ApiKeyScopes.CharactersRead)]
         [HttpGet("characters")]
         public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetCharacters()
         {
@@ -62,6 +59,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves a specific character by ID, if the user is authorized to view it.
         /// </summary>
+        [RequireScope(ApiKeyScopes.CharactersRead)]
         [HttpGet("characters/{id}")]
         public async Task<ActionResult<PlayerCharacter>> GetCharacter(Guid id)
         {
@@ -93,6 +91,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves all campaigns accessible to the authenticated user (as DM or Player).
         /// </summary>
+        [RequireScope(ApiKeyScopes.CampaignsRead)]
         [HttpGet("campaigns")]
         public async Task<ActionResult<IEnumerable<Campagne>>> GetCampaigns()
         {
@@ -147,6 +146,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves a specific campaign by ID, if the user is authorized to view it (as DM or Player).
         /// </summary>
+        [RequireScope(ApiKeyScopes.CampaignsRead)]
         [HttpGet("campaigns/{id}")]
         public async Task<ActionResult<Campagne>> GetCampaign(Guid id)
         {
@@ -189,6 +189,7 @@ namespace RPGTableHelper.WebApi.Controllers
         /// <summary>
         /// Retrieves all characters assigned to a specific campaign, if the user is the DM of that campaign.
         /// </summary>
+        [RequireScope(ApiKeyScopes.CampaignsRead)]
         [HttpGet("campaigns/{id}/characters")]
         public async Task<ActionResult<IEnumerable<PlayerCharacter>>> GetCampaignCharacters(Guid id)
         {
@@ -224,44 +225,6 @@ namespace RPGTableHelper.WebApi.Controllers
             var characters = charactersOption.IsNone ? new List<PlayerCharacter>() : charactersOption.Get();
 
             return Ok(characters);
-        }
-
-        /// <summary>
-        /// Retrieves all note documents for a specific campaign, if the user is authorized.
-        /// </summary>
-        [HttpGet("campaigns/{id}/documents")]
-        public async Task<ActionResult<IEnumerable<NoteDocumentDto>>> GetDocuments(Guid id)
-        {
-            var userId = Guid.Parse(_userContext.User.IdentityProviderId);
-
-            var documents = await _noteService.GetNoteDocumentsForUserAsync(id, userId, HttpContext.RequestAborted);
-
-            if (documents.IsNone)
-            {
-                return NotFound();
-            }
-
-            var dtos = documents.Get().Select(_mapper.Map<NoteDocumentDto>);
-            return Ok(dtos);
-        }
-
-        /// <summary>
-        /// Retrieves a specific note document by ID, if the user is authorized.
-        /// </summary>
-        [HttpGet("documents/{id}")]
-        public async Task<ActionResult<NoteDocumentDto>> GetDocument(Guid id)
-        {
-            var userId = Guid.Parse(_userContext.User.IdentityProviderId);
-
-            var document = await _noteService.GetNoteDocumentByIdAsync(id, userId, HttpContext.RequestAborted);
-
-            if (document.IsNone)
-            {
-                return NotFound();
-            }
-
-            var dto = _mapper.Map<NoteDocumentDto>(document.Get());
-            return Ok(dto);
         }
     }
 }

@@ -20,21 +20,29 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(username) => " (for ${username})";
+  static String m0(date) => "Expires: ${date}";
 
-  static String m1(characterNames) =>
+  static String m1(date) => "Last used: ${date}";
+
+  static String m2(prefix) => "Prefix: ${prefix}";
+
+  static String m3(date) => "Revoked: ${date}";
+
+  static String m4(username) => " (for ${username})";
+
+  static String m5(characterNames) =>
       "Could not grant the items to ${characterNames}. Please try again.";
 
-  static String m2(label, formattedBonus) =>
+  static String m6(label, formattedBonus) =>
       "Add ${label} ${formattedBonus} to your roll";
 
-  static String m3(amount) => "You received ${amount} new items:";
+  static String m7(amount) => "You received ${amount} new items:";
 
-  static String m4(property) => "The value of ${property}";
+  static String m8(property) => "The value of ${property}";
 
-  static String m5(count) => "You own ${count} campaigns";
+  static String m9(count) => "You own ${count} campaigns";
 
-  static String m6(count) => "You own ${count} characters";
+  static String m10(count) => "You own ${count} characters";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -66,6 +74,103 @@ class MessageLookup extends MessageLookupByLibrary {
     "amount": MessageLookupByLibrary.simpleMessage("Amount"),
     "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Amount:"),
     "amountToCraftFieldLabel": MessageLookupByLibrary.simpleMessage("Amount"),
+    "apiKeyCopied": MessageLookupByLibrary.simpleMessage("Copied to clipboard"),
+    "apiKeyCopy": MessageLookupByLibrary.simpleMessage("Copy"),
+    "apiKeyCreateConfirm": MessageLookupByLibrary.simpleMessage("Generate"),
+    "apiKeyCreateFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not create the API key.",
+    ),
+    "apiKeyCreateHint": MessageLookupByLibrary.simpleMessage(
+      "Only give a key to apps you trust. They act as you.",
+    ),
+    "apiKeyCreateTitle": MessageLookupByLibrary.simpleMessage("New API key"),
+    "apiKeyCreatedBody": MessageLookupByLibrary.simpleMessage(
+      "Copy your new key now. You won\'t see it again.",
+    ),
+    "apiKeyCreatedTitle": MessageLookupByLibrary.simpleMessage(
+      "API key created",
+    ),
+    "apiKeyDone": MessageLookupByLibrary.simpleMessage("Done"),
+    "apiKeyExpired": MessageLookupByLibrary.simpleMessage("Expired"),
+    "apiKeyExpiresAt": m0,
+    "apiKeyExpiry1Year": MessageLookupByLibrary.simpleMessage("1 year"),
+    "apiKeyExpiry30Days": MessageLookupByLibrary.simpleMessage("30 days"),
+    "apiKeyExpiry90Days": MessageLookupByLibrary.simpleMessage("90 days"),
+    "apiKeyExpiryLabel": MessageLookupByLibrary.simpleMessage("Valid for"),
+    "apiKeyExpiryNever": MessageLookupByLibrary.simpleMessage("Unlimited"),
+    "apiKeyLastUsedAt": m1,
+    "apiKeyNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Name, e.g. the app that uses it",
+    ),
+    "apiKeyNameRequired": MessageLookupByLibrary.simpleMessage("Enter a name."),
+    "apiKeyNeverExpires": MessageLookupByLibrary.simpleMessage("Never expires"),
+    "apiKeyNeverUsed": MessageLookupByLibrary.simpleMessage("Never used"),
+    "apiKeyNoScopeSelected": MessageLookupByLibrary.simpleMessage(
+      "Choose at least one permission.",
+    ),
+    "apiKeyPermissionsLabel": MessageLookupByLibrary.simpleMessage(
+      "Permissions",
+    ),
+    "apiKeyPermissionsNeedServerUpdate": MessageLookupByLibrary.simpleMessage(
+      "This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.",
+    ),
+    "apiKeyPrefix": m2,
+    "apiKeyPresetCompanion": MessageLookupByLibrary.simpleMessage(
+      "Player companion app",
+    ),
+    "apiKeyPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "apiKeyPresetReadOnly": MessageLookupByLibrary.simpleMessage("Read only"),
+    "apiKeyRevokeBody": MessageLookupByLibrary.simpleMessage(
+      "This cannot be undone. Any app using this key loses access immediately.",
+    ),
+    "apiKeyRevokeConfirm": MessageLookupByLibrary.simpleMessage("Revoke"),
+    "apiKeyRevokeFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not revoke the API key.",
+    ),
+    "apiKeyRevokeTitle": MessageLookupByLibrary.simpleMessage(
+      "Revoke API key?",
+    ),
+    "apiKeyRevoked": MessageLookupByLibrary.simpleMessage("Revoked"),
+    "apiKeyRevokedAt": m3,
+    "apiKeyScopeCampaignsRead": MessageLookupByLibrary.simpleMessage(
+      "See your campaigns and fellow players",
+    ),
+    "apiKeyScopeCharactersRead": MessageLookupByLibrary.simpleMessage(
+      "Read your character sheets",
+    ),
+    "apiKeyScopeCharactersWrite": MessageLookupByLibrary.simpleMessage(
+      "Change your character sheets, e.g. hit points",
+    ),
+    "apiKeyScopeEvents": MessageLookupByLibrary.simpleMessage(
+      "Receive live updates",
+    ),
+    "apiKeyScopeFightsPlay": MessageLookupByLibrary.simpleMessage(
+      "Roll initiative when the DM starts a fight",
+    ),
+    "apiKeyScopeNotesRead": MessageLookupByLibrary.simpleMessage(
+      "Read the notes you can see",
+    ),
+    "apiKeyScopeNotesWrite": MessageLookupByLibrary.simpleMessage(
+      "Write your own notes and choose who sees them",
+    ),
+    "apiKeyUnnamed": MessageLookupByLibrary.simpleMessage("Unnamed key"),
+    "apiKeysDocsDescription": MessageLookupByLibrary.simpleMessage(
+      "API keys let another app, such as a companion app someone in your group built, act for you as a player. Each key can only do what you allow it.",
+    ),
+    "apiKeysDocsTitle": MessageLookupByLibrary.simpleMessage(
+      "API documentation",
+    ),
+    "apiKeysEmpty": MessageLookupByLibrary.simpleMessage("No API keys yet."),
+    "apiKeysGenerate": MessageLookupByLibrary.simpleMessage(
+      "Generate new API key",
+    ),
+    "apiKeysLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not load your API keys.",
+    ),
+    "apiKeysTitle": MessageLookupByLibrary.simpleMessage("API Keys"),
+    "apiKeysViewDocs": MessageLookupByLibrary.simpleMessage(
+      "View API documentation",
+    ),
     "assignCharacterToCampagneModalContent":
         MessageLookupByLibrary.simpleMessage(
           "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
@@ -152,7 +257,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "configureProperties": MessageLookupByLibrary.simpleMessage(
       "Configure properties",
     ),
-    "configurePropertiesForCharacterNameSuffix": m0,
+    "configurePropertiesForCharacterNameSuffix": m4,
     "count": MessageLookupByLibrary.simpleMessage("Count"),
     "craft": MessageLookupByLibrary.simpleMessage("Craft"),
     "craftableAmountText": MessageLookupByLibrary.simpleMessage("Craftable:"),
@@ -194,6 +299,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "editPageTitle": MessageLookupByLibrary.simpleMessage("Edit document"),
     "email": MessageLookupByLibrary.simpleMessage("E-Mail"),
+    "endFight": MessageLookupByLibrary.simpleMessage("End fight"),
+    "endFightConfirmation": MessageLookupByLibrary.simpleMessage(
+      "End the fight? Whoever has not rolled yet will not be asked any more.",
+    ),
     "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
     "enemyName": MessageLookupByLibrary.simpleMessage("Enemy name"),
     "enterANameDefaultLabel": MessageLookupByLibrary.simpleMessage(
@@ -241,7 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technical details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Grant items"),
-    "grantItemsFailedForPlayers": m1,
+    "grantItemsFailedForPlayers": m5,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "The name of the campaign",
     ),
@@ -255,7 +364,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Field",
     ),
-    "initiativeBonusHelperSentence": m2,
+    "initiativeBonusHelperSentence": m6,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Leave anyway",
     ),
@@ -397,6 +506,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "no": MessageLookupByLibrary.simpleMessage("No"),
+    "noCharactersInCampagne": MessageLookupByLibrary.simpleMessage(
+      "No characters in this campaign yet",
+    ),
     "noFIghtStarted": MessageLookupByLibrary.simpleMessage(
       "No fight started yet",
     ),
@@ -431,6 +543,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noPlayersOnline": MessageLookupByLibrary.simpleMessage(
       "Currently no players are online",
     ),
+    "notAtTheTable": MessageLookupByLibrary.simpleMessage("not at the table"),
     "notCraftableRecipeFilter": MessageLookupByLibrary.simpleMessage(
       "Not craftable",
     ),
@@ -499,7 +612,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "You received one new item:",
     ),
-    "receivedXNewItems": m3,
+    "receivedXNewItems": m7,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Recipe for"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Ingredients:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -568,7 +681,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage("Upload image"),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "valueOfPropertyWithName": m4,
+    "valueOfPropertyWithName": m8,
+    "waitingForInitiative": MessageLookupByLibrary.simpleMessage(
+      "Waiting for initiative",
+    ),
     "warning": MessageLookupByLibrary.simpleMessage("Warning"),
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "you": MessageLookupByLibrary.simpleMessage("You"),
@@ -580,8 +696,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
         ),
-    "youOwnXCampaigns": m5,
-    "youOwnXCharacters": m6,
+    "youOwnXCampaigns": m9,
+    "youOwnXCharacters": m10,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Your are disconnected... Either you or the DM has lost the connection.",
     ),

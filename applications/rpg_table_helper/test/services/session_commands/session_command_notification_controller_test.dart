@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:quest_keeper/models/fight_state.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
 
@@ -46,12 +47,12 @@ void main() {
         utf8.encode(
           'event: playersAreAskedForRolls\n'
           'data: ${jsonEncode({
-            'fightUuid': 'fight-1',
-            'sequence': [
-              {'characterId': 'pc-1', 'characterName': 'Frodo', 'roll': 12},
-              {'characterId': null, 'characterName': 'Goblin', 'roll': 4},
-            ],
-          })}\n\n',
+                'fightUuid': 'fight-1',
+                'sequence': [
+                  {'characterId': 'pc-1', 'characterName': 'Frodo', 'roll': 12},
+                  {'characterId': null, 'characterName': 'Goblin', 'roll': 4},
+                ],
+              })}\n\n',
         ),
       );
       await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -86,11 +87,11 @@ void main() {
         utf8.encode(
           'event: dmReceivedFightSequenceAnswer\n'
           'data: ${jsonEncode({
-            'fightUuid': 'fight-1',
-            'sequence': [
-              {'characterId': 'pc-1', 'characterName': 'Frodo', 'roll': 9},
-            ],
-          })}\n\n',
+                'fightUuid': 'fight-1',
+                'sequence': [
+                  {'characterId': 'pc-1', 'characterName': 'Frodo', 'roll': 9},
+                ],
+              })}\n\n',
         ),
       );
       await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -119,12 +120,12 @@ void main() {
         utf8.encode(
           'event: itemsGranted\n'
           'data: ${jsonEncode({
-            'playerCharacterId': 'pc-1',
-            'items': [
-              {'itemUuid': 'item-1', 'amount': 3},
-              {'itemUuid': 'item-2', 'amount': -1},
-            ],
-          })}\n\n',
+                'playerCharacterId': 'pc-1',
+                'items': [
+                  {'itemUuid': 'item-1', 'amount': 3},
+                  {'itemUuid': 'item-2', 'amount': -1},
+                ],
+              })}\n\n',
         ),
       );
       await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -163,6 +164,87 @@ void main() {
       expect(askedCalls, 0);
       expect(answerCalls, 0);
       expect(grantedCalls, 0);
+
+      await sut.stop();
+    });
+    test('fight events of stored fights reach their callbacks', () async {
+      InitiativeRequest? requested;
+      InitiativeSettlement? settled;
+      final updated = <String>[];
+      final ended = <String>[];
+      final sut = SessionCommandNotificationController(
+        eventsClient: eventsClient,
+        onPlayersAreAskedForRolls: (_) {},
+        onDmReceivedFightSequenceAnswer: (_) {},
+        onItemsGranted: (_) {},
+        onInitiativeRequested: (event) => requested = event,
+        onInitiativeSettled: (event) => settled = event,
+        onFightUpdated: updated.add,
+        onFightEnded: ended.add,
+      );
+      await eventsClient.start();
+      sut.start();
+
+      sseBody.add(
+        utf8.encode(
+          'event: initiativeRequested\n'
+          'data: ${jsonEncode({
+                'fightId': 'fight-1',
+                'campagneId': 'camp-1',
+                'participants': [
+                  {
+                    'participantId': 'p-1',
+                    'characterUuid': 'aria',
+                    'playerCharacterId': 'pc-1',
+                    'name': 'Aria',
+                    'kind': 'Character',
+                  },
+                  {
+                    'participantId': 'p-2',
+                    'characterUuid': 'fang',
+                    'playerCharacterId': 'pc-1',
+                    'name': 'Fang',
+                    'kind': 'Companion',
+                  },
+                ],
+              })}\n\n'
+          'event: initiativeSettled\n'
+          'data: ${jsonEncode({
+                'fightId': 'fight-1',
+                'campagneId': 'camp-1',
+                'participants': [
+                  {'participantId': 'p-1', 'characterUuid': 'aria', 'roll': 15},
+                  {
+                    'participantId': 'p-2',
+                    'characterUuid': 'fang',
+                    'roll': null
+                  },
+                ],
+              })}\n\n'
+          'event: fightUpdated\n'
+          'data: {"fightId":"fight-1","campagneId":"camp-1","revision":3}\n\n'
+          'event: fightEnded\n'
+          'data: {"fightId":"fight-1","campagneId":"camp-1","reason":"EndedByDm"}\n\n'
+          'event: fightEnded\n'
+          'data: not json\n\n',
+        ),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(requested, isNotNull);
+      expect(requested!.fightId, 'fight-1');
+      expect(requested!.campagneId, 'camp-1');
+      expect(requested!.participants.map((p) => (p.id, p.name, p.kind)), [
+        ('p-1', 'Aria', FightParticipantKind.character),
+        ('p-2', 'Fang', FightParticipantKind.companion),
+      ]);
+      expect(requested!.participants.every((p) => p.isPending), isTrue);
+      expect(settled, isNotNull);
+      expect(settled!.fightId, 'fight-1');
+      expect(settled!.campagneId, 'camp-1');
+      expect(settled!.characterUuids, ['aria', 'fang']);
+      expect(updated, ['fight-1']);
+      expect(ended, ['fight-1']);
 
       await sut.stop();
     });

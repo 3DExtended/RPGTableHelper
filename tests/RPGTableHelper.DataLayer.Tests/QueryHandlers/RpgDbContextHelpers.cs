@@ -19,7 +19,8 @@ public static class RpgDbContextHelpers
         IDbContextFactory<RpgDbContext> contextFactory,
         IMapper mapper,
         User dmOfCampagne,
-        CancellationToken cancellationToken = default
+        CancellationToken cancellationToken = default,
+        string joinCode = "123-321"
     )
     {
         var campagne = new Campagne
@@ -28,7 +29,7 @@ public static class RpgDbContextHelpers
             LastModifiedAt = new DateTimeOffset(2024, 10, 10, 10, 10, 10, TimeSpan.Zero),
             CampagneName = "asdf",
             DmUserId = dmOfCampagne.Id,
-            JoinCode = "123-321",
+            JoinCode = joinCode,
             RpgConfiguration = string.Empty,
         };
 

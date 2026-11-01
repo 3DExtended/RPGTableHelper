@@ -57,6 +57,8 @@ public class SessionCommandSseNotificationControllerTests : ControllerTestBase
 
         using var playerReader = await OpenEventsStreamAsync(playerClient);
 
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+
         (await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
         (await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -139,6 +141,8 @@ public class SessionCommandSseNotificationControllerTests : ControllerTestBase
         );
 
         using var dmReader = await OpenEventsStreamAsync(Client);
+
+        using var playerLiveEvents = await KeepEventsStreamOpenAsync(playerClient);
 
         (await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
         (await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
@@ -253,6 +257,8 @@ public class SessionCommandSseNotificationControllerTests : ControllerTestBase
         using var playerReader = await OpenEventsStreamAsync(playerClient);
 
         // player enters first so the dm's later entry broadcasts participantOnline to them.
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+
         (await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
         (await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null)).StatusCode.Should().Be(HttpStatusCode.OK);
 

@@ -50,7 +50,8 @@ abstract class Swagger extends ChopperService {
     return _$Swagger(newClient);
   }
 
-  ///Creates a new API key.
+  ///Creates a new API key with the given scopes. Only callable with a normal login (JWT): an API key can
+  ///never create, list or revoke keys.
   Future<chopper.Response<CreateApiKeyResponse>> apiApiKeysPost({
     required CreateApiKeyRequestDto? body,
   }) {
@@ -62,7 +63,8 @@ abstract class Swagger extends ChopperService {
     return _apiApiKeysPost(body: body);
   }
 
-  ///Creates a new API key.
+  ///Creates a new API key with the given scopes. Only callable with a normal login (JWT): an API key can
+  ///never create, list or revoke keys.
   @POST(path: '/api/ApiKeys', optionalBody: true)
   Future<chopper.Response<CreateApiKeyResponse>> _apiApiKeysPost({
     @Body() required CreateApiKeyRequestDto? body,

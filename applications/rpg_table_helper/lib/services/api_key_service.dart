@@ -1,10 +1,15 @@
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/models/api_key_scopes.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 
 abstract class IApiKeyService {
   Future<HRResponse<List<ApiKeyDto>>> getApiKeys();
-  Future<HRResponse<CreateApiKeyResponse>> createApiKey(String name);
+  Future<HRResponse<CreateApiKeyResponse>> createApiKey(
+    String name, {
+    required List<String> scopes,
+    DateTime? expiresAt,
+  });
   Future<HRResponse<bool>> revokeApiKey(String id);
 }
 
@@ -30,7 +35,11 @@ class ApiKeyService implements IApiKeyService {
   }
 
   @override
-  Future<HRResponse<CreateApiKeyResponse>> createApiKey(String name) async {
+  Future<HRResponse<CreateApiKeyResponse>> createApiKey(
+    String name, {
+    required List<String> scopes,
+    DateTime? expiresAt,
+  }) async {
     var api = await _apiConnectorService.getApiConnector(requiresJwt: true);
     if (api == null) {
       return HRResponse.error<CreateApiKeyResponse>(
@@ -40,7 +49,11 @@ class ApiKeyService implements IApiKeyService {
 
     var apiKeysResult = await HRResponse.fromApiFuture(
         api.apiApiKeysPost(
-          body: CreateApiKeyRequestDto(name: name),
+          body: CreateApiKeyRequestDto(
+            name: name,
+            scopes: scopes,
+            expiresAt: expiresAt?.toUtc(),
+          ),
         ),
         'Could not create apikey for player.',
         '14ff958c-3671-4585-8d80-0966f59a9b61');
@@ -75,14 +88,20 @@ class MockApiKeyService implements IApiKeyService {
   MockApiKeyService();
 
   @override
-  Future<HRResponse<CreateApiKeyResponse>> createApiKey(String name) async {
+  Future<HRResponse<CreateApiKeyResponse>> createApiKey(
+    String name, {
+    required List<String> scopes,
+    DateTime? expiresAt,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return HRResponse.fromResult(CreateApiKeyResponse(
         apiKey: ApiKeyDto(
             id: "mock-id",
             name: name,
             prefix: "sk-mock",
-            createdAt: DateTime.now()),
+            createdAt: DateTime.now(),
+            scopes: scopes,
+            expiresAt: expiresAt),
         plainKey: "sk-mock-123456789"));
   }
 
@@ -94,12 +113,15 @@ class MockApiKeyService implements IApiKeyService {
           id: "1",
           name: "Test Key 1",
           prefix: "sk-test",
-          createdAt: DateTime.now()),
+          createdAt: DateTime.now(),
+          scopes: ApiKeyScopes.companionApp,
+          lastUsedAt: DateTime.now().subtract(const Duration(minutes: 5))),
       ApiKeyDto(
           id: "2",
           name: "Revoked Key",
           prefix: "sk-revo",
           createdAt: DateTime.now().subtract(const Duration(days: 1)),
+          scopes: ApiKeyScopes.readOnly,
           revokedAt: DateTime.now()),
     ]);
   }

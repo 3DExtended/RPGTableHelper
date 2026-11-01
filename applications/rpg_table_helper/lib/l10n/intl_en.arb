@@ -267,5 +267,91 @@
   "characterSheetSkinNightCartographer": "Night Cartographer",
   "characterSheetSkinUseCampaignDefault": "Use campaign default",
   "characterSheetSkinCampaignDefaultLabel": "Campaign default",
-  "characterSheetAppearanceTitle": "Appearance"
+  "characterSheetAppearanceTitle": "Appearance",
+  "apiKeysTitle": "API Keys",
+  "apiKeysDocsTitle": "API documentation",
+  "apiKeysDocsDescription": "API keys let another app, such as a companion app someone in your group built, act for you as a player. Each key can only do what you allow it.",
+  "apiKeysViewDocs": "View API documentation",
+  "apiKeysGenerate": "Generate new API key",
+  "apiKeysEmpty": "No API keys yet.",
+  "apiKeysLoadFailed": "Could not load your API keys.",
+  "apiKeyUnnamed": "Unnamed key",
+  "apiKeyRevoked": "Revoked",
+  "apiKeyExpired": "Expired",
+  "apiKeyPrefix": "Prefix: {prefix}",
+  "@apiKeyPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String",
+        "example": "sk-AbC1"
+      }
+    }
+  },
+  "apiKeyRevokedAt": "Revoked: {date}",
+  "@apiKeyRevokedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12.10.2026 18:30"
+      }
+    }
+  },
+  "apiKeyLastUsedAt": "Last used: {date}",
+  "@apiKeyLastUsedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12.10.2026 18:30"
+      }
+    }
+  },
+  "apiKeyNeverUsed": "Never used",
+  "apiKeyExpiresAt": "Expires: {date}",
+  "@apiKeyExpiresAt": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "12.10.2026 18:30"
+      }
+    }
+  },
+  "apiKeyNeverExpires": "Never expires",
+  "apiKeyRevokeTitle": "Revoke API key?",
+  "apiKeyRevokeBody": "This cannot be undone. Any app using this key loses access immediately.",
+  "apiKeyRevokeConfirm": "Revoke",
+  "apiKeyRevokeFailed": "Could not revoke the API key.",
+  "apiKeyCreateTitle": "New API key",
+  "apiKeyCreateHint": "Only give a key to apps you trust. They act as you.",
+  "apiKeyNameLabel": "Name, e.g. the app that uses it",
+  "apiKeyPermissionsLabel": "Permissions",
+  "apiKeyPresetReadOnly": "Read only",
+  "apiKeyPresetCompanion": "Player companion app",
+  "apiKeyPresetCustom": "Custom",
+  "apiKeyScopeCampaignsRead": "See your campaigns and fellow players",
+  "apiKeyScopeCharactersRead": "Read your character sheets",
+  "apiKeyScopeCharactersWrite": "Change your character sheets, e.g. hit points",
+  "apiKeyScopeNotesRead": "Read the notes you can see",
+  "apiKeyScopeNotesWrite": "Write your own notes and choose who sees them",
+  "apiKeyScopeFightsPlay": "Roll initiative when the DM starts a fight",
+  "apiKeyScopeEvents": "Receive live updates",
+  "apiKeyExpiryLabel": "Valid for",
+  "apiKeyPermissionsNeedServerUpdate": "This server gives every key read access to your campaigns, characters and notes. You can choose permissions and a lifetime once the server is updated.",
+  "apiKeyExpiryNever": "Unlimited",
+  "apiKeyExpiry30Days": "30 days",
+  "apiKeyExpiry90Days": "90 days",
+  "apiKeyExpiry1Year": "1 year",
+  "apiKeyCreateConfirm": "Generate",
+  "apiKeyNameRequired": "Enter a name.",
+  "apiKeyNoScopeSelected": "Choose at least one permission.",
+  "apiKeyCreateFailed": "Could not create the API key.",
+  "apiKeyCreatedTitle": "API key created",
+  "apiKeyCreatedBody": "Copy your new key now. You won't see it again.",
+  "apiKeyCopy": "Copy",
+  "apiKeyCopied": "Copied to clipboard",
+  "apiKeyDone": "Done",
+  "endFight": "End fight",
+  "endFightConfirmation": "End the fight? Whoever has not rolled yet will not be asked any more.",
+  "waitingForInitiative": "Waiting for initiative",
+  "notAtTheTable": "not at the table",
+  "noCharactersInCampagne": "No characters in this campaign yet"
 }

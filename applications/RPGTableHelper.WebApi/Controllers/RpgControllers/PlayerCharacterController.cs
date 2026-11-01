@@ -10,6 +10,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
+using RPGTableHelper.WebApi.Services.Characters;
 using RPGTableHelper.WebApi.Services.ConfigRevisions;
 using RPGTableHelper.WebApi.Services.Presence;
 using RPGTableHelper.WebApi.Services.Sse;
@@ -28,6 +29,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         private readonly ILogger<PlayerCharacterController> _logger;
         private readonly ISseEventHub _sseEventHub;
         private readonly ISessionPresenceService _sessionPresenceService;
+        private readonly ICharacterSheetWriter _characterSheetWriter;
 
         public PlayerCharacterController(
             IUserContext userContext,
@@ -36,7 +38,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             IHostEnvironment hostEnvironment,
             ILogger<PlayerCharacterController> logger,
             ISseEventHub sseEventHub,
-            ISessionPresenceService sessionPresenceService
+            ISessionPresenceService sessionPresenceService,
+            ICharacterSheetWriter characterSheetWriter
         )
         {
             _userContext = userContext;
@@ -46,6 +49,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             _logger = logger;
             _sseEventHub = sseEventHub;
             _sessionPresenceService = sessionPresenceService;
+            _characterSheetWriter = characterSheetWriter;
         }
 
         /// <summary>
@@ -284,63 +288,25 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("No valid playercharacterid passed");
             }
 
-            var playerCharacter = await new PlayerCharacterQuery
-            {
-                ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(playerCharacterIdParsed),
-            }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
-            {
-                return Unauthorized();
-            }
-
-            var updated = playerCharacter.Get();
-            var currentRevision = updated.RpgCharacterConfigurationRevision;
-
-            if (patchDto.FromRevision != currentRevision)
-            {
-                return Conflict($"Stale fromRevision. Current revision is {currentRevision}.");
-            }
-
-            if (!ConfigDocumentPatcher.TryApply(updated.RpgCharacterConfiguration, patchDto.Patch, out var resultJson, out var error))
-            {
-                return BadRequest($"Could not apply patch: {error}");
-            }
-
-            var newRevision = currentRevision + 1;
-            updated.RpgCharacterConfiguration = resultJson;
-            updated.RpgCharacterConfigurationRevision = newRevision;
-
-            var updateResult = await new PlayerCharacterUpdateQuery { UpdatedModel = updated }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (updateResult.IsNone)
-            {
-                return BadRequest("Could not update player character configuration");
-            }
-
-            await _configRevisionHistoryStore
-                .RecordPlayerCharacterSnapshotAsync(playerCharacterIdParsed, newRevision, resultJson, cancellationToken)
-                .ConfigureAwait(false);
-
-            var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmm");
-            await ConfigFileBackupWriter
-                .WriteBackupAsync(
-                    _hostEnvironment,
-                    _logger,
-                    $"{updated.CharacterName}-{playerCharacterIdParsed}-{timestamp}-rpgbackup.json",
-                    resultJson,
+            var result = await _characterSheetWriter
+                .PatchAsync(
+                    playerCharacterIdParsed,
+                    _userContext.User.UserIdentifier.Value,
+                    patchDto.FromRevision,
+                    patchDto.Patch,
+                    validate: false,
+                    source: null,
                     cancellationToken
                 )
                 .ConfigureAwait(false);
 
-            await NotifyCharacterConfigChangedAsync(playerCharacterIdParsed, updated.CampagneId, newRevision, cancellationToken)
-                .ConfigureAwait(false);
-
-            return Ok(new ConfigWriteResultDto { Revision = newRevision });
+            return result.Status switch
+            {
+                CharacterSheetWriteStatus.Saved => Ok(new ConfigWriteResultDto { Revision = result.Revision }),
+                CharacterSheetWriteStatus.NotFound => Unauthorized(),
+                CharacterSheetWriteStatus.Conflict => Conflict(result.Message),
+                _ => BadRequest(result.Message),
+            };
         }
 
         /// <summary>
@@ -573,8 +539,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
         /// <summary>
         /// Emits a session-scoped <c>characterConfigChanged</c> SSE notify (<c>{ id, revision }</c> only, no body)
-        /// to the other users currently in the owning campagne's table session. No-op if the character is not
-        /// assigned to a campagne, or no other session participants are online.
+        /// to the users currently in the owning campagne's table session, the writer included so their other
+        /// apps (API keys) see the change; this app already has the revision and ignores the notify. No-op if the
+        /// character is not assigned to a campagne, or nobody is online.
         /// </summary>
         private Task NotifyCharacterConfigChangedAsync(
             Guid playerCharacterId,
@@ -588,11 +555,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Task.CompletedTask;
             }
 
-            var actorUserId = _userContext.User.UserIdentifier.Value;
-            var recipients = _sessionPresenceService
-                .GetOnlineParticipants(campagneId.Value)
-                .Where(id => id != actorUserId)
-                .ToList();
+            var recipients = _sessionPresenceService.GetOnlineParticipants(campagneId.Value).ToList();
 
             if (recipients.Count == 0)
             {

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Queries.ApiKeys;
+using RPGTableHelper.Shared.Auth;
 
 namespace RPGTableHelper.WebApi.Services.Auth
 {
@@ -45,7 +46,8 @@ namespace RPGTableHelper.WebApi.Services.Auth
                 return AuthenticateResult.Fail("Invalid API Key provided.");
             }
 
-            var user = userOption.Get();
+            var verifiedKey = userOption.Get();
+            var user = verifiedKey.User;
 
             string idValue = user.Id.Value.ToString();
             string nameValue = user.Username ?? idValue;
@@ -54,8 +56,12 @@ namespace RPGTableHelper.WebApi.Services.Auth
             {
                 new Claim(ClaimTypes.NameIdentifier, nameValue),
                 new Claim("identityproviderid", idValue),
-                new Claim(ClaimTypes.Name, nameValue)
+                new Claim(ClaimTypes.Name, nameValue),
+                new Claim(ApiKeyClaimTypes.ApiKeyId, verifiedKey.ApiKeyId.ToString()),
+                new Claim(ApiKeyClaimTypes.ApiKeyPrefix, verifiedKey.Prefix),
             };
+
+            claims.AddRange(verifiedKey.Scopes.Select(scope => new Claim(ApiKeyClaimTypes.Scope, scope)));
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);

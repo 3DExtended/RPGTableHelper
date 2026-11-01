@@ -14,6 +14,7 @@ using Prodot.Patterns.Cqrs;
 
 using RPGTableHelper.BusinessLayer.Encryption.Contracts.Options;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
+using RPGTableHelper.DataLayer.Contracts.Queries.ApiKeys;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.SendGrid.Options;
 using RPGTableHelper.DataLayer.Tests.QueryHandlers;
@@ -97,6 +98,24 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Opens <c>/events</c> for <paramref name="client"/> and keeps it open until the reader is disposed. Session
+    /// presence only counts users with a live event stream, like the real app has, so a test client that enters
+    /// a session needs one.
+    /// </summary>
+    protected static async Task<StreamReader> KeepEventsStreamOpenAsync(HttpClient client)
+    {
+        var response = await client.GetAsync("/events", HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+        var reader = new StreamReader(await response.Content.ReadAsStreamAsync(), System.Text.Encoding.UTF8);
+
+        // drain hello
+        await reader.ReadLineAsync();
+        await reader.ReadLineAsync();
+        await reader.ReadLineAsync();
+        return reader;
+    }
+
     protected async Task<User> ConfigureLoggedInUser()
     {
         // arrange
@@ -129,6 +148,30 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
     /// </summary>
     protected string CreateJwtForUser(User user) =>
         JwtTokenGenerator.GetJWTToken(user.Username, user.Id.Value.ToString())!;
+
+    /// <summary>
+    /// Creates an API key for <paramref name="user"/> with <paramref name="scopes"/> and returns a fresh client
+    /// that sends it in the <c>X-Api-Key</c> header.
+    /// </summary>
+    protected async Task<HttpClient> CreateApiKeyClientAsync(User user, params string[] scopes)
+    {
+        var plainKey = await CreateApiKeyAsync(user, scopes);
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Add("X-Api-Key", plainKey);
+        return client;
+    }
+
+    protected async Task<string> CreateApiKeyAsync(User user, params string[] scopes)
+    {
+        var created = await new CreateApiKeyQuery
+        {
+            UserId = user.Id,
+            Name = "test key",
+            Scopes = scopes,
+        }.RunAsync(QueryProcessor, CancellationToken.None);
+
+        return created.Get().PlainKey;
+    }
 
     protected virtual void Dispose(bool disposing)
     {

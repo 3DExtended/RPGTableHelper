@@ -2,11 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/models/api_key_scopes.dart';
+import 'package:quest_keeper/screens/settings/create_api_key_dialog.dart';
 import 'package:quest_keeper/services/api_key_service.dart';
+import 'package:quest_keeper/services/backend_capabilities_service.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,14 +36,15 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
   }
 
   Future<void> _loadKeys() async {
+    var l10n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
     try {
       var service = DependencyProvider.of(context).getService<IApiKeyService>();
       var keys = await service.getApiKeys();
 
-      if (!context.mounted) return;
+      if (!mounted) return;
       await keys.possiblyHandleError(context);
-      if (!context.mounted) return;
+      if (!mounted) return;
 
       if (mounted) {
         if (!keys.isSuccessful) {
@@ -55,13 +61,14 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
       if (mounted) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load keys: $e')),
+          SnackBar(content: Text(l10n.apiKeysLoadFailed)),
         );
       }
     }
   }
 
   Future<void> _revokeKey(String id) async {
+    var l10n = AppLocalizations.of(context)!;
     var confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -74,14 +81,14 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
           ),
         ),
         title: Text(
-          'Revoke API Key?',
+          l10n.apiKeyRevokeTitle,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontWeight: FontWeight.bold,
               ),
         ),
         content: Text(
-          'This action cannot be undone. Any application using this key will lose access immediately.',
+          l10n.apiKeyRevokeBody,
           style: TextStyle(
             color: CustomThemeProvider.of(context).theme.darkTextColor,
           ),
@@ -90,7 +97,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text(
-              'Cancel',
+              l10n.cancel,
               style: TextStyle(
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
               ),
@@ -102,9 +109,9 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
             color: Colors.red,
             borderRadius: BorderRadius.circular(5),
             minimumSize: Size(0, 0),
-            child: const Text(
-              'Revoke',
-              style: TextStyle(
+            child: Text(
+              l10n.apiKeyRevokeConfirm,
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),
@@ -123,7 +130,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to revoke key: $e')),
+            SnackBar(content: Text(l10n.apiKeyRevokeFailed)),
           );
         }
       }
@@ -131,109 +138,43 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
   }
 
   Future<void> _generateKey() async {
-    TextEditingController nameController = TextEditingController();
-
-    var name = await showDialog<String>(
-      context: context,
-      builder: (context) => Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
-          child: AlertDialog(
-            backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: CustomThemeProvider.of(context).theme.darkColor,
-                width: 1,
-              ),
-            ),
-            title: Text(
-              'Generate New API Key',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: CustomThemeProvider.of(context).theme.darkTextColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            content: TextField(
-              controller: nameController,
-              autofocus: true,
-              style: TextStyle(
-                color: CustomThemeProvider.of(context).theme.darkTextColor,
-              ),
-              decoration: InputDecoration(
-                labelText: 'Key Name',
-                labelStyle: TextStyle(
-                  color: CustomThemeProvider.of(context).theme.darkTextColor,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: CustomThemeProvider.of(context).theme.darkColor,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: CustomThemeProvider.of(context).theme.darkColor,
-                    width: 2,
-                  ),
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: CustomThemeProvider.of(context).theme.darkTextColor,
-                  ),
-                ),
-              ),
-              CupertinoButton(
-                onPressed: () => Navigator.pop(context, nameController.text),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                color: CustomThemeProvider.of(context).theme.darkColor,
-                borderRadius: BorderRadius.circular(5),
-                minimumSize: Size(0, 0),
-                child: Text(
-                  'Generate',
-                  style: TextStyle(
-                    color: CustomThemeProvider.of(context).theme.textColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    var l10n = AppLocalizations.of(context)!;
+    var capabilities = await DependencyProvider.of(context)
+        .getService<IBackendCapabilitiesService>()
+        .ensureCapabilitiesLoaded();
+    if (!mounted) return;
+    var choice = await CreateApiKeyDialog.show(
+      context,
+      canChoosePermissions:
+          capabilities.contains(BackendCapability.scopedApiKeys),
     );
+    if (choice == null || !mounted) return;
 
-    if (name != null && name.isNotEmpty) {
+    try {
+      var service = DependencyProvider.of(context).getService<IApiKeyService>();
+      var response = await service.createApiKey(
+        choice.name,
+        scopes: choice.scopes,
+        expiresAt: choice.lifetime.expiresAtFrom(DateTime.now()),
+      );
+
       if (!mounted) return;
-      try {
-        var service =
-            DependencyProvider.of(context).getService<IApiKeyService>();
-        var response = await service.createApiKey(name);
+      await response.possiblyHandleError(context);
+      if (!mounted || !response.isSuccessful) return;
 
-        if (!context.mounted) return;
-        await response.possiblyHandleError(context);
-        if (!context.mounted) return;
-
-        if (mounted) {
-          _showKeyDialog(response.result!);
-          _loadKeys();
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to create key: $e')),
-          );
-        }
+      _showKeyDialog(response.result!);
+      _loadKeys();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.apiKeyCreateFailed)),
+        );
       }
     }
   }
 
   void _showKeyDialog(CreateApiKeyResponse response) {
+    var l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -247,7 +188,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
           ),
         ),
         title: Text(
-          'API Key Generated',
+          l10n.apiKeyCreatedTitle,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontWeight: FontWeight.bold,
@@ -258,7 +199,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Please copy your new API key now. You won\'t be able to see it again!',
+              l10n.apiKeyCreatedBody,
               style: TextStyle(
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
               ),
@@ -291,7 +232,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Copied to clipboard',
+                    l10n.apiKeyCopied,
                     style: TextStyle(
                       color: CustomThemeProvider.of(context).theme.textColor,
                     ),
@@ -306,7 +247,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
               color: CustomThemeProvider.of(context).theme.darkTextColor,
             ),
             label: Text(
-              'Copy',
+              l10n.apiKeyCopy,
               style: TextStyle(
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
               ),
@@ -319,7 +260,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
             borderRadius: BorderRadius.circular(5),
             minimumSize: Size(0, 0),
             child: Text(
-              'Done',
+              l10n.apiKeyDone,
               style: TextStyle(
                 color: CustomThemeProvider.of(context).theme.textColor,
               ),
@@ -330,8 +271,83 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
     );
   }
 
+  String _formatDate(BuildContext context, DateTime date) =>
+      DateFormat.yMd(Localizations.localeOf(context).toString())
+          .add_Hm()
+          .format(date.toLocal());
+
+  Widget _statusBadge(String label, Color color) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+
+  /// Prefix, permissions, last use and expiry of [key].
+  List<Widget> _buildKeyDetails(BuildContext context, ApiKeyDto key) {
+    var l10n = AppLocalizations.of(context)!;
+    var textColor = CustomThemeProvider.of(context).theme.darkTextColor;
+    var bodyStyle =
+        Theme.of(context).textTheme.bodyMedium!.copyWith(color: textColor);
+    var smallStyle =
+        Theme.of(context).textTheme.bodySmall!.copyWith(color: textColor);
+    // A server without scoped keys does not send scopes (parsed as an empty
+    // list); its keys can read. A server with scopes never has a key without.
+    var scopes = ApiKeyScopes.normalize(
+        key.scopes == null || key.scopes!.isEmpty
+            ? ApiKeyScopes.readOnly
+            : key.scopes!);
+    var preset = ApiKeyPreset.forScopes(scopes);
+
+    return [
+      const SizedBox(height: 8),
+      Text(
+        l10n.apiKeyPrefix('${key.prefix}●●●●●●'),
+        style: bodyStyle.copyWith(fontFamily: 'Courier'),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        '${l10n.apiKeyPermissionsLabel}: ${preset == ApiKeyPreset.custom ? '' : preset.label(l10n)}',
+        style: bodyStyle.copyWith(fontWeight: FontWeight.bold),
+      ),
+      if (preset == ApiKeyPreset.custom)
+        ...scopes.map((scope) =>
+            Text('• ${ApiKeyScopes.label(l10n, scope)}', style: smallStyle)),
+      const SizedBox(height: 8),
+      Text(
+        key.lastUsedAt == null
+            ? l10n.apiKeyNeverUsed
+            : l10n.apiKeyLastUsedAt(_formatDate(context, key.lastUsedAt!)),
+        style: smallStyle,
+      ),
+      Text(
+        key.expiresAt == null
+            ? l10n.apiKeyNeverExpires
+            : l10n.apiKeyExpiresAt(_formatDate(context, key.expiresAt!)),
+        style: smallStyle,
+      ),
+      if (key.revokedAt != null) ...[
+        const SizedBox(height: 4),
+        Text(
+          l10n.apiKeyRevokedAt(_formatDate(context, key.revokedAt!)),
+          style: smallStyle.copyWith(color: Colors.red),
+        ),
+      ],
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    var l10n = AppLocalizations.of(context)!;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -346,7 +362,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
               menuOpen: null,
               useTopSafePadding: true,
               titleWidget: Text(
-                'API Keys',
+                l10n.apiKeysTitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: CustomThemeProvider.of(context)
@@ -399,7 +415,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            'API Documentation',
+                                            l10n.apiKeysDocsTitle,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleMedium!
@@ -415,7 +431,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                       ),
                                       const SizedBox(height: 12),
                                       Text(
-                                        'Use your API keys to access the External API programmatically.',
+                                        l10n.apiKeysDocsDescription,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium!
@@ -457,13 +473,15 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                   .textColor,
                                             ),
                                             const SizedBox(width: 8),
-                                            Text(
-                                              'View API Documentation',
-                                              style: TextStyle(
-                                                color: CustomThemeProvider.of(
-                                                        context)
-                                                    .theme
-                                                    .textColor,
+                                            Flexible(
+                                              child: Text(
+                                                l10n.apiKeysViewDocs,
+                                                style: TextStyle(
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .textColor,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -504,18 +522,21 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                               .darkColor,
                                         ),
                                         const SizedBox(width: 12),
-                                        Text(
-                                          'Generate New API Key',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium!
-                                              .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: CustomThemeProvider.of(
-                                                        context)
-                                                    .theme
-                                                    .darkTextColor,
-                                              ),
+                                        Flexible(
+                                          child: Text(
+                                            l10n.apiKeysGenerate,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: CustomThemeProvider.of(
+                                                          context)
+                                                      .theme
+                                                      .darkTextColor,
+                                                ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -529,7 +550,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(40.0),
                                 child: Text(
-                                  'No API Keys found.',
+                                  l10n.apiKeysEmpty,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge!
@@ -543,6 +564,8 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                             else
                               ..._keys.map((key) {
                                 var isRevoked = key.revokedAt != null;
+                                var isExpired = key.expiresAt != null &&
+                                    key.expiresAt!.isBefore(DateTime.now());
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 10.0),
                                   child: ConstrainedBox(
@@ -567,7 +590,8 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Text(
-                                                    key.name ?? 'Unnamed Key',
+                                                    key.name ??
+                                                        l10n.apiKeyUnnamed,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .titleMedium!
@@ -582,27 +606,13 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                   ),
                                                 ),
                                                 if (isRevoked)
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 6),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.red,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                    ),
-                                                    child: const Text(
-                                                      'Revoked',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  )
+                                                  _statusBadge(
+                                                      l10n.apiKeyRevoked,
+                                                      Colors.red)
+                                                else if (isExpired)
+                                                  _statusBadge(
+                                                      l10n.apiKeyExpired,
+                                                      Colors.grey.shade700)
                                                 else
                                                   CupertinoButton(
                                                     onPressed: () =>
@@ -619,34 +629,7 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
                                                   ),
                                               ],
                                             ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              'Prefix: ${key.prefix}●●●●●●',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium!
-                                                  .copyWith(
-                                                    color:
-                                                        CustomThemeProvider.of(
-                                                                context)
-                                                            .theme
-                                                            .darkTextColor,
-                                                    fontFamily: 'Courier',
-                                                  ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            if (isRevoked) ...[
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Revoked: ${key.revokedAt!.toLocal().toString().split('.')[0]}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall!
-                                                    .copyWith(
-                                                      color: Colors.red,
-                                                    ),
-                                              ),
-                                            ],
+                                            ..._buildKeyDetails(context, key),
                                           ],
                                         ),
                                       ),

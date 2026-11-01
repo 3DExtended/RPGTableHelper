@@ -65,6 +65,8 @@ public class RpgDbContext : DbContext
     public DbSet<AuthSessionEntity> AuthSessions { get; set; } = default!;
     public DbSet<CampagneRpgConfigHistoryEntity> CampagneRpgConfigHistories { get; set; } = default!;
     public DbSet<PlayerCharacterRpgConfigHistoryEntity> PlayerCharacterRpgConfigHistories { get; set; } = default!;
+    public DbSet<FightEntity> Fights { get; set; } = default!;
+    public DbSet<FightParticipantEntity> FightParticipants { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -127,6 +129,24 @@ public class RpgDbContext : DbContext
             .Entity<CampagneJoinRequestEntity>()
             .HasIndex(entity => new { entity.CampagneId, entity.UserId })
             .IsUnique();
+
+        modelBuilder
+            .Entity<FightEntity>()
+            .HasOne(e => e.Campagne)
+            .WithMany()
+            .HasForeignKey(e => e.CampagneId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FightEntity>().HasIndex(entity => new { entity.CampagneId, entity.EndedAt });
+
+        modelBuilder
+            .Entity<FightEntity>()
+            .HasMany(e => e.Participants)
+            .WithOne(e => e.Fight)
+            .HasForeignKey(e => e.FightId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FightParticipantEntity>().HasIndex(entity => new { entity.FightId, entity.OwnerUserId });
 
         modelBuilder
             .Entity<CampagneJoinRequestEntity>()

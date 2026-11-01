@@ -7,6 +7,7 @@ using RPGTableHelper.DataLayer.Contracts.Models.ApiKeys;
 using RPGTableHelper.DataLayer.Contracts.Queries.ApiKeys;
 using RPGTableHelper.DataLayer.EfCore;
 using RPGTableHelper.DataLayer.Entities;
+using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Services;
 
 namespace RPGTableHelper.DataLayer.QueryHandlers.ApiKeys
@@ -58,6 +59,8 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.ApiKeys
                 Name = query.Name,
                 Prefix = plainKey.Substring(0, 7),
                 KeyHash = hash,
+                Scopes = ApiKeyScopes.Serialize(query.Scopes),
+                ExpiresAt = query.ExpiresAt.IsSome ? query.ExpiresAt.Get() : null,
                 CreationDate = _clock.Now, // Base prop
                 LastModifiedAt = _clock.Now // Base prop
             };

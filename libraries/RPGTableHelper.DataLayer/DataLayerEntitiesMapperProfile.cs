@@ -11,6 +11,7 @@ using RPGTableHelper.DataLayer.Entities;
 using RPGTableHelper.DataLayer.Entities.Images;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
 using RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities;
+using RPGTableHelper.Shared.Auth;
 
 namespace RPGTableHelper.DataLayer
 {
@@ -139,7 +140,11 @@ namespace RPGTableHelper.DataLayer
                         )
                 );
 
-            CreateMap<ApiKeyEntity, ApiKeyDto>().ReverseMap();
+            CreateMap<ApiKeyEntity, ApiKeyDto>()
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreationDate))
+                .ForMember(d => d.Scopes, o => o.MapFrom(s => ApiKeyScopes.Parse(s.Scopes)))
+                .ReverseMap()
+                .ForMember(e => e.Scopes, o => o.MapFrom(d => ApiKeyScopes.Serialize(d.Scopes)));
         }
 
         private void CreateOptionMapForType<T>()

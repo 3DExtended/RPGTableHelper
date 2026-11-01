@@ -10,7 +10,7 @@
         "tags": [
           "ApiKeys"
         ],
-        "summary": "Creates a new API key.",
+        "summary": "Creates a new API key with the given scopes. Only callable with a normal login (JWT): an API key can\nnever create, list or revoke keys.",
         "requestBody": {
           "content": {
             "application/json-patch+json": {
@@ -37,7 +37,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "The new key. `plainKey` is shown exactly once.",
             "content": {
               "text/plain": {
                 "schema": {
@@ -52,6 +52,26 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateApiKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the name is empty, a scope is unknown, or the expiry lies in the past",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -3772,6 +3792,23 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3957,6 +3994,20 @@
         "properties": {
           "name": {
             "type": "string",
+            "nullable": true
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Scopes to grant (see `ApiKeyScopes`), e.g. `notes:read`. At least one is required.\nOlder clients that send none get the read-only legacy default.",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Optional point in time after which the key stops working. Must be in the future.",
+            "format": "date-time",
             "nullable": true
           }
         },
