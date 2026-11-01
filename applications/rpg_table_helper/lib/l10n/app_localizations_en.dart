@@ -837,4 +837,164 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get characterSheetAppearanceTitle => 'Appearance';
+
+  @override
+  String get apiKeysTitle => 'API Keys';
+
+  @override
+  String get apiKeysDocsTitle => 'API documentation';
+
+  @override
+  String get apiKeysDocsDescription =>
+      'API keys let another app, such as a companion app someone in your group built, act for you as a player. Each key can only do what you allow it.';
+
+  @override
+  String get apiKeysViewDocs => 'View API documentation';
+
+  @override
+  String get apiKeysGenerate => 'Generate new API key';
+
+  @override
+  String get apiKeysEmpty => 'No API keys yet.';
+
+  @override
+  String get apiKeysLoadFailed => 'Could not load your API keys.';
+
+  @override
+  String get apiKeyUnnamed => 'Unnamed key';
+
+  @override
+  String get apiKeyRevoked => 'Revoked';
+
+  @override
+  String get apiKeyExpired => 'Expired';
+
+  @override
+  String apiKeyPrefix(String prefix) {
+    return 'Prefix: $prefix';
+  }
+
+  @override
+  String apiKeyRevokedAt(String date) {
+    return 'Revoked: $date';
+  }
+
+  @override
+  String apiKeyLastUsedAt(String date) {
+    return 'Last used: $date';
+  }
+
+  @override
+  String get apiKeyNeverUsed => 'Never used';
+
+  @override
+  String apiKeyExpiresAt(String date) {
+    return 'Expires: $date';
+  }
+
+  @override
+  String get apiKeyNeverExpires => 'Never expires';
+
+  @override
+  String get apiKeyRevokeTitle => 'Revoke API key?';
+
+  @override
+  String get apiKeyRevokeBody =>
+      'This cannot be undone. Any app using this key loses access immediately.';
+
+  @override
+  String get apiKeyRevokeConfirm => 'Revoke';
+
+  @override
+  String get apiKeyRevokeFailed => 'Could not revoke the API key.';
+
+  @override
+  String get apiKeyCreateTitle => 'New API key';
+
+  @override
+  String get apiKeyCreateHint =>
+      'Only give a key to apps you trust. They act as you.';
+
+  @override
+  String get apiKeyNameLabel => 'Name, e.g. the app that uses it';
+
+  @override
+  String get apiKeyPermissionsLabel => 'Permissions';
+
+  @override
+  String get apiKeyPresetReadOnly => 'Read only';
+
+  @override
+  String get apiKeyPresetCompanion => 'Player companion app';
+
+  @override
+  String get apiKeyPresetCustom => 'Custom';
+
+  @override
+  String get apiKeyScopeCampaignsRead =>
+      'See your campaigns and fellow players';
+
+  @override
+  String get apiKeyScopeCharactersRead => 'Read your character sheets';
+
+  @override
+  String get apiKeyScopeCharactersWrite =>
+      'Change your character sheets, e.g. hit points';
+
+  @override
+  String get apiKeyScopeNotesRead => 'Read the notes you can see';
+
+  @override
+  String get apiKeyScopeNotesWrite =>
+      'Write your own notes and choose who sees them';
+
+  @override
+  String get apiKeyScopeFightsPlay =>
+      'Roll initiative when the DM starts a fight';
+
+  @override
+  String get apiKeyScopeEvents => 'Receive live updates';
+
+  @override
+  String get apiKeyExpiryLabel => 'Valid for';
+
+  @override
+  String get apiKeyExpiryNever => 'Unlimited';
+
+  @override
+  String get apiKeyExpiry30Days => '30 days';
+
+  @override
+  String get apiKeyExpiry90Days => '90 days';
+
+  @override
+  String get apiKeyExpiry1Year => '1 year';
+
+  @override
+  String get apiKeyCreateConfirm => 'Generate';
+
+  @override
+  String get apiKeyNameRequired => 'Enter a name.';
+
+  @override
+  String get apiKeyNoScopeSelected => 'Choose at least one permission.';
+
+  @override
+  String get apiKeyCreateFailed => 'Could not create the API key.';
+
+  @override
+  String get apiKeyCreatedTitle => 'API key created';
+
+  @override
+  String get apiKeyCreatedBody =>
+      'Copy your new key now. You won\'t see it again.';
+
+  @override
+  String get apiKeyCopy => 'Copy';
+
+  @override
+  String get apiKeyCopied => 'Copied to clipboard';
+
+  @override
+  String get apiKeyDone => 'Done';
 }

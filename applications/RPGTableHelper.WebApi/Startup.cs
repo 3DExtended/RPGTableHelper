@@ -265,8 +265,9 @@ public class Startup
 
             c.SchemaFilter<EnumSchemaFilter>();
 
-            // In production, only generate External API documentation
-            if (Environment.IsDevelopment())
+            // In production, only generate External API documentation. The local E2E environment also serves
+            // the app's API so the Flutter client can be regenerated from a local run.
+            if (Environment.IsDevelopment() || Environment.IsEnvironment("LocalSignalRE2E"))
             {
                 c.SwaggerDoc("v1.0", new OpenApiInfo { Title = "Main API v1.0", Version = "v1.0" });
             }

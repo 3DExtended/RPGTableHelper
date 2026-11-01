@@ -16,6 +16,9 @@ class ApiKeyDto {
     this.prefix,
     this.createdAt,
     this.revokedAt,
+    this.scopes,
+    this.lastUsedAt,
+    this.expiresAt,
   });
 
   factory ApiKeyDto.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +37,12 @@ class ApiKeyDto {
   final DateTime? createdAt;
   @JsonKey(name: 'revokedAt')
   final DateTime? revokedAt;
+  @JsonKey(name: 'scopes', defaultValue: <String>[])
+  final List<String>? scopes;
+  @JsonKey(name: 'lastUsedAt')
+  final DateTime? lastUsedAt;
+  @JsonKey(name: 'expiresAt')
+  final DateTime? expiresAt;
   static const fromJsonFactory = _$ApiKeyDtoFromJson;
 
   @override
@@ -55,6 +64,18 @@ class ApiKeyDto {
                 const DeepCollectionEquality().equals(
                   other.revokedAt,
                   revokedAt,
+                )) &&
+            (identical(other.scopes, scopes) ||
+                const DeepCollectionEquality().equals(other.scopes, scopes)) &&
+            (identical(other.lastUsedAt, lastUsedAt) ||
+                const DeepCollectionEquality().equals(
+                  other.lastUsedAt,
+                  lastUsedAt,
+                )) &&
+            (identical(other.expiresAt, expiresAt) ||
+                const DeepCollectionEquality().equals(
+                  other.expiresAt,
+                  expiresAt,
                 )));
   }
 
@@ -68,6 +89,9 @@ class ApiKeyDto {
       const DeepCollectionEquality().hash(prefix) ^
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(revokedAt) ^
+      const DeepCollectionEquality().hash(scopes) ^
+      const DeepCollectionEquality().hash(lastUsedAt) ^
+      const DeepCollectionEquality().hash(expiresAt) ^
       runtimeType.hashCode;
 }
 
@@ -78,6 +102,9 @@ extension $ApiKeyDtoExtension on ApiKeyDto {
     String? prefix,
     DateTime? createdAt,
     DateTime? revokedAt,
+    List<String>? scopes,
+    DateTime? lastUsedAt,
+    DateTime? expiresAt,
   }) {
     return ApiKeyDto(
       id: id ?? this.id,
@@ -85,6 +112,9 @@ extension $ApiKeyDtoExtension on ApiKeyDto {
       prefix: prefix ?? this.prefix,
       createdAt: createdAt ?? this.createdAt,
       revokedAt: revokedAt ?? this.revokedAt,
+      scopes: scopes ?? this.scopes,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+      expiresAt: expiresAt ?? this.expiresAt,
     );
   }
 
@@ -94,6 +124,9 @@ extension $ApiKeyDtoExtension on ApiKeyDto {
     Wrapped<String?>? prefix,
     Wrapped<DateTime?>? createdAt,
     Wrapped<DateTime?>? revokedAt,
+    Wrapped<List<String>?>? scopes,
+    Wrapped<DateTime?>? lastUsedAt,
+    Wrapped<DateTime?>? expiresAt,
   }) {
     return ApiKeyDto(
       id: (id != null ? id.value : this.id),
@@ -101,6 +134,9 @@ extension $ApiKeyDtoExtension on ApiKeyDto {
       prefix: (prefix != null ? prefix.value : this.prefix),
       createdAt: (createdAt != null ? createdAt.value : this.createdAt),
       revokedAt: (revokedAt != null ? revokedAt.value : this.revokedAt),
+      scopes: (scopes != null ? scopes.value : this.scopes),
+      lastUsedAt: (lastUsedAt != null ? lastUsedAt.value : this.lastUsedAt),
+      expiresAt: (expiresAt != null ? expiresAt.value : this.expiresAt),
     );
   }
 }
@@ -890,7 +926,7 @@ extension $CampagneJoinRequestIdentifierGuidNodeModelBaseExtension
 
 @JsonSerializable(explicitToJson: true)
 class CreateApiKeyRequestDto {
-  const CreateApiKeyRequestDto({this.name});
+  const CreateApiKeyRequestDto({this.name, this.scopes, this.expiresAt});
 
   factory CreateApiKeyRequestDto.fromJson(Map<String, dynamic> json) =>
       _$CreateApiKeyRequestDtoFromJson(json);
@@ -900,6 +936,10 @@ class CreateApiKeyRequestDto {
 
   @JsonKey(name: 'name')
   final String? name;
+  @JsonKey(name: 'scopes', defaultValue: <String>[])
+  final List<String>? scopes;
+  @JsonKey(name: 'expiresAt')
+  final DateTime? expiresAt;
   static const fromJsonFactory = _$CreateApiKeyRequestDtoFromJson;
 
   @override
@@ -907,7 +947,14 @@ class CreateApiKeyRequestDto {
     return identical(this, other) ||
         (other is CreateApiKeyRequestDto &&
             (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)));
+                const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.scopes, scopes) ||
+                const DeepCollectionEquality().equals(other.scopes, scopes)) &&
+            (identical(other.expiresAt, expiresAt) ||
+                const DeepCollectionEquality().equals(
+                  other.expiresAt,
+                  expiresAt,
+                )));
   }
 
   @override
@@ -915,17 +962,34 @@ class CreateApiKeyRequestDto {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash(name) ^ runtimeType.hashCode;
+      const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(scopes) ^
+      const DeepCollectionEquality().hash(expiresAt) ^
+      runtimeType.hashCode;
 }
 
 extension $CreateApiKeyRequestDtoExtension on CreateApiKeyRequestDto {
-  CreateApiKeyRequestDto copyWith({String? name}) {
-    return CreateApiKeyRequestDto(name: name ?? this.name);
+  CreateApiKeyRequestDto copyWith({
+    String? name,
+    List<String>? scopes,
+    DateTime? expiresAt,
+  }) {
+    return CreateApiKeyRequestDto(
+      name: name ?? this.name,
+      scopes: scopes ?? this.scopes,
+      expiresAt: expiresAt ?? this.expiresAt,
+    );
   }
 
-  CreateApiKeyRequestDto copyWithWrapped({Wrapped<String?>? name}) {
+  CreateApiKeyRequestDto copyWithWrapped({
+    Wrapped<String?>? name,
+    Wrapped<List<String>?>? scopes,
+    Wrapped<DateTime?>? expiresAt,
+  }) {
     return CreateApiKeyRequestDto(
       name: (name != null ? name.value : this.name),
+      scopes: (scopes != null ? scopes.value : this.scopes),
+      expiresAt: (expiresAt != null ? expiresAt.value : this.expiresAt),
     );
   }
 }

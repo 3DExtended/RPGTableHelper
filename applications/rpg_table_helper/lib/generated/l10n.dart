@@ -2359,6 +2359,461 @@ class S {
       args: [],
     );
   }
+
+  /// `API Keys`
+  String get apiKeysTitle {
+    return Intl.message('API Keys', name: 'apiKeysTitle', desc: '', args: []);
+  }
+
+  /// `API documentation`
+  String get apiKeysDocsTitle {
+    return Intl.message(
+      'API documentation',
+      name: 'apiKeysDocsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `API keys let another app, such as a companion app someone in your group built, act for you as a player. Each key can only do what you allow it.`
+  String get apiKeysDocsDescription {
+    return Intl.message(
+      'API keys let another app, such as a companion app someone in your group built, act for you as a player. Each key can only do what you allow it.',
+      name: 'apiKeysDocsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View API documentation`
+  String get apiKeysViewDocs {
+    return Intl.message(
+      'View API documentation',
+      name: 'apiKeysViewDocs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate new API key`
+  String get apiKeysGenerate {
+    return Intl.message(
+      'Generate new API key',
+      name: 'apiKeysGenerate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No API keys yet.`
+  String get apiKeysEmpty {
+    return Intl.message(
+      'No API keys yet.',
+      name: 'apiKeysEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load your API keys.`
+  String get apiKeysLoadFailed {
+    return Intl.message(
+      'Could not load your API keys.',
+      name: 'apiKeysLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unnamed key`
+  String get apiKeyUnnamed {
+    return Intl.message(
+      'Unnamed key',
+      name: 'apiKeyUnnamed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Revoked`
+  String get apiKeyRevoked {
+    return Intl.message('Revoked', name: 'apiKeyRevoked', desc: '', args: []);
+  }
+
+  /// `Expired`
+  String get apiKeyExpired {
+    return Intl.message('Expired', name: 'apiKeyExpired', desc: '', args: []);
+  }
+
+  /// `Prefix: {prefix}`
+  String apiKeyPrefix(String prefix) {
+    return Intl.message(
+      'Prefix: $prefix',
+      name: 'apiKeyPrefix',
+      desc: '',
+      args: [prefix],
+    );
+  }
+
+  /// `Revoked: {date}`
+  String apiKeyRevokedAt(String date) {
+    return Intl.message(
+      'Revoked: $date',
+      name: 'apiKeyRevokedAt',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Last used: {date}`
+  String apiKeyLastUsedAt(String date) {
+    return Intl.message(
+      'Last used: $date',
+      name: 'apiKeyLastUsedAt',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Never used`
+  String get apiKeyNeverUsed {
+    return Intl.message(
+      'Never used',
+      name: 'apiKeyNeverUsed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expires: {date}`
+  String apiKeyExpiresAt(String date) {
+    return Intl.message(
+      'Expires: $date',
+      name: 'apiKeyExpiresAt',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Never expires`
+  String get apiKeyNeverExpires {
+    return Intl.message(
+      'Never expires',
+      name: 'apiKeyNeverExpires',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Revoke API key?`
+  String get apiKeyRevokeTitle {
+    return Intl.message(
+      'Revoke API key?',
+      name: 'apiKeyRevokeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This cannot be undone. Any app using this key loses access immediately.`
+  String get apiKeyRevokeBody {
+    return Intl.message(
+      'This cannot be undone. Any app using this key loses access immediately.',
+      name: 'apiKeyRevokeBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Revoke`
+  String get apiKeyRevokeConfirm {
+    return Intl.message(
+      'Revoke',
+      name: 'apiKeyRevokeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not revoke the API key.`
+  String get apiKeyRevokeFailed {
+    return Intl.message(
+      'Could not revoke the API key.',
+      name: 'apiKeyRevokeFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New API key`
+  String get apiKeyCreateTitle {
+    return Intl.message(
+      'New API key',
+      name: 'apiKeyCreateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only give a key to apps you trust. They act as you.`
+  String get apiKeyCreateHint {
+    return Intl.message(
+      'Only give a key to apps you trust. They act as you.',
+      name: 'apiKeyCreateHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name, e.g. the app that uses it`
+  String get apiKeyNameLabel {
+    return Intl.message(
+      'Name, e.g. the app that uses it',
+      name: 'apiKeyNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permissions`
+  String get apiKeyPermissionsLabel {
+    return Intl.message(
+      'Permissions',
+      name: 'apiKeyPermissionsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Read only`
+  String get apiKeyPresetReadOnly {
+    return Intl.message(
+      'Read only',
+      name: 'apiKeyPresetReadOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Player companion app`
+  String get apiKeyPresetCompanion {
+    return Intl.message(
+      'Player companion app',
+      name: 'apiKeyPresetCompanion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get apiKeyPresetCustom {
+    return Intl.message(
+      'Custom',
+      name: 'apiKeyPresetCustom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See your campaigns and fellow players`
+  String get apiKeyScopeCampaignsRead {
+    return Intl.message(
+      'See your campaigns and fellow players',
+      name: 'apiKeyScopeCampaignsRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Read your character sheets`
+  String get apiKeyScopeCharactersRead {
+    return Intl.message(
+      'Read your character sheets',
+      name: 'apiKeyScopeCharactersRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change your character sheets, e.g. hit points`
+  String get apiKeyScopeCharactersWrite {
+    return Intl.message(
+      'Change your character sheets, e.g. hit points',
+      name: 'apiKeyScopeCharactersWrite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Read the notes you can see`
+  String get apiKeyScopeNotesRead {
+    return Intl.message(
+      'Read the notes you can see',
+      name: 'apiKeyScopeNotesRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write your own notes and choose who sees them`
+  String get apiKeyScopeNotesWrite {
+    return Intl.message(
+      'Write your own notes and choose who sees them',
+      name: 'apiKeyScopeNotesWrite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Roll initiative when the DM starts a fight`
+  String get apiKeyScopeFightsPlay {
+    return Intl.message(
+      'Roll initiative when the DM starts a fight',
+      name: 'apiKeyScopeFightsPlay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive live updates`
+  String get apiKeyScopeEvents {
+    return Intl.message(
+      'Receive live updates',
+      name: 'apiKeyScopeEvents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Valid for`
+  String get apiKeyExpiryLabel {
+    return Intl.message(
+      'Valid for',
+      name: 'apiKeyExpiryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited`
+  String get apiKeyExpiryNever {
+    return Intl.message(
+      'Unlimited',
+      name: 'apiKeyExpiryNever',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `30 days`
+  String get apiKeyExpiry30Days {
+    return Intl.message(
+      '30 days',
+      name: 'apiKeyExpiry30Days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `90 days`
+  String get apiKeyExpiry90Days {
+    return Intl.message(
+      '90 days',
+      name: 'apiKeyExpiry90Days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 year`
+  String get apiKeyExpiry1Year {
+    return Intl.message(
+      '1 year',
+      name: 'apiKeyExpiry1Year',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate`
+  String get apiKeyCreateConfirm {
+    return Intl.message(
+      'Generate',
+      name: 'apiKeyCreateConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a name.`
+  String get apiKeyNameRequired {
+    return Intl.message(
+      'Enter a name.',
+      name: 'apiKeyNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose at least one permission.`
+  String get apiKeyNoScopeSelected {
+    return Intl.message(
+      'Choose at least one permission.',
+      name: 'apiKeyNoScopeSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not create the API key.`
+  String get apiKeyCreateFailed {
+    return Intl.message(
+      'Could not create the API key.',
+      name: 'apiKeyCreateFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `API key created`
+  String get apiKeyCreatedTitle {
+    return Intl.message(
+      'API key created',
+      name: 'apiKeyCreatedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy your new key now. You won't see it again.`
+  String get apiKeyCreatedBody {
+    return Intl.message(
+      'Copy your new key now. You won\'t see it again.',
+      name: 'apiKeyCreatedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy`
+  String get apiKeyCopy {
+    return Intl.message('Copy', name: 'apiKeyCopy', desc: '', args: []);
+  }
+
+  /// `Copied to clipboard`
+  String get apiKeyCopied {
+    return Intl.message(
+      'Copied to clipboard',
+      name: 'apiKeyCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get apiKeyDone {
+    return Intl.message('Done', name: 'apiKeyDone', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

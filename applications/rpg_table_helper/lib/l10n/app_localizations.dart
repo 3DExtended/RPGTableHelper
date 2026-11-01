@@ -1663,6 +1663,294 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Darstellung'**
   String get characterSheetAppearanceTitle;
+
+  /// No description provided for @apiKeysTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'API-Schlüssel'**
+  String get apiKeysTitle;
+
+  /// No description provided for @apiKeysDocsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'API-Dokumentation'**
+  String get apiKeysDocsTitle;
+
+  /// No description provided for @apiKeysDocsDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit API-Schlüsseln kann eine andere App, etwa eine Begleit-App aus deiner Gruppe, für dich als Spieler handeln. Jeder Schlüssel darf nur, was du ihm erlaubst.'**
+  String get apiKeysDocsDescription;
+
+  /// No description provided for @apiKeysViewDocs.
+  ///
+  /// In de, this message translates to:
+  /// **'API-Dokumentation öffnen'**
+  String get apiKeysViewDocs;
+
+  /// No description provided for @apiKeysGenerate.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuen API-Schlüssel erstellen'**
+  String get apiKeysGenerate;
+
+  /// No description provided for @apiKeysEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine API-Schlüssel.'**
+  String get apiKeysEmpty;
+
+  /// No description provided for @apiKeysLoadFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine API-Schlüssel konnten nicht geladen werden.'**
+  String get apiKeysLoadFailed;
+
+  /// No description provided for @apiKeyUnnamed.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbenannter Schlüssel'**
+  String get apiKeyUnnamed;
+
+  /// No description provided for @apiKeyRevoked.
+  ///
+  /// In de, this message translates to:
+  /// **'Widerrufen'**
+  String get apiKeyRevoked;
+
+  /// No description provided for @apiKeyExpired.
+  ///
+  /// In de, this message translates to:
+  /// **'Abgelaufen'**
+  String get apiKeyExpired;
+
+  /// No description provided for @apiKeyPrefix.
+  ///
+  /// In de, this message translates to:
+  /// **'Präfix: {prefix}'**
+  String apiKeyPrefix(String prefix);
+
+  /// No description provided for @apiKeyRevokedAt.
+  ///
+  /// In de, this message translates to:
+  /// **'Widerrufen: {date}'**
+  String apiKeyRevokedAt(String date);
+
+  /// No description provided for @apiKeyLastUsedAt.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt benutzt: {date}'**
+  String apiKeyLastUsedAt(String date);
+
+  /// No description provided for @apiKeyNeverUsed.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nie benutzt'**
+  String get apiKeyNeverUsed;
+
+  /// No description provided for @apiKeyExpiresAt.
+  ///
+  /// In de, this message translates to:
+  /// **'Läuft ab: {date}'**
+  String apiKeyExpiresAt(String date);
+
+  /// No description provided for @apiKeyNeverExpires.
+  ///
+  /// In de, this message translates to:
+  /// **'Läuft nie ab'**
+  String get apiKeyNeverExpires;
+
+  /// No description provided for @apiKeyRevokeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'API-Schlüssel widerrufen?'**
+  String get apiKeyRevokeTitle;
+
+  /// No description provided for @apiKeyRevokeBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Das lässt sich nicht rückgängig machen. Jede App, die diesen Schlüssel nutzt, verliert sofort den Zugriff.'**
+  String get apiKeyRevokeBody;
+
+  /// No description provided for @apiKeyRevokeConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Widerrufen'**
+  String get apiKeyRevokeConfirm;
+
+  /// No description provided for @apiKeyRevokeFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Der API-Schlüssel konnte nicht widerrufen werden.'**
+  String get apiKeyRevokeFailed;
+
+  /// No description provided for @apiKeyCreateTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer API-Schlüssel'**
+  String get apiKeyCreateTitle;
+
+  /// No description provided for @apiKeyCreateHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Gib Schlüssel nur an Apps, denen du vertraust. Sie handeln in deinem Namen.'**
+  String get apiKeyCreateHint;
+
+  /// No description provided for @apiKeyNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name, z. B. die App, die ihn nutzt'**
+  String get apiKeyNameLabel;
+
+  /// No description provided for @apiKeyPermissionsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Rechte'**
+  String get apiKeyPermissionsLabel;
+
+  /// No description provided for @apiKeyPresetReadOnly.
+  ///
+  /// In de, this message translates to:
+  /// **'Nur lesen'**
+  String get apiKeyPresetReadOnly;
+
+  /// No description provided for @apiKeyPresetCompanion.
+  ///
+  /// In de, this message translates to:
+  /// **'Begleit-App für Spieler'**
+  String get apiKeyPresetCompanion;
+
+  /// No description provided for @apiKeyPresetCustom.
+  ///
+  /// In de, this message translates to:
+  /// **'Benutzerdefiniert'**
+  String get apiKeyPresetCustom;
+
+  /// No description provided for @apiKeyScopeCampaignsRead.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Kampagnen und Mitspieler sehen'**
+  String get apiKeyScopeCampaignsRead;
+
+  /// No description provided for @apiKeyScopeCharactersRead.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Charakterbögen lesen'**
+  String get apiKeyScopeCharactersRead;
+
+  /// No description provided for @apiKeyScopeCharactersWrite.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Charakterbögen ändern, z. B. Lebenspunkte'**
+  String get apiKeyScopeCharactersWrite;
+
+  /// No description provided for @apiKeyScopeNotesRead.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Notizen lesen, die du sehen darfst'**
+  String get apiKeyScopeNotesRead;
+
+  /// No description provided for @apiKeyScopeNotesWrite.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Notizen schreiben und festlegen, wer sie sieht'**
+  String get apiKeyScopeNotesWrite;
+
+  /// No description provided for @apiKeyScopeFightsPlay.
+  ///
+  /// In de, this message translates to:
+  /// **'Initiative würfeln, wenn der DM einen Kampf startet'**
+  String get apiKeyScopeFightsPlay;
+
+  /// No description provided for @apiKeyScopeEvents.
+  ///
+  /// In de, this message translates to:
+  /// **'Live-Updates empfangen'**
+  String get apiKeyScopeEvents;
+
+  /// No description provided for @apiKeyExpiryLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Gültig für'**
+  String get apiKeyExpiryLabel;
+
+  /// No description provided for @apiKeyExpiryNever.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbegrenzt'**
+  String get apiKeyExpiryNever;
+
+  /// No description provided for @apiKeyExpiry30Days.
+  ///
+  /// In de, this message translates to:
+  /// **'30 Tage'**
+  String get apiKeyExpiry30Days;
+
+  /// No description provided for @apiKeyExpiry90Days.
+  ///
+  /// In de, this message translates to:
+  /// **'90 Tage'**
+  String get apiKeyExpiry90Days;
+
+  /// No description provided for @apiKeyExpiry1Year.
+  ///
+  /// In de, this message translates to:
+  /// **'1 Jahr'**
+  String get apiKeyExpiry1Year;
+
+  /// No description provided for @apiKeyCreateConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Erstellen'**
+  String get apiKeyCreateConfirm;
+
+  /// No description provided for @apiKeyNameRequired.
+  ///
+  /// In de, this message translates to:
+  /// **'Gib einen Namen ein.'**
+  String get apiKeyNameRequired;
+
+  /// No description provided for @apiKeyNoScopeSelected.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle mindestens ein Recht aus.'**
+  String get apiKeyNoScopeSelected;
+
+  /// No description provided for @apiKeyCreateFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Der API-Schlüssel konnte nicht erstellt werden.'**
+  String get apiKeyCreateFailed;
+
+  /// No description provided for @apiKeyCreatedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'API-Schlüssel erstellt'**
+  String get apiKeyCreatedTitle;
+
+  /// No description provided for @apiKeyCreatedBody.
+  ///
+  /// In de, this message translates to:
+  /// **'Kopiere den neuen Schlüssel jetzt. Er wird dir nicht noch einmal angezeigt.'**
+  String get apiKeyCreatedBody;
+
+  /// No description provided for @apiKeyCopy.
+  ///
+  /// In de, this message translates to:
+  /// **'Kopieren'**
+  String get apiKeyCopy;
+
+  /// No description provided for @apiKeyCopied.
+  ///
+  /// In de, this message translates to:
+  /// **'In die Zwischenablage kopiert'**
+  String get apiKeyCopied;
+
+  /// No description provided for @apiKeyDone.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get apiKeyDone;
 }
 
 class _AppLocalizationsDelegate
