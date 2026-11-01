@@ -356,7 +356,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         {
             var inspector = new ContentInspectorBuilder()
             {
-                Definitions = MimeDetective.Definitions.Default.All(),
+                Definitions = MimeDetective.Definitions.DefaultDefinitions.All(),
             }.Build();
 
             var contentInfo = inspector.Inspect(stream).ByMimeType();
