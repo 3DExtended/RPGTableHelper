@@ -131,6 +131,63 @@ public class RegisterControllerTests : ControllerTestBase
         }
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task VerifyEmailAsync_ShouldReturnBadRequestAndKeepEmailUnverifiedForWrongSignature(
+        bool useSignatureOfOtherUser
+    )
+    {
+        // arrange
+        var userEntity = new UserEntity { Id = Guid.Empty, Username = "TestUser" };
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            await context.Users.AddAsync(userEntity, default!);
+            await context.SaveChangesAsync(default);
+        }
+
+        var requestEntity = new UserCredentialEntity
+        {
+            Id = Guid.Empty,
+            Email = "asdf@asdf.de",
+            EmailVerified = false,
+            Deleted = false,
+            UserId = userEntity.Id,
+        };
+
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            await context.UserCredentials.AddAsync(requestEntity, default!);
+            await context.SaveChangesAsync(default);
+        }
+
+        var useridbase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(userEntity.Id.ToString()));
+
+        // a valid server signature, but for another user id, or bytes that are no signature at all
+        var wrongSignature = useSignatureOfOtherUser
+            ? (
+                await new RSASignStringQuery { MessageToSign = Guid.NewGuid().ToString() }.RunAsync(
+                    QueryProcessor,
+                    default
+                )
+            ).Get()
+            : Convert.ToBase64String(Encoding.UTF8.GetBytes("not-a-signature"));
+
+        // act
+        var response = await Client.GetAsync(
+            $"/register/verifyemail/{useridbase64.Replace('/', '_')}/{wrongSignature.Replace('/', '_')}"
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        using (var context = await ContextFactory!.CreateDbContextAsync(default))
+        {
+            var entities = await context.UserCredentials.ToListAsync(default);
+            entities.Count.Should().Be(1);
+            entities[0].EmailVerified.Should().BeFalse();
+        }
+    }
+
     internal static async Task<Dictionary<string, object>?> GenerateAndReceiveEncryptionChallenge(
         IQueryProcessor queryProcessor,
         HttpClient client,
