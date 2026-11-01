@@ -300,8 +300,12 @@ class _ApiKeysScreenState extends State<ApiKeysScreen> {
         Theme.of(context).textTheme.bodyMedium!.copyWith(color: textColor);
     var smallStyle =
         Theme.of(context).textTheme.bodySmall!.copyWith(color: textColor);
-    // A server without scoped keys does not send scopes; its keys can read.
-    var scopes = ApiKeyScopes.normalize(key.scopes ?? ApiKeyScopes.readOnly);
+    // A server without scoped keys does not send scopes (parsed as an empty
+    // list); its keys can read. A server with scopes never has a key without.
+    var scopes = ApiKeyScopes.normalize(
+        key.scopes == null || key.scopes!.isEmpty
+            ? ApiKeyScopes.readOnly
+            : key.scopes!);
     var preset = ApiKeyPreset.forScopes(scopes);
 
     return [

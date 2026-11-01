@@ -283,4 +283,16 @@ void main() {
     expect(find.text('Rechte: Nur lesen'), findsOneWidget);
     expect(find.text('Läuft nie ab'), findsOneWidget);
   });
+
+  testWidgets('a key as a server without scopes sends it shows read access',
+      (tester) async {
+    // The generated model turns the missing scopes into an empty list.
+    final service = _RecordingApiKeyService([
+      ApiKeyDto.fromJson({'id': '1', 'name': 'Alt', 'prefix': 'sk-old1'}),
+    ]);
+
+    await _pumpScreen(tester, service, serverHasScopedKeys: false);
+
+    expect(find.text('Rechte: Nur lesen'), findsOneWidget);
+  });
 }
