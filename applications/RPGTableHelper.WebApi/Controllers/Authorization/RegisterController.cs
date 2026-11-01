@@ -443,7 +443,8 @@ namespace RPGTableHelper.WebApi.Controllers.Authorization
                 .RunAsync(_queryProcessor, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (isVerified.IsNone)
+            // the verify query returns false (not None) for a signature that does not match
+            if (isVerified.IsNone || !isVerified.Get())
             {
                 return BadRequest("The signature is not matching!");
             }
