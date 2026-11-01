@@ -666,7 +666,7 @@ class _CreateOrEditItemModalContentState
                                   await service.createNewImageAndGetUrl(
                                 prompt: imageDescriptionController.text,
                                 campagneId:
-                                    CampagneIdentifier($value: campagneId),
+                                    CampagneIdentifier(value: campagneId),
                               );
 
                               if (!context.mounted || !mounted) return;
@@ -786,7 +786,7 @@ class _CreateOrEditItemModalContentState
                             var response =
                                 await service.uploadImageToCampagneStorage(
                                     campagneId:
-                                        CampagneIdentifier($value: campagneId),
+                                        CampagneIdentifier(value: campagneId),
                                     image: multipartFile);
 
                             if (!context.mounted || !mounted) return;

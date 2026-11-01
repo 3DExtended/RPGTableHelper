@@ -55,7 +55,7 @@ class _DmScreenCampagneManagementState
 
       var loadedCharsResponse = await service.getPlayerCharactersForCampagne(
           campagneId:
-              CampagneIdentifier($value: connectionDetails.campagneId!));
+              CampagneIdentifier(value: connectionDetails.campagneId!));
 
       if (!context.mounted || !mounted) return;
       await loadedCharsResponse.possiblyHandleError(context);
@@ -362,7 +362,7 @@ class _DmScreenCampagneManagementState
     final service =
         DependencyProvider.of(context).getService<IRpgEntityService>();
     final loadedCharsResponse = await service.getPlayerCharactersForCampagne(
-      campagneId: CampagneIdentifier($value: connectionDetails!.campagneId!),
+      campagneId: CampagneIdentifier(value: connectionDetails!.campagneId!),
     );
     if (!mounted || !context.mounted) return;
     if (!loadedCharsResponse.isSuccessful ||
@@ -377,8 +377,8 @@ class _DmScreenCampagneManagementState
 
     final previous = connectionDetails.connectedPlayers ?? const [];
     final onlineIds = previous
-        .where((p) => p.lastPing != null && p.userId.$value != null)
-        .map((p) => p.userId.$value!)
+        .where((p) => p.lastPing != null && p.userId.value != null)
+        .map((p) => p.userId.value!)
         .toSet();
 
     final remapped = mapCharactersToOpenPlayerConnections(
@@ -390,10 +390,10 @@ class _DmScreenCampagneManagementState
     // Keep prior configs/lastPing timestamps for users that were already known.
     final previousByUser = {
       for (final p in previous)
-        if (p.userId.$value != null) p.userId.$value!: p,
+        if (p.userId.value != null) p.userId.value!: p,
     };
     final merged = remapped.map((p) {
-      final prior = previousByUser[p.userId.$value];
+      final prior = previousByUser[p.userId.value];
       if (prior == null) return p;
       return prior.copyWith(
         configuration: prior.configuration,
@@ -417,7 +417,7 @@ class _DmScreenCampagneManagementState
       for (var char in fromServerLoadedPlayers!) {
         var connectedPlayerDetails = connectionDetails?.connectedPlayers
             ?.firstWhereOrNull(
-                (cp) => cp.playerCharacterId.$value == char.id!.$value!);
+                (cp) => cp.playerCharacterId.value == char.id!.value!);
 
         var isOnline = connectedPlayerDetails?.lastPing != null;
 

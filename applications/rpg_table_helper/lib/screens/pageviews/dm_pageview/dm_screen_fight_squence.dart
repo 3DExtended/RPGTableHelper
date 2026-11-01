@@ -215,7 +215,7 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
             (c) => !excludedPlayerCharacterIds.contains(c.configuration.uuid))
         .map((c) => FightStartParticipant(
               characterUuid: c.configuration.uuid,
-              playerCharacterId: c.player.playerCharacterId.$value,
+              playerCharacterId: c.player.playerCharacterId.value,
               name: c.configuration.characterName,
             ))
         .toList();

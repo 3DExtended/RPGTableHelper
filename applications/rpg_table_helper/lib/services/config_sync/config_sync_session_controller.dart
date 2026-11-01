@@ -75,7 +75,7 @@ class ConfigSyncSessionController {
     required CampagneIdentifier campagneId,
     int? initialRevision,
   }) {
-    final id = campagneId.$value;
+    final id = campagneId.value;
     if (id == null) {
       return;
     }
@@ -108,7 +108,7 @@ class ConfigSyncSessionController {
     required PlayerCharacterIdentifier playerCharacterId,
     int? initialRevision,
   }) {
-    final id = playerCharacterId.$value;
+    final id = playerCharacterId.value;
     if (id == null) {
       return;
     }
@@ -269,18 +269,18 @@ class ConfigSyncSessionController {
     String? rawConfig;
     if (_campagneId != null) {
       final response = await rpgEntityService.getPlayerCharactersForCampagne(
-        campagneId: CampagneIdentifier($value: _campagneId),
+        campagneId: CampagneIdentifier(value: _campagneId),
       );
       if (!response.isSuccessful || response.result == null) {
         return;
       }
       final match = response.result!
-          .where((c) => c.id?.$value == characterId)
+          .where((c) => c.id?.value == characterId)
           .firstOrNull;
       rawConfig = match?.rpgCharacterConfiguration;
     } else {
       final response = await rpgEntityService.getPlayerCharacterById(
-        playerCharacterId: PlayerCharacterIdentifier($value: characterId),
+        playerCharacterId: PlayerCharacterIdentifier(value: characterId),
       );
       if (!response.isSuccessful || response.result == null) {
         return;

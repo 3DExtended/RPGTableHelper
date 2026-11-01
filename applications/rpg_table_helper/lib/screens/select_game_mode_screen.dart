@@ -195,7 +195,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   }) async {
     final service =
         DependencyProvider.of(context).getService<IRpgEntityService>();
-    final characterIdValue = playerCharacterId.$value;
+    final characterIdValue = playerCharacterId.value;
     if (characterIdValue == null) return;
 
     for (var attempt = 0; attempt < 45; attempt++) {
@@ -208,9 +208,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       }
 
       final match = response.result!.firstWhereOrNull(
-        (c) => c.id?.$value == characterIdValue,
+        (c) => c.id?.value == characterIdValue,
       );
-      final campagneId = match?.campagneId?.$value;
+      final campagneId = match?.campagneId?.value;
 
       if (campagneId != null && campagneId.isNotEmpty) {
         _notifyJoinResolved(
@@ -513,7 +513,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                     Expanded(
                                       child: CustomMarkdownBody(
                                           text:
-                                              "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.$value != null).toString()}"),
+                                              "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.value != null).toString()}"),
                                     ),
                                     SizedBox(
                                       width: 10,
@@ -603,7 +603,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     }
 
     final updated = connectedPlayers
-        .map((p) => p.playerCharacterId.$value == characterId
+        .map((p) => p.playerCharacterId.value == characterId
             ? p.copyWith(configuration: config)
             : p)
         .toList();
@@ -629,20 +629,20 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     // Ignore presence for the campagne DM account: opening the table as DM
     // must not mark a DM-owned test character as "player online".
     final dmCampagne = (campagnes ?? const <Campagne>[])
-        .where((c) => c.id?.$value == connectionDetails.campagneId)
+        .where((c) => c.id?.value == connectionDetails.campagneId)
         .firstOrNull;
-    final dmUserId = dmCampagne?.dmUserId?.$value;
+    final dmUserId = dmCampagne?.dmUserId?.value;
     if (dmUserId != null && userId == dmUserId) {
       return;
     }
 
-    final known = connectedPlayers.any((p) => p.userId.$value == userId);
+    final known = connectedPlayers.any((p) => p.userId.value == userId);
     List<PlayerCharacter>? allCharacters;
     if (!known && online && connectionDetails.campagneId != null) {
       final rpgService =
           DependencyProvider.of(context).getService<IRpgEntityService>();
       final charsResponse = await rpgService.getPlayerCharactersForCampagne(
-        campagneId: CampagneIdentifier($value: connectionDetails.campagneId!),
+        campagneId: CampagneIdentifier(value: connectionDetails.campagneId!),
       );
       if (charsResponse.isSuccessful) {
         allCharacters = charsResponse.result;
@@ -827,7 +827,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     // Character "online" means a player has opened that character (player
     // SessionEnter), not that the DM opened the table. Exclude the campagne
     // DM's userId from the presence snapshot when hydrating the roster.
-    final dmUserId = hydratedCampagne.dmUserId?.$value;
+    final dmUserId = hydratedCampagne.dmUserId?.value;
     final onlinePlayerUserIds = hydrationResponse.result!.onlineUserIds
         .where((id) => dmUserId == null || id != dmUserId)
         .toList();
@@ -852,15 +852,15 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                 openPlayerRequests: joinRequestsResponse.isSuccessful
                     ? (joinRequestsResponse.result!
                         .map((j) => PlayerJoinRequests(
-                              campagneJoinRequestId: j.request.id!.$value!,
-                              playerCharacterId: j.playerCharacter.id!.$value!,
+                              campagneJoinRequestId: j.request.id!.value!,
+                              playerCharacterId: j.playerCharacter.id!.value!,
                               playerName: j.playerCharacter.characterName ??
                                   S.of(context).characterNameDefault,
                               username: j.username,
                             ))
                         .toList())
                     : List<PlayerJoinRequests>.empty(),
-                campagneId: campagne.id!.$value!,
+                campagneId: campagne.id!.value!,
                 sessionConnectionNumberForPlayers: campagne.joinCode));
 
     // sse-06: session-scoped fight/roll and item-grant SSE notifies.
@@ -875,7 +875,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     final com =
         DependencyProvider.of(context).getService<IServerMethodsService>();
     com.activeConfigSyncSessionController = configSyncSessionController;
-    await com.registerGame(campagneId: campagne.id!.$value!);
+    await com.registerGame(campagneId: campagne.id!.value!);
     if (!mounted) return;
 
     // navigate to main game screen (auth screen wrapper)
@@ -901,7 +901,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       showLoadingSpinner = true;
     });
 
-    if (character.campagneId != null && character.campagneId!.$value != null) {
+    if (character.campagneId != null && character.campagneId!.value != null) {
       // set initial rpg config
       // rpgConfigurationProvider
       var rpgService =
@@ -954,8 +954,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                   fightSequence: null,
                   lastGrantedItems: null,
                   openPlayerRequests: null,
-                  campagneId: character.campagneId?.$value,
-                  playerCharacterId: character.id!.$value!));
+                  campagneId: character.campagneId?.value,
+                  playerCharacterId: character.id!.value!));
 
       // sse-04: start listening for campagneConfigChanged / characterConfigChanged
       // SSE notifies so this client catches up on config edits made by other
@@ -1000,7 +1000,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       final com =
           DependencyProvider.of(context).getService<IServerMethodsService>();
       com.activeConfigSyncSessionController = configSyncSessionController;
-      await com.joinGameSession(playerCharacterId: character.id!.$value!);
+      await com.joinGameSession(playerCharacterId: character.id!.value!);
 
       // navigate to main game screen (auth screen wrapper)
       navigatorKey.currentState!
@@ -1201,7 +1201,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     campagnes = campagnesResponse.result ?? [];
 
     await onCampagneSelected(campagnes!
-        .singleWhere((e) => e.id!.$value! == createResponse.result!.$value!));
+        .singleWhere((e) => e.id!.value! == createResponse.result!.value!));
   }
 }
 

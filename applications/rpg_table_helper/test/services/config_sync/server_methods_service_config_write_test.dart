@@ -68,7 +68,7 @@ class _RecordingRpgEntity extends MockRpgEntityService {
     required CampagneIdentifier campagneId,
     required String rpgConfigurationJson,
   }) async {
-    legacyCampagneCalls.add(campagneId.$value!);
+    legacyCampagneCalls.add(campagneId.value!);
     return HRResponse.fromResult(true);
   }
 
@@ -77,7 +77,7 @@ class _RecordingRpgEntity extends MockRpgEntityService {
     required PlayerCharacterIdentifier playerCharacterId,
     required String rpgCharacterConfigurationJson,
   }) async {
-    legacyCharacterCalls.add(playerCharacterId.$value!);
+    legacyCharacterCalls.add(playerCharacterId.value!);
     return HRResponse.fromResult(true);
   }
 }

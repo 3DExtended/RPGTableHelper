@@ -185,7 +185,7 @@ class _ShowGenerateLoreImageModalModalContentState
                           var generationResult =
                               await service.createNewImageAndGetUrl(
                             prompt: imageDescriptionController.text,
-                            campagneId: CampagneIdentifier($value: campagneId),
+                            campagneId: CampagneIdentifier(value: campagneId),
                           );
 
                           if (!context.mounted || !mounted) return;

@@ -13,8 +13,8 @@ void main() {
       final config = RpgCharacterConfiguration.getBaseConfiguration(null)
           .copyWith(characterName: 'Frodo');
       final character = PlayerCharacter(
-        id: PlayerCharacterIdentifier($value: 'pc-1'),
-        playerUserId: UserIdentifier($value: 'user-1'),
+        id: PlayerCharacterIdentifier(value: 'pc-1'),
+        playerUserId: UserIdentifier(value: 'user-1'),
         characterName: 'Frodo',
         rpgCharacterConfiguration: jsonEncode(config),
       );
@@ -22,8 +22,8 @@ void main() {
       final result = mapCharactersToOpenPlayerConnections([character]);
 
       expect(result, hasLength(1));
-      expect(result.single.playerCharacterId.$value, 'pc-1');
-      expect(result.single.userId.$value, 'user-1');
+      expect(result.single.playerCharacterId.value, 'pc-1');
+      expect(result.single.userId.value, 'user-1');
       expect(result.single.configuration.characterName, 'Frodo');
       expect(result.single.lastPing, isNull);
     });
@@ -31,8 +31,8 @@ void main() {
     test('maps multiple characters preserving order', () {
       final characters = [
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-1'),
-          playerUserId: UserIdentifier($value: 'user-1'),
+          id: PlayerCharacterIdentifier(value: 'pc-1'),
+          playerUserId: UserIdentifier(value: 'user-1'),
           characterName: 'Frodo',
           rpgCharacterConfiguration: jsonEncode(
             RpgCharacterConfiguration.getBaseConfiguration(null)
@@ -40,8 +40,8 @@ void main() {
           ),
         ),
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-2'),
-          playerUserId: UserIdentifier($value: 'user-2'),
+          id: PlayerCharacterIdentifier(value: 'pc-2'),
+          playerUserId: UserIdentifier(value: 'user-2'),
           characterName: 'Sam',
           rpgCharacterConfiguration: jsonEncode(
             RpgCharacterConfiguration.getBaseConfiguration(null)
@@ -53,14 +53,14 @@ void main() {
       final result = mapCharactersToOpenPlayerConnections(characters);
 
       expect(result, hasLength(2));
-      expect(result[0].playerCharacterId.$value, 'pc-1');
-      expect(result[1].playerCharacterId.$value, 'pc-2');
+      expect(result[0].playerCharacterId.value, 'pc-1');
+      expect(result[1].playerCharacterId.value, 'pc-2');
     });
 
     test('skips characters missing an id', () {
       final character = PlayerCharacter(
         id: null,
-        playerUserId: UserIdentifier($value: 'user-1'),
+        playerUserId: UserIdentifier(value: 'user-1'),
         characterName: 'Frodo',
       );
 
@@ -71,7 +71,7 @@ void main() {
 
     test('skips characters missing a player user id', () {
       final character = PlayerCharacter(
-        id: PlayerCharacterIdentifier($value: 'pc-1'),
+        id: PlayerCharacterIdentifier(value: 'pc-1'),
         playerUserId: null,
         characterName: 'Frodo',
       );
@@ -85,8 +85,8 @@ void main() {
         'falls back to a named base configuration when no config was persisted yet',
         () {
       final character = PlayerCharacter(
-        id: PlayerCharacterIdentifier($value: 'pc-1'),
-        playerUserId: UserIdentifier($value: 'user-1'),
+        id: PlayerCharacterIdentifier(value: 'pc-1'),
+        playerUserId: UserIdentifier(value: 'user-1'),
         characterName: 'Frodo',
         rpgCharacterConfiguration: null,
       );
@@ -102,8 +102,8 @@ void main() {
 
     test('falls back to a named base configuration on malformed JSON', () {
       final character = PlayerCharacter(
-        id: PlayerCharacterIdentifier($value: 'pc-1'),
-        playerUserId: UserIdentifier($value: 'user-1'),
+        id: PlayerCharacterIdentifier(value: 'pc-1'),
+        playerUserId: UserIdentifier(value: 'user-1'),
         characterName: 'Frodo',
         rpgCharacterConfiguration: 'not valid json{{{',
       );
@@ -116,8 +116,8 @@ void main() {
     test('marks characters whose userId is in onlineUserIds as online', () {
       final characters = [
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-1'),
-          playerUserId: UserIdentifier($value: 'user-1'),
+          id: PlayerCharacterIdentifier(value: 'pc-1'),
+          playerUserId: UserIdentifier(value: 'user-1'),
           characterName: 'Frodo',
           rpgCharacterConfiguration: jsonEncode(
             RpgCharacterConfiguration.getBaseConfiguration(null)
@@ -125,8 +125,8 @@ void main() {
           ),
         ),
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-2'),
-          playerUserId: UserIdentifier($value: 'user-2'),
+          id: PlayerCharacterIdentifier(value: 'pc-2'),
+          playerUserId: UserIdentifier(value: 'user-2'),
           characterName: 'Sam',
           rpgCharacterConfiguration: jsonEncode(
             RpgCharacterConfiguration.getBaseConfiguration(null)
@@ -152,8 +152,8 @@ void main() {
       DateTime? lastPing,
     }) {
       return OpenPlayerConnection(
-        userId: UserIdentifier($value: userId),
-        playerCharacterId: PlayerCharacterIdentifier($value: pcId),
+        userId: UserIdentifier(value: userId),
+        playerCharacterId: PlayerCharacterIdentifier(value: pcId),
         configuration: RpgCharacterConfiguration.getBaseConfiguration(null)
             .copyWith(characterName: pcId),
         lastPing: lastPing,
@@ -191,13 +191,13 @@ void main() {
       final roster = [connection(userId: 'user-1', pcId: 'pc-1')];
       final allCharacters = [
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-1'),
-          playerUserId: UserIdentifier($value: 'user-1'),
+          id: PlayerCharacterIdentifier(value: 'pc-1'),
+          playerUserId: UserIdentifier(value: 'user-1'),
           characterName: 'Frodo',
         ),
         PlayerCharacter(
-          id: PlayerCharacterIdentifier($value: 'pc-2'),
-          playerUserId: UserIdentifier($value: 'user-2'),
+          id: PlayerCharacterIdentifier(value: 'pc-2'),
+          playerUserId: UserIdentifier(value: 'user-2'),
           characterName: 'Sam',
         ),
       ];
@@ -211,7 +211,7 @@ void main() {
 
       expect(result, hasLength(2));
       expect(
-        result.firstWhere((p) => p.userId.$value == 'user-2').lastPing,
+        result.firstWhere((p) => p.userId.value == 'user-2').lastPing,
         isNotNull,
       );
     });

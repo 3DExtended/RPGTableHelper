@@ -62,7 +62,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
     ref.watch(connectionDetailsProvider).whenData((cb) {
       var playerIds = (cb.connectedPlayers ?? [])
           .map((p) =>
-              (p.playerCharacterId.$value!, p.configuration.characterName))
+              (p.playerCharacterId.value!, p.configuration.characterName))
           .toList();
 
       for (var playerId in playerIds) {

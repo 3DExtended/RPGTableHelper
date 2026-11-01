@@ -74,7 +74,7 @@ class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
     required CampagneIdentifier campagneId,
     required FightSequence fightSequence,
   }) async {
-    askPlayersForRollsCalls.add((campagneId.$value!, fightSequence));
+    askPlayersForRollsCalls.add((campagneId.value!, fightSequence));
     return HRResponse.fromResult(true);
   }
 
@@ -84,7 +84,7 @@ class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
     required FightSequence fightSequence,
   }) async {
     sendFightSequenceRollsToDmCalls
-        .add((playerCharacterId.$value!, fightSequence));
+        .add((playerCharacterId.value!, fightSequence));
     return HRResponse.fromResult(true);
   }
 
@@ -93,8 +93,8 @@ class _RecordingRpgEntityForSessionCommands extends MockRpgEntityService {
     required PlayerCharacterIdentifier playerCharacterId,
     required List<RpgCharacterOwnedItemPair> items,
   }) async {
-    grantItemsToCharacterCalls.add((playerCharacterId.$value!, items));
-    if (rejectedPlayerCharacterIds.contains(playerCharacterId.$value)) {
+    grantItemsToCharacterCalls.add((playerCharacterId.value!, items));
+    if (rejectedPlayerCharacterIds.contains(playerCharacterId.value)) {
       return HRResponse.error(
         'Could not verify character or its campagne',
         'bad-request',

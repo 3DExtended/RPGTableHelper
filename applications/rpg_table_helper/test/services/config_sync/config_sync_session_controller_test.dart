@@ -54,14 +54,14 @@ class _RecordingRpgEntityService extends MockRpgEntityService {
   Future<HRResponse<PlayerCharacter>> getPlayerCharacterById({
     required PlayerCharacterIdentifier playerCharacterId,
   }) {
-    calls.add('getPlayerCharacterById:${playerCharacterId.$value}');
+    calls.add('getPlayerCharacterById:${playerCharacterId.value}');
     return super.getPlayerCharacterById(playerCharacterId: playerCharacterId);
   }
 
   @override
   Future<HRResponse<List<PlayerCharacter>>> getPlayerCharactersForCampagne(
       {required CampagneIdentifier campagneId}) {
-    calls.add('getPlayerCharactersForCampagne:${campagneId.$value}');
+    calls.add('getPlayerCharactersForCampagne:${campagneId.value}');
     return super.getPlayerCharactersForCampagne(campagneId: campagneId);
   }
 
@@ -162,7 +162,7 @@ void main() {
       );
       await eventsClient.start();
 
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
       sut.startForCampagne(campagneId: campagneId, initialRevision: 1);
 
       final edited =
@@ -204,7 +204,7 @@ void main() {
       );
       await eventsClient.start();
 
-      final campagneId = CampagneIdentifier($value: 'campagne-1');
+      final campagneId = CampagneIdentifier(value: 'campagne-1');
       sut.startForCampagne(campagneId: campagneId, initialRevision: 1);
 
       sseBody.add(
@@ -236,7 +236,7 @@ void main() {
       await eventsClient.start();
 
       sut.startForCampagne(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
         initialRevision: 1,
       );
 
@@ -280,7 +280,7 @@ void main() {
       );
       await eventsClient.start();
 
-      final playerCharacterId = PlayerCharacterIdentifier($value: 'pc-1');
+      final playerCharacterId = PlayerCharacterIdentifier(value: 'pc-1');
       sut.startForCharacter(
         playerCharacterId: playerCharacterId,
         initialRevision: 2,
@@ -303,8 +303,8 @@ void main() {
         'characterConfigChanged for a character other than "our own" GETs it and forwards to onRemoteCharacterConfig (DM path)',
         () async {
       final remoteCharacter = PlayerCharacter(
-        id: PlayerCharacterIdentifier($value: 'pc-other'),
-        playerUserId: UserIdentifier($value: 'user-other'),
+        id: PlayerCharacterIdentifier(value: 'pc-other'),
+        playerUserId: UserIdentifier(value: 'user-other'),
         characterName: 'Sam',
         rpgCharacterConfiguration: jsonEncode(
           RpgCharacterConfiguration.getBaseConfiguration(null)
@@ -334,7 +334,7 @@ void main() {
 
       // DM path: no startForCharacter, only startForCampagne.
       sut.startForCampagne(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
         initialRevision: 1,
       );
 
@@ -382,7 +382,7 @@ void main() {
       await eventsClient.start();
 
       sut.startForCharacter(
-        playerCharacterId: PlayerCharacterIdentifier($value: 'pc-own'),
+        playerCharacterId: PlayerCharacterIdentifier(value: 'pc-own'),
         initialRevision: 1,
       );
 
@@ -414,7 +414,7 @@ void main() {
       await eventsClient.start();
 
       sut.startForCampagne(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
         initialRevision: 1,
       );
 
@@ -447,7 +447,7 @@ void main() {
       await eventsClient.start();
 
       sut.startForCampagne(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
         initialRevision: 1,
       );
 
@@ -480,7 +480,7 @@ void main() {
       await eventsClient.start();
 
       sut.startForCampagne(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
         initialRevision: 1,
       );
 
@@ -512,7 +512,7 @@ void main() {
       await eventsClient.start();
 
       sut.startForCampagne(
-        campagneId: CampagneIdentifier($value: 'campagne-1'),
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
         initialRevision: 1,
       );
 

@@ -134,7 +134,7 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
     var service =
         DependencyProvider.of(context).getService<IImageGenerationService>();
     var imagesResponse = await service.getImagesForCampagne(
-        campagneId: CampagneIdentifier($value: campagneId));
+        campagneId: CampagneIdentifier(value: campagneId));
 
     if (!mounted) return;
     await imagesResponse.possiblyHandleError(context);
@@ -155,7 +155,7 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
   }
 
   String getPublicImageUrl(ImageMetaData image) {
-    var urlForImage = "/public/getimage/${image.id!.$value!}/${image.apiKey!}";
+    var urlForImage = "/public/getimage/${image.id!.value!}/${image.apiKey!}";
 
     return urlForImage;
   }

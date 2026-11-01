@@ -849,7 +849,7 @@ class _PlayerStatsConfigurationVisualsState
 
     var generationResult = await service.createNewImageAndGetUrl(
       prompt: textController.text,
-      campagneId: CampagneIdentifier($value: campagneId),
+      campagneId: CampagneIdentifier(value: campagneId),
     );
 
     if (!context.mounted || !mounted) return;
@@ -918,7 +918,7 @@ class _PlayerStatsConfigurationVisualsState
       var service =
           DependencyProvider.of(context).getService<IRpgEntityService>();
       var response = await service.uploadImageToCampagneStorage(
-        campagneId: CampagneIdentifier($value: campagneId),
+        campagneId: CampagneIdentifier(value: campagneId),
         image: multipartFile,
       );
 

@@ -56,20 +56,20 @@ NoteDocumentDto _ownNotesDocument() {
   final created = DateTime(2026, 10, 2, 22, 12);
   return NoteDocumentDto(
     groupName: 'Session Notes',
-    createdForCampagneId: CampagneIdentifier($value: _campagneId),
+    createdForCampagneId: CampagneIdentifier(value: _campagneId),
     title: 'Notizen und Dokumente von Ettrian Ravaren',
-    creatingUserId: UserIdentifier($value: _myUserId),
-    id: NoteDocumentIdentifier($value: '01999f0e-0000-7000-8000-00000000d0c1'),
+    creatingUserId: UserIdentifier(value: _myUserId),
+    id: NoteDocumentIdentifier(value: '01999f0e-0000-7000-8000-00000000d0c1'),
     isDeleted: false,
     creationDate: created,
     lastModifiedAt: created,
     imageBlocks: [],
     textBlocks: [
       TextBlock(
-        creatingUserId: UserIdentifier($value: _myUserId),
+        creatingUserId: UserIdentifier(value: _myUserId),
         creationDate: created,
         id: NoteBlockModelBaseIdentifier(
-            $value: '01999f0e-0000-7000-8000-00000000b001'),
+            value: '01999f0e-0000-7000-8000-00000000b001'),
         isDeleted: false,
         lastModifiedAt: created,
         permittedUsers: [],
@@ -84,23 +84,23 @@ NoteDocumentDto _dmSharedDocument() {
   final created = DateTime(2026, 10, 3, 10, 50);
   return NoteDocumentDto(
     groupName: 'Abenteuer',
-    createdForCampagneId: CampagneIdentifier($value: _campagneId),
+    createdForCampagneId: CampagneIdentifier(value: _campagneId),
     title: 'Brief des Hafenmeisters',
-    creatingUserId: UserIdentifier($value: _dmUserId),
-    id: NoteDocumentIdentifier($value: '01999f0e-0000-7000-8000-00000000d0c2'),
+    creatingUserId: UserIdentifier(value: _dmUserId),
+    id: NoteDocumentIdentifier(value: '01999f0e-0000-7000-8000-00000000d0c2'),
     isDeleted: false,
     creationDate: created,
     lastModifiedAt: created,
     imageBlocks: [],
     textBlocks: [
       TextBlock(
-        creatingUserId: UserIdentifier($value: _dmUserId),
+        creatingUserId: UserIdentifier(value: _dmUserId),
         creationDate: created,
         id: NoteBlockModelBaseIdentifier(
-            $value: '01999f0e-0000-7000-8000-00000000b002'),
+            value: '01999f0e-0000-7000-8000-00000000b002'),
         isDeleted: false,
         lastModifiedAt: created,
-        permittedUsers: [UserIdentifier($value: _myUserId)],
+        permittedUsers: [UserIdentifier(value: _myUserId)],
         markdownText: 'Die Rabenkrone darf am Pier 3 anlegen.',
       ),
     ],
@@ -440,8 +440,8 @@ void main() {
         [_ownNotesDocument(), _dmSharedDocument()]);
     events.push('noteAccessChanged', {
       'campagneId': _campagneId,
-      'documentId': _dmSharedDocument().id!.$value,
-      'blockId': _dmSharedDocument().textBlocks.first.id!.$value,
+      'documentId': _dmSharedDocument().id!.value,
+      'blockId': _dmSharedDocument().textBlocks.first.id!.value,
       'changeKind': 'granted',
     });
     await _settle(tester);
