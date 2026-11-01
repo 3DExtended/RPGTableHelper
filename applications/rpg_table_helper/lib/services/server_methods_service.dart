@@ -39,9 +39,9 @@ import 'package:uuid/v7.dart';
 /// A backend that advertises `persisted-fights` keeps fights on the server:
 /// the DM starts, orders and ends them through `/Fight/*`, every player with a
 /// character in the fight is asked to roll (also when they come back later,
-/// see [catchUpOnFight]) and the `initiativeRequested` / `fightUpdated` /
-/// `fightEnded` events replace the old fight events, which that backend still
-/// sends for older apps.
+/// see [catchUpOnFight]) and the `initiativeRequested` / `initiativeSettled` /
+/// `fightUpdated` / `fightEnded` events replace the old fight events, which
+/// that backend still sends for older apps.
 abstract class IServerMethodsService {
   final bool isMock;
   final WidgetRef widgetRef;
@@ -127,13 +127,19 @@ abstract class IServerMethodsService {
   void dmReceivedFightSequenceAnswer(String serializedFightSequence);
   void grantPlayerItems(String grantedItemsJson);
   void initiativeRequested(InitiativeRequest request);
+
+  /// Closes the roll prompts of [settlement]: the player rolled in another
+  /// app, or the DM rolled or removed them.
+  void initiativeSettled(InitiativeSettlement settlement);
   void fightUpdated(String fightId);
   void fightEnded(String fightId);
 }
 
+/// Asks for a roll; closes with null once [noLongerNeeded] completes.
 typedef InitiativeRollPrompt = Future<int?> Function(
   String characterName,
   InitiativeBonusHint? initiativeBonusHint,
+  Future<void> noLongerNeeded,
 );
 
 class ServerMethodsService extends IServerMethodsService {
@@ -146,6 +152,10 @@ class ServerMethodsService extends IServerMethodsService {
   /// "fightId|characterUuid" of every roll the player is or was asked for, so
   /// the live event, the old event and a catch-up never ask twice.
   final Set<String> _askedInitiativeRolls = {};
+
+  /// "fightId|characterUuid" of every roll prompt that is open or waits for
+  /// the one before it; completing one closes or skips that prompt.
+  final Map<String, Completer<void>> _openInitiativePrompts = {};
 
   IRpgEntityService? get _rpgEntityService =>
       DependencyProvider.getIt?.get<IRpgEntityService>();
@@ -337,6 +347,8 @@ class ServerMethodsService extends IServerMethodsService {
           navKey,
           characterAsked.characterName,
           hint,
+          // The old flow has no event that settles a roll.
+          Completer<void>().future,
         );
 
         if (roll == null) continue;
@@ -599,6 +611,8 @@ class ServerMethodsService extends IServerMethodsService {
       return;
     }
 
+    // Only prompts open before the request: a newer one may be missing in it.
+    final openPrompts = _openInitiativePrompts.keys.toSet();
     final response = await _fightApi!.getCurrentFight(campagneId: campagneId);
     if (!response.isSuccessful) {
       return;
@@ -608,6 +622,15 @@ class ServerMethodsService extends IServerMethodsService {
       _showDmFight(fight);
       return;
     }
+
+    // Rolled elsewhere or ended while the event stream was down.
+    final stillPending = {
+      for (final p in fight?.pending ?? const <FightParticipantState>[])
+        if (p.characterUuid != null) _promptKey(fight!.id, p.characterUuid!),
+    };
+    _closeInitiativePrompts(
+        (key) => openPrompts.contains(key) && !stillPending.contains(key));
+
     if (fight != null) {
       await _askForInitiative(fight.id, fight.pending);
     }
@@ -626,6 +649,15 @@ class ServerMethodsService extends IServerMethodsService {
   }
 
   @override
+  void initiativeSettled(InitiativeSettlement settlement) {
+    final settled = {
+      for (final uuid in settlement.characterUuids)
+        _promptKey(settlement.fightId, uuid),
+    };
+    _closeInitiativePrompts(settled.contains);
+  }
+
+  @override
   void fightUpdated(String fightId) {
     final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
     final fight = widgetRef.read(currentFightProvider);
@@ -641,6 +673,8 @@ class ServerMethodsService extends IServerMethodsService {
   void fightEnded(String fightId) {
     _askedInitiativeRolls
         .removeWhere((key) => key.startsWith('${fightId.toLowerCase()}|'));
+    _closeInitiativePrompts(
+        (key) => key.startsWith('${fightId.toLowerCase()}|'));
 
     final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
     if (details != null &&
@@ -698,10 +732,14 @@ class ServerMethodsService extends IServerMethodsService {
           ? _sameId(p.playerCharacterId, details.playerCharacterId)
           : ownCombatants.containsKey(uuid);
       return isOwnCharacter &&
-          _askedInitiativeRolls.add('${fightId.toLowerCase()}|$uuid');
+          _askedInitiativeRolls.add(_promptKey(fightId, uuid));
     }).toList();
     if (toAsk.isEmpty) {
       return;
+    }
+    for (final participant in toAsk) {
+      _openInitiativePrompts[_promptKey(fightId, participant.characterUuid!)] =
+          Completer<void>();
     }
 
     var navKey = navigationService.getCurrentNavigationKey();
@@ -712,19 +750,27 @@ class ServerMethodsService extends IServerMethodsService {
 
     final rolls = <(String, int)>[];
     for (final participant in toAsk) {
+      final key = _promptKey(fightId, participant.characterUuid!);
+      final noLongerNeeded = _openInitiativePrompts[key];
       final local = ownCombatants[participant.characterUuid];
       final hint = rpgConfig == null || local == null
           ? null
           : resolveInitiativeBonus(rpgConfig: rpgConfig, character: local);
-      final roll = await _askForRoll(
-        navKey,
-        local?.characterName ?? participant.name,
-        hint,
-      );
+      final roll = noLongerNeeded == null || noLongerNeeded.isCompleted
+          ? null
+          : await _askForRoll(
+              navKey,
+              local?.characterName ?? participant.name,
+              hint,
+              noLongerNeeded.future,
+            );
+      if (identical(_openInitiativePrompts[key], noLongerNeeded)) {
+        _openInitiativePrompts.remove(key);
+      }
       if (roll == null) {
-        // Asked again when they come back or the stream reconnects.
-        _askedInitiativeRolls
-            .remove('${fightId.toLowerCase()}|${participant.characterUuid}');
+        // Asked again when they come back or the stream reconnects, if the
+        // server still waits for this roll.
+        _askedInitiativeRolls.remove(key);
         continue;
       }
       rolls.add((participant.characterUuid!, roll));
@@ -741,17 +787,31 @@ class ServerMethodsService extends IServerMethodsService {
     GlobalKey<NavigatorState> navKey,
     String characterName,
     InitiativeBonusHint? hint,
+    Future<void> noLongerNeeded,
   ) {
     final prompt = initiativeRollPrompt;
     if (prompt != null) {
-      return prompt(characterName, hint);
+      return prompt(characterName, hint, noLongerNeeded);
     }
     return showAskPlayerForFightOrderRoll(
       navKey.currentContext!,
       characterName: characterName,
       initiativeBonusHint: hint,
+      noLongerNeeded: noLongerNeeded,
     );
   }
+
+  /// Closes, or skips if not shown yet, the roll prompts whose key matches.
+  void _closeInitiativePrompts(bool Function(String key) matches) {
+    for (final entry in _openInitiativePrompts.entries) {
+      if (matches(entry.key) && !entry.value.isCompleted) {
+        entry.value.complete();
+      }
+    }
+  }
+
+  static String _promptKey(String fightId, String characterUuid) =>
+      '${fightId.toLowerCase()}|$characterUuid';
 
   Future<HRResponse<bool>> _changeDmFight(
       Future<HRResponse<FightState>> change) async {

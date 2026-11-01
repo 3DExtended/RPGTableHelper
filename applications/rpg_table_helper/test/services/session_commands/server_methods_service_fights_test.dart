@@ -206,6 +206,12 @@ class _Harness {
   /// Roll the player enters per name; a missing name dismisses the prompt.
   final Map<String, int> rolls = {};
 
+  /// Names whose prompt stays open until the app no longer needs the roll.
+  final Set<String> keepOpen = {};
+
+  /// Names whose prompt the app closed because the roll was no longer needed.
+  final List<String> closed = [];
+
   FightState? get currentFight => ref.read(currentFightProvider);
 
   FightSequence? get fightSequence =>
@@ -230,8 +236,13 @@ Future<_Harness> _setup(
   final svc = ServerMethodsService(
     navigationService: _FakeNav(),
     widgetRef: ref,
-    initiativeRollPrompt: (name, hint) async {
+    initiativeRollPrompt: (name, hint, noLongerNeeded) async {
       asked.add(name);
+      if (harness.keepOpen.contains(name)) {
+        await noLongerNeeded;
+        harness.closed.add(name);
+        return null;
+      }
       return harness.rolls[name];
     },
   );
@@ -541,6 +552,111 @@ void main() {
       expect(h.fightApi.submittedRolls, [
         [('aria', 11)],
       ]);
+    });
+
+    testWidgets('stops asking once the roll was made in another app',
+        (tester) async {
+      final h = await _setup(tester, isDm: false);
+      h.keepOpen.add('Aria');
+      h.rolls['Fang'] = 9;
+
+      h.svc.initiativeRequested(InitiativeRequest(
+        fightId: 'fight-1',
+        campagneId: 'camp-1',
+        participants: [
+          _participant('p-aria', 'Aria',
+              uuid: 'aria', playerCharacterId: 'pc-aria'),
+          _participant('p-fang', 'Fang',
+              uuid: 'fang',
+              playerCharacterId: 'pc-aria',
+              kind: FightParticipantKind.companion),
+        ],
+      ));
+      await _settle(tester);
+      h.svc.initiativeSettled(const InitiativeSettlement(
+          fightId: 'fight-2', campagneId: 'camp-1', characterUuids: ['aria']));
+      await _settle(tester);
+      expect(h.closed, isEmpty, reason: 'another fight');
+
+      // both rolled in the web app while Aria's prompt was open here
+      h.svc.initiativeSettled(const InitiativeSettlement(
+          fightId: 'FIGHT-1',
+          campagneId: 'camp-1',
+          characterUuids: ['aria', 'fang']));
+      await _settle(tester);
+
+      expect(h.closed, ['Aria']);
+      expect(h.asked, ['Aria'], reason: 'Fang was settled before its turn');
+      expect(h.fightApi.submittedRolls, isEmpty);
+    });
+
+    testWidgets('stops asking when the DM ends the fight', (tester) async {
+      final h = await _setup(tester, isDm: false);
+      h.keepOpen.add('Aria');
+
+      h.svc.initiativeRequested(InitiativeRequest(
+        fightId: 'fight-1',
+        campagneId: 'camp-1',
+        participants: [
+          _participant('p-aria', 'Aria',
+              uuid: 'aria', playerCharacterId: 'pc-aria'),
+        ],
+      ));
+      await _settle(tester);
+      h.svc.fightEnded('FIGHT-1');
+      await _settle(tester);
+
+      expect(h.closed, ['Aria']);
+      expect(h.fightApi.submittedRolls, isEmpty);
+    });
+
+    testWidgets(
+        'stops asking on reconnect when the roll was made while disconnected',
+        (tester) async {
+      final h = await _setup(tester, isDm: false);
+      h.keepOpen.add('Aria');
+      h.fightApi.fight = _fight([
+        _participant('p-aria', 'Aria',
+            uuid: 'aria', playerCharacterId: 'pc-aria'),
+      ]);
+      final firstCatchUp = h.svc.catchUpOnFight();
+      await _settle(tester);
+      expect(h.asked, ['Aria']);
+
+      // still pending: the prompt stays open
+      await h.svc.catchUpOnFight();
+      await _settle(tester);
+      expect(h.closed, isEmpty);
+
+      h.fightApi.fight = _fight([
+        _participant('p-aria', 'Aria',
+            uuid: 'aria', playerCharacterId: 'pc-aria', roll: 12, position: 0),
+      ]);
+      await h.svc.catchUpOnFight();
+      await firstCatchUp;
+
+      expect(h.closed, ['Aria']);
+      expect(h.asked, ['Aria']);
+      expect(h.fightApi.submittedRolls, isEmpty);
+    });
+
+    testWidgets('stops asking on reconnect when the fight is over',
+        (tester) async {
+      final h = await _setup(tester, isDm: false);
+      h.keepOpen.add('Aria');
+      h.fightApi.fight = _fight([
+        _participant('p-aria', 'Aria',
+            uuid: 'aria', playerCharacterId: 'pc-aria'),
+      ]);
+      final firstCatchUp = h.svc.catchUpOnFight();
+      await _settle(tester);
+
+      h.fightApi.fight = null;
+      await h.svc.catchUpOnFight();
+      await firstCatchUp;
+
+      expect(h.closed, ['Aria']);
+      expect(h.fightApi.submittedRolls, isEmpty);
     });
 
     testWidgets('is not asked for a fight in another campagne', (tester) async {

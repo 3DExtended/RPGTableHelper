@@ -724,6 +724,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         serverMethodsService.grantPlayerItems(jsonEncode([grant]));
       },
       onInitiativeRequested: serverMethodsService.initiativeRequested,
+      onInitiativeSettled: serverMethodsService.initiativeSettled,
       onFightUpdated: serverMethodsService.fightUpdated,
       onFightEnded: serverMethodsService.fightEnded,
     );

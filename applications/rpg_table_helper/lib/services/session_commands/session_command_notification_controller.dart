@@ -16,8 +16,8 @@ import 'package:quest_keeper/services/sse/sse_parser.dart';
 /// [JoinRequestNotificationController]. Callers should start this once the
 /// table session UI is active and stop it when leaving the session.
 ///
-/// Fights kept on the server add `initiativeRequested`, `fightUpdated` and
-/// `fightEnded`.
+/// Fights kept on the server add `initiativeRequested`, `initiativeSettled`,
+/// `fightUpdated` and `fightEnded`.
 class SessionCommandNotificationController {
   SessionCommandNotificationController({
     required this.eventsClient,
@@ -25,6 +25,7 @@ class SessionCommandNotificationController {
     required this.onDmReceivedFightSequenceAnswer,
     required this.onItemsGranted,
     this.onInitiativeRequested,
+    this.onInitiativeSettled,
     this.onFightUpdated,
     this.onFightEnded,
   });
@@ -36,6 +37,7 @@ class SessionCommandNotificationController {
       onDmReceivedFightSequenceAnswer;
   final void Function(ItemsGrantedNotification event) onItemsGranted;
   final void Function(InitiativeRequest event)? onInitiativeRequested;
+  final void Function(InitiativeSettlement event)? onInitiativeSettled;
 
   /// Called with the fight id.
   final void Function(String fightId)? onFightUpdated;
@@ -80,6 +82,12 @@ class SessionCommandNotificationController {
           onInitiativeRequested?.call(parsed);
         }
         break;
+      case 'initiativeSettled':
+        final parsed = _tryParseInitiativeSettlement(event.data);
+        if (parsed != null) {
+          onInitiativeSettled?.call(parsed);
+        }
+        break;
       case 'fightUpdated':
         final fightId = _tryParseFightId(event.data);
         if (fightId != null) {
@@ -116,6 +124,28 @@ class SessionCommandNotificationController {
         fightId: fightId,
         campagneId: campagneId,
         participants: participants,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  InitiativeSettlement? _tryParseInitiativeSettlement(String data) {
+    try {
+      final json = jsonDecode(data) as Map<String, dynamic>;
+      final fightId = json['fightId'] as String?;
+      final campagneId = json['campagneId'] as String?;
+      final participantsRaw = json['participants'] as List<dynamic>?;
+      if (fightId == null || campagneId == null || participantsRaw == null) {
+        return null;
+      }
+      return InitiativeSettlement(
+        fightId: fightId,
+        campagneId: campagneId,
+        characterUuids: participantsRaw
+            .map((raw) => (raw as Map<String, dynamic>)['characterUuid'])
+            .whereType<String>()
+            .toList(),
       );
     } catch (_) {
       return null;

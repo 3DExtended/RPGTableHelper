@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -225,5 +227,51 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Add Geschicklichkeit (+2) to your roll'), findsNothing);
+  });
+
+  testWidgets('closes itself once the roll is no longer needed',
+      (tester) async {
+    final modalNavigatorKey = GlobalKey<NavigatorState>();
+    final noLongerNeeded = Completer<void>();
+    Future<int?>? result;
+    await tester.pumpWidget(
+      CustomThemeProvider(
+        overrideBrightness: Brightness.light,
+        child: MaterialApp(
+          navigatorKey: modalNavigatorKey,
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            S.delegate
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () => result = showAskPlayerForFightOrderRoll(
+                  context,
+                  characterName: 'Frodo',
+                  overrideNavigatorKey: modalNavigatorKey,
+                  noLongerNeeded: noLongerNeeded.future,
+                ),
+                child: const Text('Ask'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Ask'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PlayerHasBeenAskedToRollForFightOrderModalContent),
+        findsOneWidget);
+
+    noLongerNeeded.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PlayerHasBeenAskedToRollForFightOrderModalContent),
+        findsNothing);
+    expect(await result, isNull);
+    expect(find.text('Ask'), findsOneWidget);
   });
 }

@@ -169,6 +169,7 @@ void main() {
     });
     test('fight events of stored fights reach their callbacks', () async {
       InitiativeRequest? requested;
+      InitiativeSettlement? settled;
       final updated = <String>[];
       final ended = <String>[];
       final sut = SessionCommandNotificationController(
@@ -177,6 +178,7 @@ void main() {
         onDmReceivedFightSequenceAnswer: (_) {},
         onItemsGranted: (_) {},
         onInitiativeRequested: (event) => requested = event,
+        onInitiativeSettled: (event) => settled = event,
         onFightUpdated: updated.add,
         onFightEnded: ended.add,
       );
@@ -206,6 +208,19 @@ void main() {
                   },
                 ],
               })}\n\n'
+          'event: initiativeSettled\n'
+          'data: ${jsonEncode({
+                'fightId': 'fight-1',
+                'campagneId': 'camp-1',
+                'participants': [
+                  {'participantId': 'p-1', 'characterUuid': 'aria', 'roll': 15},
+                  {
+                    'participantId': 'p-2',
+                    'characterUuid': 'fang',
+                    'roll': null
+                  },
+                ],
+              })}\n\n'
           'event: fightUpdated\n'
           'data: {"fightId":"fight-1","campagneId":"camp-1","revision":3}\n\n'
           'event: fightEnded\n'
@@ -224,6 +239,10 @@ void main() {
         ('p-2', 'Fang', FightParticipantKind.companion),
       ]);
       expect(requested!.participants.every((p) => p.isPending), isTrue);
+      expect(settled, isNotNull);
+      expect(settled!.fightId, 'fight-1');
+      expect(settled!.campagneId, 'camp-1');
+      expect(settled!.characterUuids, ['aria', 'fang']);
       expect(updated, ['fight-1']);
       expect(ended, ['fight-1']);
 

@@ -134,3 +134,17 @@ class InitiativeRequest {
     required this.participants,
   });
 }
+
+/// `initiativeSettled` SSE payload: these of your characters no longer need a
+/// roll (rolled in another app or by the DM, or removed by the DM).
+class InitiativeSettlement {
+  final String fightId;
+  final String campagneId;
+  final List<String> characterUuids;
+
+  const InitiativeSettlement({
+    required this.fightId,
+    required this.campagneId,
+    required this.characterUuids,
+  });
+}

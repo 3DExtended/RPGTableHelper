@@ -13,9 +13,13 @@ import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
+/// Asks for an initiative roll; null when the player closes the dialog. The
+/// dialog also closes with null once [noLongerNeeded] completes, e.g. when the
+/// player rolled in another app or the fight ended.
 Future<int?> showAskPlayerForFightOrderRoll(BuildContext context,
     {required String characterName,
     InitiativeBonusHint? initiativeBonusHint,
+    Future<void>? noLongerNeeded,
     GlobalKey<NavigatorState>? overrideNavigatorKey}) async {
   // show error to user
   return await customShowCupertinoModalBottomSheet<int>(
@@ -36,6 +40,7 @@ Future<int?> showAskPlayerForFightOrderRoll(BuildContext context,
           modalPadding: modalPadding,
           characterName: characterName,
           initiativeBonusHint: initiativeBonusHint,
+          noLongerNeeded: noLongerNeeded,
         );
       });
 }
@@ -46,11 +51,15 @@ class PlayerHasBeenAskedToRollForFightOrderModalContent extends StatefulWidget {
     required this.modalPadding,
     required this.characterName,
     this.initiativeBonusHint,
+    this.noLongerNeeded,
   });
 
   final String characterName;
   final double modalPadding;
   final InitiativeBonusHint? initiativeBonusHint;
+
+  /// Closes the dialog without a roll when it completes.
+  final Future<void>? noLongerNeeded;
 
   @override
   State<PlayerHasBeenAskedToRollForFightOrderModalContent> createState() =>
@@ -60,6 +69,26 @@ class PlayerHasBeenAskedToRollForFightOrderModalContent extends StatefulWidget {
 class _PlayerHasBeenAskedToRollForFightOrderModalContentState
     extends State<PlayerHasBeenAskedToRollForFightOrderModalContent> {
   var textEditingController = TextEditingController(text: "");
+
+  @override
+  void initState() {
+    super.initState();
+    widget.noLongerNeeded?.then((_) {
+      if (!mounted) {
+        return;
+      }
+      final route = ModalRoute.of(context);
+      if (route == null || !route.isActive) {
+        return;
+      }
+      final navigator = Navigator.of(context);
+      if (route.isCurrent) {
+        navigator.pop();
+      } else {
+        navigator.removeRoute(route);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
