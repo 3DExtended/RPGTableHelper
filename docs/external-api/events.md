@@ -63,8 +63,8 @@ time, `leave` from one of them makes you leave in both. Prefer to simply close t
 What to do:
 
 - **`characterConfigChanged`** — if `id` is your character and `revision` is newer than yours, load
-  the sheet again ([Character sheet](character-sheet.md)). Fires for every character at the table and
-  also after your own writes.
+  the sheet again ([Character sheet](character-sheet.md)). Fires for every character at the table,
+  also after your own writes and when you change your character in the Questkeeper app.
 - **`itemsGranted`** — the DM gave you items. They are already in the sheet; show a message.
 - **`campagneConfigChanged`** — reload `campaigns/{id}/config` if you show stat names.
 - **`noteAccessChanged`** — reload the document ([Notes](notes.md)).

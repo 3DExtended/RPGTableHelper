@@ -539,8 +539,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 
         /// <summary>
         /// Emits a session-scoped <c>characterConfigChanged</c> SSE notify (<c>{ id, revision }</c> only, no body)
-        /// to the other users currently in the owning campagne's table session. No-op if the character is not
-        /// assigned to a campagne, or no other session participants are online.
+        /// to the users currently in the owning campagne's table session, the writer included so their other
+        /// apps (API keys) see the change; this app already has the revision and ignores the notify. No-op if the
+        /// character is not assigned to a campagne, or nobody is online.
         /// </summary>
         private Task NotifyCharacterConfigChangedAsync(
             Guid playerCharacterId,
@@ -554,11 +555,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Task.CompletedTask;
             }
 
-            var actorUserId = _userContext.User.UserIdentifier.Value;
-            var recipients = _sessionPresenceService
-                .GetOnlineParticipants(campagneId.Value)
-                .Where(id => id != actorUserId)
-                .ToList();
+            var recipients = _sessionPresenceService.GetOnlineParticipants(campagneId.Value).ToList();
 
             if (recipients.Count == 0)
             {

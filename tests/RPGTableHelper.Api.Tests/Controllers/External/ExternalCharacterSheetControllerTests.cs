@@ -95,6 +95,52 @@ public class ExternalCharacterSheetControllerTests : ExternalApiTestBase
         await ReadUntilEventAsync(heroAppEvents, "characterConfigChanged");
     }
 
+    [Theory]
+    [InlineData("PATCH")]
+    [InlineData("PUT")]
+    public async Task AChangeMadeInThePlayersQuestkeeperApp_ReachesTheirOtherApp(string method)
+    {
+        // arrange: the player's web app (API key) sits at the table next to their Questkeeper app.
+        var (_, campagne) = await CreateTableAsync();
+        var hero = await AddPlayerAsync(campagne, "Hero");
+        var key = await CreateApiKeyClientAsync(hero.User, ApiKeyScopes.CharactersRead, ApiKeyScopes.Events);
+        using var webAppEvents = await KeepEventsStreamOpenAsync(key);
+        (await key.PostAsync($"{V1}/campaigns/{campagne.Id.Value}/session/enter", null)).EnsureSuccessStatusCode();
+
+        // act: the hit points change in the Questkeeper app.
+        HttpResponseMessage response;
+        if (method == "PATCH")
+        {
+            var patch = new JsonArray(
+                new JsonObject
+                {
+                    ["op"] = "replace",
+                    ["path"] = "/characterStats/1/serializedValue",
+                    ["value"] = HpValue(4, 20),
+                }
+            );
+            response = await hero.AppClient.PatchAsync(
+                $"/PlayerCharacter/patchcharacterconfig/{hero.CharacterId}",
+                Json(new { fromRevision = 1, patch = patch.ToJsonString() })
+            );
+        }
+        else
+        {
+            var sheet = await LoadStoredSheetAsync(hero.CharacterId);
+            sheet["characterStats"]![1]!["serializedValue"] = HpValue(4, 20);
+            response = await hero.AppClient.PutAsync(
+                $"/PlayerCharacter/updatecharacterconfig/{hero.CharacterId}",
+                Json(new { rpgCharacterConfiguration = sheet.ToJsonString(), fromRevision = 1 })
+            );
+        }
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK, await response.Content.ReadAsStringAsync());
+        var changed = JsonNode.Parse(await ReadUntilEventAsync(webAppEvents, "characterConfigChanged"))!;
+        changed["id"]!.GetValue<string>().Should().Be(hero.CharacterId.ToString());
+        changed["revision"]!.GetValue<int>().Should().Be(2);
+    }
+
     [Fact]
     public async Task PatchSheet_FromAnOldRevision_IsAConflictNamingTheCurrentRevision()
     {

@@ -31,6 +31,8 @@ The player API: a player's own app can take part at the table.
   `notes:read`.
 - The old paths without `/v1` (`characters`, `campaigns`, `documents` reads) still work. They are
   not documented any more; use `/v1`.
+- `characterConfigChanged` also reaches the player who made the change, so a change made in the
+  Questkeeper app shows up in your app and the other way round.
 
 ### Fixed
 

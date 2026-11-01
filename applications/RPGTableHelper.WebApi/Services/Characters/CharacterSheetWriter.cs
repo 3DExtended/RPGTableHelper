@@ -198,14 +198,7 @@ public sealed class CharacterSheetWriter : ICharacterSheetWriter
             );
         }
 
-        // A write from another app (source set) must also reach the player's own Questkeeper app.
-        await NotifyCharacterConfigChangedAsync(
-                playerCharacterId,
-                updated.CampagneId,
-                newRevision,
-                excludedUserId: source == null ? actorUserId : null,
-                cancellationToken
-            )
+        await NotifyCharacterConfigChangedAsync(playerCharacterId, updated.CampagneId, newRevision, cancellationToken)
             .ConfigureAwait(false);
 
         return new CharacterSheetWriteResult { Status = CharacterSheetWriteStatus.Saved, Revision = newRevision };
@@ -229,14 +222,15 @@ public sealed class CharacterSheetWriter : ICharacterSheetWriter
 
     /// <summary>
     /// Emits a session-scoped <c>characterConfigChanged</c> SSE notify (<c>{ id, revision }</c> only, no body)
-    /// to the users currently in the owning campagne's table session, except <paramref name="excludedUserId"/>.
-    /// No-op if the character is not assigned to a campagne, or nobody else is online.
+    /// to the users currently in the owning campagne's table session. The writer is included: a change from the
+    /// player's Questkeeper app must reach their other apps (API keys) and the other way round; the writing app
+    /// already has the revision and ignores the notify.
+    /// No-op if the character is not assigned to a campagne, or nobody is online.
     /// </summary>
     private Task NotifyCharacterConfigChangedAsync(
         Guid playerCharacterId,
         Campagne.CampagneIdentifier? campagneId,
         int revision,
-        Guid? excludedUserId,
         CancellationToken cancellationToken
     )
     {
@@ -245,10 +239,7 @@ public sealed class CharacterSheetWriter : ICharacterSheetWriter
             return Task.CompletedTask;
         }
 
-        var recipients = _sessionPresenceService
-            .GetOnlineParticipants(campagneId.Value)
-            .Where(id => id != excludedUserId)
-            .ToList();
+        var recipients = _sessionPresenceService.GetOnlineParticipants(campagneId.Value).ToList();
 
         if (recipients.Count == 0)
         {
