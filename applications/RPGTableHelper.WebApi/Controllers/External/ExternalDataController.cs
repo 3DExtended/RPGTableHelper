@@ -17,7 +17,7 @@ using RPGTableHelper.WebApi.Services.Auth;
 namespace RPGTableHelper.WebApi.Controllers.External
 {
     /// <summary>
-    /// Read access to the caller's characters, campaigns and notes for the external player API.
+    /// Read access to the caller's characters and campaigns for the external player API.
     /// </summary>
     [ApiController]
     [Route(ExternalApiRoutes.V1)]
@@ -28,20 +28,11 @@ namespace RPGTableHelper.WebApi.Controllers.External
     {
         private readonly IQueryProcessor _queryProcessor;
         private readonly IUserContext _userContext;
-        private readonly INoteService _noteService;
-        private readonly IMapper _mapper;
 
-        public ExternalDataController(
-            IQueryProcessor queryProcessor,
-            IUserContext userContext,
-            INoteService noteService,
-            IMapper mapper
-        )
+        public ExternalDataController(IQueryProcessor queryProcessor, IUserContext userContext)
         {
             _queryProcessor = queryProcessor;
             _userContext = userContext;
-            _noteService = noteService;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -234,46 +225,6 @@ namespace RPGTableHelper.WebApi.Controllers.External
             var characters = charactersOption.IsNone ? new List<PlayerCharacter>() : charactersOption.Get();
 
             return Ok(characters);
-        }
-
-        /// <summary>
-        /// Retrieves all note documents for a specific campaign, if the user is authorized.
-        /// </summary>
-        [RequireScope(ApiKeyScopes.NotesRead)]
-        [HttpGet("campaigns/{id}/documents")]
-        public async Task<ActionResult<IEnumerable<NoteDocumentDto>>> GetDocuments(Guid id)
-        {
-            var userId = Guid.Parse(_userContext.User.IdentityProviderId);
-
-            var documents = await _noteService.GetNoteDocumentsForUserAsync(id, userId, HttpContext.RequestAborted);
-
-            if (documents.IsNone)
-            {
-                return NotFound();
-            }
-
-            var dtos = documents.Get().Select(_mapper.Map<NoteDocumentDto>);
-            return Ok(dtos);
-        }
-
-        /// <summary>
-        /// Retrieves a specific note document by ID, if the user is authorized.
-        /// </summary>
-        [RequireScope(ApiKeyScopes.NotesRead)]
-        [HttpGet("documents/{id}")]
-        public async Task<ActionResult<NoteDocumentDto>> GetDocument(Guid id)
-        {
-            var userId = Guid.Parse(_userContext.User.IdentityProviderId);
-
-            var document = await _noteService.GetNoteDocumentByIdAsync(id, userId, HttpContext.RequestAborted);
-
-            if (document.IsNone)
-            {
-                return NotFound();
-            }
-
-            var dto = _mapper.Map<NoteDocumentDto>(document.Get());
-            return Ok(dto);
         }
     }
 }

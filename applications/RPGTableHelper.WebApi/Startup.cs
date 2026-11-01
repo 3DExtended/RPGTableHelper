@@ -107,6 +107,9 @@ public class Startup
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        // After authorization: only then does the request carry the API key's claims to partition by.
+        app.UseRateLimiter();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -158,6 +161,11 @@ public class Startup
             RPGTableHelper.WebApi.Services.Fights.IFightNotifier,
             RPGTableHelper.WebApi.Services.Fights.FightNotifier
         >();
+        services.AddScoped<
+            RPGTableHelper.WebApi.Services.Characters.ICharacterSheetWriter,
+            RPGTableHelper.WebApi.Services.Characters.CharacterSheetWriter
+        >();
+        services.AddExternalApiRateLimiting(Configuration);
 
         services.AddTransient(provider =>
         {
@@ -355,7 +363,12 @@ public class Startup
                 "CorsPolicy",
                 builder =>
                 {
-                    builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed((host) => true).AllowCredentials();
+                    builder
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowCredentials()
+                        .WithExposedHeaders("Retry-After");
                 }
             )
         );
