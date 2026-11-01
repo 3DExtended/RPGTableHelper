@@ -49,10 +49,17 @@ public class EventsController : ControllerBase
 
         var writeLock = new SemaphoreSlim(1, 1);
 
+        // A stream opened with an API key only gets the events its scopes cover.
+        var apiKeyScopes = User.IsApiKeyRequest() ? User.GetApiKeyScopes() : null;
         var registration = _sseEventHub.Register(
             userId,
             async (eventType, dataJson, ct) =>
             {
+                if (apiKeyScopes != null && !ExternalEventCatalog.IsDelivered(eventType, apiKeyScopes))
+                {
+                    return;
+                }
+
                 await WriteSseEventAsync(writeLock, eventType, dataJson, ct).ConfigureAwait(false);
             }
         );
