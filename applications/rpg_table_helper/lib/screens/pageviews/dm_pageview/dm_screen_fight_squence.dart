@@ -37,9 +37,9 @@ class _DmScreenFightSquenceState extends ConsumerState<DmScreenFightSquence> {
 
   @override
   Widget build(BuildContext context) {
-    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
     var currentFight = ref.watch(currentFightProvider);
-    var _ = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var _ = ref.watch(rpgConfigurationProvider).value;
 
     // With fights kept on the server, players who are away are asked when
     // they come back, so the DM can include them.

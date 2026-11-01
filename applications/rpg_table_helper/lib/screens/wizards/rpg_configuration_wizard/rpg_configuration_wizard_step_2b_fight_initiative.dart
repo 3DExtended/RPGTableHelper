@@ -385,7 +385,7 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
 
   void saveChanges() {
     final notifier = ref.read(rpgConfigurationProvider.notifier);
-    final current = ref.read(rpgConfigurationProvider).valueOrNull ??
+    final current = ref.read(rpgConfigurationProvider).value ??
         RpgConfigurationModel.getBaseConfiguration();
 
     if (!_isSelectionComplete() || selectedStatUuid == null) {

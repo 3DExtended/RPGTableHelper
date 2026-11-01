@@ -26,8 +26,8 @@ class _DmScreenCharacterOverviewState
     extends ConsumerState<DmScreenCharacterOverview> {
   @override
   Widget build(BuildContext context) {
-    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
+    var rpgConfig = ref.watch(rpgConfigurationProvider).value;
 
     return Container(
         color: characterSheetSurfaceColor(context),

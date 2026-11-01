@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
@@ -17,8 +18,7 @@ final rpgCharacterConfigurationProvider = StateNotifierProvider<
 
 class RpgCharacterConfigurationNotifier
     extends StateNotifier<AsyncValue<RpgCharacterConfiguration>> {
-  final StateNotifierProviderRef<RpgCharacterConfigurationNotifier,
-      AsyncValue<RpgCharacterConfiguration>> ref;
+  final Ref ref;
   bool runningInTests;
 
   RpgCharacterConfigurationNotifier({

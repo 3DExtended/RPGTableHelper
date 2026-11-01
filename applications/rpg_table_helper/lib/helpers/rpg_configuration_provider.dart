@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 final rpgConfigurationProvider = StateNotifierProvider<RpgConfigurationNotifier,
@@ -14,8 +15,7 @@ final rpgConfigurationProvider = StateNotifierProvider<RpgConfigurationNotifier,
 
 class RpgConfigurationNotifier
     extends StateNotifier<AsyncValue<RpgConfigurationModel>> {
-  final StateNotifierProviderRef<RpgConfigurationNotifier,
-      AsyncValue<RpgConfigurationModel>> ref;
+  final Ref ref;
   bool runningInTests;
   RpgConfigurationNotifier({
     required AsyncValue<RpgConfigurationModel> decks,
@@ -93,7 +93,7 @@ class RpgConfigurationNotifier
   void updateCharacterScreenStatsTabs(
       List<CharacterStatsTabDefinition> tabsToEdit) {
     final current =
-        state.valueOrNull ?? RpgConfigurationModel.getBaseConfiguration();
+        state.value ?? RpgConfigurationModel.getBaseConfiguration();
     state = AsyncValue.data(
         current.copyWith(characterStatTabsDefinition: tabsToEdit));
   }

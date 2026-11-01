@@ -411,7 +411,7 @@ class ServerMethodsService extends IServerMethodsService {
     // client-generated RpgCharacterConfiguration.uuid.
     var ownCharacterId = widgetRef
         .read(connectionDetailsProvider)
-        .valueOrNull
+        .value
         ?.playerCharacterId;
     if (ownCharacterId == null) {
       return;
@@ -507,7 +507,7 @@ class ServerMethodsService extends IServerMethodsService {
     }
 
     final fightSequence =
-        widgetRef.read(connectionDetailsProvider).valueOrNull?.fightSequence;
+        widgetRef.read(connectionDetailsProvider).value?.fightSequence;
     if (fightSequence == null) {
       return HRResponse.fromResult(false);
     }
@@ -533,7 +533,7 @@ class ServerMethodsService extends IServerMethodsService {
     }
 
     final fightSequence =
-        widgetRef.read(connectionDetailsProvider).valueOrNull?.fightSequence;
+        widgetRef.read(connectionDetailsProvider).value?.fightSequence;
     if (fightSequence == null ||
         !_swap(fightSequence.sequence, index, index + offset)) {
       return HRResponse.fromResult(false);
@@ -555,7 +555,7 @@ class ServerMethodsService extends IServerMethodsService {
     }
 
     final fightSequence =
-        widgetRef.read(connectionDetailsProvider).valueOrNull?.fightSequence;
+        widgetRef.read(connectionDetailsProvider).value?.fightSequence;
     if (fightSequence == null ||
         index < 0 ||
         index >= fightSequence.sequence.length) {
@@ -605,7 +605,7 @@ class ServerMethodsService extends IServerMethodsService {
     if (!await _loadUsesPersistedFights()) {
       return;
     }
-    final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
+    final details = widgetRef.read(connectionDetailsProvider).value;
     final campagneId = details?.campagneId;
     if (details == null || campagneId == null) {
       return;
@@ -638,7 +638,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void initiativeRequested(InitiativeRequest request) {
-    final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
+    final details = widgetRef.read(connectionDetailsProvider).value;
     if (details == null ||
         details.isDm ||
         !_sameId(details.campagneId, request.campagneId)) {
@@ -659,7 +659,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   @override
   void fightUpdated(String fightId) {
-    final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
+    final details = widgetRef.read(connectionDetailsProvider).value;
     final fight = widgetRef.read(currentFightProvider);
     if (details == null || !details.isDm) {
       return;
@@ -676,7 +676,7 @@ class ServerMethodsService extends IServerMethodsService {
     _closeInitiativePrompts(
         (key) => key.startsWith('${fightId.toLowerCase()}|'));
 
-    final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
+    final details = widgetRef.read(connectionDetailsProvider).value;
     if (details != null &&
         details.isDm &&
         _sameId(widgetRef.read(currentFightProvider)?.id, fightId)) {
@@ -688,7 +688,7 @@ class ServerMethodsService extends IServerMethodsService {
   /// open; false when the old flow has to ask instead.
   Future<bool> _askForStoredFight(String fightId) async {
     final campagneId =
-        widgetRef.read(connectionDetailsProvider).valueOrNull?.campagneId;
+        widgetRef.read(connectionDetailsProvider).value?.campagneId;
     if (campagneId == null) {
       return false;
     }
@@ -707,12 +707,12 @@ class ServerMethodsService extends IServerMethodsService {
   /// character they play and was not asked for yet, then saves the rolls.
   Future<void> _askForInitiative(
       String fightId, List<FightParticipantState> participants) async {
-    final details = widgetRef.read(connectionDetailsProvider).valueOrNull;
+    final details = widgetRef.read(connectionDetailsProvider).value;
     if (details == null || details.isDm) {
       return;
     }
     final character =
-        widgetRef.read(rpgCharacterConfigurationProvider).valueOrNull;
+        widgetRef.read(rpgCharacterConfigurationProvider).value;
     final ownCombatants = <String, RpgCharacterConfigurationBase>{
       if (character != null) character.uuid: character,
       for (final c in character?.companionCharacters ??
@@ -746,7 +746,7 @@ class ServerMethodsService extends IServerMethodsService {
     if (navKey.currentContext == null) {
       navKey = navigatorKey;
     }
-    final rpgConfig = widgetRef.read(rpgConfigurationProvider).valueOrNull;
+    final rpgConfig = widgetRef.read(rpgConfigurationProvider).value;
 
     final rolls = <(String, int)>[];
     for (final participant in toAsk) {
@@ -841,7 +841,7 @@ class ServerMethodsService extends IServerMethodsService {
 
   void _updateConnectionDetails(
       ConnectionDetails Function(ConnectionDetails details) change) {
-    final details = widgetRef.read(connectionDetailsProvider).valueOrNull ??
+    final details = widgetRef.read(connectionDetailsProvider).value ??
         ConnectionDetails.defaultValue();
     widgetRef
         .read(connectionDetailsProvider.notifier)

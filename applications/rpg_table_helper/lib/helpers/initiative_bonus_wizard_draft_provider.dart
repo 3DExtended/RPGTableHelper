@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
 /// Ephemeral Fight/Initiative wizard selection that survives step dispose

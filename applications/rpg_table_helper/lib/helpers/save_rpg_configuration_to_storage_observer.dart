@@ -6,35 +6,32 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 
-class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
+final class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
   SaveRpgConfigurationToStorageObserver();
 
   @override
   void didAddProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? value,
-    ProviderContainer container,
   ) {}
 
   @override
   void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
+    ProviderObserverContext context,
   ) {}
 
   @override
   void didUpdateProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer container,
   ) {
     if (newValue is AsyncData<RpgConfigurationModel>) {
       // TODO i am not sure this is correct here...
       _handleAsyncData(newValue);
 
       var connectionDetails =
-          container.read(connectionDetailsProvider).valueOrNull;
+          context.container.read(connectionDetailsProvider).value;
 
       var isPlayer = (connectionDetails?.isPlayer ?? false) &&
           (connectionDetails?.isInSession ?? false) &&
@@ -75,9 +72,8 @@ class SaveRpgConfigurationToStorageObserver extends ProviderObserver {
 
   @override
   void providerDidFail(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object error,
     StackTrace stackTrace,
-    ProviderContainer container,
   ) {}
 }

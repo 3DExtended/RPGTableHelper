@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 
 final connectionDetailsProvider = StateNotifierProvider<
@@ -12,8 +13,7 @@ final connectionDetailsProvider = StateNotifierProvider<
 
 class ConnectionDetailsNotifier
     extends StateNotifier<AsyncValue<ConnectionDetails>> {
-  final StateNotifierProviderRef<ConnectionDetailsNotifier,
-      AsyncValue<ConnectionDetails>> ref;
+  final Ref ref;
   bool runningInTests;
   ConnectionDetailsNotifier({
     required AsyncValue<ConnectionDetails> initState,

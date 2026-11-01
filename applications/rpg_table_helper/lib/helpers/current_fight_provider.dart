@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:quest_keeper/models/fight_state.dart';
 
 /// The open fight as the DM sees it on the server, or null when there is none

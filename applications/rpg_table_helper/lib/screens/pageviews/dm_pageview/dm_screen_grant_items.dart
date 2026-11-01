@@ -56,8 +56,8 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
 
   @override
   Widget build(BuildContext context) {
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
-    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
+    var rpgConfig = ref.watch(rpgConfigurationProvider).value;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
 
     ref.watch(connectionDetailsProvider).whenData((cb) {
       var playerIds = (cb.connectedPlayers ?? [])

@@ -123,7 +123,7 @@ class _GeneratedImagesScreenState extends ConsumerState<GeneratedImagesScreen> {
 
   Future _reloadAllPages() async {
     var campagneId =
-        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+        ref.read(connectionDetailsProvider).value?.campagneId;
     if (campagneId == null) {
       return;
     }

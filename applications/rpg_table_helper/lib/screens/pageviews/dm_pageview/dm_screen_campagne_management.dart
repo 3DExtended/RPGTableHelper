@@ -73,8 +73,8 @@ class _DmScreenCampagneManagementState
 
   @override
   Widget build(BuildContext context) {
-    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
+    var rpgConfig = ref.watch(rpgConfigurationProvider).value;
 
     return Container(
       color: characterSheetSurfaceColor(context),
@@ -354,7 +354,7 @@ class _DmScreenCampagneManagementState
   /// Reloads campagne characters after accept/deny and merges them into
   /// `connectedPlayers` without clearing existing presence (`lastPing`).
   Future<void> _refreshPlayersAfterJoinChange() async {
-    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    final connectionDetails = ref.read(connectionDetailsProvider).value;
     if (connectionDetails?.campagneId == null) {
       return;
     }
@@ -383,7 +383,7 @@ class _DmScreenCampagneManagementState
 
     final remapped = mapCharactersToOpenPlayerConnections(
       characters,
-      campagneConfig: ref.read(rpgConfigurationProvider).valueOrNull,
+      campagneConfig: ref.read(rpgConfigurationProvider).value,
       onlineUserIds: onlineIds,
     );
 
