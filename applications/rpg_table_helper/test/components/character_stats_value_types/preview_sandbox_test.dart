@@ -115,7 +115,7 @@ void main() {
   // it so nothing else in the config form can be mistaken for a preview button.
   Finder previewPlus() => find.descendant(
         of: find.byType(PageView),
-        matching: find.byIcon(FontAwesomeIcons.plus),
+        matching: find.byIcon(FontAwesomeIcons.plus.data),
       );
 
   int savedValueOf(RpgCharacterStatValue? v) =>

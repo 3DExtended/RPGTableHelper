@@ -14,7 +14,7 @@ dependencies:
   image_picker: ^1.1.2
   mime: ^2.0.0
   uuid: ^4.4.0
-  font_awesome_flutter: ^10.10.0
+  font_awesome_flutter: ^11.0.0
   shared_preferences: ^2.2.3
   path_provider: ^2.1.5
   timeago: ^3.7.0
@@ -22,7 +22,7 @@ dependencies:
     sdk: flutter
   intl: any
   shadow_widget: ^0.1.1
-  get_it: ^8.0.0
+  get_it: ^9.3.0
   modal_bottom_sheet: ^3.0.0-pre
   chopper: ^8.0.1+1
   json_annotation: ^4.9.0
@@ -37,14 +37,14 @@ dependencies:
   asn1lib: ^1.5.5
   encrypt: ^5.0.3
   google_sign_in: ^7.2.0
-  loading_indicator: ^3.1.1
+  loading_indicator: ^4.0.2
   flutter_svg: ^2.0.11
   transparent_image: ^2.0.1
   cached_network_image: ^3.4.1
   auto_size_text: ^3.0.0
   animated_text_kit: ^4.2.2
   google_fonts: ^6.2.1
-  themed: ^7.0.0
+  themed: ^8.3.1
   page_view_dot_indicator: ^2.3.0
   flutter_cache_manager: ^3.4.1
   pull_to_refresh: ^2.0.0
@@ -53,7 +53,7 @@ dependencies:
   url_launcher: ^6.3.1
   connectivity_plus: ^7.1.0
   json_patch: ^3.0.0
-  flutter_secure_storage: ^10.3.1
+  flutter_secure_storage: ^11.2.0
 
 # Flutter 3.41 + path_provider_foundation 2.6 FFI embeds the wrong
 # objective_c.framework arch when alternating device/simulator builds
@@ -66,9 +66,9 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   golden_toolkit: ^0.15.0
-  custom_lint: ^0.7.0
+  custom_lint: ^0.8.0
   json_serializable: ^6.8.0
   build_runner: ^2.3.3
   copy_with_extension_gen: ^6.0.0

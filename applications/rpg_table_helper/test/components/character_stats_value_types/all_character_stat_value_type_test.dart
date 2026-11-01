@@ -903,7 +903,7 @@ void main() {
         final previewPlus = find
             .descendant(
               of: find.byType(PageView),
-              matching: find.byIcon(FontAwesomeIcons.plus),
+              matching: find.byIcon(FontAwesomeIcons.plus.data),
             )
             .hitTestable()
             .first;

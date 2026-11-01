@@ -7,7 +7,7 @@ class CustomFaIcon extends StatelessWidget {
       {super.key, required this.icon, this.size, this.color, this.noPadding});
 
   final Color? color;
-  final IconData icon;
+  final FaIconData icon;
   final double? size;
   final bool? noPadding;
 

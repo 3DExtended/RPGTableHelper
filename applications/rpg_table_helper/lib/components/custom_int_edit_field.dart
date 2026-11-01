@@ -221,7 +221,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
 
 class _LedgerStepButton extends StatelessWidget {
   final Color ink;
-  final IconData icon;
+  final FaIconData icon;
   final bool enabled;
   final VoidCallback onPressed;
 
