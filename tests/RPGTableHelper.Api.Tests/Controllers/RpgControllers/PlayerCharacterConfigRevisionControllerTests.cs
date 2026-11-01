@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 
@@ -264,6 +265,52 @@ public class PlayerCharacterConfigRevisionControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var stored = await context.PlayerCharacters.SingleAsync(c => c.Id == entity.Id);
+            stored.RpgCharacterConfiguration.Should().Be("{\"characterName\":\"old\"}");
+            stored.RpgCharacterConfigurationRevision.Should().Be(5);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(1)]
+    [InlineData(5)]
+    public async Task UpdatePlayerCharacterRpgConfigAsync_ShouldReturnUnauthorizedForNonOwnerWhateverTheBody(
+        int? fromRevision
+    )
+    {
+        // arrange
+        await ConfigureLoggedInUser();
+        var owner = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "OtherOwner");
+        var entity = new PlayerCharacterEntity
+        {
+            Id = Guid.Empty,
+            CharacterName = "CharacterName1",
+            PlayerUserId = owner.Id.Value,
+            RpgCharacterConfiguration = "{\"characterName\":\"old\"}",
+            RpgCharacterConfigurationRevision = 5,
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.PlayerCharacters.AddAsync(entity);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var response = await Client.PutAsJsonAsync(
+            $"/PlayerCharacter/updatecharacterconfig/{entity.Id}",
+            new PlayerCharacterUpdateRpgConfigDto
+            {
+                RpgCharacterConfiguration = "{\"characterName\":\"hacked\"}",
+                FromRevision = fromRevision,
+            }
+        );
+
+        // assert: the owner check runs first, so no request value (not even a stale revision) changes the answer
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         using (var context = ContextFactory!.CreateDbContext())
         {
             var stored = await context.PlayerCharacters.SingleAsync(c => c.Id == entity.Id);

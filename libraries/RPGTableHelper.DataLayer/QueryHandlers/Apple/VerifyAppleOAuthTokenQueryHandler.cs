@@ -59,7 +59,7 @@ public class VerifyAppleOAuthTokenQueryHandler
                     "application/x-www-form-urlencoded"
                 );
 
-                var response = await httpClient.SendAsync(request);
+                var response = await httpClient.SendAsync(request, cancellationToken);
                 var appleTokenString = await response
                     .Content.ReadAsStringAsync(cancellationToken)
                     .ConfigureAwait(false);

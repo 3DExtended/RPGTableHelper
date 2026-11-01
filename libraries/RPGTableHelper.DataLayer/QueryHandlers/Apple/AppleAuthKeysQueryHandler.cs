@@ -36,11 +36,11 @@ public class AppleAuthKeysQueryHandler : IQueryHandler<AppleAuthKeysQuery, Apple
 
                 using (var httpClient = _httpClientFactory.CreateClient())
                 {
-                    var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                    var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                         var appleKeys = JsonConvert.DeserializeObject<AppleKeysResponse>(content);
 
                         if (appleKeys != null)

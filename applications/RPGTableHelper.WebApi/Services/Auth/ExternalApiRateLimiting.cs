@@ -67,8 +67,8 @@ namespace RPGTableHelper.WebApi.Services.Auth
                 .LogInformation(
                     "API key {ApiKeyPrefix} hit the rate limit on {Method} {Path}",
                     httpContext.User.FindFirst(ApiKeyClaimTypes.ApiKeyPrefix)?.Value,
-                    httpContext.Request.Method,
-                    httpContext.Request.Path
+                    SanitizeForLog(httpContext.Request.Method),
+                    SanitizeForLog(httpContext.Request.Path.ToString())
                 );
 
             httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
@@ -103,6 +103,10 @@ namespace RPGTableHelper.WebApi.Services.Auth
 
         private static bool IsRead(string method) =>
             HttpMethods.IsGet(method) || HttpMethods.IsHead(method) || HttpMethods.IsOptions(method);
+
+        /// <summary>Strips CR and LF from a request value so it cannot forge extra log lines.</summary>
+        private static string SanitizeForLog(string value) =>
+            value.Replace("\r", string.Empty).Replace("\n", string.Empty);
     }
 
     /// <summary>How many requests one API key may make; requests with a JWT are not limited.</summary>

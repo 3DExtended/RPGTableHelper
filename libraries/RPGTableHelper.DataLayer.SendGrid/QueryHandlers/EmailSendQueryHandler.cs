@@ -49,7 +49,7 @@ namespace BookGram.DataLayer.SendGrid.QueryHandlers
                 plainTextContent,
                 htmlContent
             );
-            var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
+            var response = await client.SendEmailAsync(msg, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {

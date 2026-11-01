@@ -74,7 +74,7 @@ public class ImageLoadQueryHandler : IQueryHandler<ImageLoadQuery, Stream>
                 lastException = ex;
             }
 
-            await Task.Delay(100);
+            await Task.Delay(100, cancellationToken);
         }
 
         _logger.LogWarning(lastException, "Could not open image file {FilePath} after {Retries} attempts", filepath, retryCounter);
