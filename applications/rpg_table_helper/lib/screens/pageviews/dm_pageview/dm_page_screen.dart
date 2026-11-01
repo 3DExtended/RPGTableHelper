@@ -90,7 +90,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
     var dmScreensToSwipe = getDmScreens(context);
     var currentTitle = dmScreensToSwipe[_currentStep].$1;
 
-    final rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
+    final rpgConfig = ref.watch(rpgConfigurationProvider).value;
     // Only drive the global skin while this route is on top. Otherwise the DM
     // shell fights a pushed character preview's skin and remounts chrome under
     // the sheet (looks like a double-rendered parchment/frame).

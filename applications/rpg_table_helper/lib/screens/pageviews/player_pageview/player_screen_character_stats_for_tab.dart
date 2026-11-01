@@ -128,7 +128,7 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
             // Preview / DM views may not have hydrated the player character
             // provider; missing-stats edits only apply to the live player session.
             final connectionDetails =
-                ref.read(connectionDetailsProvider).valueOrNull;
+                ref.read(connectionDetailsProvider).value;
             if (connectionDetails == null ||
                 connectionDetails.isDm ||
                 !connectionDetails.isInSession ||

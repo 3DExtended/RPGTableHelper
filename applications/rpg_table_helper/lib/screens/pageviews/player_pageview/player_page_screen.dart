@@ -115,7 +115,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             onStatValueChanged: (updatedStat) {
               if (charToRender == null) return;
               var newestCharacterConfig =
-                  ref.read(rpgCharacterConfigurationProvider).valueOrNull;
+                  ref.read(rpgCharacterConfigurationProvider).value;
               if (newestCharacterConfig == null) return;
 
               // Copy before mutate — in-place edits to charToRender.characterStats
@@ -220,7 +220,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     }
 
     var campagneId =
-        ref.read(connectionDetailsProvider).valueOrNull?.campagneId;
+        ref.read(connectionDetailsProvider).value?.campagneId;
     if (showLore && campagneId != null) {
       result
           .add((S.of(context).navBarHeaderLore, LoreScreen(), "lore_tab_uuid"));
@@ -275,7 +275,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
       // Live player sessions without startScreenOverride open the default tab.
       if (widget.startScreenOverride != null) return;
-      final rpgConfig = ref.read(rpgConfigurationProvider).valueOrNull;
+      final rpgConfig = ref.read(rpgConfigurationProvider).value;
       if (rpgConfig?.characterStatTabsDefinition == null) return;
       final defaultIdx = rpgConfig!.characterStatTabsDefinition!
           .indexWhere((tab) => tab.isDefaultTab == true);
@@ -295,10 +295,10 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var rpgConfig = ref.watch(rpgConfigurationProvider).valueOrNull;
-    var connectionDetails = ref.watch(connectionDetailsProvider).valueOrNull;
+    var rpgConfig = ref.watch(rpgConfigurationProvider).value;
+    var connectionDetails = ref.watch(connectionDetailsProvider).value;
     var tempLoadedRpgCharacter =
-        ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
+        ref.watch(rpgCharacterConfigurationProvider).value;
 
     RpgCharacterConfigurationBase? charToRender;
     if (rpgCharacterToRender != null) {
@@ -370,7 +370,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ownerSkinId = overrideChar.skinId;
       } else {
         final mainChar =
-            ref.watch(rpgCharacterConfigurationProvider).valueOrNull;
+            ref.watch(rpgCharacterConfigurationProvider).value;
         final localChar = charToRender;
         if (localChar is RpgCharacterConfiguration && mainChar == null) {
           ownerSkinId = localChar.skinId;
@@ -773,7 +773,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
     if (choice == 'appearance') {
       // Appearance is only for the player's own main character config.
       final mainCharacter =
-          ref.read(rpgCharacterConfigurationProvider).valueOrNull;
+          ref.read(rpgCharacterConfigurationProvider).value;
       if (mainCharacter == null || rpgCharacterToRender != null) return;
 
       final immediate = hasMissingRequiredCampaignStats(

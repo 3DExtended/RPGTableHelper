@@ -124,7 +124,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   void _onJoinRequestCreated(JoinRequestCreatedEvent event) {
     if (!mounted) return;
 
-    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    final connectionDetails = ref.read(connectionDetailsProvider).value;
     if (connectionDetails != null &&
         connectionDetails.isDm &&
         connectionDetails.campagneId == event.campagneId) {
@@ -571,15 +571,15 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           .read(rpgConfigurationProvider.notifier)
           .updateConfiguration(config),
       readCampagneConfig: () =>
-          ref.read(rpgConfigurationProvider).valueOrNull ??
+          ref.read(rpgConfigurationProvider).value ??
           RpgConfigurationModel.getBaseConfiguration(),
       applyCharacterConfig: (config) => ref
           .read(rpgCharacterConfigurationProvider.notifier)
           .updateConfiguration(config),
       readCharacterConfig: () =>
-          ref.read(rpgCharacterConfigurationProvider).valueOrNull ??
+          ref.read(rpgCharacterConfigurationProvider).value ??
           RpgCharacterConfiguration.getBaseConfiguration(
-              ref.read(rpgConfigurationProvider).valueOrNull),
+              ref.read(rpgConfigurationProvider).value),
       onRemoteCharacterConfig: onRemoteCharacterConfig,
       onParticipantOnline: onParticipantOnline,
       onParticipantOffline: onParticipantOffline,
@@ -596,7 +596,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   /// presence.
   void _onRemoteCharacterConfigForDm(
       String characterId, RpgCharacterConfiguration config) {
-    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    final connectionDetails = ref.read(connectionDetailsProvider).value;
     final connectedPlayers = connectionDetails?.connectedPlayers;
     if (connectionDetails == null || connectedPlayers == null) {
       return;
@@ -620,7 +620,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   /// them online.
   Future<void> _onParticipantPresenceForDm(String userId,
       {required bool online}) async {
-    final connectionDetails = ref.read(connectionDetailsProvider).valueOrNull;
+    final connectionDetails = ref.read(connectionDetailsProvider).value;
     final connectedPlayers = connectionDetails?.connectedPlayers;
     if (connectionDetails == null || connectedPlayers == null) {
       return;
@@ -651,7 +651,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
     if (!mounted) return;
 
-    final latest = ref.read(connectionDetailsProvider).valueOrNull;
+    final latest = ref.read(connectionDetailsProvider).value;
     if (latest?.connectedPlayers == null) {
       return;
     }
@@ -661,7 +661,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       userId: userId,
       online: online,
       allCharacters: allCharacters,
-      campagneConfig: ref.read(rpgConfigurationProvider).valueOrNull,
+      campagneConfig: ref.read(rpgConfigurationProvider).value,
     );
 
     ref
@@ -703,9 +703,9 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         // event.playerCharacterId is the character's server id - compare it
         // against the session's character id, not the config's local uuid.
         final ownCharacterId =
-            ref.read(connectionDetailsProvider).valueOrNull?.playerCharacterId;
+            ref.read(connectionDetailsProvider).value?.playerCharacterId;
         final currentCharacter =
-            ref.read(rpgCharacterConfigurationProvider).valueOrNull;
+            ref.read(rpgCharacterConfigurationProvider).value;
         if (currentCharacter == null ||
             ownCharacterId == null ||
             ownCharacterId != event.playerCharacterId) {
@@ -839,7 +839,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     );
 
     ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-        (ref.read(connectionDetailsProvider).valueOrNull ??
+        (ref.read(connectionDetailsProvider).value ??
                 ConnectionDetails.defaultValue())
             .copyWith(
                 lastPing: null,
@@ -945,7 +945,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       }
 
       ref.read(connectionDetailsProvider.notifier).updateConfiguration(
-          (ref.read(connectionDetailsProvider).valueOrNull ??
+          (ref.read(connectionDetailsProvider).value ??
                   ConnectionDetails.defaultValue())
               .copyWith(
                   isDm: false,

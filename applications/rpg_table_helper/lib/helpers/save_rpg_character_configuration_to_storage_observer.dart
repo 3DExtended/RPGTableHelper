@@ -6,34 +6,31 @@ import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 
-class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
+final class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
   SaveRpgCharacterConfigurationToStorageObserver();
 
   @override
   void didAddProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? value,
-    ProviderContainer container,
   ) {}
 
   @override
   void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
+    ProviderObserverContext context,
   ) {}
 
   @override
   void didUpdateProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer container,
   ) {
     if (newValue is AsyncData<RpgCharacterConfiguration>) {
       _handleAsyncData(newValue);
 
       var connectionDetails =
-          container.read(connectionDetailsProvider).valueOrNull;
+          context.container.read(connectionDetailsProvider).value;
 
       // Player character edits are persisted via ConfigSync (debounced REST
       // PATCH/PUT with revision + 409 rebase). Do NOT gate on isConnected so
@@ -68,9 +65,8 @@ class SaveRpgCharacterConfigurationToStorageObserver extends ProviderObserver {
 
   @override
   void providerDidFail(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object error,
     StackTrace stackTrace,
-    ProviderContainer container,
   ) {}
 }
