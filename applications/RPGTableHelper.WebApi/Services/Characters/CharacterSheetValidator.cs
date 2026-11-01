@@ -43,7 +43,12 @@ public static class CharacterSheetValidator
         RequireString(sheet, "characterName", string.Empty, problems, allowEmpty: true);
         CheckStats(sheet, "characterStats", string.Empty, statTypes, problems, required: true);
 
-        if (sheet.TryGetPropertyValue("inventory", out var inventory) && inventory != null)
+        // The app cannot open a sheet without an inventory list.
+        if (!sheet.TryGetPropertyValue("inventory", out var inventory) || inventory == null)
+        {
+            problems.Add("/inventory: is required.");
+        }
+        else
         {
             if (inventory is not JsonArray items)
             {
@@ -105,6 +110,8 @@ public static class CharacterSheetValidator
         {
             if (form is JsonObject activeForm)
             {
+                RequireString(activeForm, "uuid", "/alternateForm", problems, allowEmpty: false);
+                RequireString(activeForm, "characterName", "/alternateForm", problems, allowEmpty: true);
                 CheckStats(activeForm, "characterStats", "/alternateForm", statTypes, problems, required: true);
             }
             else

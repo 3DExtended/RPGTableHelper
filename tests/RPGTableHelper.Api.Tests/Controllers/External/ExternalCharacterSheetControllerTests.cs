@@ -187,6 +187,28 @@ public class ExternalCharacterSheetControllerTests : ExternalApiTestBase
     }
 
     [Fact]
+    public async Task PatchSheet_ThatRemovesTheInventory_IsRejectedBecauseTheAppNeedsIt()
+    {
+        // arrange
+        var (_, campagne) = await CreateTableAsync();
+        var hero = await AddPlayerAsync(campagne, "Hero");
+        var key = await CreateApiKeyClientAsync(hero.User, ApiKeyScopes.CharactersWrite);
+
+        // act
+        var response = await key.PatchAsync(
+            $"{V1}/characters/{hero.CharacterId}/sheet",
+            Json(new { fromRevision = 1, patch = new object[] { new { op = "remove", path = "/inventory" } } })
+        );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        var body = JsonNode.Parse(await response.Content.ReadAsStringAsync())!;
+        body["problems"]!.AsArray().Select(p => p!.GetValue<string>())
+            .Should().ContainSingle(p => p.StartsWith("/inventory"));
+        (await LoadStoredSheetAsync(hero.CharacterId))["inventory"].Should().NotBeNull();
+    }
+
+    [Fact]
     public async Task PatchSheet_WithoutFromRevision_IsAnInvalidRequest()
     {
         // arrange

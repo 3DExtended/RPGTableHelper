@@ -138,10 +138,12 @@ Answers:
 
 What is checked (only problems your change introduces count):
 
-- `uuid` stays the same and non-empty; `characterName` is a string; `characterStats` is a list.
+- `uuid` stays the same and non-empty; `characterName` is a string; `characterStats` and `inventory`
+  are lists (the app cannot open a sheet without them, so do not remove them).
 - Every stat value has a `statUuid` and a `serializedValue` that is a JSON object.
 - If the campaign defines stats: the `statUuid` exists and the value fits its `valueType`.
-- The same for companions, alternate forms and the active form.
+- The same for companions, alternate forms and the active form; each of them needs a `uuid` and a
+  `characterName`.
 - `inventory` entries are `{ itemUuid, amount }`; `moneyInBaseType` is an integer.
 
 ## Staying in sync

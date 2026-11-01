@@ -87,6 +87,13 @@ public class CharacterSheetValidatorTests
     }
 
     [Fact]
+    public void Validate_ASheetWithoutInventory_HasAProblem()
+    {
+        CharacterSheetValidator.Validate("""{"uuid":"hero","characterName":"X","characterStats":[]}""", new Dictionary<string, string>())
+            .Should().ContainSingle(p => p.StartsWith("/inventory"));
+    }
+
+    [Fact]
     public void FindNewProblems_IgnoresProblemsTheSheetAlreadyHad()
     {
         var broken = Stat("hp", new JsonObject { ["value"] = "broken" });
@@ -141,6 +148,18 @@ public class CharacterSheetValidatorTests
             .Should().ContainSingle(p => p.StartsWith("/alternateForm/characterStats[statUuid=hp]"));
     }
 
+    [Fact]
+    public void FindNewProblems_FindsAnActiveFormWithoutUuidOrName()
+    {
+        var before = Sheet();
+        var after = JsonNode.Parse(before)!.AsObject();
+        after["alternateForm"] = new JsonObject { ["characterStats"] = new JsonArray() };
+
+        CharacterSheetValidator.FindNewProblems(before, after.ToJsonString(), Config)
+            .Should().Contain(p => p.StartsWith("/alternateForm/uuid"))
+            .And.Contain(p => p.StartsWith("/alternateForm/characterName"));
+    }
+
     private static JsonObject Stat(string statUuid, JsonObject value) =>
         new() { ["statUuid"] = statUuid, ["serializedValue"] = value.ToJsonString() };
 
@@ -150,5 +169,6 @@ public class CharacterSheetValidatorTests
             ["uuid"] = "hero",
             ["characterName"] = "Hero",
             ["characterStats"] = new JsonArray(stats.Select(s => (JsonNode)s).ToArray()),
+            ["inventory"] = new JsonArray(),
         }.ToJsonString();
 }
