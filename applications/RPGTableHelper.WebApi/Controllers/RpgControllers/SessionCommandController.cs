@@ -231,6 +231,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                     await _fightNotifier
                         .NotifyUpdatedAsync(recorded.Fight!, _userContext.User.UserIdentifier.Value, cancellationToken)
                         .ConfigureAwait(false);
+                    await _fightNotifier
+                        .NotifySettledAsync(recorded.Fight!, recorded.Rolled, cancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
 

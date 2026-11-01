@@ -9,6 +9,7 @@ public class ExternalEventCatalogTests
 {
     [Theory]
     [InlineData("initiativeRequested", ApiKeyScopes.FightsPlay)]
+    [InlineData("initiativeSettled", ApiKeyScopes.FightsPlay)]
     [InlineData("fightEnded", ApiKeyScopes.FightsPlay)]
     [InlineData("characterConfigChanged", ApiKeyScopes.CharactersRead)]
     [InlineData("itemsGranted", ApiKeyScopes.CharactersRead)]

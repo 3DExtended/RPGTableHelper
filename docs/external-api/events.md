@@ -58,6 +58,7 @@ time, `leave` from one of them makes you leave in both. Prefer to simply close t
 | `campagneConfigChanged` | `campaigns:read` | at the table | `{ id, revision }` — `id` is the campaign id |
 | `noteAccessChanged` | `notes:read` | you, always | `{ campagneId, documentId, blockId, changeKind }` |
 | `initiativeRequested` | `fights:play` | you, always | `{ fightId, campagneId, participants: [{ participantId, characterUuid, playerCharacterId, name, kind }] }` |
+| `initiativeSettled` | `fights:play` | you, always | `{ fightId, campagneId, participants: [{ participantId, characterUuid, roll }] }` |
 | `fightEnded` | `fights:play` | you, always | `{ fightId, campagneId, reason }` |
 
 What to do:
@@ -68,7 +69,7 @@ What to do:
 - **`itemsGranted`** — the DM gave you items. They are already in the sheet; show a message.
 - **`campagneConfigChanged`** — reload `campaigns/{id}/config` if you show stat names.
 - **`noteAccessChanged`** — reload the document ([Notes](notes.md)).
-- **`initiativeRequested`**, **`fightEnded`** — see [Initiative](initiative.md).
+- **`initiativeRequested`**, **`initiativeSettled`**, **`fightEnded`** — see [Initiative](initiative.md).
 
 Other events the Questkeeper app uses are not sent to API keys. New events may be added; ignore the
 ones you do not know.

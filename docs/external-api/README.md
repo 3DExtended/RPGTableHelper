@@ -45,7 +45,7 @@ A complete browser client is in [examples/player-client.mjs](examples/player-cli
 | Show and edit the sheet | `GET characters/{id}/sheet`, `PATCH characters/{id}/sheet`, `GET campaigns/{id}/config` | [Character sheet](character-sheet.md) |
 | Sync hit points | `PUT characters/{id}/sheet/stats/{statUuid}` | [Character sheet](character-sheet.md#changing-one-stat) |
 | Notes | `GET/POST campaigns/{id}/documents`, `POST documents/{id}/blocks`, `PUT blocks/{id}` | [Notes](notes.md) |
-| Initiative | event `initiativeRequested`, `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls` | [Initiative](initiative.md) |
+| Initiative | events `initiativeRequested`, `initiativeSettled`, `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls` | [Initiative](initiative.md) |
 | Live updates | `GET /events`, `POST campaigns/{id}/session/enter` | [Events](events.md) |
 
 ## Endpoints

@@ -50,7 +50,19 @@ Scope: `fights:play`.
    The answer is the fight as you see it, now with `isPending: false`. The DM sees the new order
    right away. You may send rolls one by one.
 
-4. The fight ends:
+4. A roll is no longer needed because the player rolled somewhere else (in the Questkeeper app, or
+   in a second tab of your app), the DM rolled for them, or the DM took the character out of the
+   fight. Every stream of that player gets
+
+   ```text
+   event: initiativeSettled
+   data: {"fightId":"5b0e...","campagneId":"2991...","participants":[{"participantId":"91ac...","characterUuid":"0b7c...","roll":17}]}
+   ```
+
+   Stop asking for these `characterUuid`s. `roll` is `null` when the DM removed the character. Your
+   own roll comes back to you too; ignore what you no longer show.
+
+5. The fight ends:
 
    ```text
    event: fightEnded
@@ -71,4 +83,6 @@ Scope: `fights:play`.
 | 409 | `fight_conflict` | You already rolled for this character (e.g. in the Questkeeper app). Reload the fight. |
 
 The player may also roll in the Questkeeper app. Whatever arrives first counts; the other one gets
-`fight_conflict`.
+`fight_conflict`, and both apps get `initiativeSettled`, so the other prompt closes. Events missed
+while disconnected are not sent later: after a reconnect, load the fight and close the prompts of
+characters that are no longer pending.

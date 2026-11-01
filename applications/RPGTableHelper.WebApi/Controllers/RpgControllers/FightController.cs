@@ -212,7 +212,15 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             var result = await _fightService
                 .RemoveParticipantAsync(fightid, CurrentUserId, participantid, cancellationToken)
                 .ConfigureAwait(false);
-            return result.Succeeded ? Ok(FightDtoMapper.ToDmDto(result.Fight!)) : ToErrorResult(result);
+            if (!result.Succeeded)
+            {
+                return ToErrorResult(result);
+            }
+
+            await _fightNotifier
+                .NotifySettledAsync(result.Fight!, result.Removed.Where(p => p.IsPending), cancellationToken)
+                .ConfigureAwait(false);
+            return Ok(FightDtoMapper.ToDmDto(result.Fight!));
         }
 
         /// <summary>
@@ -249,6 +257,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             await _fightNotifier.NotifyUpdatedAsync(result.Fight!, CurrentUserId, cancellationToken).ConfigureAwait(false);
+            await _fightNotifier.NotifySettledAsync(result.Fight!, result.Rolled, cancellationToken).ConfigureAwait(false);
             await _fightNotifier
                 .NotifyLegacyRollsToDmAsync(result.Fight!, result.Rolled, cancellationToken)
                 .ConfigureAwait(false);

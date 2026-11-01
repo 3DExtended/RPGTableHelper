@@ -19,8 +19,10 @@ The player API: a player's own app can take part at the table.
   text blocks with an explicit `visibleTo`.
 - Initiative: `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls`. Open requests are stored
   on the server, so a player who was away is still asked.
-- Events for API keys: `initiativeRequested`, `fightEnded`. Each event reaches a key only with the
-  matching scope; events of the app's internals are no longer sent to keys.
+- Events for API keys: `initiativeRequested`, `initiativeSettled`, `fightEnded`. Each event reaches
+  a key only with the matching scope; events of the app's internals are no longer sent to keys.
+  `initiativeSettled` tells every app of a player that a roll is no longer needed (rolled in another
+  app or by the DM, or removed by the DM), so all their prompts close.
 - Rate limits per key: 120 requests and 30 writes per minute (`429` with `Retry-After`).
 - One error shape for v1: `{ error, message, problems?, ... }`.
 - Swagger document "External API" with the scope of every endpoint.

@@ -21,6 +21,7 @@ public static class ExternalEventCatalog
         ["campagneConfigChanged"] = ApiKeyScopes.CampaignsRead,
         ["noteAccessChanged"] = ApiKeyScopes.NotesRead,
         [FightEvents.InitiativeRequested] = ApiKeyScopes.FightsPlay,
+        [FightEvents.InitiativeSettled] = ApiKeyScopes.FightsPlay,
         [FightEvents.FightEnded] = ApiKeyScopes.FightsPlay,
     };
 

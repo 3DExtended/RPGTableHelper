@@ -312,12 +312,14 @@ qk.listen({
     const fight = await qk.fight(campaignId);
     const pending = fight?.participants.filter((p) => p.isPending) ?? [];
     if (pending.length > 0) showInitiativeDialog(pending);
+    else closeInitiativeDialog(); // rolled elsewhere or ended while we were away
   },
   onEvent: async (type, data) => {
     if (type === "characterConfigChanged" && data.id === character.id && data.revision > revision) {
       ({ revision, sheet } = await qk.sheet(character.id)); // e.g. the DM changed our hit points
     }
     if (type === "initiativeRequested") showInitiativeDialog(data.participants);
+    if (type === "initiativeSettled") closeInitiativeDialog(data.participants); // e.g. rolled in Questkeeper
     if (type === "fightEnded") closeInitiativeDialog();
   },
   onError: (error) => console.warn("Questkeeper:", error),

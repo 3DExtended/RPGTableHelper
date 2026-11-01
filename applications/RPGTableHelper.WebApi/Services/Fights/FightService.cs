@@ -465,11 +465,12 @@ public sealed class FightService : IFightService
                     return FightOperationResult.Fail(FightError.NotFound, "Participant not found in this fight.");
                 }
 
+                var removed = ToSnapshot(participant);
                 context.FightParticipants.Remove(participant);
                 fight.Participants.Remove(participant);
                 Renumber(OrderedParticipants(fight));
                 Touch(fight, now);
-                return FightOperationResult.Ok(ToSnapshot(fight, dmUserId));
+                return FightOperationResult.Ok(ToSnapshot(fight, dmUserId), removed: new[] { removed });
             },
             cancellationToken
         );
@@ -680,18 +681,21 @@ public sealed class FightService : IFightService
             fight
                 .Participants.OrderBy(p => p.Position ?? int.MaxValue)
                 .ThenBy(p => p.Name, StringComparer.CurrentCulture)
-                .Select(p => new FightParticipantSnapshot(
-                    p.Id,
-                    p.Kind,
-                    p.CharacterUuid,
-                    p.PlayerCharacterId,
-                    p.OwnerUserId,
-                    p.Name,
-                    p.Roll,
-                    p.RolledAt,
-                    p.Position
-                ))
+                .Select(ToSnapshot)
                 .ToList()
+        );
+
+    private static FightParticipantSnapshot ToSnapshot(FightParticipantEntity participant) =>
+        new(
+            participant.Id,
+            participant.Kind,
+            participant.CharacterUuid,
+            participant.PlayerCharacterId,
+            participant.OwnerUserId,
+            participant.Name,
+            participant.Roll,
+            participant.RolledAt,
+            participant.Position
         );
 
     private bool IsInactive(FightEntity fight) => fight.LastActivityAt + InactivityTimeout <= _systemClock.Now;

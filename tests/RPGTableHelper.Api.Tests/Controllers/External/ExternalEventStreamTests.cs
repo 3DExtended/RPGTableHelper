@@ -45,6 +45,43 @@ public class ExternalEventStreamTests : ExternalApiTestBase
         appTypes.Should().Contain(new[] { "initiativeRequested", "playersAreAskedForRolls" });
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ARollInOneOfThePlayersApps_TellsTheirOtherApp_SoItStopsAsking(bool rollWithTheKey)
+    {
+        // arrange
+        var (_, campagne) = await CreateTableAsync();
+        var hero = await AddPlayerAsync(campagne, "Hero");
+        var key = await CreateApiKeyClientAsync(hero.User, ApiKeyScopes.Events, ApiKeyScopes.FightsPlay);
+        using var keyEvents = await KeepEventsStreamOpenAsync(key);
+        using var appEvents = await KeepEventsStreamOpenAsync(hero.AppClient);
+        var fightId = await StartFightAsync(campagne, hero.Uuid);
+        await ReadUntilEventAsync(keyEvents, "initiativeRequested");
+        await ReadUntilEventAsync(appEvents, "initiativeRequested");
+
+        // act
+        var response = rollWithTheKey
+            ? await key.PostAsync(
+                $"{V1}/campaigns/{campagne.Id.Value}/fight/rolls",
+                Json(new { rolls = new[] { new { characterUuid = hero.Uuid, roll = 15 } } })
+            )
+            : await hero.AppClient.PostAsync(
+                $"/Fight/{fightId}/rolls",
+                Json(new { rolls = new[] { new { characterUuid = hero.Uuid, roll = 15 } } })
+            );
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK, await response.Content.ReadAsStringAsync());
+        var otherApp = rollWithTheKey ? appEvents : keyEvents;
+        var settled = System.Text.Json.Nodes.JsonNode.Parse(await ReadUntilEventAsync(otherApp, "initiativeSettled"))!;
+        settled["fightId"]!.GetValue<Guid>().Should().Be(fightId);
+        settled["campagneId"]!.GetValue<Guid>().Should().Be(campagne.Id.Value);
+        var participant = settled["participants"]!.AsArray().Should().ContainSingle().Subject!;
+        participant["characterUuid"]!.GetValue<string>().Should().Be(hero.Uuid);
+        participant["roll"]!.GetValue<int>().Should().Be(15);
+    }
+
     [Fact]
     public async Task AKeyWithoutFightsPlay_GetsNoFightEvents()
     {

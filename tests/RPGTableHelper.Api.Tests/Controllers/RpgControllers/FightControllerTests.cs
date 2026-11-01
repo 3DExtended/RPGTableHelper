@@ -318,6 +318,30 @@ public class FightControllerTests : ControllerTestBase
     }
 
     [Fact]
+    public async Task RemoveParticipant_TellsThatPlayer_TheyNeedNotRollAnyMore()
+    {
+        // arrange
+        var (_, campagne) = await CreateTableAsync();
+        var hero = await AddPlayerAsync(campagne, "Hero");
+        var rogue = await AddPlayerAsync(campagne, "Rogue");
+        using var rogueEvents = await OpenEventsStreamAsync(rogue.Client);
+        var fight = await StartAsync(campagne, Participant(hero), Participant(rogue));
+        var rogueParticipant = fight.Participants.Single(p => p.Name == "Rogue");
+
+        // act
+        var response = await Client.DeleteAsync($"/Fight/{fight.Id}/participants/{rogueParticipant.Id}");
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        using var payload = JsonDocument.Parse(await ReadUntilEventAsync(rogueEvents, FightEvents.InitiativeSettled));
+        payload.RootElement.GetProperty("fightId").GetGuid().Should().Be(fight.Id);
+        var settled = payload.RootElement.GetProperty("participants").EnumerateArray().Should().ContainSingle().Subject;
+        settled.GetProperty("participantId").GetGuid().Should().Be(rogueParticipant.Id);
+        settled.GetProperty("characterUuid").GetString().Should().Be(rogue.Uuid);
+        settled.GetProperty("roll").ValueKind.Should().Be(JsonValueKind.Null);
+    }
+
+    [Fact]
     public async Task End_StopsAskingEveryone_AndIsIdempotent()
     {
         // arrange
@@ -472,6 +496,30 @@ public class FightControllerTests : ControllerTestBase
         var dmView = await GetCurrentAsync(Client, campagne);
         dmView!.Participants.Single().Roll.Should().Be(17);
         dmView.Participants.Single().Position.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task LegacyRollAnswer_TellsThePlayersOtherApps_TheyNeedNotRollAnyMore()
+    {
+        // arrange: the player answers from an older app; their newer app is open too.
+        var (_, campagne) = await CreateTableAsync();
+        var hero = await AddPlayerAsync(campagne, "Hero");
+        using var heroEvents = await OpenEventsStreamAsync(hero.Client);
+        var fight = await StartAsync(campagne, Participant(hero));
+
+        // act
+        await hero.Client.PostAsJsonAsync(
+            $"/SessionCommand/sendfightsequencerollstodm/{hero.CharacterId}",
+            new FightSequenceDto
+            {
+                FightUuid = fight.Id.ToString(),
+                Sequence = new() { new() { CharacterId = hero.Uuid, CharacterName = "Hero", Roll = 17 } },
+            }
+        );
+
+        // assert
+        var data = await ReadUntilEventAsync(heroEvents, FightEvents.InitiativeSettled);
+        data.Should().Contain(fight.Id.ToString()).And.Contain(hero.Uuid).And.Contain("17");
     }
 
     private static StartFightParticipantDto Participant(TablePlayer player) =>

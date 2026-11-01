@@ -187,6 +187,7 @@ public sealed class FightOperationResult
         FightSnapshot? fight,
         FightSnapshot? replacedFight,
         IReadOnlyList<FightParticipantSnapshot> rolled,
+        IReadOnlyList<FightParticipantSnapshot> removed,
         bool changed
     )
     {
@@ -196,6 +197,7 @@ public sealed class FightOperationResult
         Fight = fight;
         ReplacedFight = replacedFight;
         Rolled = rolled;
+        Removed = removed;
     }
 
     public FightError Error { get; }
@@ -211,6 +213,9 @@ public sealed class FightOperationResult
     /// <summary>The participants that got their roll in this write.</summary>
     public IReadOnlyList<FightParticipantSnapshot> Rolled { get; }
 
+    /// <summary>The participants the DM removed in this write, as they were before.</summary>
+    public IReadOnlyList<FightParticipantSnapshot> Removed { get; }
+
     /// <summary>False when the write was a no-op, e.g. ending a fight that is already over.</summary>
     public bool Changed { get; }
 
@@ -220,9 +225,27 @@ public sealed class FightOperationResult
         FightSnapshot fight,
         FightSnapshot? replacedFight = null,
         IReadOnlyList<FightParticipantSnapshot>? rolled = null,
+        IReadOnlyList<FightParticipantSnapshot>? removed = null,
         bool changed = true
-    ) => new(FightError.None, null, fight, replacedFight, rolled ?? Array.Empty<FightParticipantSnapshot>(), changed);
+    ) =>
+        new(
+            FightError.None,
+            null,
+            fight,
+            replacedFight,
+            rolled ?? Array.Empty<FightParticipantSnapshot>(),
+            removed ?? Array.Empty<FightParticipantSnapshot>(),
+            changed
+        );
 
     public static FightOperationResult Fail(FightError error, string message) =>
-        new(error, message, null, null, Array.Empty<FightParticipantSnapshot>(), false);
+        new(
+            error,
+            message,
+            null,
+            null,
+            Array.Empty<FightParticipantSnapshot>(),
+            Array.Empty<FightParticipantSnapshot>(),
+            false
+        );
 }

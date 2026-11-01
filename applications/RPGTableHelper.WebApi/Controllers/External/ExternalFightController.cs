@@ -150,6 +150,9 @@ namespace RPGTableHelper.WebApi.Controllers.External
             {
                 await _fightNotifier.NotifyUpdatedAsync(result.Fight!, CurrentUserId, cancellationToken).ConfigureAwait(false);
                 await _fightNotifier
+                    .NotifySettledAsync(result.Fight!, result.Rolled, cancellationToken)
+                    .ConfigureAwait(false);
+                await _fightNotifier
                     .NotifyLegacyRollsToDmAsync(result.Fight!, result.Rolled, cancellationToken)
                     .ConfigureAwait(false);
             }

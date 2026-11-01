@@ -11,6 +11,12 @@ public static class FightEvents
     /// <summary>To each player with pending participants when a fight starts: roll for these.</summary>
     public const string InitiativeRequested = "initiativeRequested";
 
+    /// <summary>
+    /// To the owner of participants that no longer wait for a roll - rolled in any of their apps or by the DM, or
+    /// removed by the DM - so every app of theirs stops asking for them.
+    /// </summary>
+    public const string InitiativeSettled = "initiativeSettled";
+
     /// <summary>To the DM when a fight changed without them (a player rolled): fetch it again.</summary>
     public const string FightUpdated = "fightUpdated";
 
@@ -31,6 +37,16 @@ public interface IFightNotifier
     /// <paramref name="includeLegacyAsk"/> also sends the pre-persistence ask to the session's online players.
     /// </summary>
     Task NotifyStartedAsync(FightSnapshot fight, Guid actorUserId, bool includeLegacyAsk, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Tells the owners of <paramref name="settled"/> that these no longer wait for a roll
+    /// (<see cref="FightEvents.InitiativeSettled"/>). The actor hears it too: their other apps may still ask.
+    /// </summary>
+    Task NotifySettledAsync(
+        FightSnapshot fight,
+        IEnumerable<FightParticipantSnapshot> settled,
+        CancellationToken cancellationToken
+    );
 
     /// <summary>Tells the DM and every asked player that the fight is over, except the actor.</summary>
     Task NotifyEndedAsync(FightSnapshot fight, Guid actorUserId, CancellationToken cancellationToken);
@@ -121,6 +137,33 @@ public sealed class FightNotifier : IFightNotifier
         await _sseEventHub
             .SendToUsersAsync(recipients, FightEvents.LegacyPlayersAreAskedForRolls, legacyPayload, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    public async Task NotifySettledAsync(
+        FightSnapshot fight,
+        IEnumerable<FightParticipantSnapshot> settled,
+        CancellationToken cancellationToken
+    )
+    {
+        foreach (var owner in settled.Where(p => p.OwnerUserId != null).GroupBy(p => p.OwnerUserId!.Value))
+        {
+            var payload = Serialize(
+                new
+                {
+                    fightId = fight.Id,
+                    campagneId = fight.CampagneId,
+                    participants = owner.Select(p => new
+                    {
+                        participantId = p.Id,
+                        characterUuid = p.CharacterUuid,
+                        roll = p.Roll,
+                    }),
+                }
+            );
+            await _sseEventHub
+                .SendToUserAsync(owner.Key, FightEvents.InitiativeSettled, payload, cancellationToken)
+                .ConfigureAwait(false);
+        }
     }
 
     public Task NotifyEndedAsync(FightSnapshot fight, Guid actorUserId, CancellationToken cancellationToken)
