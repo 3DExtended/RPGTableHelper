@@ -37,7 +37,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.Users
                         (e) =>
                             e.HashedPassword == query.HashedPassword
                             && e.User != null
-                            && query.Username == e.User!.Username
+                            && query.Username == e.User.Username
                     )
                     .AsNoTracking()
                     .FirstOrDefaultAsync(cancellationToken)

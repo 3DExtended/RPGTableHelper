@@ -35,7 +35,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.NoteEntities
 
                 var existingEntity = await context
                     .Set<NoteBlockEntityBase>()
-                    .FirstOrDefaultAsync(e => e.Id!.Equals(query.UpdatedModel.Id.Value), cancellationToken)
+                    .FirstOrDefaultAsync(e => e.Id.Equals(query.UpdatedModel.Id.Value), cancellationToken)
                     .ConfigureAwait(false);
 
                 if (existingEntity == null)

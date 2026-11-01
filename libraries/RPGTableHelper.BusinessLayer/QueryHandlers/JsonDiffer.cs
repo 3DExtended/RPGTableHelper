@@ -67,7 +67,7 @@ public static class JsonDiffer
         }
 
         result["version"] = targetVersion;
-        return result!;
+        return result;
     }
 
     private static void ApplyOperation(JsonNode? root, string op, string path, JsonNode opData)

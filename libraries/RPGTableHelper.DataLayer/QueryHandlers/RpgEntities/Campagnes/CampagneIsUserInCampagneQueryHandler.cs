@@ -52,7 +52,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.Campagnes
 
                 return campagneWithUsers.DmUserId == query.UserIdToCheck.Value
                     || campagneWithUsers
-                        .Characters!.Select(e => e.PlayerUserId)
+                        .Characters.Select(e => e.PlayerUserId)
                         .Contains(query.UserIdToCheck.Value);
             }
         }

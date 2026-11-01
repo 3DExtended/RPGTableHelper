@@ -196,11 +196,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest("No valid playercharacterid passed");
             }
 
-            if (updateDto == null || string.IsNullOrWhiteSpace(updateDto.RpgCharacterConfiguration))
-            {
-                return BadRequest("Missing rpg character configuration");
-            }
-
+            // The owner check depends only on the stored character and the authenticated user, and runs before
+            // any check on the request body, so no client-supplied value decides whether it runs.
             var playerCharacter = await new PlayerCharacterQuery
             {
                 ModelId = PlayerCharacter.PlayerCharacterIdentifier.From(playerCharacterIdParsed),
@@ -211,6 +208,11 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (playerCharacter.IsNone || playerCharacter.Get().PlayerUserId != _userContext.User.UserIdentifier)
             {
                 return Unauthorized();
+            }
+
+            if (updateDto == null || string.IsNullOrWhiteSpace(updateDto.RpgCharacterConfiguration))
+            {
+                return BadRequest("Missing rpg character configuration");
             }
 
             var updated = playerCharacter.Get();

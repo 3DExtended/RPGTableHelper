@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using RPGTableHelper.Api.Tests.Base;
 using RPGTableHelper.DataLayer.Entities.RpgEntities;
+using RPGTableHelper.DataLayer.Tests.QueryHandlers;
 using RPGTableHelper.WebApi;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 
@@ -131,6 +132,51 @@ public class CampagneConfigRevisionControllerTests : ControllerTestBase
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            var stored = await context.Campagnes.SingleAsync(c => c.Id == entity.Id);
+            stored.RpgConfiguration.Should().Be("{\"rpgName\":\"old\"}");
+            stored.RpgConfigurationMergedRevision.Should().Be(5);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(1)]
+    [InlineData(5)]
+    public async Task UpdateCampagneRpgConfigAsync_ShouldReturnUnauthorizedForNonDmWhateverTheBody(int? fromRevision)
+    {
+        // arrange
+        await ConfigureLoggedInUser();
+        var dm = await RpgDbContextHelpers.CreateUserInDb(ContextFactory!, Mapper!, usernameOverride: "OtherDm");
+        var entity = new CampagneEntity
+        {
+            Id = Guid.Empty,
+            CampagneName = "CampagneName1",
+            JoinCode = "JOIN07",
+            DmUserId = dm.Id.Value,
+            RpgConfiguration = "{\"rpgName\":\"old\"}",
+            RpgConfigurationMergedRevision = 5,
+        };
+
+        using (var context = ContextFactory!.CreateDbContext())
+        {
+            await context.Campagnes.AddAsync(entity);
+            await context.SaveChangesAsync();
+        }
+
+        // act
+        var response = await Client.PutAsJsonAsync(
+            $"/Campagne/updatecampagneconfig/{entity.Id}",
+            new CampagneUpdateRpgConfigDto
+            {
+                RpgConfiguration = "{\"rpgName\":\"hacked\"}",
+                FromRevision = fromRevision,
+            }
+        );
+
+        // assert: the DM check runs first, so no request value (not even a stale revision) changes the answer
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         using (var context = ContextFactory!.CreateDbContext())
         {
             var stored = await context.Campagnes.SingleAsync(c => c.Id == entity.Id);

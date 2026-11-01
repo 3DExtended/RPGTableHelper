@@ -61,7 +61,7 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.CampagneJoinRequest
                 return requestsForCampagne
                     .Select(c =>
                         (
-                            _mapper.Map<CampagneJoinRequest>(c!),
+                            _mapper.Map<CampagneJoinRequest>(c),
                             _mapper.Map<PlayerCharacter>(c.Player!),
                             c.User!.Username
                         )

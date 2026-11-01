@@ -93,7 +93,7 @@ public class AppleVerifyTokenAndReceiveUserDetailsQueryHandler
 
         // some string uniquely identifying the user
         var internalId = appleAuthTokenDetails["sub"];
-        var email = appleAuthTokenDetails["email"]!;
+        var email = appleAuthTokenDetails["email"];
         var appleRefreshToken = appleTokenResponse.Get().refresh_token ?? null;
 
         return (internalId, email, appleRefreshToken);

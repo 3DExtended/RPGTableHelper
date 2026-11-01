@@ -211,11 +211,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             return BadRequest("No valid campagneId passed");
         }
 
-        if (updateDto == null || string.IsNullOrWhiteSpace(updateDto.RpgConfiguration))
-        {
-            return BadRequest("Missing rpg configuration");
-        }
-
+        // The DM check depends only on the stored campagne and the authenticated user, and runs before
+        // any check on the request body, so no client-supplied value decides whether it runs.
         var campagne = await new CampagneQuery
             {
                 ModelId = Campagne.CampagneIdentifier.From(campagneIdParsed),
@@ -226,6 +223,11 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         if (campagne.IsNone || campagne.Get().DmUserId != _userContext.User.UserIdentifier)
         {
             return Unauthorized();
+        }
+
+        if (updateDto == null || string.IsNullOrWhiteSpace(updateDto.RpgConfiguration))
+        {
+            return BadRequest("Missing rpg configuration");
         }
 
         var updateCampagne = campagne.Get();

@@ -28,11 +28,15 @@ namespace RPGTableHelper.BusinessLayer.Encryption.Handlers
             {
                 byte[] messageBytes = Encoding.UTF8.GetBytes(query.MessageToSign);
 
+                // RSASSA-PKCS1-v1_5 is a sound signature scheme (S5542 targets encryption padding), and the
+                // verify handler and email links already sent depend on it, so PSS would break them.
+#pragma warning disable S5542 // Encryption algorithms should be used with secure mode and padding scheme
                 byte[] signature = privateKey.SignData(
                     messageBytes,
                     HashAlgorithmName.SHA256,
                     RSASignaturePadding.Pkcs1
                 );
+#pragma warning restore S5542 // Encryption algorithms should be used with secure mode and padding scheme
 
                 var result = Convert.ToBase64String(signature);
                 privateKey.Clear();

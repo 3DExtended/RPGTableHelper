@@ -11,7 +11,7 @@ namespace RPGTableHelper.Shared.Auth
             get
             {
                 return User.UserIdentifier.From(
-                    IdentityProviderId == null ? Guid.Empty : Guid.Parse(IdentityProviderId!)
+                    IdentityProviderId == null ? Guid.Empty : Guid.Parse(IdentityProviderId)
                 );
             }
         }
