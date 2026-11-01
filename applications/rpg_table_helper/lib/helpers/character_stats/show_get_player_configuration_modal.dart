@@ -163,7 +163,7 @@ class WarningBox extends StatelessWidget {
           Row(
             children: [
               Icon(
-                FontAwesomeIcons.exclamation,
+                FontAwesomeIcons.exclamation.data,
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
                 size: 24,
               ),

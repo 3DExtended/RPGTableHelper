@@ -154,7 +154,7 @@ class _ItemCardRenderingWithFilteringState
     }
   }
 
-  IconData sortModeIcon() {
+  FaIconData sortModeIcon() {
     switch (sortMode) {
       case ItemInventorySortMode.nameAscending:
         return FontAwesomeIcons.arrowDownAZ;
