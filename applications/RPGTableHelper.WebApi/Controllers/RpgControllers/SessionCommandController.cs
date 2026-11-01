@@ -11,6 +11,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.PlayerCharacters;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.RpgEntities;
 using RPGTableHelper.WebApi.Services.ConfigRevisions;
+using RPGTableHelper.WebApi.Services.Fights;
 using RPGTableHelper.WebApi.Services.Presence;
 using RPGTableHelper.WebApi.Services.Sse;
 
@@ -35,6 +36,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         private readonly IConfigRevisionHistoryStore _configRevisionHistoryStore;
         private readonly IHostEnvironment _hostEnvironment;
         private readonly ILogger<SessionCommandController> _logger;
+        private readonly IFightService _fightService;
+        private readonly IFightNotifier _fightNotifier;
 
         public SessionCommandController(
             IUserContext userContext,
@@ -43,7 +46,9 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             ISessionPresenceService sessionPresenceService,
             IConfigRevisionHistoryStore configRevisionHistoryStore,
             IHostEnvironment hostEnvironment,
-            ILogger<SessionCommandController> logger
+            ILogger<SessionCommandController> logger,
+            IFightService fightService,
+            IFightNotifier fightNotifier
         )
         {
             _userContext = userContext;
@@ -53,12 +58,15 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             _configRevisionHistoryStore = configRevisionHistoryStore;
             _hostEnvironment = hostEnvironment;
             _logger = logger;
+            _fightService = fightService;
+            _fightNotifier = fightNotifier;
         }
 
         /// <summary>
         /// DM asks the other session participants to roll for fight order. Fans out the fight sequence
-        /// inline over SSE (<c>playersAreAskedForRolls</c>) to other users currently in the table session -
-        /// no ephemeral state is persisted server-side.
+        /// inline over SSE (<c>playersAreAskedForRolls</c>) to other users currently in the table session.
+        /// Superseded by <see cref="FightController.StartFightAsync"/>, kept for older apps: the fight is persisted
+        /// as well, so newer apps (and players who come back later) are asked via <c>initiativeRequested</c>.
         /// </summary>
         /// <response code="200">Notify was sent (or no-op if nobody else is currently in session)</response>
         /// <response code="400">If the campagneid is invalid</response>
@@ -97,8 +105,45 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             {
                 var payload = JsonSerializer.Serialize(fightSequence, ConfigDocumentPatcher.SerializerOptions);
                 await _sseEventHub
-                    .SendToUsersAsync(recipients, "playersAreAskedForRolls", payload, cancellationToken)
+                    .SendToUsersAsync(recipients, FightEvents.LegacyPlayersAreAskedForRolls, payload, cancellationToken)
                     .ConfigureAwait(false);
+            }
+
+            var started = await _fightService
+                .StartAsync(
+                    campagneIdParsed,
+                    actorUserId,
+                    Guid.TryParse(fightSequence.FightUuid, out var fightId) ? fightId : null,
+                    fightSequence
+                        .Sequence.Where(e => !string.IsNullOrWhiteSpace(e.CharacterId))
+                        .Select(e => new FightParticipantRequest(e.CharacterId!, null, e.CharacterName))
+                        .ToList(),
+                    fightSequence
+                        .Sequence.Where(e => string.IsNullOrWhiteSpace(e.CharacterId) && e.Roll >= 0)
+                        .Select(e => new FightEnemyRequest(e.CharacterName, e.Roll))
+                        .ToList(),
+                    skipUnknownParticipants: true,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            if (started.Succeeded)
+            {
+                if (started.ReplacedFight != null)
+                {
+                    await _fightNotifier
+                        .NotifyEndedAsync(started.ReplacedFight, actorUserId, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+
+                // The old ask above already reached the players at the table.
+                await _fightNotifier
+                    .NotifyStartedAsync(started.Fight!, actorUserId, includeLegacyAsk: false, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                _logger.LogWarning("Could not persist fight for campagne {CampagneId}: {Message}", campagneIdParsed, started.Message);
             }
 
             return Ok();
@@ -107,7 +152,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// <summary>
         /// A player reports their fight-order roll(s) back to the DM. Notifies the DM inline over SSE
         /// (<c>dmReceivedFightSequenceAnswer</c>) if the DM currently has an active table session for this
-        /// character's campagne; no-op otherwise.
+        /// character's campagne. Superseded by <see cref="FightController.SubmitRollsAsync"/>, kept for older apps:
+        /// rolls for the campagne's open fight are recorded there too.
         /// </summary>
         /// <response code="200">Notify was sent (or no-op if the DM is not currently in session)</response>
         /// <response code="400">If the playercharacterid is invalid, or the character has no campagne</response>
@@ -161,8 +207,31 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             {
                 var payload = JsonSerializer.Serialize(fightSequence, ConfigDocumentPatcher.SerializerOptions);
                 await _sseEventHub
-                    .SendToUserAsync(dmUserId, "dmReceivedFightSequenceAnswer", payload, cancellationToken)
+                    .SendToUserAsync(dmUserId, FightEvents.LegacyDmReceivedFightSequenceAnswer, payload, cancellationToken)
                     .ConfigureAwait(false);
+            }
+
+            if (Guid.TryParse(fightSequence.FightUuid, out var fightId))
+            {
+                var recorded = await _fightService
+                    .SubmitRollsAsync(
+                        fightId,
+                        _userContext.User.UserIdentifier.Value,
+                        fightSequence
+                            .Sequence.Where(e => !string.IsNullOrWhiteSpace(e.CharacterId))
+                            .Select(e => new FightRollRequest(e.CharacterId!, e.Roll))
+                            .ToList(),
+                        skipInvalidRolls: true,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
+
+                if (recorded.Succeeded && recorded.Changed)
+                {
+                    await _fightNotifier
+                        .NotifyUpdatedAsync(recorded.Fight!, _userContext.User.UserIdentifier.Value, cancellationToken)
+                        .ConfigureAwait(false);
+                }
             }
 
             return Ok();

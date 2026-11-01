@@ -149,6 +149,16 @@ public class Startup
             RPGTableHelper.WebApi.Services.ConfigRevisions.ConfigRevisionHistoryStore
         >();
 
+        // Singleton: the fight service serializes fight writes with an in-process lock.
+        services.AddSingleton<
+            RPGTableHelper.WebApi.Services.Fights.IFightService,
+            RPGTableHelper.WebApi.Services.Fights.FightService
+        >();
+        services.AddSingleton<
+            RPGTableHelper.WebApi.Services.Fights.IFightNotifier,
+            RPGTableHelper.WebApi.Services.Fights.FightNotifier
+        >();
+
         services.AddTransient(provider =>
         {
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();

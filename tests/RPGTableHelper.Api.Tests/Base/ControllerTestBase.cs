@@ -98,6 +98,24 @@ public abstract class ControllerTestBase : IClassFixture<WebApplicationFactory<P
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Opens <c>/events</c> for <paramref name="client"/> and keeps it open until the reader is disposed. Session
+    /// presence only counts users with a live event stream, like the real app has, so a test client that enters
+    /// a session needs one.
+    /// </summary>
+    protected static async Task<StreamReader> KeepEventsStreamOpenAsync(HttpClient client)
+    {
+        var response = await client.GetAsync("/events", HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+        var reader = new StreamReader(await response.Content.ReadAsStreamAsync(), System.Text.Encoding.UTF8);
+
+        // drain hello
+        await reader.ReadLineAsync();
+        await reader.ReadLineAsync();
+        await reader.ReadLineAsync();
+        return reader;
+    }
+
     protected async Task<User> ConfigureLoggedInUser()
     {
         // arrange

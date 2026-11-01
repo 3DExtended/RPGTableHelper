@@ -326,6 +326,90 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.ToTable("CampagneRpgConfigHistories");
                 });
 
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.FightEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CampagneId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("EndReason")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("EndedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("LastActivityAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("StartedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampagneId", "EndedAt");
+
+                    b.ToTable("Fights");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.FightParticipantEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CharacterUuid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("FightId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Kind")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset>("LastModifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("OwnerUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PlayerCharacterId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("Position")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Roll")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("RolledAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FightId", "OwnerUserId");
+
+                    b.ToTable("FightParticipants");
+                });
+
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", b =>
                 {
                     b.Property<Guid>("Id")
@@ -714,6 +798,28 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Navigation("Campagne");
                 });
 
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.FightEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", "Campagne")
+                        .WithMany()
+                        .HasForeignKey("CampagneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Campagne");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.FightParticipantEntity", b =>
+                {
+                    b.HasOne("RPGTableHelper.DataLayer.Entities.RpgEntities.FightEntity", "Fight")
+                        .WithMany("Participants")
+                        .HasForeignKey("FightId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fight");
+                });
+
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", b =>
                 {
                     b.HasOne("RPGTableHelper.DataLayer.Entities.UserEntity", "CreatingUser")
@@ -830,6 +936,11 @@ namespace RPGTableHelper.DataLayer.Migrations
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.CampagneEntity", b =>
                 {
                     b.Navigation("Characters");
+                });
+
+            modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.FightEntity", b =>
+                {
+                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("RPGTableHelper.DataLayer.Entities.RpgEntities.NoteEntities.NoteBlockEntityBase", b =>

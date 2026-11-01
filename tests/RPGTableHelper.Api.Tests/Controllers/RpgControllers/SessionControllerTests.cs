@@ -48,6 +48,8 @@ public class SessionControllerTests : ControllerTestBase
         var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory!, Mapper!, dm);
 
         // act
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+
         var response = await Client.PostAsync($"/Session/enter/{campagne.Id.Value}", null);
 
         // assert
@@ -85,6 +87,9 @@ public class SessionControllerTests : ControllerTestBase
             "Bearer",
             CreateJwtForUser(player)
         );
+
+        using var dmLiveEvents = await KeepEventsStreamOpenAsync(Client);
+        using var playerLiveEvents = await KeepEventsStreamOpenAsync(playerClient);
 
         var playerEnterResponse = await playerClient.PostAsync($"/Session/enter/{campagne.Id.Value}", null);
         playerEnterResponse.StatusCode.Should().Be(HttpStatusCode.OK);
