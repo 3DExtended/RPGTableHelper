@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prodot.Patterns.Cqrs;
@@ -12,6 +13,7 @@ using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.WebApi.Dtos.External;
 using RPGTableHelper.WebApi.Services;
 using RPGTableHelper.WebApi.Services.Auth;
+using RPGTableHelper.WebApi.Services.Images;
 using RPGTableHelper.WebApi.Services.Sse;
 
 namespace RPGTableHelper.WebApi.Controllers.External
@@ -28,17 +30,20 @@ namespace RPGTableHelper.WebApi.Controllers.External
     {
         private readonly INoteService _noteService;
         private readonly INoteAccessChangeNotifier _noteAccessChangeNotifier;
+        private readonly IImageUploadService _imageUploadService;
 
         public ExternalNotesController(
             IQueryProcessor queryProcessor,
             IUserContext userContext,
             INoteService noteService,
-            INoteAccessChangeNotifier noteAccessChangeNotifier
+            INoteAccessChangeNotifier noteAccessChangeNotifier,
+            IImageUploadService imageUploadService
         )
             : base(queryProcessor, userContext)
         {
             _noteService = noteService;
             _noteAccessChangeNotifier = noteAccessChangeNotifier;
+            _imageUploadService = imageUploadService;
         }
 
         private User.UserIdentifier CurrentUser => UserContext.User.UserIdentifier;
@@ -279,7 +284,7 @@ namespace RPGTableHelper.WebApi.Controllers.External
                 return Error(
                     StatusCodes.Status400BadRequest,
                     ExternalApiErrors.UnsupportedBlockType,
-                    "Only text blocks can be changed through the API."
+                    "This is an image block: change it with PUT image-blocks/{id}."
                 );
             }
 
@@ -298,6 +303,159 @@ namespace RPGTableHelper.WebApi.Controllers.External
                     NoteDocumentId = textBlock.NoteDocumentId,
                     CreatingUserId = textBlock.CreatingUserId,
                     CreationDate = textBlock.CreationDate,
+                    MarkdownText = request.MarkdownText,
+                    PermittedUsers = visibleTo,
+                },
+            }
+                .RunAsync(QueryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            var after = updated.IsSome ? await LoadBlockAsync(blockId, cancellationToken).ConfigureAwait(false) : null;
+            if (after == null)
+            {
+                return Error(StatusCodes.Status500InternalServerError, ExternalApiErrors.WriteFailed, "Could not change the block.");
+            }
+
+            await _noteAccessChangeNotifier
+                .NotifyBlockUpdatedAsync(document.CreatedForCampagneId, document.Id, before, after, CurrentUser, cancellationToken)
+                .ConfigureAwait(false);
+            return Ok(ToDto(after));
+        }
+
+        /// <summary>
+        /// Adds an image block to your document, sent as <c>multipart/form-data</c>: the file <c>image</c> (PNG or
+        /// JPEG, at most 10 MB), the JSON array <c>visibleTo</c> (<c>[]</c> keeps it private) and optionally the
+        /// caption <c>markdownText</c>. <c>visibleTo</c> guards the block; anyone with the image's link can load
+        /// the image.
+        /// </summary>
+        /// <response code="201">The new block</response>
+        /// <response code="400">If the file is no PNG or JPEG or too big, or <c>visibleTo</c> is not valid</response>
+        /// <response code="403">If the document is someone else's</response>
+        /// <response code="404">If the document does not exist or nothing in it is shared with you</response>
+        [RequireScope(ApiKeyScopes.NotesWrite)]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(typeof(ExternalNoteBlockDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [HttpPost("documents/{documentId:guid}/image-blocks")]
+        public async Task<ActionResult<ExternalNoteBlockDto>> CreateImageBlockAsync(
+            Guid documentId,
+            [FromForm] ExternalImageBlockCreateRequestDto request,
+            CancellationToken cancellationToken
+        )
+        {
+            var (document, denied) = await LoadDocumentForWriteAsync(documentId, cancellationToken).ConfigureAwait(false);
+            if (document == null)
+            {
+                return denied!;
+            }
+
+            var requestedReaders = ParseVisibleTo(request.VisibleTo);
+            if (requestedReaders == null)
+            {
+                return InvalidRequest(
+                    "visibleTo must be a JSON array of user ids.",
+                    new List<string> { "visibleTo: not a JSON array of user ids, e.g. [\"40c3...\"] or []." }
+                );
+            }
+
+            var (visibleTo, invalid) = await ResolveVisibleToAsync(document.CreatedForCampagneId, requestedReaders, cancellationToken)
+                .ConfigureAwait(false);
+            if (visibleTo == null)
+            {
+                return invalid!;
+            }
+
+            var imageProblem = await _imageUploadService.ValidateAsync(request.Image, cancellationToken).ConfigureAwait(false);
+            if (imageProblem != null)
+            {
+                return InvalidRequest(imageProblem, new List<string> { $"image: {imageProblem}" });
+            }
+
+            var image = await _imageUploadService
+                .StoreAsync(document.CreatedForCampagneId, CurrentUser, request.Image, cancellationToken)
+                .ConfigureAwait(false);
+            if (image == null)
+            {
+                return Error(StatusCodes.Status500InternalServerError, ExternalApiErrors.WriteFailed, "Could not store the image.");
+            }
+
+            var created = await new NoteBlockCreateQuery
+            {
+                ModelToCreate = new ImageBlock
+                {
+                    NoteDocumentId = document.Id,
+                    CreatingUserId = CurrentUser,
+                    ImageMetaDataId = image.MetaDataId,
+                    PublicImageUrl = image.PublicUrl,
+                    MarkdownText = request.MarkdownText,
+                    PermittedUsers = visibleTo,
+                },
+            }
+                .RunAsync(QueryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            var block = created.IsSome
+                ? await LoadBlockAsync(created.Get().Value, cancellationToken).ConfigureAwait(false)
+                : null;
+            if (block == null)
+            {
+                return Error(StatusCodes.Status500InternalServerError, ExternalApiErrors.WriteFailed, "Could not create the block.");
+            }
+
+            await _noteAccessChangeNotifier
+                .NotifyBlockCreatedAsync(document.CreatedForCampagneId, document.Id, block, CurrentUser, cancellationToken)
+                .ConfigureAwait(false);
+            return Created($"/{ExternalApiRoutes.V1}/documents/{document.Id.Value}", ToDto(block));
+        }
+
+        /// <summary>
+        /// Replaces the caption and the visibility of your image block; the image stays. Send <c>visibleTo</c> every
+        /// time: whoever is not in it can no longer read the block.
+        /// </summary>
+        /// <response code="200">The changed block</response>
+        /// <response code="400">If <c>visibleTo</c> names someone who is not in the campaign, or it is a text block</response>
+        /// <response code="403">If the block is someone else's</response>
+        /// <response code="404">If the block does not exist or is not shared with you</response>
+        [RequireScope(ApiKeyScopes.NotesWrite)]
+        [ProducesResponseType(typeof(ExternalNoteBlockDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [HttpPut("image-blocks/{blockId:guid}")]
+        public async Task<ActionResult<ExternalNoteBlockDto>> UpdateImageBlockAsync(
+            Guid blockId,
+            [FromBody] [Required] ExternalImageBlockUpdateRequestDto request,
+            CancellationToken cancellationToken
+        )
+        {
+            var (before, document, denied) = await LoadBlockForWriteAsync(blockId, cancellationToken).ConfigureAwait(false);
+            if (before == null)
+            {
+                return denied!;
+            }
+
+            if (before is not ImageBlock imageBlock)
+            {
+                return Error(
+                    StatusCodes.Status400BadRequest,
+                    ExternalApiErrors.UnsupportedBlockType,
+                    "This is a text block: change it with PUT blocks/{id}."
+                );
+            }
+
+            var (visibleTo, invalid) = await ResolveVisibleToAsync(document!.CreatedForCampagneId, request.VisibleTo, cancellationToken)
+                .ConfigureAwait(false);
+            if (visibleTo == null)
+            {
+                return invalid!;
+            }
+
+            var updated = await new NoteBlockUpdateQuery
+            {
+                UpdatedModel = new ImageBlock
+                {
+                    Id = imageBlock.Id,
+                    NoteDocumentId = imageBlock.NoteDocumentId,
+                    CreatingUserId = imageBlock.CreatingUserId,
+                    CreationDate = imageBlock.CreationDate,
+                    ImageMetaDataId = imageBlock.ImageMetaDataId,
+                    PublicImageUrl = imageBlock.PublicImageUrl,
                     MarkdownText = request.MarkdownText,
                     PermittedUsers = visibleTo,
                 },
@@ -344,6 +502,34 @@ namespace RPGTableHelper.WebApi.Controllers.External
                 .NotifyBlockDeletedAsync(document!.CreatedForCampagneId, document.Id, block, CurrentUser, cancellationToken)
                 .ConfigureAwait(false);
             return NoContent();
+        }
+
+        /// <summary>The user ids in a form field, or null if it is not a JSON array of them.</summary>
+        private static List<Guid>? ParseVisibleTo(string visibleTo)
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<List<Guid>>(visibleTo);
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// The stored image url as a full link. The app keeps it relative to its own server. The Cloudflare tunnel
+        /// reaches us over http and says so in <c>X-Forwarded-Proto</c>.
+        /// </summary>
+        private string ToFullImageUrl(string imageUrl)
+        {
+            if (!imageUrl.StartsWith('/'))
+            {
+                return imageUrl;
+            }
+
+            var scheme = Request.Headers["X-Forwarded-Proto"] == "https" ? "https" : Request.Scheme;
+            return $"{scheme}://{Request.Host}{imageUrl}";
         }
 
         /// <summary>
@@ -481,7 +667,7 @@ namespace RPGTableHelper.WebApi.Controllers.External
                     ImageBlock image => image.MarkdownText,
                     _ => null,
                 },
-                ImageUrl = (block as ImageBlock)?.PublicImageUrl,
+                ImageUrl = block is ImageBlock imageBlock ? ToFullImageUrl(imageBlock.PublicImageUrl) : null,
                 CreatedByUserId = block.CreatingUserId.Value,
                 IsOwn = isOwn,
                 VisibleTo = isOwn ? block.PermittedUsers.Select(u => u.Value).ToList() : null,

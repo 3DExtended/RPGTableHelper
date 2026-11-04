@@ -84,7 +84,7 @@ Errors of the v1 API share one JSON shape:
 | --- | --- | --- |
 | 400 | `invalid_request` | The body or a parameter is invalid; `problems` says what. |
 | 400 | `invalid_patch` | The JSON Patch is malformed or does not apply (e.g. a path that is not there). |
-| 400 | `unsupported_block_type` | Only text blocks can be written. |
+| 400 | `unsupported_block_type` | Wrong route for the block: `blocks/{id}` is for text, `image-blocks/{id}` for images. |
 | 401 | – (empty body) | No key, or the key is unknown, revoked or expired. |
 | 403 | `insufficient_scope` | The key lacks a scope; `requiredScopes` lists it. |
 | 403 | `forbidden` | You may see it but not change it (someone else's note, someone else's character in a fight). |

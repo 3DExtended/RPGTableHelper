@@ -15,6 +15,7 @@ using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
 using RPGTableHelper.DataLayer.OpenAI.Contracts.Queries;
 using RPGTableHelper.Shared.Auth;
 using RPGTableHelper.Shared.Services;
+using RPGTableHelper.WebApi.Services.Images;
 
 namespace RPGTableHelper.WebApi.Controllers.RpgControllers
 {
@@ -23,15 +24,15 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
     [Route("[controller]")]
     public class ImageController : ControllerBase
     {
-        private const long MaxFileSize = 10 * 1024 * 1024; // 10 MB
-
         private readonly IUserContext _userContext;
         private readonly IQueryProcessor _queryProcessor;
+        private readonly IImageUploadService _imageUploadService;
 
-        public ImageController(IUserContext userContext, IQueryProcessor queryProcessor)
+        public ImageController(IUserContext userContext, IQueryProcessor queryProcessor, IImageUploadService imageUploadService)
         {
             _queryProcessor = queryProcessor;
             _userContext = userContext;
+            _imageUploadService = imageUploadService;
         }
 
         [HttpPost("generateimage/{campagneid}")]
@@ -132,30 +133,10 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return BadRequest($"Campagne Id is malformed");
             }
 
-            if (image.Length > MaxFileSize)
+            var imageProblem = await _imageUploadService.ValidateAsync(image, cancellationToken).ConfigureAwait(false);
+            if (imageProblem != null)
             {
-                return BadRequest($"File size exceeds the maximum limit of {MaxFileSize / (1024 * 1024)} MB.");
-            }
-
-            if (image.Length == 0)
-            {
-                return BadRequest($"File size is 0 MB.");
-            }
-
-            var permittedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
-
-            if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
-            {
-                return BadRequest($"Invalid file type.");
-            }
-
-            // Optional: Validate MIME type as well
-            var mimeType = image.ContentType;
-            var permittedMimeTypes = new[] { "image/jpeg", "image/jpg", "image/png" };
-            if (!permittedMimeTypes.Contains(mimeType))
-            {
-                return BadRequest("Invalid MIME type.");
+                return BadRequest(imageProblem);
             }
 
             var isUserInCampagne = await new CampagneIsUserInCampagneQuery
@@ -171,48 +152,16 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Unauthorized();
             }
 
-            // var mimeType = await GetMimeTypeFromStreamAsync(Request.Body);
-            var apikey = ApiKeyGenerator.GenerateKey(32);
-            var newMetadata = new ImageMetaData
-            {
-                CreatedForCampagneId = Campagne.CampagneIdentifier.From(campagneIdParsed),
-                CreatorId = _userContext.User.UserIdentifier,
-                ApiKey = apikey,
-                ImageType = mimeType switch
-                {
-                    "image/jpeg" => ImageType.JPEG,
-                    "image/jpg" => ImageType.JPEG,
-                    "image/png" => ImageType.PNG,
-                    _ => throw new NotImplementedException(),
-                },
-                LocallyStored = true,
-            };
-
-            var metadata = await new ImageMetaDataCreateQuery { ModelToCreate = newMetadata }
-                .RunAsync(_queryProcessor, cancellationToken)
+            var storedImage = await _imageUploadService
+                .StoreAsync(Campagne.CampagneIdentifier.From(campagneIdParsed), _userContext.User.UserIdentifier, image, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (metadata.IsNone)
+            if (storedImage == null)
             {
                 return BadRequest();
             }
 
-            newMetadata.Id = metadata.Get();
-
-            // Do some processing with body…
-            await using var imageStream = image.OpenReadStream();
-
-            var saveResult = await new ImageSaveQuery { Stream = imageStream, MetaData = newMetadata }
-                .RunAsync(_queryProcessor, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (saveResult.IsNone)
-            {
-                return BadRequest();
-            }
-
-            var urlForImage = $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
-            return Ok(urlForImage);
+            return Ok(storedImage.PublicUrl);
         }
 
         /// <summary>

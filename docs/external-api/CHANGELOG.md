@@ -17,6 +17,8 @@ The player API: a player's own app can take part at the table.
   alternate form included).
 - Notes: read documents and the blocks shared with you; create, change and delete your documents and
   text blocks with an explicit `visibleTo`.
+- Image blocks in notes: `POST documents/{id}/image-blocks` (upload as `multipart/form-data`) and
+  `PUT image-blocks/{id}` (caption and `visibleTo`). `imageUrl` is now a full link.
 - Initiative: `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls`. Open requests are stored
   on the server, so a player who was away is still asked.
 - Events for API keys: `initiativeRequested`, `initiativeSettled`, `fightEnded`. Each event reaches
