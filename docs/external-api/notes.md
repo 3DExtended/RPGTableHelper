@@ -5,7 +5,7 @@ its own visibility: its author always reads it, plus the campaign members listed
 
 - You read your own documents completely, and in other documents the blocks shared with you.
 - You change only what you wrote.
-- Through the API you write **text blocks** (Markdown). Image blocks can be read and deleted.
+- A block is **text** (Markdown) or an **image** with an optional caption.
 
 Scopes: `notes:read` to read, `notes:write` to write.
 
@@ -93,6 +93,38 @@ PUT /api/external/v1/documents/{documentId}
 DELETE /api/external/v1/blocks/{blockId}        → 204
 DELETE /api/external/v1/documents/{documentId}  → 204 (with all blocks)
 ```
+
+An image block carries an image and optionally a caption. Upload it as `multipart/form-data`:
+
+```bash
+curl -X POST "$BASE/api/external/v1/documents/$DOCUMENT_ID/image-blocks" \
+  -H "X-Api-Key: $KEY" \
+  -F "image=@vault.png;type=image/png" \
+  -F "markdownText=The vault" \
+  -F 'visibleTo=["40c3..."]'
+```
+
+The answer is `201` with the block; `imageUrl` holds the full link to the image.
+
+- `image`: PNG or JPEG, at most 10 MB. The file's content is checked, not just its name.
+- `visibleTo`: required, here as a **JSON array in a form field**. `[]` keeps the block private.
+- `markdownText`: optional.
+
+Afterwards you can change the caption and who reads the block. The image itself stays; to swap it,
+delete the block and create a new one.
+
+```http
+PUT /api/external/v1/image-blocks/{blockId}
+{ "markdownText": "The empty vault", "visibleTo": [] }
+→ 200, the block
+```
+
+`PUT blocks/{id}` is for text blocks only, `PUT image-blocks/{id}` for image blocks only; the wrong
+one answers `400 unsupported_block_type`. `DELETE blocks/{id}` deletes both.
+
+> **`visibleTo` guards the block, not the image file.** Anyone with the `imageUrl` can load the image
+> without logging in, and someone who has seen the link keeps it after you take them out of
+> `visibleTo`. Do not upload images that must stay secret from people who had access once.
 
 `groupName` is the folder the app sorts the document into; documents with the same name are shown
 together.

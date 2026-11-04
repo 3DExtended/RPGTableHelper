@@ -41,14 +41,14 @@ public class ExternalNoteBlockDto
     [Required]
     public Guid Id { get; set; }
 
-    /// <summary><c>text</c> or <c>image</c>. Only text blocks can be written through the API.</summary>
+    /// <summary><c>text</c> or <c>image</c>.</summary>
     [Required]
     public string Type { get; set; } = default!;
 
     /// <summary>Markdown of a text block, or the caption of an image block.</summary>
     public string? MarkdownText { get; set; }
 
-    /// <summary>Only for image blocks.</summary>
+    /// <summary>Only for image blocks: the full URL of the image. Anyone with this link can load the image.</summary>
     public string? ImageUrl { get; set; }
 
     [Required]
@@ -90,6 +90,35 @@ public class ExternalTextBlockRequestDto
     /// Who besides you may read the block: user ids of campaign members. <c>[]</c> keeps it private.
     /// Required, so a block is never shared by accident.
     /// </summary>
+    [Required]
+    public List<Guid> VisibleTo { get; set; } = default!;
+}
+
+/// <summary>A new image block, sent as <c>multipart/form-data</c>.</summary>
+public class ExternalImageBlockCreateRequestDto
+{
+    /// <summary>The image: PNG or JPEG, at most 10 MB.</summary>
+    [Required]
+    public IFormFile Image { get; set; } = default!;
+
+    /// <summary>The caption, as Markdown.</summary>
+    public string? MarkdownText { get; set; }
+
+    /// <summary>
+    /// Who besides you may read the block: a JSON array of user ids of campaign members. <c>[]</c> keeps it
+    /// private. Required, so a block is never shared by accident.
+    /// </summary>
+    [Required(AllowEmptyStrings = false)]
+    public string VisibleTo { get; set; } = default!;
+}
+
+/// <summary>Caption and visibility of an image block. The image itself stays.</summary>
+public class ExternalImageBlockUpdateRequestDto
+{
+    /// <summary>The caption, as Markdown. Leaving it out removes the caption.</summary>
+    public string? MarkdownText { get; set; }
+
+    /// <summary>Who besides you may read the block. <c>[]</c> keeps it private. Required.</summary>
     [Required]
     public List<Guid> VisibleTo { get; set; } = default!;
 }

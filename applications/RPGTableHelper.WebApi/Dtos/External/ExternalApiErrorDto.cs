@@ -49,7 +49,7 @@ public static class ExternalApiErrors
     /// <summary>The fight changed in a way that conflicts with the request (e.g. a participant already rolled).</summary>
     public const string FightConflict = "fight_conflict";
 
-    /// <summary>Only text blocks can be written through the API.</summary>
+    /// <summary>The route does not fit the block: text blocks change at <c>blocks/{id}</c>, image blocks at <c>image-blocks/{id}</c>.</summary>
     public const string UnsupportedBlockType = "unsupported_block_type";
 
     /// <summary>The server could not store the change; try again later.</summary>

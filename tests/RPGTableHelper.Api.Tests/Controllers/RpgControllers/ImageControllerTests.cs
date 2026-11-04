@@ -45,6 +45,27 @@ public class ImageControllerTests
         }
 
         [Fact]
+        public async Task StreamUploadImage_ShouldReturnBadRequest_WhenContentIsNoImage()
+        {
+            // arrange
+            var user = await ConfigureLoggedInUser();
+            var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory!, Mapper!, user);
+
+            var fileContent = "<html></html>"u8.ToArray();
+            using var fileStream = new MemoryStream(fileContent);
+            var content = new StreamContent(fileStream);
+            content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            using var formData = new MultipartFormDataContent { { content, "image", "test.png" } };
+
+            // act
+            var response = await Client.PostAsync($"{UploadUrl}?campagneId={campagne.Id.Value}", formData);
+
+            // assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            (await response.Content.ReadAsStringAsync()).Should().Contain("not a PNG or JPEG");
+        }
+
+        [Fact]
         public async Task StreamUploadImage_ShouldReturnBadRequest_WhenFileSizeExceedsLimit()
         {
             // arrange

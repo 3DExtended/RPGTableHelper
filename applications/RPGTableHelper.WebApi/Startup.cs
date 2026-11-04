@@ -506,6 +506,7 @@ public class Startup
         }
 
         services.AddTransient<INoteService, NoteService>();
+        services.AddTransient<RPGTableHelper.WebApi.Services.Images.IImageUploadService, RPGTableHelper.WebApi.Services.Images.ImageUploadService>();
         var openAiOptions = Configuration.GetSection("OpenAi").Get<OpenAIOptions>() ?? new OpenAIOptions();
         services.AddSingleton(openAiOptions);
 
