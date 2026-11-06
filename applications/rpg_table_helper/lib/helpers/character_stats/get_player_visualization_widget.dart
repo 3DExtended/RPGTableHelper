@@ -42,10 +42,7 @@ String resolveStatImageUrl(String? imageUrl) {
   if (imageUrl.startsWith("assets")) {
     return imageUrl;
   }
-  return apiBaseUrl +
-      (imageUrl.startsWith("/")
-          ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
-          : imageUrl);
+  return apiImageUrl(imageUrl);
 }
 
 int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {

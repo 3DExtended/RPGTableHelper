@@ -52,6 +52,21 @@ namespace RPGTableHelper.WebApi.Controllers.External
             Error(StatusCodes.Status400BadRequest, ExternalApiErrors.InvalidRequest, message, problems);
 
         /// <summary>
+        /// The stored image url as a full link. The app keeps it relative to its own server. The Cloudflare tunnel
+        /// reaches us over http and says so in <c>X-Forwarded-Proto</c>.
+        /// </summary>
+        protected string ToFullImageUrl(string imageUrl)
+        {
+            if (!imageUrl.StartsWith('/'))
+            {
+                return imageUrl;
+            }
+
+            var scheme = Request.Headers["X-Forwarded-Proto"] == "https" ? "https" : Request.Scheme;
+            return $"{scheme}://{Request.Host}{imageUrl}";
+        }
+
+        /// <summary>
         /// The campaign if the caller is its DM or has a character in it, else null. Callers answer null with 404,
         /// so a key cannot probe which campaigns exist.
         /// </summary>

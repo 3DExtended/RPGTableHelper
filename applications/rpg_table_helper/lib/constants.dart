@@ -29,6 +29,17 @@ String get apiBaseUrl {
   return 'https://questkeeper-prod.peter-esser.de/';
 }
 
+/// Turns an image path the API returned (`/public/getimage/...`) into a
+/// loadable URL. Full `http(s)://` links, e.g. set through the player API,
+/// stay as they are.
+String apiImageUrl(String imagePath) {
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  return apiBaseUrl +
+      (imagePath.startsWith('/') ? imagePath.substring(1) : imagePath);
+}
+
 const rpgtablehelperPublicCertificate = '''-----BEGIN PUBLIC KEY-----
 MIICLjANBgkqhkiG9w0BAQEFAAOCAhsAMIICFgKCAg0LBlhtjPsdRKW8xNSSfqAr
 WAnoODMM3mSgpPDLz9WdCDm5Ms+MvqWm635c+kvpgKNI2OMMuwtx3bOlT7l8th/0

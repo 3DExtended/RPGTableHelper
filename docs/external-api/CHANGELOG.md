@@ -19,6 +19,8 @@ The player API: a player's own app can take part at the table.
   text blocks with an explicit `visibleTo`.
 - Image blocks in notes: `POST documents/{id}/image-blocks` (upload as `multipart/form-data`) and
   `PUT image-blocks/{id}` (caption and `visibleTo`). `imageUrl` is now a full link.
+- Images for the character sheet: `POST campaigns/{id}/images` (upload as `multipart/form-data`,
+  `characters:write`) returns `path` for a `singleImage` stat and the full `imageUrl`.
 - Initiative: `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls`. Open requests are stored
   on the server, so a player who was away is still asked.
 - Events for API keys: `initiativeRequested`, `initiativeSettled`, `fightEnded`. Each event reaches

@@ -502,12 +502,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                                 var fullImageUrl =
                                     (imageUrl.startsWith("assets")
                                         ? imageUrl
-                                        : (apiBaseUrl +
-                                            (imageUrl.startsWith("/")
-                                                ? (imageUrl.length > 1
-                                                    ? imageUrl.substring(1)
-                                                    : '')
-                                                : imageUrl)));
+                                        : apiImageUrl(imageUrl));
                                 return Row(
                                   children: [
                                     Expanded(

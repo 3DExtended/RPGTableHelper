@@ -518,21 +518,6 @@ namespace RPGTableHelper.WebApi.Controllers.External
         }
 
         /// <summary>
-        /// The stored image url as a full link. The app keeps it relative to its own server. The Cloudflare tunnel
-        /// reaches us over http and says so in <c>X-Forwarded-Proto</c>.
-        /// </summary>
-        private string ToFullImageUrl(string imageUrl)
-        {
-            if (!imageUrl.StartsWith('/'))
-            {
-                return imageUrl;
-            }
-
-            var scheme = Request.Headers["X-Forwarded-Proto"] == "https" ? "https" : Request.Scheme;
-            return $"{scheme}://{Request.Host}{imageUrl}";
-        }
-
-        /// <summary>
         /// The requested readers as members of the campaign, without the author (who always reads their own
         /// blocks); or a 400 naming who is not a member.
         /// </summary>
