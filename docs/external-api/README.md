@@ -44,6 +44,7 @@ A complete browser client is in [examples/player-client.mjs](examples/player-cli
 | --- | --- | --- |
 | Show and edit the sheet | `GET characters/{id}/sheet`, `PATCH characters/{id}/sheet`, `GET campaigns/{id}/config` | [Character sheet](character-sheet.md) |
 | Sync hit points | `PUT characters/{id}/sheet/stats/{statUuid}` | [Character sheet](character-sheet.md#changing-one-stat) |
+| Set a character picture | `POST campaigns/{id}/images`, then `PUT characters/{id}/sheet/stats/{statUuid}` | [Character sheet](character-sheet.md#images) |
 | Notes | `GET/POST campaigns/{id}/documents`, `POST documents/{id}/blocks`, `POST documents/{id}/image-blocks`, `PUT blocks/{id}`, `PUT image-blocks/{id}` | [Notes](notes.md) |
 | Initiative | events `initiativeRequested`, `initiativeSettled`, `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls` | [Initiative](initiative.md) |
 | Live updates | `GET /events`, `POST campaigns/{id}/session/enter` | [Events](events.md) |
@@ -64,6 +65,7 @@ All paths are relative to `/api/external/v1`.
 | GET | `characters/{id}/sheet` | `characters:read` |
 | PATCH | `characters/{id}/sheet` | `characters:write` |
 | PUT | `characters/{id}/sheet/stats/{statUuid}` | `characters:write` |
+| POST | `campaigns/{id}/images` | `characters:write` |
 | GET | `campaigns/{id}/documents`, `documents/{id}` | `notes:read` |
 | POST | `campaigns/{id}/documents` | `notes:write` |
 | PUT, DELETE | `documents/{id}` | `notes:write` |

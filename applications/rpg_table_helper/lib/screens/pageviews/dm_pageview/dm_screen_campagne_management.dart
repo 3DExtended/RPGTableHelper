@@ -471,10 +471,7 @@ class _DmScreenCampagneManagementState
         ? null
         : (imageUrl.startsWith("assets")
             ? imageUrl
-            : (apiBaseUrl +
-                (imageUrl.startsWith("/")
-                    ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
-                    : imageUrl)));
+            : apiImageUrl(imageUrl));
     return CupertinoButton(
       onPressed: () {
         navigatorKey.currentState!.pushNamed(PlayerPageScreen.route,

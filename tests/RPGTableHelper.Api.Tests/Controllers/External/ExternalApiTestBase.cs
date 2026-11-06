@@ -29,6 +29,8 @@ public abstract class ExternalApiTestBase : ControllerTestBase
 
     protected const string BioStat = "bio-stat";
 
+    protected const string PortraitStat = "portrait-stat";
+
     protected static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
         Converters = { new JsonStringEnumConverter() },
@@ -97,6 +99,12 @@ public abstract class ExternalApiTestBase : ControllerTestBase
                             ["statUuid"] = BioStat,
                             ["name"] = "Biography",
                             ["valueType"] = "multiLineText",
+                        },
+                        new JsonObject
+                        {
+                            ["statUuid"] = PortraitStat,
+                            ["name"] = "Portrait",
+                            ["valueType"] = "singleImage",
                         }
                     ),
                 }

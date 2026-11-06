@@ -718,10 +718,7 @@ class _PlayerStatsConfigurationVisualsState
                 ? "assets/images/charactercard_placeholder.png"
                 : (imageUrl.startsWith("assets")
                     ? imageUrl
-                    : (apiBaseUrl +
-                        (imageUrl.startsWith("/")
-                            ? (imageUrl.length > 1 ? imageUrl.substring(1) : '')
-                            : imageUrl)));
+                    : apiImageUrl(imageUrl));
 
             return BorderedImage(
               lightColor: CustomThemeProvider.of(context).theme.darkColor,

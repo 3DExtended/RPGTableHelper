@@ -73,7 +73,7 @@ GET /api/external/v1/campaigns/{campaignId}/config        (campaigns:read)
 | `intWithMaxValue` | `{ "value": 12, "maxValue": 17 }` — hit points are usually this |
 | `intWithCalculatedValue` | `{ "value": 12, "otherValue": 2 }` |
 | `multiselect` | `{ "values": ["<option uuid>", ...] }`, options in `jsonSerializedAdditionalData.options` |
-| `singleImage` | `{ "imageUrl": "https://...", "value": "caption" }` |
+| `singleImage` | `{ "imageUrl": "/public/getimage/...", "value": "caption" }`, see [Images](#images) |
 | `listOfIntWithCalculatedValues` | `{ "values": [{ "uuid": "<group uuid>", "value": 12, "otherValue": 2 }] }` |
 | `listOfIntsWithIcons` | `{ "values": [{ "uuid": "<group uuid>", "value": 12 }] }` |
 | `characterNameWithLevelAndAdditionalDetails` | `{ "level": 3, "values": [{ "uuid": "<group uuid>", "value": "Dwarf" }] }` |
@@ -102,6 +102,36 @@ Content-Type: application/json
   Send `"fromRevision": 7` if you only want to write on top of the version you have.
 - `404` if the sheet has no value for that stat yet (add it with PATCH), `422` if the value does not
   fit the stat's type.
+
+## Images
+
+A `singleImage` stat (a portrait, a map...) holds a link to an image on the Questkeeper server, not
+the image itself (no Base64). Upload the image first:
+
+```bash
+curl -X POST "$BASE/api/external/v1/campaigns/$CAMPAIGN_ID/images" \
+  -H "X-Api-Key: $KEY" \
+  -F "image=@portrait.png;type=image/png"
+```
+
+```json
+{
+  "path": "/public/getimage/5e1c.../Xk3...?metadataid=5e1c...",
+  "imageUrl": "https://questkeeper-prod.peter-esser.de/public/getimage/5e1c.../Xk3...?metadataid=5e1c..."
+}
+```
+
+- `image`: PNG or JPEG, at most 10 MB. The file's content is checked, not just its name.
+- Needs `characters:write`; the campaign must be yours to play in (`404` otherwise).
+- Put **`path`** into the stat. Older versions of the app put the server address in front of
+  `imageUrl`, so a full link shows no image there.
+
+```http
+PUT /api/external/v1/characters/{characterId}/sheet/stats/{statUuid}
+{ "value": { "imageUrl": "/public/getimage/5e1c.../Xk3...?metadataid=5e1c...", "value": "caption" } }
+```
+
+Send the caption you want to keep along. Anyone with the link can load the image without logging in.
 
 ## Changing anything: JSON Patch
 
