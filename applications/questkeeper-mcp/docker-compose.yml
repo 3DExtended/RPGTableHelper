@@ -1,0 +1,38 @@
+# Questkeeper-Notizen MCP-Server auf Unraid, öffentlich nur über einen eigenen Cloudflare Tunnel.
+# Start:  docker compose up -d --build   (im Ordner applications/questkeeper-mcp)
+name: questkeeper-mcp
+
+services:
+  questkeeper_mcp:
+    container_name: questkeeper_mcp
+    build: .
+    image: questkeeper-mcp:latest
+    restart: unless-stopped
+    # Unraid-Konvention nobody:users, damit die Dateien in appdata wie gewohnt gehören.
+    user: "99:100"
+    env_file: mcp.env
+    environment:
+      DATA_DIR: /data
+      PORT: "8787"
+    volumes:
+      # Array-Disk wie beim Backend: der appdata-Share liegt nur auf dem Cache.
+      - /mnt/disk2/appdata/questkeeper_mcp:/data
+    # Kein Port nach außen: erreichbar nur über den Tunnel (und docker exec).
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+  questkeeper_mcp_tunnel:
+    container_name: questkeeper_mcp_tunnel
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    # Public Hostname im Cloudflare-Dashboard: <dein-hostname> -> http://questkeeper_mcp:8787
+    command: tunnel --no-autoupdate run
+    env_file: tunnel.env
+    depends_on:
+      questkeeper_mcp:
+        condition: service_healthy

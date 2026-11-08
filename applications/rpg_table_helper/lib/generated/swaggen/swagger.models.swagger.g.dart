@@ -342,6 +342,7 @@ ImageBlock _$ImageBlockFromJson(Map<String, dynamic> json) => ImageBlock(
       ? null
       : DateTime.parse(json['lastModifiedAt'] as String),
   isDeleted: json['isDeleted'] as bool?,
+  sortIndex: (json['sortIndex'] as num?)?.toInt(),
   noteDocumentId: json['noteDocumentId'] == null
       ? null
       : NoteDocumentIdentifier.fromJson(
@@ -367,6 +368,7 @@ Map<String, dynamic> _$ImageBlockToJson(
   'creationDate': instance.creationDate?.toIso8601String(),
   'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
   'isDeleted': instance.isDeleted,
+  'sortIndex': instance.sortIndex,
   'noteDocumentId': instance.noteDocumentId?.toJson(),
   'creatingUserId': instance.creatingUserId?.toJson(),
   'permittedUsers': instance.permittedUsers?.map((e) => e.toJson()).toList(),
@@ -480,6 +482,7 @@ Map<String, dynamic> _$LoginWithUsernameAndPasswordDtoToJson(
 NoteBlockModelBase _$NoteBlockModelBaseFromJson(Map<String, dynamic> json) =>
     NoteBlockModelBase(
       isDeleted: json['isDeleted'] as bool?,
+      sortIndex: (json['sortIndex'] as num?)?.toInt(),
       noteDocumentId: json['noteDocumentId'] == null
           ? null
           : NoteDocumentIdentifier.fromJson(
@@ -512,6 +515,7 @@ Map<String, dynamic> _$NoteBlockModelBaseToJson(
   NoteBlockModelBase instance,
 ) => <String, dynamic>{
   'isDeleted': instance.isDeleted,
+  'sortIndex': instance.sortIndex,
   'noteDocumentId': instance.noteDocumentId?.toJson(),
   'creatingUserId': instance.creatingUserId?.toJson(),
   'permittedUsers': instance.permittedUsers?.map((e) => e.toJson()).toList(),
@@ -801,6 +805,7 @@ TextBlock _$TextBlockFromJson(Map<String, dynamic> json) => TextBlock(
       ? null
       : DateTime.parse(json['lastModifiedAt'] as String),
   isDeleted: json['isDeleted'] as bool?,
+  sortIndex: (json['sortIndex'] as num?)?.toInt(),
   noteDocumentId: json['noteDocumentId'] == null
       ? null
       : NoteDocumentIdentifier.fromJson(
@@ -822,6 +827,7 @@ Map<String, dynamic> _$TextBlockToJson(TextBlock instance) => <String, dynamic>{
   'creationDate': instance.creationDate?.toIso8601String(),
   'lastModifiedAt': instance.lastModifiedAt?.toIso8601String(),
   'isDeleted': instance.isDeleted,
+  'sortIndex': instance.sortIndex,
   'noteDocumentId': instance.noteDocumentId?.toJson(),
   'creatingUserId': instance.creatingUserId?.toJson(),
   'permittedUsers': instance.permittedUsers?.map((e) => e.toJson()).toList(),

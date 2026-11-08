@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
 using RPGTableHelper.DataLayer.Contracts.Queries.RpgEntities.Campagnes;
@@ -31,6 +32,34 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.NoteEntities
             : base(mapper, contextFactory, systemClock)
         {
             _contextFactory = contextFactory;
+        }
+
+        /// <summary>
+        /// A new block goes to the end of its document: after the last arranged block if the document's blocks were
+        /// arranged, else (no <c>SortIndex</c>) by its creation date. Whatever position the caller sent is ignored.
+        /// The document counts as modified.
+        /// </summary>
+        protected override async Task<Option<NoteBlockModelBase>> PrepareModelAsync(
+            NoteBlockModelBase model,
+            RpgDbContext context,
+            CancellationToken cancellationToken
+        )
+        {
+            var prepared = await base.PrepareModelAsync(model, context, cancellationToken).ConfigureAwait(false);
+            if (prepared.IsNone)
+            {
+                return prepared;
+            }
+
+            var documentId = model.NoteDocumentId.Value;
+            var lastIndex = await context
+                .NoteBlocks.Where(b => b.NoteDocumentId == documentId)
+                .MaxAsync(b => b.SortIndex, cancellationToken)
+                .ConfigureAwait(false);
+            prepared.Get().SortIndex = lastIndex.HasValue ? lastIndex.Value + 1 : null;
+
+            await NoteDocumentTouch.MarkModifiedAsync(context, new[] { documentId }, cancellationToken).ConfigureAwait(false);
+            return prepared;
         }
 
         /// <summary>

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data/
+.env
+mcp.env
+tunnel.env
+mcp.local.env
+# The repository's root .gitignore ignores every tools/ folder; the MCP tools are source code.
+!src/mcp/tools/

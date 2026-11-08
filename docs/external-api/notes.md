@@ -69,7 +69,12 @@ GET /api/external/v1/documents/{documentId}
 }
 ```
 
-Blocks come oldest first. `visibleTo` is only filled on your own blocks.
+Blocks come in document order: the order set with `block-order` (see below), or, in a document that was
+never arranged, oldest first. `visibleTo` is only filled on your own blocks.
+
+`lastModifiedAt` of a document changes whenever the document or one of its blocks changes, also when only
+`visibleTo` of a block changes. Use it to make sure you do not overwrite something you have not seen; see
+[Changing only what you have read](#changing-only-what-you-have-read).
 
 ## Writing
 
@@ -127,7 +132,74 @@ one answers `400 unsupported_block_type`. `DELETE blocks/{id}` deletes both.
 > `visibleTo`. Do not upload images that must stay secret from people who had access once.
 
 `groupName` is the folder the app sorts the document into; documents with the same name are shown
-together.
+together. A folder exists as long as a document has its name.
+
+## Several blocks at once
+
+```http
+POST /api/external/v1/documents/{documentId}/blocks/batch
+{
+  "blocks": [
+    { "markdownText": "## Chapter 1", "visibleTo": [] },
+    { "markdownText": "The tavern burns.", "visibleTo": ["40c3..."] }
+  ]
+}
+→ 201, the new blocks in order, at the end of the document
+```
+
+1 to 100 blocks, each with its own required `visibleTo`. If one of them is not valid, none is saved. The
+request counts as one write for the [rate limit](authentication.md#rate-limits).
+
+## Ordering and moving blocks
+
+```http
+PUT /api/external/v1/documents/{documentId}/block-order
+{ "blockIds": ["7a1e...", "c03f...", "91b2..."] }
+→ 200, the document in its new order
+```
+
+List every block of the document you can read, in the new order. The list may also name your own blocks from
+your other documents in the same campaign: they move into this document. That is how you merge documents.
+
+- A block that moves or changes place keeps its id, its content, its image and its `visibleTo`. Nothing is
+  shared or unshared by ordering or moving.
+- `400 invalid_request` if a block of the document is missing from the list, a block is listed twice, or a
+  block is not yours, not in one of your documents, or from another campaign. Nothing changes then.
+- Readers of a moved block get `noteAccessChanged` with `revoked` for the old document and `granted` for the
+  new one.
+- New blocks go to the end, also after ordering.
+
+## Moving documents into a folder
+
+```http
+POST /api/external/v1/campaigns/{campaignId}/documents/move
+{ "documentIds": ["14dc...", "52aa..."], "groupName": "Town" }
+→ 200, the moved documents
+```
+
+1 to 200 of your documents of the campaign, in one write. Use it to rename a folder (move all its documents to
+the new name) or to dissolve one (move them to another folder). The documents' blocks do not change. If one of
+the documents is not yours, nothing moves (`403`, or `404` if you cannot read it).
+
+## Changing only what you have read
+
+Every write to an existing document or block accepts `expectedLastModifiedAt`: the document's
+`lastModifiedAt` as you read it. If the document changed since, nothing is saved and you get
+
+```json
+{
+  "error": "version_conflict",
+  "message": "The document changed since expectedLastModifiedAt; nothing was saved. Read it again.",
+  "currentLastModifiedAt": "2026-11-01T18:07:12.4410000+00:00"
+}
+```
+
+| Request | Where |
+| --- | --- |
+| `PUT documents/{id}`, `PUT blocks/{id}`, `PUT image-blocks/{id}`, `POST documents/{id}/blocks`, `POST documents/{id}/blocks/batch`, `PUT documents/{id}/block-order` | `expectedLastModifiedAt` in the body |
+| `DELETE documents/{id}`, `DELETE blocks/{id}` | `?expectedLastModifiedAt=` (URL-encoded, the `+` as `%2B`) |
+
+It is optional; without it the write happens as before. The server compares to the millisecond.
 
 You can only add blocks to your own documents. Changing someone else's document or block answers
 `403 forbidden` if you can read it, and `404` if you cannot.

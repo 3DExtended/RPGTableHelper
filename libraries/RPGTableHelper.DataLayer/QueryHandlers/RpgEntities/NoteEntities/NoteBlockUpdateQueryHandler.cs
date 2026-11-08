@@ -80,6 +80,9 @@ namespace RPGTableHelper.DataLayer.QueryHandlers.RpgEntities.NoteEntities
                         .ConfigureAwait(false);
                 }
 
+                await NoteDocumentTouch
+                    .MarkModifiedAsync(context, new[] { existingEntity.NoteDocumentId }, cancellationToken)
+                    .ConfigureAwait(false);
                 await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
 

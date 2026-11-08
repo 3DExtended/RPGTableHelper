@@ -1400,6 +1400,7 @@ class ImageBlock {
     this.creationDate,
     this.lastModifiedAt,
     this.isDeleted,
+    this.sortIndex,
     this.noteDocumentId,
     this.creatingUserId,
     this.permittedUsers,
@@ -1425,6 +1426,8 @@ class ImageBlock {
   final DateTime? lastModifiedAt;
   @JsonKey(name: 'isDeleted')
   final bool? isDeleted;
+  @JsonKey(name: 'sortIndex')
+  final int? sortIndex;
   @JsonKey(name: 'noteDocumentId')
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
@@ -1469,6 +1472,11 @@ class ImageBlock {
                   other.isDeleted,
                   isDeleted,
                 )) &&
+            (identical(other.sortIndex, sortIndex) ||
+                const DeepCollectionEquality().equals(
+                  other.sortIndex,
+                  sortIndex,
+                )) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
                 const DeepCollectionEquality().equals(
                   other.noteDocumentId,
@@ -1498,6 +1506,7 @@ class ImageBlock {
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(lastModifiedAt) ^
       const DeepCollectionEquality().hash(isDeleted) ^
+      const DeepCollectionEquality().hash(sortIndex) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
       const DeepCollectionEquality().hash(permittedUsers) ^
@@ -1513,6 +1522,7 @@ extension $ImageBlockExtension on ImageBlock {
     DateTime? creationDate,
     DateTime? lastModifiedAt,
     bool? isDeleted,
+    int? sortIndex,
     NoteDocumentIdentifier? noteDocumentId,
     UserIdentifier? creatingUserId,
     List<UserIdentifier>? permittedUsers,
@@ -1525,6 +1535,7 @@ extension $ImageBlockExtension on ImageBlock {
       creationDate: creationDate ?? this.creationDate,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
       isDeleted: isDeleted ?? this.isDeleted,
+      sortIndex: sortIndex ?? this.sortIndex,
       noteDocumentId: noteDocumentId ?? this.noteDocumentId,
       creatingUserId: creatingUserId ?? this.creatingUserId,
       permittedUsers: permittedUsers ?? this.permittedUsers,
@@ -1539,6 +1550,7 @@ extension $ImageBlockExtension on ImageBlock {
     Wrapped<DateTime?>? creationDate,
     Wrapped<DateTime?>? lastModifiedAt,
     Wrapped<bool?>? isDeleted,
+    Wrapped<int?>? sortIndex,
     Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
     Wrapped<UserIdentifier?>? creatingUserId,
     Wrapped<List<UserIdentifier>?>? permittedUsers,
@@ -1561,6 +1573,7 @@ extension $ImageBlockExtension on ImageBlock {
           ? lastModifiedAt.value
           : this.lastModifiedAt),
       isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      sortIndex: (sortIndex != null ? sortIndex.value : this.sortIndex),
       noteDocumentId: (noteDocumentId != null
           ? noteDocumentId.value
           : this.noteDocumentId),
@@ -2014,6 +2027,7 @@ extension $LoginWithUsernameAndPasswordDtoExtension
 class NoteBlockModelBase {
   const NoteBlockModelBase({
     this.isDeleted,
+    this.sortIndex,
     this.noteDocumentId,
     this.creatingUserId,
     this.permittedUsers,
@@ -2030,6 +2044,8 @@ class NoteBlockModelBase {
 
   @JsonKey(name: 'isDeleted')
   final bool? isDeleted;
+  @JsonKey(name: 'sortIndex')
+  final int? sortIndex;
   @JsonKey(name: 'noteDocumentId')
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
@@ -2052,6 +2068,11 @@ class NoteBlockModelBase {
                 const DeepCollectionEquality().equals(
                   other.isDeleted,
                   isDeleted,
+                )) &&
+            (identical(other.sortIndex, sortIndex) ||
+                const DeepCollectionEquality().equals(
+                  other.sortIndex,
+                  sortIndex,
                 )) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
                 const DeepCollectionEquality().equals(
@@ -2088,6 +2109,7 @@ class NoteBlockModelBase {
   @override
   int get hashCode =>
       const DeepCollectionEquality().hash(isDeleted) ^
+      const DeepCollectionEquality().hash(sortIndex) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
       const DeepCollectionEquality().hash(permittedUsers) ^
@@ -2100,6 +2122,7 @@ class NoteBlockModelBase {
 extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
   NoteBlockModelBase copyWith({
     bool? isDeleted,
+    int? sortIndex,
     NoteDocumentIdentifier? noteDocumentId,
     UserIdentifier? creatingUserId,
     List<UserIdentifier>? permittedUsers,
@@ -2109,6 +2132,7 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
   }) {
     return NoteBlockModelBase(
       isDeleted: isDeleted ?? this.isDeleted,
+      sortIndex: sortIndex ?? this.sortIndex,
       noteDocumentId: noteDocumentId ?? this.noteDocumentId,
       creatingUserId: creatingUserId ?? this.creatingUserId,
       permittedUsers: permittedUsers ?? this.permittedUsers,
@@ -2120,6 +2144,7 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
 
   NoteBlockModelBase copyWithWrapped({
     Wrapped<bool?>? isDeleted,
+    Wrapped<int?>? sortIndex,
     Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
     Wrapped<UserIdentifier?>? creatingUserId,
     Wrapped<List<UserIdentifier>?>? permittedUsers,
@@ -2129,6 +2154,7 @@ extension $NoteBlockModelBaseExtension on NoteBlockModelBase {
   }) {
     return NoteBlockModelBase(
       isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      sortIndex: (sortIndex != null ? sortIndex.value : this.sortIndex),
       noteDocumentId: (noteDocumentId != null
           ? noteDocumentId.value
           : this.noteDocumentId),
@@ -3348,6 +3374,7 @@ class TextBlock {
     this.creationDate,
     this.lastModifiedAt,
     this.isDeleted,
+    this.sortIndex,
     this.noteDocumentId,
     this.creatingUserId,
     this.permittedUsers,
@@ -3369,6 +3396,8 @@ class TextBlock {
   final DateTime? lastModifiedAt;
   @JsonKey(name: 'isDeleted')
   final bool? isDeleted;
+  @JsonKey(name: 'sortIndex')
+  final int? sortIndex;
   @JsonKey(name: 'noteDocumentId')
   final NoteDocumentIdentifier? noteDocumentId;
   @JsonKey(name: 'creatingUserId')
@@ -3403,6 +3432,11 @@ class TextBlock {
                   other.isDeleted,
                   isDeleted,
                 )) &&
+            (identical(other.sortIndex, sortIndex) ||
+                const DeepCollectionEquality().equals(
+                  other.sortIndex,
+                  sortIndex,
+                )) &&
             (identical(other.noteDocumentId, noteDocumentId) ||
                 const DeepCollectionEquality().equals(
                   other.noteDocumentId,
@@ -3430,6 +3464,7 @@ class TextBlock {
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(lastModifiedAt) ^
       const DeepCollectionEquality().hash(isDeleted) ^
+      const DeepCollectionEquality().hash(sortIndex) ^
       const DeepCollectionEquality().hash(noteDocumentId) ^
       const DeepCollectionEquality().hash(creatingUserId) ^
       const DeepCollectionEquality().hash(permittedUsers) ^
@@ -3443,6 +3478,7 @@ extension $TextBlockExtension on TextBlock {
     DateTime? creationDate,
     DateTime? lastModifiedAt,
     bool? isDeleted,
+    int? sortIndex,
     NoteDocumentIdentifier? noteDocumentId,
     UserIdentifier? creatingUserId,
     List<UserIdentifier>? permittedUsers,
@@ -3453,6 +3489,7 @@ extension $TextBlockExtension on TextBlock {
       creationDate: creationDate ?? this.creationDate,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
       isDeleted: isDeleted ?? this.isDeleted,
+      sortIndex: sortIndex ?? this.sortIndex,
       noteDocumentId: noteDocumentId ?? this.noteDocumentId,
       creatingUserId: creatingUserId ?? this.creatingUserId,
       permittedUsers: permittedUsers ?? this.permittedUsers,
@@ -3465,6 +3502,7 @@ extension $TextBlockExtension on TextBlock {
     Wrapped<DateTime?>? creationDate,
     Wrapped<DateTime?>? lastModifiedAt,
     Wrapped<bool?>? isDeleted,
+    Wrapped<int?>? sortIndex,
     Wrapped<NoteDocumentIdentifier?>? noteDocumentId,
     Wrapped<UserIdentifier?>? creatingUserId,
     Wrapped<List<UserIdentifier>?>? permittedUsers,
@@ -3481,6 +3519,7 @@ extension $TextBlockExtension on TextBlock {
           ? lastModifiedAt.value
           : this.lastModifiedAt),
       isDeleted: (isDeleted != null ? isDeleted.value : this.isDeleted),
+      sortIndex: (sortIndex != null ? sortIndex.value : this.sortIndex),
       noteDocumentId: (noteDocumentId != null
           ? noteDocumentId.value
           : this.noteDocumentId),

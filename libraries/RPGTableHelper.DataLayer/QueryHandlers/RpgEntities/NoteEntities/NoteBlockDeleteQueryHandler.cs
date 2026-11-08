@@ -32,6 +32,9 @@ public class NoteBlockDeleteQueryHandler : IQueryHandler<NoteBlockDeleteQuery, U
             }
 
             entityToDelete.IsDeleted = true;
+            await NoteDocumentTouch
+                .MarkModifiedAsync(context, new[] { entityToDelete.NoteDocumentId }, cancellationToken)
+                .ConfigureAwait(false);
             await context.SaveChangesAsync(cancellationToken);
 
             return Option.From(Unit.Value);

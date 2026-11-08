@@ -10,6 +10,12 @@ public abstract class NoteBlockEntityBase : EntityBase<Guid>
     public Guid NoteDocumentId { get; set; } = Guid.Empty;
     public bool IsDeleted { get; set; } = default!;
 
+    /// <summary>
+    /// Position in the document. Null until the document's blocks are arranged (<c>block-order</c>); blocks without
+    /// one keep their creation order, before the arranged ones.
+    /// </summary>
+    public int? SortIndex { get; set; }
+
     public virtual NoteDocumentEntity? NoteDocument { get; set; }
 
     [ForeignKey(nameof(CreatingUser))]

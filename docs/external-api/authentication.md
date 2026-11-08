@@ -90,6 +90,7 @@ Errors of the v1 API share one JSON shape:
 | 403 | `forbidden` | You may see it but not change it (someone else's note, someone else's character in a fight). |
 | 404 | `not_found` | It does not exist, or it is not yours to see. |
 | 409 | `revision_conflict` | The sheet changed since `fromRevision`; `currentRevision` says where it is now. |
+| 409 | `version_conflict` | The note document changed since `expectedLastModifiedAt`; `currentLastModifiedAt` says when. |
 | 409 | `no_open_fight` | The campaign has no open fight (any more). |
 | 409 | `fight_conflict` | E.g. you already rolled for this character. |
 | 422 | `invalid_sheet` | The change would break the sheet for Questkeeper; `problems` lists why. |

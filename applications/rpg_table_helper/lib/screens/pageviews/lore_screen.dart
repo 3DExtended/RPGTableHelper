@@ -28,6 +28,7 @@ import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modals/show_edit_lore_page_title.dart';
 import 'package:quest_keeper/helpers/modals/show_generate_lore_image_modal.dart';
+import 'package:quest_keeper/helpers/note_block_order.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -973,14 +974,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   }
 
   List<dynamic> get getBlocksOfSelectedDocument {
-    List<dynamic> blocks = [
+    return sortNoteBlocksInDocumentOrder([
       ...selectedDocument!.imageBlocks,
       ...selectedDocument!.textBlocks
-    ];
-
-    blocks.sortBy<DateTime>((k) => k.creationDate);
-
-    return blocks;
+    ]);
   }
 
   List<Widget> _renderContentBlocks() {

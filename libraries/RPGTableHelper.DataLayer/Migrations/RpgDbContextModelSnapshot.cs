@@ -431,6 +431,9 @@ namespace RPGTableHelper.DataLayer.Migrations
                     b.Property<Guid>("NoteDocumentId")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("SortIndex")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("block_type")
                         .HasColumnType("INTEGER");
 

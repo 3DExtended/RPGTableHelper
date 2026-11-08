@@ -58,13 +58,17 @@ namespace RPGTableHelper.DataLayer
             CreateMap<TextBlock, TextBlockEntity>().ReverseMap();
             CreateMap<ImageBlock, ImageBlockEntity>().ReverseMap();
 
+            // Updates keep the author, the document and the position: blocks move and get arranged only through
+            // NoteBlocksArrangeQuery, so an app that sends no sortIndex cannot reset it.
             CreateMap<TextBlockEntity, TextBlockEntity>()
                 .ForMember(x => x.CreatingUserId, opt => opt.Ignore())
-                .ForMember(x => x.NoteDocumentId, opt => opt.Ignore());
+                .ForMember(x => x.NoteDocumentId, opt => opt.Ignore())
+                .ForMember(x => x.SortIndex, opt => opt.Ignore());
 
             CreateMap<ImageBlockEntity, ImageBlockEntity>()
                 .ForMember(x => x.CreatingUserId, opt => opt.Ignore())
-                .ForMember(x => x.NoteDocumentId, opt => opt.Ignore());
+                .ForMember(x => x.NoteDocumentId, opt => opt.Ignore())
+                .ForMember(x => x.SortIndex, opt => opt.Ignore());
 
             CreateModelMaps<User, User.UserIdentifier, Guid, UserEntity>();
             CreateModelMaps<ImageMetaData, ImageMetaData.ImageMetaDataIdentifier, Guid, ImageMetaDataEntity>();

@@ -19,6 +19,11 @@ The player API: a player's own app can take part at the table.
   text blocks with an explicit `visibleTo`.
 - Image blocks in notes: `POST documents/{id}/image-blocks` (upload as `multipart/form-data`) and
   `PUT image-blocks/{id}` (caption and `visibleTo`). `imageUrl` is now a full link.
+- Restructuring notes: `PUT documents/{id}/block-order` orders a document's blocks and moves your blocks
+  from your other documents into it (merging); a block keeps its id, content, image and `visibleTo`.
+  `POST documents/{id}/blocks/batch` adds up to 100 text blocks in one write.
+  `POST campaigns/{id}/documents/move` moves up to 200 documents into a folder in one write.
+- `expectedLastModifiedAt` on every note write: `409 version_conflict` if the document changed since.
 - Images for the character sheet: `POST campaigns/{id}/images` (upload as `multipart/form-data`,
   `characters:write`) returns `path` for a `singleImage` stat and the full `imageUrl`.
 - Initiative: `GET campaigns/{id}/fight`, `POST campaigns/{id}/fight/rolls`. Open requests are stored
@@ -32,6 +37,11 @@ The player API: a player's own app can take part at the table.
 - Swagger document "External API" with the scope of every endpoint.
 
 ### Changed
+
+- A note document's `lastModifiedAt` now also changes when one of its blocks is created, changed (also only
+  its `visibleTo`), moved or deleted.
+- Blocks come in document order (set with `block-order`); documents that were never arranged keep the oldest
+  first order.
 
 - Keys created before scopes existed keep read access: `campaigns:read`, `characters:read`,
   `notes:read`.

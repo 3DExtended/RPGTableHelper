@@ -1,0 +1,10 @@
+node_modules
+dist
+data
+test
+scripts
+.env
+mcp.env
+tunnel.env
+*.md
+docker-compose.yml

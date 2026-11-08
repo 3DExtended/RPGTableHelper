@@ -133,9 +133,11 @@ namespace RPGTableHelper.WebApi.Controllers.External
         /// <response code="200">The changed document</response>
         /// <response code="403">If the document is someone else's</response>
         /// <response code="404">If the document does not exist or nothing in it is shared with you</response>
+        /// <response code="409">If the document changed since <c>expectedLastModifiedAt</c></response>
         [RequireScope(ApiKeyScopes.NotesWrite)]
         [ProducesResponseType(typeof(ExternalNoteDocumentDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
         [HttpPut("documents/{documentId:guid}")]
         public async Task<ActionResult<ExternalNoteDocumentDto>> UpdateDocumentAsync(
             Guid documentId,
@@ -147,6 +149,12 @@ namespace RPGTableHelper.WebApi.Controllers.External
             if (document == null)
             {
                 return denied!;
+            }
+
+            var conflict = VersionConflict(document, request.ExpectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
             }
 
             document.Title = request.Title.Trim();
@@ -168,20 +176,35 @@ namespace RPGTableHelper.WebApi.Controllers.External
             return Ok(ToDto(reloaded));
         }
 
-        /// <summary>Deletes your document with all its blocks.</summary>
+        /// <summary>
+        /// Deletes your document with all its blocks. With <c>?expectedLastModifiedAt=</c> only if it did not change
+        /// since.
+        /// </summary>
         /// <response code="204">Deleted</response>
         /// <response code="403">If the document is someone else's</response>
         /// <response code="404">If the document does not exist or nothing in it is shared with you</response>
+        /// <response code="409">If the document changed since <c>expectedLastModifiedAt</c></response>
         [RequireScope(ApiKeyScopes.NotesWrite)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
         [HttpDelete("documents/{documentId:guid}")]
-        public async Task<IActionResult> DeleteDocumentAsync(Guid documentId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteDocumentAsync(
+            Guid documentId,
+            [FromQuery] DateTimeOffset? expectedLastModifiedAt,
+            CancellationToken cancellationToken
+        )
         {
             var (document, denied) = await LoadDocumentForWriteAsync(documentId, cancellationToken).ConfigureAwait(false);
             if (document == null)
             {
                 return denied!;
+            }
+
+            var conflict = VersionConflict(document, expectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
             }
 
             var deleted = await new NoteDocumentDeleteQuery { Id = document.Id }
@@ -209,6 +232,7 @@ namespace RPGTableHelper.WebApi.Controllers.External
         [RequireScope(ApiKeyScopes.NotesWrite)]
         [ProducesResponseType(typeof(ExternalNoteBlockDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
         [HttpPost("documents/{documentId:guid}/blocks")]
         public async Task<ActionResult<ExternalNoteBlockDto>> CreateTextBlockAsync(
             Guid documentId,
@@ -220,6 +244,12 @@ namespace RPGTableHelper.WebApi.Controllers.External
             if (document == null)
             {
                 return denied!;
+            }
+
+            var conflict = VersionConflict(document, request.ExpectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
             }
 
             var (visibleTo, invalid) = await ResolveVisibleToAsync(document.CreatedForCampagneId, request.VisibleTo, cancellationToken)
@@ -266,6 +296,7 @@ namespace RPGTableHelper.WebApi.Controllers.External
         [RequireScope(ApiKeyScopes.NotesWrite)]
         [ProducesResponseType(typeof(ExternalNoteBlockDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
         [HttpPut("blocks/{blockId:guid}")]
         public async Task<ActionResult<ExternalNoteBlockDto>> UpdateTextBlockAsync(
             Guid blockId,
@@ -286,6 +317,12 @@ namespace RPGTableHelper.WebApi.Controllers.External
                     ExternalApiErrors.UnsupportedBlockType,
                     "This is an image block: change it with PUT image-blocks/{id}."
                 );
+            }
+
+            var conflict = VersionConflict(document!, request.ExpectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
             }
 
             var (visibleTo, invalid) = await ResolveVisibleToAsync(document!.CreatedForCampagneId, request.VisibleTo, cancellationToken)
@@ -417,6 +454,7 @@ namespace RPGTableHelper.WebApi.Controllers.External
         [RequireScope(ApiKeyScopes.NotesWrite)]
         [ProducesResponseType(typeof(ExternalNoteBlockDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
         [HttpPut("image-blocks/{blockId:guid}")]
         public async Task<ActionResult<ExternalNoteBlockDto>> UpdateImageBlockAsync(
             Guid blockId,
@@ -437,6 +475,12 @@ namespace RPGTableHelper.WebApi.Controllers.External
                     ExternalApiErrors.UnsupportedBlockType,
                     "This is a text block: change it with PUT blocks/{id}."
                 );
+            }
+
+            var conflict = VersionConflict(document!, request.ExpectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
             }
 
             var (visibleTo, invalid) = await ResolveVisibleToAsync(document!.CreatedForCampagneId, request.VisibleTo, cancellationToken)
@@ -474,20 +518,35 @@ namespace RPGTableHelper.WebApi.Controllers.External
             return Ok(ToDto(after));
         }
 
-        /// <summary>Deletes your block (text or image).</summary>
+        /// <summary>
+        /// Deletes your block (text or image). With <c>?expectedLastModifiedAt=</c> (of the document) only if the
+        /// document did not change since.
+        /// </summary>
         /// <response code="204">Deleted</response>
         /// <response code="403">If the block is someone else's</response>
         /// <response code="404">If the block does not exist or is not shared with you</response>
+        /// <response code="409">If the document changed since <c>expectedLastModifiedAt</c></response>
         [RequireScope(ApiKeyScopes.NotesWrite)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
         [HttpDelete("blocks/{blockId:guid}")]
-        public async Task<IActionResult> DeleteBlockAsync(Guid blockId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteBlockAsync(
+            Guid blockId,
+            [FromQuery] DateTimeOffset? expectedLastModifiedAt,
+            CancellationToken cancellationToken
+        )
         {
             var (block, document, denied) = await LoadBlockForWriteAsync(blockId, cancellationToken).ConfigureAwait(false);
             if (block == null)
             {
                 return denied!;
+            }
+
+            var conflict = VersionConflict(document!, expectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
             }
 
             var deleted = await new NoteBlockDeleteQuery { Id = block.Id }
@@ -502,6 +561,280 @@ namespace RPGTableHelper.WebApi.Controllers.External
                 .NotifyBlockDeletedAsync(document!.CreatedForCampagneId, document.Id, block, CurrentUser, cancellationToken)
                 .ConfigureAwait(false);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Adds several text blocks to the end of your document in one request (one write for the rate limit). Each
+        /// block needs its own <c>visibleTo</c>; <c>[]</c> keeps it private. Nothing is saved if one of them is not
+        /// valid.
+        /// </summary>
+        /// <response code="201">The new blocks, in order</response>
+        /// <response code="400">If a <c>visibleTo</c> names someone who is not in the campaign</response>
+        /// <response code="403">If the document is someone else's</response>
+        /// <response code="404">If the document does not exist or nothing in it is shared with you</response>
+        /// <response code="409">If the document changed since <c>expectedLastModifiedAt</c></response>
+        [RequireScope(ApiKeyScopes.NotesWrite)]
+        [ProducesResponseType(typeof(List<ExternalNoteBlockDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
+        [HttpPost("documents/{documentId:guid}/blocks/batch")]
+        public async Task<ActionResult<List<ExternalNoteBlockDto>>> CreateTextBlocksAsync(
+            Guid documentId,
+            [FromBody] [Required] ExternalTextBlockBatchRequestDto request,
+            CancellationToken cancellationToken
+        )
+        {
+            var (document, denied) = await LoadDocumentForWriteAsync(documentId, cancellationToken).ConfigureAwait(false);
+            if (document == null)
+            {
+                return denied!;
+            }
+
+            var conflict = VersionConflict(document, request.ExpectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
+            }
+
+            var members = await LoadCampaignMemberIdsAsync(document.CreatedForCampagneId, cancellationToken).ConfigureAwait(false);
+            var readersPerBlock = new List<List<User.UserIdentifier>>();
+            var problems = new List<string>();
+            for (var index = 0; index < request.Blocks.Count; index++)
+            {
+                var (readers, blockProblems) = ResolveVisibleTo(members, request.Blocks[index].VisibleTo, $"blocks[{index}].visibleTo");
+                readersPerBlock.Add(readers);
+                problems.AddRange(blockProblems);
+            }
+
+            if (problems.Count > 0)
+            {
+                return InvalidRequest("visibleTo may only name members of the campaign (see GET campaigns/{id}/members).", problems);
+            }
+
+            var createdBlocks = new List<ExternalNoteBlockDto>();
+            for (var index = 0; index < request.Blocks.Count; index++)
+            {
+                var created = await new NoteBlockCreateQuery
+                {
+                    ModelToCreate = new TextBlock
+                    {
+                        NoteDocumentId = document.Id,
+                        CreatingUserId = CurrentUser,
+                        MarkdownText = request.Blocks[index].MarkdownText,
+                        PermittedUsers = readersPerBlock[index],
+                    },
+                }
+                    .RunAsync(QueryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
+                var block = created.IsSome
+                    ? await LoadBlockAsync(created.Get().Value, cancellationToken).ConfigureAwait(false)
+                    : null;
+                if (block == null)
+                {
+                    return Error(
+                        StatusCodes.Status500InternalServerError,
+                        ExternalApiErrors.WriteFailed,
+                        $"Could not create block {index}; the {index} blocks before it were saved."
+                    );
+                }
+
+                await _noteAccessChangeNotifier
+                    .NotifyBlockCreatedAsync(document.CreatedForCampagneId, document.Id, block, CurrentUser, cancellationToken)
+                    .ConfigureAwait(false);
+                createdBlocks.Add(ToDto(block));
+            }
+
+            return Created($"/{ExternalApiRoutes.V1}/documents/{document.Id.Value}", createdBlocks);
+        }
+
+        /// <summary>
+        /// Puts the blocks of your document into a new order. List every block of the document you can read, in the
+        /// new order. You may add your blocks from other documents of yours in the same campaign: they move here.
+        /// Moving and ordering never change a block: it keeps its id, content, image and who may read it.
+        /// </summary>
+        /// <response code="200">The document in its new order</response>
+        /// <response code="400">If a block of the document is missing, listed twice, or not yours to move here</response>
+        /// <response code="403">If the document is someone else's</response>
+        /// <response code="404">If the document does not exist or nothing in it is shared with you</response>
+        /// <response code="409">If the document changed since <c>expectedLastModifiedAt</c></response>
+        [RequireScope(ApiKeyScopes.NotesWrite)]
+        [ProducesResponseType(typeof(ExternalNoteDocumentDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status409Conflict)]
+        [HttpPut("documents/{documentId:guid}/block-order")]
+        public async Task<ActionResult<ExternalNoteDocumentDto>> ArrangeBlocksAsync(
+            Guid documentId,
+            [FromBody] [Required] ExternalBlockOrderRequestDto request,
+            CancellationToken cancellationToken
+        )
+        {
+            var (document, denied) = await LoadDocumentForWriteAsync(documentId, cancellationToken).ConfigureAwait(false);
+            if (document == null)
+            {
+                return denied!;
+            }
+
+            var conflict = VersionConflict(document, request.ExpectedLastModifiedAt);
+            if (conflict != null)
+            {
+                return conflict;
+            }
+
+            var problems = request
+                .BlockIds.GroupBy(id => id)
+                .Where(group => group.Count() > 1)
+                .Select(group => $"blockIds: {group.Key} is listed more than once.")
+                .ToList();
+
+            var inDocument = document
+                .NoteBlocks.Where(b => !b.IsDeleted)
+                .OrderBy(b => b.SortIndex ?? -1)
+                .ThenBy(b => b.CreationDate)
+                .ToList();
+            var readable = inDocument.Where(IsReadableByCaller).Select(b => b.Id.Value).ToHashSet();
+            problems.AddRange(
+                readable
+                    .Where(id => !request.BlockIds.Contains(id))
+                    .Select(id => $"blockIds: {id} is in the document but not listed. List every block; delete blocks with DELETE blocks/{{id}}.")
+            );
+
+            var moving = new List<(NoteBlockModelBase Block, NoteDocument Source)>();
+            var inDocumentIds = inDocument.Select(b => b.Id.Value).ToHashSet();
+            foreach (var blockId in request.BlockIds.Distinct().Where(id => !inDocumentIds.Contains(id)))
+            {
+                var block = await LoadBlockAsync(blockId, cancellationToken).ConfigureAwait(false);
+                var source = block == null || block.CreatingUserId.Value != CurrentUserId
+                    ? null
+                    : await LoadOwnDocumentAsync(block.NoteDocumentId.Value, cancellationToken).ConfigureAwait(false);
+                if (block == null || source == null)
+                {
+                    problems.Add($"blockIds: {blockId} is not one of your blocks in one of your documents.");
+                }
+                else if (source.CreatedForCampagneId != document.CreatedForCampagneId)
+                {
+                    problems.Add($"blockIds: {blockId} is in a document of another campaign.");
+                }
+                else
+                {
+                    moving.Add((block, source));
+                }
+            }
+
+            if (problems.Count > 0)
+            {
+                return InvalidRequest("The block order does not fit the document.", problems);
+            }
+
+            // Blocks the caller cannot read stay in the document, after the listed ones, in their current order.
+            var order = request
+                .BlockIds.Concat(inDocument.Where(b => !readable.Contains(b.Id.Value)).Select(b => b.Id.Value))
+                .Select(NoteBlockModelBase.NoteBlockModelBaseIdentifier.From)
+                .ToList();
+            var arranged = await new NoteBlocksArrangeQuery { DocumentId = document.Id, OrderedBlockIds = order }
+                .RunAsync(QueryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            var reloaded = arranged.IsSome
+                ? await LoadOwnDocumentAsync(documentId, cancellationToken).ConfigureAwait(false)
+                : null;
+            if (reloaded == null)
+            {
+                return Error(StatusCodes.Status500InternalServerError, ExternalApiErrors.WriteFailed, "Could not arrange the blocks.");
+            }
+
+            foreach (var (block, source) in moving)
+            {
+                await _noteAccessChangeNotifier
+                    .NotifyBlockDeletedAsync(source.CreatedForCampagneId, source.Id, block, CurrentUser, cancellationToken)
+                    .ConfigureAwait(false);
+                await _noteAccessChangeNotifier
+                    .NotifyBlockCreatedAsync(reloaded.CreatedForCampagneId, reloaded.Id, block, CurrentUser, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            await _noteAccessChangeNotifier
+                .NotifyDocumentUpdatedAsync(reloaded, CurrentUser, cancellationToken)
+                .ConfigureAwait(false);
+            return Ok(ToDto(reloaded));
+        }
+
+        /// <summary>
+        /// Moves several of your documents into one folder (<c>groupName</c>) in one request, e.g. to rename or
+        /// dissolve a folder. Their content does not change. Nothing is moved if one of them is not yours.
+        /// </summary>
+        /// <response code="200">The moved documents</response>
+        /// <response code="400">If a document belongs to another campaign</response>
+        /// <response code="403">If a document is someone else's</response>
+        /// <response code="404">If the campaign or a document does not exist or is not shared with you</response>
+        [RequireScope(ApiKeyScopes.NotesWrite)]
+        [ProducesResponseType(typeof(List<ExternalNoteDocumentDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ExternalApiErrorDto), StatusCodes.Status404NotFound)]
+        [HttpPost("campaigns/{campaignId:guid}/documents/move")]
+        public async Task<ActionResult<List<ExternalNoteDocumentDto>>> MoveDocumentsAsync(
+            Guid campaignId,
+            [FromBody] [Required] ExternalDocumentsMoveRequestDto request,
+            CancellationToken cancellationToken
+        )
+        {
+            var campaign = await LoadCampaignAsMemberAsync(campaignId, cancellationToken).ConfigureAwait(false);
+            if (campaign == null)
+            {
+                return NotFoundError("Campaign not found.");
+            }
+
+            var groupName = request.GroupName.Trim();
+            if (groupName.Length == 0)
+            {
+                return InvalidRequest("groupName must not be empty.", new List<string> { "groupName: empty." });
+            }
+
+            var documents = new List<NoteDocument>();
+            foreach (var documentId in request.DocumentIds.Distinct())
+            {
+                var (document, denied) = await LoadDocumentForWriteAsync(documentId, cancellationToken).ConfigureAwait(false);
+                if (document == null)
+                {
+                    return denied!;
+                }
+
+                if (document.CreatedForCampagneId.Value != campaignId)
+                {
+                    return InvalidRequest(
+                        "Every document must belong to the campaign.",
+                        new List<string> { $"documentIds: {documentId} belongs to another campaign." }
+                    );
+                }
+
+                documents.Add(document);
+            }
+
+            var moved = await new NoteDocumentsSetGroupQuery
+            {
+                DocumentIds = documents.Select(d => d.Id).ToList(),
+                GroupName = groupName,
+            }
+                .RunAsync(QueryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            if (moved.IsNone)
+            {
+                return Error(StatusCodes.Status500InternalServerError, ExternalApiErrors.WriteFailed, "Could not move the documents.");
+            }
+
+            var result = new List<ExternalNoteDocumentDto>();
+            foreach (var document in documents)
+            {
+                var reloaded = await LoadOwnDocumentAsync(document.Id.Value, cancellationToken).ConfigureAwait(false);
+                if (reloaded == null)
+                {
+                    continue;
+                }
+
+                await _noteAccessChangeNotifier
+                    .NotifyDocumentUpdatedAsync(reloaded, CurrentUser, cancellationToken)
+                    .ConfigureAwait(false);
+                result.Add(ToDto(reloaded));
+            }
+
+            return Ok(result);
         }
 
         /// <summary>The user ids in a form field, or null if it is not a JSON array of them.</summary>
@@ -527,6 +860,19 @@ namespace RPGTableHelper.WebApi.Controllers.External
             CancellationToken cancellationToken
         )
         {
+            var members = await LoadCampaignMemberIdsAsync(campaignId, cancellationToken).ConfigureAwait(false);
+            var (readers, problems) = ResolveVisibleTo(members, requested, "visibleTo");
+            return problems.Count > 0
+                ? (null, InvalidRequest("visibleTo may only name members of the campaign (see GET campaigns/{id}/members).", problems))
+                : (readers, null);
+        }
+
+        /// <summary>The DM and every player with a character in the campaign.</summary>
+        private async Task<HashSet<Guid>> LoadCampaignMemberIdsAsync(
+            Campagne.CampagneIdentifier campaignId,
+            CancellationToken cancellationToken
+        )
+        {
             var campaign = await LoadCampaignAsMemberAsync(campaignId.Value, cancellationToken).ConfigureAwait(false);
             var characters = await new PlayerCharactersForCampagneQuery { CampagneId = campaignId }
                 .RunAsync(QueryProcessor, cancellationToken)
@@ -539,21 +885,48 @@ namespace RPGTableHelper.WebApi.Controllers.External
                 members.Add(campaign.DmUserId.Value);
             }
 
+            return members;
+        }
+
+        /// <summary>The readers without the caller, and a problem for everyone who is not a member.</summary>
+        private (List<User.UserIdentifier> Readers, List<string> Problems) ResolveVisibleTo(
+            HashSet<Guid> members,
+            IEnumerable<Guid> requested,
+            string field
+        )
+        {
             var readers = requested.Distinct().Where(id => id != CurrentUserId).ToList();
-            var strangers = readers.Where(id => !members.Contains(id)).ToList();
-            if (strangers.Count > 0)
+            var problems = readers
+                .Where(id => !members.Contains(id))
+                .Select(id => $"{field}: {id} is not a member of the campaign.")
+                .ToList();
+            return (readers.Select(DataLayer.Contracts.Models.Auth.User.UserIdentifier.From).ToList(), problems);
+        }
+
+        /// <summary>
+        /// A 409 if the document changed since <paramref name="expected"/>, else null. Compared to the millisecond, as
+        /// clients that parse the timestamp keep no more.
+        /// </summary>
+        private ObjectResult? VersionConflict(NoteDocument document, DateTimeOffset? expected)
+        {
+            if (expected == null || (document.LastModifiedAt - expected.Value).Duration() < TimeSpan.FromMilliseconds(1))
             {
-                return (
-                    null,
-                    InvalidRequest(
-                        "visibleTo may only name members of the campaign (see GET campaigns/{id}/members).",
-                        strangers.Select(id => $"visibleTo: {id} is not a member of the campaign.").ToList()
-                    )
-                );
+                return null;
             }
 
-            return (readers.Select(DataLayer.Contracts.Models.Auth.User.UserIdentifier.From).ToList(), null);
+            return StatusCode(
+                StatusCodes.Status409Conflict,
+                new ExternalApiErrorDto
+                {
+                    Error = ExternalApiErrors.VersionConflict,
+                    Message = "The document changed since expectedLastModifiedAt; nothing was saved. Read it again.",
+                    CurrentLastModifiedAt = document.LastModifiedAt,
+                }
+            );
         }
+
+        private bool IsReadableByCaller(NoteBlockModelBase block) =>
+            block.CreatingUserId.Value == CurrentUserId || block.PermittedUsers.Any(u => u.Value == CurrentUserId);
 
         /// <summary>The caller's own document, or why not: 404 if they may not read it, 403 if they only read it.</summary>
         private async Task<(NoteDocument? Document, ObjectResult? Denied)> LoadDocumentForWriteAsync(
@@ -633,8 +1006,9 @@ namespace RPGTableHelper.WebApi.Controllers.External
                 LastModifiedAt = document.LastModifiedAt,
                 Blocks = document
                     .NoteBlocks.Where(b => !b.IsDeleted)
-                    .Where(b => b.CreatingUserId.Value == CurrentUserId || b.PermittedUsers.Any(u => u.Value == CurrentUserId))
-                    .OrderBy(b => b.CreationDate)
+                    .Where(IsReadableByCaller)
+                    .OrderBy(b => b.SortIndex ?? -1)
+                    .ThenBy(b => b.CreationDate)
                     .Select(ToDto)
                     .ToList(),
             };

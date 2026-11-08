@@ -15,6 +15,12 @@ namespace RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities
     {
         public bool IsDeleted { get; set; } = false;
 
+        /// <summary>
+        /// Position in the document, set by the server: null until the document's blocks are arranged, then
+        /// 0, 1, 2, ... Order blocks by <see cref="SortIndex"/> (null first), then by creation date.
+        /// </summary>
+        public int? SortIndex { get; set; }
+
         public NoteDocument.NoteDocumentIdentifier NoteDocumentId { get; set; } = default!;
         public User.UserIdentifier CreatingUserId { get; set; } = default!;
 

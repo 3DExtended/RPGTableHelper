@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - '**.md'
       - 'applications/rpg_table_helper/**'
+      - 'applications/questkeeper-mcp/**'
 
 jobs:
   build:

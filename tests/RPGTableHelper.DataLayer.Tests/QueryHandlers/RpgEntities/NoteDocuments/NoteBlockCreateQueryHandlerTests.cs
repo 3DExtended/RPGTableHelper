@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using Prodot.Patterns.Cqrs;
 using RPGTableHelper.DataLayer.Contracts.Models.Auth;
 using RPGTableHelper.DataLayer.Contracts.Models.RpgEntities.NoteEntities;
@@ -78,4 +79,63 @@ public class NoteBlockCreateQueryHandlerTests : QueryHandlersTestBase
         result.IsSome.Should().BeTrue("because the creation should be successful");
         Context.PermittedUsersToNotesBlocks.Count().Should().Be(0);
     }
+
+    [Fact]
+    public async Task RunQueryAsync_InADocumentThatWasNeverArranged_LeavesThePositionEmpty()
+    {
+        // arrange
+        var owner = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper);
+        var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory, Mapper, owner);
+        var document = await RpgDbContextHelpers.CreateNoteDocumentInDb(ContextFactory, Mapper, owner, campagne);
+        var subjectUnderTest = new NoteBlockCreateQueryHandler(Mapper, ContextFactory, SystemClock);
+
+        // act
+        var result = await subjectUnderTest.RunQueryAsync(NewTextBlock(owner, document, sortIndex: 7), default);
+
+        // assert
+        Context.NoteBlocks.AsNoTracking().Single(b => b.Id == result.Get().Value).SortIndex.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task RunQueryAsync_InAnArrangedDocument_PutsTheBlockLast_AndChangesTheDocument()
+    {
+        // arrange
+        var owner = await RpgDbContextHelpers.CreateUserInDb(ContextFactory, Mapper);
+        var campagne = await RpgDbContextHelpers.CreateCampagneInDb(ContextFactory, Mapper, owner);
+        var document = await RpgDbContextHelpers.CreateNoteDocumentInDb(ContextFactory, Mapper, owner, campagne);
+        Context.NoteBlocks.Add(
+            new TextBlockEntity
+            {
+                Id = Guid.NewGuid(),
+                MarkdownText = "arranged",
+                CreatingUserId = owner.Id.Value,
+                NoteDocumentId = document.Id.Value,
+                SortIndex = 4,
+            }
+        );
+        Context.SaveChanges();
+        var later = new DateTimeOffset(2024, 03, 03, 9, 0, 0, TimeSpan.Zero);
+        SystemClock.Now.Returns(later);
+        var subjectUnderTest = new NoteBlockCreateQueryHandler(Mapper, ContextFactory, SystemClock);
+
+        // act
+        var result = await subjectUnderTest.RunQueryAsync(NewTextBlock(owner, document, sortIndex: 0), default);
+
+        // assert
+        Context.NoteBlocks.AsNoTracking().Single(b => b.Id == result.Get().Value).SortIndex.Should().Be(5);
+        Context.CampagneDocuments.AsNoTracking().Single(d => d.Id == document.Id.Value).LastModifiedAt.Should().Be(later);
+    }
+
+    private static NoteBlockCreateQuery NewTextBlock(User owner, NoteDocument document, int? sortIndex) =>
+        new()
+        {
+            ModelToCreate = new TextBlock
+            {
+                CreatingUserId = owner.Id,
+                NoteDocumentId = document.Id,
+                MarkdownText = "new",
+                SortIndex = sortIndex,
+                PermittedUsers = new List<User.UserIdentifier>(),
+            },
+        };
 }

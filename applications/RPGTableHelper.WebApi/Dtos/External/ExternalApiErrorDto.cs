@@ -17,6 +17,10 @@ public class ExternalApiErrorDto
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public int? CurrentRevision { get; set; }
 
+    /// <summary>With <c>version_conflict</c>: the document's <c>lastModifiedAt</c> now.</summary>
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public DateTimeOffset? CurrentLastModifiedAt { get; set; }
+
     /// <summary>With <c>invalid_request</c> and <c>invalid_sheet</c>: what exactly is wrong.</summary>
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public List<string>? Problems { get; set; }
@@ -36,6 +40,11 @@ public static class ExternalApiErrors
 
     /// <summary>The sheet changed since <c>fromRevision</c>; reload and apply the change again.</summary>
     public const string RevisionConflict = "revision_conflict";
+
+    /// <summary>
+    /// The note document changed since the <c>expectedLastModifiedAt</c> you sent; nothing was saved. Read it again.
+    /// </summary>
+    public const string VersionConflict = "version_conflict";
 
     /// <summary>The JSON Patch is malformed or does not apply to the sheet (e.g. a path that is not there).</summary>
     public const string InvalidPatch = "invalid_patch";

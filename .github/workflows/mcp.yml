@@ -1,0 +1,39 @@
+name: Test MCP server
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'applications/questkeeper-mcp/**'
+      - '.github/workflows/mcp.yml'
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'applications/questkeeper-mcp/**'
+      - '.github/workflows/mcp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/questkeeper-mcp
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: applications/questkeeper-mcp/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Docker image builds
+        run: docker build -t questkeeper-mcp:ci .
