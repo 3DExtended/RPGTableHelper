@@ -1156,5 +1156,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get computedPresetUnarmoredArmorClass => 'RK ohne Rüstung';
 
   @override
-  String get computedPresetIncomplete => 'Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.';
+  String get computedPresetIncomplete =>
+      'Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.';
 }

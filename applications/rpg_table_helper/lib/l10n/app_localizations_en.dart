@@ -1145,5 +1145,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get computedPresetUnarmoredArmorClass => 'AC without armor';
 
   @override
-  String get computedPresetIncomplete => 'Not every value of the template exists in this campaign. Add the missing building blocks yourself.';
+  String get computedPresetIncomplete =>
+      'Not every value of the template exists in this campaign. Add the missing building blocks yourself.';
 }
