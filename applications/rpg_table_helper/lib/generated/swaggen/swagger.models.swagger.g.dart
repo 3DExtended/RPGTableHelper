@@ -479,6 +479,20 @@ Map<String, dynamic> _$LoginWithUsernameAndPasswordDtoToJson(
   'userSecretByEncryptionChallenge': instance.userSecretByEncryptionChallenge,
 };
 
+NoteBlockImageDto _$NoteBlockImageDtoFromJson(Map<String, dynamic> json) =>
+    NoteBlockImageDto(
+      imageMetaDataId: ImageMetaDataIdentifier.fromJson(
+        json['imageMetaDataId'] as Map<String, dynamic>,
+      ),
+      publicImageUrl: json['publicImageUrl'] as String,
+    );
+
+Map<String, dynamic> _$NoteBlockImageDtoToJson(NoteBlockImageDto instance) =>
+    <String, dynamic>{
+      'imageMetaDataId': instance.imageMetaDataId.toJson(),
+      'publicImageUrl': instance.publicImageUrl,
+    };
+
 NoteBlockModelBase _$NoteBlockModelBaseFromJson(Map<String, dynamic> json) =>
     NoteBlockModelBase(
       isDeleted: json['isDeleted'] as bool?,

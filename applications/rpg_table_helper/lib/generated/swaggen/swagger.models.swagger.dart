@@ -2024,6 +2024,77 @@ extension $LoginWithUsernameAndPasswordDtoExtension
 }
 
 @JsonSerializable(explicitToJson: true)
+class NoteBlockImageDto {
+  const NoteBlockImageDto({
+    required this.imageMetaDataId,
+    required this.publicImageUrl,
+  });
+
+  factory NoteBlockImageDto.fromJson(Map<String, dynamic> json) =>
+      _$NoteBlockImageDtoFromJson(json);
+
+  static const toJsonFactory = _$NoteBlockImageDtoToJson;
+  Map<String, dynamic> toJson() => _$NoteBlockImageDtoToJson(this);
+
+  @JsonKey(name: 'imageMetaDataId')
+  final ImageMetaDataIdentifier imageMetaDataId;
+  @JsonKey(name: 'publicImageUrl')
+  final String publicImageUrl;
+  static const fromJsonFactory = _$NoteBlockImageDtoFromJson;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is NoteBlockImageDto &&
+            (identical(other.imageMetaDataId, imageMetaDataId) ||
+                const DeepCollectionEquality().equals(
+                  other.imageMetaDataId,
+                  imageMetaDataId,
+                )) &&
+            (identical(other.publicImageUrl, publicImageUrl) ||
+                const DeepCollectionEquality().equals(
+                  other.publicImageUrl,
+                  publicImageUrl,
+                )));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(imageMetaDataId) ^
+      const DeepCollectionEquality().hash(publicImageUrl) ^
+      runtimeType.hashCode;
+}
+
+extension $NoteBlockImageDtoExtension on NoteBlockImageDto {
+  NoteBlockImageDto copyWith({
+    ImageMetaDataIdentifier? imageMetaDataId,
+    String? publicImageUrl,
+  }) {
+    return NoteBlockImageDto(
+      imageMetaDataId: imageMetaDataId ?? this.imageMetaDataId,
+      publicImageUrl: publicImageUrl ?? this.publicImageUrl,
+    );
+  }
+
+  NoteBlockImageDto copyWithWrapped({
+    Wrapped<ImageMetaDataIdentifier>? imageMetaDataId,
+    Wrapped<String>? publicImageUrl,
+  }) {
+    return NoteBlockImageDto(
+      imageMetaDataId: (imageMetaDataId != null
+          ? imageMetaDataId.value
+          : this.imageMetaDataId),
+      publicImageUrl: (publicImageUrl != null
+          ? publicImageUrl.value
+          : this.publicImageUrl),
+    );
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class NoteBlockModelBase {
   const NoteBlockModelBase({
     this.isDeleted,

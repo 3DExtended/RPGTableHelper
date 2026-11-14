@@ -3209,6 +3209,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Add image`
+  String get attachImageBtnLabel {
+    return Intl.message(
+      'Add image',
+      name: 'attachImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace image`
+  String get replaceImageBtnLabel {
+    return Intl.message(
+      'Replace image',
+      name: 'replaceImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove image`
+  String get removeImageBtnLabel {
+    return Intl.message(
+      'Remove image',
+      name: 'removeImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload image`
+  String get uploadImageMenuLabel {
+    return Intl.message(
+      'Upload image',
+      name: 'uploadImageMenuLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert paragraph here`
+  String get insertParagraphMenuLabel {
+    return Intl.message(
+      'Insert paragraph here',
+      name: 'insertParagraphMenuLabel',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

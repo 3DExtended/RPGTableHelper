@@ -259,6 +259,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// <param name="textBlockToCreate">The new textblock</param>
         /// <param name="notedocumentid">The document id where this block will be assigned</param>
         /// <param name="cancellationToken">Cancellation token</param>
+        /// <param name="insertBeforeBlockId">Optional: a block of the document the new block goes right before. Without it the new block goes last.</param>
         /// <response code="200">The id of the new document</response>
         /// <response code="400">If there was an error retrieving the document</response>
         /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
@@ -269,7 +270,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         public async Task<ActionResult<TextBlock>> CreateTextBlockForDocumentAsync(
             [FromBody] [Required] TextBlock textBlockToCreate,
             [FromRoute] string notedocumentid,
-            CancellationToken cancellationToken
+            CancellationToken cancellationToken,
+            [FromQuery] Guid? insertBeforeBlockId = null
         )
         {
             if (notedocumentid == null)
@@ -299,6 +301,11 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Unauthorized();
             }
 
+            if (!await IsBlockOfDocumentAsync(insertBeforeBlockId, notedocumentidparsed, cancellationToken).ConfigureAwait(false))
+            {
+                return BadRequest("insertBeforeBlockId is not a block of this document");
+            }
+
             textBlockToCreate.NoteDocumentId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed);
             textBlockToCreate.CreatingUserId = _userContext.User.UserIdentifier;
 
@@ -309,6 +316,19 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (textBlockCreationResult.IsNone)
             {
                 return BadRequest("Could not create textblock");
+            }
+
+            if (insertBeforeBlockId != null)
+            {
+                await new NoteBlockMoveQuery
+                {
+                    BlockId = textBlockCreationResult.Get(),
+                    BeforeBlockId = Option.From(
+                        NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(insertBeforeBlockId.Value)
+                    ),
+                }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
             }
 
             var textBlock = await new NoteBlockQuery { ModelId = textBlockCreationResult.Get() }
@@ -340,6 +360,7 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         /// <param name="imageBlockToCreate">The new imageblock</param>
         /// <param name="notedocumentid">The document id where this block will be assigned</param>
         /// <param name="cancellationToken">Cancellation token</param>
+        /// <param name="insertBeforeBlockId">Optional: a block of the document the new block goes right before. Without it the new block goes last.</param>
         /// <response code="200">The id of the new document</response>
         /// <response code="400">If there was an error retrieving the document</response>
         /// <response code="401">If you are not logged in or you are not allowed to see this document</response>
@@ -350,7 +371,8 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
         public async Task<ActionResult<ImageBlock>> CreateImageBlockForDocumentAsync(
             [FromBody] [Required] ImageBlock imageBlockToCreate,
             [FromRoute] string notedocumentid,
-            CancellationToken cancellationToken
+            CancellationToken cancellationToken,
+            [FromQuery] Guid? insertBeforeBlockId = null
         )
         {
             if (notedocumentid == null)
@@ -380,6 +402,11 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
                 return Unauthorized();
             }
 
+            if (!await IsBlockOfDocumentAsync(insertBeforeBlockId, notedocumentidparsed, cancellationToken).ConfigureAwait(false))
+            {
+                return BadRequest("insertBeforeBlockId is not a block of this document");
+            }
+
             imageBlockToCreate.NoteDocumentId = NoteDocument.NoteDocumentIdentifier.From(notedocumentidparsed);
             imageBlockToCreate.CreatingUserId = _userContext.User.UserIdentifier;
 
@@ -390,6 +417,19 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             if (imageBlockCreationResult.IsNone)
             {
                 return BadRequest("Could not create imageblock");
+            }
+
+            if (insertBeforeBlockId != null)
+            {
+                await new NoteBlockMoveQuery
+                {
+                    BlockId = imageBlockCreationResult.Get(),
+                    BeforeBlockId = Option.From(
+                        NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(insertBeforeBlockId.Value)
+                    ),
+                }
+                    .RunAsync(_queryProcessor, cancellationToken)
+                    .ConfigureAwait(false);
             }
 
             var imageBlock = await new NoteBlockQuery { ModelId = imageBlockCreationResult.Get() }
@@ -681,6 +721,264 @@ namespace RPGTableHelper.WebApi.Controllers.RpgControllers
             }
 
             return Ok(noteBlockDeleteResult.Get());
+        }
+
+        /// <summary>
+        /// Moves a block of your document right before another of its blocks, or to the end.
+        /// </summary>
+        /// <remarks>You must be the owner of the block</remarks>
+        /// <param name="blockid">The block to move</param>
+        /// <param name="beforeblockid">The block it goes right before; without it the block goes last</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The document in its new order</response>
+        /// <response code="400">If the block does not exist or beforeblockid is not another block of its document</response>
+        /// <response code="401">If you are not logged in or the block is not yours</response>
+        [ProducesResponseType(typeof(NoteDocumentDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("moveblock/{blockid}")]
+        public async Task<ActionResult<NoteDocumentDto>> MoveNoteBlockAsync(
+            [FromRoute] Guid blockid,
+            [FromQuery] Guid? beforeblockid,
+            CancellationToken cancellationToken
+        )
+        {
+            var blockLoaded = await new NoteBlockQuery
+            {
+                ModelId = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(blockid),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (blockLoaded.IsNone)
+            {
+                return BadRequest("Could not retrieve note block");
+            }
+
+            if (_userContext.User.UserIdentifier != blockLoaded.Get().CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            var moved = await new NoteBlockMoveQuery
+            {
+                BlockId = blockLoaded.Get().Id,
+                BeforeBlockId =
+                    beforeblockid == null
+                        ? Option.None
+                        : Option.From(NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(beforeblockid.Value)),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (moved.IsNone)
+            {
+                return BadRequest("beforeblockid is not another block of this document");
+            }
+
+            var documentLoaded = await new NoteDocumentQuery { ModelId = blockLoaded.Get().NoteDocumentId }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (documentLoaded.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            await _noteAccessChangeNotifier
+                .NotifyDocumentUpdatedAsync(documentLoaded.Get(), _userContext.User.UserIdentifier, cancellationToken)
+                .ConfigureAwait(false);
+
+            var ownView = await _noteService
+                .GetNoteDocumentByIdAsync(
+                    documentLoaded.Get().Id.Value,
+                    _userContext.User.UserIdentifier.Value,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            if (ownView.IsNone)
+            {
+                return BadRequest("Could not retrieve NoteDocument");
+            }
+
+            return Ok(_mapper.Map<NoteDocumentDto>(ownView.Get()));
+        }
+
+        /// <summary>
+        /// Adds an image to a text block of your document. The text block becomes an image block with the same
+        /// text, position and visibility, under a new id.
+        /// </summary>
+        /// <remarks>You must be the owner of the block</remarks>
+        /// <param name="blockid">The text block</param>
+        /// <param name="image">The uploaded or generated image</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The new image block</response>
+        /// <response code="400">If the block does not exist or is not a text block</response>
+        /// <response code="401">If you are not logged in or the block is not yours</response>
+        [ProducesResponseType(typeof(ImageBlock), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("attachimage/{blockid}")]
+        public async Task<ActionResult<ImageBlock>> AttachImageToTextBlockAsync(
+            [FromRoute] Guid blockid,
+            [FromBody] [Required] NoteBlockImageDto image,
+            CancellationToken cancellationToken
+        )
+        {
+            var blockLoaded = await new NoteBlockQuery
+            {
+                ModelId = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(blockid),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (blockLoaded.IsNone || blockLoaded.Get() is not TextBlock textBlock)
+            {
+                return BadRequest("Could not retrieve text block");
+            }
+
+            if (_userContext.User.UserIdentifier != textBlock.CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            var replaced = await ReplaceBlockAsync(
+                    textBlock,
+                    new ImageBlock
+                    {
+                        MarkdownText = textBlock.MarkdownText,
+                        ImageMetaDataId = image.ImageMetaDataId,
+                        PublicImageUrl = image.PublicImageUrl,
+                    },
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            if (replaced is not ImageBlock imageBlock)
+            {
+                return BadRequest("Could not add the image");
+            }
+
+            return Ok(imageBlock);
+        }
+
+        /// <summary>
+        /// Removes the image of an image block of your document. The image block becomes a text block with the same
+        /// text, position and visibility, under a new id.
+        /// </summary>
+        /// <remarks>You must be the owner of the block</remarks>
+        /// <param name="blockid">The image block</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">The new text block</response>
+        /// <response code="400">If the block does not exist or is not an image block</response>
+        /// <response code="401">If you are not logged in or the block is not yours</response>
+        [ProducesResponseType(typeof(TextBlock), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPost("removeimage/{blockid}")]
+        public async Task<ActionResult<TextBlock>> RemoveImageFromImageBlockAsync(
+            [FromRoute] Guid blockid,
+            CancellationToken cancellationToken
+        )
+        {
+            var blockLoaded = await new NoteBlockQuery
+            {
+                ModelId = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(blockid),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (blockLoaded.IsNone || blockLoaded.Get() is not ImageBlock imageBlock)
+            {
+                return BadRequest("Could not retrieve image block");
+            }
+
+            if (_userContext.User.UserIdentifier != imageBlock.CreatingUserId)
+            {
+                return Unauthorized();
+            }
+
+            var replaced = await ReplaceBlockAsync(
+                    imageBlock,
+                    new TextBlock { MarkdownText = imageBlock.MarkdownText ?? string.Empty },
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
+
+            if (replaced is not TextBlock textBlock)
+            {
+                return BadRequest("Could not remove the image");
+            }
+
+            return Ok(textBlock);
+        }
+
+        private async Task<NoteBlockModelBase?> ReplaceBlockAsync(
+            NoteBlockModelBase oldBlock,
+            NoteBlockModelBase replacement,
+            CancellationToken cancellationToken
+        )
+        {
+            var newId = await new NoteBlockReplaceQuery { BlockId = oldBlock.Id, Replacement = replacement }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            if (newId.IsNone)
+            {
+                return null;
+            }
+
+            var newBlock = await new NoteBlockQuery { ModelId = newId.Get() }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            var document = await new NoteDocumentQuery { ModelId = oldBlock.NoteDocumentId }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            if (newBlock.IsNone)
+            {
+                return null;
+            }
+
+            if (document.IsSome)
+            {
+                await _noteAccessChangeNotifier
+                    .NotifyBlockDeletedAsync(
+                        document.Get().CreatedForCampagneId,
+                        document.Get().Id,
+                        oldBlock,
+                        _userContext.User.UserIdentifier,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
+                await _noteAccessChangeNotifier
+                    .NotifyBlockCreatedAsync(
+                        document.Get().CreatedForCampagneId,
+                        document.Get().Id,
+                        newBlock.Get(),
+                        _userContext.User.UserIdentifier,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
+            }
+
+            return newBlock.Get();
+        }
+
+        /// <summary>True if no block is given, or the block is a (not deleted) block of the document.</summary>
+        private async Task<bool> IsBlockOfDocumentAsync(Guid? blockId, Guid documentId, CancellationToken cancellationToken)
+        {
+            if (blockId == null)
+            {
+                return true;
+            }
+
+            var block = await new NoteBlockQuery
+            {
+                ModelId = NoteBlockModelBase.NoteBlockModelBaseIdentifier.From(blockId.Value),
+            }
+                .RunAsync(_queryProcessor, cancellationToken)
+                .ConfigureAwait(false);
+            return block.IsSome && block.Get().NoteDocumentId.Value == documentId;
         }
     }
 }

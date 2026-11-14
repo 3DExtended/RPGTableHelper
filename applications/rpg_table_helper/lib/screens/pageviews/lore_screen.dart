@@ -16,6 +16,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/notes/lore_block_rendering_editable.dart';
+import 'package:quest_keeper/components/notes/note_block_menu.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
@@ -680,7 +681,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        _ledgerManuscriptDate(selectedDocument!.lastModifiedAt!),
+                        _ledgerManuscriptDate(
+                            selectedDocument!.lastModifiedAt!.toLocal()),
                         textAlign: TextAlign.start,
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
                               color: ink.withValues(alpha: 0.7),
@@ -704,7 +706,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        selectedDocument!.lastModifiedAt!.format(
+                        // The server sends UTC; show the reader's local time.
+                        selectedDocument!.lastModifiedAt!.toLocal().format(
                             S.of(context).hourMinutesDayMonthYearFormatString),
                         textAlign: TextAlign.end,
                         style:
@@ -985,12 +988,15 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     List<dynamic> blocks = getBlocksOfSelectedDocument;
     final ledger = isDecoratedSheetSkinActive(context);
 
-    List<Widget> result = [];
+    List<Widget> blockWidgets = [];
 
-    for (var block in blocks) {
+    for (var (index, block) in blocks.indexed) {
+      final isFirst = index == 0;
+      final isLast = index == blocks.length - 1;
+
       // Keyed on the list's direct child so a block keeps its editor state
       // (unsaved text, edit mode) when other blocks are added or removed.
-      result.add(Builder(key: ValueKey(block.id), builder: (context) {
+      blockWidgets.add(Builder(key: ValueKey(block.id), builder: (context) {
         assert(block.id != null);
 
         return LoreBlockRenderingEditable(
@@ -1016,18 +1022,17 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
               return false;
             },
-            updateImageContent: (String pathToImageToUpload) async {
-              if (block is! ImageBlock) {
-                assert(
-                    false); // we should not come here... images should run another update method
-                return false;
-              }
-
-              // TODO make me
-              // var textBlockCopy = (block).copyWith(markdownText: newText);
-              // return await updateTextBlock(context, textBlockCopy);
-              return false;
-            },
+            attachImage: block is TextBlock
+                ? (source) => _attachImageToTextBlock(block, source)
+                : null,
+            replaceImage: block is ImageBlock
+                ? (source) => _replaceImageOfImageBlock(block, source)
+                : null,
+            removeImage: block is ImageBlock
+                ? () => _removeImageFromImageBlock(block)
+                : null,
+            moveUp: isFirst ? null : () => _moveBlock(block, up: true),
+            moveDown: isLast ? null : () => _moveBlock(block, up: false),
             deleteBlock: () async {
               var service = DependencyProvider.of(context)
                   .getService<INoteDocumentService>();
@@ -1060,249 +1065,420 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       }));
     }
 
-    if (_isAllowedToEdit) {
-      Widget addActionButton({
-        required Future<void> Function() onPressed,
-        required String label,
-      }) {
-        if (ledger) {
-          return LedgerOutlinedAccentButton(
-            onPressed: () {
-              onPressed();
-            },
-            label: '+ $label',
+    final divider = ledger
+        ? const Padding(
+            padding: EdgeInsets.symmetric(vertical: 14),
+            child: LedgerDoubleRule(),
+          )
+        : const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: HorizontalLine(),
           );
-        }
-        return CustomButton(
-          variant: CustomButtonVariant.AccentButton,
-          onPressed: onPressed,
-          label: label,
-          icon: CustomFaIcon(
-            icon: FontAwesomeIcons.plus,
-            size: iconSizeInlineButtons,
-            color: CustomThemeProvider.of(context).theme.textColor,
-          ),
-        );
-      }
 
-      result.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Center(
-          child: Wrap(
-            runAlignment: WrapAlignment.center,
-            spacing: 10,
-            runSpacing: 10,
-            alignment: WrapAlignment.center,
-            children: [
-              addActionButton(
-                onPressed: () async {
-                  var service = DependencyProvider.of(context)
-                      .getService<INoteDocumentService>();
-                  var createResult =
-                      await service.createNewTextBlockForDocument(
-                          textBlockToCreate: TextBlock(
-                            creationDate: DateTime.now(),
-                            lastModifiedAt: DateTime.now(),
-                            creatingUserId: _myUser,
-                            id: NoteBlockModelBaseIdentifier(
-                                value: "00000000-0000-0000-0000-000000000000"),
-                            isDeleted: false,
-                            permittedUsers: [],
-                            markdownText: "",
-                            noteDocumentId: selectedDocument!.id,
-                          ),
-                          notedocumentid: selectedDocument!.id!);
-
-                  if (!context.mounted || !mounted) return;
-                  await createResult.possiblyHandleError(context);
-                  if (!context.mounted || !mounted) return;
-
-                  if (createResult.isSuccessful) {
-                    setState(() {
-                      selectedDocument!.textBlocks.add(createResult.result!);
-                    });
-                  }
-                },
-                label: S.of(context).addParagraphBtnLabel,
-              ),
-              addActionButton(
-                onPressed: () async {
-                  var connectionDetails =
-                      ref.read(connectionDetailsProvider).requireValue;
-                  var campagneId = connectionDetails.campagneId;
-                  if (campagneId == null) return;
-
-                  final ImagePicker picker = ImagePicker();
-                  try {
-                    var pickedFile = await picker.pickImage(
-                      source: ImageSource.gallery,
-                      maxWidth: 4196 * 2,
-                      maxHeight: 4196 * 2,
-                      requestFullMetadata: false,
-                    );
-                    setState(() {
-                      isLoading = true;
-                    });
-                    final mimeType = lookupMimeType(pickedFile!.path);
-
-                    if (mimeType == null || !(mimeType.startsWith('image/'))) {
-                      if (!context.mounted || !mounted) return;
-                      DependencyProvider.of(context)
-                          .getService<ISnackBarService>()
-                          .showSnackBar(
-                            uniqueId:
-                                "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
-                            snack: SnackBar(
-                              content: Text("Invalid image file selected."),
-                            ),
-                          );
-                      setState(() {
-                        isLoading = false;
-                      });
-                      return;
-                    }
-
-                    final fileName = pickedFile.path.split('/').last;
-
-                    final multipartFile = await MultipartFile.fromPath(
-                      'image',
-                      pickedFile.path,
-                      contentType: MediaType.parse(mimeType),
-                      filename: fileName,
-                    );
-                    if (!context.mounted || !mounted) return;
-                    var service = DependencyProvider.of(context)
-                        .getService<IRpgEntityService>();
-                    var response = await service.uploadImageToCampagneStorage(
-                        campagneId: CampagneIdentifier(value: campagneId),
-                        image: multipartFile);
-
-                    if (!context.mounted || !mounted) return;
-                    await response.possiblyHandleError(context);
-                    if (!context.mounted || !mounted) return;
-
-                    if (response.isSuccessful && response.result != null) {
-                      // structure: $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
-                      var imageUrl = response.result!;
-
-                      // extract metadata id from url
-                      var urlSplits = imageUrl.split("?metadataid=");
-                      var publicUrl = urlSplits[0];
-                      var metadataId = urlSplits[1];
-                      if (!context.mounted || !mounted) return;
-                      var service = DependencyProvider.of(context)
-                          .getService<INoteDocumentService>();
-                      var createResult =
-                          await service.createNewImageBlockForDocument(
-                              imageBlockToCreate: ImageBlock(
-                                creationDate: DateTime.now(),
-                                lastModifiedAt: DateTime.now(),
-                                creatingUserId: _myUser,
-                                id: NoteBlockModelBaseIdentifier(
-                                    value:
-                                        "00000000-0000-0000-0000-000000000000"),
-                                isDeleted: false,
-                                permittedUsers: [],
-                                noteDocumentId: selectedDocument!.id,
-                                imageMetaDataId:
-                                    ImageMetaDataIdentifier(value: metadataId),
-                                publicImageUrl: publicUrl,
-                              ),
-                              notedocumentid: selectedDocument!.id!);
-
-                      if (!context.mounted || !mounted) return;
-                      await createResult.possiblyHandleError(context);
-                      if (!context.mounted || !mounted) return;
-
-                      if (createResult.isSuccessful) {
-                        setState(() {
-                          selectedDocument!.imageBlocks
-                              .add(createResult.result!);
-                        });
-                      }
-                    }
-                    setState(() {
-                      isLoading = false;
-                    });
-                  } catch (e) {
-                    setState(() {
-                      isLoading = false;
-                    });
-                  }
-                },
-                label: S.of(context).addImageBtnLabel,
-              ),
-              addActionButton(
-                onPressed: () async {
-                  var result = await showGenerateLoreImageModal(context);
-                  if (result == null) return;
-
-                  var connectionDetails =
-                      ref.read(connectionDetailsProvider).requireValue;
-                  var campagneId = connectionDetails.campagneId;
-                  if (campagneId == null) return;
-
-                  // TODO: make this a modal dialog
-
-                  // structure: $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
-                  var imageUrl = result.publicUrl;
-
-                  // extract metadata id from url
-                  var urlSplits = imageUrl.split("?metadataid=");
-                  var publicUrl = urlSplits[0];
-                  var metadataId = urlSplits[1];
-                  if (!context.mounted || !mounted) return;
-                  var service = DependencyProvider.of(context)
-                      .getService<INoteDocumentService>();
-                  var createResult =
-                      await service.createNewImageBlockForDocument(
-                          imageBlockToCreate: ImageBlock(
-                            creationDate: DateTime.now(),
-                            lastModifiedAt: DateTime.now(),
-                            creatingUserId: _myUser,
-                            id: NoteBlockModelBaseIdentifier(
-                                value: "00000000-0000-0000-0000-000000000000"),
-                            isDeleted: false,
-                            permittedUsers: [],
-                            noteDocumentId: selectedDocument!.id,
-                            imageMetaDataId:
-                                ImageMetaDataIdentifier(value: metadataId),
-                            publicImageUrl: publicUrl,
-                          ),
-                          notedocumentid: selectedDocument!.id!);
-
-                  if (!context.mounted || !mounted) return;
-                  await createResult.possiblyHandleError(context);
-                  if (!context.mounted || !mounted) return;
-
-                  if (createResult.isSuccessful) {
-                    setState(() {
-                      selectedDocument!.imageBlocks.add(createResult.result!);
-                    });
-                  }
-                  setState(() {
-                    isLoading = false;
-                  });
-                },
-                label: S.of(context).generateImageBtnLabel,
-              ),
-            ],
-          ),
-        ),
-      ));
+    if (!_isAllowedToEdit) {
+      return blockWidgets.insertBetween(divider);
     }
 
-    return result.insertBetween(
-      isDecoratedSheetSkinActive(context)
-          ? const Padding(
-              padding: EdgeInsets.symmetric(vertical: 14),
-              child: LedgerDoubleRule(),
-            )
-          : const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: HorizontalLine(),
+    Widget addActionButton({
+      required Future<void> Function() onPressed,
+      required String label,
+    }) {
+      if (ledger) {
+        return LedgerOutlinedAccentButton(
+          onPressed: () {
+            onPressed();
+          },
+          label: '+ $label',
+        );
+      }
+      return CustomButton(
+        variant: CustomButtonVariant.AccentButton,
+        onPressed: onPressed,
+        label: label,
+        icon: CustomFaIcon(
+          icon: FontAwesomeIcons.plus,
+          size: iconSizeInlineButtons,
+          color: CustomThemeProvider.of(context).theme.textColor,
+        ),
+      );
+    }
+
+    final addButtons = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+        child: Wrap(
+          runAlignment: WrapAlignment.center,
+          spacing: 10,
+          runSpacing: 10,
+          alignment: WrapAlignment.center,
+          children: [
+            addActionButton(
+              onPressed: () => _createTextBlock(),
+              label: S.of(context).addParagraphBtnLabel,
             ),
+            addActionButton(
+              onPressed: () => _createImageBlock(NoteImageSource.upload),
+              label: S.of(context).addImageBtnLabel,
+            ),
+            addActionButton(
+              onPressed: () => _createImageBlock(NoteImageSource.generate),
+              label: S.of(context).generateImageBtnLabel,
+            ),
+          ],
+        ),
+      ),
     );
+
+    // Owners get a "+" on each divider (and above the first block) to insert
+    // a block right there; the buttons below still add at the end.
+    return [
+      for (var (index, blockWidget) in blockWidgets.indexed) ...[
+        _buildInsertDivider(
+          before: blocks[index].id as NoteBlockModelBaseIdentifier,
+          ledger: ledger,
+        ),
+        blockWidget,
+      ],
+      if (blockWidgets.isNotEmpty) divider,
+      addButtons,
+    ];
+  }
+
+  Widget _buildInsertDivider({
+    required NoteBlockModelBaseIdentifier before,
+    required bool ledger,
+  }) {
+    final theme = CustomThemeProvider.of(context).theme;
+    final line = ledger ? const LedgerDoubleRule() : const HorizontalLine();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: ledger ? 8 : 4),
+      child: Row(
+        children: [
+          Expanded(child: line),
+          Builder(builder: (anchorContext) {
+            return CupertinoButton(
+              key: ValueKey('insertNoteBlockBefore-${before.value}'),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              minimumSize: const Size(0, 0),
+              onPressed: () => _showInsertMenu(anchorContext, before),
+              child: Container(
+                width: 26,
+                height: 26,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: theme.bgColor,
+                  border: Border.all(
+                    color: theme.darkColor.withValues(alpha: 0.5),
+                  ),
+                ),
+                child: CustomFaIcon(
+                  icon: FontAwesomeIcons.plus,
+                  size: 12,
+                  color: theme.darkColor,
+                ),
+              ),
+            );
+          }),
+          Expanded(child: line),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showInsertMenu(
+      BuildContext anchorContext, NoteBlockModelBaseIdentifier before) async {
+    final kind = await showNoteBlockMenu(anchorContext, [
+      NoteBlockMenuItem(
+        NoteBlockInsertKind.paragraph,
+        FontAwesomeIcons.alignLeft,
+        S.of(context).insertParagraphMenuLabel,
+      ),
+      NoteBlockMenuItem(
+        NoteBlockInsertKind.uploadImage,
+        FontAwesomeIcons.image,
+        S.of(context).uploadImageMenuLabel,
+      ),
+      NoteBlockMenuItem(
+        NoteBlockInsertKind.generateImage,
+        FontAwesomeIcons.wandMagicSparkles,
+        S.of(context).generateImageBtnLabel,
+      ),
+    ]);
+    switch (kind) {
+      case NoteBlockInsertKind.paragraph:
+        await _createTextBlock(before: before);
+      case NoteBlockInsertKind.uploadImage:
+        await _createImageBlock(NoteImageSource.upload, before: before);
+      case NoteBlockInsertKind.generateImage:
+        await _createImageBlock(NoteImageSource.generate, before: before);
+      case null:
+        break;
+    }
+  }
+
+  /// Creates an empty text block at the end, or right before [before].
+  Future<void> _createTextBlock({NoteBlockModelBaseIdentifier? before}) async {
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var createResult = await service.createNewTextBlockForDocument(
+      textBlockToCreate: TextBlock(
+        creationDate: DateTime.now(),
+        lastModifiedAt: DateTime.now(),
+        creatingUserId: _myUser,
+        id: NoteBlockModelBaseIdentifier(
+            value: "00000000-0000-0000-0000-000000000000"),
+        isDeleted: false,
+        permittedUsers: [],
+        markdownText: "",
+        noteDocumentId: selectedDocument!.id,
+      ),
+      notedocumentid: selectedDocument!.id!,
+      insertBeforeBlockId: before,
+    );
+
+    if (!mounted) return;
+    await createResult.possiblyHandleError(context);
+    if (!mounted || !createResult.isSuccessful) return;
+
+    if (before != null) {
+      // the blocks after it moved down: take the server's order
+      await _reloadSelectedDocument();
+      return;
+    }
+
+    setState(() {
+      selectedDocument!.textBlocks.add(createResult.result!);
+    });
+  }
+
+  /// Creates an image block (uploaded or generated image) at the end, or
+  /// right before [before].
+  Future<void> _createImageBlock(NoteImageSource source,
+      {NoteBlockModelBaseIdentifier? before}) async {
+    final image = await _acquireImage(source);
+    if (image == null || !mounted) return;
+
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var createResult = await service.createNewImageBlockForDocument(
+      imageBlockToCreate: ImageBlock(
+        creationDate: DateTime.now(),
+        lastModifiedAt: DateTime.now(),
+        creatingUserId: _myUser,
+        id: NoteBlockModelBaseIdentifier(
+            value: "00000000-0000-0000-0000-000000000000"),
+        isDeleted: false,
+        permittedUsers: [],
+        noteDocumentId: selectedDocument!.id,
+        imageMetaDataId: image.imageMetaDataId,
+        publicImageUrl: image.publicImageUrl,
+      ),
+      notedocumentid: selectedDocument!.id!,
+      insertBeforeBlockId: before,
+    );
+
+    if (!mounted) return;
+    await createResult.possiblyHandleError(context);
+    if (!mounted || !createResult.isSuccessful) return;
+
+    if (before != null) {
+      await _reloadSelectedDocument();
+      return;
+    }
+
+    setState(() {
+      selectedDocument!.imageBlocks.add(createResult.result!);
+    });
+  }
+
+  /// Uploads a picked image or lets the user generate one. Null if the user
+  /// cancelled or something failed (errors are shown to the user).
+  Future<NoteBlockImageDto?> _acquireImage(NoteImageSource source) async {
+    var campagneId = ref.read(connectionDetailsProvider).requireValue.campagneId;
+    if (campagneId == null) return null;
+
+    final String? imageUrl;
+    if (source == NoteImageSource.generate) {
+      imageUrl = (await showGenerateLoreImageModal(context))?.publicUrl;
+    } else {
+      imageUrl = await _pickAndUploadImage(campagneId);
+    }
+    if (imageUrl == null) return null;
+
+    // structure: $"/public/getimage/{newMetadata.Id.Value}/{apikey}?metadataid={newMetadata.Id.Value}";
+    var urlSplits = imageUrl.split("?metadataid=");
+    if (urlSplits.length != 2) return null;
+    return NoteBlockImageDto(
+      imageMetaDataId: ImageMetaDataIdentifier(value: urlSplits[1]),
+      publicImageUrl: urlSplits[0],
+    );
+  }
+
+  /// Lets the user pick an image from the gallery and uploads it to the
+  /// campaign. Returns the image url (with `?metadataid=`), or null.
+  Future<String?> _pickAndUploadImage(String campagneId) async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      var pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 4196 * 2,
+        maxHeight: 4196 * 2,
+        requestFullMetadata: false,
+      );
+      if (pickedFile == null || !mounted) return null;
+
+      setState(() {
+        isLoading = true;
+      });
+      final mimeType = lookupMimeType(pickedFile.path);
+
+      if (mimeType == null || !(mimeType.startsWith('image/'))) {
+        if (!mounted) return null;
+        DependencyProvider.of(context).getService<ISnackBarService>().showSnackBar(
+              uniqueId:
+                  "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
+              snack: SnackBar(
+                content: Text("Invalid image file selected."),
+              ),
+            );
+        return null;
+      }
+
+      final fileName = pickedFile.path.split('/').last;
+
+      final multipartFile = await MultipartFile.fromPath(
+        'image',
+        pickedFile.path,
+        contentType: MediaType.parse(mimeType),
+        filename: fileName,
+      );
+      if (!mounted) return null;
+      var service =
+          DependencyProvider.of(context).getService<IRpgEntityService>();
+      var response = await service.uploadImageToCampagneStorage(
+          campagneId: CampagneIdentifier(value: campagneId),
+          image: multipartFile);
+
+      if (!mounted) return null;
+      await response.possiblyHandleError(context);
+      if (!response.isSuccessful) return null;
+      return response.result;
+    } catch (e) {
+      return null;
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  /// Moves [block] one up or down, by putting it before its new successor.
+  Future<void> _moveBlock(dynamic block, {required bool up}) async {
+    final blocks = getBlocksOfSelectedDocument;
+    final index = blocks.indexWhere((b) => b.id?.value == block.id?.value);
+    if (index < 0) return;
+
+    final NoteBlockModelBaseIdentifier? before;
+    if (up) {
+      if (index == 0) return;
+      before = blocks[index - 1].id;
+    } else {
+      if (index >= blocks.length - 1) return;
+      before = index + 2 < blocks.length ? blocks[index + 2].id : null;
+    }
+
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var response = await service.moveNoteBlock(
+      blockId: block.id as NoteBlockModelBaseIdentifier,
+      beforeBlockId: before,
+    );
+
+    if (!mounted) return;
+    await response.possiblyHandleError(context);
+    if (!mounted || !response.isSuccessful || response.result == null) return;
+    _showUpdatedDocument(response.result!);
+  }
+
+  Future<bool> _attachImageToTextBlock(
+      TextBlock block, NoteImageSource source) async {
+    final image = await _acquireImage(source);
+    if (image == null || !mounted) return false;
+
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var response =
+        await service.attachImageToTextBlock(blockId: block.id!, image: image);
+
+    if (!mounted) return false;
+    await response.possiblyHandleError(context);
+    if (!mounted || !response.isSuccessful) return false;
+
+    // the text block is gone and the image block has a new id
+    await _reloadSelectedDocument();
+    return true;
+  }
+
+  Future<bool> _replaceImageOfImageBlock(
+      ImageBlock block, NoteImageSource source) async {
+    final image = await _acquireImage(source);
+    if (image == null || !mounted) return false;
+
+    return await updateImageBlock(
+      context,
+      block.copyWith(
+        imageMetaDataId: image.imageMetaDataId,
+        publicImageUrl: image.publicImageUrl,
+      ),
+    );
+  }
+
+  Future<bool> _removeImageFromImageBlock(ImageBlock block) async {
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var response = await service.removeImageFromImageBlock(blockId: block.id!);
+
+    if (!mounted) return false;
+    await response.possiblyHandleError(context);
+    if (!mounted || !response.isSuccessful) return false;
+
+    await _reloadSelectedDocument();
+    return true;
+  }
+
+  /// Loads the selected document again, e.g. after its order changed.
+  Future<void> _reloadSelectedDocument() async {
+    final documentId = selectedDocument?.id;
+    if (documentId == null) return;
+
+    var service =
+        DependencyProvider.of(context).getService<INoteDocumentService>();
+    var response = await service.getDocument(notedocumentid: documentId);
+
+    if (!mounted) return;
+    await response.possiblyHandleError(context);
+    if (!mounted || !response.isSuccessful || response.result == null) return;
+    _showUpdatedDocument(response.result!);
+  }
+
+  /// Shows [document] in place of its older version.
+  void _showUpdatedDocument(NoteDocumentDto document) {
+    setState(() {
+      final group = groupedDocuments[document.groupName];
+      final index =
+          group?.indexWhere((d) => d.id?.value == document.id?.value) ?? -1;
+      if (index >= 0) {
+        group![index] = document;
+      }
+
+      if (selectedDocument?.id?.value == document.id?.value) {
+        selectedDocument = document;
+      }
+    });
   }
 
   Future<bool> updateTextBlock(

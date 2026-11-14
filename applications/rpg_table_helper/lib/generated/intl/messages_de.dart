@@ -195,6 +195,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
         ),
+    "attachImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Bild hinzufügen",
+    ),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Autor:"),
     "automaticCardStatsHint": MessageLookupByLibrary.simpleMessage(
       "Automatisch: der erste Wert mit Maximum als Balken und die ersten Zahlen aus dem Standard-Tab.",
@@ -482,6 +485,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeRollTextFieldLabel": MessageLookupByLibrary.simpleMessage(
       "Kampf Wurf",
     ),
+    "insertParagraphMenuLabel": MessageLookupByLibrary.simpleMessage(
+      "Absatz hier einfügen",
+    ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Zahlen-Wert"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Zahlen-Wert mit zusätzlicher Zahl",
@@ -724,6 +730,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "reduceBalance": MessageLookupByLibrary.simpleMessage("Guthaben abziehen"),
     "register": MessageLookupByLibrary.simpleMessage("Registrieren"),
+    "removeImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Bild entfernen",
+    ),
+    "replaceImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Bild ersetzen",
+    ),
     "requiredIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "Benötigt:",
     ),
@@ -783,6 +795,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Verwandlungsname",
     ),
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Bild hochladen",
+    ),
+    "uploadImageMenuLabel": MessageLookupByLibrary.simpleMessage(
       "Bild hochladen",
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),

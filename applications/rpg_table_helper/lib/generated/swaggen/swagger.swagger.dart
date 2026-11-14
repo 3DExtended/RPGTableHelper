@@ -529,23 +529,28 @@ never create, list or revoke keys.''',
 
   ///Creates a single text block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
+  ///@param insertBeforeBlockId Optional: a block of the document the new block goes right before. Without it the new block goes last.
   Future<chopper.Response<TextBlock>> notesCreatetextblockNotedocumentidPost({
     required String? notedocumentid,
+    String? insertBeforeBlockId,
     required TextBlock? body,
   }) {
     generatedMapping.putIfAbsent(TextBlock, () => TextBlock.fromJsonFactory);
 
     return _notesCreatetextblockNotedocumentidPost(
       notedocumentid: notedocumentid,
+      insertBeforeBlockId: insertBeforeBlockId,
       body: body,
     );
   }
 
   ///Creates a single text block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
+  ///@param insertBeforeBlockId Optional: a block of the document the new block goes right before. Without it the new block goes last.
   @POST(path: '/Notes/createtextblock/{notedocumentid}', optionalBody: true)
   Future<chopper.Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
+    @Query('insertBeforeBlockId') String? insertBeforeBlockId,
     @Body() required TextBlock? body,
     @chopper.Tag()
     SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
@@ -562,24 +567,29 @@ never create, list or revoke keys.''',
 
   ///Creates a single image block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
+  ///@param insertBeforeBlockId Optional: a block of the document the new block goes right before. Without it the new block goes last.
   Future<chopper.Response<ImageBlock>> notesCreateimageblockNotedocumentidPost({
     required String? notedocumentid,
+    String? insertBeforeBlockId,
     required ImageBlock? body,
   }) {
     generatedMapping.putIfAbsent(ImageBlock, () => ImageBlock.fromJsonFactory);
 
     return _notesCreateimageblockNotedocumentidPost(
       notedocumentid: notedocumentid,
+      insertBeforeBlockId: insertBeforeBlockId,
       body: body,
     );
   }
 
   ///Creates a single image block for a given document.
   ///@param notedocumentid The document id where this block will be assigned
+  ///@param insertBeforeBlockId Optional: a block of the document the new block goes right before. Without it the new block goes last.
   @POST(path: '/Notes/createimageblock/{notedocumentid}', optionalBody: true)
   Future<chopper.Response<ImageBlock>>
   _notesCreateimageblockNotedocumentidPost({
     @Path('notedocumentid') required String? notedocumentid,
+    @Query('insertBeforeBlockId') String? insertBeforeBlockId,
     @Body() required ImageBlock? body,
     @chopper.Tag()
     SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
@@ -1223,6 +1233,111 @@ key in order to receive the encrypted challenge dictionary.''',
       produces: [],
       security: [],
       tags: ["SignIn"],
+      deprecated: false,
+    ),
+  });
+
+  ///Adds an image to a text block of your document. The text block becomes an image block with the same
+  ///text, position and visibility, under a new id.
+  ///@param blockid The text block
+  Future<chopper.Response<ImageBlock>> notesAttachimageBlockidPost({
+    required String? blockid,
+    required NoteBlockImageDto? body,
+  }) {
+    generatedMapping.putIfAbsent(ImageBlock, () => ImageBlock.fromJsonFactory);
+
+    return _notesAttachimageBlockidPost(blockid: blockid, body: body);
+  }
+
+  ///Adds an image to a text block of your document. The text block becomes an image block with the same
+  ///text, position and visibility, under a new id.
+  ///@param blockid The text block
+  @POST(path: '/Notes/attachimage/{blockid}', optionalBody: true)
+  Future<chopper.Response<ImageBlock>> _notesAttachimageBlockidPost({
+    @Path('blockid') required String? blockid,
+    @Body() required NoteBlockImageDto? body,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the block',
+      summary:
+          '''Adds an image to a text block of your document. The text block becomes an image block with the same
+text, position and visibility, under a new id.''',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
+  });
+
+  ///Moves a block of your document right before another of its blocks, or to the end.
+  ///@param blockid The block to move
+  ///@param beforeblockid The block it goes right before; without it the block goes last
+  Future<chopper.Response<NoteDocumentDto>> notesMoveblockBlockidPut({
+    required String? blockid,
+    String? beforeblockid,
+  }) {
+    generatedMapping.putIfAbsent(
+      NoteDocumentDto,
+      () => NoteDocumentDto.fromJsonFactory,
+    );
+
+    return _notesMoveblockBlockidPut(
+      blockid: blockid,
+      beforeblockid: beforeblockid,
+    );
+  }
+
+  ///Moves a block of your document right before another of its blocks, or to the end.
+  ///@param blockid The block to move
+  ///@param beforeblockid The block it goes right before; without it the block goes last
+  @PUT(path: '/Notes/moveblock/{blockid}', optionalBody: true)
+  Future<chopper.Response<NoteDocumentDto>> _notesMoveblockBlockidPut({
+    @Path('blockid') required String? blockid,
+    @Query('beforeblockid') String? beforeblockid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the block',
+      summary:
+          'Moves a block of your document right before another of its blocks, or to the end.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
+  });
+
+  ///Removes the image of an image block of your document. The image block becomes a text block with the same
+  ///text, position and visibility, under a new id.
+  ///@param blockid The image block
+  Future<chopper.Response<TextBlock>> notesRemoveimageBlockidPost({
+    required String? blockid,
+  }) {
+    generatedMapping.putIfAbsent(TextBlock, () => TextBlock.fromJsonFactory);
+
+    return _notesRemoveimageBlockidPost(blockid: blockid);
+  }
+
+  ///Removes the image of an image block of your document. The image block becomes a text block with the same
+  ///text, position and visibility, under a new id.
+  ///@param blockid The image block
+  @POST(path: '/Notes/removeimage/{blockid}', optionalBody: true)
+  Future<chopper.Response<TextBlock>> _notesRemoveimageBlockidPost({
+    @Path('blockid') required String? blockid,
+    @chopper.Tag()
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the block',
+      summary:
+          '''Removes the image of an image block of your document. The image block becomes a text block with the same
+text, position and visibility, under a new id.''',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
       deprecated: false,
     ),
   });

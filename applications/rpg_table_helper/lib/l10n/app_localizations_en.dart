@@ -1147,4 +1147,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get computedPresetIncomplete =>
       'Not every value of the template exists in this campaign. Add the missing building blocks yourself.';
+
+  @override
+  String get attachImageBtnLabel => 'Add image';
+
+  @override
+  String get replaceImageBtnLabel => 'Replace image';
+
+  @override
+  String get removeImageBtnLabel => 'Remove image';
+
+  @override
+  String get uploadImageMenuLabel => 'Upload image';
+
+  @override
+  String get insertParagraphMenuLabel => 'Insert paragraph here';
 }

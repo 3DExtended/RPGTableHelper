@@ -1158,4 +1158,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get computedPresetIncomplete =>
       'Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.';
+
+  @override
+  String get attachImageBtnLabel => 'Bild hinzufügen';
+
+  @override
+  String get replaceImageBtnLabel => 'Bild ersetzen';
+
+  @override
+  String get removeImageBtnLabel => 'Bild entfernen';
+
+  @override
+  String get uploadImageMenuLabel => 'Bild hochladen';
+
+  @override
+  String get insertParagraphMenuLabel => 'Absatz hier einfügen';
 }

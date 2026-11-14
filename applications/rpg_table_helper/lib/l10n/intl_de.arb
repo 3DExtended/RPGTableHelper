@@ -449,5 +449,10 @@
   "computedPresetPassiveStealth": "Passive Heimlichkeit",
   "computedPresetInitiative": "Initiative",
   "computedPresetUnarmoredArmorClass": "RK ohne Rüstung",
-  "computedPresetIncomplete": "Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst."
+  "computedPresetIncomplete": "Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.",
+  "attachImageBtnLabel": "Bild hinzufügen",
+  "replaceImageBtnLabel": "Bild ersetzen",
+  "removeImageBtnLabel": "Bild entfernen",
+  "uploadImageMenuLabel": "Bild hochladen",
+  "insertParagraphMenuLabel": "Absatz hier einfügen"
 }

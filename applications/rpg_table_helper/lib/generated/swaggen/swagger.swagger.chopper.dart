@@ -448,6 +448,7 @@ never create, list or revoke keys.''',
   @override
   Future<Response<TextBlock>> _notesCreatetextblockNotedocumentidPost({
     required String? notedocumentid,
+    String? insertBeforeBlockId,
     required TextBlock? body,
     SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
       description: 'You must be the owner of the document',
@@ -461,12 +462,16 @@ never create, list or revoke keys.''',
     ),
   }) {
     final Uri $url = Uri.parse('/Notes/createtextblock/${notedocumentid}');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'insertBeforeBlockId': insertBeforeBlockId,
+    };
     final $body = body;
     final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
       body: $body,
+      parameters: $params,
       tag: swaggerMetaData,
     );
     return client.send<TextBlock, TextBlock>($request);
@@ -475,6 +480,7 @@ never create, list or revoke keys.''',
   @override
   Future<Response<ImageBlock>> _notesCreateimageblockNotedocumentidPost({
     required String? notedocumentid,
+    String? insertBeforeBlockId,
     required ImageBlock? body,
     SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
       description: 'You must be the owner of the document',
@@ -488,12 +494,16 @@ never create, list or revoke keys.''',
     ),
   }) {
     final Uri $url = Uri.parse('/Notes/createimageblock/${notedocumentid}');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'insertBeforeBlockId': insertBeforeBlockId,
+    };
     final $body = body;
     final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
       body: $body,
+      parameters: $params,
       tag: swaggerMetaData,
     );
     return client.send<ImageBlock, ImageBlock>($request);
@@ -1118,5 +1128,90 @@ key in order to receive the encrypted challenge dictionary.''',
       tag: swaggerMetaData,
     );
     return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<ImageBlock>> _notesAttachimageBlockidPost({
+    required String? blockid,
+    required NoteBlockImageDto? body,
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the block',
+      summary:
+          '''Adds an image to a text block of your document. The text block becomes an image block with the same
+text, position and visibility, under a new id.''',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
+  }) {
+    final Uri $url = Uri.parse('/Notes/attachimage/${blockid}');
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      tag: swaggerMetaData,
+    );
+    return client.send<ImageBlock, ImageBlock>($request);
+  }
+
+  @override
+  Future<Response<NoteDocumentDto>> _notesMoveblockBlockidPut({
+    required String? blockid,
+    String? beforeblockid,
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the block',
+      summary:
+          'Moves a block of your document right before another of its blocks, or to the end.',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
+  }) {
+    final Uri $url = Uri.parse('/Notes/moveblock/${blockid}');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'beforeblockid': beforeblockid,
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      tag: swaggerMetaData,
+    );
+    return client.send<NoteDocumentDto, NoteDocumentDto>($request);
+  }
+
+  @override
+  Future<Response<TextBlock>> _notesRemoveimageBlockidPost({
+    required String? blockid,
+    SwaggerMetaData swaggerMetaData = const SwaggerMetaData(
+      description: 'You must be the owner of the block',
+      summary:
+          '''Removes the image of an image block of your document. The image block becomes a text block with the same
+text, position and visibility, under a new id.''',
+      operationId: '',
+      consumes: [],
+      produces: [],
+      security: [],
+      tags: ["Notes"],
+      deprecated: false,
+    ),
+  }) {
+    final Uri $url = Uri.parse('/Notes/removeimage/${blockid}');
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      tag: swaggerMetaData,
+    );
+    return client.send<TextBlock, TextBlock>($request);
   }
 }

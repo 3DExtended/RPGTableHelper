@@ -24,14 +24,44 @@ abstract class INoteDocumentService {
     required NoteDocumentDto dto,
   });
 
-  Future<HRResponse<TextBlock>> createNewTextBlockForDocument({
-    required TextBlock textBlockToCreate,
+  Future<HRResponse<NoteDocumentDto>> getDocument({
     required NoteDocumentIdentifier notedocumentid,
   });
 
+  /// Creates the block last in the document, or right before
+  /// [insertBeforeBlockId] (a block of the same document).
+  Future<HRResponse<TextBlock>> createNewTextBlockForDocument({
+    required TextBlock textBlockToCreate,
+    required NoteDocumentIdentifier notedocumentid,
+    NoteBlockModelBaseIdentifier? insertBeforeBlockId,
+  });
+
+  /// Creates the block last in the document, or right before
+  /// [insertBeforeBlockId] (a block of the same document).
   Future<HRResponse<ImageBlock>> createNewImageBlockForDocument({
     required ImageBlock imageBlockToCreate,
     required NoteDocumentIdentifier notedocumentid,
+    NoteBlockModelBaseIdentifier? insertBeforeBlockId,
+  });
+
+  /// Moves the block right before [beforeBlockId], or to the end of its
+  /// document if that is null. Returns the document in its new order.
+  Future<HRResponse<NoteDocumentDto>> moveNoteBlock({
+    required NoteBlockModelBaseIdentifier blockId,
+    NoteBlockModelBaseIdentifier? beforeBlockId,
+  });
+
+  /// Turns a text block into an image block with the same text, position and
+  /// visibility. The block gets a new id.
+  Future<HRResponse<ImageBlock>> attachImageToTextBlock({
+    required NoteBlockModelBaseIdentifier blockId,
+    required NoteBlockImageDto image,
+  });
+
+  /// Turns an image block back into a text block with the same text,
+  /// position and visibility. The block gets a new id.
+  Future<HRResponse<TextBlock>> removeImageFromImageBlock({
+    required NoteBlockModelBaseIdentifier blockId,
   });
 
   Future<HRResponse<bool>> updateTextBlock({
@@ -114,7 +144,8 @@ class NoteDocumentService extends INoteDocumentService {
   @override
   Future<HRResponse<ImageBlock>> createNewImageBlockForDocument(
       {required ImageBlock imageBlockToCreate,
-      required NoteDocumentIdentifier notedocumentid}) async {
+      required NoteDocumentIdentifier notedocumentid,
+      NoteBlockModelBaseIdentifier? insertBeforeBlockId}) async {
     var api = await apiConnectorService.getApiConnector(requiresJwt: true);
     if (api == null) {
       return HRResponse.error<ImageBlock>('Could not load api connector.',
@@ -123,7 +154,9 @@ class NoteDocumentService extends INoteDocumentService {
 
     var createResponse = await HRResponse.fromApiFuture(
         api.notesCreateimageblockNotedocumentidPost(
-            notedocumentid: notedocumentid.value, body: imageBlockToCreate),
+            notedocumentid: notedocumentid.value,
+            insertBeforeBlockId: insertBeforeBlockId?.value,
+            body: imageBlockToCreate),
         'Could not create image block in document.',
         '3ef467ea-4bd6-4478-af96-0bdb2d1da038');
     return createResponse;
@@ -132,7 +165,8 @@ class NoteDocumentService extends INoteDocumentService {
   @override
   Future<HRResponse<TextBlock>> createNewTextBlockForDocument(
       {required TextBlock textBlockToCreate,
-      required NoteDocumentIdentifier notedocumentid}) async {
+      required NoteDocumentIdentifier notedocumentid,
+      NoteBlockModelBaseIdentifier? insertBeforeBlockId}) async {
     var api = await apiConnectorService.getApiConnector(requiresJwt: true);
     if (api == null) {
       return HRResponse.error<TextBlock>('Could not load api connector.',
@@ -141,10 +175,76 @@ class NoteDocumentService extends INoteDocumentService {
 
     var createResponse = await HRResponse.fromApiFuture(
         api.notesCreatetextblockNotedocumentidPost(
-            notedocumentid: notedocumentid.value, body: textBlockToCreate),
+            notedocumentid: notedocumentid.value,
+            insertBeforeBlockId: insertBeforeBlockId?.value,
+            body: textBlockToCreate),
         'Could not create text block in document.',
         '91956dae-503d-4f58-b8c1-5ebd3d860397');
     return createResponse;
+  }
+
+  @override
+  Future<HRResponse<NoteDocumentDto>> getDocument(
+      {required NoteDocumentIdentifier notedocumentid}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<NoteDocumentDto>(
+          'Could not load api connector.', '5020026c-5c92-4678-abfb-93d9d7860e33');
+    }
+
+    return await HRResponse.fromApiFuture(
+        api.notesGetdocumentNotedocumentidGet(
+            notedocumentid: notedocumentid.value),
+        'Could not load document.',
+        '0bdfc9a9-750a-4b73-8097-60b7bc91bea1');
+  }
+
+  @override
+  Future<HRResponse<NoteDocumentDto>> moveNoteBlock(
+      {required NoteBlockModelBaseIdentifier blockId,
+      NoteBlockModelBaseIdentifier? beforeBlockId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<NoteDocumentDto>(
+          'Could not load api connector.', '976855ae-e22b-40c0-aef3-9be808316beb');
+    }
+
+    return await HRResponse.fromApiFuture(
+        api.notesMoveblockBlockidPut(
+            blockid: blockId.value, beforeblockid: beforeBlockId?.value),
+        'Could not move note block.',
+        'cf939771-78b3-4169-8403-e2d53922a9b3');
+  }
+
+  @override
+  Future<HRResponse<ImageBlock>> attachImageToTextBlock(
+      {required NoteBlockModelBaseIdentifier blockId,
+      required NoteBlockImageDto image}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<ImageBlock>(
+          'Could not load api connector.', 'd71722f5-d4c9-404c-aad5-fa074f5dfd6a');
+    }
+
+    return await HRResponse.fromApiFuture(
+        api.notesAttachimageBlockidPost(blockid: blockId.value, body: image),
+        'Could not add the image to the text block.',
+        'f0b374b2-4dbf-4190-aa4c-90ac5e990231');
+  }
+
+  @override
+  Future<HRResponse<TextBlock>> removeImageFromImageBlock(
+      {required NoteBlockModelBaseIdentifier blockId}) async {
+    var api = await apiConnectorService.getApiConnector(requiresJwt: true);
+    if (api == null) {
+      return HRResponse.error<TextBlock>(
+          'Could not load api connector.', '5bab71d5-582c-45e4-8fd6-f57684066cd4');
+    }
+
+    return await HRResponse.fromApiFuture(
+        api.notesRemoveimageBlockidPost(blockid: blockId.value),
+        'Could not remove the image from the block.',
+        'bdfaa00a-46bc-4cef-9272-f864358a875d');
   }
 
   @override
@@ -695,14 +795,42 @@ class MockNoteDocumentService extends INoteDocumentService {
   @override
   Future<HRResponse<ImageBlock>> createNewImageBlockForDocument(
       {required ImageBlock imageBlockToCreate,
-      required NoteDocumentIdentifier notedocumentid}) {
+      required NoteDocumentIdentifier notedocumentid,
+      NoteBlockModelBaseIdentifier? insertBeforeBlockId}) {
     throw UnimplementedError();
   }
 
   @override
   Future<HRResponse<TextBlock>> createNewTextBlockForDocument(
       {required TextBlock textBlockToCreate,
-      required NoteDocumentIdentifier notedocumentid}) {
+      required NoteDocumentIdentifier notedocumentid,
+      NoteBlockModelBaseIdentifier? insertBeforeBlockId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<NoteDocumentDto>> getDocument(
+      {required NoteDocumentIdentifier notedocumentid}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<NoteDocumentDto>> moveNoteBlock(
+      {required NoteBlockModelBaseIdentifier blockId,
+      NoteBlockModelBaseIdentifier? beforeBlockId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<ImageBlock>> attachImageToTextBlock(
+      {required NoteBlockModelBaseIdentifier blockId,
+      required NoteBlockImageDto image}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<TextBlock>> removeImageFromImageBlock(
+      {required NoteBlockModelBaseIdentifier blockId}) {
     throw UnimplementedError();
   }
 

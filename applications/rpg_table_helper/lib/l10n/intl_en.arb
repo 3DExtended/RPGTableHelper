@@ -409,5 +409,10 @@
   "computedPresetPassiveStealth": "Passive Stealth",
   "computedPresetInitiative": "Initiative",
   "computedPresetUnarmoredArmorClass": "AC without armor",
-  "computedPresetIncomplete": "Not every value of the template exists in this campaign. Add the missing building blocks yourself."
+  "computedPresetIncomplete": "Not every value of the template exists in this campaign. Add the missing building blocks yourself.",
+  "attachImageBtnLabel": "Add image",
+  "replaceImageBtnLabel": "Replace image",
+  "removeImageBtnLabel": "Remove image",
+  "uploadImageMenuLabel": "Upload image",
+  "insertParagraphMenuLabel": "Insert paragraph here"
 }

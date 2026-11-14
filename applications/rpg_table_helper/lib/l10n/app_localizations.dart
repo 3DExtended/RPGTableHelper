@@ -2227,6 +2227,36 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.'**
   String get computedPresetIncomplete;
+
+  /// No description provided for @attachImageBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild hinzufügen'**
+  String get attachImageBtnLabel;
+
+  /// No description provided for @replaceImageBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild ersetzen'**
+  String get replaceImageBtnLabel;
+
+  /// No description provided for @removeImageBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild entfernen'**
+  String get removeImageBtnLabel;
+
+  /// No description provided for @uploadImageMenuLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild hochladen'**
+  String get uploadImageMenuLabel;
+
+  /// No description provided for @insertParagraphMenuLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Absatz hier einfügen'**
+  String get insertParagraphMenuLabel;
 }
 
 class _AppLocalizationsDelegate

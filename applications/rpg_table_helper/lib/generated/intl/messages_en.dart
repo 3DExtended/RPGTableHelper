@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
         ),
+    "attachImageBtnLabel": MessageLookupByLibrary.simpleMessage("Add image"),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Author:"),
     "automaticCardStatsHint": MessageLookupByLibrary.simpleMessage(
       "Automatic: the first value with a maximum as bar and the first numbers of the default tab.",
@@ -464,6 +465,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeRollTextFieldLabel": MessageLookupByLibrary.simpleMessage(
       "Initiative roll",
     ),
+    "insertParagraphMenuLabel": MessageLookupByLibrary.simpleMessage(
+      "Insert paragraph here",
+    ),
     "integerValue": MessageLookupByLibrary.simpleMessage("Number value"),
     "integerValueWithCalculatedValue": MessageLookupByLibrary.simpleMessage(
       "Number value with additional number",
@@ -696,6 +700,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "reduceBalance": MessageLookupByLibrary.simpleMessage("Reduce balance"),
     "register": MessageLookupByLibrary.simpleMessage("Register"),
+    "removeImageBtnLabel": MessageLookupByLibrary.simpleMessage("Remove image"),
+    "replaceImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Replace image",
+    ),
     "requiredIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "Required:",
     ),
@@ -755,6 +763,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Transformation name",
     ),
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage("Upload image"),
+    "uploadImageMenuLabel": MessageLookupByLibrary.simpleMessage(
+      "Upload image",
+    ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
     "valueOfPropertyWithName": m10,

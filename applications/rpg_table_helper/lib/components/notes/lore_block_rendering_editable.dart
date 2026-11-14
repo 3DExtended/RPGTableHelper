@@ -5,6 +5,7 @@ import 'package:quest_keeper/components/bordered_image.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_markdown_body.dart';
+import 'package:quest_keeper/components/notes/note_block_menu.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
@@ -23,12 +24,30 @@ class LoreBlockRenderingEditable extends StatefulWidget {
     required this.block,
     required this.usersInCampagne,
     required this.updatePermittedUsersOnBlock,
-    required this.updateImageContent,
     required this.deleteBlock,
+    this.attachImage,
+    this.replaceImage,
+    this.removeImage,
+    this.moveUp,
+    this.moveDown,
   });
 
   final Future<bool> Function() deleteBlock;
-  final Future<bool> Function(String pathToImageToUpload) updateImageContent;
+
+  /// Text blocks only: adds an image, which turns the block into an image block.
+  final Future<bool> Function(NoteImageSource source)? attachImage;
+
+  /// Image blocks only: puts another image into the block.
+  final Future<bool> Function(NoteImageSource source)? replaceImage;
+
+  /// Image blocks only: removes the image, which turns the block into a text block.
+  final Future<bool> Function()? removeImage;
+
+  /// Moves the block one up; null for the first block.
+  final Future<void> Function()? moveUp;
+
+  /// Moves the block one down; null for the last block.
+  final Future<void> Function()? moveDown;
   final List<NoteDocumentPlayerDescriptorDto> usersInCampagne;
   final void Function(List<UserIdentifier> newPermittedUsers, dynamic block)
       updatePermittedUsersOnBlock;
@@ -112,18 +131,31 @@ class _LoreBlockRenderingEditableState
         if (widget.isUserAllowedToEdit == true && isEditEnabled)
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: CupertinoButton(
-              padding: EdgeInsets.all(0),
-              onPressed: () async {
-                // TODO make me ask the user if they really want to discard changes
-                await widget.deleteBlock();
-              },
-              minimumSize: Size(0, 0),
-              child: CustomFaIcon(
-                icon: FontAwesomeIcons.trashCan,
-                size: 20,
-                color: CustomThemeProvider.of(context).theme.darkColor,
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _iconButton(
+                  icon: FontAwesomeIcons.trashCan,
+                  onPressed: () async {
+                    // TODO make me ask the user if they really want to discard changes
+                    await widget.deleteBlock();
+                  },
+                ),
+                if (widget.moveUp != null || widget.moveDown != null) ...[
+                  const SizedBox(height: 16),
+                  _iconButton(
+                    key: const ValueKey('moveNoteBlockUp'),
+                    icon: FontAwesomeIcons.arrowUp,
+                    onPressed: widget.moveUp,
+                  ),
+                  const SizedBox(height: 12),
+                  _iconButton(
+                    key: const ValueKey('moveNoteBlockDown'),
+                    icon: FontAwesomeIcons.arrowDown,
+                    onPressed: widget.moveDown,
+                  ),
+                ],
+              ],
             ),
           ),
         if (widget.isShowingPermittedUsers == true &&
@@ -176,6 +208,57 @@ class _LoreBlockRenderingEditableState
           )
       ],
     );
+  }
+
+  Widget _iconButton({
+    Key? key,
+    required FaIconData icon,
+    required Future<void> Function()? onPressed,
+  }) {
+    final color = CustomThemeProvider.of(context).theme.darkColor;
+    return CupertinoButton(
+      key: key,
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      minimumSize: Size(0, 0),
+      child: CustomFaIcon(
+        icon: icon,
+        size: 20,
+        color: onPressed == null ? color.withValues(alpha: 0.3) : color,
+      ),
+    );
+  }
+
+  /// Saves unsaved text first, so it is not lost when the block is replaced.
+  Future<void> _saveTextIfChanged() async {
+    if (hasChanged) {
+      await widget.updateTextContent(_textEditingController.text);
+    }
+  }
+
+  Widget _imageSourceButton({
+    required Key key,
+    required String label,
+    required Future<bool> Function(NoteImageSource source) onChosen,
+  }) {
+    return Builder(builder: (anchorContext) {
+      return CustomButton(
+        key: key,
+        variant: CustomButtonVariant.Default,
+        icon: CustomFaIcon(
+          icon: FontAwesomeIcons.image,
+          size: 16,
+          color: CustomThemeProvider.of(context).theme.textColor,
+        ),
+        onPressed: () async {
+          final source = await showNoteImageSourceMenu(anchorContext);
+          if (source == null) return;
+          await _saveTextIfChanged();
+          await onChosen(source);
+        },
+        label: label,
+      );
+    });
   }
 
   List<Widget> getPillsToIndicateVisibilityForPlayers(
@@ -377,7 +460,29 @@ class _LoreBlockRenderingEditableState
                     });
                   },
                   label: S.of(context).cancel,
-                )
+                ),
+                if (widget.attachImage != null)
+                  _imageSourceButton(
+                    key: const ValueKey('attachImageToNoteBlock'),
+                    label: S.of(context).attachImageBtnLabel,
+                    onChosen: widget.attachImage!,
+                  ),
+                if (widget.replaceImage != null)
+                  _imageSourceButton(
+                    key: const ValueKey('replaceNoteBlockImage'),
+                    label: S.of(context).replaceImageBtnLabel,
+                    onChosen: widget.replaceImage!,
+                  ),
+                if (widget.removeImage != null)
+                  CustomButton(
+                    key: const ValueKey('removeNoteBlockImage'),
+                    variant: CustomButtonVariant.Default,
+                    onPressed: () async {
+                      await _saveTextIfChanged();
+                      await widget.removeImage!();
+                    },
+                    label: S.of(context).removeImageBtnLabel,
+                  ),
               ],
             ),
           )
