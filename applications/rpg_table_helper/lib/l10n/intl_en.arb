@@ -353,5 +353,19 @@
   "endFightConfirmation": "End the fight? Whoever has not rolled yet will not be asked any more.",
   "waitingForInitiative": "Waiting for initiative",
   "notAtTheTable": "not at the table",
-  "noCharactersInCampagne": "No characters in this campaign yet"
+  "noCharactersInCampagne": "No characters in this campaign yet",
+  "customizeCards": "Customize cards",
+  "hiddenCards": "Hidden",
+  "allCardsHidden": "All cards are hidden",
+  "visibleCards": "Visible cards",
+  "visibleCardsHint": "Hidden cards stay hidden on this device, even if a player was offline in between.",
+  "cardStatsSection": "Properties on the cards",
+  "chooseCardStatsYourself": "Choose properties yourself",
+  "automaticCardStatsHint": "Automatic: the first value with a maximum as bar and the first numbers of the default tab.",
+  "cardBar": "Bar",
+  "noBar": "No bar",
+  "cardNumbers": "Numbers",
+  "companion": "Companion",
+  "calculatedValueShort": "calc.",
+  "noCardStatsAvailable": "This campaign has no properties with numbers yet."
 }

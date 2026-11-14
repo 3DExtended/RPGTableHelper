@@ -70,6 +70,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "additionalSettings": MessageLookupByLibrary.simpleMessage(
       "Additional settings",
     ),
+    "allCardsHidden": MessageLookupByLibrary.simpleMessage(
+      "All cards are hidden",
+    ),
     "allPlayers": MessageLookupByLibrary.simpleMessage("All players:"),
     "amount": MessageLookupByLibrary.simpleMessage("Amount"),
     "amountHeaderLabel": MessageLookupByLibrary.simpleMessage("Amount:"),
@@ -176,17 +179,26 @@ class MessageLookup extends MessageLookupByLibrary {
           "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
         ),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Author:"),
+    "automaticCardStatsHint": MessageLookupByLibrary.simpleMessage(
+      "Automatic: the first value with a maximum as bar and the first numbers of the default tab.",
+    ),
     "back": MessageLookupByLibrary.simpleMessage("Back"),
     "calculatedValue": MessageLookupByLibrary.simpleMessage("Calculated value"),
     "calculatedValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "The calculated value",
     ),
+    "calculatedValueShort": MessageLookupByLibrary.simpleMessage("calc."),
     "campaignManagement": MessageLookupByLibrary.simpleMessage(
       "Campaign management",
     ),
     "campaignName": MessageLookupByLibrary.simpleMessage("Campaign name"),
     "campaigneName": MessageLookupByLibrary.simpleMessage("Name"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "cardBar": MessageLookupByLibrary.simpleMessage("Bar"),
+    "cardNumbers": MessageLookupByLibrary.simpleMessage("Numbers"),
+    "cardStatsSection": MessageLookupByLibrary.simpleMessage(
+      "Properties on the cards",
+    ),
     "character": MessageLookupByLibrary.simpleMessage("Character:"),
     "characterConfigSaveFailedBody": MessageLookupByLibrary.simpleMessage(
       "Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.",
@@ -242,6 +254,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "chooseACharacter": MessageLookupByLibrary.simpleMessage(
       "Choose a character",
     ),
+    "chooseCardStatsYourself": MessageLookupByLibrary.simpleMessage(
+      "Choose properties yourself",
+    ),
+    "companion": MessageLookupByLibrary.simpleMessage("Companion"),
     "companionOverview": MessageLookupByLibrary.simpleMessage(
       "Companion overview",
     ),
@@ -279,6 +295,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "currentValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "The current value for this property",
     ),
+    "customizeCards": MessageLookupByLibrary.simpleMessage("Customize cards"),
     "defaultGroupNameForDocuments": MessageLookupByLibrary.simpleMessage(
       "Other",
     ),
@@ -354,6 +371,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "The name of the campaign",
     ),
+    "hiddenCards": MessageLookupByLibrary.simpleMessage("Hidden"),
     "hideHeading": MessageLookupByLibrary.simpleMessage("Hide heading"),
     "hidePropertyForCharacter": MessageLookupByLibrary.simpleMessage(
       "Hide property for my character",
@@ -506,6 +524,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "no": MessageLookupByLibrary.simpleMessage("No"),
+    "noBar": MessageLookupByLibrary.simpleMessage("No bar"),
+    "noCardStatsAvailable": MessageLookupByLibrary.simpleMessage(
+      "This campaign has no properties with numbers yet.",
+    ),
     "noCharactersInCampagne": MessageLookupByLibrary.simpleMessage(
       "No characters in this campaign yet",
     ),
@@ -682,6 +704,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
     "valueOfPropertyWithName": m8,
+    "visibleCards": MessageLookupByLibrary.simpleMessage("Visible cards"),
+    "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
+      "Hidden cards stay hidden on this device, even if a player was offline in between.",
+    ),
     "waitingForInitiative": MessageLookupByLibrary.simpleMessage(
       "Waiting for initiative",
     ),

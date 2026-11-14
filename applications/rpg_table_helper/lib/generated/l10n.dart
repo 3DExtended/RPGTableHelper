@@ -2869,6 +2869,121 @@ class S {
       args: [],
     );
   }
+
+  /// `Customize cards`
+  String get customizeCards {
+    return Intl.message(
+      'Customize cards',
+      name: 'customizeCards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hidden`
+  String get hiddenCards {
+    return Intl.message('Hidden', name: 'hiddenCards', desc: '', args: []);
+  }
+
+  /// `All cards are hidden`
+  String get allCardsHidden {
+    return Intl.message(
+      'All cards are hidden',
+      name: 'allCardsHidden',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Visible cards`
+  String get visibleCards {
+    return Intl.message(
+      'Visible cards',
+      name: 'visibleCards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hidden cards stay hidden on this device, even if a player was offline in between.`
+  String get visibleCardsHint {
+    return Intl.message(
+      'Hidden cards stay hidden on this device, even if a player was offline in between.',
+      name: 'visibleCardsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Properties on the cards`
+  String get cardStatsSection {
+    return Intl.message(
+      'Properties on the cards',
+      name: 'cardStatsSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose properties yourself`
+  String get chooseCardStatsYourself {
+    return Intl.message(
+      'Choose properties yourself',
+      name: 'chooseCardStatsYourself',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic: the first value with a maximum as bar and the first numbers of the default tab.`
+  String get automaticCardStatsHint {
+    return Intl.message(
+      'Automatic: the first value with a maximum as bar and the first numbers of the default tab.',
+      name: 'automaticCardStatsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bar`
+  String get cardBar {
+    return Intl.message('Bar', name: 'cardBar', desc: '', args: []);
+  }
+
+  /// `No bar`
+  String get noBar {
+    return Intl.message('No bar', name: 'noBar', desc: '', args: []);
+  }
+
+  /// `Numbers`
+  String get cardNumbers {
+    return Intl.message('Numbers', name: 'cardNumbers', desc: '', args: []);
+  }
+
+  /// `Companion`
+  String get companion {
+    return Intl.message('Companion', name: 'companion', desc: '', args: []);
+  }
+
+  /// `calc.`
+  String get calculatedValueShort {
+    return Intl.message(
+      'calc.',
+      name: 'calculatedValueShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This campaign has no properties with numbers yet.`
+  String get noCardStatsAvailable {
+    return Intl.message(
+      'This campaign has no properties with numbers yet.',
+      name: 'noCardStatsAvailable',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

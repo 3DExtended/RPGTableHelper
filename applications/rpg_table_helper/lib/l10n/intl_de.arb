@@ -393,5 +393,19 @@
   "endFightConfirmation": "Kampf wirklich beenden? Wer noch nicht gewürfelt hat, wird dann nicht mehr gefragt.",
   "waitingForInitiative": "Wartet auf Initiative",
   "notAtTheTable": "nicht am Tisch",
-  "noCharactersInCampagne": "Noch keine Charaktere in dieser Kampagne"
+  "noCharactersInCampagne": "Noch keine Charaktere in dieser Kampagne",
+  "customizeCards": "Karten anpassen",
+  "hiddenCards": "Ausgeblendet",
+  "allCardsHidden": "Alle Karten sind ausgeblendet",
+  "visibleCards": "Sichtbare Karten",
+  "visibleCardsHint": "Ausgeblendete Karten bleiben auf diesem Gerät ausgeblendet, auch wenn ein Spieler zwischendurch offline war.",
+  "cardStatsSection": "Eigenschaften auf den Karten",
+  "chooseCardStatsYourself": "Eigenschaften selbst wählen",
+  "automaticCardStatsHint": "Automatisch: der erste Wert mit Maximum als Balken und die ersten Zahlen aus dem Standard-Tab.",
+  "cardBar": "Balken",
+  "noBar": "Kein Balken",
+  "cardNumbers": "Zahlen",
+  "companion": "Begleiter",
+  "calculatedValueShort": "ber.",
+  "noCardStatsAvailable": "Diese Kampagne hat noch keine Eigenschaften mit Zahlen."
 }

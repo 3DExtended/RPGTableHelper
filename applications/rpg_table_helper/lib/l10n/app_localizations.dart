@@ -1987,6 +1987,90 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Noch keine Charaktere in dieser Kampagne'**
   String get noCharactersInCampagne;
+
+  /// No description provided for @customizeCards.
+  ///
+  /// In de, this message translates to:
+  /// **'Karten anpassen'**
+  String get customizeCards;
+
+  /// No description provided for @hiddenCards.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgeblendet'**
+  String get hiddenCards;
+
+  /// No description provided for @allCardsHidden.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Karten sind ausgeblendet'**
+  String get allCardsHidden;
+
+  /// No description provided for @visibleCards.
+  ///
+  /// In de, this message translates to:
+  /// **'Sichtbare Karten'**
+  String get visibleCards;
+
+  /// No description provided for @visibleCardsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgeblendete Karten bleiben auf diesem Gerät ausgeblendet, auch wenn ein Spieler zwischendurch offline war.'**
+  String get visibleCardsHint;
+
+  /// No description provided for @cardStatsSection.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaften auf den Karten'**
+  String get cardStatsSection;
+
+  /// No description provided for @chooseCardStatsYourself.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaften selbst wählen'**
+  String get chooseCardStatsYourself;
+
+  /// No description provided for @automaticCardStatsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Automatisch: der erste Wert mit Maximum als Balken und die ersten Zahlen aus dem Standard-Tab.'**
+  String get automaticCardStatsHint;
+
+  /// No description provided for @cardBar.
+  ///
+  /// In de, this message translates to:
+  /// **'Balken'**
+  String get cardBar;
+
+  /// No description provided for @noBar.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Balken'**
+  String get noBar;
+
+  /// No description provided for @cardNumbers.
+  ///
+  /// In de, this message translates to:
+  /// **'Zahlen'**
+  String get cardNumbers;
+
+  /// No description provided for @companion.
+  ///
+  /// In de, this message translates to:
+  /// **'Begleiter'**
+  String get companion;
+
+  /// No description provided for @calculatedValueShort.
+  ///
+  /// In de, this message translates to:
+  /// **'ber.'**
+  String get calculatedValueShort;
+
+  /// No description provided for @noCardStatsAvailable.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Kampagne hat noch keine Eigenschaften mit Zahlen.'**
+  String get noCardStatsAvailable;
 }
 
 class _AppLocalizationsDelegate

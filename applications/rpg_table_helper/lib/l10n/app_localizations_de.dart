@@ -1028,4 +1028,49 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get noCharactersInCampagne =>
       'Noch keine Charaktere in dieser Kampagne';
+
+  @override
+  String get customizeCards => 'Karten anpassen';
+
+  @override
+  String get hiddenCards => 'Ausgeblendet';
+
+  @override
+  String get allCardsHidden => 'Alle Karten sind ausgeblendet';
+
+  @override
+  String get visibleCards => 'Sichtbare Karten';
+
+  @override
+  String get visibleCardsHint =>
+      'Ausgeblendete Karten bleiben auf diesem Gerät ausgeblendet, auch wenn ein Spieler zwischendurch offline war.';
+
+  @override
+  String get cardStatsSection => 'Eigenschaften auf den Karten';
+
+  @override
+  String get chooseCardStatsYourself => 'Eigenschaften selbst wählen';
+
+  @override
+  String get automaticCardStatsHint =>
+      'Automatisch: der erste Wert mit Maximum als Balken und die ersten Zahlen aus dem Standard-Tab.';
+
+  @override
+  String get cardBar => 'Balken';
+
+  @override
+  String get noBar => 'Kein Balken';
+
+  @override
+  String get cardNumbers => 'Zahlen';
+
+  @override
+  String get companion => 'Begleiter';
+
+  @override
+  String get calculatedValueShort => 'ber.';
+
+  @override
+  String get noCardStatsAvailable =>
+      'Diese Kampagne hat noch keine Eigenschaften mit Zahlen.';
 }
