@@ -300,6 +300,28 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "computedModeValue": MessageLookupByLibrary.simpleMessage("wie er ist"),
     "computedModifierOf": m5,
+    "computedPreset": MessageLookupByLibrary.simpleMessage("Vorlage (D&D 5e)"),
+    "computedPresetIncomplete": MessageLookupByLibrary.simpleMessage(
+      "Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.",
+    ),
+    "computedPresetInitiative": MessageLookupByLibrary.simpleMessage(
+      "Initiative",
+    ),
+    "computedPresetPassiveInsight": MessageLookupByLibrary.simpleMessage(
+      "Passives Motiv erkennen",
+    ),
+    "computedPresetPassiveInvestigation": MessageLookupByLibrary.simpleMessage(
+      "Passive Nachforschungen",
+    ),
+    "computedPresetPassivePerception": MessageLookupByLibrary.simpleMessage(
+      "Passive Wahrnehmung",
+    ),
+    "computedPresetPassiveStealth": MessageLookupByLibrary.simpleMessage(
+      "Passive Heimlichkeit",
+    ),
+    "computedPresetUnarmoredArmorClass": MessageLookupByLibrary.simpleMessage(
+      "RK ohne Rüstung",
+    ),
     "computedPreview": MessageLookupByLibrary.simpleMessage("Formel"),
     "computedSource": MessageLookupByLibrary.simpleMessage("Wert"),
     "computedTerms": MessageLookupByLibrary.simpleMessage("Bausteine"),

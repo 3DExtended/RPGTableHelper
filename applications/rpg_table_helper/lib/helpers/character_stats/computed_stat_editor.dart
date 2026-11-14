@@ -7,6 +7,7 @@ import 'package:quest_keeper/components/custom_dropdown_menu.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/computed_stat_presets.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_number_labels.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/computed_stat_formula.dart';
@@ -17,6 +18,9 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 typedef ComputedConditionOption = ({
   ComputedTermCondition condition,
   String label,
+
+  /// The option's own label, without the stat name.
+  String optionLabel,
 });
 
 /// Every option of every multiselect stat in [stats].
@@ -45,6 +49,7 @@ List<ComputedConditionOption> computedConditionOptions(
           optionUuid: uuid,
         ),
         label: "${stat.name}: ${option["label"] ?? ""}",
+        optionLabel: option["label"]?.toString() ?? "",
       ));
     }
   }
@@ -80,6 +85,22 @@ String describeComputedFormula(
   return result;
 }
 
+/// Localized name of a preset, also used as the property's name.
+String presetName(BuildContext context, ComputedStatPresetId id) =>
+    switch (id) {
+      ComputedStatPresetId.passivePerception =>
+        S.of(context).computedPresetPassivePerception,
+      ComputedStatPresetId.passiveInsight =>
+        S.of(context).computedPresetPassiveInsight,
+      ComputedStatPresetId.passiveInvestigation =>
+        S.of(context).computedPresetPassiveInvestigation,
+      ComputedStatPresetId.passiveStealth =>
+        S.of(context).computedPresetPassiveStealth,
+      ComputedStatPresetId.initiative => S.of(context).computedPresetInitiative,
+      ComputedStatPresetId.unarmoredArmorClass =>
+        S.of(context).computedPresetUnarmoredArmorClass,
+    };
+
 /// Builds a [ComputedStatFormula] from a start value and building blocks.
 class ComputedStatEditor extends StatefulWidget {
   const ComputedStatEditor({
@@ -88,6 +109,7 @@ class ComputedStatEditor extends StatefulWidget {
     required this.availableStats,
     required this.ownStatUuid,
     required this.onChanged,
+    this.onPresetApplied,
   });
 
   final ComputedStatFormula initialFormula;
@@ -99,6 +121,9 @@ class ComputedStatEditor extends StatefulWidget {
   final String? ownStatUuid;
 
   final void Function(ComputedStatFormula formula) onChanged;
+
+  /// Called with the preset's name after the DM picked a preset.
+  final void Function(String presetName)? onPresetApplied;
 
   /// Factors a building block can have.
   static const factors = [1, -1, 2, -2, 3, -3];
@@ -133,6 +158,23 @@ class _ComputedStatEditorState extends State<ComputedStatEditor> {
     widget.onChanged(updated);
   }
 
+  ComputedStatPresetId? appliedPreset;
+  bool appliedPresetComplete = true;
+
+  void _applyPreset(ComputedStatPresetId id, String name) {
+    var result = ComputedStatPresets.build(
+      id,
+      widget.availableStats,
+      excludeStatUuid: widget.ownStatUuid,
+    );
+    appliedPreset = id;
+    appliedPresetComplete = result.complete;
+    // Update the formula first, so the base field's listener sees no change.
+    _update(result.formula);
+    baseController.text = result.formula.base.toString();
+    widget.onPresetApplied?.call(name);
+  }
+
   void _updateTerm(int index, ComputedStatTerm term) {
     var terms = [...formula.terms];
     terms[index] = term;
@@ -158,6 +200,41 @@ class _ComputedStatEditorState extends State<ComputedStatEditor> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(S.of(context).computedValueHint, style: textStyle),
+        const SizedBox(height: 12),
+        CustomDropdownMenu(
+          isExpanded: true,
+          // Keys carry the value: dropdowns only read their initial value.
+          key: ValueKey("computedPreset-${appliedPreset?.name ?? "none"}"),
+          label: S.of(context).computedPreset,
+          selectedValueTemp: appliedPreset?.name,
+          setter: (name) {
+            var id = ComputedStatPresetId.values
+                .where((p) => p.name == name)
+                .firstOrNull;
+            if (id == null) return;
+            _applyPreset(id, presetName(context, id));
+          },
+          items: ComputedStatPresetId.values
+              .map(
+                (id) => DropdownMenuItem<String?>(
+                  value: id.name,
+                  child: Text(
+                    presetName(context, id),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+        if (!appliedPresetComplete)
+          Padding(
+            key: const ValueKey("computedPresetIncomplete"),
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              S.of(context).computedPresetIncomplete,
+              style: textStyle.copyWith(fontStyle: FontStyle.italic),
+            ),
+          ),
         const SizedBox(height: 12),
         CustomTextField(
           key: const ValueKey("computedBase"),

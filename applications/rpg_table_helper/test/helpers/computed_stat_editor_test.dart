@@ -170,6 +170,57 @@ void main() {
     );
   });
 
+  testWidgets('a preset fills the builder and names the new property', (
+    tester,
+  ) async {
+    var result = await pumpModal(
+      tester,
+      CharacterStatDefinition(
+        statUuid: "passive",
+        name: "",
+        groupId: null,
+        helperText: "",
+        valueType: CharacterStatValueType.int,
+        editType: CharacterStatEditType.static,
+        isOptionalForAlternateForms: false,
+        isOptionalForCompanionCharacters: false,
+        jsonSerializedAdditionalData: const ComputedStatFormula(base: 3)
+            .toAdditionalData(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("open"));
+    await tester.pumpAndSettle();
+
+    await pickFromDropdown(
+      tester,
+      real(find.byKey(const ValueKey("computedPreset-none"))),
+      "Passive Wahrnehmung",
+    );
+
+    expect(
+      tester
+          .widget<Text>(real(find.byKey(const ValueKey("computedPreview"))))
+          .data,
+      "Formel: 10 + Mod(Weisheit) + ÜB (wenn Fertigkeiten: Wahrnehmung (Wei))",
+    );
+    expect(
+      find.byKey(const ValueKey("computedPresetIncomplete")),
+      findsNothing,
+    );
+
+    var save = real(find.text("Speichern"));
+    await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    await tester.pumpAndSettle();
+
+    var saved = await result();
+    expect(saved!.name, "Passive Wahrnehmung");
+    expect(ComputedStatFormula.of(saved)!.terms, hasLength(2));
+    expect(ComputedStatFormula.of(saved)!.base, 10);
+  });
+
   testWidgets('switching "compute" off saves a plain number again', (
     tester,
   ) async {

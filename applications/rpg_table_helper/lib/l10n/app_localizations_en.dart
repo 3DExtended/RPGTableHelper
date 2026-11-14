@@ -1122,4 +1122,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get computedValueBadge => 'computed';
+
+  @override
+  String get computedPreset => 'Template (D&D 5e)';
+
+  @override
+  String get computedPresetPassivePerception => 'Passive Perception';
+
+  @override
+  String get computedPresetPassiveInsight => 'Passive Insight';
+
+  @override
+  String get computedPresetPassiveInvestigation => 'Passive Investigation';
+
+  @override
+  String get computedPresetPassiveStealth => 'Passive Stealth';
+
+  @override
+  String get computedPresetInitiative => 'Initiative';
+
+  @override
+  String get computedPresetUnarmoredArmorClass => 'AC without armor';
+
+  @override
+  String get computedPresetIncomplete => 'Not every value of the template exists in this campaign. Add the missing building blocks yourself.';
 }

@@ -3129,6 +3129,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Template (D&D 5e)`
+  String get computedPreset {
+    return Intl.message(
+      'Template (D&D 5e)',
+      name: 'computedPreset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passive Perception`
+  String get computedPresetPassivePerception {
+    return Intl.message(
+      'Passive Perception',
+      name: 'computedPresetPassivePerception',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passive Insight`
+  String get computedPresetPassiveInsight {
+    return Intl.message(
+      'Passive Insight',
+      name: 'computedPresetPassiveInsight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passive Investigation`
+  String get computedPresetPassiveInvestigation {
+    return Intl.message(
+      'Passive Investigation',
+      name: 'computedPresetPassiveInvestigation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passive Stealth`
+  String get computedPresetPassiveStealth {
+    return Intl.message(
+      'Passive Stealth',
+      name: 'computedPresetPassiveStealth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initiative`
+  String get computedPresetInitiative {
+    return Intl.message(
+      'Initiative',
+      name: 'computedPresetInitiative',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AC without armor`
+  String get computedPresetUnarmoredArmorClass {
+    return Intl.message(
+      'AC without armor',
+      name: 'computedPresetUnarmoredArmorClass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not every value of the template exists in this campaign. Add the missing building blocks yourself.`
+  String get computedPresetIncomplete {
+    return Intl.message(
+      'Not every value of the template exists in this campaign. Add the missing building blocks yourself.',
+      name: 'computedPresetIncomplete',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

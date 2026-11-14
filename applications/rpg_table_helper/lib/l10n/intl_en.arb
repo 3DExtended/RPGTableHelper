@@ -401,5 +401,13 @@
       }
     }
   },
-  "computedValueBadge": "computed"
+  "computedValueBadge": "computed",
+  "computedPreset": "Template (D&D 5e)",
+  "computedPresetPassivePerception": "Passive Perception",
+  "computedPresetPassiveInsight": "Passive Insight",
+  "computedPresetPassiveInvestigation": "Passive Investigation",
+  "computedPresetPassiveStealth": "Passive Stealth",
+  "computedPresetInitiative": "Initiative",
+  "computedPresetUnarmoredArmorClass": "AC without armor",
+  "computedPresetIncomplete": "Not every value of the template exists in this campaign. Add the missing building blocks yourself."
 }

@@ -549,6 +549,11 @@ class _ShowGetDmConfigurationModalContentState
           availableStats: widget.availableStats,
           ownStatUuid: widget.predefinedConfiguration?.statUuid,
           onChanged: (formula) => computedFormula = formula,
+          // A preset names an unnamed property after itself.
+          onPresetApplied: (name) {
+            if (nameTextEditor.text.trim().isNotEmpty) return;
+            setState(() => nameTextEditor.text = name);
+          },
         ),
     ];
   }

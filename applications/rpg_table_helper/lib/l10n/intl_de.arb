@@ -441,5 +441,13 @@
       }
     }
   },
-  "computedValueBadge": "berechnet"
+  "computedValueBadge": "berechnet",
+  "computedPreset": "Vorlage (D&D 5e)",
+  "computedPresetPassivePerception": "Passive Wahrnehmung",
+  "computedPresetPassiveInsight": "Passives Motiv erkennen",
+  "computedPresetPassiveInvestigation": "Passive Nachforschungen",
+  "computedPresetPassiveStealth": "Passive Heimlichkeit",
+  "computedPresetInitiative": "Initiative",
+  "computedPresetUnarmoredArmorClass": "RK ohne Rüstung",
+  "computedPresetIncomplete": "Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst."
 }

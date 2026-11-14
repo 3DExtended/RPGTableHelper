@@ -1133,4 +1133,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get computedValueBadge => 'berechnet';
+
+  @override
+  String get computedPreset => 'Vorlage (D&D 5e)';
+
+  @override
+  String get computedPresetPassivePerception => 'Passive Wahrnehmung';
+
+  @override
+  String get computedPresetPassiveInsight => 'Passives Motiv erkennen';
+
+  @override
+  String get computedPresetPassiveInvestigation => 'Passive Nachforschungen';
+
+  @override
+  String get computedPresetPassiveStealth => 'Passive Heimlichkeit';
+
+  @override
+  String get computedPresetInitiative => 'Initiative';
+
+  @override
+  String get computedPresetUnarmoredArmorClass => 'RK ohne Rüstung';
+
+  @override
+  String get computedPresetIncomplete => 'Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.';
 }

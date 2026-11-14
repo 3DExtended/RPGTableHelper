@@ -290,6 +290,28 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "computedModeValue": MessageLookupByLibrary.simpleMessage("as is"),
     "computedModifierOf": m5,
+    "computedPreset": MessageLookupByLibrary.simpleMessage("Template (D&D 5e)"),
+    "computedPresetIncomplete": MessageLookupByLibrary.simpleMessage(
+      "Not every value of the template exists in this campaign. Add the missing building blocks yourself.",
+    ),
+    "computedPresetInitiative": MessageLookupByLibrary.simpleMessage(
+      "Initiative",
+    ),
+    "computedPresetPassiveInsight": MessageLookupByLibrary.simpleMessage(
+      "Passive Insight",
+    ),
+    "computedPresetPassiveInvestigation": MessageLookupByLibrary.simpleMessage(
+      "Passive Investigation",
+    ),
+    "computedPresetPassivePerception": MessageLookupByLibrary.simpleMessage(
+      "Passive Perception",
+    ),
+    "computedPresetPassiveStealth": MessageLookupByLibrary.simpleMessage(
+      "Passive Stealth",
+    ),
+    "computedPresetUnarmoredArmorClass": MessageLookupByLibrary.simpleMessage(
+      "AC without armor",
+    ),
     "computedPreview": MessageLookupByLibrary.simpleMessage("Formula"),
     "computedSource": MessageLookupByLibrary.simpleMessage("Value"),
     "computedTerms": MessageLookupByLibrary.simpleMessage("Building blocks"),

@@ -2179,6 +2179,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'berechnet'**
   String get computedValueBadge;
+
+  /// No description provided for @computedPreset.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage (D&D 5e)'**
+  String get computedPreset;
+
+  /// No description provided for @computedPresetPassivePerception.
+  ///
+  /// In de, this message translates to:
+  /// **'Passive Wahrnehmung'**
+  String get computedPresetPassivePerception;
+
+  /// No description provided for @computedPresetPassiveInsight.
+  ///
+  /// In de, this message translates to:
+  /// **'Passives Motiv erkennen'**
+  String get computedPresetPassiveInsight;
+
+  /// No description provided for @computedPresetPassiveInvestigation.
+  ///
+  /// In de, this message translates to:
+  /// **'Passive Nachforschungen'**
+  String get computedPresetPassiveInvestigation;
+
+  /// No description provided for @computedPresetPassiveStealth.
+  ///
+  /// In de, this message translates to:
+  /// **'Passive Heimlichkeit'**
+  String get computedPresetPassiveStealth;
+
+  /// No description provided for @computedPresetInitiative.
+  ///
+  /// In de, this message translates to:
+  /// **'Initiative'**
+  String get computedPresetInitiative;
+
+  /// No description provided for @computedPresetUnarmoredArmorClass.
+  ///
+  /// In de, this message translates to:
+  /// **'RK ohne Rüstung'**
+  String get computedPresetUnarmoredArmorClass;
+
+  /// No description provided for @computedPresetIncomplete.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.'**
+  String get computedPresetIncomplete;
 }
 
 class _AppLocalizationsDelegate
