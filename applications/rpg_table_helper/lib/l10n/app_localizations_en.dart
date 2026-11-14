@@ -1063,4 +1063,63 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noCardStatsAvailable =>
       'This campaign has no properties with numbers yet.';
+
+  @override
+  String get maxValueShort => 'max.';
+
+  @override
+  String get computedValue => 'Compute the value';
+
+  @override
+  String get computedValueHint =>
+      'Players don\'t enter this value: it is computed from other properties, e.g. passive Perception = 10 + Mod(Wisdom) + proficiency bonus (if proficient). Modifiers round down.';
+
+  @override
+  String get computedBase => 'Start value';
+
+  @override
+  String get computedTerms => 'Building blocks';
+
+  @override
+  String get addComputedTerm => 'Add building block';
+
+  @override
+  String get computedSource => 'Value';
+
+  @override
+  String get computedMode => 'Conversion';
+
+  @override
+  String get computedModeValue => 'as is';
+
+  @override
+  String get computedModeModifier => 'Modifier (x−10)/2';
+
+  @override
+  String get computedFactor => 'Factor';
+
+  @override
+  String get computedCondition => 'Counts only if picked';
+
+  @override
+  String get computedAlways => 'Always';
+
+  @override
+  String get computedPreview => 'Formula';
+
+  @override
+  String get computedValueNoSources => 'Add properties with numbers first.';
+
+  @override
+  String computedModifierOf(String label) {
+    return 'Mod($label)';
+  }
+
+  @override
+  String computedIfPicked(String condition) {
+    return '(if $condition)';
+  }
+
+  @override
+  String get computedValueBadge => 'computed';
 }

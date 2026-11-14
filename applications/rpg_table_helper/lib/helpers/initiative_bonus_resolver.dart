@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
+import 'package:quest_keeper/models/computed_stat_formula.dart';
 
 class InitiativeBonusHint {
   final String label;
@@ -87,6 +89,17 @@ InitiativeBonusHint? resolveInitiativeBonus({
 
   final definition = _findStatDefinition(rpgConfig, statUuid);
   if (definition == null) return null;
+
+  // A computed stat (e.g. Initiative = Mod(Dexterity)) is evaluated from the
+  // character's other values, whatever is stored for it.
+  final formula = ComputedStatFormula.of(definition);
+  if (formula != null) {
+    return InitiativeBonusHint(
+      label: definition.name,
+      bonus: StatNumbers.evaluate(
+          StatNumbers.allStats(rpgConfig), statUuid, formula, character),
+    );
+  }
 
   final characterStat =
       character.characterStats.where((s) => s.statUuid == statUuid).firstOrNull;

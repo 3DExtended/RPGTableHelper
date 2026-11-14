@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
@@ -27,6 +29,15 @@ class RpgCharacterConfigurationNotifier
     required this.runningInTests,
   }) : super(decks) {
     init();
+    if (!runningInTests) {
+      // The DM may change a formula: bring the stored computed values of
+      // the player's character up to date (no-op when nothing changes).
+      ref.listen(rpgConfigurationProvider, (_, next) {
+        if (next.hasValue && state.hasValue) {
+          updateConfiguration(state.requireValue);
+        }
+      });
+    }
   }
 
   AsyncValue<RpgCharacterConfiguration> getState() {
@@ -57,6 +68,15 @@ class RpgCharacterConfigurationNotifier
   }
 
   void updateConfiguration(RpgCharacterConfiguration config) {
+    // Keep stored values of computed stats current, so app versions without
+    // computed stats, the API and the MCP server see the right number.
+    final rpgConfig = runningInTests
+        ? null
+        : ref.read(rpgConfigurationProvider).value;
+    if (rpgConfig != null) {
+      config = StatNumbers.applyComputedValues(rpgConfig, config);
+    }
+
     if (state.hasValue) {
       final jsonEncodingOfNewConfig = jsonEncode(config);
       final jsonEncodingOfState = jsonEncode(state.requireValue);

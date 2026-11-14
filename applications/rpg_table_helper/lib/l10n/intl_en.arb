@@ -367,5 +367,39 @@
   "cardNumbers": "Numbers",
   "companion": "Companion",
   "calculatedValueShort": "calc.",
-  "noCardStatsAvailable": "This campaign has no properties with numbers yet."
+  "noCardStatsAvailable": "This campaign has no properties with numbers yet.",
+  "maxValueShort": "max.",
+  "computedValue": "Compute the value",
+  "computedValueHint": "Players don't enter this value: it is computed from other properties, e.g. passive Perception = 10 + Mod(Wisdom) + proficiency bonus (if proficient). Modifiers round down.",
+  "computedBase": "Start value",
+  "computedTerms": "Building blocks",
+  "addComputedTerm": "Add building block",
+  "computedSource": "Value",
+  "computedMode": "Conversion",
+  "computedModeValue": "as is",
+  "computedModeModifier": "Modifier (x−10)/2",
+  "computedFactor": "Factor",
+  "computedCondition": "Counts only if picked",
+  "computedAlways": "Always",
+  "computedPreview": "Formula",
+  "computedValueNoSources": "Add properties with numbers first.",
+  "computedModifierOf": "Mod({label})",
+  "@computedModifierOf": {
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "Weisheit"
+      }
+    }
+  },
+  "computedIfPicked": "(if {condition})",
+  "@computedIfPicked": {
+    "placeholders": {
+      "condition": {
+        "type": "String",
+        "example": "Fertigkeiten: Wahrnehmung"
+      }
+    }
+  },
+  "computedValueBadge": "computed"
 }

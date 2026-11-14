@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:quest_keeper/components/custom_character_card.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/dm_card_stats.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_number_labels.dart';
 import 'package:quest_keeper/models/dm_character_card_settings.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -23,7 +24,7 @@ class RenderCharactersAsCards {
     DmCharacterCardSettings settings = DmCharacterCardSettings.empty,
   }) {
     List<Widget> result = [];
-    var calculatedSuffix = S.of(context).calculatedValueShort;
+    var labels = statNumberLabelsOf(context);
 
     for (var tuple in charactersToRender) {
       var characterName = tuple.characterToRender.characterName.trim().isEmpty
@@ -47,7 +48,7 @@ class RenderCharactersAsCards {
             rpgConfig,
             selection,
             tuple.characterToRender,
-            calculatedSuffix,
+            labels,
           ),
           imageUrl: characterImage,
           isGreyscale: false,

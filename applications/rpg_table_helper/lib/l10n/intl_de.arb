@@ -407,5 +407,39 @@
   "cardNumbers": "Zahlen",
   "companion": "Begleiter",
   "calculatedValueShort": "ber.",
-  "noCardStatsAvailable": "Diese Kampagne hat noch keine Eigenschaften mit Zahlen."
+  "noCardStatsAvailable": "Diese Kampagne hat noch keine Eigenschaften mit Zahlen.",
+  "maxValueShort": "Max.",
+  "computedValue": "Wert berechnen",
+  "computedValueHint": "Spieler tragen diesen Wert nicht ein: Er wird aus anderen Eigenschaften berechnet, z. B. passive Wahrnehmung = 10 + Mod(Weisheit) + Übungsbonus (wenn geübt). Modifikatoren werden abgerundet.",
+  "computedBase": "Startwert",
+  "computedTerms": "Bausteine",
+  "addComputedTerm": "Baustein hinzufügen",
+  "computedSource": "Wert",
+  "computedMode": "Umrechnung",
+  "computedModeValue": "wie er ist",
+  "computedModeModifier": "Modifikator (x−10)/2",
+  "computedFactor": "Faktor",
+  "computedCondition": "Zählt nur, wenn gewählt",
+  "computedAlways": "Immer",
+  "computedPreview": "Formel",
+  "computedValueNoSources": "Lege zuerst Eigenschaften mit Zahlen an.",
+  "computedModifierOf": "Mod({label})",
+  "@computedModifierOf": {
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "Weisheit"
+      }
+    }
+  },
+  "computedIfPicked": "(wenn {condition})",
+  "@computedIfPicked": {
+    "placeholders": {
+      "condition": {
+        "type": "String",
+        "example": "Fertigkeiten: Wahrnehmung"
+      }
+    }
+  },
+  "computedValueBadge": "berechnet"
 }

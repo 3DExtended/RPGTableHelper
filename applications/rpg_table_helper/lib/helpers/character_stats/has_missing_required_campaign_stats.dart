@@ -1,3 +1,4 @@
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
@@ -12,6 +13,8 @@ bool hasMissingRequiredCampaignStats({
           .toList() ??
       const <CharacterStatDefinition>[];
   final present = character.characterStats.map((s) => s.statUuid).toSet();
-  final missingDef = defs.any((st) => !present.contains(st.statUuid));
+  // Computed stats are never typed in, so they are never missing.
+  final missingDef = defs.any(
+      (st) => !present.contains(st.statUuid) && !StatNumbers.isComputed(st));
   return missingDef || character.characterName.trim().isEmpty;
 }

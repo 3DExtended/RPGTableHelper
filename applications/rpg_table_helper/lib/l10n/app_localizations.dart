@@ -2071,6 +2071,114 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Diese Kampagne hat noch keine Eigenschaften mit Zahlen.'**
   String get noCardStatsAvailable;
+
+  /// No description provided for @maxValueShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Max.'**
+  String get maxValueShort;
+
+  /// No description provided for @computedValue.
+  ///
+  /// In de, this message translates to:
+  /// **'Wert berechnen'**
+  String get computedValue;
+
+  /// No description provided for @computedValueHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler tragen diesen Wert nicht ein: Er wird aus anderen Eigenschaften berechnet, z. B. passive Wahrnehmung = 10 + Mod(Weisheit) + Übungsbonus (wenn geübt). Modifikatoren werden abgerundet.'**
+  String get computedValueHint;
+
+  /// No description provided for @computedBase.
+  ///
+  /// In de, this message translates to:
+  /// **'Startwert'**
+  String get computedBase;
+
+  /// No description provided for @computedTerms.
+  ///
+  /// In de, this message translates to:
+  /// **'Bausteine'**
+  String get computedTerms;
+
+  /// No description provided for @addComputedTerm.
+  ///
+  /// In de, this message translates to:
+  /// **'Baustein hinzufügen'**
+  String get addComputedTerm;
+
+  /// No description provided for @computedSource.
+  ///
+  /// In de, this message translates to:
+  /// **'Wert'**
+  String get computedSource;
+
+  /// No description provided for @computedMode.
+  ///
+  /// In de, this message translates to:
+  /// **'Umrechnung'**
+  String get computedMode;
+
+  /// No description provided for @computedModeValue.
+  ///
+  /// In de, this message translates to:
+  /// **'wie er ist'**
+  String get computedModeValue;
+
+  /// No description provided for @computedModeModifier.
+  ///
+  /// In de, this message translates to:
+  /// **'Modifikator (x−10)/2'**
+  String get computedModeModifier;
+
+  /// No description provided for @computedFactor.
+  ///
+  /// In de, this message translates to:
+  /// **'Faktor'**
+  String get computedFactor;
+
+  /// No description provided for @computedCondition.
+  ///
+  /// In de, this message translates to:
+  /// **'Zählt nur, wenn gewählt'**
+  String get computedCondition;
+
+  /// No description provided for @computedAlways.
+  ///
+  /// In de, this message translates to:
+  /// **'Immer'**
+  String get computedAlways;
+
+  /// No description provided for @computedPreview.
+  ///
+  /// In de, this message translates to:
+  /// **'Formel'**
+  String get computedPreview;
+
+  /// No description provided for @computedValueNoSources.
+  ///
+  /// In de, this message translates to:
+  /// **'Lege zuerst Eigenschaften mit Zahlen an.'**
+  String get computedValueNoSources;
+
+  /// No description provided for @computedModifierOf.
+  ///
+  /// In de, this message translates to:
+  /// **'Mod({label})'**
+  String computedModifierOf(String label);
+
+  /// No description provided for @computedIfPicked.
+  ///
+  /// In de, this message translates to:
+  /// **'(wenn {condition})'**
+  String computedIfPicked(String condition);
+
+  /// No description provided for @computedValueBadge.
+  ///
+  /// In de, this message translates to:
+  /// **'berechnet'**
+  String get computedValueBadge;
 }
 
 class _AppLocalizationsDelegate

@@ -1,49 +1,6 @@
-/// Which number of a stat value a card shows.
-///
-/// `value` is the main number (`{"value": 17}`), `otherValue` is the second,
-/// "calculated" number of `intWithCalculatedValue` and
-/// `listOfIntWithCalculatedValues` (`{"value": 16, "otherValue": 3}`).
-enum DmCardStatField { value, otherValue }
+import 'package:quest_keeper/models/stat_number_ref.dart';
 
-/// Points at one number of a character stat: the stat, for list stats the
-/// entry inside it, and which of its numbers.
-class DmCardStatRef {
-  final String statUuid;
-  final String? entryUuid;
-  final DmCardStatField field;
-
-  const DmCardStatRef({
-    required this.statUuid,
-    this.entryUuid,
-    this.field = DmCardStatField.value,
-  });
-
-  /// Stable string form, used for storage and equality.
-  String get key => "$statUuid|${entryUuid ?? ""}|${field.name}";
-
-  static DmCardStatRef? fromKey(String key) {
-    var parts = key.split("|");
-    if (parts.length != 3 || parts[0].isEmpty) return null;
-    var field = DmCardStatField.values
-        .where((f) => f.name == parts[2])
-        .firstOrNull;
-    if (field == null) return null;
-    return DmCardStatRef(
-      statUuid: parts[0],
-      entryUuid: parts[1].isEmpty ? null : parts[1],
-      field: field,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) => other is DmCardStatRef && other.key == key;
-
-  @override
-  int get hashCode => key.hashCode;
-
-  @override
-  String toString() => "DmCardStatRef($key)";
-}
+export 'package:quest_keeper/models/stat_number_ref.dart';
 
 /// The DM's local choices for the character cards on the DM overview:
 /// which cards are hidden and which stats a card shows.
@@ -65,7 +22,7 @@ class DmCharacterCardSettings {
   final String? barStatUuid;
 
   /// The numbers listed on the card, in this order.
-  final List<DmCardStatRef> numberStats;
+  final List<StatNumberRef> numberStats;
 
   /// A card has room for this many numbers.
   static const maxNumberStats = 8;
@@ -83,7 +40,7 @@ class DmCharacterCardSettings {
     Set<String>? hiddenCharacterUuids,
     bool? useCustomStats,
     String? Function()? barStatUuid,
-    List<DmCardStatRef>? numberStats,
+    List<StatNumberRef>? numberStats,
   }) {
     return DmCharacterCardSettings(
       hiddenCharacterUuids: hiddenCharacterUuids ?? this.hiddenCharacterUuids,
@@ -129,8 +86,8 @@ class DmCharacterCardSettings {
       numberStats: numbers is List
           ? numbers
                 .whereType<String>()
-                .map(DmCardStatRef.fromKey)
-                .whereType<DmCardStatRef>()
+                .map(StatNumberRef.fromKey)
+                .whereType<StatNumberRef>()
                 .take(maxNumberStats)
                 .toList()
           : const [],

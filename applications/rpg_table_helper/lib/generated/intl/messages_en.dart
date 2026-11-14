@@ -28,21 +28,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(date) => "Revoked: ${date}";
 
-  static String m4(username) => " (for ${username})";
+  static String m4(condition) => "(if ${condition})";
 
-  static String m5(characterNames) =>
+  static String m5(label) => "Mod(${label})";
+
+  static String m6(username) => " (for ${username})";
+
+  static String m7(characterNames) =>
       "Could not grant the items to ${characterNames}. Please try again.";
 
-  static String m6(label, formattedBonus) =>
+  static String m8(label, formattedBonus) =>
       "Add ${label} ${formattedBonus} to your roll";
 
-  static String m7(amount) => "You received ${amount} new items:";
+  static String m9(amount) => "You received ${amount} new items:";
 
-  static String m8(property) => "The value of ${property}";
+  static String m10(property) => "The value of ${property}";
 
-  static String m9(count) => "You own ${count} campaigns";
+  static String m11(count) => "You own ${count} campaigns";
 
-  static String m10(count) => "You own ${count} characters";
+  static String m12(count) => "You own ${count} characters";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -56,6 +60,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "addBalance": MessageLookupByLibrary.simpleMessage("Add balance"),
     "addCharacterToCampagneModalTitle": MessageLookupByLibrary.simpleMessage(
       "Add character to campaign",
+    ),
+    "addComputedTerm": MessageLookupByLibrary.simpleMessage(
+      "Add building block",
     ),
     "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Image"),
     "addItems": MessageLookupByLibrary.simpleMessage("Add items"),
@@ -270,10 +277,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "completeRegistration": MessageLookupByLibrary.simpleMessage(
       "Complete registration",
     ),
+    "computedAlways": MessageLookupByLibrary.simpleMessage("Always"),
+    "computedBase": MessageLookupByLibrary.simpleMessage("Start value"),
+    "computedCondition": MessageLookupByLibrary.simpleMessage(
+      "Counts only if picked",
+    ),
+    "computedFactor": MessageLookupByLibrary.simpleMessage("Factor"),
+    "computedIfPicked": m4,
+    "computedMode": MessageLookupByLibrary.simpleMessage("Conversion"),
+    "computedModeModifier": MessageLookupByLibrary.simpleMessage(
+      "Modifier (x−10)/2",
+    ),
+    "computedModeValue": MessageLookupByLibrary.simpleMessage("as is"),
+    "computedModifierOf": m5,
+    "computedPreview": MessageLookupByLibrary.simpleMessage("Formula"),
+    "computedSource": MessageLookupByLibrary.simpleMessage("Value"),
+    "computedTerms": MessageLookupByLibrary.simpleMessage("Building blocks"),
+    "computedValue": MessageLookupByLibrary.simpleMessage("Compute the value"),
+    "computedValueBadge": MessageLookupByLibrary.simpleMessage("computed"),
+    "computedValueHint": MessageLookupByLibrary.simpleMessage(
+      "Players don\'t enter this value: it is computed from other properties, e.g. passive Perception = 10 + Mod(Wisdom) + proficiency bonus (if proficient). Modifiers round down.",
+    ),
+    "computedValueNoSources": MessageLookupByLibrary.simpleMessage(
+      "Add properties with numbers first.",
+    ),
     "configureProperties": MessageLookupByLibrary.simpleMessage(
       "Configure properties",
     ),
-    "configurePropertiesForCharacterNameSuffix": m4,
+    "configurePropertiesForCharacterNameSuffix": m6,
     "count": MessageLookupByLibrary.simpleMessage("Count"),
     "craft": MessageLookupByLibrary.simpleMessage("Craft"),
     "craftableAmountText": MessageLookupByLibrary.simpleMessage("Craftable:"),
@@ -367,7 +398,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technical details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Grant items"),
-    "grantItemsFailedForPlayers": m5,
+    "grantItemsFailedForPlayers": m7,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "The name of the campaign",
     ),
@@ -382,7 +413,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Field",
     ),
-    "initiativeBonusHelperSentence": m6,
+    "initiativeBonusHelperSentence": m8,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Leave anyway",
     ),
@@ -474,6 +505,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "maxValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "The max value for this property",
     ),
+    "maxValueShort": MessageLookupByLibrary.simpleMessage("max."),
     "moreValues": MessageLookupByLibrary.simpleMessage("More values"),
     "multilineText": MessageLookupByLibrary.simpleMessage("Multiline text"),
     "multiselectOption": MessageLookupByLibrary.simpleMessage("Multiselect"),
@@ -634,7 +666,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "You received one new item:",
     ),
-    "receivedXNewItems": m7,
+    "receivedXNewItems": m9,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Recipe for"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Ingredients:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -703,7 +735,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage("Upload image"),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "valueOfPropertyWithName": m8,
+    "valueOfPropertyWithName": m10,
     "visibleCards": MessageLookupByLibrary.simpleMessage("Visible cards"),
     "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
       "Hidden cards stay hidden on this device, even if a player was offline in between.",
@@ -722,8 +754,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
         ),
-    "youOwnXCampaigns": m9,
-    "youOwnXCharacters": m10,
+    "youOwnXCampaigns": m11,
+    "youOwnXCharacters": m12,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Your are disconnected... Either you or the DM has lost the connection.",
     ),

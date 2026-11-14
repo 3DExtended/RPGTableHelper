@@ -3,6 +3,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/dm_card_stats.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_number_labels.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/dm_character_card_settings.dart';
@@ -87,7 +88,7 @@ class _DmCharacterCardSettingsModalContentState
     });
   }
 
-  void _toggleNumber(List<DmCardStatOption> options, DmCardStatRef ref) {
+  void _toggleNumber(List<DmCardStatOption> options, StatNumberRef ref) {
     setState(() {
       var selected = settings.numberStats.toSet();
       if (!selected.remove(ref)) {
@@ -114,7 +115,7 @@ class _DmCharacterCardSettingsModalContentState
 
     var numberOptions = DmCardStats.numberOptions(
       widget.rpgConfig,
-      S.of(context).calculatedValueShort,
+      statNumberLabelsOf(context),
     );
     var barOptions = DmCardStats.barOptions(widget.rpgConfig);
 

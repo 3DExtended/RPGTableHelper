@@ -10,9 +10,14 @@ class CustomDropdownMenu extends StatelessWidget {
     required this.items,
     required this.label,
     this.noBorder,
+    this.isExpanded = false,
   });
   final String label;
   final bool? noBorder;
+
+  /// Fill the available width and cut long item texts instead of growing to
+  /// the widest item (which overflows narrow screens).
+  final bool isExpanded;
   final String? selectedValueTemp;
   final Null Function(String? newValue) setter;
   final List<DropdownMenuItem<String?>> items;
@@ -29,27 +34,29 @@ class CustomDropdownMenu extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
         inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-              fillColor: CustomThemeProvider.of(context).theme.darkColor,
-              enabledBorder: noBorder == true
-                  ? InputBorder.none
-                  : OutlineInputBorder(
-                      borderSide: BorderSide(
-                      color: CustomThemeProvider.of(context).theme.darkColor,
-                    )),
-            ),
+          fillColor: CustomThemeProvider.of(context).theme.darkColor,
+          enabledBorder: noBorder == true
+              ? InputBorder.none
+              : OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: CustomThemeProvider.of(context).theme.darkColor,
+                  ),
+                ),
+        ),
       ),
       child: DropdownButtonFormField<String?>(
         iconEnabledColor: CustomThemeProvider.of(context).theme.darkColor,
         iconDisabledColor: const Color.fromARGB(255, 140, 133, 125),
         borderRadius: BorderRadius.circular(10),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: CustomThemeProvider.of(context).theme.darkTextColor,
-              fontSize: noBorder == true ? 24 : null,
-              height: noBorder == true ? 1 : null,
-            ),
+          color: CustomThemeProvider.of(context).theme.darkTextColor,
+          fontSize: noBorder == true ? 24 : null,
+          height: noBorder == true ? 1 : null,
+        ),
         decoration: InputDecoration(
           labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: CustomThemeProvider.of(context).theme.darkTextColor),
+            color: CustomThemeProvider.of(context).theme.darkTextColor,
+          ),
           filled: true,
           fillColor: const Color.fromARGB(0, 0, 0, 0),
           labelText: label,
@@ -57,12 +64,14 @@ class CustomDropdownMenu extends StatelessWidget {
               ? InputBorder.none
               : OutlineInputBorder(
                   borderSide: BorderSide(
-                  color: CustomThemeProvider.of(context).theme.darkColor,
-                )),
+                    color: CustomThemeProvider.of(context).theme.darkColor,
+                  ),
+                ),
         ),
         dropdownColor: CustomThemeProvider.of(context).theme.bgColor,
         initialValue: selectedValueTemp,
         isDense: true,
+        isExpanded: isExpanded,
         onChanged: setter,
         items: items,
       ),
@@ -76,11 +85,11 @@ class CustomDropdownMenu extends StatelessWidget {
     final cartographer = isNightCartographerActive(context);
     final menuBg = cartographer ? theme.middleBgColor : theme.bgColor;
     final textStyle = Theme.of(context).textTheme.labelLarge!.copyWith(
-          color: ink,
-          fontFamily: 'Ruwudu',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        );
+      color: ink,
+      fontFamily: 'Ruwudu',
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+    );
 
     return CustomPaint(
       painter: _DecoratedFieldPlatePainter(ink: ink),
@@ -91,10 +100,8 @@ class CustomDropdownMenu extends StatelessWidget {
             canvasColor: menuBg,
             splashColor: ink.withValues(alpha: 0.12),
             highlightColor: ink.withValues(alpha: 0.08),
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  surface: Colors.transparent,
-                  onSurface: ink,
-                ),
+            colorScheme: Theme.of(context).colorScheme
+                .copyWith(surface: Colors.transparent, onSurface: ink),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButtonFormField<String?>(
@@ -115,12 +122,15 @@ class CustomDropdownMenu extends StatelessWidget {
                 disabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 focusedErrorBorder: InputBorder.none,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 10,
+                ),
               ),
               dropdownColor: menuBg,
               initialValue: selectedValueTemp,
               isDense: true,
+              isExpanded: isExpanded,
               onChanged: setter,
               items: items,
             ),

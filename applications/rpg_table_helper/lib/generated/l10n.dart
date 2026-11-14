@@ -2984,6 +2984,151 @@ class S {
       args: [],
     );
   }
+
+  /// `max.`
+  String get maxValueShort {
+    return Intl.message('max.', name: 'maxValueShort', desc: '', args: []);
+  }
+
+  /// `Compute the value`
+  String get computedValue {
+    return Intl.message(
+      'Compute the value',
+      name: 'computedValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Players don't enter this value: it is computed from other properties, e.g. passive Perception = 10 + Mod(Wisdom) + proficiency bonus (if proficient). Modifiers round down.`
+  String get computedValueHint {
+    return Intl.message(
+      'Players don\'t enter this value: it is computed from other properties, e.g. passive Perception = 10 + Mod(Wisdom) + proficiency bonus (if proficient). Modifiers round down.',
+      name: 'computedValueHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start value`
+  String get computedBase {
+    return Intl.message(
+      'Start value',
+      name: 'computedBase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Building blocks`
+  String get computedTerms {
+    return Intl.message(
+      'Building blocks',
+      name: 'computedTerms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add building block`
+  String get addComputedTerm {
+    return Intl.message(
+      'Add building block',
+      name: 'addComputedTerm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value`
+  String get computedSource {
+    return Intl.message('Value', name: 'computedSource', desc: '', args: []);
+  }
+
+  /// `Conversion`
+  String get computedMode {
+    return Intl.message('Conversion', name: 'computedMode', desc: '', args: []);
+  }
+
+  /// `as is`
+  String get computedModeValue {
+    return Intl.message('as is', name: 'computedModeValue', desc: '', args: []);
+  }
+
+  /// `Modifier (x−10)/2`
+  String get computedModeModifier {
+    return Intl.message(
+      'Modifier (x−10)/2',
+      name: 'computedModeModifier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Factor`
+  String get computedFactor {
+    return Intl.message('Factor', name: 'computedFactor', desc: '', args: []);
+  }
+
+  /// `Counts only if picked`
+  String get computedCondition {
+    return Intl.message(
+      'Counts only if picked',
+      name: 'computedCondition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Always`
+  String get computedAlways {
+    return Intl.message('Always', name: 'computedAlways', desc: '', args: []);
+  }
+
+  /// `Formula`
+  String get computedPreview {
+    return Intl.message('Formula', name: 'computedPreview', desc: '', args: []);
+  }
+
+  /// `Add properties with numbers first.`
+  String get computedValueNoSources {
+    return Intl.message(
+      'Add properties with numbers first.',
+      name: 'computedValueNoSources',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mod({label})`
+  String computedModifierOf(String label) {
+    return Intl.message(
+      'Mod($label)',
+      name: 'computedModifierOf',
+      desc: '',
+      args: [label],
+    );
+  }
+
+  /// `(if {condition})`
+  String computedIfPicked(String condition) {
+    return Intl.message(
+      '(if $condition)',
+      name: 'computedIfPicked',
+      desc: '',
+      args: [condition],
+    );
+  }
+
+  /// `computed`
+  String get computedValueBadge {
+    return Intl.message(
+      'computed',
+      name: 'computedValueBadge',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

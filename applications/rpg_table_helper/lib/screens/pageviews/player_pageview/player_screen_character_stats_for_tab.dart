@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/components/dynamic_height_column_layout.dart';
 import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/generated/l10n.dart';
@@ -107,15 +108,20 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
     List<Widget> result = [];
 
     var statsInTab = tabDef.statsInTab;
+    // Computed stats show their current result (and appear even before the
+    // player's app stored one).
+    var characterStats = charToRender == null
+        ? <RpgCharacterStatValue>[]
+        : StatNumbers.withComputedValues(rpgConfig, charToRender!,
+            isCompanion: charToRender is! RpgCharacterConfiguration,
+            isAlternateForm: charToRender is! RpgCharacterConfiguration);
     var statsOfCharacterInTab = statsInTab
-        .where((st) =>
-            charToRender?.characterStats
-                .any((cs) => cs.statUuid == st.statUuid) ??
-            false)
+        .where((st) => characterStats.any((cs) => cs.statUuid == st.statUuid))
         .toList();
 
     for (var statToRender in statsOfCharacterInTab) {
-      var matchingPlayerCharacterStat = charToRender?.characterStats
+      var isComputed = StatNumbers.isComputed(statToRender);
+      var matchingPlayerCharacterStat = characterStats
           .firstWhereOrNull((stat) =>
               statToRender.statUuid == stat.statUuid &&
               stat.hideFromCharacterScreen != true);
@@ -125,6 +131,8 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
       result.add(
         LongPressScaleWidget(
           onLongPress: () {
+            // Nothing to type in for a computed stat.
+            if (isComputed) return;
             // Preview / DM views may not have hydrated the player character
             // provider; missing-stats edits only apply to the live player session.
             final connectionDetails =

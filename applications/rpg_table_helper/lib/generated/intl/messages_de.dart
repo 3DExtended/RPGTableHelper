@@ -28,21 +28,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(date) => "Widerrufen: ${date}";
 
-  static String m4(username) => " (für ${username})";
+  static String m4(condition) => "(wenn ${condition})";
 
-  static String m5(characterNames) =>
+  static String m5(label) => "Mod(${label})";
+
+  static String m6(username) => " (für ${username})";
+
+  static String m7(characterNames) =>
       "Die Items konnten nicht an ${characterNames} verteilt werden. Bitte versuche es erneut.";
 
-  static String m6(label, formattedBonus) =>
+  static String m8(label, formattedBonus) =>
       "Addiere ${label} ${formattedBonus} zu deinem Wurf";
 
-  static String m7(amount) => "Du hast ${amount} neue Items erhalten:";
+  static String m9(amount) => "Du hast ${amount} neue Items erhalten:";
 
-  static String m8(property) => "Der Wert von ${property}";
+  static String m10(property) => "Der Wert von ${property}";
 
-  static String m9(count) => "Dir gehören ${count} Kampagnen";
+  static String m11(count) => "Dir gehören ${count} Kampagnen";
 
-  static String m10(count) => "Dir gehören ${count} Charaktere";
+  static String m12(count) => "Dir gehören ${count} Charaktere";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -56,6 +60,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "addBalance": MessageLookupByLibrary.simpleMessage("Guthaben hinzufügen"),
     "addCharacterToCampagneModalTitle": MessageLookupByLibrary.simpleMessage(
       "Charakter zur Kampagne hinzufügen",
+    ),
+    "addComputedTerm": MessageLookupByLibrary.simpleMessage(
+      "Baustein hinzufügen",
     ),
     "addImageBtnLabel": MessageLookupByLibrary.simpleMessage("Bild"),
     "addItems": MessageLookupByLibrary.simpleMessage("Items hinzufügen"),
@@ -280,10 +287,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "completeRegistration": MessageLookupByLibrary.simpleMessage(
       "Registrierung abschließen",
     ),
+    "computedAlways": MessageLookupByLibrary.simpleMessage("Immer"),
+    "computedBase": MessageLookupByLibrary.simpleMessage("Startwert"),
+    "computedCondition": MessageLookupByLibrary.simpleMessage(
+      "Zählt nur, wenn gewählt",
+    ),
+    "computedFactor": MessageLookupByLibrary.simpleMessage("Faktor"),
+    "computedIfPicked": m4,
+    "computedMode": MessageLookupByLibrary.simpleMessage("Umrechnung"),
+    "computedModeModifier": MessageLookupByLibrary.simpleMessage(
+      "Modifikator (x−10)/2",
+    ),
+    "computedModeValue": MessageLookupByLibrary.simpleMessage("wie er ist"),
+    "computedModifierOf": m5,
+    "computedPreview": MessageLookupByLibrary.simpleMessage("Formel"),
+    "computedSource": MessageLookupByLibrary.simpleMessage("Wert"),
+    "computedTerms": MessageLookupByLibrary.simpleMessage("Bausteine"),
+    "computedValue": MessageLookupByLibrary.simpleMessage("Wert berechnen"),
+    "computedValueBadge": MessageLookupByLibrary.simpleMessage("berechnet"),
+    "computedValueHint": MessageLookupByLibrary.simpleMessage(
+      "Spieler tragen diesen Wert nicht ein: Er wird aus anderen Eigenschaften berechnet, z. B. passive Wahrnehmung = 10 + Mod(Weisheit) + Übungsbonus (wenn geübt). Modifikatoren werden abgerundet.",
+    ),
+    "computedValueNoSources": MessageLookupByLibrary.simpleMessage(
+      "Lege zuerst Eigenschaften mit Zahlen an.",
+    ),
     "configureProperties": MessageLookupByLibrary.simpleMessage(
       "Eigenschaften konfigurieren",
     ),
-    "configurePropertiesForCharacterNameSuffix": m4,
+    "configurePropertiesForCharacterNameSuffix": m6,
     "count": MessageLookupByLibrary.simpleMessage("Anzahl"),
     "craft": MessageLookupByLibrary.simpleMessage("Herstellen"),
     "craftableAmountText": MessageLookupByLibrary.simpleMessage("Herstellbar:"),
@@ -383,7 +414,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technische Details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Items verteilen"),
-    "grantItemsFailedForPlayers": m5,
+    "grantItemsFailedForPlayers": m7,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "Wie soll die Kampagne heißen?",
     ),
@@ -400,7 +431,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Feld",
     ),
-    "initiativeBonusHelperSentence": m6,
+    "initiativeBonusHelperSentence": m8,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Trotzdem verlassen",
     ),
@@ -496,6 +527,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "maxValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "Der maximaler Wert für diese Eigenschaft",
     ),
+    "maxValueShort": MessageLookupByLibrary.simpleMessage("Max."),
     "moreValues": MessageLookupByLibrary.simpleMessage("Weitere Werte"),
     "multilineText": MessageLookupByLibrary.simpleMessage("Mehrzeiliger Text"),
     "multiselectOption": MessageLookupByLibrary.simpleMessage(
@@ -662,7 +694,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "Du hast ein neues Item erhalten:",
     ),
-    "receivedXNewItems": m7,
+    "receivedXNewItems": m9,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Rezept für"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -733,7 +765,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-    "valueOfPropertyWithName": m8,
+    "valueOfPropertyWithName": m10,
     "visibleCards": MessageLookupByLibrary.simpleMessage("Sichtbare Karten"),
     "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
       "Ausgeblendete Karten bleiben auf diesem Gerät ausgeblendet, auch wenn ein Spieler zwischendurch offline war.",
@@ -752,8 +784,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
         ),
-    "youOwnXCampaigns": m9,
-    "youOwnXCharacters": m10,
+    "youOwnXCampaigns": m11,
+    "youOwnXCharacters": m12,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
     ),

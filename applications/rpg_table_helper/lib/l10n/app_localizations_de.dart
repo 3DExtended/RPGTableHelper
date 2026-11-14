@@ -1073,4 +1073,64 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get noCardStatsAvailable =>
       'Diese Kampagne hat noch keine Eigenschaften mit Zahlen.';
+
+  @override
+  String get maxValueShort => 'Max.';
+
+  @override
+  String get computedValue => 'Wert berechnen';
+
+  @override
+  String get computedValueHint =>
+      'Spieler tragen diesen Wert nicht ein: Er wird aus anderen Eigenschaften berechnet, z. B. passive Wahrnehmung = 10 + Mod(Weisheit) + Übungsbonus (wenn geübt). Modifikatoren werden abgerundet.';
+
+  @override
+  String get computedBase => 'Startwert';
+
+  @override
+  String get computedTerms => 'Bausteine';
+
+  @override
+  String get addComputedTerm => 'Baustein hinzufügen';
+
+  @override
+  String get computedSource => 'Wert';
+
+  @override
+  String get computedMode => 'Umrechnung';
+
+  @override
+  String get computedModeValue => 'wie er ist';
+
+  @override
+  String get computedModeModifier => 'Modifikator (x−10)/2';
+
+  @override
+  String get computedFactor => 'Faktor';
+
+  @override
+  String get computedCondition => 'Zählt nur, wenn gewählt';
+
+  @override
+  String get computedAlways => 'Immer';
+
+  @override
+  String get computedPreview => 'Formel';
+
+  @override
+  String get computedValueNoSources =>
+      'Lege zuerst Eigenschaften mit Zahlen an.';
+
+  @override
+  String computedModifierOf(String label) {
+    return 'Mod($label)';
+  }
+
+  @override
+  String computedIfPicked(String condition) {
+    return '(wenn $condition)';
+  }
+
+  @override
+  String get computedValueBadge => 'berechnet';
 }

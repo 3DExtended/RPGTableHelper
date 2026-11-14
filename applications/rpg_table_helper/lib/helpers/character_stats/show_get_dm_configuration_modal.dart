@@ -9,11 +9,14 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/computed_stat_editor.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/models/computed_stat_formula.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
@@ -22,6 +25,7 @@ Future<CharacterStatDefinition?> showGetDmConfigurationModal({
   required BuildContext context,
   CharacterStatDefinition? predefinedConfiguration,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
+  List<StatWithTab> availableStats = const [],
 }) async {
   return await customShowCupertinoModalBottomSheet<CharacterStatDefinition>(
       isDismissible: true,
@@ -35,6 +39,7 @@ Future<CharacterStatDefinition?> showGetDmConfigurationModal({
         return ShowGetDmConfigurationModalContent(
           overrideNavigatorKey: overrideNavigatorKey,
           predefinedConfiguration: predefinedConfiguration,
+          availableStats: availableStats,
         );
       });
 }
@@ -43,11 +48,16 @@ class ShowGetDmConfigurationModalContent extends StatefulWidget {
   const ShowGetDmConfigurationModalContent({
     this.overrideNavigatorKey,
     this.predefinedConfiguration,
+    this.availableStats = const [],
     super.key,
   });
 
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
   final CharacterStatDefinition? predefinedConfiguration;
+
+  /// The campaign's stats (all tabs, unsaved edits included): sources for a
+  /// computed value.
+  final List<StatWithTab> availableStats;
 
   @override
   State<ShowGetDmConfigurationModalContent> createState() =>
@@ -83,6 +93,10 @@ class _ShowGetDmConfigurationModalContentState
   bool isOptionalForAlternateForms = false;
   bool multiselectIsAllowedToBeSelectedMultipleTimes = false;
 
+  // int: computed from other stats instead of typed in by players
+  bool isComputed = false;
+  ComputedStatFormula computedFormula = const ComputedStatFormula(base: 10);
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
@@ -103,6 +117,13 @@ class _ShowGetDmConfigurationModalContentState
           isOptionalForCompanionCharacters = widget
                   .predefinedConfiguration!.isOptionalForCompanionCharacters ??
               false;
+
+          var predefinedFormula =
+              ComputedStatFormula.of(widget.predefinedConfiguration!);
+          if (predefinedFormula != null) {
+            isComputed = true;
+            computedFormula = predefinedFormula;
+          }
 
           // what to do about additionaldetails
           if (selectedValueType == CharacterStatValueType.companionSelector) {
@@ -266,6 +287,12 @@ class _ShowGetDmConfigurationModalContentState
                 jsonSerializedAdditionalData: serializedAdditionalData);
           }
 
+          if (selectedValueType == CharacterStatValueType.int && isComputed) {
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData:
+                    computedFormula.toAdditionalData());
+          }
+
           if (widget.predefinedConfiguration == null) {
             return tempResult;
           } else {
@@ -293,6 +320,7 @@ class _ShowGetDmConfigurationModalContentState
               height: 10,
             ),
             CustomDropdownMenu(
+                isExpanded: true,
                 selectedValueTemp: selectedEditType?.name,
                 setter: (newValue) {
                   setState(() {
@@ -325,6 +353,7 @@ class _ShowGetDmConfigurationModalContentState
               height: 15,
             ),
             CustomDropdownMenu(
+                isExpanded: true,
                 selectedValueTemp: selectedValueType?.name,
                 setter: (newValue) {
                   setState(() {
@@ -497,6 +526,33 @@ class _ShowGetDmConfigurationModalContentState
     return result;
   }
 
+  List<Widget> getComputedValueWidgets() {
+    return [
+      const SizedBox(height: 20),
+      HorizontalLine(),
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          Expanded(
+            child: SelectableTile(
+              key: const ValueKey("computedValueToggle"),
+              onValueChange: () => setState(() => isComputed = !isComputed),
+              isSet: isComputed,
+              label: S.of(context).computedValue,
+            ),
+          ),
+        ],
+      ),
+      if (isComputed)
+        ComputedStatEditor(
+          initialFormula: computedFormula,
+          availableStats: widget.availableStats,
+          ownStatUuid: widget.predefinedConfiguration?.statUuid,
+          onChanged: (formula) => computedFormula = formula,
+        ),
+    ];
+  }
+
   List<Widget> getAdditionalDetailsWidgets() {
     // TODO add all items which need additionalDetails here
     var typesWithAdditionalConfigurationRequired = [
@@ -508,6 +564,9 @@ class _ShowGetDmConfigurationModalContentState
     ];
 
     if (selectedValueType == null) return [];
+    if (selectedValueType == CharacterStatValueType.int) {
+      return getComputedValueWidgets();
+    }
     if (!typesWithAdditionalConfigurationRequired.contains(selectedValueType)) {
       return [];
     }

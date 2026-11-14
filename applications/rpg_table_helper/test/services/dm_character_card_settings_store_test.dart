@@ -12,8 +12,8 @@ void main() {
         useCustomStats: true,
         barStatUuid: "hp",
         numberStats: [
-          DmCardStatRef(statUuid: "icons", entryUuid: "ac"),
-          DmCardStatRef(statUuid: "skills", field: DmCardStatField.otherValue),
+          StatNumberRef(statUuid: "icons", entryUuid: "ac"),
+          StatNumberRef(statUuid: "skills", field: StatNumberField.otherValue),
         ],
       );
 
@@ -31,7 +31,7 @@ void main() {
       expect(parsed.hiddenCharacterUuids, {"a"});
       expect(parsed.useCustomStats, isFalse);
       expect(parsed.barStatUuid, isNull);
-      expect(parsed.numberStats, [DmCardStatRef(statUuid: "s")]);
+      expect(parsed.numberStats, [StatNumberRef(statUuid: "s")]);
     });
   });
 

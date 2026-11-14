@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/helpers/character_stats/dm_card_stats.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/dm_character_card_settings.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -28,6 +29,8 @@ RpgCharacterStatValue _value({
   hideLabelOfStat: false,
 );
 
+const _labels = StatNumberLabels(calculated: "calc.", max: "max.", level: "Level");
+
 void main() {
   final config = RpgConfigurationModel.getBaseConfiguration();
 
@@ -48,7 +51,7 @@ void main() {
           config,
           selection,
           character,
-          "calc.",
+          _labels,
         ).map((e) => "${e.label}=${e.value}"),
         ["AC=12", "SP=12", "Temp HP=12", "ÜB=12"],
       );
@@ -96,7 +99,7 @@ void main() {
         withInts,
         selection,
         character,
-        "calc.",
+        _labels,
       );
 
       expect(numbers.length, 8);
@@ -125,11 +128,11 @@ void main() {
         useCustomStats: true,
         barStatUuid: null,
         numberStats: [
-          DmCardStatRef(statUuid: _iconListUuid, entryUuid: _acEntry),
-          DmCardStatRef(
+          StatNumberRef(statUuid: _iconListUuid, entryUuid: _acEntry),
+          StatNumberRef(
             statUuid: _skillsUuid,
             entryUuid: _wisdomEntry,
-            field: DmCardStatField.otherValue,
+            field: StatNumberField.otherValue,
           ),
         ],
       );
@@ -142,7 +145,7 @@ void main() {
       );
 
       expect(DmCardStats.barFor(config, selection, character), isNull);
-      expect(DmCardStats.numbersFor(config, selection, character, "calc."), [
+      expect(DmCardStats.numbersFor(config, selection, character, _labels), [
         (label: "AC", value: 17),
         (label: "Weisheit (calc.)", value: 2),
       ]);
@@ -154,8 +157,8 @@ void main() {
         useCustomStats: true,
         barStatUuid: _hpUuid,
         numberStats: [
-          DmCardStatRef(statUuid: _iconListUuid, entryUuid: _acEntry),
-          DmCardStatRef(statUuid: "deleted-stat"),
+          StatNumberRef(statUuid: _iconListUuid, entryUuid: _acEntry),
+          StatNumberRef(statUuid: "deleted-stat"),
         ],
       );
       var selection = DmCardStats.selectionFor(
@@ -166,7 +169,7 @@ void main() {
       );
 
       expect(
-        DmCardStats.numbersFor(config, selection, character, "calc."),
+        DmCardStats.numbersFor(config, selection, character, _labels),
         isEmpty,
       );
       expect(DmCardStats.barFor(config, selection, character), isNull);
@@ -181,7 +184,8 @@ void main() {
       ]);
       expect(
         DmCardStats.resolve(
-          DmCardStatRef(statUuid: "x", field: DmCardStatField.otherValue),
+          config,
+          StatNumberRef(statUuid: "x", field: StatNumberField.otherValue),
           character,
         ),
         3,
@@ -190,7 +194,7 @@ void main() {
   });
 
   test('number options cover every number of the campaign', () {
-    var options = DmCardStats.numberOptions(config, "calc.");
+    var options = DmCardStats.numberOptions(config, _labels);
     var labels = options.map((o) => o.label).toList();
 
     expect(

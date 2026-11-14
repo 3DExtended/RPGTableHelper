@@ -14,6 +14,7 @@ import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -57,6 +58,14 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
 
   bool isFormValid = true;
   RpgConfigurationNotifier? _configNotifier;
+
+  /// Every stat being edited, all tabs in order: sources for computed stats.
+  List<StatWithTab> _statsWithTabs() => [
+        for (var tab in tabsToEdit)
+          for (var entry in statsUnderTab[tab.$1] ?? <StatOrGroupIndicator>[])
+            if (entry.stat != null)
+              (tabName: tab.$2.text, stat: entry.stat!),
+      ];
 
   @override
   void initState() {
@@ -368,7 +377,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                                   Expanded(
                                                     child: CustomMarkdownBody(
                                                       text:
-                                                          "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString(context)})",
+                                                          "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString(context)}${StatNumbers.isComputed(e.value.stat!) ? ", ${S.of(context).computedValueBadge}" : ""})",
                                                     ),
                                                   ),
                                                 ],
@@ -390,6 +399,8 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                           onPressed: () async {
                                             await showGetDmConfigurationModal(
                                                     context: context,
+                                                    availableStats:
+                                                        _statsWithTabs(),
                                                     predefinedConfiguration:
                                                         e.value.stat)
                                                 .then((value) {
@@ -497,7 +508,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                       onPressed: () async {
                         // open new modal for dm config
                         // if it returns non null add the stat
-                        await showGetDmConfigurationModal(context: context)
+                        await showGetDmConfigurationModal(
+                                context: context,
+                                availableStats: _statsWithTabs())
                             .then((value) {
                           if (value == null) {
                             return;

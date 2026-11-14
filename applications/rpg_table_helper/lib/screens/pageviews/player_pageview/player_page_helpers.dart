@@ -7,6 +7,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
@@ -90,6 +91,8 @@ class PlayerPageHelpers {
               .expand((i) => i)
               .where(
                   (s) => s.statUuid == filterStatUuid || filterStatUuid == null)
+              // Computed stats are never typed in.
+              .where((s) => !StatNumbers.isComputed(s))
               .toList() ??
           [];
 
