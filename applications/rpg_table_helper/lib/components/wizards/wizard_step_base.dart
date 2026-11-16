@@ -12,3 +12,21 @@ abstract class WizardStepBase extends ConsumerStatefulWidget {
     required this.setWizardTitle,
   });
 }
+
+typedef WizardStepBuilder = WizardStepBase Function(
+    void Function() moveToPrevious,
+    void Function() moveToNext,
+    void Function(String newTitle) setTitle);
+
+class WizardStepDefinition {
+  final WizardStepBuilder builder;
+
+  /// Optional steps show a "skip" control that jumps over this and all
+  /// directly following optional steps.
+  final bool isOptional;
+
+  const WizardStepDefinition({
+    required this.builder,
+    this.isOptional = false,
+  });
+}

@@ -5,6 +5,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_recipe_card.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -45,7 +46,8 @@ class _RpgConfigurationWizardStep7CraftingRecipesState
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Rezepte");
+      if (!mounted) return;
+      widget.setWizardTitle(S.of(context).wizardRecipesStepTitle);
     });
     super.initState();
   }
@@ -63,13 +65,7 @@ class _RpgConfigurationWizardStep7CraftingRecipesState
       }
     });
 
-    var stepHelperText = '''
-
-Nachdem du nun alle Items hinzugefügt hast, kannst du deinen Spieler Rezepte hinzufügen, damit sie selber bspw. Heiltränke craften können.
-
-Für manche Rezepte ist es natürlich Voraussetzung, dass du ein Tool (wie ein Kräuterkunde-Set) hast.
-Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen dann die entsprechenden Tools um die Rezepte nutzen zu können.
-'''; // TODO localize
+    var stepHelperText = S.of(context).wizardRecipesStepHelper;
 
     return TwoPartWizardStepBody(
         isLandscapeMode: MediaQuery.of(context).size.width >
@@ -119,7 +115,7 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                         });
                       });
                     },
-                    label: "+ Hinzufügen",
+                    label: "+ ${S.of(context).add}",
                   )
                 ],
               ),
@@ -221,7 +217,9 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                                   CupertinoContextMenuAction(
                                     isDestructiveAction: false,
                                     isDefaultAction: true,
-                                    child: Text('Details öffnen'),
+                                    child: Text(S
+                                        .of(context)
+                                        .wizardRecipeOpenDetails),
                                     onPressed: () async {
                                       Navigator.pop(context); // Close the popup
 
@@ -245,7 +243,9 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                                   CupertinoContextMenuAction(
                                     isDestructiveAction: false,
                                     isDefaultAction: false,
-                                    child: Text('Duplizieren und öffnen'),
+                                    child: Text(S
+                                        .of(context)
+                                        .wizardRecipeDuplicateAndOpen),
                                     onPressed: () async {
                                       Navigator.pop(context); // Close the popup
 
@@ -272,7 +272,9 @@ Auch dies kannst du in deinen Rezepten hinterlegen und die Spieler benötigen da
                                   ),
                                   CupertinoContextMenuAction(
                                     isDestructiveAction: true,
-                                    child: Text('Unwiderruflich Löschen'),
+                                    child: Text(S
+                                        .of(context)
+                                        .wizardRecipeDeletePermanently),
                                     onPressed: () {
                                       Navigator.pop(context); // Close the popup
                                       setState(() {

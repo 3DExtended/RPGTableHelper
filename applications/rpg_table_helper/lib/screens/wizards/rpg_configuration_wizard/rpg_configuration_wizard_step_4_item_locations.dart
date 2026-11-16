@@ -7,6 +7,8 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -45,15 +47,26 @@ class _RpgConfigurationWizardStep4ItemLocations
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Fundorte");
+      if (!mounted) return;
+      widget.setWizardTitle(S.of(context).wizardLocationsStepTitle);
     });
+    registerWizardStepSave(_saveIfValid);
 
     super.initState();
   }
 
   @override
   void dispose() {
+    unregisterWizardStepSave(_saveIfValid);
     super.dispose();
+  }
+
+  /// Called by the wizard when the step is left in any way, including
+  /// "skip". Incomplete entries are not saved; saved places stay untouched.
+  void _saveIfValid() {
+    if (getIsFormValid()) {
+      saveChanges();
+    }
   }
 
   @override
@@ -79,14 +92,7 @@ class _RpgConfigurationWizardStep4ItemLocations
       }
     });
 
-    var stepHelperText = '''
-
-Als nächstes wollen wir uns um die Items für deine Spieler kümmern.
-
-Manche Items können dabei an bestimmten Orten gefunden werden: Am Strand, in Höhlen, in Grotten usw.
-
-Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen können, hinterleg bitte die unterschiedlichen Orte, an denen deine Items gefunden werden können.
-'''; // TODO localize
+    var stepHelperText = S.of(context).wizardLocationsStepHelper;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
@@ -98,10 +104,8 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
               saveChanges();
               widget.onNextBtnPressed();
             },
-      onPreviousBtnPressed: () {
-        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-        widget.onPreviousBtnPressed();
-      },
+      // Leaving the step saves valid entries through the registered save.
+      onPreviousBtnPressed: widget.onPreviousBtnPressed,
       sideBarFlex: 1,
       contentFlex: 2,
       contentChildren: [
@@ -119,9 +123,10 @@ Damit wir in den nächsten Schritten diese Items mit Fundorten verknüpfen könn
                       keyboardType: TextInputType.text,
                       placeholderText: rpgConfig == null
                           ? null
-                          : "An diesem Fundort können ${getNumberOfToPlaceAssignedItems(rpgConfig!, e.value.$1)} Items gefunden werden.",
-
-                      labelText: "Fundort #${e.key + 1}", // TODO localize
+                          : S.of(context).wizardLocationItemCount(
+                              getNumberOfToPlaceAssignedItems(
+                                  rpgConfig!, e.value.$1)),
+                      labelText: S.of(context).wizardLocationLabel(e.key + 1),
                       textEditingController: e.value.$2,
                     ),
                   ),

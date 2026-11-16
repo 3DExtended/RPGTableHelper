@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/item_card_rendering_with_filtering.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_create_or_edit_item_modal_new_design.dart';
@@ -46,7 +47,8 @@ class _RpgConfigurationWizardStep6ItemsState
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Items");
+      if (!mounted) return;
+      widget.setWizardTitle(S.of(context).wizardItemsStepTitle);
     });
     super.initState();
   }
@@ -64,14 +66,7 @@ class _RpgConfigurationWizardStep6ItemsState
       }
     });
 
-    // TODO where do I show this?
-    var stepHelperText = '''
-
-Nun ist es Zeit, die Items des RPGs zu hinterlegen. Egal ob Heiltränke, Waffen, Questitems oder Zutaten für Gifte, hier kannst du alles anlegen was in die Taschen deiner Player wandern könnte.
-
-Außerdem kannst du hier auch hinterlegen, welche Wirkungen ein Trank hat.
-
-Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Beschreibung zu stellen, damit deine Spieler die wichtigsten Infos auf den ersten Blick sehen können!'''; // TODO localize
+    var stepHelperText = S.of(context).wizardItemsStepHelper;
 
     return TwoPartWizardStepBody(
       contentChildren: [],
@@ -319,7 +314,7 @@ Tipp: Versuche die Wirkungen, Schäden oder ähnliches am Anfang einer jeden Bes
     result += placeOfFinding.name;
 
     // TODO decide if I want to show this...
-    result += " (DC: ${plid.diceChallenge})";
+    result += " (${S.of(context).diceChallengeAbbr}: ${plid.diceChallenge})";
 
     return result;
   }

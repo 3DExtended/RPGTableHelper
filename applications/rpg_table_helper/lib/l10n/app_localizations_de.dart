@@ -398,7 +398,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get rpgConfigurationDmWizardStep2Tutorial =>
-      'Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:';
+      'Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleitung, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nEigenschaften ordnest du in Tabs und Gruppen. Halte eine Eigenschaft gedrückt, um sie zu verschieben.';
 
   @override
   String get levelAbbr => 'LVL';
@@ -548,7 +548,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get itemCardDescRequires => 'Braucht:';
 
   @override
-  String get defaultTab => 'Default Tab';
+  String get defaultTab => 'Start-Tab';
 
   @override
   String get amountHeaderLabel => 'Anzahl:';
@@ -701,7 +701,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nameOfCharacterHelperText => 'Wie heißt dein Charakter?';
 
   @override
-  String get campaignName => 'Kampagnen Name';
+  String get campaignName => 'Kampagnenname';
 
   @override
   String get tranformToAlternateForm => 'Verwandeln';
@@ -1320,4 +1320,302 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get authNoConnection =>
       'Der Server ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
+
+  @override
+  String get wizardFinishBtnLabel => 'Fertig';
+
+  @override
+  String get wizardSkipBtnLabel => 'Überspringen';
+
+  @override
+  String get wizardOptionalStepLabel => 'Optionaler Schritt';
+
+  @override
+  String get wizardShowExplanation => 'Erklärung anzeigen';
+
+  @override
+  String get wizardHideExplanation => 'Erklärung einklappen';
+
+  @override
+  String get wizardSavedSnackbar => 'Einrichtung gespeichert';
+
+  @override
+  String get confirmDeleteBtnLabel => 'Löschen';
+
+  @override
+  String get wizardUndo => 'Rückgängig';
+
+  @override
+  String get wizardSkinStepHelper =>
+      '## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.';
+
+  @override
+  String get wizardCampaignNameStepHelper =>
+      '## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.';
+
+  @override
+  String get wizardCharacterSheetStepTitle => 'Charakterbogen';
+
+  @override
+  String get wizardTabNameLabel => 'Name des Tabs';
+
+  @override
+  String get wizardUnnamedTab => 'Unbenannter Tab';
+
+  @override
+  String get wizardUnnamedProperty => 'Unbenannte Eigenschaft';
+
+  @override
+  String wizardGroupLabel(int number) {
+    return 'Gruppe $number';
+  }
+
+  @override
+  String get wizardDeleteTabTitle => 'Tab löschen?';
+
+  @override
+  String wizardDeleteTabMessage(int count, String tabName) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Tab „$tabName“ mit $count Eigenschaften löschen? Werte der Charaktere gehen verloren.',
+      one:
+          'Tab „$tabName“ mit einer Eigenschaft löschen? Werte der Charaktere gehen verloren.',
+      zero: 'Den leeren Tab „$tabName“ löschen?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wizardDeletePropertyTitle => 'Eigenschaft löschen?';
+
+  @override
+  String wizardDeletePropertyMessage(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Eigenschaft „$name“ löschen? $count Charaktere haben dafür schon Werte, sie gehen verloren.',
+      one:
+          'Eigenschaft „$name“ löschen? Ein Charakter hat dafür schon einen Wert, er geht verloren.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardPropertyDeletedSnackbar(String name) {
+    return 'Eigenschaft „$name“ gelöscht';
+  }
+
+  @override
+  String get wizardCurrencyStepTitle => 'Währung';
+
+  @override
+  String get wizardCurrencyStepHelper =>
+      '## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).';
+
+  @override
+  String get wizardSmallestCurrencyLabel => 'Name der kleinsten Währung:';
+
+  @override
+  String get wizardNextCurrencyLabel => 'Name der nächstgrößeren Währung:';
+
+  @override
+  String get wizardCurrencyMultipleLabel =>
+      'Entspricht wie vielen der vorherigen Währung:';
+
+  @override
+  String get wizardNewEntryDefaultName => 'Neu';
+
+  @override
+  String get wizardLocationsStepTitle => 'Fundorte';
+
+  @override
+  String get wizardLocationsStepHelper =>
+      '## Fundorte (optional)\n\nAb hier geht es um Items und Crafting. Diesen und die folgenden Schritte (Fundorte, Item-Kategorien, Items, Rezepte) brauchst du nur, wenn ihr damit spielt. Mit **Überspringen** geht es direkt zur Zusammenfassung; schon angelegte Daten bleiben erhalten.\n\nManche Items lassen sich an bestimmten Orten finden: am Strand, in Höhlen, in Grotten und so weiter. Lege hier die Orte an, damit du sie in den nächsten Schritten mit Items verknüpfen kannst.';
+
+  @override
+  String wizardLocationLabel(int number) {
+    return 'Fundort #$number';
+  }
+
+  @override
+  String wizardLocationItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'An diesem Fundort können $count Items gefunden werden.',
+      one: 'An diesem Fundort kann ein Item gefunden werden.',
+      zero: 'An diesem Fundort gibt es noch keine Items.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wizardItemCategoriesStepTitle => 'Item-Kategorien';
+
+  @override
+  String get wizardItemCategoriesStepHelper =>
+      '## Item-Kategorien (optional)\n\nDamit die Spieler ihre Items filtern können, sortieren wir sie in Kategorien ein. Dafür haben wir dir eine Reihe von Kategorien und Unterkategorien vorbereitet.\n\nPasse sie gern an, wenn sie nicht zu eurem Rollenspiel passen.';
+
+  @override
+  String get wizardCategoryNameLabel => 'Name der Kategorie:';
+
+  @override
+  String get wizardSubCategoryNameLabel => 'Name der Unterkategorie:';
+
+  @override
+  String wizardCategoryItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'In dieser Kategorie sind $count Items.',
+      one: 'In dieser Kategorie ist ein Item.',
+      zero: 'In dieser Kategorie sind noch keine Items.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wizardNewSubCategoryBtnLabel => 'Neue Unterkategorie';
+
+  @override
+  String wizardIconForCategorySuffix(String name) {
+    return ' (für Kategorie $name)';
+  }
+
+  @override
+  String get wizardItemsStepTitle => 'Items';
+
+  @override
+  String get wizardItemsStepHelper =>
+      '## Items (optional)\n\nHier legst du die Items deiner Welt an: Heiltränke, Waffen, Questgegenstände oder Zutaten für Gifte, also alles, was in den Taschen deiner Spieler landen kann.\n\nAuch die Wirkung eines Tranks kannst du hier hinterlegen.\n\nTipp: Schreib Wirkung, Schaden und Ähnliches an den Anfang der Beschreibung. Dann sehen deine Spieler das Wichtigste auf einen Blick.';
+
+  @override
+  String get wizardEditItemTitle => 'Item bearbeiten';
+
+  @override
+  String get wizardItemNameLabel => 'Name des Items:';
+
+  @override
+  String get wizardItemCategoryLabel => 'Kategorie';
+
+  @override
+  String get wizardItemPatchSizeLabel => 'Fundgröße (optional):';
+
+  @override
+  String get wizardItemImageDescriptionLabel => 'Bildbeschreibung:';
+
+  @override
+  String get wizardItemPlacesOfFindingHeader => 'Fundorte:';
+
+  @override
+  String get wizardNewLocationBtnLabel => 'Neuer Fundort';
+
+  @override
+  String get wizardNewImageBtnLabel => 'Neues Bild';
+
+  @override
+  String get wizardPickImageBtnLabel => 'Bild auswählen';
+
+  @override
+  String get wizardInvalidImageFile => 'Diese Datei ist kein gültiges Bild.';
+
+  @override
+  String get wizardRecipesStepTitle => 'Rezepte';
+
+  @override
+  String get wizardRecipesStepHelper =>
+      '## Rezepte (optional)\n\nMit Rezepten können deine Spieler selbst Dinge herstellen, zum Beispiel Heiltränke.\n\nManche Rezepte setzen ein Werkzeug voraus, etwa ein Kräuterkunde-Set. Auch das kannst du im Rezept hinterlegen; die Spieler brauchen das Werkzeug dann, um das Rezept zu nutzen.\n\nTippe auf ein Rezept, um es zu bearbeiten. Halte es gedrückt für weitere Aktionen.';
+
+  @override
+  String get wizardRecipeOpenDetails => 'Details öffnen';
+
+  @override
+  String get wizardRecipeDuplicateAndOpen => 'Duplizieren und öffnen';
+
+  @override
+  String get wizardRecipeDeletePermanently => 'Endgültig löschen';
+
+  @override
+  String get wizardEditRecipeTitle => 'Rezept bearbeiten';
+
+  @override
+  String get wizardRecipeCreatedItemLabel => 'Herzustellendes Item';
+
+  @override
+  String wizardRecipeRequirementLabel(int number) {
+    return 'Voraussetzung #$number';
+  }
+
+  @override
+  String get wizardRecipeAddRequirement => 'Weitere Voraussetzung';
+
+  @override
+  String wizardRecipeIngredientLabel(int number) {
+    return 'Zutat #$number';
+  }
+
+  @override
+  String get wizardRecipeAddIngredient => 'Weitere Zutat';
+
+  @override
+  String get wizardSummaryStepTitle => 'Zusammenfassung';
+
+  @override
+  String get wizardSummaryStepHelper =>
+      '## Fertig!\n\nDeine Kampagne ist eingerichtet und alles ist gespeichert. Die Übersicht zeigt, was eingerichtet ist.\n\nÄndern kannst du alles später über das Zahnrad oben rechts.\n\nMit **Fertig** schließt du den Assistenten.';
+
+  @override
+  String get wizardSummaryCampaignLabel => 'Kampagne';
+
+  @override
+  String get wizardSummaryNotSet => 'Noch nicht festgelegt';
+
+  @override
+  String wizardSummaryTabCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tabs',
+      one: '1 Tab',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardSummaryPropertyCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Eigenschaften',
+      one: '1 Eigenschaft',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardSummaryItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Items',
+      one: '1 Item',
+      zero: 'Keine Items',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardSummaryRecipeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Rezepte',
+      one: '1 Rezept',
+      zero: 'Keine Rezepte',
+    );
+    return '$_temp0';
+  }
 }

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/components/wizards/wizard_manager.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class WizardConfiguration {
-  final List<
-          WizardStepBase Function(
-              void Function(), void Function(), void Function(String newTitle))>
-      stepBuilders;
+  final List<WizardStepDefinition> steps;
 
-  WizardConfiguration({required this.stepBuilders});
+  WizardConfiguration({required this.steps});
+
+  List<WizardStepBuilder> get stepBuilders =>
+      steps.map((s) => s.builder).toList();
 }
 
 class WizardRendererForConfiguration extends StatelessWidget {
@@ -35,10 +36,15 @@ class WizardRendererForConfiguration extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       body: WizardManager(
         startStepIndex: startStepIndex,
-        stepBuilders: configuration.stepBuilders,
+        steps: configuration.steps,
         onFinish: () {
-          // Pop the wizard route off the stack when finished
+          // Everything is already saved step by step; confirm it once the
+          // wizard is done.
+          final messenger = ScaffoldMessenger.maybeOf(context);
+          final message = S.of(context).wizardSavedSnackbar;
           Navigator.of(context).pop();
+          messenger?.hideCurrentSnackBar();
+          messenger?.showSnackBar(SnackBar(content: Text(message)));
         },
       ),
     );

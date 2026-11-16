@@ -206,7 +206,7 @@ class _CreateOrEditItemModalContentState
                       menuOpen: null,
                       useTopSafePadding: false,
                       titleWidget: Text(
-                        "Item bearbeiten", // TODO localize/ switch text between add and edit
+                        S.of(context).wizardEditItemTitle,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: CustomThemeProvider.of(context)
@@ -279,7 +279,7 @@ class _CreateOrEditItemModalContentState
             Expanded(
               child: CustomTextField(
                 keyboardType: TextInputType.text,
-                labelText: "Name des Items:", // TODO localize
+                labelText: S.of(context).wizardItemNameLabel,
                 textEditingController: nameController,
               ),
             ),
@@ -300,7 +300,7 @@ class _CreateOrEditItemModalContentState
                       selectedItemCategoryId = newValue;
                     });
                   },
-                  label: 'Kategorie', // TODO localize
+                  label: S.of(context).wizardItemCategoryLabel,
                   items: [
                     ...(CustomIterableExtensions(
                             ItemCategory.flattenCategoriesRecursive(
@@ -366,7 +366,7 @@ class _CreateOrEditItemModalContentState
             Expanded(
               child: CustomTextField(
                 keyboardType: TextInputType.text,
-                labelText: "Fundgröße: (optional)", // TODO localize
+                labelText: S.of(context).wizardItemPatchSizeLabel,
                 textEditingController: patchSizeTextController,
               ),
             ),
@@ -380,7 +380,7 @@ class _CreateOrEditItemModalContentState
             Expanded(
               child: CustomTextField(
                 keyboardType: TextInputType.multiline,
-                labelText: "Beschreibung:", // TODO localize
+                labelText: S.of(context).itemDetailsDescriptionHeader,
                 textEditingController: descriptionController,
               ),
             ),
@@ -394,7 +394,7 @@ class _CreateOrEditItemModalContentState
             Expanded(
               child: CustomTextField(
                 keyboardType: TextInputType.multiline,
-                labelText: "Bild-Beschreibung:", // TODO localize
+                labelText: S.of(context).wizardItemImageDescriptionLabel,
                 textEditingController: imageDescriptionController,
               ),
             ),
@@ -408,7 +408,7 @@ class _CreateOrEditItemModalContentState
           height: 10,
         ),
         Text(
-          "Fundorte:",
+          S.of(context).wizardItemPlacesOfFindingHeader,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: CustomThemeProvider.of(context).theme.darkTextColor,
               fontSize: 16),
@@ -430,7 +430,7 @@ class _CreateOrEditItemModalContentState
                                   (newValue, _placesOfFinding[tuple.key].$2);
                             });
                           },
-                          label: 'Fundort #${tuple.key + 1}', // TODO localize
+                          label: S.of(context).wizardLocationLabel(tuple.key + 1),
                           items: CustomIterableExtensions(_allPlacesOfFindings)
                               .sortBy((p) => p.name)
                               .map((placeOfFinding) {
@@ -449,7 +449,7 @@ class _CreateOrEditItemModalContentState
                       width: 75,
                       child: CustomTextField(
                         keyboardType: TextInputType.number,
-                        labelText: "DC:", // TODO localize
+                        labelText: "${S.of(context).diceChallengeAbbr}:",
                         textEditingController: tuple.value.$2,
                       ),
                     ),
@@ -495,7 +495,7 @@ class _CreateOrEditItemModalContentState
                     ));
                   });
                 },
-                label: "Neuer Fundort",
+                label: S.of(context).wizardNewLocationBtnLabel,
                 icon: Theme(
                     data: ThemeData(
                       fontFamily: "Ruwudu",
@@ -690,7 +690,7 @@ class _CreateOrEditItemModalContentState
                       minSize: 0,
                       padding: EdgeInsets.zero,
                       child: Text(
-                        "Neues Bild",
+                        S.of(context).wizardNewImageBtnLabel,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               color: isLoading
                                   ? CustomThemeProvider.of(context)
@@ -718,7 +718,7 @@ class _CreateOrEditItemModalContentState
                         minSize: 0,
                         padding: EdgeInsets.zero,
                         child: Text(
-                          "Bild auswählen",
+                          S.of(context).wizardPickImageBtnLabel,
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge!
@@ -762,7 +762,7 @@ class _CreateOrEditItemModalContentState
                                         "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
                                     snack: SnackBar(
                                       content:
-                                          Text("Invalid image file selected."),
+                                          Text(S.of(context).wizardInvalidImageFile),
                                     ),
                                   );
 

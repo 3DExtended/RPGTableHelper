@@ -15,10 +15,37 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
+import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/modals/show_confirm_delete_dialog.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/models/connection_details.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/character_stat_group_editing.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
+
+/// How many of the campaign's characters (or their companions) hold a value
+/// for [statUuid]. Uses the roster the DM screen already loaded.
+int countCharactersWithValuesForStat(
+  List<OpenPlayerConnection>? players,
+  String statUuid,
+) {
+  bool hasValue(RpgCharacterConfigurationBase character) =>
+      character.characterStats.any(
+          (s) => s.statUuid == statUuid && s.serializedValue.isNotEmpty);
+
+  return (players ?? const <OpenPlayerConnection>[])
+      .where((p) =>
+          hasValue(p.configuration) ||
+          (p.configuration.companionCharacters ?? const [])
+              .any((companion) => hasValue(companion)))
+      .length;
+}
+
+const wizardDeleteTabButtonKeyPrefix = 'wizardDeleteTab-';
+const wizardDeleteStatButtonKeyPrefix = 'wizardDeleteStat-';
+const wizardDeleteGroupButtonKeyPrefix = 'wizardDeleteGroup-';
 
 class RpgConfigurationWizardStep2CharacterConfigurationsPreset
     extends WizardStepBase {
@@ -71,8 +98,132 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.setWizardTitle("Character Stats");
+      if (!mounted) return;
+      widget.setWizardTitle(S.of(context).wizardCharacterSheetStepTitle);
     });
+  }
+
+  static bool _isGroupDivider(StatOrGroupIndicator entry) =>
+      entry.groupHandleId != null;
+
+  String _displayNameOfStat(CharacterStatDefinition stat) {
+    final name = stat.name.trim();
+    return name.isEmpty ? S.of(context).wizardUnnamedProperty : name;
+  }
+
+  String _displayNameOfTab(TextEditingController tabName) {
+    final name = tabName.text.trim();
+    return name.isEmpty ? S.of(context).wizardUnnamedTab : name;
+  }
+
+  /// Asks with the tab's name and number of properties, then removes it.
+  Future<void> _confirmAndDeleteTab(String tabUuid) async {
+    final tab = tabsToEdit.firstWhere((t) => t.$1 == tabUuid);
+    final statCount = countStats(
+      statsUnderTab[tabUuid] ?? const <StatOrGroupIndicator>[],
+      isGroupDivider: _isGroupDivider,
+    );
+    final confirmed = await showConfirmDeleteDialog(
+      context: context,
+      title: S.of(context).wizardDeleteTabTitle,
+      message: S
+          .of(context)
+          .wizardDeleteTabMessage(statCount, _displayNameOfTab(tab.$2)),
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+
+    setState(() {
+      final index = tabsToEdit.indexWhere((t) => t.$1 == tabUuid);
+      if (index < 0) {
+        return;
+      }
+      final removed = tabsToEdit.removeAt(index);
+      statsUnderTab.remove(tabUuid);
+      // Keep a start tab when the deleted one was it.
+      if (removed.$4 && tabsToEdit.isNotEmpty) {
+        final first = tabsToEdit.first;
+        tabsToEdit[0] = (first.$1, first.$2, first.$3, true);
+      }
+    });
+  }
+
+  /// Deletes a property. Asks first when characters already hold values for
+  /// it; otherwise deletes right away and offers to undo.
+  Future<void> _deleteStat(String tabUuid, CharacterStatDefinition stat) async {
+    final statName = _displayNameOfStat(stat);
+    final charactersWithValues = countCharactersWithValuesForStat(
+      ref.read(connectionDetailsProvider).value?.connectedPlayers,
+      stat.statUuid,
+    );
+
+    if (charactersWithValues > 0) {
+      final confirmed = await showConfirmDeleteDialog(
+        context: context,
+        title: S.of(context).wizardDeletePropertyTitle,
+        message: S
+            .of(context)
+            .wizardDeletePropertyMessage(charactersWithValues, statName),
+      );
+      if (!confirmed || !mounted) {
+        return;
+      }
+      _removeStatEntry(tabUuid, stat);
+      return;
+    }
+
+    final before = [...statsUnderTab[tabUuid] ?? <StatOrGroupIndicator>[]];
+    final indexBefore = before.indexWhere((e) => identical(e.stat, stat));
+    final removed = _removeStatEntry(tabUuid, stat);
+    if (removed == null) {
+      return;
+    }
+    // The editor mutates the tab's list in place (reorder, add), so compare
+    // against a copy.
+    final after = [...removed];
+
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    messenger?.hideCurrentSnackBar();
+    messenger?.showSnackBar(SnackBar(
+      content: Text(S.of(context).wizardPropertyDeletedSnackbar(statName)),
+      action: SnackBarAction(
+        label: S.of(context).wizardUndo,
+        onPressed: () {
+          if (!mounted) return;
+          final current = statsUnderTab[tabUuid];
+          if (current == null) return;
+          setState(() {
+            final unchanged = current.length == after.length &&
+                Iterable.generate(current.length)
+                    .every((i) => identical(current[i], after[i]));
+            if (unchanged) {
+              statsUnderTab[tabUuid] = before;
+            } else {
+              current.insert(indexBefore.clamp(0, current.length),
+                  StatOrGroupIndicator(stat: stat, groupHandleId: null));
+            }
+          });
+        },
+      ),
+    ));
+  }
+
+  /// Removes [stat] and a group divider left empty by it. Returns the new
+  /// list of the tab, or null when the stat was not found.
+  List<StatOrGroupIndicator>? _removeStatEntry(
+      String tabUuid, CharacterStatDefinition stat) {
+    final entries = statsUnderTab[tabUuid];
+    if (entries == null) return null;
+    final index = entries.indexWhere((e) => identical(e.stat, stat));
+    if (index < 0) return null;
+
+    final updated = removeStatAndEmptyGroup(entries, index,
+        isGroupDivider: _isGroupDivider);
+    setState(() {
+      statsUnderTab[tabUuid] = updated;
+    });
+    return updated;
   }
 
   @override
@@ -121,7 +272,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
 
   @override
   void dispose() {
-    registerWizardStepSave(null);
+    unregisterWizardStepSave(_persistToProviderIfReady);
     for (final tab in tabsToEdit) {
       tab.$2.dispose();
     }
@@ -179,7 +330,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      labelText: "Tab Title",
+                      labelText: S.of(context).wizardTabNameLabel,
                       textEditingController: tab.value.$2,
                       keyboardType: TextInputType.text,
                     ),
@@ -192,12 +343,12 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                     width: 40,
                     clipBehavior: Clip.none,
                     child: CustomButton(
+                      key: ValueKey(
+                          '$wizardDeleteTabButtonKeyPrefix${tab.value.$1}'),
                       isSubbutton: true,
                       variant: CustomButtonVariant.FlatButton,
                       onPressed: () {
-                        setState(() {
-                          tabsToEdit.removeAt(tab.key);
-                        });
+                        _confirmAndDeleteTab(tab.value.$1);
                       },
                       icon: CustomFaIcon(
                           size: 16,
@@ -263,6 +414,11 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
               // stats beneath
               Builder(
                 builder: (context) {
+                  final groupNumbers = groupNumbersForDividers(
+                    statsUnderTab[tab.value.$1] ??
+                        const <StatOrGroupIndicator>[],
+                    isGroupDivider: _isGroupDivider,
+                  );
                   return ReorderableListView(
                     shrinkWrap: true,
                     physics: ScrollPhysics(),
@@ -301,8 +457,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                           (e) => e.value.groupHandleId != null
                               ? Padding(
                                   key: ValueKey(e.value),
-                                  padding:
-                                      const EdgeInsets.only(left: 3, right: 95),
+                                  padding: const EdgeInsets.only(left: 3),
                                   child: Row(
                                     children: [
                                       CustomFaIcon(
@@ -328,10 +483,51 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                               ),
                                               Center(
                                                 child: Text(
-                                                    S.of(context).newGroup),
+                                                  S.of(context).wizardGroupLabel(
+                                                      groupNumbers[e.key] ?? 1),
+                                                  style: TextStyle(
+                                                    color:
+                                                        CustomThemeProvider.of(
+                                                                context)
+                                                            .theme
+                                                            .darkTextColor,
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           ),
+                                        ),
+                                      ),
+                                      // Lines up with the stats' delete
+                                      // buttons (edit button width + gap).
+                                      SizedBox(width: 50),
+                                      Container(
+                                        height: 50,
+                                        width: 40,
+                                        clipBehavior: Clip.none,
+                                        child: CustomButton(
+                                          key: ValueKey(
+                                              '$wizardDeleteGroupButtonKeyPrefix${e.value.groupHandleId}'),
+                                          isSubbutton: true,
+                                          variant:
+                                              CustomButtonVariant.FlatButton,
+                                          onPressed: () {
+                                            // Only the divider goes; its
+                                            // properties join the group above.
+                                            setState(() {
+                                              statsUnderTab[tab.value.$1]!
+                                                  .removeWhere((entry) =>
+                                                      identical(
+                                                          entry, e.value));
+                                            });
+                                          },
+                                          icon: CustomFaIcon(
+                                              size: 16,
+                                              color: CustomThemeProvider.of(
+                                                      context)
+                                                  .theme
+                                                  .darkColor,
+                                              icon: FontAwesomeIcons.trashCan),
                                         ),
                                       ),
                                     ],
@@ -377,7 +573,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                                   Expanded(
                                                     child: CustomMarkdownBody(
                                                       text:
-                                                          "### ${e.value.stat!.name} (${e.value.stat!.valueType.toCustomString(context)}${StatNumbers.isComputed(e.value.stat!) ? ", ${S.of(context).computedValueBadge}" : ""})",
+                                                          "### ${_displayNameOfStat(e.value.stat!)} (${e.value.stat!.valueType.toCustomString(context)}${StatNumbers.isComputed(e.value.stat!) ? ", ${S.of(context).computedValueBadge}" : ""})",
                                                     ),
                                                   ),
                                                 ],
@@ -431,14 +627,14 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                                         width: 40,
                                         clipBehavior: Clip.none,
                                         child: CustomButton(
+                                          key: ValueKey(
+                                              '$wizardDeleteStatButtonKeyPrefix${e.value.stat!.statUuid}'),
                                           isSubbutton: true,
                                           variant:
                                               CustomButtonVariant.FlatButton,
                                           onPressed: () {
-                                            setState(() {
-                                              statsUnderTab[tab.value.$1]!
-                                                  .removeAt(e.key);
-                                            });
+                                            _deleteStat(
+                                                tab.value.$1, e.value.stat!);
                                           },
                                           icon: CustomFaIcon(
                                               size: 16,

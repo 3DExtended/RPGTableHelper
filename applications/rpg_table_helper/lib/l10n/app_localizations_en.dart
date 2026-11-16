@@ -393,7 +393,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rpgConfigurationDmWizardStep2Tutorial =>
-      'Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:';
+      'Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.';
 
   @override
   String get levelAbbr => 'LVL';
@@ -1307,4 +1307,302 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authNoConnection =>
       'The server can\'t be reached right now. Please try again in a moment.';
+
+  @override
+  String get wizardFinishBtnLabel => 'Done';
+
+  @override
+  String get wizardSkipBtnLabel => 'Skip';
+
+  @override
+  String get wizardOptionalStepLabel => 'Optional step';
+
+  @override
+  String get wizardShowExplanation => 'Show explanation';
+
+  @override
+  String get wizardHideExplanation => 'Hide explanation';
+
+  @override
+  String get wizardSavedSnackbar => 'Setup saved';
+
+  @override
+  String get confirmDeleteBtnLabel => 'Delete';
+
+  @override
+  String get wizardUndo => 'Undo';
+
+  @override
+  String get wizardSkinStepHelper =>
+      '## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.';
+
+  @override
+  String get wizardCampaignNameStepHelper =>
+      '## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.';
+
+  @override
+  String get wizardCharacterSheetStepTitle => 'Character sheet';
+
+  @override
+  String get wizardTabNameLabel => 'Tab name';
+
+  @override
+  String get wizardUnnamedTab => 'Unnamed tab';
+
+  @override
+  String get wizardUnnamedProperty => 'Unnamed property';
+
+  @override
+  String wizardGroupLabel(int number) {
+    return 'Group $number';
+  }
+
+  @override
+  String get wizardDeleteTabTitle => 'Delete tab?';
+
+  @override
+  String wizardDeleteTabMessage(int count, String tabName) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Delete tab “$tabName” with $count properties? Character values will be lost.',
+      one:
+          'Delete tab “$tabName” with one property? Character values will be lost.',
+      zero: 'Delete the empty tab “$tabName”?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wizardDeletePropertyTitle => 'Delete property?';
+
+  @override
+  String wizardDeletePropertyMessage(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Delete property “$name”? $count characters already have values for it, which will be lost.',
+      one:
+          'Delete property “$name”? One character already has a value for it, which will be lost.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardPropertyDeletedSnackbar(String name) {
+    return 'Property “$name” deleted';
+  }
+
+  @override
+  String get wizardCurrencyStepTitle => 'Currency';
+
+  @override
+  String get wizardCurrencyStepHelper =>
+      '## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).';
+
+  @override
+  String get wizardSmallestCurrencyLabel => 'Name of the smallest currency:';
+
+  @override
+  String get wizardNextCurrencyLabel => 'Name of the next larger currency:';
+
+  @override
+  String get wizardCurrencyMultipleLabel =>
+      'Worth how many of the previous currency:';
+
+  @override
+  String get wizardNewEntryDefaultName => 'New';
+
+  @override
+  String get wizardLocationsStepTitle => 'Places of finding';
+
+  @override
+  String get wizardLocationsStepHelper =>
+      '## Places of finding (optional)\n\nFrom here on it is about items and crafting. You only need this and the following steps (places of finding, item categories, items, recipes) if you play with them. **Skip** takes you straight to the summary; data you already entered stays.\n\nSome items can be found in certain places: on the beach, in caves, in grottos and so on. Add those places here so you can link them to items in the next steps.';
+
+  @override
+  String wizardLocationLabel(int number) {
+    return 'Place #$number';
+  }
+
+  @override
+  String wizardLocationItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items can be found here.',
+      one: 'One item can be found here.',
+      zero: 'No items can be found here yet.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wizardItemCategoriesStepTitle => 'Item categories';
+
+  @override
+  String get wizardItemCategoriesStepHelper =>
+      '## Item categories (optional)\n\nSo players can filter their items, we sort them into categories. We have prepared a set of categories and subcategories for you.\n\nFeel free to adjust them if they do not fit your game.';
+
+  @override
+  String get wizardCategoryNameLabel => 'Category name:';
+
+  @override
+  String get wizardSubCategoryNameLabel => 'Subcategory name:';
+
+  @override
+  String wizardCategoryItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items in this category.',
+      one: 'One item in this category.',
+      zero: 'No items in this category yet.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wizardNewSubCategoryBtnLabel => 'New subcategory';
+
+  @override
+  String wizardIconForCategorySuffix(String name) {
+    return ' (for category $name)';
+  }
+
+  @override
+  String get wizardItemsStepTitle => 'Items';
+
+  @override
+  String get wizardItemsStepHelper =>
+      '## Items (optional)\n\nAdd the items of your world here: healing potions, weapons, quest items or ingredients for poisons, anything that can end up in the bags of your players.\n\nYou can also note what a potion does.\n\nTip: put effects, damage and the like at the start of the description. Then your players see the most important facts at a glance.';
+
+  @override
+  String get wizardEditItemTitle => 'Edit item';
+
+  @override
+  String get wizardItemNameLabel => 'Item name:';
+
+  @override
+  String get wizardItemCategoryLabel => 'Category';
+
+  @override
+  String get wizardItemPatchSizeLabel => 'Patch size (optional):';
+
+  @override
+  String get wizardItemImageDescriptionLabel => 'Image description:';
+
+  @override
+  String get wizardItemPlacesOfFindingHeader => 'Places of finding:';
+
+  @override
+  String get wizardNewLocationBtnLabel => 'New place';
+
+  @override
+  String get wizardNewImageBtnLabel => 'New image';
+
+  @override
+  String get wizardPickImageBtnLabel => 'Choose image';
+
+  @override
+  String get wizardInvalidImageFile => 'This file is not a valid image.';
+
+  @override
+  String get wizardRecipesStepTitle => 'Recipes';
+
+  @override
+  String get wizardRecipesStepHelper =>
+      '## Recipes (optional)\n\nRecipes let your players craft things themselves, for example healing potions.\n\nSome recipes require a tool, such as a herbalism kit. You can note that in the recipe too; players then need the tool to use the recipe.\n\nTap a recipe to edit it. Press and hold it for more actions.';
+
+  @override
+  String get wizardRecipeOpenDetails => 'Open details';
+
+  @override
+  String get wizardRecipeDuplicateAndOpen => 'Duplicate and open';
+
+  @override
+  String get wizardRecipeDeletePermanently => 'Delete permanently';
+
+  @override
+  String get wizardEditRecipeTitle => 'Edit recipe';
+
+  @override
+  String get wizardRecipeCreatedItemLabel => 'Item to craft';
+
+  @override
+  String wizardRecipeRequirementLabel(int number) {
+    return 'Prerequisite #$number';
+  }
+
+  @override
+  String get wizardRecipeAddRequirement => 'Add prerequisite';
+
+  @override
+  String wizardRecipeIngredientLabel(int number) {
+    return 'Ingredient #$number';
+  }
+
+  @override
+  String get wizardRecipeAddIngredient => 'Add ingredient';
+
+  @override
+  String get wizardSummaryStepTitle => 'Summary';
+
+  @override
+  String get wizardSummaryStepHelper =>
+      '## All set!\n\nYour campaign is set up and everything is saved. The overview shows what is set up.\n\nYou can change everything later via the gear icon in the top right.\n\n**Done** closes the wizard.';
+
+  @override
+  String get wizardSummaryCampaignLabel => 'Campaign';
+
+  @override
+  String get wizardSummaryNotSet => 'Not set yet';
+
+  @override
+  String wizardSummaryTabCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tabs',
+      one: '1 tab',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardSummaryPropertyCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count properties',
+      one: '1 property',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardSummaryItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'No items',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardSummaryRecipeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipes',
+      one: '1 recipe',
+      zero: 'No recipes',
+    );
+    return '$_temp0';
+  }
 }

@@ -821,7 +821,7 @@ abstract class AppLocalizations {
   /// No description provided for @rpgConfigurationDmWizardStep2Tutorial.
   ///
   /// In de, this message translates to:
-  /// **'Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:'**
+  /// **'Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleitung, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nEigenschaften ordnest du in Tabs und Gruppen. Halte eine Eigenschaft gedrückt, um sie zu verschieben.'**
   String get rpgConfigurationDmWizardStep2Tutorial;
 
   /// No description provided for @levelAbbr.
@@ -1109,7 +1109,7 @@ abstract class AppLocalizations {
   /// No description provided for @defaultTab.
   ///
   /// In de, this message translates to:
-  /// **'Default Tab'**
+  /// **'Start-Tab'**
   String get defaultTab;
 
   /// No description provided for @amountHeaderLabel.
@@ -1403,7 +1403,7 @@ abstract class AppLocalizations {
   /// No description provided for @campaignName.
   ///
   /// In de, this message translates to:
-  /// **'Kampagnen Name'**
+  /// **'Kampagnenname'**
   String get campaignName;
 
   /// No description provided for @tranformToAlternateForm.
@@ -2503,6 +2503,414 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Der Server ist gerade nicht erreichbar. Versuch es gleich noch einmal.'**
   String get authNoConnection;
+
+  /// No description provided for @wizardFinishBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get wizardFinishBtnLabel;
+
+  /// No description provided for @wizardSkipBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Überspringen'**
+  String get wizardSkipBtnLabel;
+
+  /// No description provided for @wizardOptionalStepLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Optionaler Schritt'**
+  String get wizardOptionalStepLabel;
+
+  /// No description provided for @wizardShowExplanation.
+  ///
+  /// In de, this message translates to:
+  /// **'Erklärung anzeigen'**
+  String get wizardShowExplanation;
+
+  /// No description provided for @wizardHideExplanation.
+  ///
+  /// In de, this message translates to:
+  /// **'Erklärung einklappen'**
+  String get wizardHideExplanation;
+
+  /// No description provided for @wizardSavedSnackbar.
+  ///
+  /// In de, this message translates to:
+  /// **'Einrichtung gespeichert'**
+  String get wizardSavedSnackbar;
+
+  /// No description provided for @confirmDeleteBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get confirmDeleteBtnLabel;
+
+  /// No description provided for @wizardUndo.
+  ///
+  /// In de, this message translates to:
+  /// **'Rückgängig'**
+  String get wizardUndo;
+
+  /// No description provided for @wizardSkinStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.'**
+  String get wizardSkinStepHelper;
+
+  /// No description provided for @wizardCampaignNameStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.'**
+  String get wizardCampaignNameStepHelper;
+
+  /// No description provided for @wizardCharacterSheetStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Charakterbogen'**
+  String get wizardCharacterSheetStepTitle;
+
+  /// No description provided for @wizardTabNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name des Tabs'**
+  String get wizardTabNameLabel;
+
+  /// No description provided for @wizardUnnamedTab.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbenannter Tab'**
+  String get wizardUnnamedTab;
+
+  /// No description provided for @wizardUnnamedProperty.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbenannte Eigenschaft'**
+  String get wizardUnnamedProperty;
+
+  /// No description provided for @wizardGroupLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Gruppe {number}'**
+  String wizardGroupLabel(int number);
+
+  /// No description provided for @wizardDeleteTabTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Tab löschen?'**
+  String get wizardDeleteTabTitle;
+
+  /// No description provided for @wizardDeleteTabMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Den leeren Tab „{tabName}“ löschen?} one{Tab „{tabName}“ mit einer Eigenschaft löschen? Werte der Charaktere gehen verloren.} other{Tab „{tabName}“ mit {count} Eigenschaften löschen? Werte der Charaktere gehen verloren.}}'**
+  String wizardDeleteTabMessage(int count, String tabName);
+
+  /// No description provided for @wizardDeletePropertyTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaft löschen?'**
+  String get wizardDeletePropertyTitle;
+
+  /// No description provided for @wizardDeletePropertyMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{Eigenschaft „{name}“ löschen? Ein Charakter hat dafür schon einen Wert, er geht verloren.} other{Eigenschaft „{name}“ löschen? {count} Charaktere haben dafür schon Werte, sie gehen verloren.}}'**
+  String wizardDeletePropertyMessage(int count, String name);
+
+  /// No description provided for @wizardPropertyDeletedSnackbar.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaft „{name}“ gelöscht'**
+  String wizardPropertyDeletedSnackbar(String name);
+
+  /// No description provided for @wizardCurrencyStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Währung'**
+  String get wizardCurrencyStepTitle;
+
+  /// No description provided for @wizardCurrencyStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).'**
+  String get wizardCurrencyStepHelper;
+
+  /// No description provided for @wizardSmallestCurrencyLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name der kleinsten Währung:'**
+  String get wizardSmallestCurrencyLabel;
+
+  /// No description provided for @wizardNextCurrencyLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name der nächstgrößeren Währung:'**
+  String get wizardNextCurrencyLabel;
+
+  /// No description provided for @wizardCurrencyMultipleLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Entspricht wie vielen der vorherigen Währung:'**
+  String get wizardCurrencyMultipleLabel;
+
+  /// No description provided for @wizardNewEntryDefaultName.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu'**
+  String get wizardNewEntryDefaultName;
+
+  /// No description provided for @wizardLocationsStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Fundorte'**
+  String get wizardLocationsStepTitle;
+
+  /// No description provided for @wizardLocationsStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Fundorte (optional)\n\nAb hier geht es um Items und Crafting. Diesen und die folgenden Schritte (Fundorte, Item-Kategorien, Items, Rezepte) brauchst du nur, wenn ihr damit spielt. Mit **Überspringen** geht es direkt zur Zusammenfassung; schon angelegte Daten bleiben erhalten.\n\nManche Items lassen sich an bestimmten Orten finden: am Strand, in Höhlen, in Grotten und so weiter. Lege hier die Orte an, damit du sie in den nächsten Schritten mit Items verknüpfen kannst.'**
+  String get wizardLocationsStepHelper;
+
+  /// No description provided for @wizardLocationLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Fundort #{number}'**
+  String wizardLocationLabel(int number);
+
+  /// No description provided for @wizardLocationItemCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{An diesem Fundort gibt es noch keine Items.} one{An diesem Fundort kann ein Item gefunden werden.} other{An diesem Fundort können {count} Items gefunden werden.}}'**
+  String wizardLocationItemCount(int count);
+
+  /// No description provided for @wizardItemCategoriesStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Item-Kategorien'**
+  String get wizardItemCategoriesStepTitle;
+
+  /// No description provided for @wizardItemCategoriesStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Item-Kategorien (optional)\n\nDamit die Spieler ihre Items filtern können, sortieren wir sie in Kategorien ein. Dafür haben wir dir eine Reihe von Kategorien und Unterkategorien vorbereitet.\n\nPasse sie gern an, wenn sie nicht zu eurem Rollenspiel passen.'**
+  String get wizardItemCategoriesStepHelper;
+
+  /// No description provided for @wizardCategoryNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name der Kategorie:'**
+  String get wizardCategoryNameLabel;
+
+  /// No description provided for @wizardSubCategoryNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name der Unterkategorie:'**
+  String get wizardSubCategoryNameLabel;
+
+  /// No description provided for @wizardCategoryItemCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{In dieser Kategorie sind noch keine Items.} one{In dieser Kategorie ist ein Item.} other{In dieser Kategorie sind {count} Items.}}'**
+  String wizardCategoryItemCount(int count);
+
+  /// No description provided for @wizardNewSubCategoryBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Unterkategorie'**
+  String get wizardNewSubCategoryBtnLabel;
+
+  /// No description provided for @wizardIconForCategorySuffix.
+  ///
+  /// In de, this message translates to:
+  /// **' (für Kategorie {name})'**
+  String wizardIconForCategorySuffix(String name);
+
+  /// No description provided for @wizardItemsStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Items'**
+  String get wizardItemsStepTitle;
+
+  /// No description provided for @wizardItemsStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Items (optional)\n\nHier legst du die Items deiner Welt an: Heiltränke, Waffen, Questgegenstände oder Zutaten für Gifte, also alles, was in den Taschen deiner Spieler landen kann.\n\nAuch die Wirkung eines Tranks kannst du hier hinterlegen.\n\nTipp: Schreib Wirkung, Schaden und Ähnliches an den Anfang der Beschreibung. Dann sehen deine Spieler das Wichtigste auf einen Blick.'**
+  String get wizardItemsStepHelper;
+
+  /// No description provided for @wizardEditItemTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Item bearbeiten'**
+  String get wizardEditItemTitle;
+
+  /// No description provided for @wizardItemNameLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name des Items:'**
+  String get wizardItemNameLabel;
+
+  /// No description provided for @wizardItemCategoryLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie'**
+  String get wizardItemCategoryLabel;
+
+  /// No description provided for @wizardItemPatchSizeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Fundgröße (optional):'**
+  String get wizardItemPatchSizeLabel;
+
+  /// No description provided for @wizardItemImageDescriptionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bildbeschreibung:'**
+  String get wizardItemImageDescriptionLabel;
+
+  /// No description provided for @wizardItemPlacesOfFindingHeader.
+  ///
+  /// In de, this message translates to:
+  /// **'Fundorte:'**
+  String get wizardItemPlacesOfFindingHeader;
+
+  /// No description provided for @wizardNewLocationBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Fundort'**
+  String get wizardNewLocationBtnLabel;
+
+  /// No description provided for @wizardNewImageBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Bild'**
+  String get wizardNewImageBtnLabel;
+
+  /// No description provided for @wizardPickImageBtnLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild auswählen'**
+  String get wizardPickImageBtnLabel;
+
+  /// No description provided for @wizardInvalidImageFile.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Datei ist kein gültiges Bild.'**
+  String get wizardInvalidImageFile;
+
+  /// No description provided for @wizardRecipesStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Rezepte'**
+  String get wizardRecipesStepTitle;
+
+  /// No description provided for @wizardRecipesStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Rezepte (optional)\n\nMit Rezepten können deine Spieler selbst Dinge herstellen, zum Beispiel Heiltränke.\n\nManche Rezepte setzen ein Werkzeug voraus, etwa ein Kräuterkunde-Set. Auch das kannst du im Rezept hinterlegen; die Spieler brauchen das Werkzeug dann, um das Rezept zu nutzen.\n\nTippe auf ein Rezept, um es zu bearbeiten. Halte es gedrückt für weitere Aktionen.'**
+  String get wizardRecipesStepHelper;
+
+  /// No description provided for @wizardRecipeOpenDetails.
+  ///
+  /// In de, this message translates to:
+  /// **'Details öffnen'**
+  String get wizardRecipeOpenDetails;
+
+  /// No description provided for @wizardRecipeDuplicateAndOpen.
+  ///
+  /// In de, this message translates to:
+  /// **'Duplizieren und öffnen'**
+  String get wizardRecipeDuplicateAndOpen;
+
+  /// No description provided for @wizardRecipeDeletePermanently.
+  ///
+  /// In de, this message translates to:
+  /// **'Endgültig löschen'**
+  String get wizardRecipeDeletePermanently;
+
+  /// No description provided for @wizardEditRecipeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Rezept bearbeiten'**
+  String get wizardEditRecipeTitle;
+
+  /// No description provided for @wizardRecipeCreatedItemLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Herzustellendes Item'**
+  String get wizardRecipeCreatedItemLabel;
+
+  /// No description provided for @wizardRecipeRequirementLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Voraussetzung #{number}'**
+  String wizardRecipeRequirementLabel(int number);
+
+  /// No description provided for @wizardRecipeAddRequirement.
+  ///
+  /// In de, this message translates to:
+  /// **'Weitere Voraussetzung'**
+  String get wizardRecipeAddRequirement;
+
+  /// No description provided for @wizardRecipeIngredientLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Zutat #{number}'**
+  String wizardRecipeIngredientLabel(int number);
+
+  /// No description provided for @wizardRecipeAddIngredient.
+  ///
+  /// In de, this message translates to:
+  /// **'Weitere Zutat'**
+  String get wizardRecipeAddIngredient;
+
+  /// No description provided for @wizardSummaryStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Zusammenfassung'**
+  String get wizardSummaryStepTitle;
+
+  /// No description provided for @wizardSummaryStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Fertig!\n\nDeine Kampagne ist eingerichtet und alles ist gespeichert. Die Übersicht zeigt, was eingerichtet ist.\n\nÄndern kannst du alles später über das Zahnrad oben rechts.\n\nMit **Fertig** schließt du den Assistenten.'**
+  String get wizardSummaryStepHelper;
+
+  /// No description provided for @wizardSummaryCampaignLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagne'**
+  String get wizardSummaryCampaignLabel;
+
+  /// No description provided for @wizardSummaryNotSet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht festgelegt'**
+  String get wizardSummaryNotSet;
+
+  /// No description provided for @wizardSummaryTabCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 Tab} other{{count} Tabs}}'**
+  String wizardSummaryTabCount(int count);
+
+  /// No description provided for @wizardSummaryPropertyCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 Eigenschaft} other{{count} Eigenschaften}}'**
+  String wizardSummaryPropertyCount(int count);
+
+  /// No description provided for @wizardSummaryItemCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Keine Items} one{1 Item} other{{count} Items}}'**
+  String wizardSummaryItemCount(int count);
+
+  /// No description provided for @wizardSummaryRecipeCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Keine Rezepte} one{1 Rezept} other{{count} Rezepte}}'**
+  String wizardSummaryRecipeCount(int count);
 }
 
 class _AppLocalizationsDelegate

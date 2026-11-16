@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/components/wizards/wizard_manager.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -66,12 +67,14 @@ void main() {
                 backgroundColor: Colors.transparent,
                 body: WizardManager(
                   onFinish: () {},
-                  stepBuilders: [
-                    (onPrevious, onNext, setTitle) =>
-                        RpgConfigurationWizardStep0CharacterSheetSkin(
-                      onPreviousBtnPressed: onPrevious,
-                      onNextBtnPressed: onNext,
-                      setWizardTitle: setTitle,
+                  steps: [
+                    WizardStepDefinition(
+                      builder: (onPrevious, onNext, setTitle) =>
+                          RpgConfigurationWizardStep0CharacterSheetSkin(
+                        onPreviousBtnPressed: onPrevious,
+                        onNextBtnPressed: onNext,
+                        setWizardTitle: setTitle,
+                      ),
                     ),
                   ],
                 ),

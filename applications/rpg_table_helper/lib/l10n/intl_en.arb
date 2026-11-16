@@ -127,7 +127,7 @@
   "receivedOneNewItemText": "You received one new item:",
   "receivedXNewItems": "You received {amount} new items:",
   "ok": "Ok",
-  "rpgConfigurationDmWizardStep2Tutorial": "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character's backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:",
+  "rpgConfigurationDmWizardStep2Tutorial": "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.",
   "levelAbbr": "LVL",
   "addAdditionalEnemy": "Add additional enemy",
   "enemyName": "Enemy name",
@@ -487,5 +487,193 @@
   "forgotPasswordRequestNewCode": "Request a new code",
   "forgotPasswordSuccess": "Your password has been changed. Sign in with your new password now.",
   "forgotPasswordBackToLogin": "Back to sign in",
-  "authNoConnection": "The server can't be reached right now. Please try again in a moment."
+  "authNoConnection": "The server can't be reached right now. Please try again in a moment.",
+  "wizardFinishBtnLabel": "Done",
+  "wizardSkipBtnLabel": "Skip",
+  "wizardOptionalStepLabel": "Optional step",
+  "wizardShowExplanation": "Show explanation",
+  "wizardHideExplanation": "Hide explanation",
+  "wizardSavedSnackbar": "Setup saved",
+  "confirmDeleteBtnLabel": "Delete",
+  "wizardUndo": "Undo",
+  "wizardSkinStepHelper": "## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.",
+  "wizardCampaignNameStepHelper": "## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.",
+  "wizardCharacterSheetStepTitle": "Character sheet",
+  "wizardTabNameLabel": "Tab name",
+  "wizardUnnamedTab": "Unnamed tab",
+  "wizardUnnamedProperty": "Unnamed property",
+  "wizardGroupLabel": "Group {number}",
+  "@wizardGroupLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "wizardDeleteTabTitle": "Delete tab?",
+  "wizardDeleteTabMessage": "{count, plural, =0{Delete the empty tab “{tabName}”?} one{Delete tab “{tabName}” with one property? Character values will be lost.} other{Delete tab “{tabName}” with {count} properties? Character values will be lost.}}",
+  "@wizardDeleteTabMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "7"
+      },
+      "tabName": {
+        "type": "String",
+        "example": "Hintergrund"
+      }
+    }
+  },
+  "wizardDeletePropertyTitle": "Delete property?",
+  "wizardDeletePropertyMessage": "{count, plural, one{Delete property “{name}”? One character already has a value for it, which will be lost.} other{Delete property “{name}”? {count} characters already have values for it, which will be lost.}}",
+  "@wizardDeletePropertyMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      },
+      "name": {
+        "type": "String",
+        "example": "HP"
+      }
+    }
+  },
+  "wizardPropertyDeletedSnackbar": "Property “{name}” deleted",
+  "@wizardPropertyDeletedSnackbar": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "HP"
+      }
+    }
+  },
+  "wizardCurrencyStepTitle": "Currency",
+  "wizardCurrencyStepHelper": "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).",
+  "wizardSmallestCurrencyLabel": "Name of the smallest currency:",
+  "wizardNextCurrencyLabel": "Name of the next larger currency:",
+  "wizardCurrencyMultipleLabel": "Worth how many of the previous currency:",
+  "wizardNewEntryDefaultName": "New",
+  "wizardLocationsStepTitle": "Places of finding",
+  "wizardLocationsStepHelper": "## Places of finding (optional)\n\nFrom here on it is about items and crafting. You only need this and the following steps (places of finding, item categories, items, recipes) if you play with them. **Skip** takes you straight to the summary; data you already entered stays.\n\nSome items can be found in certain places: on the beach, in caves, in grottos and so on. Add those places here so you can link them to items in the next steps.",
+  "wizardLocationLabel": "Place #{number}",
+  "@wizardLocationLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "wizardLocationItemCount": "{count, plural, =0{No items can be found here yet.} one{One item can be found here.} other{{count} items can be found here.}}",
+  "@wizardLocationItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "wizardItemCategoriesStepTitle": "Item categories",
+  "wizardItemCategoriesStepHelper": "## Item categories (optional)\n\nSo players can filter their items, we sort them into categories. We have prepared a set of categories and subcategories for you.\n\nFeel free to adjust them if they do not fit your game.",
+  "wizardCategoryNameLabel": "Category name:",
+  "wizardSubCategoryNameLabel": "Subcategory name:",
+  "wizardCategoryItemCount": "{count, plural, =0{No items in this category yet.} one{One item in this category.} other{{count} items in this category.}}",
+  "@wizardCategoryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "wizardNewSubCategoryBtnLabel": "New subcategory",
+  "wizardIconForCategorySuffix": " (for category {name})",
+  "@wizardIconForCategorySuffix": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Waffen"
+      }
+    }
+  },
+  "wizardItemsStepTitle": "Items",
+  "wizardItemsStepHelper": "## Items (optional)\n\nAdd the items of your world here: healing potions, weapons, quest items or ingredients for poisons, anything that can end up in the bags of your players.\n\nYou can also note what a potion does.\n\nTip: put effects, damage and the like at the start of the description. Then your players see the most important facts at a glance.",
+  "wizardEditItemTitle": "Edit item",
+  "wizardItemNameLabel": "Item name:",
+  "wizardItemCategoryLabel": "Category",
+  "wizardItemPatchSizeLabel": "Patch size (optional):",
+  "wizardItemImageDescriptionLabel": "Image description:",
+  "wizardItemPlacesOfFindingHeader": "Places of finding:",
+  "wizardNewLocationBtnLabel": "New place",
+  "wizardNewImageBtnLabel": "New image",
+  "wizardPickImageBtnLabel": "Choose image",
+  "wizardInvalidImageFile": "This file is not a valid image.",
+  "wizardRecipesStepTitle": "Recipes",
+  "wizardRecipesStepHelper": "## Recipes (optional)\n\nRecipes let your players craft things themselves, for example healing potions.\n\nSome recipes require a tool, such as a herbalism kit. You can note that in the recipe too; players then need the tool to use the recipe.\n\nTap a recipe to edit it. Press and hold it for more actions.",
+  "wizardRecipeOpenDetails": "Open details",
+  "wizardRecipeDuplicateAndOpen": "Duplicate and open",
+  "wizardRecipeDeletePermanently": "Delete permanently",
+  "wizardEditRecipeTitle": "Edit recipe",
+  "wizardRecipeCreatedItemLabel": "Item to craft",
+  "wizardRecipeRequirementLabel": "Prerequisite #{number}",
+  "@wizardRecipeRequirementLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "wizardRecipeAddRequirement": "Add prerequisite",
+  "wizardRecipeIngredientLabel": "Ingredient #{number}",
+  "@wizardRecipeIngredientLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "wizardRecipeAddIngredient": "Add ingredient",
+  "wizardSummaryStepTitle": "Summary",
+  "wizardSummaryStepHelper": "## All set!\n\nYour campaign is set up and everything is saved. The overview shows what is set up.\n\nYou can change everything later via the gear icon in the top right.\n\n**Done** closes the wizard.",
+  "wizardSummaryCampaignLabel": "Campaign",
+  "wizardSummaryNotSet": "Not set yet",
+  "wizardSummaryTabCount": "{count, plural, one{1 tab} other{{count} tabs}}",
+  "@wizardSummaryTabCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "wizardSummaryPropertyCount": "{count, plural, one{1 property} other{{count} properties}}",
+  "@wizardSummaryPropertyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "24"
+      }
+    }
+  },
+  "wizardSummaryItemCount": "{count, plural, =0{No items} one{1 item} other{{count} items}}",
+  "@wizardSummaryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+  "wizardSummaryRecipeCount": "{count, plural, =0{No recipes} one{1 recipe} other{{count} recipes}}",
+  "@wizardSummaryRecipeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  }
 }

@@ -57,7 +57,7 @@ class _RpgConfigurationWizardStep2bFightInitiativeState
 
   @override
   void dispose() {
-    registerWizardStepSave(null);
+    unregisterWizardStepSave(_persistToProviderIfReady);
     super.dispose();
   }
 

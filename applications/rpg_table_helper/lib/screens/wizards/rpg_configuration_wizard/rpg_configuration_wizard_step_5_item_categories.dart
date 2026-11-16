@@ -7,6 +7,8 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
@@ -99,15 +101,27 @@ class _RpgConfigurationWizardStep5ItemCategories
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Item Kategorien");
+      if (!mounted) return;
+      widget.setWizardTitle(S.of(context).wizardItemCategoriesStepTitle);
     });
+    registerWizardStepSave(_saveIfValid);
 
     super.initState();
   }
 
   @override
   void dispose() {
+    unregisterWizardStepSave(_saveIfValid);
     super.dispose();
+  }
+
+  /// Called by the wizard when the step is left in any way, including
+  /// "skip". Incomplete entries are not saved; saved categories stay
+  /// untouched.
+  void _saveIfValid() {
+    if (getIsFormValid()) {
+      saveChanges();
+    }
   }
 
   RpgConfigurationModel? rpgConfig;
@@ -132,14 +146,7 @@ class _RpgConfigurationWizardStep5ItemCategories
       }
     });
 
-    var stepHelperText = '''
-
-Damit die Spieler ihre Items filtern können, wollen wir die Items in bestimmte Kategorien einsortieren. Hierzu haben wir dir eine Reihe von Kategorien und Subkategorien vorbereitet.
-
-Nimm gerne Anpassungen vor, wenn diese Kategorien nicht zu eurem RPG passen!
-
-Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle Items auflaufen, die keiner anderen Kategorie zugewiesen wurden.
-'''; // TODO localize
+    var stepHelperText = S.of(context).wizardItemCategoriesStepHelper;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
@@ -153,10 +160,8 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
               saveChanges();
               widget.onNextBtnPressed();
             },
-      onPreviousBtnPressed: () {
-        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-        widget.onPreviousBtnPressed();
-      },
+      // Leaving the step saves valid entries through the registered save.
+      onPreviousBtnPressed: widget.onPreviousBtnPressed,
       contentChildren: [
         const SizedBox(
           height: 20,
@@ -177,8 +182,10 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                         await showSelectIconWithColorModal(context,
                                 alreadySelectedIcoName: e.value.iconName,
                                 alreadySelectedIconColor: e.value.iconColor,
-                                titleSuffix:
-                                    " (für Kategorie ${e.value.nameController.text})")
+                                titleSuffix: S
+                                    .of(context)
+                                    .wizardIconForCategorySuffix(
+                                        e.value.nameController.text))
                             .then((value) {
                           if (value == null) {
                             return;
@@ -206,11 +213,13 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                   Expanded(
                     child: CustomTextField(
                       keyboardType: TextInputType.text,
-                      labelText: "Name der Kategorie:", // TODO localize
+                      labelText: S.of(context).wizardCategoryNameLabel,
                       textEditingController: e.value.nameController,
                       placeholderText: rpgConfig == null
                           ? null
-                          : "In dieser Kategorie sind ${getNumberOfToCategoryAssignedItems(rpgConfig!, e.value.uuid)} Items.",
+                          : S.of(context).wizardCategoryItemCount(
+                              getNumberOfToCategoryAssignedItems(
+                                  rpgConfig!, e.value.uuid)),
                     ),
                   ),
                   Container(
@@ -249,12 +258,14 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                             child: CustomTextField(
                               keyboardType: TextInputType.text,
                               labelText:
-                                  "Name der Sub-Kategorie:", // TODO localize
+                                  S.of(context).wizardSubCategoryNameLabel,
                               textEditingController:
                                   subCat.value.nameController,
                               placeholderText: rpgConfig == null
                                   ? null
-                                  : "In dieser Kategorie sind ${getNumberOfToCategoryAssignedItems(rpgConfig!, subCat.value.uuid)} Items.",
+                                  : S.of(context).wizardCategoryItemCount(
+                                      getNumberOfToCategoryAssignedItems(
+                                          rpgConfig!, subCat.value.uuid)),
                             ),
                           ),
                           Container(
@@ -301,12 +312,12 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                                   colorCode: "#ffff00ff",
                                   iconName: "spellbook-svgrepo-com",
                                   uuid: const UuidV7().generate(),
-                                  name: "Neu",
+                                  name: S.of(context).wizardNewEntryDefaultName,
                                   subCategories: []),
                               _updateStateForFormValidation));
                     });
                   },
-                  label: "Neue Sub-Kategorie",
+                  label: S.of(context).wizardNewSubCategoryBtnLabel,
                   icon: Padding(
                     padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                     child: Container(
@@ -340,7 +351,7 @@ Hinweis: Wir legen automatisch eine Kategorie “Sonstiges” an, in der alle It
                       colorCode: "#ffff00ff",
                       iconName: "spellbook-svgrepo-com",
                       uuid: const UuidV7().generate(),
-                      name: "Neu",
+                      name: S.of(context).wizardNewEntryDefaultName,
                       subCategories: []),
                   _updateStateForFormValidation));
             });

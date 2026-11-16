@@ -1100,10 +1100,10 @@ class S {
     return Intl.message('Ok', name: 'ok', desc: '', args: []);
   }
 
-  /// `Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character's backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:`
+  /// `Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.`
   String get rpgConfigurationDmWizardStep2Tutorial {
     return Intl.message(
-      'Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:',
+      'Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.',
       name: 'rpgConfigurationDmWizardStep2Tutorial',
       desc: '',
       args: [],
@@ -3657,6 +3657,701 @@ class S {
       name: 'authNoConnection',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Done`
+  String get wizardFinishBtnLabel {
+    return Intl.message(
+      'Done',
+      name: 'wizardFinishBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skip`
+  String get wizardSkipBtnLabel {
+    return Intl.message('Skip', name: 'wizardSkipBtnLabel', desc: '', args: []);
+  }
+
+  /// `Optional step`
+  String get wizardOptionalStepLabel {
+    return Intl.message(
+      'Optional step',
+      name: 'wizardOptionalStepLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show explanation`
+  String get wizardShowExplanation {
+    return Intl.message(
+      'Show explanation',
+      name: 'wizardShowExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide explanation`
+  String get wizardHideExplanation {
+    return Intl.message(
+      'Hide explanation',
+      name: 'wizardHideExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Setup saved`
+  String get wizardSavedSnackbar {
+    return Intl.message(
+      'Setup saved',
+      name: 'wizardSavedSnackbar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get confirmDeleteBtnLabel {
+    return Intl.message(
+      'Delete',
+      name: 'confirmDeleteBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Undo`
+  String get wizardUndo {
+    return Intl.message('Undo', name: 'wizardUndo', desc: '', args: []);
+  }
+
+  /// `## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.`
+  String get wizardSkinStepHelper {
+    return Intl.message(
+      '## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.',
+      name: 'wizardSkinStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.`
+  String get wizardCampaignNameStepHelper {
+    return Intl.message(
+      '## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.',
+      name: 'wizardCampaignNameStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Character sheet`
+  String get wizardCharacterSheetStepTitle {
+    return Intl.message(
+      'Character sheet',
+      name: 'wizardCharacterSheetStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tab name`
+  String get wizardTabNameLabel {
+    return Intl.message(
+      'Tab name',
+      name: 'wizardTabNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unnamed tab`
+  String get wizardUnnamedTab {
+    return Intl.message(
+      'Unnamed tab',
+      name: 'wizardUnnamedTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unnamed property`
+  String get wizardUnnamedProperty {
+    return Intl.message(
+      'Unnamed property',
+      name: 'wizardUnnamedProperty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group {number}`
+  String wizardGroupLabel(int number) {
+    return Intl.message(
+      'Group $number',
+      name: 'wizardGroupLabel',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Delete tab?`
+  String get wizardDeleteTabTitle {
+    return Intl.message(
+      'Delete tab?',
+      name: 'wizardDeleteTabTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, =0{Delete the empty tab “{tabName}”?} one{Delete tab “{tabName}” with one property? Character values will be lost.} other{Delete tab “{tabName}” with {count} properties? Character values will be lost.}}`
+  String wizardDeleteTabMessage(int count, String tabName) {
+    return Intl.plural(
+      count,
+      zero: 'Delete the empty tab “$tabName”?',
+      one:
+          'Delete tab “$tabName” with one property? Character values will be lost.',
+      other:
+          'Delete tab “$tabName” with $count properties? Character values will be lost.',
+      name: 'wizardDeleteTabMessage',
+      desc: '',
+      args: [count, tabName],
+    );
+  }
+
+  /// `Delete property?`
+  String get wizardDeletePropertyTitle {
+    return Intl.message(
+      'Delete property?',
+      name: 'wizardDeletePropertyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one{Delete property “{name}”? One character already has a value for it, which will be lost.} other{Delete property “{name}”? {count} characters already have values for it, which will be lost.}}`
+  String wizardDeletePropertyMessage(int count, String name) {
+    return Intl.plural(
+      count,
+      one:
+          'Delete property “$name”? One character already has a value for it, which will be lost.',
+      other:
+          'Delete property “$name”? $count characters already have values for it, which will be lost.',
+      name: 'wizardDeletePropertyMessage',
+      desc: '',
+      args: [count, name],
+    );
+  }
+
+  /// `Property “{name}” deleted`
+  String wizardPropertyDeletedSnackbar(String name) {
+    return Intl.message(
+      'Property “$name” deleted',
+      name: 'wizardPropertyDeletedSnackbar',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Currency`
+  String get wizardCurrencyStepTitle {
+    return Intl.message(
+      'Currency',
+      name: 'wizardCurrencyStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).`
+  String get wizardCurrencyStepHelper {
+    return Intl.message(
+      '## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).',
+      name: 'wizardCurrencyStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name of the smallest currency:`
+  String get wizardSmallestCurrencyLabel {
+    return Intl.message(
+      'Name of the smallest currency:',
+      name: 'wizardSmallestCurrencyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name of the next larger currency:`
+  String get wizardNextCurrencyLabel {
+    return Intl.message(
+      'Name of the next larger currency:',
+      name: 'wizardNextCurrencyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Worth how many of the previous currency:`
+  String get wizardCurrencyMultipleLabel {
+    return Intl.message(
+      'Worth how many of the previous currency:',
+      name: 'wizardCurrencyMultipleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New`
+  String get wizardNewEntryDefaultName {
+    return Intl.message(
+      'New',
+      name: 'wizardNewEntryDefaultName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Places of finding`
+  String get wizardLocationsStepTitle {
+    return Intl.message(
+      'Places of finding',
+      name: 'wizardLocationsStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Places of finding (optional)\n\nFrom here on it is about items and crafting. You only need this and the following steps (places of finding, item categories, items, recipes) if you play with them. **Skip** takes you straight to the summary; data you already entered stays.\n\nSome items can be found in certain places: on the beach, in caves, in grottos and so on. Add those places here so you can link them to items in the next steps.`
+  String get wizardLocationsStepHelper {
+    return Intl.message(
+      '## Places of finding (optional)\n\nFrom here on it is about items and crafting. You only need this and the following steps (places of finding, item categories, items, recipes) if you play with them. **Skip** takes you straight to the summary; data you already entered stays.\n\nSome items can be found in certain places: on the beach, in caves, in grottos and so on. Add those places here so you can link them to items in the next steps.',
+      name: 'wizardLocationsStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Place #{number}`
+  String wizardLocationLabel(int number) {
+    return Intl.message(
+      'Place #$number',
+      name: 'wizardLocationLabel',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `{count, plural, =0{No items can be found here yet.} one{One item can be found here.} other{{count} items can be found here.}}`
+  String wizardLocationItemCount(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No items can be found here yet.',
+      one: 'One item can be found here.',
+      other: '$count items can be found here.',
+      name: 'wizardLocationItemCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Item categories`
+  String get wizardItemCategoriesStepTitle {
+    return Intl.message(
+      'Item categories',
+      name: 'wizardItemCategoriesStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Item categories (optional)\n\nSo players can filter their items, we sort them into categories. We have prepared a set of categories and subcategories for you.\n\nFeel free to adjust them if they do not fit your game.`
+  String get wizardItemCategoriesStepHelper {
+    return Intl.message(
+      '## Item categories (optional)\n\nSo players can filter their items, we sort them into categories. We have prepared a set of categories and subcategories for you.\n\nFeel free to adjust them if they do not fit your game.',
+      name: 'wizardItemCategoriesStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Category name:`
+  String get wizardCategoryNameLabel {
+    return Intl.message(
+      'Category name:',
+      name: 'wizardCategoryNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subcategory name:`
+  String get wizardSubCategoryNameLabel {
+    return Intl.message(
+      'Subcategory name:',
+      name: 'wizardSubCategoryNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, =0{No items in this category yet.} one{One item in this category.} other{{count} items in this category.}}`
+  String wizardCategoryItemCount(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No items in this category yet.',
+      one: 'One item in this category.',
+      other: '$count items in this category.',
+      name: 'wizardCategoryItemCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `New subcategory`
+  String get wizardNewSubCategoryBtnLabel {
+    return Intl.message(
+      'New subcategory',
+      name: 'wizardNewSubCategoryBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` (for category {name})`
+  String wizardIconForCategorySuffix(String name) {
+    return Intl.message(
+      ' (for category $name)',
+      name: 'wizardIconForCategorySuffix',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Items`
+  String get wizardItemsStepTitle {
+    return Intl.message(
+      'Items',
+      name: 'wizardItemsStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Items (optional)\n\nAdd the items of your world here: healing potions, weapons, quest items or ingredients for poisons, anything that can end up in the bags of your players.\n\nYou can also note what a potion does.\n\nTip: put effects, damage and the like at the start of the description. Then your players see the most important facts at a glance.`
+  String get wizardItemsStepHelper {
+    return Intl.message(
+      '## Items (optional)\n\nAdd the items of your world here: healing potions, weapons, quest items or ingredients for poisons, anything that can end up in the bags of your players.\n\nYou can also note what a potion does.\n\nTip: put effects, damage and the like at the start of the description. Then your players see the most important facts at a glance.',
+      name: 'wizardItemsStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit item`
+  String get wizardEditItemTitle {
+    return Intl.message(
+      'Edit item',
+      name: 'wizardEditItemTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Item name:`
+  String get wizardItemNameLabel {
+    return Intl.message(
+      'Item name:',
+      name: 'wizardItemNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Category`
+  String get wizardItemCategoryLabel {
+    return Intl.message(
+      'Category',
+      name: 'wizardItemCategoryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patch size (optional):`
+  String get wizardItemPatchSizeLabel {
+    return Intl.message(
+      'Patch size (optional):',
+      name: 'wizardItemPatchSizeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image description:`
+  String get wizardItemImageDescriptionLabel {
+    return Intl.message(
+      'Image description:',
+      name: 'wizardItemImageDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Places of finding:`
+  String get wizardItemPlacesOfFindingHeader {
+    return Intl.message(
+      'Places of finding:',
+      name: 'wizardItemPlacesOfFindingHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New place`
+  String get wizardNewLocationBtnLabel {
+    return Intl.message(
+      'New place',
+      name: 'wizardNewLocationBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New image`
+  String get wizardNewImageBtnLabel {
+    return Intl.message(
+      'New image',
+      name: 'wizardNewImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose image`
+  String get wizardPickImageBtnLabel {
+    return Intl.message(
+      'Choose image',
+      name: 'wizardPickImageBtnLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This file is not a valid image.`
+  String get wizardInvalidImageFile {
+    return Intl.message(
+      'This file is not a valid image.',
+      name: 'wizardInvalidImageFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recipes`
+  String get wizardRecipesStepTitle {
+    return Intl.message(
+      'Recipes',
+      name: 'wizardRecipesStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Recipes (optional)\n\nRecipes let your players craft things themselves, for example healing potions.\n\nSome recipes require a tool, such as a herbalism kit. You can note that in the recipe too; players then need the tool to use the recipe.\n\nTap a recipe to edit it. Press and hold it for more actions.`
+  String get wizardRecipesStepHelper {
+    return Intl.message(
+      '## Recipes (optional)\n\nRecipes let your players craft things themselves, for example healing potions.\n\nSome recipes require a tool, such as a herbalism kit. You can note that in the recipe too; players then need the tool to use the recipe.\n\nTap a recipe to edit it. Press and hold it for more actions.',
+      name: 'wizardRecipesStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open details`
+  String get wizardRecipeOpenDetails {
+    return Intl.message(
+      'Open details',
+      name: 'wizardRecipeOpenDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate and open`
+  String get wizardRecipeDuplicateAndOpen {
+    return Intl.message(
+      'Duplicate and open',
+      name: 'wizardRecipeDuplicateAndOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete permanently`
+  String get wizardRecipeDeletePermanently {
+    return Intl.message(
+      'Delete permanently',
+      name: 'wizardRecipeDeletePermanently',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit recipe`
+  String get wizardEditRecipeTitle {
+    return Intl.message(
+      'Edit recipe',
+      name: 'wizardEditRecipeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Item to craft`
+  String get wizardRecipeCreatedItemLabel {
+    return Intl.message(
+      'Item to craft',
+      name: 'wizardRecipeCreatedItemLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prerequisite #{number}`
+  String wizardRecipeRequirementLabel(int number) {
+    return Intl.message(
+      'Prerequisite #$number',
+      name: 'wizardRecipeRequirementLabel',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Add prerequisite`
+  String get wizardRecipeAddRequirement {
+    return Intl.message(
+      'Add prerequisite',
+      name: 'wizardRecipeAddRequirement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ingredient #{number}`
+  String wizardRecipeIngredientLabel(int number) {
+    return Intl.message(
+      'Ingredient #$number',
+      name: 'wizardRecipeIngredientLabel',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Add ingredient`
+  String get wizardRecipeAddIngredient {
+    return Intl.message(
+      'Add ingredient',
+      name: 'wizardRecipeAddIngredient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Summary`
+  String get wizardSummaryStepTitle {
+    return Intl.message(
+      'Summary',
+      name: 'wizardSummaryStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## All set!\n\nYour campaign is set up and everything is saved. The overview shows what is set up.\n\nYou can change everything later via the gear icon in the top right.\n\n**Done** closes the wizard.`
+  String get wizardSummaryStepHelper {
+    return Intl.message(
+      '## All set!\n\nYour campaign is set up and everything is saved. The overview shows what is set up.\n\nYou can change everything later via the gear icon in the top right.\n\n**Done** closes the wizard.',
+      name: 'wizardSummaryStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Campaign`
+  String get wizardSummaryCampaignLabel {
+    return Intl.message(
+      'Campaign',
+      name: 'wizardSummaryCampaignLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not set yet`
+  String get wizardSummaryNotSet {
+    return Intl.message(
+      'Not set yet',
+      name: 'wizardSummaryNotSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one{1 tab} other{{count} tabs}}`
+  String wizardSummaryTabCount(int count) {
+    return Intl.plural(
+      count,
+      one: '1 tab',
+      other: '$count tabs',
+      name: 'wizardSummaryTabCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, one{1 property} other{{count} properties}}`
+  String wizardSummaryPropertyCount(int count) {
+    return Intl.plural(
+      count,
+      one: '1 property',
+      other: '$count properties',
+      name: 'wizardSummaryPropertyCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, =0{No items} one{1 item} other{{count} items}}`
+  String wizardSummaryItemCount(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No items',
+      one: '1 item',
+      other: '$count items',
+      name: 'wizardSummaryItemCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, =0{No recipes} one{1 recipe} other{{count} recipes}}`
+  String wizardSummaryRecipeCount(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No recipes',
+      one: '1 recipe',
+      other: '$count recipes',
+      name: 'wizardSummaryRecipeCount',
+      desc: '',
+      args: [count],
     );
   }
 }

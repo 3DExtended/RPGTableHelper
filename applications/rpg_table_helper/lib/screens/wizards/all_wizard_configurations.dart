@@ -1,4 +1,5 @@
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_0_character_sheet_skin.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_1_campagne_name.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_2_character_configurations_preset.dart';
@@ -8,64 +9,98 @@ import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_config
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_5_item_categories.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_6_items.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
+import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_8_summary.dart';
 
+/// Steps run top to bottom. Optional steps (crafting) can be skipped in one
+/// go; the summary at the end closes the wizard. New steps (e.g. a template
+/// choice) can be inserted anywhere, nothing depends on step indices.
 Map<String, WizardConfiguration> allWizardConfigurations = {
   "/rpgconfigurationwizard": WizardConfiguration(
-    stepBuilders: [
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep0CharacterSheetSkin(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep1CampagneName(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep2CharacterConfigurationsPreset(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep2bFightInitiative(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep3CurrencyDefinition(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep4ItemLocations(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep5ItemCategories(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep6Items(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
-      (moveToPrevious, moveToNext, setTitle) =>
-          RpgConfigurationWizardStep7CraftingRecipes(
-            onPreviousBtnPressed: moveToPrevious,
-            onNextBtnPressed: moveToNext,
-            setWizardTitle: setTitle,
-          ),
+    steps: [
+      WizardStepDefinition(
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep0CharacterSheetSkin(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep1CampagneName(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep2CharacterConfigurationsPreset(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep2bFightInitiative(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep3CurrencyDefinition(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        isOptional: true,
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep4ItemLocations(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        isOptional: true,
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep5ItemCategories(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        isOptional: true,
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep6Items(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        isOptional: true,
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep7CraftingRecipes(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
+      WizardStepDefinition(
+        builder: (moveToPrevious, moveToNext, setTitle) =>
+            RpgConfigurationWizardStep8Summary(
+          onPreviousBtnPressed: moveToPrevious,
+          onNextBtnPressed: moveToNext,
+          setWizardTitle: setTitle,
+        ),
+      ),
     ],
   )
 };

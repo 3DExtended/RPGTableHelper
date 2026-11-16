@@ -127,7 +127,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                         menuOpen: null,
                         useTopSafePadding: false,
                         titleWidget: Text(
-                          "Rezept bearbeiten", // TODO localize/ switch text between add and edit
+                          S.of(context).wizardEditRecipeTitle,
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
@@ -170,7 +170,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                             });
                                           },
                                           label:
-                                              'Herzustellendes Item', // TODO localize
+                                              S.of(context).wizardRecipeCreatedItemLabel,
                                           items: _allItems.map((item) {
                                             return DropdownMenuEntry<String?>(
                                               value: item.uuid == ""
@@ -187,7 +187,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                       width: 70,
                                       child: CustomTextField(
                                         keyboardType: TextInputType.number,
-                                        labelText: "Anzahl", // TODO localize
+                                        labelText: S.of(context).amount,
                                         textEditingController:
                                             selectedCreatingItem.$2,
                                       ),
@@ -202,7 +202,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                   height: 10,
                                 ),
                                 Text(
-                                  "Voraussetzungen:",
+                                  S.of(context).recipeRequirements,
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelMedium!
@@ -239,7 +239,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                                         });
                                                       },
                                                       label:
-                                                          'Voraussetzung #${tuple.key + 1}', // TODO localize
+                                                          S.of(context).wizardRecipeRequirementLabel(tuple.key + 1),
                                                       items: _allItems
                                                           .sortBy((p) => p.name)
                                                           .map((item) {
@@ -298,7 +298,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                             requiredItemIdsSelected.add("");
                                           });
                                         },
-                                        label: "Weitere Voraussetzung",
+                                        label: S.of(context).wizardRecipeAddRequirement,
                                         icon: Theme(
                                             data: ThemeData(
                                               fontFamily: "Ruwudu",
@@ -336,7 +336,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                   height: 10,
                                 ),
                                 Text(
-                                  "Zutaten:",
+                                  S.of(context).recipeIngredients,
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelMedium!
@@ -376,7 +376,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                                         });
                                                       },
                                                       label:
-                                                          'Zutat #${tuple.key + 1}', // TODO localize
+                                                          S.of(context).wizardRecipeIngredientLabel(tuple.key + 1),
                                                       items: _allItems
                                                           .sortBy((p) => p.name)
                                                           .map((item) {
@@ -398,7 +398,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                                 keyboardType:
                                                     TextInputType.number,
                                                 labelText:
-                                                    "Anzahl", // TODO localize
+                                                    S.of(context).amount,
                                                 textEditingController:
                                                     tuple.value.$2,
                                               ),
@@ -453,7 +453,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                             ));
                                           });
                                         },
-                                        label: "Weitere Zutat",
+                                        label: S.of(context).wizardRecipeAddIngredient,
                                         icon: Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               5, 0, 5, 0),

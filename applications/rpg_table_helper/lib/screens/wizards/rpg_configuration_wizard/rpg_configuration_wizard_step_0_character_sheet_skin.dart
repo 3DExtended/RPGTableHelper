@@ -54,12 +54,7 @@ class _RpgConfigurationWizardStep0CharacterSheetSkinState
       }
     });
 
-    final helper = '''
-## ${S.of(context).characterSheetAppearanceTitle}
-
-Pick the default look for character sheets in this campaign.
-Players can override this later for their own characters.
-''';
+    final helper = S.of(context).wizardSkinStepHelper;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >

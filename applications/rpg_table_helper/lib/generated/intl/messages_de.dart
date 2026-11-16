@@ -54,9 +54,45 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(property) => "Der Wert von ${property}";
 
-  static String m15(count) => "Dir gehören ${count} Kampagnen";
+  static String m15(count) =>
+      "${Intl.plural(count, zero: 'In dieser Kategorie sind noch keine Items.', one: 'In dieser Kategorie ist ein Item.', other: 'In dieser Kategorie sind ${count} Items.')}";
 
-  static String m16(count) => "Dir gehören ${count} Charaktere";
+  static String m16(count, name) =>
+      "${Intl.plural(count, one: 'Eigenschaft „${name}“ löschen? Ein Charakter hat dafür schon einen Wert, er geht verloren.', other: 'Eigenschaft „${name}“ löschen? ${count} Charaktere haben dafür schon Werte, sie gehen verloren.')}";
+
+  static String m17(count, tabName) =>
+      "${Intl.plural(count, zero: 'Den leeren Tab „${tabName}“ löschen?', one: 'Tab „${tabName}“ mit einer Eigenschaft löschen? Werte der Charaktere gehen verloren.', other: 'Tab „${tabName}“ mit ${count} Eigenschaften löschen? Werte der Charaktere gehen verloren.')}";
+
+  static String m18(number) => "Gruppe ${number}";
+
+  static String m19(name) => " (für Kategorie ${name})";
+
+  static String m20(count) =>
+      "${Intl.plural(count, zero: 'An diesem Fundort gibt es noch keine Items.', one: 'An diesem Fundort kann ein Item gefunden werden.', other: 'An diesem Fundort können ${count} Items gefunden werden.')}";
+
+  static String m21(number) => "Fundort #${number}";
+
+  static String m22(name) => "Eigenschaft „${name}“ gelöscht";
+
+  static String m23(number) => "Zutat #${number}";
+
+  static String m24(number) => "Voraussetzung #${number}";
+
+  static String m25(count) =>
+      "${Intl.plural(count, zero: 'Keine Items', one: '1 Item', other: '${count} Items')}";
+
+  static String m26(count) =>
+      "${Intl.plural(count, one: '1 Eigenschaft', other: '${count} Eigenschaften')}";
+
+  static String m27(count) =>
+      "${Intl.plural(count, zero: 'Keine Rezepte', one: '1 Rezept', other: '${count} Rezepte')}";
+
+  static String m28(count) =>
+      "${Intl.plural(count, one: '1 Tab', other: '${count} Tabs')}";
+
+  static String m29(count) => "Dir gehören ${count} Kampagnen";
+
+  static String m30(count) => "Dir gehören ${count} Charaktere";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -225,7 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "campaignManagement": MessageLookupByLibrary.simpleMessage(
       "Kampagnen Management",
     ),
-    "campaignName": MessageLookupByLibrary.simpleMessage("Kampagnen Name"),
+    "campaignName": MessageLookupByLibrary.simpleMessage("Kampagnenname"),
     "campaigneName": MessageLookupByLibrary.simpleMessage("Name"),
     "cancel": MessageLookupByLibrary.simpleMessage("Abbrechen"),
     "cardBar": MessageLookupByLibrary.simpleMessage("Balken"),
@@ -354,6 +390,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eigenschaften konfigurieren",
     ),
     "configurePropertiesForCharacterNameSuffix": m6,
+    "confirmDeleteBtnLabel": MessageLookupByLibrary.simpleMessage("Löschen"),
     "connectionLostReconnecting": MessageLookupByLibrary.simpleMessage(
       "Keine Verbindung – verbinde neu …",
     ),
@@ -386,7 +423,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultGroupNameForDocuments": MessageLookupByLibrary.simpleMessage(
       "Sonstiges",
     ),
-    "defaultTab": MessageLookupByLibrary.simpleMessage("Default Tab"),
+    "defaultTab": MessageLookupByLibrary.simpleMessage("Start-Tab"),
     "descriptionOfProperty": MessageLookupByLibrary.simpleMessage(
       "Hilfstext für die Eigenschaft",
     ),
@@ -844,7 +881,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rollOfInititive": MessageLookupByLibrary.simpleMessage("Reihenfolgenwurf"),
     "rpgConfigurationDmWizardStep2Tutorial":
         MessageLookupByLibrary.simpleMessage(
-          "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleiter, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nFalls du mehr Erklärungen benötigst, findest du hier eine Beispielseite mit allen Konfigurationen und dem entsprechenden Aussehen auf den Charakterbögen:",
+          "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleitung, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nEigenschaften ordnest du in Tabs und Gruppen. Halte eine Eigenschaft gedrückt, um sie zu verschieben.",
         ),
     "save": MessageLookupByLibrary.simpleMessage("Speichern"),
     "searchLabel": MessageLookupByLibrary.simpleMessage("Suche"),
@@ -928,6 +965,161 @@ class MessageLookup extends MessageLookupByLibrary {
     "welcomeTagline": MessageLookupByLibrary.simpleMessage(
       "Dein Begleiter für Pen-&-Paper-Runden am Tisch.",
     ),
+    "wizardCampaignNameStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.",
+    ),
+    "wizardCategoryItemCount": m15,
+    "wizardCategoryNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Name der Kategorie:",
+    ),
+    "wizardCharacterSheetStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Charakterbogen",
+    ),
+    "wizardCurrencyMultipleLabel": MessageLookupByLibrary.simpleMessage(
+      "Entspricht wie vielen der vorherigen Währung:",
+    ),
+    "wizardCurrencyStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).",
+    ),
+    "wizardCurrencyStepTitle": MessageLookupByLibrary.simpleMessage("Währung"),
+    "wizardDeletePropertyMessage": m16,
+    "wizardDeletePropertyTitle": MessageLookupByLibrary.simpleMessage(
+      "Eigenschaft löschen?",
+    ),
+    "wizardDeleteTabMessage": m17,
+    "wizardDeleteTabTitle": MessageLookupByLibrary.simpleMessage(
+      "Tab löschen?",
+    ),
+    "wizardEditItemTitle": MessageLookupByLibrary.simpleMessage(
+      "Item bearbeiten",
+    ),
+    "wizardEditRecipeTitle": MessageLookupByLibrary.simpleMessage(
+      "Rezept bearbeiten",
+    ),
+    "wizardFinishBtnLabel": MessageLookupByLibrary.simpleMessage("Fertig"),
+    "wizardGroupLabel": m18,
+    "wizardHideExplanation": MessageLookupByLibrary.simpleMessage(
+      "Erklärung einklappen",
+    ),
+    "wizardIconForCategorySuffix": m19,
+    "wizardInvalidImageFile": MessageLookupByLibrary.simpleMessage(
+      "Diese Datei ist kein gültiges Bild.",
+    ),
+    "wizardItemCategoriesStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Item-Kategorien (optional)\n\nDamit die Spieler ihre Items filtern können, sortieren wir sie in Kategorien ein. Dafür haben wir dir eine Reihe von Kategorien und Unterkategorien vorbereitet.\n\nPasse sie gern an, wenn sie nicht zu eurem Rollenspiel passen.",
+    ),
+    "wizardItemCategoriesStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Item-Kategorien",
+    ),
+    "wizardItemCategoryLabel": MessageLookupByLibrary.simpleMessage(
+      "Kategorie",
+    ),
+    "wizardItemImageDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Bildbeschreibung:",
+    ),
+    "wizardItemNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Name des Items:",
+    ),
+    "wizardItemPatchSizeLabel": MessageLookupByLibrary.simpleMessage(
+      "Fundgröße (optional):",
+    ),
+    "wizardItemPlacesOfFindingHeader": MessageLookupByLibrary.simpleMessage(
+      "Fundorte:",
+    ),
+    "wizardItemsStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Items (optional)\n\nHier legst du die Items deiner Welt an: Heiltränke, Waffen, Questgegenstände oder Zutaten für Gifte, also alles, was in den Taschen deiner Spieler landen kann.\n\nAuch die Wirkung eines Tranks kannst du hier hinterlegen.\n\nTipp: Schreib Wirkung, Schaden und Ähnliches an den Anfang der Beschreibung. Dann sehen deine Spieler das Wichtigste auf einen Blick.",
+    ),
+    "wizardItemsStepTitle": MessageLookupByLibrary.simpleMessage("Items"),
+    "wizardLocationItemCount": m20,
+    "wizardLocationLabel": m21,
+    "wizardLocationsStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Fundorte (optional)\n\nAb hier geht es um Items und Crafting. Diesen und die folgenden Schritte (Fundorte, Item-Kategorien, Items, Rezepte) brauchst du nur, wenn ihr damit spielt. Mit **Überspringen** geht es direkt zur Zusammenfassung; schon angelegte Daten bleiben erhalten.\n\nManche Items lassen sich an bestimmten Orten finden: am Strand, in Höhlen, in Grotten und so weiter. Lege hier die Orte an, damit du sie in den nächsten Schritten mit Items verknüpfen kannst.",
+    ),
+    "wizardLocationsStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Fundorte",
+    ),
+    "wizardNewEntryDefaultName": MessageLookupByLibrary.simpleMessage("Neu"),
+    "wizardNewImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Neues Bild",
+    ),
+    "wizardNewLocationBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Neuer Fundort",
+    ),
+    "wizardNewSubCategoryBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Neue Unterkategorie",
+    ),
+    "wizardNextCurrencyLabel": MessageLookupByLibrary.simpleMessage(
+      "Name der nächstgrößeren Währung:",
+    ),
+    "wizardOptionalStepLabel": MessageLookupByLibrary.simpleMessage(
+      "Optionaler Schritt",
+    ),
+    "wizardPickImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Bild auswählen",
+    ),
+    "wizardPropertyDeletedSnackbar": m22,
+    "wizardRecipeAddIngredient": MessageLookupByLibrary.simpleMessage(
+      "Weitere Zutat",
+    ),
+    "wizardRecipeAddRequirement": MessageLookupByLibrary.simpleMessage(
+      "Weitere Voraussetzung",
+    ),
+    "wizardRecipeCreatedItemLabel": MessageLookupByLibrary.simpleMessage(
+      "Herzustellendes Item",
+    ),
+    "wizardRecipeDeletePermanently": MessageLookupByLibrary.simpleMessage(
+      "Endgültig löschen",
+    ),
+    "wizardRecipeDuplicateAndOpen": MessageLookupByLibrary.simpleMessage(
+      "Duplizieren und öffnen",
+    ),
+    "wizardRecipeIngredientLabel": m23,
+    "wizardRecipeOpenDetails": MessageLookupByLibrary.simpleMessage(
+      "Details öffnen",
+    ),
+    "wizardRecipeRequirementLabel": m24,
+    "wizardRecipesStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Rezepte (optional)\n\nMit Rezepten können deine Spieler selbst Dinge herstellen, zum Beispiel Heiltränke.\n\nManche Rezepte setzen ein Werkzeug voraus, etwa ein Kräuterkunde-Set. Auch das kannst du im Rezept hinterlegen; die Spieler brauchen das Werkzeug dann, um das Rezept zu nutzen.\n\nTippe auf ein Rezept, um es zu bearbeiten. Halte es gedrückt für weitere Aktionen.",
+    ),
+    "wizardRecipesStepTitle": MessageLookupByLibrary.simpleMessage("Rezepte"),
+    "wizardSavedSnackbar": MessageLookupByLibrary.simpleMessage(
+      "Einrichtung gespeichert",
+    ),
+    "wizardShowExplanation": MessageLookupByLibrary.simpleMessage(
+      "Erklärung anzeigen",
+    ),
+    "wizardSkinStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.",
+    ),
+    "wizardSkipBtnLabel": MessageLookupByLibrary.simpleMessage("Überspringen"),
+    "wizardSmallestCurrencyLabel": MessageLookupByLibrary.simpleMessage(
+      "Name der kleinsten Währung:",
+    ),
+    "wizardSubCategoryNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Name der Unterkategorie:",
+    ),
+    "wizardSummaryCampaignLabel": MessageLookupByLibrary.simpleMessage(
+      "Kampagne",
+    ),
+    "wizardSummaryItemCount": m25,
+    "wizardSummaryNotSet": MessageLookupByLibrary.simpleMessage(
+      "Noch nicht festgelegt",
+    ),
+    "wizardSummaryPropertyCount": m26,
+    "wizardSummaryRecipeCount": m27,
+    "wizardSummaryStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Fertig!\n\nDeine Kampagne ist eingerichtet und alles ist gespeichert. Die Übersicht zeigt, was eingerichtet ist.\n\nÄndern kannst du alles später über das Zahnrad oben rechts.\n\nMit **Fertig** schließt du den Assistenten.",
+    ),
+    "wizardSummaryStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Zusammenfassung",
+    ),
+    "wizardSummaryTabCount": m28,
+    "wizardTabNameLabel": MessageLookupByLibrary.simpleMessage("Name des Tabs"),
+    "wizardUndo": MessageLookupByLibrary.simpleMessage("Rückgängig"),
+    "wizardUnnamedProperty": MessageLookupByLibrary.simpleMessage(
+      "Unbenannte Eigenschaft",
+    ),
+    "wizardUnnamedTab": MessageLookupByLibrary.simpleMessage("Unbenannter Tab"),
     "yes": MessageLookupByLibrary.simpleMessage("Ja"),
     "you": MessageLookupByLibrary.simpleMessage("Du"),
     "youAreEditingACopiedPropertyChangesWillNotAffect":
@@ -938,8 +1130,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
         ),
-    "youOwnXCampaigns": m15,
-    "youOwnXCharacters": m16,
+    "youOwnXCampaigns": m29,
+    "youOwnXCharacters": m30,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
     ),

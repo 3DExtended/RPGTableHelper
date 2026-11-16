@@ -54,9 +54,45 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(property) => "The value of ${property}";
 
-  static String m15(count) => "You own ${count} campaigns";
+  static String m15(count) =>
+      "${Intl.plural(count, zero: 'No items in this category yet.', one: 'One item in this category.', other: '${count} items in this category.')}";
 
-  static String m16(count) => "You own ${count} characters";
+  static String m16(count, name) =>
+      "${Intl.plural(count, one: 'Delete property “${name}”? One character already has a value for it, which will be lost.', other: 'Delete property “${name}”? ${count} characters already have values for it, which will be lost.')}";
+
+  static String m17(count, tabName) =>
+      "${Intl.plural(count, zero: 'Delete the empty tab “${tabName}”?', one: 'Delete tab “${tabName}” with one property? Character values will be lost.', other: 'Delete tab “${tabName}” with ${count} properties? Character values will be lost.')}";
+
+  static String m18(number) => "Group ${number}";
+
+  static String m19(name) => " (for category ${name})";
+
+  static String m20(count) =>
+      "${Intl.plural(count, zero: 'No items can be found here yet.', one: 'One item can be found here.', other: '${count} items can be found here.')}";
+
+  static String m21(number) => "Place #${number}";
+
+  static String m22(name) => "Property “${name}” deleted";
+
+  static String m23(number) => "Ingredient #${number}";
+
+  static String m24(number) => "Prerequisite #${number}";
+
+  static String m25(count) =>
+      "${Intl.plural(count, zero: 'No items', one: '1 item', other: '${count} items')}";
+
+  static String m26(count) =>
+      "${Intl.plural(count, one: '1 property', other: '${count} properties')}";
+
+  static String m27(count) =>
+      "${Intl.plural(count, zero: 'No recipes', one: '1 recipe', other: '${count} recipes')}";
+
+  static String m28(count) =>
+      "${Intl.plural(count, one: '1 tab', other: '${count} tabs')}";
+
+  static String m29(count) => "You own ${count} campaigns";
+
+  static String m30(count) => "You own ${count} characters";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -342,6 +378,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Configure properties",
     ),
     "configurePropertiesForCharacterNameSuffix": m6,
+    "confirmDeleteBtnLabel": MessageLookupByLibrary.simpleMessage("Delete"),
     "connectionLostReconnecting": MessageLookupByLibrary.simpleMessage(
       "No connection – reconnecting…",
     ),
@@ -812,7 +849,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "rpgConfigurationDmWizardStep2Tutorial":
         MessageLookupByLibrary.simpleMessage(
-          "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the character\'s backstory) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nIf you need more explanations, you can find an example page here with all configurations and the corresponding appearance on the character sheets:",
+          "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.",
         ),
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "searchLabel": MessageLookupByLibrary.simpleMessage("Search"),
@@ -890,6 +927,145 @@ class MessageLookup extends MessageLookupByLibrary {
     "welcomeTagline": MessageLookupByLibrary.simpleMessage(
       "Your companion for pen & paper sessions at the table.",
     ),
+    "wizardCampaignNameStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.",
+    ),
+    "wizardCategoryItemCount": m15,
+    "wizardCategoryNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Category name:",
+    ),
+    "wizardCharacterSheetStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Character sheet",
+    ),
+    "wizardCurrencyMultipleLabel": MessageLookupByLibrary.simpleMessage(
+      "Worth how many of the previous currency:",
+    ),
+    "wizardCurrencyStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).",
+    ),
+    "wizardCurrencyStepTitle": MessageLookupByLibrary.simpleMessage("Currency"),
+    "wizardDeletePropertyMessage": m16,
+    "wizardDeletePropertyTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete property?",
+    ),
+    "wizardDeleteTabMessage": m17,
+    "wizardDeleteTabTitle": MessageLookupByLibrary.simpleMessage("Delete tab?"),
+    "wizardEditItemTitle": MessageLookupByLibrary.simpleMessage("Edit item"),
+    "wizardEditRecipeTitle": MessageLookupByLibrary.simpleMessage(
+      "Edit recipe",
+    ),
+    "wizardFinishBtnLabel": MessageLookupByLibrary.simpleMessage("Done"),
+    "wizardGroupLabel": m18,
+    "wizardHideExplanation": MessageLookupByLibrary.simpleMessage(
+      "Hide explanation",
+    ),
+    "wizardIconForCategorySuffix": m19,
+    "wizardInvalidImageFile": MessageLookupByLibrary.simpleMessage(
+      "This file is not a valid image.",
+    ),
+    "wizardItemCategoriesStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Item categories (optional)\n\nSo players can filter their items, we sort them into categories. We have prepared a set of categories and subcategories for you.\n\nFeel free to adjust them if they do not fit your game.",
+    ),
+    "wizardItemCategoriesStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Item categories",
+    ),
+    "wizardItemCategoryLabel": MessageLookupByLibrary.simpleMessage("Category"),
+    "wizardItemImageDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Image description:",
+    ),
+    "wizardItemNameLabel": MessageLookupByLibrary.simpleMessage("Item name:"),
+    "wizardItemPatchSizeLabel": MessageLookupByLibrary.simpleMessage(
+      "Patch size (optional):",
+    ),
+    "wizardItemPlacesOfFindingHeader": MessageLookupByLibrary.simpleMessage(
+      "Places of finding:",
+    ),
+    "wizardItemsStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Items (optional)\n\nAdd the items of your world here: healing potions, weapons, quest items or ingredients for poisons, anything that can end up in the bags of your players.\n\nYou can also note what a potion does.\n\nTip: put effects, damage and the like at the start of the description. Then your players see the most important facts at a glance.",
+    ),
+    "wizardItemsStepTitle": MessageLookupByLibrary.simpleMessage("Items"),
+    "wizardLocationItemCount": m20,
+    "wizardLocationLabel": m21,
+    "wizardLocationsStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Places of finding (optional)\n\nFrom here on it is about items and crafting. You only need this and the following steps (places of finding, item categories, items, recipes) if you play with them. **Skip** takes you straight to the summary; data you already entered stays.\n\nSome items can be found in certain places: on the beach, in caves, in grottos and so on. Add those places here so you can link them to items in the next steps.",
+    ),
+    "wizardLocationsStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Places of finding",
+    ),
+    "wizardNewEntryDefaultName": MessageLookupByLibrary.simpleMessage("New"),
+    "wizardNewImageBtnLabel": MessageLookupByLibrary.simpleMessage("New image"),
+    "wizardNewLocationBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "New place",
+    ),
+    "wizardNewSubCategoryBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "New subcategory",
+    ),
+    "wizardNextCurrencyLabel": MessageLookupByLibrary.simpleMessage(
+      "Name of the next larger currency:",
+    ),
+    "wizardOptionalStepLabel": MessageLookupByLibrary.simpleMessage(
+      "Optional step",
+    ),
+    "wizardPickImageBtnLabel": MessageLookupByLibrary.simpleMessage(
+      "Choose image",
+    ),
+    "wizardPropertyDeletedSnackbar": m22,
+    "wizardRecipeAddIngredient": MessageLookupByLibrary.simpleMessage(
+      "Add ingredient",
+    ),
+    "wizardRecipeAddRequirement": MessageLookupByLibrary.simpleMessage(
+      "Add prerequisite",
+    ),
+    "wizardRecipeCreatedItemLabel": MessageLookupByLibrary.simpleMessage(
+      "Item to craft",
+    ),
+    "wizardRecipeDeletePermanently": MessageLookupByLibrary.simpleMessage(
+      "Delete permanently",
+    ),
+    "wizardRecipeDuplicateAndOpen": MessageLookupByLibrary.simpleMessage(
+      "Duplicate and open",
+    ),
+    "wizardRecipeIngredientLabel": m23,
+    "wizardRecipeOpenDetails": MessageLookupByLibrary.simpleMessage(
+      "Open details",
+    ),
+    "wizardRecipeRequirementLabel": m24,
+    "wizardRecipesStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Recipes (optional)\n\nRecipes let your players craft things themselves, for example healing potions.\n\nSome recipes require a tool, such as a herbalism kit. You can note that in the recipe too; players then need the tool to use the recipe.\n\nTap a recipe to edit it. Press and hold it for more actions.",
+    ),
+    "wizardRecipesStepTitle": MessageLookupByLibrary.simpleMessage("Recipes"),
+    "wizardSavedSnackbar": MessageLookupByLibrary.simpleMessage("Setup saved"),
+    "wizardShowExplanation": MessageLookupByLibrary.simpleMessage(
+      "Show explanation",
+    ),
+    "wizardSkinStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.",
+    ),
+    "wizardSkipBtnLabel": MessageLookupByLibrary.simpleMessage("Skip"),
+    "wizardSmallestCurrencyLabel": MessageLookupByLibrary.simpleMessage(
+      "Name of the smallest currency:",
+    ),
+    "wizardSubCategoryNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Subcategory name:",
+    ),
+    "wizardSummaryCampaignLabel": MessageLookupByLibrary.simpleMessage(
+      "Campaign",
+    ),
+    "wizardSummaryItemCount": m25,
+    "wizardSummaryNotSet": MessageLookupByLibrary.simpleMessage("Not set yet"),
+    "wizardSummaryPropertyCount": m26,
+    "wizardSummaryRecipeCount": m27,
+    "wizardSummaryStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## All set!\n\nYour campaign is set up and everything is saved. The overview shows what is set up.\n\nYou can change everything later via the gear icon in the top right.\n\n**Done** closes the wizard.",
+    ),
+    "wizardSummaryStepTitle": MessageLookupByLibrary.simpleMessage("Summary"),
+    "wizardSummaryTabCount": m28,
+    "wizardTabNameLabel": MessageLookupByLibrary.simpleMessage("Tab name"),
+    "wizardUndo": MessageLookupByLibrary.simpleMessage("Undo"),
+    "wizardUnnamedProperty": MessageLookupByLibrary.simpleMessage(
+      "Unnamed property",
+    ),
+    "wizardUnnamedTab": MessageLookupByLibrary.simpleMessage("Unnamed tab"),
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "you": MessageLookupByLibrary.simpleMessage("You"),
     "youAreEditingACopiedPropertyChangesWillNotAffect":
@@ -900,8 +1076,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
         ),
-    "youOwnXCampaigns": m15,
-    "youOwnXCharacters": m16,
+    "youOwnXCampaigns": m29,
+    "youOwnXCharacters": m30,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Your are disconnected... Either you or the DM has lost the connection.",
     ),

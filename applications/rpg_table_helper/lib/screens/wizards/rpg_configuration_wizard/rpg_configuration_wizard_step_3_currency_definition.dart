@@ -8,6 +8,8 @@ import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -52,17 +54,28 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
         .addListener(_updateStateForFormValidation);
 
     Future.delayed(Duration.zero, () {
-      widget.setWizardTitle("Währungen");
+      if (!mounted) return;
+      widget.setWizardTitle(S.of(context).wizardCurrencyStepTitle);
     });
+    registerWizardStepSave(_saveIfValid);
 
     super.initState();
   }
 
   @override
   void dispose() {
+    unregisterWizardStepSave(_saveIfValid);
     smallestCurrencyNameTextEditingController
         .removeListener(_updateStateForFormValidation);
     super.dispose();
+  }
+
+  /// Called by the wizard when the step is left in any way. Incomplete
+  /// currencies are not saved.
+  void _saveIfValid() {
+    if (getIsFormValid()) {
+      saveChanges();
+    }
   }
 
   @override
@@ -92,14 +105,7 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
       }
     });
 
-    var stepHelperText = '''
-
-Als nächstes kommen wir zu den Items der Welt!
-
-Lass uns anfangen indem du einstellst, welche Währung in dem RPG genutzt wird und welcher Umrechnungskurs zwischen denen herrscht.
-
-Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten Währung!
-'''; // TODO localize
+    var stepHelperText = S.of(context).wizardCurrencyStepHelper;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
@@ -111,10 +117,8 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
               saveChanges();
               widget.onNextBtnPressed();
             },
-      onPreviousBtnPressed: () {
-        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-        widget.onPreviousBtnPressed();
-      },
+      // Leaving the step saves valid currencies through the registered save.
+      onPreviousBtnPressed: widget.onPreviousBtnPressed,
       sideBarFlex: 1,
       contentFlex: 2,
       footerWidget: Column(
@@ -137,7 +141,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
             Expanded(
               child: CustomTextField(
                 keyboardType: TextInputType.text,
-                labelText: "Name der kleinsten Währung:", // TODO localize
+                labelText: S.of(context).wizardSmallestCurrencyLabel,
                 textEditingController:
                     smallestCurrencyNameTextEditingController,
               ),
@@ -166,9 +170,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   Expanded(
                     child: CustomTextField(
                       keyboardType: TextInputType.text,
-
-                      labelText:
-                          "Name der nächst größeren Währung:", // TODO localize
+                      labelText: S.of(context).wizardNextCurrencyLabel,
                       textEditingController: e.value.$1,
                     ),
                   ),
@@ -206,8 +208,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
                   Expanded(
                     child: CustomTextField(
                       keyboardType: TextInputType.number,
-                      labelText:
-                          "Gleichwertige Anzahl an vorheriger Währung:", // TODO localize
+                      labelText: S.of(context).wizardCurrencyMultipleLabel,
                       textEditingController: e.value.$2,
                     ),
                   ),
@@ -232,7 +233,7 @@ Fang bitte mit der kleinsten Einheit an und arbeite dich hoch bis zur größten 
           isSubbutton: true,
           onPressed: () {
             setState(() {
-              addNewCurrencyPair("New", "10");
+              addNewCurrencyPair(S.of(context).wizardNewEntryDefaultName, "10");
             });
           },
           icon: Theme(

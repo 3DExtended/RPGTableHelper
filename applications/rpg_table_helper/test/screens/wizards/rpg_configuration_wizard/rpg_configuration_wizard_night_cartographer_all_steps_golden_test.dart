@@ -27,6 +27,7 @@ const _stepNames = [
   'item-categories',
   'items',
   'recipes',
+  'summary',
 ];
 
 void main() {

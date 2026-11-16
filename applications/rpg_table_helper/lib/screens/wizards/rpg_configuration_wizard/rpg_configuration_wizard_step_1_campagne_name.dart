@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
+import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 
@@ -38,16 +39,27 @@ class _RpgConfigurationWizardStep1CampagneNameState
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
+      if (!mounted) return;
       widget.setWizardTitle(S.of(context).campaignName);
     });
     textEditingController.addListener(_updateStateForFormValidation);
+    registerWizardStepSave(_saveIfValid);
     super.initState();
   }
 
   @override
   void dispose() {
+    unregisterWizardStepSave(_saveIfValid);
     textEditingController.removeListener(_updateStateForFormValidation);
     super.dispose();
+  }
+
+  /// Called by the wizard when the step is left in any way (close, back,
+  /// step indicator). An invalid name is not saved.
+  void _saveIfValid() {
+    if (getIsFormValid()) {
+      saveChanges();
+    }
   }
 
   @override
@@ -61,15 +73,7 @@ class _RpgConfigurationWizardStep1CampagneNameState
       }
     });
 
-    var stepHelperText = '''
-
-Willkommen beim RPG Helper!
-
-Du wirst auf den nächsten Schritten die App für dich und deine Party konfigurieren. Hierzu wirst du die Character Sheets erstellen, Item Kategorien, Fundorte, Items und Crafting Rezepte anlegen. Alle diese Einstellungen können später noch ergänzt werden, jedoch lohnt es sich am Anfang etwas Zeit zu investieren, damit deine Spieler die App bestens für sich nutzen können.
-
-Wir beginnen mit der wohl schwierigsten Frage überhaupt:
-
-Wie heißt deine Kampagne?'''; // TODO localize
+    var stepHelperText = S.of(context).wizardCampaignNameStepHelper;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >
@@ -81,10 +85,8 @@ Wie heißt deine Kampagne?'''; // TODO localize
               saveChanges();
               widget.onNextBtnPressed();
             },
-      onPreviousBtnPressed: () {
-        // TODO as we dont validate the state of this form we are not saving changes. hence we should inform the user that their changes are revoked.
-        widget.onPreviousBtnPressed();
-      },
+      // Leaving the step saves a valid name through the registered save.
+      onPreviousBtnPressed: widget.onPreviousBtnPressed,
       sideBarFlex: 1,
       contentFlex: 2,
       contentChildren: [
