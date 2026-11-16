@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/screens/about/about_and_licenses_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -85,6 +86,19 @@ class UserSettingsScreen extends StatelessWidget {
                             .apiKeysSettingsSubtitle,
                         onTap: () {
                           Navigator.of(context).pushNamed(ApiKeysScreen.route);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSettingsCard(
+                        context,
+                        icon: FontAwesomeIcons.scaleBalanced,
+                        title:
+                            AppLocalizations.of(context)!.aboutLicensesTitle,
+                        subtitle: AppLocalizations.of(context)!
+                            .aboutLicensesSettingsSubtitle,
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AboutAndLicensesScreen.route);
                         },
                       ),
                       // Developer tool: nothing in the app writes this log

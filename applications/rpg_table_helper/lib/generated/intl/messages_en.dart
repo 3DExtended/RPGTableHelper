@@ -124,6 +124,42 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "aboutLicensesAttributionEnglish": MessageLookupByLibrary.simpleMessage(
+      "Attribution (English original)",
+    ),
+    "aboutLicensesAttributionGerman": MessageLookupByLibrary.simpleMessage(
+      "Attribution (German edition)",
+    ),
+    "aboutLicensesAuthoritativeHint": MessageLookupByLibrary.simpleMessage(
+      "The German text is for information only. The English version is authoritative.",
+    ),
+    "aboutLicensesChanges": MessageLookupByLibrary.simpleMessage(
+      "Changes: material from the SRD 5.2.1 was selected, translated or taken from the German edition, abridged and adapted for QuestKeeper. Summaries and other template texts are our own.",
+    ),
+    "aboutLicensesNotAffiliated": MessageLookupByLibrary.simpleMessage(
+      "QuestKeeper is an independent product. It is not published or endorsed by any roleplaying game publisher.",
+    ),
+    "aboutLicensesOpenLicense": MessageLookupByLibrary.simpleMessage(
+      "Open license CC BY 4.0",
+    ),
+    "aboutLicensesOpenSourceTitle": MessageLookupByLibrary.simpleMessage(
+      "Open source licenses",
+    ),
+    "aboutLicensesSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Rules material, licenses and open source notices",
+    ),
+    "aboutLicensesShowOpenSource": MessageLookupByLibrary.simpleMessage(
+      "Show all licenses",
+    ),
+    "aboutLicensesSrdIntro": MessageLookupByLibrary.simpleMessage(
+      "The “Fantasy 5E (SRD)” template contains material from the System Reference Document 5.2.1. It is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).",
+    ),
+    "aboutLicensesSrdTitle": MessageLookupByLibrary.simpleMessage(
+      "Rules material: SRD 5.2.1",
+    ),
+    "aboutLicensesTitle": MessageLookupByLibrary.simpleMessage(
+      "About & licenses",
+    ),
     "activeAlternateFormBannerTitle": MessageLookupByLibrary.simpleMessage(
       "Alternate form",
     ),
@@ -395,7 +431,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "computedModeValue": MessageLookupByLibrary.simpleMessage("as is"),
     "computedModifierOf": m8,
-    "computedPreset": MessageLookupByLibrary.simpleMessage("Template (D&D 5e)"),
+    "computedPreset": MessageLookupByLibrary.simpleMessage(
+      "Template (Fantasy 5E)",
+    ),
     "computedPresetIncomplete": MessageLookupByLibrary.simpleMessage(
       "Not every value of the template exists in this campaign. Add the missing building blocks yourself.",
     ),
@@ -1188,7 +1226,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Worth how many of the previous currency:",
     ),
     "wizardCurrencyStepHelper": MessageLookupByLibrary.simpleMessage(
-      "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).",
+      "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in many fantasy RPGs: 10 copper = 1 silver).",
     ),
     "wizardCurrencyStepTitle": MessageLookupByLibrary.simpleMessage("Currency"),
     "wizardDeletePropertyMessage": m26,

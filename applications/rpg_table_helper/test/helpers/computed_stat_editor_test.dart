@@ -133,7 +133,7 @@ void main() {
               ),
         ),
       ),
-      "Weisheit · Skills",
+      "Weisheit · Attribute",
     );
     await pickFromDropdown(
       tester,

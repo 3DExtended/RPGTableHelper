@@ -57,16 +57,23 @@ class RpgConfigurationModel {
   }
 
   static RpgConfigurationModel getBaseConfiguration() => RpgConfigurationModel(
-        rpgName: "Maries Kampagne",
+        // Template "Fantasy 5E (SRD)". The spell texts are taken from the
+        // German edition of the SRD 5.2.1 (CC-BY-4.0); the attribution is
+        // shown on AboutAndLicensesScreen.
+        rpgName: "Fantasy 5E (SRD)",
         initiativeBonusStatUuid: "44ab4bcc-0f90-42e0-b9f5-9d4dffc9ffc3",
         initiativeBonusListEntryUuid: "a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4",
         initiativeBonusField: InitiativeBonusField.otherValue,
         currencyDefinition: CurrencyDefinition(
           currencyTypes: [
+            // SRD 5.2.1 coin values: 10 KM = 1 SM, 10 SM = 1 GM,
+            // 10 GM = 1 PM. Electrum (1 EM = 5 SM) is left out: the greedy
+            // split would show most amounts with an EM, and the coin icons
+            // only know these four names. Prices are stored in Kupfer.
             CurrencyType(name: "Kupfer", multipleOfPreviousValue: null),
-            CurrencyType(name: "Silber", multipleOfPreviousValue: 100),
-            CurrencyType(name: "Gold", multipleOfPreviousValue: 100),
-            CurrencyType(name: "Platin", multipleOfPreviousValue: 100),
+            CurrencyType(name: "Silber", multipleOfPreviousValue: 10),
+            CurrencyType(name: "Gold", multipleOfPreviousValue: 10),
+            CurrencyType(name: "Platin", multipleOfPreviousValue: 10),
           ],
         ),
         placesOfFindings: [
@@ -152,7 +159,7 @@ class RpgConfigurationModel {
                 colorCode: "#ffff00ff",
                 iconName: "spellbook-svgrepo-com",
                 uuid: "04b75751-0a85-4d82-8b66-361f47743797",
-                name: "Buff",
+                name: "Stärkung",
                 subCategories: [],
               ),
             ],
@@ -204,7 +211,7 @@ class RpgConfigurationModel {
             colorCode: "#ffff00ff",
             iconName: "spellbook-svgrepo-com",
             uuid: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
-            name: "Tool",
+            name: "Werkzeug",
             subCategories: [],
           ),
         ],
@@ -216,10 +223,10 @@ class RpgConfigurationModel {
             uuid: "a7537746-260d-4aed-b182-26768a9c2d51",
             name: "Kl. Heiltrank",
             categoryId: "79773521-2fd6-4aff-942e-87b9e4bb6599",
-            baseCurrencyPrice: 10000,
+            baseCurrencyPrice: 100,
             placeOfFindings: [],
             description:
-                "1D4 Heilung bei Konsum\n\nEin kleiner Heiltrank der auf natürliche (und nicht magische) Weise Lebenspunkte wiederherstellt.\nDieser Gegenstand ist fast unerlässlich für Kämpfe!",
+                "1W4 Heilung bei Konsum\n\nEin kleiner Heiltrank, der auf natürliche (und nicht magische) Weise Trefferpunkte wiederherstellt.\nDieser Gegenstand ist fast unerlässlich für Kämpfe!",
           ),
           RpgItem(
               imageDescription: null,
@@ -227,7 +234,7 @@ class RpgConfigurationModel {
               uuid: "8abe00a8-fa94-4e5d-9c99-2a68b9de60e7",
               name: "Rote Vitus Blüte",
               categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
-              baseCurrencyPrice: 100,
+              baseCurrencyPrice: 1,
               patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
               placeOfFindings: [
                 RpgItemRarity(
@@ -259,7 +266,7 @@ class RpgConfigurationModel {
             uuid: "73b51a58-8a07-4de2-828c-d0952d42af34",
             name: "Fuchsschwanz",
             categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
-            baseCurrencyPrice: 777777,
+            baseCurrencyPrice: 10,
             placeOfFindings: [],
             description: "Der Schwanz eines Fuchses",
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
@@ -268,11 +275,12 @@ class RpgConfigurationModel {
             imageDescription: null,
             imageUrlWithoutBasePath: null,
             uuid: "dc497952-1989-40d1-9d50-a5b4e53dd1be",
-            name: "Kräuterkunde-Set",
+            name: "Kräuterkundeausrüstung",
             categoryId: "f9f4ba0d-9314-4f70-b7ba-fa6375490c70",
-            baseCurrencyPrice: 777777,
+            baseCurrencyPrice: 500,
             placeOfFindings: [],
-            description: "Ein Tool zum erstellen von Tränken",
+            description:
+                "Werkzeug, um Pflanzen zu bestimmen und Heiltränke herzustellen.",
             patchSize: DiceRoll(numDice: 0, diceSides: 6, modifier: 0),
           ),
           RpgItem(
@@ -280,52 +288,52 @@ class RpgConfigurationModel {
             name: "Gelber Morgentau",
             description:
                 "Der Gelbe Morgentau wächst dicht am Boden und hat winzige runde Blätter, die vom Stiel weg leicht gelblich werden. Er ist leicht zu verwechseln mit dem Grünen Morgentau, ist im Gegensatz zu diesem allerdings hochgiftig.",
-            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
             imageUrlWithoutBasePath: null,
             imageDescription:
                 "Der Gelbe Morgentau wächst in großen Patches dicht am Boden, wie eine bodendeckende Pflanze. Die Pflanze hat winzige runde Blätter und Blüten, die vom Stiel weg leicht gelblich werden. Die Pflanze erinnert an Klee oder Moos und wächst in dicht bewachsenen Wäldern.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
             placeOfFindings: [],
             patchSize: DiceRoll(numDice: 2, diceSides: 2, modifier: 2),
-            baseCurrencyPrice: 50,
+            baseCurrencyPrice: 1,
           ),
           RpgItem(
             uuid: "01920bc5-599a-783f-8d88-38257ecf78f5",
             name: "Gemeiner Farn",
             description:
                 "Der Gemeine Farn wächst gerne zwischen anderen Pflanzen und stiehlt ihre Nährstoffe. Bei Berührung drehen sich die fedrigen Farnblätter seitlich ein.",
-            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
             imageUrlWithoutBasePath: null,
             imageDescription:
                 "Der Gemeine Farn hat fedrige hellgrüne Farnblätter die sich seitlich eindrehen.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
             placeOfFindings: [],
             patchSize: DiceRoll(numDice: 2, diceSides: 4, modifier: 0),
-            baseCurrencyPrice: 50,
+            baseCurrencyPrice: 1,
           ),
           RpgItem(
             uuid: "01921424-0eca-74bb-bc3d-be2c82996103",
             name: "Glücksklee",
             description:
-                "Heilt bei rohem Verzehr 3 verlorene HP.\n\nDiese Kleeart wächst nah am Boden und besteht nur vier-blättrigen Pflanzen, deren Äderung leicht golden schimmert.",
-            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+                "Heilt bei rohem Verzehr 3 verlorene TP.\n\nDiese Kleeart wächst nah am Boden und besteht nur aus vierblättrigen Pflanzen, deren Äderung leicht golden schimmert.",
+            categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
             imageUrlWithoutBasePath: null,
             imageDescription:
                 "\n\nDiese Kleeart wächst nah am Boden und besteht nur knallgrünen Blättern, die wie bei Glücksklee aussehen und deren Äderung leicht golden schimmert.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
             placeOfFindings: [],
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
-            baseCurrencyPrice: 10000,
+            baseCurrencyPrice: 100,
           ),
           RpgItem(
             uuid: "01921428-f433-7519-880f-d012289b60da",
             name: "Glutflechte",
             description:
                 "Verringert unbehandelt für 1h jeglichen erhaltenen Kälteschaden um 1.\n\nDie Glutflechte wächst schuppenartig an Steinen entlang. Sie ist leicht an ihrer gelb-orangen Farbe zu erkennen.",
-            categoryId: "0191d10c-59bc-7098-a6c4-37167d7681bc",
+            categoryId: "b895a30a-2c0a-4aba-8629-9a363e405281",
             imageUrlWithoutBasePath: null,
             imageDescription:
                 "\n\nDie Glutflechte wächst in schuppenartig Verflechtungen auf Steinen, wie eine Moosflechte. Sie ist gelb-orange.\nNutze einen Stil der in ein düsteres animiertes 3D Computerspiel für Erwachsene passt. Setze die Pflanze in eine passende Szene.",
             placeOfFindings: [],
             patchSize: DiceRoll(numDice: 1, diceSides: 6, modifier: 1),
-            baseCurrencyPrice: 2000,
+            baseCurrencyPrice: 20,
           )
         ],
         craftingRecipes: [
@@ -383,7 +391,7 @@ class RpgConfigurationModel {
           CharacterStatsTabDefinition(
               isDefaultTab: false,
               uuid: "8e725f17-ce7c-41d9-a9fd-b83566075096",
-              tabName: "Background",
+              tabName: "Hintergrund",
               isOptional: false,
               statsInTab: [
                 CharacterStatDefinition(
@@ -443,7 +451,7 @@ class RpgConfigurationModel {
           CharacterStatsTabDefinition(
               isDefaultTab: true,
               uuid: "ebf46bc6-1e1e-4ea2-b580-caa992480e80",
-              tabName: "Stats",
+              tabName: "Werte",
               isOptional: false,
               statsInTab: [
                 CharacterStatDefinition(
@@ -451,10 +459,10 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "8b92f020-58f4-41d8-9844-580de13e607d",
-                  name: "Charakter Zusammenfassung",
+                  name: "Charakter-Zusammenfassung",
                   helperText: "",
                   jsonSerializedAdditionalData:
-                      "{\"values\":[{\"uuid\":\"019317b8-49eb-7575-9f8e-c28c9c8eded2\",\"label\":\"Klasse\"},{\"uuid\":\"019317b8-4bb6-7881-a4db-2a8ec3c751f6\",\"label\":\"Volk\"}]}",
+                      "{\"values\":[{\"uuid\":\"019317b8-49eb-7575-9f8e-c28c9c8eded2\",\"label\":\"Klasse\"},{\"uuid\":\"019317b8-4bb6-7881-a4db-2a8ec3c751f6\",\"label\":\"Spezies\"}]}",
                   valueType: CharacterStatValueType
                       .characterNameWithLevelAndAdditionalDetails,
                   editType: CharacterStatEditType.static,
@@ -474,7 +482,7 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "44ab4bcc-0f90-42e0-b9f5-9d4dffc9ffc3",
-                  name: "Skills",
+                  name: "Attribute",
                   helperText: "",
                   jsonSerializedAdditionalData:
                       '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
@@ -483,7 +491,7 @@ class RpgConfigurationModel {
                   editType: CharacterStatEditType.static,
                 ),
                 CharacterStatDefinition(
-                    name: "",
+                    name: "Kampfwerte",
                     statUuid: "01933514-7eef-7523-a4cc-974802dc96e7",
                     helperText: "",
                     groupId: 0,
@@ -492,14 +500,14 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     jsonSerializedAdditionalData:
-                        "{\"values\":[{\"uuid\":\"01933512-97e4-70fe-877d-0e1f64224a00\",\"label\":\"AC\",\"iconName\":\"shield-halved\"},{\"uuid\":\"01933512-997d-7628-9de3-72827cf4f419\",\"label\":\"SP\",\"iconName\":\"person-running\"},{\"uuid\":\"01933512-9cb6-7466-9977-0768e0dda2a7\",\"label\":\"ÜB\",\"iconName\":\"trophy\"},{\"uuid\":\"01933512-a096-701e-875d-05ad93810ba2\",\"label\":\"Temp HP\",\"iconName\":\"shield-heart\"}]}"),
+                        "{\"values\":[{\"uuid\":\"01933512-97e4-70fe-877d-0e1f64224a00\",\"label\":\"RK\",\"iconName\":\"shield-halved\"},{\"uuid\":\"01933512-997d-7628-9de3-72827cf4f419\",\"label\":\"Bewegung\",\"iconName\":\"person-running\"},{\"uuid\":\"01933512-9cb6-7466-9977-0768e0dda2a7\",\"label\":\"ÜB\",\"iconName\":\"trophy\"},{\"uuid\":\"01933512-a096-701e-875d-05ad93810ba2\",\"label\":\"Temp. TP\",\"iconName\":\"shield-heart\"}]}"),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
-                  name: "HP",
-                  helperText: "Lebenspunkte",
+                  name: "TP",
+                  helperText: "Trefferpunkte",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -509,7 +517,7 @@ class RpgConfigurationModel {
                     isOptionalForCompanionCharacters: false,
                     statUuid: "1ce2f567-d540-498a-a677-9776d518622d",
                     name: "Rettungswürfe",
-                    helperText: "Übungsbonus auf Rettungswürfen",
+                    helperText: "In diesen Rettungswürfen bist du geübt.",
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
@@ -524,12 +532,31 @@ class RpgConfigurationModel {
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "de1fb5bc-3e3e-42e1-8b11-9dfafebfdfbc", "label": "Aktrobatik (Ges)", "description": ""}, {"uuid": "4da1f35a-0ee9-44b0-84de-3341ee7eaad6", "label": "Arkane Kunst (Int)", "description": ""},{"uuid": "89f12e22-178a-4d87-8517-4fe4787335f3", "label": "Athletik (Str)", "description": ""},{"uuid": "3196199d-f023-4289-a8ce-e5659d54deae", "label": "Auftreten (Cha)", "description": ""},{"uuid": "1d477c82-7289-4524-b807-3734f9e1e297", "label": "Einschüchtern (Cha)", "description": ""},{"uuid": "9ab19470-306b-4be0-a23d-ab8bc9c79e0d", "label": "Fingerfertigkeit (Ges)", "description": ""},{"uuid": "3f952394-664f-44e1-8b36-116106266c0f", "label": "Geschichte (Int)", "description": ""},{"uuid": "f5c38dde-e288-473b-9113-0ae7a960af23", "label": "Heilkunde (Int)", "description": ""},{"uuid": "9a187aa5-71bb-40c3-b749-d12ace0471b9", "label": "Mit Tieren umgehen (Wei)", "description": ""},{"uuid": "a3040091-cf15-4e63-87b7-3c449a9b3dd4", "label": "Motiv erkennen (Wei)", "description": ""},{"uuid": "d6833b01-0f6e-4bc3-9590-60a6bc3cdc01", "label": "Nachforschungen (Int)", "description": ""},{"uuid": "c6e1f42a-44ef-406e-b009-245ceb9637f8", "label": "Naturkunde (Int)", "description": ""},{"uuid": "21468550-7899-4188-a3cf-fdec85deb1ca", "label": "Religion (Int)", "description": ""},{"uuid": "072ea46a-043c-4548-bb2d-9d340691d940", "label": "Täuschen (Cha)", "description": ""},{"uuid": "bc922713-6614-4bd7-8d62-0607bcf03146", "label": "Überlebenskunst (Wei)", "description": ""},{"uuid": "8957fe9f-9142-44fd-8354-d50c06c9b1a5", "label": "Überzeugen (Cha)", "description": ""},{"uuid": "827f2550-9683-45cf-b8fb-cad229c47fe8", "label": "Wahrnehmung (Wei)", "description": ""}]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "de1fb5bc-3e3e-42e1-8b11-9dfafebfdfbc", "label": "Akrobatik (Ges)", "description": ""},'
+                        '{"uuid": "4da1f35a-0ee9-44b0-84de-3341ee7eaad6", "label": "Arkane Kunde (Int)", "description": ""},'
+                        '{"uuid": "89f12e22-178a-4d87-8517-4fe4787335f3", "label": "Athletik (Stä)", "description": ""},'
+                        '{"uuid": "3196199d-f023-4289-a8ce-e5659d54deae", "label": "Auftreten (Cha)", "description": ""},'
+                        '{"uuid": "1d477c82-7289-4524-b807-3734f9e1e297", "label": "Einschüchtern (Cha)", "description": ""},'
+                        '{"uuid": "9ab19470-306b-4be0-a23d-ab8bc9c79e0d", "label": "Fingerfertigkeit (Ges)", "description": ""},'
+                        '{"uuid": "3f952394-664f-44e1-8b36-116106266c0f", "label": "Geschichte (Int)", "description": ""},'
+                        '{"uuid": "f5c38dde-e288-473b-9113-0ae7a960af23", "label": "Heilkunde (Wei)", "description": ""},'
+                        '{"uuid": "b62eeed4-fe7f-47ce-b14c-041b6b1467d6", "label": "Heimlichkeit (Ges)", "description": ""},'
+                        '{"uuid": "9a187aa5-71bb-40c3-b749-d12ace0471b9", "label": "Mit Tieren umgehen (Wei)", "description": ""},'
+                        '{"uuid": "a3040091-cf15-4e63-87b7-3c449a9b3dd4", "label": "Motiv erkennen (Wei)", "description": ""},'
+                        '{"uuid": "d6833b01-0f6e-4bc3-9590-60a6bc3cdc01", "label": "Nachforschungen (Int)", "description": ""},'
+                        '{"uuid": "c6e1f42a-44ef-406e-b009-245ceb9637f8", "label": "Naturkunde (Int)", "description": ""},'
+                        '{"uuid": "21468550-7899-4188-a3cf-fdec85deb1ca", "label": "Religion (Int)", "description": ""},'
+                        '{"uuid": "072ea46a-043c-4548-bb2d-9d340691d940", "label": "Täuschen (Cha)", "description": ""},'
+                        '{"uuid": "bc922713-6614-4bd7-8d62-0607bcf03146", "label": "Überlebenskunst (Wei)", "description": ""},'
+                        '{"uuid": "8957fe9f-9142-44fd-8354-d50c06c9b1a5", "label": "Überzeugen (Cha)", "description": ""},'
+                        '{"uuid": "827f2550-9683-45cf-b8fb-cad229c47fe8", "label": "Wahrnehmung (Wei)", "description": ""}'
+                        ']}'),
               ]),
           CharacterStatsTabDefinition(
               isDefaultTab: false,
               uuid: "11cc5da3-624b-40d4-9477-468a0a6b4670",
-              tabName: "Features",
+              tabName: "Merkmale",
               isOptional: false,
               statsInTab: [
                 CharacterStatDefinition(
@@ -537,8 +564,9 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "893bab17-6c13-4ed5-a287-8eaa135a54ef",
-                  name: "Features",
-                  helperText: "Charakter Eigenschaften",
+                  name: "Merkmale",
+                  helperText:
+                      "Klassenmerkmale, Merkmale deiner Spezies und Talente",
                   valueType: CharacterStatValueType.multiLineText,
                   editType: CharacterStatEditType.static,
                 ),
@@ -546,7 +574,7 @@ class RpgConfigurationModel {
           CharacterStatsTabDefinition(
               isDefaultTab: false,
               uuid: "f0c39bb7-1d95-4d7a-aaf2-80bf31f2662a",
-              tabName: "Attacks",
+              tabName: "Angriffe",
               isOptional: false,
               statsInTab: [
                 CharacterStatDefinition(
@@ -554,8 +582,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "3219934b-09fc-409b-8413-9e56b864c664",
-                  name: "Attacken",
-                  helperText: "Physische Attacken",
+                  name: "Angriffe",
+                  helperText: "Angriffe mit Waffen und waffenlose Angriffe",
                   valueType: CharacterStatValueType.multiLineText,
                   editType: CharacterStatEditType.static,
                 ),
@@ -563,7 +591,7 @@ class RpgConfigurationModel {
           CharacterStatsTabDefinition(
               uuid: "9421920d-99c2-4882-8a39-53564e7b2920",
               isDefaultTab: false,
-              tabName: "Spells",
+              tabName: "Zauber",
               isOptional: true,
               statsInTab: [
                 CharacterStatDefinition(
@@ -571,8 +599,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "2438aac8-4a67-41ca-aad9-3c838b7c5cf3",
-                  name: "Zauberpunkte",
-                  helperText: "Wieviele Zauberpunkte hast du?",
+                  name: "Zauberplätze gesamt",
+                  helperText: "Wie viele Zauberplätze hast du insgesamt noch?",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -586,15 +614,23 @@ class RpgConfigurationModel {
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "1e720492-1520-4bf3-86a3-98c4f61be329", "label": "Botschaft", "summary": "Flüstere eine Botschaft zu einem Ziel; nur ihr beide hört sie.","description": "Zaubertrick der Verwandlung\\nZeitaufwand: 1 Aktion\\nReichweite: 36 m\\nKomponenten: V, G, M (ein kurzes Stück Kupferdraht)\\nWirkungsdauer: 1 Runde\\nDu deutest mit dem Finger auf eine Kreatur in Reichweite und flüsterst eine Botschaft. Das Ziel (und nur dieses) hört die Botschaft und kann in einem Flüstern antworten, das nur du zu hören vermagst.\\nDu darfst diesen Zauber durch feste Gegenstände wirken, wenn du mit dem Ziel vertraut bist und weißt, dass es sich hinter der Barriere befindet. Magische Stille, 30 cm Stein, 2,5 cm gewöhnliches Metall, eine dünne Schicht Blei oder 90 cm Holz blockieren den Zauber. Der Effekt muss keiner geraden Linie folgen und kann sich frei um Ecken oder durch Öffnungen bewegen."    },    {        "uuid": "bc6ddcc2-ccf5-4a70-9b0f-afbf17c7be47", "label": "Magierhand", "summary": "Geisterhafte Hand erscheint und manipuliert leichte Gegenstände.",        "description": "Zaubertrick der Beschwörung\\nZeitaufwand: 1 Aktion\\nReichweite: 9 m\\nKomponenten: V, G\\nWirkungsdauer: 1 Minute\\nEine geisterhafte, schwebende Hand erscheint an einem Punkt deiner Wahl in Reichweite. Die Hand bleibt für die Wirkungsdauer bestehen oder bis du sie mit einer Aktion fortschickst. Sie verschwindet auch, wenn sie sich weiter als 9 m von dir entfernt oder du den Zauber erneut wirkst.\\nAls Aktion kannst du die Hand kontrollieren und sie verwenden, um mit Gegenständen zu interagieren, geschlossene Türen oder Behälter zu öffnen, einen Gegenstand aus einem geöffneten Behälter zu holen oder ihn darin zu verstauen oder den Inhalt einer Phiole auszugießen. Immer wenn du die Hand kontrollierst, darfst du sie bis zu 9 m bewegen.\\nDie Hand kann nicht angreifen, keine magischen Gegenstände aktivieren oder mehr als 10 Pfund tragen."    },    {        "uuid": "5b9c7345-8cda-469b-8e00-4ff47f50ce9c", "label": "Gift versprühen", "summary": "Giftwolke auf nahen Feind; Rettungswurf oder Giftschaden.",        "description": "Zaubertrick der Beschwörung\\nZeitaufwand: 1 Aktion\\nReichweite: 3 m\\nKomponenten: V, G\\nWirkungsdauer: unmittelbar\\nDu streckst deine Hand in Richtung einer Kreatur aus, die sich in Reichweite befindet und die du sehen kannst, und erzeugst eine Wolke ekelhaften Gases aus deiner Handfläche.\\nDie Kreatur muss einen erfolgreichen Konstitutionsrettungswurf ablegen, sonst erleidet sie 1W12 Giftschaden.\\nDer Schaden dieses Zaubers steigt jeweils um 1W12 bei Erreichen der 5. (2W12), 11. (3W12) und 17. Stufe (4W12)."    },    {        "uuid": "4ee11bf7-1f97-4209-b2e4-d05346b04ed9", "label": "Flammen erzeugen", "summary": "Flackernde Flamme in der Hand als Licht oder Brandmittel.",        "description": "Zaubertrick der Beschwörung\\nZeitaufwand: 1 Aktion\\nReichweite: selbst Komponenten: V, G\\nWirkungsdauer: 10 Minuten\\nEine flackernde Flamme erscheint in deiner Hand. Diese bleibt für die Wirkungsdauer bestehen und beschädigt weder dich noch deine Ausrüstung. Sie strahlt innerhalb von 3 m helles Licht und in einem Radius von weiteren 3 m dämmriges Licht aus. Der Zauber endet, wenn du ihn als Aktion aufhebst oder noch einmal wirkst.\\nDu kannst mit der Flamme auch angreifen, dies beendet jedoch den Zauber. Beim Wirken des Zaubers oder als Aktion in einem späteren Zug kannst du die Flamme auf eine Kreatur innerhalb von 9 m werfen. Führe einen Fernkampf-Zauberangriff aus. Bei einem Treffer erleidet das Ziel 1W8 Feuerschaden.\\nDer Schaden dieses Zaubers steigt jeweils um 1W8 bei Erreichen der 5. (2W8), 11. (3W8) und 17. Stufe (4W8)."    },    {        "uuid": "c247bc4f-f04b-4301-a401-fe0908eb3ca9", "label": "Kalte Hand", "summary": "Geisterhafte Hand schwächt das Ziel und erschwert Angriffe.",        "description": "Zaubertrick der Nekromantie\\nZeitaufwand: 1 Aktion\\nReichweite: 36 m Komponenten: V, G\\nWirkungsdauer: 1 Runde\\nDu erschaffst eine geisterhafte, skelettierte Hand im Bereich einer Kreatur in Reichweite. Führe einen Fernkampf-Zauberangriff gegen die Kreatur aus, um sie die Kälte des Grabes spüren zu lassen. Bei einem Treffer erleidet das Ziel 1W8 nekrotischen Schaden und kann bis zum Beginn deines nächsten Zuges keine Trefferpunkte zurückerlangen. Bis dahin hält sich die Hand an dem Ziel fest.\\nWenn du eine untote Kreatur triffst, ist sie außerdem im Nachteil bei Angriffswürfen gegen dich bis zum Ende deines nächsten Zuges.\\nDer Schaden dieses Zaubers steigt jeweils um 1W8 bei Erreichen der 5. (2W8), 11. (3W8) und 17. Stufe (4W8)."    },    {        "uuid": "c3fa6593-ac9c-44d0-b158-09555d0f3f5e", "label": "Druidenkunst", "summary": "Kleine Naturwunder: Wetterhauch, Blüten, Geräusche der Wildnis.",        "description": "Zaubertrick der Verwandlung\\nZeitaufwand: 1 Aktion\\nReichweite: 9 m Komponenten: V, G\\nWirkungsdauer: unmittelbar\\nDu sprichst flüsternd mit den Geistern der Natur und erzeugst innerhalb der Reichweite einen der folgenden Effekte:\\nDu erschaffst einen harmlosen sensorischen Effekt, der das Wetter an deinem Aufenthaltsort für die nächsten 24 Stunden vorhersagt. Der Effekt hält 1 Runde lang an und könnte sich als goldene Kugel für einen klaren Himmel, als Wolke für Regen, als fallende Schneeflocken für Schnee oder Ähnliches manifestieren.﻿\\nDu bewirkst, dass augenblicklich eine Blume erblüht, eine Samenkapsel sich öffnet oder eine Blattknospe aufblüht.\\nDu erschaffst einen harmlosen sensorischen Effekt, wie fallende Blätter, einen Windhauch, die Geräusche eines kleinen Tieres oder den leichten Geruch eines Stinktiers. Der Effekt muss in einen Würfel mit 1,50 m Kantenlänge passen.\\nDu kannst augenblicklich eine Kerze, eine Fackel oder ein kleines Lagerfeuer entzünden oder löschen."    },    {        "uuid": "1e7c68b0-c76b-421c-98ca-d41e7a4fdaa4", "label": "Dornenpeitsche", "summary": "Dornranke peitscht zu und kann Ziele heranziehen.",        "description": "Zaubertrick der Verwandlung\\nZeitaufwand: 1 Aktion\\nReichweite: 9 m\\nKomponenten: V, G, M (der Stiel einer Pflanze mit Dornen)\\nWirkungsdauer: unmittelbar\\nDu erschaffst eine lange, rankenartige Peitsche, die mit Dornen bedeckt ist und die auf deinen Befehl hin nach einer Kreatur in Reichweite schlägt. Führe einen Nahkampf-Zauberangriff gegen das Ziel durch. Wenn der Angriff trifft, erleidet die Kreatur 1W6 Stichschaden. Handelt es sich um eine Kreatur der Größenkategorie groß oder kleiner, wird sie zusätzlich 3 m in deine\\nRichtung gezogen.\\nDer Schaden dieses Zaubers steigt jeweils um 1W6 bei Erreichen der 5. (2W6), 11. (3W6) und 17. Stufe (4W6)."    },    {        "uuid": "30928f34-7632-469a-bd3d-6f76ee660f98", "label": "Shillelagh", "summary": "Macht Keule oder Stab zu einer magischen Nahkampfwaffe.",        "description": "Zaubertrick der Verwandlung\\nZeitaufwand: 1 Bonusaktion\\nReichweite: Berührung\\nKomponenten: V, G, M (Mistelzweig, vierblättriges Kleeblatt und eine Keule oder ein Kampfstab)\\nWirkungsdauer: 1 Minute\\nDas Holz einer Keule oder eines Kampfstabs, den du in der Hand hältst, wird von der Macht der Natur erfüllt. Für die Wirkungsdauer kannst du dein Attribut zum Zauberwirken anstelle von Stärke verwenden, wenn du Angriffs- und Schadenswürfe für Nahkampfangriffe mit dieser Waffe durchführst. Außerdem wird der Schadenswürfel der Waffe zu einem W8 und die Waffe magisch, falls sie es nicht bereits ist. Der Zauber endet, wenn du ihn erneut wirkst oder die Waffe loslässt."}]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "1e720492-1520-4bf3-86a3-98c4f61be329", "label": "Botschaft", "summary": "Flüstere eine Botschaft zu einem Ziel; nur ihr beide hört sie.", "description": "Zaubertrick der Verwandlung (Barde, Druide, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 36 Meter\\nKomponenten: G, M (ein Stück Kupferdraht)\\nWirkungsdauer: 1 Runde\\nDu deutest auf eine Kreatur in Reichweite und flüsterst eine Botschaft. Das Ziel (und nur dieses) hört die Botschaft und kann mit einem Flüstern antworten, das nur du hörst.\\nDu kannst diesen Zauber durch massive Gegenstände hindurch wirken, wenn du mit dem Ziel vertraut bist und weißt, dass es sich hinter der Barriere befindet. Magische Stille, 30 Zentimeter Stein, Metall oder Holz sowie dünnes Bleiblech blockieren den Zauber."},'
+                        '{"uuid": "bc6ddcc2-ccf5-4a70-9b0f-afbf17c7be47", "label": "Magierhand", "summary": "Geisterhafte Hand erscheint und manipuliert leichte Gegenstände.", "description": "Zaubertrick der Beschwörung (Barde, Hexenmeister, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 9 Meter\\nKomponenten: V, G\\nWirkungsdauer: 1 Minute\\nAn einem Punkt deiner Wahl in Reichweite erscheint eine geisterhafte schwebende Hand. Sie bleibt für die Wirkungsdauer bestehen. Die Hand verschwindet, wenn sie weiter als neun Meter von dir entfernt ist oder du den Zauber erneut wirkst.\\nWenn du den Zauber wirkst, kannst du mithilfe der Hand mit Gegenständen interagieren, unverschlossene Türen oder Behälter öffnen, Gegenstände in einem Behälter verstauen oder daraus hervorholen oder den Inhalt einer Phiole ausgießen.\\nIn deinen folgenden Zügen kannst du die Hand als magische Aktion erneut auf diese Art kontrollieren. Als Teil dieser Aktion kannst du die Hand bis zu neun Meter weit bewegen.\\nDie Hand kann nicht angreifen, keine magischen Gegenstände aktivieren und nicht mehr als fünf Kilogramm Gewicht tragen."},'
+                        '{"uuid": "5b9c7345-8cda-469b-8e00-4ff47f50ce9c", "label": "Gift versprühen", "summary": "Giftnebel auf eine Kreatur; Fernkampf-Zauberangriff mit Giftschaden.", "description": "Zaubertrick der Nekromantie (Druide, Hexenmeister, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 9 Meter\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu sprühst giftigen Nebel auf eine Kreatur in Reichweite. Führe einen Fernkampf-Zauberangriff gegen das Ziel aus. Bei einem Treffer erleidet das Ziel 1W12 Giftschaden.\\nZaubertrick-Aufwertung: Der Schaden wird um jeweils 1W12 erhöht, wenn du die 5. (2W12), die 11. (3W12) und die 17. (4W12) Stufe erreichst."},'
+                        '{"uuid": "4ee11bf7-1f97-4209-b2e4-d05346b04ed9", "label": "Flammen erzeugen", "summary": "Flamme in der Hand spendet Licht; du kannst damit Feuer schleudern.", "description": "Zaubertrick der Beschwörung (Druide)\\nZeitaufwand: Bonusaktion\\nReichweite: Selbst\\nKomponenten: V, G\\nWirkungsdauer: 10 Minuten\\nIn deiner Hand erscheint für die Wirkungsdauer eine flackernde Flamme. Sie strahlt keine Wärme aus und kann nichts entzünden, spendet jedoch in einem Radius von sechs Metern helles Licht und in einem Radius von weiteren sechs Metern dämmriges Licht. Der Zauber endet vorzeitig, wenn du ihn erneut wirkst.\\nBis der Zauber endet, kannst du eine magische Aktion ausführen, um Feuer auf eine Kreatur oder einen Gegenstand im Abstand von bis zu 18 Metern von dir zu schleudern. Führe einen Fernkampf-Zauberangriff aus. Bei einem Treffer erleidet das Ziel 1W8 Feuerschaden.\\nZaubertrick-Aufwertung: Der Schaden wird um jeweils 1W8 erhöht, wenn du die 5. (2W8), die 11. (3W8) und die 17. (4W8) Stufe erreichst."},'
+                        '{"uuid": "c247bc4f-f04b-4301-a401-fe0908eb3ca9", "label": "Kalte Hand", "summary": "Nahkampf-Zauberangriff mit Grabeskälte; das Ziel kann kurz nicht heilen.", "description": "Zaubertrick der Nekromantie (Hexenmeister, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: Berührung\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu kanalisierst Grabeskälte und führst einen Nahkampf-Zauberangriff auf ein Ziel in Reichweite aus. Bei einem Treffer erleidet das Ziel 1W10 nekrotischen Schaden und kann bis zum Ende deines nächsten Zugs keine Trefferpunkte zurückerhalten.\\nZaubertrick-Aufwertung: Der Schaden wird um jeweils 1W10 erhöht, wenn du die 5. (2W10), die 11. (3W10) und die 17. (4W10) Stufe erreichst."},'
+                        '{"uuid": "c3fa6593-ac9c-44d0-b158-09555d0f3f5e", "label": "Druidenkunst", "summary": "Kleine Naturwunder: Wettervorhersage, Blüten, Sinneseindrücke, Feuerspiel.", "description": "Zaubertrick der Verwandlung (Druide)\\nZeitaufwand: Aktion\\nReichweite: 9 Meter\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu flüsterst den Geistern der Natur zu und erzeugst in Reichweite einen der folgenden magischen Effekte.\\nWettersensor: Du erschaffst einen winzigen, harmlosen sensorischen Effekt, der das Wetter an deinem Aufenthaltsort in den nächsten 24 Stunden vorhersagt. Der Effekt kann sich als goldene Kugel für einen wolkenlosen Himmel, als Wolke für Regen, als Schneeflocken für Schnee oder dergleichen manifestieren. Dieser Effekt hält eine Runde lang an.\\nErblühen: Du bewirkst, dass sofort eine Blume erblüht, sich eine Samenkapsel oder eine Blattknospe öffnet.\\nSensorischer Effekt: Du erzeugst einen harmlosen sensorischen Effekt, beispielsweise fallende Blätter, geisterhafte tanzende Feenwesen, eine sanfte Brise, die Geräusche eines Tieres oder leichten Stinktiergeruch. Der Effekt muss in einen Würfel mit 1,5 Metern Kantenlänge passen.\\nFeuerspiel: Du entzündest oder löschst eine Kerze, eine Fackel oder ein Lagerfeuer."},'
+                        '{"uuid": "30928f34-7632-469a-bd3d-6f76ee660f98", "label": "Shillelagh", "summary": "Knüppel oder Kampfstab nutzt dein Zauberattribut und trifft härter.", "description": "Zaubertrick der Verwandlung (Druide)\\nZeitaufwand: Bonusaktion\\nReichweite: Selbst\\nKomponenten: V, G, M (ein Mistelzweig)\\nWirkungsdauer: 1 Minute\\nDas Holz eines Knüppels oder Kampfstabs, den du in der Hand hältst, wird von der Macht der Natur erfüllt. Für die Wirkungsdauer kannst du bei Angriffs- und Schadenswürfen von Nahkampfangriffen mit dieser Waffe dein Attribut zum Zauberwirken anstatt Stärke verwenden, und der Schadenswürfel der Waffe wird zu einem W8. Wenn der Angriff Schaden bewirkt, kann dies Energieschaden oder die normale Schadensart der Waffe sein (nach deiner Wahl).\\nDer Zauber endet vorzeitig, wenn du ihn erneut wirkst oder die Waffe loslässt.\\nZaubertrick-Aufwertung: Der Schadenswürfel ändert sich, wenn du die 5. (W10), die 11. (W12) und die 17. (2W6) Stufe erreichst."}'
+                        ']}'),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "18877c24-515a-4788-a657-d50915a5c0cc",
-                  name: "Zauber 1. Stufe",
+                  name: "Zauberplätze 1. Grades",
                   helperText:
-                      "Wieviele Zauber der Stufe 1 hast du heute gewirkt?",
+                      "Wie viele Zauberplätze des 1. Grades hast du heute verbraucht?",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -603,20 +639,27 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     statUuid: "31a52ed2-3e7b-42ac-8f3e-490b3a04027a",
-                    name: "Zauber 1. Stufe",
-                    helperText: "Welche Zauber der Stufe 1 kennst du?",
+                    name: "Zauber 1. Grades",
+                    helperText: "Welche Zauber des 1. Grades kennst du?",
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "e79adcb9-4d57-45e6-9d05-29aeb2bbfe1a", "label": "Brennende Hände", "summary": "Feuerkegel aus den Fingern; Geschick gegen Feuerschaden.", "description": "Hervorrufung des 1. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: selbst (Kegel von 4,50 m)\\nKomponenten: V, G\\nWirkungsdauer: unmittelbar\\nDu streckst die Hände aus, mit sich berührenden Daumen und ausgebreiteten Fingern, und eine dünne Fläche aus Feuer schießt aus deinen ausgestreckten Fingerspitzen. Jede Kreatur in einem Kegel von 4,50 m muss einen Geschicklichkeitsrettungswurf ablegen. Bei einem Misserfolg erleidet das Ziel 3W6 Feuerschaden oder halb so viel Schaden bei einem erfolgreichen Rettungswurf.\\nDas Feuer entzündet alle brennbaren Gegenstände im Wirkungsbereich, die nicht getragen oder in der Hand gehalten werden.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 2. oder eines höheren Grades wirkst, steigt der Schaden für jeden Grad über den 1. hinaus um 1W6."    },    {        "uuid": "f28e6faa-1cce-4f99-8f4f-30e9b89defd7", "label": "Magisches Geschoss", "summary": "Drei magische Geschosse treffen automatisch.",        "description": "Hervorrufung des 1. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 36 m Komponenten: V, G\\nWirkungsdauer: unmittelbar\\nDu erschaffst drei leuchtende Pfeile aus magischer Energie.\\nJeder Pfeil trifft eine Kreatur deiner Wahl in Reichweite, die du sehen kannst, und fügt dem Ziel 1W4 +1 Energieschaden zu.\\nDie Pfeile schlagen alle gleichzeitig ein und können auf eine oder mehrere Kreaturen losgeschickt werden.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 2. oder eines höheren Grades wirkst, erschaffst du für jeden Grad über den 1. hinaus einen weiteren Pfeil."    },    {        "uuid": "94a4169b-80c3-4819-bb9f-4e4fc40fb294", "label": "Höllischer Tadel", "summary": "Reaktion: Feuerschaden an den Angreifer, der dich verletzt.",        "description": "Hervorrufung des 1. Grades\\nZeitaufwand: 1 Reaktion, die du ausführst, wenn du von einer Kreatur verletzt wirst, die sich innerhalb von 18 m befindet und die du sehen kannst\\nReichweite: 18 m Komponenten: V, G\\nWirkungsdauer: unmittelbar\\nDu deutest mit einem Finger und die Kreatur, die dich verletzt hat, wird für einen kurzen Moment von höllischen Flammen eingehüllt.\\nDie Kreatur muss einen Geschicklichkeitsrettungswurf ablegen.\\nBei einem Misserfolg erleidet das Ziel 2W10 Feuerschaden oder halb so viel Schaden bei einem erfolgreichen Rettungswurf.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 2. oder eines höheren Grades wirkst, steigt der Schaden für jeden Grad über den 1. hinaus um 1W10."    },    {        "uuid": "6c0490b7-2da1-41d2-84e1-c0e4deb98ab3", "label": "Mit Tiere sprechen", "summary": "Verstehe und antworte Tieren für kurze Zeit.",        "description": "Erkenntnismagie des 1. Grades (Ritual)\\nZeitaufwand: 1 Aktion\\nReichweite: selbst Komponenten: V, G\\nWirkungsdauer: 10 Minuten\\nFür die Wirkungsdauer erhältst du die Fähigkeit, Tiere zu verstehen und verbal mit ihnen zu kommunizieren. Das Wissen und das Bewusstsein vieler Tiere wird durch ihren Intelligenzwert beschränkt, sie sind jedoch immer in der Lage, Informationen über nahe Orte und Monster zu übermitteln sowie über das, was sie wahrnehmen können oder innerhalb des letzten Tages wahrgenommen haben. Nach Maßgabe des SL könntest du ein Tier auch überzeugen, dir einen kleinen Gefallen zu erweisen."    },    {        "uuid": "be12d521-1a3c-440f-90bc-1ab262df56c9", "label": "Magie entdecken", "summary": "Spüre Magie und erkenne Schulen in Sichtweite.",        "description": "Erkenntnismagie des 1. Grades (Ritual)\\nZeitaufwand: 1 Aktion\\nReichweite: selbst Komponenten: V, G\\nWirkungsdauer: Konzentration, bis zu 10 Minuten\\nFür die Wirkungsdauer fühlst du die Anwesenheit von Magie im Umkreis von 9 m. Verwendest du deine Aktion, wenn du Magie auf diese Weise spürst, nimmst du eine schwache Aura um jede sichtbare Kreatur und jeden Gegenstand im Wirkungsbereich wahr, der von Magie erfüllt ist. Außerdem ist dir auch die Schule der Magie bekannt, sofern es eine gibt. Der Zauber kann die meisten Hindernisse durchdringen, wird aber blockiert von 30 cm Stein, 2,5 cm gewöhnlichem Metall, einer dünnen Schicht Blei oder 90 cm Holz oder Erde."    },    {        "uuid": "94746221-d26a-496a-bdc6-44a457db8eaf", "label": "Heilendes Wort", "summary": "Bonusaktion: heile eine Kreatur in Reichweite.",        "description": "Hervorrufung des 1. Grades\\nZeitaufwand: 1 Bonusaktion\\nReichweite: 18 m Komponenten: V\\nWirkungsdauer: unmittelbar\\nEine Kreatur deiner Wahl, die sich in Reichweite befindet und die du sehen kannst, erhält Trefferpunkte zurück in Höhe von 1W4 + den Modifikator deines zum Zaubern relevanten Attributs. Der Zauber hat keine Auswirkungen auf Untote oder Konstrukte.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauber-platz des 2. oder eines höheren Grades wirkst, steigt die Anzahl der geheilten Trefferpunkte für jeden Grad über den 1. hinaus um 1W4."}]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "e79adcb9-4d57-45e6-9d05-29aeb2bbfe1a", "label": "Brennende Hände", "summary": "Flammenkegel; Geschicklichkeitsrettungswurf gegen Feuerschaden.", "description": "Hervorrufungszauber 1. Grades (Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: Selbst\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu verschießt ein dünnes Flammenband. Jede Kreatur in einem Kegel von 4,5 Metern führt einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet sie 3W6 Feuerschaden, anderenfalls die Hälfte.\\nBrennbare Gegenstände im Kegel, die nicht getragen oder gehalten werden, beginnen zu brennen.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 1. wird der Schaden um 1W6 erhöht."},'
+                        '{"uuid": "f28e6faa-1cce-4f99-8f4f-30e9b89defd7", "label": "Magisches Geschoss", "summary": "Drei magische Geschosse treffen automatisch.", "description": "Hervorrufungszauber 1. Grades (Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 36 Meter\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu erschaffst drei leuchtende Wurfpfeile aus magischer Energie. Jeder Wurfpfeil trifft eine Kreatur deiner Wahl in Reichweite, die du sehen kannst. Ein Wurfpfeil fügt seinem Ziel 1W4+1 Energieschaden zu. Die Wurfpfeile treffen alle gleichzeitig. Du kannst bestimmen, ob sie dieselbe oder verschiedene Kreaturen treffen.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 1. erzeugt der Zauber einen weiteren Wurfpfeil."},'
+                        '{"uuid": "94a4169b-80c3-4819-bb9f-4e4fc40fb294", "label": "Höllischer Tadel", "summary": "Reaktion: Feuerschaden an den Angreifer, der dich verletzt.", "description": "Hervorrufungszauber 1. Grades (Hexenmeister)\\nZeitaufwand: Reaktion, die du ausführst, wenn du Schaden durch eine Kreatur im Abstand von bis zu 18 Metern von dir erlitten hast, die du sehen kannst\\nReichweite: 18 Meter\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDie Kreatur, die dir Schaden zugefügt hat, ist kurz von grünen Flammen umgeben. Sie führt einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet sie 2W10 Feuerschaden, anderenfalls die Hälfte.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 1. wird der Schaden um 1W10 erhöht."},'
+                        '{"uuid": "6c0490b7-2da1-41d2-84e1-c0e4deb98ab3", "label": "Mit Tieren sprechen", "summary": "Verstehe und antworte Tieren für kurze Zeit.", "description": "Erkenntniszauber 1. Grades (Barde, Druide, Hexenmeister, Waldläufer)\\nZeitaufwand: Aktion oder Ritual\\nReichweite: Selbst\\nKomponenten: V, G\\nWirkungsdauer: 10 Minuten\\nFür die Wirkungsdauer kannst du Tiere verstehen und verbal mit ihnen kommunizieren, und du kannst beliebige Fertigkeitsoptionen der Beeinflussen-Aktion auf sie anwenden.\\nDie meisten Tiere haben zu Themen abseits von Überleben oder Gefährtenschaft nicht viel zu sagen. Sie sind jedoch zumindest in der Lage, Informationen über nahe Orte und Monster sowie über Ereignisse mitzuteilen, die sie innerhalb des letzten Tages erlebt haben."},'
+                        '{"uuid": "be12d521-1a3c-440f-90bc-1ab262df56c9", "label": "Magie entdecken", "summary": "Spüre Magie in deiner Nähe und erkenne die Schule von Zaubern.", "description": "Erkenntniszauber 1. Grades (Barde, Druide, Hexenmeister, Kleriker, Magier, Paladin, Waldläufer, Zauberer)\\nZeitaufwand: Aktion oder Ritual\\nReichweite: Selbst\\nKomponenten: V, G\\nWirkungsdauer: Konzentration, bis zu 10 Minuten\\nWährend der Wirkungsdauer nimmst du magische Effekte im Abstand von bis zu neun Metern von dir wahr. Wenn du magische Effekte wahrnimmst, kannst du die magische Aktion ausführen, um rund um sichtbare Kreaturen und Gegenstände im Bereich, auf welche die Magie wirkt, eine schwache Aura zu sehen. Wurde der Effekt durch einen Zauber hervorgerufen, so erkennst du dessen Schule der Magie.\\nDer Zauber wird von 30 Zentimetern Stein, Erde oder Holz sowie von 2,5 Zentimetern Metall oder einer dünnen Bleischicht blockiert."},'
+                        '{"uuid": "94746221-d26a-496a-bdc6-44a457db8eaf", "label": "Heilendes Wort", "summary": "Bonusaktion: heile eine Kreatur in Reichweite.", "description": "Bannzauber 1. Grades (Barde, Druide, Kleriker)\\nZeitaufwand: Bonusaktion\\nReichweite: 18 Meter\\nKomponenten: V\\nWirkungsdauer: Unmittelbar\\nEine Kreatur deiner Wahl in Reichweite, die du sehen kannst, erhält Trefferpunkte in Höhe von 2W4 plus deinem Zauberwirken-Attributsmodifikator zurück.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 1. wird die Heilung um 2W4 Trefferpunkte erhöht."}'
+                        ']}'),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "cae3e22b-5674-4728-82d4-c8a28615fcdd",
-                  name: "Zauber 2. Stufe",
+                  name: "Zauberplätze 2. Grades",
                   helperText:
-                      "Wieviele Zauber der Stufe 2 hast du heute gewirkt?",
+                      "Wie viele Zauberplätze des 2. Grades hast du heute verbraucht?",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -625,20 +668,25 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     statUuid: "212b9948-bc45-48f1-af39-bc84d6c5283f",
-                    name: "Zauber 2. Stufe",
-                    helperText: "Welche Zauber der Stufe 2 kennst du?",
+                    name: "Zauber 2. Grades",
+                    helperText: "Welche Zauber des 2. Grades kennst du?",
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "10978c13-95c7-4179-bd91-e4270547ebe2", "label": "Flammenkugel", "summary": "Bewegliche Feuerkugel, die Kreaturen in der Nähe versengt.","description": "Beschwörung des 2. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 18 m\\nKomponenten: V, G, M (etwas Talg, eine Prise Schwefel und\\netwas Eisenpulver)\\nWirkungsdauer: Konzentration, bis zu 1 Minute\\nEine Sphäre aus Feuer mit einem Durchmesser von 1,50 m erscheint in einem nicht besetzten Bereich deiner Wahl in Reichweite und bleibt für die Wirkungsdauer bestehen. Jede Kreatur, die ihren Zug innerhalb von 1,50 m um die Sphäre beendet, muss einen Geschicklichkeitsrettungswurf ablegen. Bei einem Misserfolg erleidet eine Kreatur 2W6 Feuerschaden oder halb so viel Schaden bei einem erfolgreichen Rettungswurf.\\nAls Bonusaktion kannst du die Sphäre bis zu 9 m bewegen.\\nWenn du eine Kreatur mit der Sphäre rammst, muss das Ziel den oben beschriebenen Rettungswurf erfolgreich ablegen oder es erleidet den vollen Feuerschaden. Die Bewegung der Sphäre endet in diesem Zug. Wenn du die Sphäre bewegst, kannst du sie über Hindernisse lenken, die bis zu 1,50 m hoch sind, und sie über Gräben von bis zu 3 m Breite springen lassen."    },    {        "uuid": "7f182652-7da8-4b11-9e1c-de0393fd30b6", "label": "Sengender Strahl", "summary": "Drei Feuerstrahlen auf ein oder mehrere Ziele.",        "description": "Hervorrufung des 2. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 36 m Komponenten: V, G\\nWirkungsdauer: unmittelbar\\nDu erschaffst drei Strahlen aus Feuer und schleuderst sie auf ein oder mehrere Ziele in Reichweite. Führe einen Fernkampf-Zauberangriff für jeden Strahl aus. Bei einem Treffer erleidet das Ziel\\n2W6 Feuerschaden.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 3. oder eines höheren Grades wirkst, erschaffst du für jeden Grad über den 2. hinaus einen zusätzlichen Strahl."    },    {        "uuid": "774a0a67-ff6d-478e-ae6b-38158e1c5db0", "label": "Dornenwuchs", "summary": "Boden wird zu schwierigem Gelände voller Dornen.",        "description": "Verwandlung des 2. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 45 m\\nKomponenten: V, G, M (sieben scharfe Dornen oder sieben angespitze kleine Zweige)\\nWirkungsdauer: Konzentration, bis zu 10 Minuten\\nDer Boden in einem Radius von 6 m, zentriert um einen Punkt in Reichweite, wird von harten Stacheln und Dornen überwuchert. Für die Wirkungsdauer gilt der Bereich als schwieriges Gelände. Bewegt sich eine Kreatur in das Gebiet hinein oder innerhalb dessen, erleidet sie 2W4 Stichschaden für jeweils 1,50 m, die sie zurücklegt.\\nDie Verwandlung des Bodens ist so getarnt, dass dieser nicht gefährlich wirkt. Jede Kreatur, die den Bereich nicht sehen kann, wenn der Zauber gewirkt wird, muss bei dessen Betreten einen Wurf auf Weisheit (Wahrnehmung) gegen den SG zum Widerstehen deiner Zauber ablegen. Misslingt er, erkennt sie nicht, welche Gefahr von dem Gelände ausgeht."    },    {        "uuid": "b2aa3dc4-ac1d-4be4-bd81-db41e7501ae5", "label": "Spurloses Gehen", "summary": "Hinterlasst keine Spuren; erschwert Verfolgung.",        "description": "Bannmagie des 2. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: selbst\\nKomponenten: V, G, M (Asche eines verbrannten Mistelblatts und ein Fichtenzweig)\\nWirkungsdauer: Konzentration, bis zu 1 Stunde\\nEin Schleier aus Schatten und Stille geht von dir aus und maskiert dich und deine Gefährten, sodass ihr nicht entdeckt werden könnt.\\nFür die Wirkungsdauer erhalten alle Kreaturen deiner Wahl innerhalb von 9 m (inklusive dir) einen Bonus von +10 auf Würfe auf Geschicklichkeit (Heimlichkeit). Außerdem können ihre Spuren nur auf magische Weise gelesen werden. Eine Kreatur, die vom Effekt des Zaubers betroffen ist, hinterlässt keine Fährten oder andere Spuren ihrer Anwesenheit."}]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "10978c13-95c7-4179-bd91-e4270547ebe2", "label": "Flammenkugel", "summary": "Bewegliche Feuerkugel, die Kreaturen in der Nähe versengt.", "description": "Beschwörungszauber 2. Grades (Druide, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 18 Meter\\nKomponenten: V, G, M (eine Kugel aus Wachs)\\nWirkungsdauer: Konzentration, bis zu 1 Minute\\nDu erzeugst in einem freien Bereich in Reichweite auf dem Boden eine flammende Kugel mit einem Durchmesser von 1,5 Metern. Die Kugel bleibt für die Wirkungsdauer bestehen. Jede Kreatur, die ihren Zug im Abstand von bis zu 1,5 Metern um die Kugel beendet, führt einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet sie 2W6 Feuerschaden, anderenfalls die Hälfte.\\nAls Bonusaktion kannst du die Kugel bis zu neun Meter weit über den Boden rollen lassen. Wenn du die Kugel in den Bereich einer Kreatur bewegst, muss diese den Rettungswurf gegen die Kugel ausführen, und die Kugel beendet ihre Bewegung für diesen Zug.\\nBewegst du die Kugel, so kannst du sie über bis zu 1,5 Meter hohe Hindernisse dirigieren und über bis zu drei Meter breite Gruben springen lassen. Brennbare Gegenstände, die nicht getragen oder gehalten werden, beginnen zu brennen, wenn sie von der Kugel berührt werden. Die Kugel spendet in einem Radius von sechs Metern helles Licht sowie in einem Radius von weiteren sechs Metern dämmriges Licht.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 2. wird der Schaden um 1W6 erhöht."},'
+                        '{"uuid": "7f182652-7da8-4b11-9e1c-de0393fd30b6", "label": "Sengender Strahl", "summary": "Drei Feuerstrahlen auf ein oder mehrere Ziele.", "description": "Hervorrufungszauber 2. Grades (Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 36 Meter\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu schleuderst drei feurige Strahlen. Du kannst sie auf ein Ziel oder auf mehrere Ziele in Reichweite schleudern. Führe für jeden Strahl einen Fernkampf-Zauberangriff aus. Bei einem Treffer erleidet das Ziel 2W6 Feuerschaden pro Strahl.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 2. kannst du einen zusätzlichen Strahl erzeugen."},'
+                        '{"uuid": "774a0a67-ff6d-478e-ae6b-38158e1c5db0", "label": "Dornenwuchs", "summary": "Boden wird zu schwierigem Gelände voller Dornen.", "description": "Verwandlungszauber 2. Grades (Druide, Waldläufer)\\nZeitaufwand: Aktion\\nReichweite: 45 Meter\\nKomponenten: V, G, M (sieben Dornen)\\nWirkungsdauer: Konzentration, bis zu 10 Minuten\\nIn einem Radius von sechs Metern um einen Punkt in Reichweite wird der Boden von harten Stacheln und Dornen überwuchert. Der Bereich wird für die Wirkungsdauer zu schwierigem Gelände. Bewegt sich eine Kreatur in oder durch den Bereich, so erleidet sie pro zurückgelegten 1,5 Metern 2W4 Stichschaden.\\nDie Verwandlung des Bodens ist als natürlich getarnt. Jede Kreatur, die den Bereich beim Wirken des Zaubers nicht sehen kann, muss die Suchen-Aktion ausführen und einen Weisheitswurf (Überlebenskunst oder Wahrnehmung) gegen deinen Zauberrettungswurf-SG ausführen. Bei einem Erfolg erkennt sie das Gelände vor dem Betreten als gefährlich."},'
+                        '{"uuid": "b2aa3dc4-ac1d-4be4-bd81-db41e7501ae5", "label": "Spurloses Gehen", "summary": "+10 auf Heimlichkeit für deine Gruppe; ihr hinterlasst keine Spuren.", "description": "Bannzauber 2. Grades (Druide, Waldläufer)\\nZeitaufwand: Aktion\\nReichweite: Selbst\\nKomponenten: V, G, M (Asche eines Mistelzweigs)\\nWirkungsdauer: Konzentration, bis zu 1 Stunde\\nVon dir geht für die Wirkungsdauer eine verhüllende Aura in einer Ausströmung von neun Metern aus. Du und jede Kreatur deiner Wahl habt in der Aura einen Bonus von +10 auf Geschicklichkeitswürfe (Heimlichkeit), und ihr hinterlasst keine Spuren."}'
+                        ']}'),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "66f0e8dd-1fed-47d8-9e4d-88e0b8b2e2b0",
-                  name: "Zauber 3. Stufe",
+                  name: "Zauberplätze 3. Grades",
                   helperText:
-                      "Wieviele Zauber der Stufe 3 hast du heute gewirkt?",
+                      "Wie viele Zauberplätze des 3. Grades hast du heute verbraucht?",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -647,20 +695,23 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     statUuid: "f8b49ed4-a24a-45fb-8077-369fde7ef37c",
-                    name: "Zauber 3. Stufe",
-                    helperText: "Welche Zauber der Stufe 3 kennst du?",
+                    name: "Zauber 3. Grades",
+                    helperText: "Welche Zauber des 3. Grades kennst du?",
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "f663078d-730f-422c-8d8f-dacdc8896981", "label": "Feuerball", "summary": "Explosive Feuerkugel mit großem Radius und hohem Schaden.","description": "Hervorrufung des 3. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 45 m\\nKomponenten: V, G, M (eine winzige Kugel aus Fledermauskot und Schwefel)\\nWirkungsdauer: unmittelbar\\nEin gleißender Lichtblitz schießt aus einem deiner Finger zu einem Punkt deiner Wahl in Reichweite und erblüht mit einem dunklen Grollen zu einer feurigen Explosion aus Flammen. Alle Kreaturen in einem Radius von 6 m um diesen Punkt müssen einen Geschicklichkeitsrettungswurf ablegen. Bei einem Misserfolg erleidet ein Ziel 8W6 Feuerschaden oder halb so viel Schaden bei einem erfolgreichen Rettungswurf.\\nDas Feuer kann sich um Ecken ausbreiten. Es entzündet alle brennbaren Gegenstände im Bereich, die nicht getragen oder in der Hand gehalten werden.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 4. oder eines höheren Grades wirkst, steigt der Schaden für jeden Grad über den 3. hinaus um 1W6."    },    {        "uuid": "327f07de-4191-43db-9ac5-a8c65382cff7", "label": "Furcht", "summary": "Kegel der Furcht; Betroffene müssen fliehen.",        "description": "Illusion des 3. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: selbst (Kegel von 9 m)\\nKomponenten: V, G, M (eine weiße Feder oder das Herz einer\\nHenne)\\nWirkungsdauer: Konzentration, bis zu 1 Minute\\nDu projizierst ein geisterhaftes Bild der schlimmsten Ängste einer Kreatur. Alle Kreaturen in einem Kegel von 9 m müssen einen erfolgreichen Weisheitsrettungswurf ablegen, um nicht alles fallenzulassen, was sie in Händen halten, und für die Wirkungsdauer von dir verängstigt zu werden.\\nSolange eine Kreatur durch diesen Zauber verängstigt ist, muss sie in jedem ihrer Züge die Spurtaktion verwenden und sich auf dem sichersten und kürzesten verfügbaren Weg von dir wegbewegen, bis dies nicht mehr möglich ist. Wenn die Kreatur ihren Zug an einem Ort beendet, an dem sie dich nicht mehr sehen kann, darf sie einen Weisheitsrettungswurf ablegen. Bei einem Erfolg endet der Zauber für die Kreatur."    }]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "f663078d-730f-422c-8d8f-dacdc8896981", "label": "Feuerball", "summary": "Explosive Feuerkugel mit großem Radius und hohem Schaden.", "description": "Hervorrufungszauber 3. Grades (Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 45 Meter\\nKomponenten: V, G, M (eine Kugel aus Fledermaus-Guano und Schwefel)\\nWirkungsdauer: Unmittelbar\\nDu verschießt einen hellen Lichtstrahl auf einen Punkt deiner Wahl in Reichweite, wo er unter dumpfem Grollen zu einer Flammenexplosion detoniert. Jede Kreatur in einer Kugel mit einem Radius von sechs Metern um diesen Punkt führt einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet sie 8W6 Feuerschaden, anderenfalls die Hälfte.\\nBrennbare Gegenstände im Bereich, die nicht getragen oder gehalten werden, beginnen zu brennen.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 3. wird der Schaden um 1W6 erhöht."},'
+                        '{"uuid": "327f07de-4191-43db-9ac5-a8c65382cff7", "label": "Furcht", "summary": "Kegel der Furcht; Betroffene müssen fliehen.", "description": "Illusionszauber 3. Grades (Barde, Hexenmeister, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: Selbst\\nKomponenten: V, G, M (eine weiße Feder)\\nWirkungsdauer: Konzentration, bis zu 1 Minute\\nJede Kreatur in einem Kegel von neun Metern muss einen Weisheitsrettungswurf bestehen, oder sie lässt fallen, was auch immer sie hält, und ist für die Wirkungsdauer verängstigt.\\nEine verängstigte Kreatur führt in jedem ihrer Züge die Spurt-Aktion aus und entfernt sich auf dem sichersten Weg von dir, sofern möglich. Beendet eine Kreatur ihren Zug in einem Bereich, in dem du nicht in ihrer Sichtlinie bist, führt sie einen Weisheitsrettungswurf aus. Bei einem erfolgreichen Rettungswurf endet der Zauber bei der Kreatur."}'
+                        ']}'),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "f4268470-6c7c-4fc8-8412-cf2fea4e19b1",
-                  name: "Zauber 4. Stufe",
+                  name: "Zauberplätze 4. Grades",
                   helperText:
-                      "Wieviele Zauber der Stufe 4 hast du heute gewirkt?",
+                      "Wie viele Zauberplätze des 4. Grades hast du heute verbraucht?",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -669,20 +720,23 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     statUuid: "612f5698-fdda-4485-b138-599ae3532520",
-                    name: "Zauber 4. Stufe",
-                    helperText: "Welche Zauber der Stufe 4 kennst du?",
+                    name: "Zauber 4. Grades",
+                    helperText: "Welche Zauber des 4. Grades kennst du?",
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "ea4263df-f701-427a-a3fe-ff55288237a1", "label": "Feuerwand", "summary": "Brennende Barriere, die Schaden verursacht und Sicht blockiert.","description": "Hervorrufung des 4. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 36 m\\nKomponenten: V, G, M (ein kleines Stück Phosphor) Wirkungsdauer: Konzentration, bis zu 1 Minute\\nDu erschaffst eine Barriere aus Feuer auf einem festen Untergrund in Reichweite. Sie kann gerade sein (bis zu 18 m lang, 6 m hoch und 30 cm dick) oder ringförmig (bis zu 6 m Durchmesser, 6 m Höhe und 30 cm Dicke). Die Barriere ist mit Blicken nicht zu durchdringen und hält für die Wirkungsdauer an.\\nErschaffst du die Feuerwand, müssen alle Kreaturen in ihrem\\nBereich einen Geschicklichkeitsrettungswurf ablegen. Bei einem Misserfolg erleidet eine Kreatur 5W8 Feuerschaden oder halb so viel Schaden bei einem gelungenen Rettungswurf.\\nEine Seite der Feuerwand, die du beim Wirken des Zaubers bestimmst, verursacht bei jeder Kreatur 5W8 Feuerschaden, die ihren Zug innerhalb von 3 m zu dieser Seite beendet. Eine Kreatur erleidet diesen Schaden ebenfalls, wenn sie die Barriere das erste Mal in einem Zug betritt oder ihren Zug dort beendet. Die andere Seite der Feuerwand verursacht keinen Schaden.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 5. oder eines höheren Grades wirkst, steigt der Schaden für jeden Grad über den 4. hinaus um 1W8."    },    {        "uuid": "2edae70c-e48f-45d4-b601-565f8ddbee83", "label": "Hüter des Glaubens", "summary": "Spektraler Wächter bewacht einen Bereich.",        "description": "Beschwörung des 4. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 9 m Komponenten: V\\nWirkungsdauer: 8 Stunden\\nEin großer spektraler Hüter erscheint und schwebt für die Wirkungsdauer in einem nicht besetzten Bereich deiner Wahl, der sich in Reichweite befindet und den du sehen kannst. Der Hüter besetzt seinen Bereich und ist nicht klar zu erkennen, mit Ausnahme eines leuchtenden Schwertes und eines Schilds, welches das Symbol deiner Gottheit trägt.\\nJede dir feindlich gesonnene Kreatur, die sich zum ersten Mal in ihrem Zug dem Hüter auf weniger als 3 m nähert, muss einen Geschicklichkeitsrettungswurf ablegen. Bei einem Misserfolg erleidet die Kreatur 20 Punkte gleißenden Schaden oder halb so viel Schaden bei einem erfolgreichen Rettungswurf. Der Hüter verschwindet, wenn er insgesamt 60 Punkte Schaden verursacht hat."}]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "ea4263df-f701-427a-a3fe-ff55288237a1", "label": "Feuerwand", "summary": "Brennende Barriere, die Schaden verursacht und Sicht blockiert.", "description": "Hervorrufungszauber 4. Grades (Druide, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 36 Meter\\nKomponenten: V, G, M (ein Stück Kohle)\\nWirkungsdauer: Konzentration, bis zu 1 Minute\\nDu erschaffst auf einer festen Oberfläche in Reichweite eine Feuerwand. Du kannst eine gerade Wand mit bis zu 18 Metern Länge oder eine ringförmige Wand mit einem Radius von bis zu drei Metern erschaffen. In beiden Fällen ist die Wand sechs Meter hoch und 30 Zentimeter dick. Die Wand ist undurchsichtig und bleibt für die Wirkungsdauer bestehen.\\nWenn die Wand erscheint, führt jede Kreatur in ihrem Bereich einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet die Kreatur 5W8 Feuerschaden, anderenfalls die Hälfte.\\nEine Seite der Wand, die du beim Wirken des Zaubers bestimmst, fügt jeder Kreatur, die ihren Zug im Abstand von bis zu drei Metern von der Seite oder in der Wand beendet, 5W8 Feuerschaden zu. Eine Kreatur erleidet den Schaden ebenfalls, wenn sie die Wand in einem Zug erstmals betritt. Die andere Seite der Wand bewirkt keinen Schaden.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 4. wird der Schaden um 1W8 erhöht."},'
+                        '{"uuid": "2edae70c-e48f-45d4-b601-565f8ddbee83", "label": "Hüter des Glaubens", "summary": "Geisterhafter Wächter, der Gegnern in seiner Nähe schadet.", "description": "Beschwörungszauber 4. Grades (Kleriker)\\nZeitaufwand: Aktion\\nReichweite: 9 Meter\\nKomponenten: V\\nWirkungsdauer: 8 Stunden\\nIn einem freien Bereich in Reichweite, den du sehen kannst, erscheint ein großer geisterhafter Wächter und schwebt dort für die Wirkungsdauer. Der Wächter besetzt diesen Bereich und ist unverwundbar. Er erscheint in einer Gestalt, die deiner Gottheit oder deinem Pantheon entspricht.\\nEin Gegner, der sich in einem Zug erstmals in einen Bereich im Abstand von bis zu drei Metern vom Wächter bewegt oder den Zug dort beginnt, führt einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet er 20 gleißenden Schaden, anderenfalls die Hälfte. Wenn der Wächter insgesamt 60 Schaden bewirkt hat, verschwindet er."}'
+                        ']}'),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "940ef581-e6a5-4dcd-bb9d-567a0294a76d",
-                  name: "Zauber 5. Stufe",
+                  name: "Zauberplätze 5. Grades",
                   helperText:
-                      "Wieviele Zauber der Stufe 5 hast du heute gewirkt?",
+                      "Wie viele Zauberplätze des 5. Grades hast du heute verbraucht?",
                   valueType: CharacterStatValueType.intWithMaxValue,
                   editType: CharacterStatEditType.oneTap,
                 ),
@@ -691,12 +745,15 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     statUuid: "347e51fa-caf0-4054-8eb9-dac3ba48c281",
-                    name: "Zauber 5. Stufe",
-                    helperText: "Welche Zauber der Stufe 5 kennst du?",
+                    name: "Zauber 5. Grades",
+                    helperText: "Welche Zauber des 5. Grades kennst du?",
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false, "options":[{"uuid": "e4927331-9272-4685-94bb-b243507142f5", "label": "Flammenschlag", "summary": "Säule aus Feuer und gleißendem Schaden vom Himmel.","description": "Hervorrufung des 5. Grades\\nZeitaufwand: 1 Aktion\\nReichweite: 18 m\\nKomponenten: V, G, M (eine Prise Schwefel)\\nWirkungsdauer: unmittelbar\\nEine senkrechte Säule aus göttlichem Feuer fährt vom Himmel auf einen Ort herab, den du bestimmst. Alle Kreaturen innerhalb eines Zylinders mit 3 m Radius und 12 m Höhe, der um einen Punkt in Reichweite zentriert ist, müssen einen Geschicklichkeitsrettungs-wurf ablegen. Bei einem Misserfolg erleidet ein Ziel 4W6 Feuerschaden und 4W6 gleißenden Schaden oder jeweils halb so viel Schaden bei einem erfolgreichen Rettungswurf.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 6. oder eines höheren Grades wirkst, steigt der Feuerschaden oder der gleißende Schaden (deine Wahl) für jeden Grad über den 5. hinaus um 1W6."    },    {        "uuid": "cb5deac0-8f79-43dd-9358-3dc3179e43db", "label": "Elementar beschwören", "summary": "Beschwöre einen Elementargeist als Verbündeten.",        "description": "Beschwörung des 5. Grades\\nZeitaufwand: 1 Minute\\nReichweite: 27 m\\nKomponenten: V, G, M (brennender Weihrauch für Luft, weicher Lehm für Erde, Schwefel und Phosphor für Feuer oder Wasser und Sand für Wasser)\\nWirkungsdauer: Konzentration, bis zu 1 Stunde\\nDu rufst einen elementaren Diener herbei. Wähle einen Bereich von Luft, Erde, Feuer oder Wasser in Reichweite, der einen Würfel mit 3 m Kantenlänge füllt. Ein Elementar mit Heraus-forderungsgrad 5 oder niedriger, welcher der Art des gewählten Bereichs entspricht, erscheint an einer nicht besetzten Stelle im Umkreis von 3 m zu diesem Bereich. Beispielsweise könnte ein Feuerelementar aus einem Freudenfeuer hervortreten oder ein Erdelementar aus dem Boden aufsteigen. Der Elementar verschwindet, wenn seine Trefferpunkte auf 0 reduziert werden oder der Zauber endet.\\nDer Elementar ist für die Wirkungsdauer mit dir und deinen Gefährten verbündet. Würfle die Initiative für den Elementar, da er eigene Züge ausführt. Dein elementarer Diener folgt allen verbalen Befehlen, die du ihm erteilst (dazu musst du keine Aktion aufwenden). Ohne Befehl verteidigt er sich gegen feindliche Kreaturen, führt aber ansonsten keine Aktionen aus.\\nWenn deine Konzentration unterbrochen wird, verschwindet der Elementar nicht, sondern du verlierst die Kontrolle über ihn. Er wird dir und deinen Gefährten gegenüber feindlich und könnte angreifen. Ein unkontrollierter Elementar kann von dir nicht fortgeschickt werden und verschwindet 1 Stunde, nachdem du ihn beschworen hast. Der SL hat die Spielwerte des Elementars zur Verfügung.\\nAuf höheren Graden: Wenn du diesen Spruch mit einem Zauberplatz des 6. oder eines höheren Grades wirkst, steigt der Herausforderungsgrad des Elementars für jeden Grad über den 5. hinaus um 1."}]}'),
+                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"uuid": "e4927331-9272-4685-94bb-b243507142f5", "label": "Flammenschlag", "summary": "Säule aus Feuer und gleißendem Schaden von oben.", "description": "Hervorrufungszauber 5. Grades (Kleriker)\\nZeitaufwand: Aktion\\nReichweite: 18 Meter\\nKomponenten: V, G, M (eine Prise Schwefel)\\nWirkungsdauer: Unmittelbar\\nEine vertikale Säule aus strahlendem Feuer fährt von oben herab. Jede Kreatur in einem zwölf Meter hohen Zylinder mit einem Radius von drei Metern um einen Punkt in Reichweite führt einen Geschicklichkeitsrettungswurf aus. Misslingt der Wurf, so erleidet die Kreatur 5W6 Feuerschaden und 5W6 gleißenden Schaden, anderenfalls die Hälfte.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 5. werden Feuerschaden und gleißender Schaden um 1W6 erhöht."},'
+                        '{"uuid": "cb5deac0-8f79-43dd-9358-3dc3179e43db", "label": "Elementar beschwören", "summary": "Elementargeist hält Kreaturen fest und fügt ihnen Schaden zu.", "description": "Beschwörungszauber 5. Grades (Druide, Magier)\\nZeitaufwand: Aktion\\nReichweite: 18 Meter\\nKomponenten: V, G\\nWirkungsdauer: Konzentration, bis zu 10 Minuten\\nDu beschwörst einen großen immateriellen Geist von den Elementarebenen, der in einem freien Bereich in Reichweite erscheint. Wähle das Element des Geistes aus, durch das seine Schadensart bestimmt wird: Erde (Schall), Feuer (Feuer), Luft (Blitz) oder Wasser (Kälte). Der Geist bleibt für die Wirkungsdauer bestehen.\\nWann immer eine Kreatur, die du sehen kannst, den Bereich des Geistes betritt oder ihren Zug im Abstand von bis zu 1,5 Metern vom Geist beginnt, kannst du die Kreatur zu einem Geschicklichkeitsrettungswurf zwingen, sofern der Geist keine Kreatur festgesetzt hat. Misslingt der Wurf, so erleidet das Ziel 8W8 Schaden je nach Art des Geists und ist festgesetzt, bis der Zauber endet. Das festgesetzte Ziel wiederholt den Rettungswurf zu Beginn jedes seiner Züge. Misslingt der Wurf, so erleidet das Ziel 4W8 Schaden je nach Art des Geists. Bei einem erfolgreichen Rettungswurf ist das Ziel nicht mehr vom Geist festgesetzt.\\nVerwenden von Zauberplätzen höheren Grades: Für jeden Zauberplatzgrad über dem 5. wird der Schaden um 1W8 erhöht."}'
+                        ']}'),
               ]),
         ],
       );

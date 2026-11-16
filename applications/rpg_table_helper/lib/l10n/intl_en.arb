@@ -402,7 +402,7 @@
     }
   },
   "computedValueBadge": "computed",
-  "computedPreset": "Template (D&D 5e)",
+  "computedPreset": "Template (Fantasy 5E)",
   "computedPresetPassivePerception": "Passive Perception",
   "computedPresetPassiveInsight": "Passive Insight",
   "computedPresetPassiveInvestigation": "Passive Investigation",
@@ -549,7 +549,7 @@
     }
   },
   "wizardCurrencyStepTitle": "Currency",
-  "wizardCurrencyStepHelper": "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).",
+  "wizardCurrencyStepHelper": "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in many fantasy RPGs: 10 copper = 1 silver).",
   "wizardSmallestCurrencyLabel": "Name of the smallest currency:",
   "wizardNextCurrencyLabel": "Name of the next larger currency:",
   "wizardCurrencyMultipleLabel": "Worth how many of the previous currency:",
@@ -856,5 +856,17 @@
   "invalidWholeNumberShort": "Enter a whole number",
   "invalidNonNegativeNumberShort": "Enter 0 or more",
   "invalidPositiveNumberShort": "Enter 1 or more",
-  "invalidCurrencyMultiple": "Enter a whole number greater than 1, e.g. 10."
+  "invalidCurrencyMultiple": "Enter a whole number greater than 1, e.g. 10.",
+  "aboutLicensesTitle": "About & licenses",
+  "aboutLicensesSrdTitle": "Rules material: SRD 5.2.1",
+  "aboutLicensesSrdIntro": "The “Fantasy 5E (SRD)” template contains material from the System Reference Document 5.2.1. It is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).",
+  "aboutLicensesAttributionEnglish": "Attribution (English original)",
+  "aboutLicensesAttributionGerman": "Attribution (German edition)",
+  "aboutLicensesAuthoritativeHint": "The German text is for information only. The English version is authoritative.",
+  "aboutLicensesChanges": "Changes: material from the SRD 5.2.1 was selected, translated or taken from the German edition, abridged and adapted for QuestKeeper. Summaries and other template texts are our own.",
+  "aboutLicensesOpenLicense": "Open license CC BY 4.0",
+  "aboutLicensesNotAffiliated": "QuestKeeper is an independent product. It is not published or endorsed by any roleplaying game publisher.",
+  "aboutLicensesOpenSourceTitle": "Open source licenses",
+  "aboutLicensesShowOpenSource": "Show all licenses",
+  "aboutLicensesSettingsSubtitle": "Rules material, licenses and open source notices"
 }

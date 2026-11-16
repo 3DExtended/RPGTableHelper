@@ -1410,6 +1410,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       baseConfig: RpgConfigurationModel.getBaseConfiguration().copyWith(
         rpgName: result,
         allItems: [],
+        // The template's recipes use its items; without them they are empty.
+        craftingRecipes: [],
       ),
     );
 

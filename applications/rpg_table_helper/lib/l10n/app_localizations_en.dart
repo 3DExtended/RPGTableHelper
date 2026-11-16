@@ -1145,7 +1145,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get computedValueBadge => 'computed';
 
   @override
-  String get computedPreset => 'Template (D&D 5e)';
+  String get computedPreset => 'Template (Fantasy 5E)';
 
   @override
   String get computedPresetPassivePerception => 'Passive Perception';
@@ -1421,7 +1421,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wizardCurrencyStepHelper =>
-      '## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).';
+      '## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in many fantasy RPGs: 10 copper = 1 silver).';
 
   @override
   String get wizardSmallestCurrencyLabel => 'Name of the smallest currency:';
@@ -1959,4 +1959,46 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get invalidCurrencyMultiple =>
       'Enter a whole number greater than 1, e.g. 10.';
+
+  @override
+  String get aboutLicensesTitle => 'About & licenses';
+
+  @override
+  String get aboutLicensesSrdTitle => 'Rules material: SRD 5.2.1';
+
+  @override
+  String get aboutLicensesSrdIntro =>
+      'The “Fantasy 5E (SRD)” template contains material from the System Reference Document 5.2.1. It is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).';
+
+  @override
+  String get aboutLicensesAttributionEnglish =>
+      'Attribution (English original)';
+
+  @override
+  String get aboutLicensesAttributionGerman => 'Attribution (German edition)';
+
+  @override
+  String get aboutLicensesAuthoritativeHint =>
+      'The German text is for information only. The English version is authoritative.';
+
+  @override
+  String get aboutLicensesChanges =>
+      'Changes: material from the SRD 5.2.1 was selected, translated or taken from the German edition, abridged and adapted for QuestKeeper. Summaries and other template texts are our own.';
+
+  @override
+  String get aboutLicensesOpenLicense => 'Open license CC BY 4.0';
+
+  @override
+  String get aboutLicensesNotAffiliated =>
+      'QuestKeeper is an independent product. It is not published or endorsed by any roleplaying game publisher.';
+
+  @override
+  String get aboutLicensesOpenSourceTitle => 'Open source licenses';
+
+  @override
+  String get aboutLicensesShowOpenSource => 'Show all licenses';
+
+  @override
+  String get aboutLicensesSettingsSubtitle =>
+      'Rules material, licenses and open source notices';
 }

@@ -442,7 +442,7 @@
     }
   },
   "computedValueBadge": "berechnet",
-  "computedPreset": "Vorlage (D&D 5e)",
+  "computedPreset": "Vorlage (Fantasy 5E)",
   "computedPresetPassivePerception": "Passive Wahrnehmung",
   "computedPresetPassiveInsight": "Passives Motiv erkennen",
   "computedPresetPassiveInvestigation": "Passive Nachforschungen",
@@ -589,7 +589,7 @@
     }
   },
   "wizardCurrencyStepTitle": "Währung",
-  "wizardCurrencyStepHelper": "## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).",
+  "wizardCurrencyStepHelper": "## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (in vielen Fantasy-Rollenspielen: 10 Kupfer = 1 Silber).",
   "wizardSmallestCurrencyLabel": "Name der kleinsten Währung:",
   "wizardNextCurrencyLabel": "Name der nächstgrößeren Währung:",
   "wizardCurrencyMultipleLabel": "Entspricht wie vielen der vorherigen Währung:",
@@ -896,5 +896,17 @@
   "invalidWholeNumberShort": "Ganze Zahl eingeben",
   "invalidNonNegativeNumberShort": "Zahl ab 0 eingeben",
   "invalidPositiveNumberShort": "Zahl ab 1 eingeben",
-  "invalidCurrencyMultiple": "Gib eine ganze Zahl größer als 1 ein, z. B. 10."
+  "invalidCurrencyMultiple": "Gib eine ganze Zahl größer als 1 ein, z. B. 10.",
+  "aboutLicensesTitle": "Info & Lizenzen",
+  "aboutLicensesSrdTitle": "Regelmaterial: SRD 5.2.1",
+  "aboutLicensesSrdIntro": "Die Vorlage „Fantasy 5E (SRD)“ enthält Material aus dem System Reference Document 5.2.1. Es steht unter der Lizenz Creative Commons Namensnennung 4.0 International (CC BY 4.0).",
+  "aboutLicensesAttributionEnglish": "Namensnennung (englisches Original)",
+  "aboutLicensesAttributionGerman": "Namensnennung (deutsche Fassung)",
+  "aboutLicensesAuthoritativeHint": "Die deutsche Fassung dient nur der Information. Maßgeblich ist die englische Fassung.",
+  "aboutLicensesChanges": "Änderungen: Material aus dem SRD 5.2.1 wurde ausgewählt, übersetzt oder aus der deutschen Fassung übernommen, gekürzt und an QuestKeeper angepasst. Kurzbeschreibungen und weitere Texte der Vorlage sind eigene Texte.",
+  "aboutLicensesOpenLicense": "Lizenz CC BY 4.0 öffnen",
+  "aboutLicensesNotAffiliated": "QuestKeeper ist ein unabhängiges Produkt und wird von keinem Rollenspielverlag herausgegeben oder unterstützt.",
+  "aboutLicensesOpenSourceTitle": "Open-Source-Lizenzen",
+  "aboutLicensesShowOpenSource": "Alle Lizenzen anzeigen",
+  "aboutLicensesSettingsSubtitle": "Regelmaterial, Lizenzen und Open-Source-Hinweise"
 }

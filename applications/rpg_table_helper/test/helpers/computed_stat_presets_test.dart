@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/helpers/character_stats/computed_stat_presets.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
@@ -9,6 +11,38 @@ import 'stat_numbers_test.dart' as h;
 const intelligence = "0f6557a8-c3b6-4832-a673-a8903f87ff24";
 const insight = "a3040091-cf15-4e63-87b7-3c449a9b3dd4";
 const investigation = "d6833b01-0f6e-4bc3-9590-60a6bc3cdc01";
+const stealth = "b62eeed4-fe7f-47ce-b14c-041b6b1467d6";
+const skillsMultiselect = "c5ef782a-8d8b-4a88-98b2-be277f741e4c";
+
+/// The template with [optionUuid] removed from the skill list.
+RpgConfigurationModel _templateWithoutOption(String optionUuid) {
+  var config = RpgConfigurationModel.getBaseConfiguration();
+  return config.copyWith(
+    characterStatTabsDefinition: [
+      for (var tab in config.characterStatTabsDefinition!)
+        tab.copyWith(
+          statsInTab: [
+            for (var stat in tab.statsInTab)
+              if (stat.statUuid == skillsMultiselect)
+                stat.copyWith(
+                  jsonSerializedAdditionalData: jsonEncode(
+                    (jsonDecode(stat.jsonSerializedAdditionalData!)
+                        as Map<String, dynamic>)
+                      ..update(
+                        "options",
+                        (options) => (options as List)
+                            .where((o) => o["uuid"] != optionUuid)
+                            .toList(),
+                      ),
+                  ),
+                )
+              else
+                stat,
+          ],
+        ),
+    ],
+  );
+}
 
 void main() {
   final stats = StatNumbers.statsWithTabs(
@@ -43,12 +77,25 @@ void main() {
     );
   });
 
-  test('a missing skill leaves the proficiency block out instead of always '
-      'counting it', () {
-    // The base campaign has no Stealth skill.
+  test('passive Stealth is complete in the template (SRD skill list)', () {
     var result = ComputedStatPresets.build(
       ComputedStatPresetId.passiveStealth,
       stats,
+    );
+
+    expect(result.complete, isTrue);
+    expect(result.formula.base, 10);
+    expect(result.formula.terms[0].source.entryUuid, h.dexterity);
+    expect(result.formula.terms[1].condition!.statUuid, skillsMultiselect);
+    expect(result.formula.terms[1].condition!.optionUuid, stealth);
+  });
+
+  test('a missing skill leaves the proficiency block out instead of always '
+      'counting it', () {
+    // A campaign whose skill list has no Stealth.
+    var result = ComputedStatPresets.build(
+      ComputedStatPresetId.passiveStealth,
+      StatNumbers.statsWithTabs(_templateWithoutOption(stealth)),
     );
 
     expect(result.complete, isFalse);

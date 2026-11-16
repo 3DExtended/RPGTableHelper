@@ -106,7 +106,7 @@ void main() {
       final container = await _pumpStep(tester, startConfig);
 
       await _selectDropdownValue(
-          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+          tester, const Key('initiativeBonusStatDropdown'), 'Attribute');
       await _selectDropdownValue(tester,
           const Key('initiativeBonusListEntryDropdown'), 'Geschicklichkeit');
 
@@ -218,7 +218,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await _selectDropdownValue(
-          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+          tester, const Key('initiativeBonusStatDropdown'), 'Attribute');
       // Leave list entry unset → incomplete
 
       await _tapNext(tester);
@@ -281,7 +281,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await _selectDropdownValue(
-          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+          tester, const Key('initiativeBonusStatDropdown'), 'Attribute');
       await _tapNext(tester);
 
       await tester.tap(find.byKey(const Key('initiativeBonusIncompleteLeave')));
@@ -344,7 +344,7 @@ void main() {
 
       await pumpStep();
       await _selectDropdownValue(
-          tester, const Key('initiativeBonusStatDropdown'), 'Skills');
+          tester, const Key('initiativeBonusStatDropdown'), 'Attribute');
 
       // Simulate Back: write draft via previous handler
       await tester.tap(find.byType(CustomButton).first);

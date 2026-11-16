@@ -170,7 +170,7 @@ void main() {
     expect(visible.length, config.characterStatTabsDefinition!.length - 1);
     expect(
       visible[defaultVisibleCharacterStatTabIndex(config)!].tabName,
-      'Stats',
+      'Werte',
     );
   });
 
@@ -186,7 +186,7 @@ void main() {
     );
 
     // opens on the default tab, with its name as the title
-    expect(_titleText(tester), 'Stats');
+    expect(_titleText(tester), 'Werte');
     expect(find.text('Leere Seite'), findsNothing);
 
     final tabs = tester
@@ -195,11 +195,11 @@ void main() {
         .map((i) => i.label)
         .toList();
     expect(tabs, [
-      'Background',
-      'Stats',
-      'Features',
-      'Attacks',
-      'Spells',
+      'Hintergrund',
+      'Werte',
+      'Merkmale',
+      'Angriffe',
+      'Zauber',
       'Währung',
       'Inventar',
       'Herstellen',
@@ -222,7 +222,7 @@ void main() {
     // swiping keeps the tabs in step
     await tester.tap(find.byKey(PageTabStrip.tabKey(0)));
     await tester.pumpAndSettle();
-    expect(_titleText(tester), 'Background');
+    expect(_titleText(tester), 'Hintergrund');
   });
 
   testWidgets('phone, DM: the pages have short names, the notes are one tap '
@@ -272,7 +272,7 @@ void main() {
       screen: _playerScreen(),
     );
     expect(find.byType(PageTabStrip), findsNothing);
-    expect(find.text('Stats'), findsOneWidget);
+    expect(find.text('Werte'), findsOneWidget);
   });
 
   testWidgets('iPad mini in landscape keeps the iPad navigation', (

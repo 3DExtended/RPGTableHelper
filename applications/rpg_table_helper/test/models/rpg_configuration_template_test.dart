@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 
-/// The D&D template new campaigns start from.
+/// The "Fantasy 5E (SRD)" template new campaigns start from.
 void main() {
   final config = RpgConfigurationModel.getBaseConfiguration();
   final tabs = config.characterStatTabsDefinition!;
   final allStats = tabs.expand((t) => t.statsInTab).toList();
 
   /// Every value a player types in: plain stats by name, plus the detail
-  /// values inside the character summary (Klasse, Volk).
+  /// values inside the character summary (Klasse, Spezies).
   List<String> askedValueNames() => [
     for (final stat in allStats)
       if (stat.valueType ==
@@ -23,15 +23,15 @@ void main() {
         stat.name,
   ];
 
-  test('Klasse and Volk are asked only once (in the character summary)', () {
+  test('Klasse and Spezies are asked only once (in the character summary)', () {
     final names = askedValueNames();
     expect(names.where((n) => n == 'Klasse'), hasLength(1));
-    expect(names.where((n) => n == 'Volk'), hasLength(1));
+    expect(names.where((n) => n == 'Spezies'), hasLength(1));
 
-    final background = tabs.firstWhere((t) => t.tabName == 'Background');
+    final background = tabs.firstWhere((t) => t.tabName == 'Hintergrund');
     expect(
       background.statsInTab.map((s) => s.name),
-      isNot(anyOf(contains('Klasse'), contains('Volk'))),
+      isNot(anyOf(contains('Klasse'), contains('Spezies'))),
     );
 
     final summary = allStats.singleWhere(
@@ -40,7 +40,7 @@ void main() {
           CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
     );
     expect(summary.jsonSerializedAdditionalData, contains('"Klasse"'));
-    expect(summary.jsonSerializedAdditionalData, contains('"Volk"'));
+    expect(summary.jsonSerializedAdditionalData, contains('"Spezies"'));
   });
 
   test('no typed-in text field is asked twice', () {
@@ -48,8 +48,8 @@ void main() {
     final duplicates = names
         .where((n) => names.where((other) => other == n).length > 1)
         .toSet();
-    // "Aussehen" exists twice on purpose: a text on Background and the
-    // portrait image on Stats (the image is not part of this list).
+    // "Aussehen" exists twice on purpose: a text on Hintergrund and the
+    // portrait image on Werte (the image is not part of this list).
     expect(duplicates, isEmpty);
   });
 

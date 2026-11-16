@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart' show LicenseRegistry;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,8 @@ import 'package:quest_keeper/helpers/lifecycle_event_handler.dart';
 import 'package:quest_keeper/helpers/save_rpg_character_configuration_to_storage_observer.dart';
 import 'package:quest_keeper/helpers/save_rpg_configuration_to_storage_observer.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/screens/about/about_and_licenses_screen.dart';
+import 'package:quest_keeper/screens/about/srd_attribution.dart';
 import 'package:quest_keeper/screens/authorized_screen_wrapper.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
@@ -36,6 +39,9 @@ import 'package:quest_keeper/services/sse/network_change_reconnect.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // CC BY 4.0 attribution of the SRD 5.2.1 in Flutter's license list.
+  LicenseRegistry.addLicense(srdLicenseEntries);
 
   runApp(const MyApp());
 }
@@ -217,6 +223,11 @@ class AppRoutingShell extends ConsumerWidget {
                       case AgentDebugLogScreen.route:
                         return MaterialWithModalsPageRoute(
                           builder: (_) => const AgentDebugLogScreen(),
+                          settings: settings,
+                        );
+                      case AboutAndLicensesScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => const AboutAndLicensesScreen(),
                           settings: settings,
                         );
                     }

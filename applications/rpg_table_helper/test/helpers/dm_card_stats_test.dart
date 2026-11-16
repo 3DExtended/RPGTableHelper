@@ -45,7 +45,7 @@ void main() {
       );
 
       expect(selection.barStatUuid, _hpUuid);
-      expect(DmCardStats.barFor(config, selection, character)?.$1.name, "HP");
+      expect(DmCardStats.barFor(config, selection, character)?.$1.name, "TP");
       expect(
         DmCardStats.numbersFor(
           config,
@@ -53,7 +53,7 @@ void main() {
           character,
           _labels,
         ).map((e) => "${e.label}=${e.value}"),
-        ["AC=12", "SP=12", "Temp HP=12", "ÜB=12"],
+        ["Bewegung=12", "RK=12", "Temp. TP=12", "ÜB=12"],
       );
     });
 
@@ -146,7 +146,7 @@ void main() {
 
       expect(DmCardStats.barFor(config, selection, character), isNull);
       expect(DmCardStats.numbersFor(config, selection, character, _labels), [
-        (label: "AC", value: 17),
+        (label: "RK", value: 17),
         (label: "Weisheit (calc.)", value: 2),
       ]);
     });
@@ -199,10 +199,13 @@ void main() {
 
     expect(
       labels,
-      containsAll(["AC", "Temp HP", "Weisheit", "Weisheit (calc.)"]),
+      containsAll(["RK", "Temp. TP", "Weisheit", "Weisheit (calc.)"]),
     );
-    // The icon list has no name; its tab names the group.
-    expect(options.firstWhere((o) => o.label == "AC").groupLabel, "Stats");
-    expect(DmCardStats.barOptions(config).map((s) => s.name), contains("HP"));
+    // The icon list is named "Kampfwerte"; that names the group.
+    expect(
+      options.firstWhere((o) => o.label == "RK").groupLabel,
+      "Kampfwerte",
+    );
+    expect(DmCardStats.barOptions(config).map((s) => s.name), contains("TP"));
   });
 }

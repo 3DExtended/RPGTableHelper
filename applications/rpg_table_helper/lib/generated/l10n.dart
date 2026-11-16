@@ -3138,10 +3138,10 @@ class S {
     );
   }
 
-  /// `Template (D&D 5e)`
+  /// `Template (Fantasy 5E)`
   String get computedPreset {
     return Intl.message(
-      'Template (D&D 5e)',
+      'Template (Fantasy 5E)',
       name: 'computedPreset',
       desc: '',
       args: [],
@@ -3877,10 +3877,10 @@ class S {
     );
   }
 
-  /// `## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).`
+  /// `## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in many fantasy RPGs: 10 copper = 1 silver).`
   String get wizardCurrencyStepHelper {
     return Intl.message(
-      '## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in D&D: 10 copper = 1 silver).',
+      '## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in many fantasy RPGs: 10 copper = 1 silver).',
       name: 'wizardCurrencyStepHelper',
       desc: '',
       args: [],
@@ -5245,6 +5245,126 @@ class S {
     return Intl.message(
       'Enter a whole number greater than 1, e.g. 10.',
       name: 'invalidCurrencyMultiple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About & licenses`
+  String get aboutLicensesTitle {
+    return Intl.message(
+      'About & licenses',
+      name: 'aboutLicensesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rules material: SRD 5.2.1`
+  String get aboutLicensesSrdTitle {
+    return Intl.message(
+      'Rules material: SRD 5.2.1',
+      name: 'aboutLicensesSrdTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The “Fantasy 5E (SRD)” template contains material from the System Reference Document 5.2.1. It is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).`
+  String get aboutLicensesSrdIntro {
+    return Intl.message(
+      'The “Fantasy 5E (SRD)” template contains material from the System Reference Document 5.2.1. It is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).',
+      name: 'aboutLicensesSrdIntro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attribution (English original)`
+  String get aboutLicensesAttributionEnglish {
+    return Intl.message(
+      'Attribution (English original)',
+      name: 'aboutLicensesAttributionEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attribution (German edition)`
+  String get aboutLicensesAttributionGerman {
+    return Intl.message(
+      'Attribution (German edition)',
+      name: 'aboutLicensesAttributionGerman',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The German text is for information only. The English version is authoritative.`
+  String get aboutLicensesAuthoritativeHint {
+    return Intl.message(
+      'The German text is for information only. The English version is authoritative.',
+      name: 'aboutLicensesAuthoritativeHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changes: material from the SRD 5.2.1 was selected, translated or taken from the German edition, abridged and adapted for QuestKeeper. Summaries and other template texts are our own.`
+  String get aboutLicensesChanges {
+    return Intl.message(
+      'Changes: material from the SRD 5.2.1 was selected, translated or taken from the German edition, abridged and adapted for QuestKeeper. Summaries and other template texts are our own.',
+      name: 'aboutLicensesChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open license CC BY 4.0`
+  String get aboutLicensesOpenLicense {
+    return Intl.message(
+      'Open license CC BY 4.0',
+      name: 'aboutLicensesOpenLicense',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QuestKeeper is an independent product. It is not published or endorsed by any roleplaying game publisher.`
+  String get aboutLicensesNotAffiliated {
+    return Intl.message(
+      'QuestKeeper is an independent product. It is not published or endorsed by any roleplaying game publisher.',
+      name: 'aboutLicensesNotAffiliated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open source licenses`
+  String get aboutLicensesOpenSourceTitle {
+    return Intl.message(
+      'Open source licenses',
+      name: 'aboutLicensesOpenSourceTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show all licenses`
+  String get aboutLicensesShowOpenSource {
+    return Intl.message(
+      'Show all licenses',
+      name: 'aboutLicensesShowOpenSource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rules material, licenses and open source notices`
+  String get aboutLicensesSettingsSubtitle {
+    return Intl.message(
+      'Rules material, licenses and open source notices',
+      name: 'aboutLicensesSettingsSubtitle',
       desc: '',
       args: [],
     );

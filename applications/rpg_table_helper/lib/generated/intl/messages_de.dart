@@ -124,6 +124,42 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "aboutLicensesAttributionEnglish": MessageLookupByLibrary.simpleMessage(
+      "Namensnennung (englisches Original)",
+    ),
+    "aboutLicensesAttributionGerman": MessageLookupByLibrary.simpleMessage(
+      "Namensnennung (deutsche Fassung)",
+    ),
+    "aboutLicensesAuthoritativeHint": MessageLookupByLibrary.simpleMessage(
+      "Die deutsche Fassung dient nur der Information. Maßgeblich ist die englische Fassung.",
+    ),
+    "aboutLicensesChanges": MessageLookupByLibrary.simpleMessage(
+      "Änderungen: Material aus dem SRD 5.2.1 wurde ausgewählt, übersetzt oder aus der deutschen Fassung übernommen, gekürzt und an QuestKeeper angepasst. Kurzbeschreibungen und weitere Texte der Vorlage sind eigene Texte.",
+    ),
+    "aboutLicensesNotAffiliated": MessageLookupByLibrary.simpleMessage(
+      "QuestKeeper ist ein unabhängiges Produkt und wird von keinem Rollenspielverlag herausgegeben oder unterstützt.",
+    ),
+    "aboutLicensesOpenLicense": MessageLookupByLibrary.simpleMessage(
+      "Lizenz CC BY 4.0 öffnen",
+    ),
+    "aboutLicensesOpenSourceTitle": MessageLookupByLibrary.simpleMessage(
+      "Open-Source-Lizenzen",
+    ),
+    "aboutLicensesSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Regelmaterial, Lizenzen und Open-Source-Hinweise",
+    ),
+    "aboutLicensesShowOpenSource": MessageLookupByLibrary.simpleMessage(
+      "Alle Lizenzen anzeigen",
+    ),
+    "aboutLicensesSrdIntro": MessageLookupByLibrary.simpleMessage(
+      "Die Vorlage „Fantasy 5E (SRD)“ enthält Material aus dem System Reference Document 5.2.1. Es steht unter der Lizenz Creative Commons Namensnennung 4.0 International (CC BY 4.0).",
+    ),
+    "aboutLicensesSrdTitle": MessageLookupByLibrary.simpleMessage(
+      "Regelmaterial: SRD 5.2.1",
+    ),
+    "aboutLicensesTitle": MessageLookupByLibrary.simpleMessage(
+      "Info & Lizenzen",
+    ),
     "activeAlternateFormBannerTitle": MessageLookupByLibrary.simpleMessage(
       "Verwandelte Gestalt",
     ),
@@ -407,7 +443,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "computedModeValue": MessageLookupByLibrary.simpleMessage("wie er ist"),
     "computedModifierOf": m8,
-    "computedPreset": MessageLookupByLibrary.simpleMessage("Vorlage (D&D 5e)"),
+    "computedPreset": MessageLookupByLibrary.simpleMessage(
+      "Vorlage (Fantasy 5E)",
+    ),
     "computedPresetIncomplete": MessageLookupByLibrary.simpleMessage(
       "Nicht alle Werte der Vorlage gibt es in dieser Kampagne. Ergänze die fehlenden Bausteine selbst.",
     ),
@@ -1232,7 +1270,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Entspricht wie vielen der vorherigen Währung:",
     ),
     "wizardCurrencyStepHelper": MessageLookupByLibrary.simpleMessage(
-      "## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).",
+      "## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (in vielen Fantasy-Rollenspielen: 10 Kupfer = 1 Silber).",
     ),
     "wizardCurrencyStepTitle": MessageLookupByLibrary.simpleMessage("Währung"),
     "wizardDeletePropertyMessage": m26,

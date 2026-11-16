@@ -368,6 +368,6 @@ void main() {
     );
     var labelsOnly = options.map((o) => o.label);
 
-    expect(labelsOnly, containsAll(["HP (max.)", "Level", "Weisheit"]));
+    expect(labelsOnly, containsAll(["TP (max.)", "Level", "Weisheit"]));
   });
 }

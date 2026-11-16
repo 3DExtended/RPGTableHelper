@@ -3,7 +3,7 @@ import 'package:quest_keeper/helpers/character_stats/computed_stat_editor.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/computed_stat_formula.dart';
 
-/// Ready-made D&D 5e formulas that fill the builder.
+/// Ready-made 5E SRD formulas that fill the builder.
 enum ComputedStatPresetId {
   passivePerception,
   passiveInsight,

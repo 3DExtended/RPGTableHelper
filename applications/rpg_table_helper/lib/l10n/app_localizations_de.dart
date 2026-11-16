@@ -1155,7 +1155,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get computedValueBadge => 'berechnet';
 
   @override
-  String get computedPreset => 'Vorlage (D&D 5e)';
+  String get computedPreset => 'Vorlage (Fantasy 5E)';
 
   @override
   String get computedPresetPassivePerception => 'Passive Wahrnehmung';
@@ -1434,7 +1434,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wizardCurrencyStepHelper =>
-      '## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).';
+      '## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (in vielen Fantasy-Rollenspielen: 10 Kupfer = 1 Silber).';
 
   @override
   String get wizardSmallestCurrencyLabel => 'Name der kleinsten Währung:';
@@ -1976,4 +1976,47 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get invalidCurrencyMultiple =>
       'Gib eine ganze Zahl größer als 1 ein, z. B. 10.';
+
+  @override
+  String get aboutLicensesTitle => 'Info & Lizenzen';
+
+  @override
+  String get aboutLicensesSrdTitle => 'Regelmaterial: SRD 5.2.1';
+
+  @override
+  String get aboutLicensesSrdIntro =>
+      'Die Vorlage „Fantasy 5E (SRD)“ enthält Material aus dem System Reference Document 5.2.1. Es steht unter der Lizenz Creative Commons Namensnennung 4.0 International (CC BY 4.0).';
+
+  @override
+  String get aboutLicensesAttributionEnglish =>
+      'Namensnennung (englisches Original)';
+
+  @override
+  String get aboutLicensesAttributionGerman =>
+      'Namensnennung (deutsche Fassung)';
+
+  @override
+  String get aboutLicensesAuthoritativeHint =>
+      'Die deutsche Fassung dient nur der Information. Maßgeblich ist die englische Fassung.';
+
+  @override
+  String get aboutLicensesChanges =>
+      'Änderungen: Material aus dem SRD 5.2.1 wurde ausgewählt, übersetzt oder aus der deutschen Fassung übernommen, gekürzt und an QuestKeeper angepasst. Kurzbeschreibungen und weitere Texte der Vorlage sind eigene Texte.';
+
+  @override
+  String get aboutLicensesOpenLicense => 'Lizenz CC BY 4.0 öffnen';
+
+  @override
+  String get aboutLicensesNotAffiliated =>
+      'QuestKeeper ist ein unabhängiges Produkt und wird von keinem Rollenspielverlag herausgegeben oder unterstützt.';
+
+  @override
+  String get aboutLicensesOpenSourceTitle => 'Open-Source-Lizenzen';
+
+  @override
+  String get aboutLicensesShowOpenSource => 'Alle Lizenzen anzeigen';
+
+  @override
+  String get aboutLicensesSettingsSubtitle =>
+      'Regelmaterial, Lizenzen und Open-Source-Hinweise';
 }

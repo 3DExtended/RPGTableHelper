@@ -205,7 +205,9 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
         ],
         alternateForms: [],
         uuid: const UuidV7().generate(),
-        characterName: "Gandalf",
+        // Neutral placeholder; also shown by the GM roster for characters
+        // without a name.
+        characterName: "Unbenannter Charakter",
         characterStats: getDefaultStats(rpgConfig, false, variant),
         inventory: [
           RpgCharacterOwnedItemPair(
@@ -219,7 +221,9 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
           RpgCharacterOwnedItemPair(
               itemUuid: "01921424-0eca-74bb-bc3d-be2c82996103", amount: 2)
         ],
-        moneyInBaseType: 23456,
+        // 2 Gold 3 Silber 5 Kupfer with the template's factor-10 coins
+        // (the same gold value as the former 23456 at factor 100).
+        moneyInBaseType: 235,
       );
 
   static List<RpgCharacterStatValue> getDefaultStats(

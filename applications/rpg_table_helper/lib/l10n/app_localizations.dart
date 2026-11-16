@@ -2183,7 +2183,7 @@ abstract class AppLocalizations {
   /// No description provided for @computedPreset.
   ///
   /// In de, this message translates to:
-  /// **'Vorlage (D&D 5e)'**
+  /// **'Vorlage (Fantasy 5E)'**
   String get computedPreset;
 
   /// No description provided for @computedPresetPassivePerception.
@@ -2633,7 +2633,7 @@ abstract class AppLocalizations {
   /// No description provided for @wizardCurrencyStepHelper.
   ///
   /// In de, this message translates to:
-  /// **'## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (bei D&D: 10 Kupfer = 1 Silber).'**
+  /// **'## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (in vielen Fantasy-Rollenspielen: 10 Kupfer = 1 Silber).'**
   String get wizardCurrencyStepHelper;
 
   /// No description provided for @wizardSmallestCurrencyLabel.
@@ -3469,6 +3469,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Gib eine ganze Zahl größer als 1 ein, z. B. 10.'**
   String get invalidCurrencyMultiple;
+
+  /// No description provided for @aboutLicensesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Info & Lizenzen'**
+  String get aboutLicensesTitle;
+
+  /// No description provided for @aboutLicensesSrdTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Regelmaterial: SRD 5.2.1'**
+  String get aboutLicensesSrdTitle;
+
+  /// No description provided for @aboutLicensesSrdIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Vorlage „Fantasy 5E (SRD)“ enthält Material aus dem System Reference Document 5.2.1. Es steht unter der Lizenz Creative Commons Namensnennung 4.0 International (CC BY 4.0).'**
+  String get aboutLicensesSrdIntro;
+
+  /// No description provided for @aboutLicensesAttributionEnglish.
+  ///
+  /// In de, this message translates to:
+  /// **'Namensnennung (englisches Original)'**
+  String get aboutLicensesAttributionEnglish;
+
+  /// No description provided for @aboutLicensesAttributionGerman.
+  ///
+  /// In de, this message translates to:
+  /// **'Namensnennung (deutsche Fassung)'**
+  String get aboutLicensesAttributionGerman;
+
+  /// No description provided for @aboutLicensesAuthoritativeHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Die deutsche Fassung dient nur der Information. Maßgeblich ist die englische Fassung.'**
+  String get aboutLicensesAuthoritativeHint;
+
+  /// No description provided for @aboutLicensesChanges.
+  ///
+  /// In de, this message translates to:
+  /// **'Änderungen: Material aus dem SRD 5.2.1 wurde ausgewählt, übersetzt oder aus der deutschen Fassung übernommen, gekürzt und an QuestKeeper angepasst. Kurzbeschreibungen und weitere Texte der Vorlage sind eigene Texte.'**
+  String get aboutLicensesChanges;
+
+  /// No description provided for @aboutLicensesOpenLicense.
+  ///
+  /// In de, this message translates to:
+  /// **'Lizenz CC BY 4.0 öffnen'**
+  String get aboutLicensesOpenLicense;
+
+  /// No description provided for @aboutLicensesNotAffiliated.
+  ///
+  /// In de, this message translates to:
+  /// **'QuestKeeper ist ein unabhängiges Produkt und wird von keinem Rollenspielverlag herausgegeben oder unterstützt.'**
+  String get aboutLicensesNotAffiliated;
+
+  /// No description provided for @aboutLicensesOpenSourceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Open-Source-Lizenzen'**
+  String get aboutLicensesOpenSourceTitle;
+
+  /// No description provided for @aboutLicensesShowOpenSource.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Lizenzen anzeigen'**
+  String get aboutLicensesShowOpenSource;
+
+  /// No description provided for @aboutLicensesSettingsSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Regelmaterial, Lizenzen und Open-Source-Hinweise'**
+  String get aboutLicensesSettingsSubtitle;
 }
 
 class _AppLocalizationsDelegate

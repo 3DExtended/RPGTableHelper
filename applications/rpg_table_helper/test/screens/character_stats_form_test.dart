@@ -25,7 +25,7 @@ import '../custom_font_loader.dart';
 void main() {
   final config = RpgConfigurationModel.getBaseConfiguration();
   final tabs = config.characterStatTabsDefinition!;
-  final backgroundTab = tabs.firstWhere((t) => t.tabName == 'Background');
+  final backgroundTab = tabs.firstWhere((t) => t.tabName == 'Hintergrund');
   final statsTab = tabs.firstWhere((t) => t.isDefaultTab);
   final summaryStat = statsTab.statsInTab.firstWhere(
     (s) =>
@@ -157,7 +157,7 @@ void main() {
     );
     expect(
       find.text(
-        S.current.characterSetupProgress(1, form.pages.length, 'Background'),
+        S.current.characterSetupProgress(1, form.pages.length, 'Hintergrund'),
       ),
       findsWidgets,
     );
@@ -174,7 +174,7 @@ void main() {
 
     expect(
       find.text(
-        S.current.characterSetupProgress(2, form.pages.length, 'Stats'),
+        S.current.characterSetupProgress(2, form.pages.length, 'Werte'),
       ),
       findsWidgets,
     );
@@ -281,7 +281,7 @@ void main() {
 
     expect(
       find.text(
-        S.current.characterSetupProgress(1, form.pages.length, 'Background'),
+        S.current.characterSetupProgress(1, form.pages.length, 'Hintergrund'),
       ),
       findsWidgets,
     );
@@ -305,7 +305,7 @@ void main() {
     expect(form.persisted, isEmpty, reason: 'nothing stored as level 0');
     expect(
       find.text(
-        S.current.characterSetupProgress(2, form.pages.length, 'Stats'),
+        S.current.characterSetupProgress(2, form.pages.length, 'Werte'),
       ),
       findsWidgets,
       reason: 'still on the Stats page',

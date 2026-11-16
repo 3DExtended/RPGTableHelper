@@ -10,7 +10,7 @@ enum ComputedTermMode {
   /// The number as it is.
   value,
 
-  /// The D&D ability modifier: ⌊(x − 10) / 2⌋.
+  /// The 5E SRD ability modifier: ⌊(x − 10) / 2⌋.
   modifier,
 }
 
