@@ -2430,4 +2430,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get propertyPurposeTransformationDescription =>
       'A button that turns the character into another form. E.g. an animal shape.';
+
+  @override
+  String get buildingBlocksTitle => 'Ready-made blocks';
+
+  @override
+  String get buildingBlocksCardDescription =>
+      'Take properties from the templates, e.g. ability scores, saving throws, spell slots, aspects or stress.';
+
+  @override
+  String get buildingBlocksHint =>
+      'Tick what you want to take over. The properties go into this tab, and you can change them afterwards.';
+
+  @override
+  String buildingBlocksTabLabel(String tabName) {
+    return 'Tab “$tabName”';
+  }
+
+  @override
+  String get buildingBlocksAlreadyOnSheet => 'Already on the sheet';
+
+  @override
+  String get buildingBlocksAdd => 'Add';
+
+  @override
+  String buildingBlocksAddCount(int count) {
+    return 'Add $count';
+  }
 }

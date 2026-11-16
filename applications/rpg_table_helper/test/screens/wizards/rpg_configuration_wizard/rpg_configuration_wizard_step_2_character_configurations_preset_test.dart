@@ -7,10 +7,15 @@ import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_confirm_delete_dialog.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
+import 'package:quest_keeper/helpers/character_stats/sheet_building_blocks.dart';
+import 'package:quest_keeper/helpers/character_stats/show_building_block_picker.dart';
+import 'package:quest_keeper/helpers/character_stats/show_property_purpose_picker.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_2_character_configurations_preset.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -120,6 +125,7 @@ Future<ProviderContainer> _pumpStep(
       child: CustomThemeProvider(
         overrideBrightness: Brightness.dark,
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           localizationsDelegates: [
             ...AppLocalizations.localizationsDelegates,
             S.delegate,
@@ -310,6 +316,36 @@ void main() {
         findsOneWidget,
       );
     });
+  });
+
+  testWidgets('building blocks from the templates go into the tab', (
+    tester,
+  ) async {
+    final container = await _pumpStep(tester);
+    final abilities = sheetBuildingBlocks().firstWhere((b) =>
+        b.template == RpgConfigurationTemplateId.fantasySrd &&
+        b.stat.name == 'Attribute');
+
+    // "Neue Eigenschaft" of the second tab, "Werte".
+    await tester.tap(find.text(S.current.newPropertyBtnLabel).last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(PropertyPurposePicker.buildingBlocksKey).last);
+    await tester.pumpAndSettle();
+    final tile = find.byKey(BuildingBlockPicker.keyFor(abilities.stat.statUuid));
+    await tester.ensureVisible(tile.last);
+    await tester.pumpAndSettle();
+    await tester.tap(tile.last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(S.current.buildingBlocksAddCount(1)).last);
+    await tester.pumpAndSettle();
+
+    final tabs = _savedTabs(container);
+    expect(tabs[0].statsInTab.map((s) => s.statUuid),
+        ['s-name', 's-age', 's-origin']);
+    expect(tabs[1].statsInTab.map((s) => s.statUuid),
+        ['s-hp', abilities.stat.statUuid]);
+    expect(tabs[1].statsInTab.last.valueType,
+        CharacterStatValueType.listOfIntWithCalculatedValues);
   });
 
   test('countCharactersWithValuesForStat counts characters, not values', () {

@@ -121,11 +121,11 @@ void main() {
     });
   });
 
-  Future<Future<CharacterStatDefinition?> Function()> pumpAndOpen(
+  Future<Future<Object?> Function()> pumpAndOpen(
     WidgetTester tester,
-    Future<CharacterStatDefinition?> Function(BuildContext context) open,
+    Future<Object?> Function(BuildContext context) open,
   ) async {
-    CharacterStatDefinition? saved;
+    Object? saved;
     var done = false;
     tester.view.physicalSize = const Size(1200, 2400) * 3;
     tester.view.devicePixelRatio = 3;
@@ -231,7 +231,8 @@ void main() {
     expect(tester.takeException(), isNull);
 
     await tapReal(tester, find.text(S.current.save));
-    final saved = (await result())!;
+    final saved =
+        ((await result())! as List<CharacterStatDefinition>).single;
     expect(saved.name, 'Trefferpunkte');
     expect(saved.valueType, CharacterStatValueType.intWithMaxValue);
     expect(saved.editType, CharacterStatEditType.oneTap);
@@ -268,7 +269,8 @@ void main() {
 
     await enterName(tester, 'Gold');
     await tapReal(tester, find.text(S.current.save));
-    expect((await result())!.name, 'Gold');
+    expect(
+        ((await result())! as List<CharacterStatDefinition>).single.name, 'Gold');
   });
 
   testWidgets('cancelling the picker adds nothing', (tester) async {
@@ -279,7 +281,7 @@ void main() {
     await tapReal(tester, find.text(S.current.cancel));
 
     expect(find.byType(ShowGetDmConfigurationModalContent), findsNothing);
-    expect(await result(), isNull);
+    expect(await result(), isEmpty);
   });
 
   testWidgets('editing an existing property shows no purpose',

@@ -4,6 +4,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/property_purposes.dart';
+import 'package:quest_keeper/helpers/character_stats/show_building_block_picker.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -11,17 +12,24 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
-/// What the game master picked in [showPropertyPurposePicker]: a purpose, or
-/// the full list of field types ([purpose] null).
+/// What the game master picked in [showPropertyPurposePicker]: a purpose,
+/// the full list of field types ([purpose] null), or properties from the
+/// templates ([buildingBlocks]).
 class PropertyPurposeSelection {
-  const PropertyPurposeSelection(this.purpose);
+  const PropertyPurposeSelection(this.purpose) : buildingBlocks = false;
+
+  const PropertyPurposeSelection.buildingBlocks()
+      : purpose = null,
+        buildingBlocks = true;
 
   final PropertyPurpose? purpose;
+  final bool buildingBlocks;
 }
 
-/// A new property: first "What do you want to track?", then the property
-/// editor with the field type the purpose stands for. Null when cancelled.
-Future<CharacterStatDefinition?> showNewPropertyEditor({
+/// New properties: first "What do you want to track?", then the property
+/// editor with the field type the purpose stands for, or the ticked
+/// properties of the templates. Empty when cancelled.
+Future<List<CharacterStatDefinition>> showNewPropertyEditor({
   required BuildContext context,
   List<StatWithTab> availableStats = const [],
   GlobalKey<NavigatorState>? overrideNavigatorKey,
@@ -30,14 +38,24 @@ Future<CharacterStatDefinition?> showNewPropertyEditor({
     context: context,
     overrideNavigatorKey: overrideNavigatorKey,
   );
-  if (selection == null || !context.mounted) return null;
+  if (selection == null || !context.mounted) return const [];
 
-  return showGetDmConfigurationModal(
+  if (selection.buildingBlocks) {
+    return await showBuildingBlockPicker(
+          context: context,
+          existingStats: [for (final entry in availableStats) entry.stat],
+          overrideNavigatorKey: overrideNavigatorKey,
+        ) ??
+        const [];
+  }
+
+  final stat = await showGetDmConfigurationModal(
     context: context,
     availableStats: availableStats,
     purpose: selection.purpose,
     overrideNavigatorKey: overrideNavigatorKey,
   );
+  return [?stat];
 }
 
 Future<PropertyPurposeSelection?> showPropertyPurposePicker({
@@ -66,14 +84,16 @@ class PropertyPurposePicker extends StatelessWidget {
   static ValueKey<String> keyFor(PropertyPurpose? purpose) =>
       ValueKey('propertyPurpose-${purpose?.name ?? 'advanced'}');
 
+  static const buildingBlocksKey = ValueKey('propertyPurpose-buildingBlocks');
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = CustomThemeProvider.of(context).theme;
     final textTheme = Theme.of(context).textTheme;
 
-    void pick(PropertyPurpose? purpose) =>
-        navigatorKey.currentState!.pop(PropertyPurposeSelection(purpose));
+    void pick(PropertyPurposeSelection selection) =>
+        navigatorKey.currentState!.pop(selection);
 
     return ModalContentWrapper<PropertyPurposeSelection>(
       isFullscreen: true,
@@ -97,7 +117,7 @@ class PropertyPurposePicker extends StatelessWidget {
                 icon: icon,
                 title: title,
                 description: description,
-                onTap: () => pick(purpose),
+                onTap: () => pick(PropertyPurposeSelection(purpose)),
               ),
             );
 
@@ -120,6 +140,16 @@ class PropertyPurposePicker extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+            _PurposeCard(
+              key: buildingBlocksKey,
+              icon: FontAwesomeIcons.cubes,
+              title: s.buildingBlocksTitle,
+              description: s.buildingBlocksCardDescription,
+              highlighted: true,
+              onTap: () =>
+                  pick(const PropertyPurposeSelection.buildingBlocks()),
+            ),
+            const SizedBox(height: spacing),
             Wrap(
               spacing: spacing,
               runSpacing: spacing,
@@ -146,8 +176,11 @@ class _PurposeCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.onTap,
+    this.highlighted = false,
   });
 
+  /// Drawn with the accent colour, to stand out from the purposes.
+  final bool highlighted;
   final FaIconData icon;
   final String title;
   final String description;
@@ -170,8 +203,13 @@ class _PurposeCard extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               borderRadius: radius,
+              color: highlighted
+                  ? theme.accentColor.withValues(alpha: 0.08)
+                  : null,
               border: Border.all(
-                color: theme.darkTextColor.withValues(alpha: 0.35),
+                color: highlighted
+                    ? theme.accentColor
+                    : theme.darkTextColor.withValues(alpha: 0.35),
               ),
             ),
             child: Row(

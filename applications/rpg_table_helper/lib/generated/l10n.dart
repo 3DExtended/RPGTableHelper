@@ -6609,6 +6609,71 @@ class S {
       args: [],
     );
   }
+
+  /// `Ready-made blocks`
+  String get buildingBlocksTitle {
+    return Intl.message(
+      'Ready-made blocks',
+      name: 'buildingBlocksTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take properties from the templates, e.g. ability scores, saving throws, spell slots, aspects or stress.`
+  String get buildingBlocksCardDescription {
+    return Intl.message(
+      'Take properties from the templates, e.g. ability scores, saving throws, spell slots, aspects or stress.',
+      name: 'buildingBlocksCardDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tick what you want to take over. The properties go into this tab, and you can change them afterwards.`
+  String get buildingBlocksHint {
+    return Intl.message(
+      'Tick what you want to take over. The properties go into this tab, and you can change them afterwards.',
+      name: 'buildingBlocksHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tab “{tabName}”`
+  String buildingBlocksTabLabel(String tabName) {
+    return Intl.message(
+      'Tab “$tabName”',
+      name: 'buildingBlocksTabLabel',
+      desc: '',
+      args: [tabName],
+    );
+  }
+
+  /// `Already on the sheet`
+  String get buildingBlocksAlreadyOnSheet {
+    return Intl.message(
+      'Already on the sheet',
+      name: 'buildingBlocksAlreadyOnSheet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get buildingBlocksAdd {
+    return Intl.message('Add', name: 'buildingBlocksAdd', desc: '', args: []);
+  }
+
+  /// `Add {count}`
+  String buildingBlocksAddCount(int count) {
+    return Intl.message(
+      'Add $count',
+      name: 'buildingBlocksAddCount',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

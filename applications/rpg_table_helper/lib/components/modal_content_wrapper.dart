@@ -17,7 +17,11 @@ class ModalContentWrapper<T> extends StatelessWidget {
     required this.onCancel,
     required this.isFullscreen,
     this.hideSaveButton = false,
+    this.saveButtonLabel,
   });
+
+  /// Instead of "Speichern", e.g. "3 hinzufügen".
+  final String? saveButtonLabel;
 
   /// For a chooser that closes when an entry is tapped: no Save button.
   final bool hideSaveButton;
@@ -122,16 +126,16 @@ class ModalContentWrapper<T> extends StatelessWidget {
                             ),
                             const Spacer(),
                             if (!hideSaveButton)
-                            CustomButton(
-                              label: S.of(context).save,
-                              onPressed: onSave == null
-                                  ? null
-                                  : () async {
-                                      var result = await onSave!();
+                              CustomButton(
+                                label: saveButtonLabel ?? S.of(context).save,
+                                onPressed: onSave == null
+                                    ? null
+                                    : () async {
+                                        var result = await onSave!();
 
-                                      navigatorKey.currentState!.pop(result);
-                                    },
-                            ),
+                                        navigatorKey.currentState!.pop(result);
+                                      },
+                              ),
                           ],
                         ),
                       ),

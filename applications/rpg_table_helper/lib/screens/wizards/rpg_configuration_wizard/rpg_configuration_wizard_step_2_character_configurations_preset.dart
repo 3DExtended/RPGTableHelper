@@ -725,23 +725,22 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                     CustomButton(
                       isSubbutton: true,
                       onPressed: () async {
-                        // "What do you want to track?", then the editor;
-                        // if it returns non null add the stat
-                        await showNewPropertyEditor(
-                                context: context,
-                                availableStats: _statsWithTabs())
-                            .then((value) {
-                          if (value == null) {
-                            return;
-                          }
-                          setState(() {
-                            statsUnderTab
-                                .putIfAbsent(tab.value.$1, () => [])
-                                .add(StatOrGroupIndicator(
-                                  stat: value,
-                                  groupHandleId: null,
-                                ));
-                          });
+                        // "What do you want to track?", then the editor
+                        // or the template properties; add what comes back
+                        final added = await showNewPropertyEditor(
+                            context: context,
+                            availableStats: _statsWithTabs());
+                        if (added.isEmpty || !mounted) return;
+                        setState(() {
+                          statsUnderTab
+                              .putIfAbsent(tab.value.$1, () => [])
+                              .addAll([
+                            for (final stat in added)
+                              StatOrGroupIndicator(
+                                stat: stat,
+                                groupHandleId: null,
+                              ),
+                          ]);
                         });
                       },
                       label: S.of(context).newPropertyBtnLabel,

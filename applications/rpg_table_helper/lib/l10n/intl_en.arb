@@ -1008,5 +1008,26 @@
   "propertyPurposeCompanionsTitle": "Companions",
   "propertyPurposeCompanionsDescription": "Companions with their own sheet. E.g. pet, familiar, mount.",
   "propertyPurposeTransformationTitle": "Transformation",
-  "propertyPurposeTransformationDescription": "A button that turns the character into another form. E.g. an animal shape."
+  "propertyPurposeTransformationDescription": "A button that turns the character into another form. E.g. an animal shape.",
+  "buildingBlocksTitle": "Ready-made blocks",
+  "buildingBlocksCardDescription": "Take properties from the templates, e.g. ability scores, saving throws, spell slots, aspects or stress.",
+  "buildingBlocksHint": "Tick what you want to take over. The properties go into this tab, and you can change them afterwards.",
+  "buildingBlocksTabLabel": "Tab “{tabName}”",
+  "@buildingBlocksTabLabel": {
+    "placeholders": {
+      "tabName": {
+        "type": "String"
+      }
+    }
+  },
+  "buildingBlocksAlreadyOnSheet": "Already on the sheet",
+  "buildingBlocksAdd": "Add",
+  "buildingBlocksAddCount": "Add {count}",
+  "@buildingBlocksAddCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

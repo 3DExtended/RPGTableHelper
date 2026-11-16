@@ -18,6 +18,20 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 /// What the template step remembers while a new campaign is set up: the
 /// template picked last and the configuration it gave (name and sheet skin
 /// left out), to tell whether the game master changed something since.
+/// The icon of template [id], as the template choice shows it.
+FaIconData rpgTemplateIconOf(RpgConfigurationTemplateId id) => switch (id) {
+  RpgConfigurationTemplateId.empty => FontAwesomeIcons.file,
+  RpgConfigurationTemplateId.fantasySrd => FontAwesomeIcons.dragon,
+  RpgConfigurationTemplateId.narrative => FontAwesomeIcons.featherPointed,
+};
+
+/// The name of template [id], as the template choice shows it.
+String rpgTemplateTitleOf(S s, RpgConfigurationTemplateId id) => switch (id) {
+  RpgConfigurationTemplateId.empty => s.wizardTemplateEmptyName,
+  RpgConfigurationTemplateId.fantasySrd => s.wizardTemplateFantasyName,
+  RpgConfigurationTemplateId.narrative => s.wizardTemplateNarrativeName,
+};
+
 class RpgTemplateChoice {
   final String? campagneId;
   final RpgConfigurationTemplateId templateId;
@@ -178,17 +192,11 @@ class _RpgConfigurationWizardStepTemplateChoiceState
     );
   }
 
-  static FaIconData _iconOf(RpgConfigurationTemplateId id) => switch (id) {
-    RpgConfigurationTemplateId.empty => FontAwesomeIcons.file,
-    RpgConfigurationTemplateId.fantasySrd => FontAwesomeIcons.dragon,
-    RpgConfigurationTemplateId.narrative => FontAwesomeIcons.featherPointed,
-  };
+  static FaIconData _iconOf(RpgConfigurationTemplateId id) =>
+      rpgTemplateIconOf(id);
 
-  static String _titleOf(S s, RpgConfigurationTemplateId id) => switch (id) {
-    RpgConfigurationTemplateId.empty => s.wizardTemplateEmptyName,
-    RpgConfigurationTemplateId.fantasySrd => s.wizardTemplateFantasyName,
-    RpgConfigurationTemplateId.narrative => s.wizardTemplateNarrativeName,
-  };
+  static String _titleOf(S s, RpgConfigurationTemplateId id) =>
+      rpgTemplateTitleOf(s, id);
 
   static String _descriptionOf(S s, RpgConfigurationTemplateId id) =>
       switch (id) {

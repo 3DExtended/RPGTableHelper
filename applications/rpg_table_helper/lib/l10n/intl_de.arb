@@ -1056,5 +1056,26 @@
   "propertyPurposeCompanionsTitle": "Begleiter",
   "propertyPurposeCompanionsDescription": "Begleiter mit eigenem Bogen. Z. B. Haustier, Vertrauter, Reittier.",
   "propertyPurposeTransformationTitle": "Verwandlung",
-  "propertyPurposeTransformationDescription": "Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt."
+  "propertyPurposeTransformationDescription": "Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt.",
+  "buildingBlocksTitle": "Fertige Bausteine",
+  "buildingBlocksCardDescription": "Eigenschaften aus den Vorlagen übernehmen, z. B. Attribute, Rettungswürfe, Zauberplätze, Aspekte oder Stress.",
+  "buildingBlocksHint": "Hake an, was du übernehmen willst. Die Eigenschaften landen in diesem Reiter, und du kannst sie danach anpassen.",
+  "buildingBlocksTabLabel": "Reiter „{tabName}“",
+  "@buildingBlocksTabLabel": {
+    "placeholders": {
+      "tabName": {
+        "type": "String"
+      }
+    }
+  },
+  "buildingBlocksAlreadyOnSheet": "Schon im Bogen",
+  "buildingBlocksAdd": "Hinzufügen",
+  "buildingBlocksAddCount": "{count} hinzufügen",
+  "@buildingBlocksAddCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

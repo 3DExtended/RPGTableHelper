@@ -4321,6 +4321,48 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt.'**
   String get propertyPurposeTransformationDescription;
+
+  /// No description provided for @buildingBlocksTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertige Bausteine'**
+  String get buildingBlocksTitle;
+
+  /// No description provided for @buildingBlocksCardDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigenschaften aus den Vorlagen übernehmen, z. B. Attribute, Rettungswürfe, Zauberplätze, Aspekte oder Stress.'**
+  String get buildingBlocksCardDescription;
+
+  /// No description provided for @buildingBlocksHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Hake an, was du übernehmen willst. Die Eigenschaften landen in diesem Reiter, und du kannst sie danach anpassen.'**
+  String get buildingBlocksHint;
+
+  /// No description provided for @buildingBlocksTabLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Reiter „{tabName}“'**
+  String buildingBlocksTabLabel(String tabName);
+
+  /// No description provided for @buildingBlocksAlreadyOnSheet.
+  ///
+  /// In de, this message translates to:
+  /// **'Schon im Bogen'**
+  String get buildingBlocksAlreadyOnSheet;
+
+  /// No description provided for @buildingBlocksAdd.
+  ///
+  /// In de, this message translates to:
+  /// **'Hinzufügen'**
+  String get buildingBlocksAdd;
+
+  /// No description provided for @buildingBlocksAddCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} hinzufügen'**
+  String buildingBlocksAddCount(int count);
 }
 
 class _AppLocalizationsDelegate

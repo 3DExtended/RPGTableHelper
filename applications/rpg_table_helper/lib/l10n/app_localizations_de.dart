@@ -2449,4 +2449,31 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get propertyPurposeTransformationDescription =>
       'Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt.';
+
+  @override
+  String get buildingBlocksTitle => 'Fertige Bausteine';
+
+  @override
+  String get buildingBlocksCardDescription =>
+      'Eigenschaften aus den Vorlagen übernehmen, z. B. Attribute, Rettungswürfe, Zauberplätze, Aspekte oder Stress.';
+
+  @override
+  String get buildingBlocksHint =>
+      'Hake an, was du übernehmen willst. Die Eigenschaften landen in diesem Reiter, und du kannst sie danach anpassen.';
+
+  @override
+  String buildingBlocksTabLabel(String tabName) {
+    return 'Reiter „$tabName“';
+  }
+
+  @override
+  String get buildingBlocksAlreadyOnSheet => 'Schon im Bogen';
+
+  @override
+  String get buildingBlocksAdd => 'Hinzufügen';
+
+  @override
+  String buildingBlocksAddCount(int count) {
+    return '$count hinzufügen';
+  }
 }
