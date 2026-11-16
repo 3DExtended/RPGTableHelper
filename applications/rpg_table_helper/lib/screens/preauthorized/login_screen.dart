@@ -220,6 +220,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 textEditingController:
                                     usernameTextEditingController,
                                 keyboardType: TextInputType.name,
+                                // Usernames are typed as they are.
+                                textCapitalization: TextCapitalization.none,
                               ),
 
                               // password Textfield

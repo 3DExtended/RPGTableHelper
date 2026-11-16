@@ -252,6 +252,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         labelText: S.of(context).username,
         textEditingController: usernameTextEditingController,
         keyboardType: TextInputType.name,
+        // Usernames are typed as they are.
+        textCapitalization: TextCapitalization.none,
       ),
       if (showFieldErrors && !usernameValid(_username))
         AuthFieldError(message: S.of(context).registerUsernameInvalid),

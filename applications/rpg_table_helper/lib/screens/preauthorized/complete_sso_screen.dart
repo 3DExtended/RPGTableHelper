@@ -102,6 +102,8 @@ class _CompleteSsoScreenState extends ConsumerState<CompleteSsoScreen> {
                       labelText: S.of(context).username,
                       textEditingController: usernameTextEditingController,
                       keyboardType: TextInputType.name,
+                      // Usernames are typed as they are.
+                      textCapitalization: TextCapitalization.none,
                     ),
 
                     SizedBox(

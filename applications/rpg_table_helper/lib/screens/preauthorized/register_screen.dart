@@ -218,6 +218,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       placeholderText: S.of(context).usernameRuleHint,
                       textEditingController: usernameTextEditingController,
                       keyboardType: TextInputType.name,
+                      // Usernames are typed as they are.
+                      textCapitalization: TextCapitalization.none,
                     ),
                     if (showFieldErrors && !_usernameValid)
                       AuthFieldError(

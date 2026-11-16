@@ -13,8 +13,13 @@ class CustomTextField extends StatelessWidget {
       this.password,
       this.placeholderText,
       this.disableMaxLineLimit,
-      this.errorText});
+      this.errorText,
+      this.textCapitalization});
   final bool? disableMaxLineLimit;
+
+  /// Overrides the default: sentences, except for e-mail addresses, links and
+  /// passwords, which the keyboard must not capitalize.
+  final TextCapitalization? textCapitalization;
 
   /// Shown below the field in the error style; null when the input is valid.
   final String? errorText;
@@ -39,7 +44,13 @@ class CustomTextField extends StatelessWidget {
               ? (disableMaxLineLimit == true ? null : 5)
               : (password == true ? 1 : null),
           keyboardType: keyboardType,
-          textCapitalization: TextCapitalization.sentences,
+          textCapitalization: textCapitalization ??
+              (password == true ||
+                      keyboardType == TextInputType.emailAddress ||
+                      keyboardType == TextInputType.url ||
+                      keyboardType == TextInputType.visiblePassword
+                  ? TextCapitalization.none
+                  : TextCapitalization.sentences),
           obscureText: password ?? false,
           enableSuggestions: true,
           scrollPhysics: disableMaxLineLimit == true
