@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:quest_keeper/components/colored_rotated_square.dart';
@@ -21,14 +21,17 @@ import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/arcane_ledger_lore_chrome.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/phone_layout.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/list_extensions.dart';
 import 'package:quest_keeper/helpers/modals/show_edit_lore_page_title.dart';
 import 'package:quest_keeper/helpers/modals/show_generate_lore_image_modal.dart';
+import 'package:quest_keeper/helpers/note_document_grouping.dart';
 import 'package:quest_keeper/helpers/note_block_order.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_7_crafting_recipes.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -99,9 +102,30 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   /// over the content instead of the content sitting beside/below it.
   double get _currentNavbarWidth => _isNavbarCollapsed
       ? _collapsedNavbarWidth
-      : (isDecoratedSheetSkinActive(context) ? 320.0 : expandedWidth);
+      : _expandedNavbarWidth;
 
-  String get otherGroupName => S.of(context).defaultGroupNameForDocuments;
+  double get _expandedNavbarWidth =>
+      isDecoratedSheetSkinActive(context) ? 320.0 : expandedWidth;
+
+  /// "+ New" and the chevron need about this much of the list's width.
+  static const double _minWidthForListFooter = 200;
+
+  /// Phones: the open document list lies over the content (SP-8) and is at
+  /// most this wide, so a strip of the page stays visible to tap it away.
+  double _overlayNavbarWidth(double availableWidth) => _isNavbarCollapsed
+      ? _collapsedNavbarWidth
+      : min(_expandedNavbarWidth, max(_collapsedNavbarWidth, availableWidth - 56));
+
+  bool get _amIDm =>
+      usersInCampagne.firstWhereOrNull((u) => u.isYou)?.isDm ??
+      ref.read(connectionDetailsProvider).value?.isDm ??
+      false;
+
+  /// The group that is always listed and takes new documents. Players get
+  /// their own group (B10), so their notes do not end up between the DM's.
+  String get otherGroupName => _amIDm
+      ? S.of(context).defaultGroupNameForDocuments
+      : S.of(context).myNotesGroupName;
 
   var refreshController = RefreshController(
     initialRefreshStatus: RefreshStatus.refreshing,
@@ -116,10 +140,10 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   UserIdentifier? get _myUser =>
       usersInCampagne.firstWhereOrNull((u) => u.isYou)?.userId;
 
+  /// Owners edit their documents on every device, phones included (B1).
   bool get _isAllowedToEdit =>
       selectedDocument?.creatingUserId?.value != null &&
-      selectedDocument?.creatingUserId?.value == _myUser?.value &&
-      context.isTablet; // disable editing on mobile
+      selectedDocument?.creatingUserId?.value == _myUser?.value;
 
   @override
   void initState() {
@@ -129,7 +153,11 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       setState(() {
         if (!isInTestEnvironment) {
           // so we can see the navbar in golden tests
-          _isNavbarCollapsed = !context.isTablet;
+          // Phones start on the document. Without any document the list
+          // stays open, so "+ New" is in sight.
+          _isNavbarCollapsed = _isOverlayLayout
+              ? selectedDocument != null
+              : !context.isTablet;
         }
       });
       await _startNoteAccessNotifications();
@@ -218,64 +246,148 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     });
   }
 
+  /// Narrow screens (phones held upright): the document list is an overlay
+  /// over the content (SP-8). Wider screens keep it beside the content.
+  bool get _isOverlayLayout =>
+      MediaQuery.sizeOf(context).width < phoneShortestSideMax;
+
   @override
   Widget build(BuildContext context) {
-    // the navbar is rendered on top of the content if this setting is true
-    var useStackOption = !context.isTablet;
     final ledger = isDecoratedSheetSkinActive(context);
 
-    var children = [
-      // collapsable navbar
-      _getCollapsableNavbar(),
+    if (_isOverlayLayout) {
+      // The content always keeps only the collapsed strip free. The open
+      // list lies over it with a scrim; tapping the scrim closes the list.
+      return LayoutBuilder(builder: (context, constraints) {
+        return Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: _collapsedNavbarWidth),
+              child: _getContent(),
+            ),
+            if (!_isNavbarCollapsed)
+              Positioned.fill(
+                child: GestureDetector(
+                  key: const ValueKey('loreDocumentListScrim'),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    setState(() {
+                      _isNavbarCollapsed = true;
+                    });
+                  },
+                  child: ColoredBox(
+                    color: Colors.black.withValues(alpha: 0.35),
+                  ),
+                ),
+              ),
+            _getCollapsableNavbar(
+              overlayWidth: _overlayNavbarWidth(constraints.maxWidth),
+            ),
+          ],
+        );
+      });
+    }
 
-      // Mock: binder rings (Ledger) or thin atlas rule (Cartographer) between panes.
-      if (!useStackOption && ledger && !_isNavbarCollapsed)
-        isNightCartographerActive(context)
-            ? const CartographerLoreDivider()
-            : const LedgerBinderSpine(),
-
-      // content
-      if (!useStackOption)
-        Expanded(
-          child: _getContent(),
-        ),
-      if (useStackOption)
-        Padding(
-          padding: EdgeInsets.only(left: _currentNavbarWidth),
-          child: _getContent(),
-        )
-    ];
-
-    if (useStackOption) {
+    if (!context.isTablet) {
+      // Wide screens that are no tablet by aspect ratio (e.g. iPad mini in
+      // landscape): the list lies on top of the content, as before.
       return Stack(
-        children: children.reversed.toList(),
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: _currentNavbarWidth),
+            child: _getContent(),
+          ),
+          _getCollapsableNavbar(),
+        ],
       );
     }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
+      children: [
+        // collapsable navbar
+        _getCollapsableNavbar(),
+
+        // Mock: binder rings (Ledger) or thin atlas rule (Cartographer) between panes.
+        if (ledger && !_isNavbarCollapsed)
+          isNightCartographerActive(context)
+              ? const CartographerLoreDivider()
+              : const LedgerBinderSpine(),
+
+        // content
+        Expanded(
+          child: _getContent(),
+        ),
+      ],
     );
   }
 
-  Widget _getCollapsableNavbar() {
+  /// Selects [doc]. On phones the document list then closes, so the
+  /// document is in view.
+  void _selectDocument(NoteDocumentDto doc) {
+    setState(() {
+      selectedDocument = doc;
+      selectedDocumentId = doc.id;
+      if (_isOverlayLayout) {
+        _isNavbarCollapsed = true;
+      }
+    });
+  }
+
+  /// [overlayWidth] is set on phones, where the list lies over the content.
+  Widget _getCollapsableNavbar({double? overlayWidth}) {
     final ledger = isDecoratedSheetSkinActive(context);
+    final theme = CustomThemeProvider.of(context).theme;
     final Color sidebarColor;
     if (ledger) {
       // Parchment chrome shows through — no solid classic sidebar panel.
       sidebarColor = Colors.transparent;
     } else if (CustomThemeProvider.of(context).brightnessNotifier.value ==
         Brightness.light) {
-      sidebarColor = CustomThemeProvider.of(context).theme.middleBgColor;
+      sidebarColor = theme.middleBgColor;
     } else {
-      sidebarColor =
-          CustomThemeProvider.of(context).theme.bgColor.darker(0.2);
+      sidebarColor = theme.bgColor.darker(0.2);
+    }
+
+    BoxDecoration? overlayDecoration;
+    if (overlayWidth != null) {
+      final open = !_isNavbarCollapsed;
+      // An open list covers the content, so it needs a solid backing - on
+      // decorated skins the page's own paper or star chart.
+      DecorationImage? backing;
+      if (open && isArcaneLedgerActive(context)) {
+        backing = const DecorationImage(
+          image: AssetImage(ArcaneLedgerAssets.parchment),
+          fit: BoxFit.cover,
+          opacity: 0.82,
+        );
+      } else if (open && isNightCartographerActive(context)) {
+        backing = const DecorationImage(
+          image: AssetImage(NightCartographerAssets.constellation),
+          fit: BoxFit.cover,
+          opacity: 0.55,
+        );
+      }
+      overlayDecoration = BoxDecoration(
+        color: open && ledger ? theme.bgColor : sidebarColor,
+        image: backing,
+        boxShadow: open
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 12,
+                  offset: const Offset(2, 0),
+                ),
+              ]
+            : null,
+      );
     }
 
     return AnimatedContainer(
       duration: duration,
-      width: _currentNavbarWidth,
-      color: sidebarColor,
+      width: overlayWidth ?? _currentNavbarWidth,
+      color: overlayDecoration == null ? sidebarColor : null,
+      decoration: overlayDecoration,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -366,23 +478,15 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                               return GestureDetector(
                                                 behavior:
                                                     HitTestBehavior.opaque,
-                                                onTap: () {
-                                                  setState(() {
-                                                    selectedDocument = doc;
-                                                    selectedDocumentId = doc.id;
-                                                  });
-                                                },
+                                                onTap: () =>
+                                                    _selectDocument(doc),
                                                 child: listChild,
                                               );
                                             }
                                             return CupertinoButton(
                                               padding: EdgeInsets.zero,
-                                              onPressed: () {
-                                                setState(() {
-                                                  selectedDocument = doc;
-                                                  selectedDocumentId = doc.id;
-                                                });
-                                              },
+                                              onPressed: () =>
+                                                  _selectDocument(doc),
                                               minimumSize: Size(0, 0),
                                               child: listChild,
                                             );
@@ -421,21 +525,26 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
             // a single child in a spaceBetween Row sits flush at the start
             // instead of centering, which let it collide with the
             // CharacterSheetSkinChrome frame border on decorated skins.
-            child: _isNavbarCollapsed
-                ? Center(child: _getCollapseButton(duration))
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: ledger ? 20.0 : 20.0,
-                          bottom: ledger ? 0 : 10,
+            // While the list is still opening (animated width), there is no
+            // room for "+ New" yet either.
+            child: LayoutBuilder(builder: (context, constraints) {
+              return _isNavbarCollapsed ||
+                      constraints.maxWidth < _minWidthForListFooter
+                  ? Center(child: _getCollapseButton(duration))
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: ledger ? 20.0 : 20.0,
+                            bottom: ledger ? 0 : 10,
+                          ),
+                          child: _buildNewDocumentButton(ledger),
                         ),
-                        child: _buildNewDocumentButton(ledger),
-                      ),
-                      _getCollapseButton(duration),
-                    ],
-                  ),
+                        _getCollapseButton(duration),
+                      ],
+                    );
+            }),
           ),
         ],
       ),
@@ -458,9 +567,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
       });
 
       var newDocument = NoteDocumentDto(
-        // if some document is selected, add it to the same group
-        groupName: selectedDocument?.groupName ??
-            S.of(context).defaultGroupNameForDocuments,
+        // the group of the selected document, if it is mine (B10)
+        groupName: groupNameForNewNoteDocument(
+          selectedDocument: selectedDocument,
+          myUserId: _myUser?.value,
+          defaultGroupName: otherGroupName,
+        ),
         title:
             "${S.of(context).documentDefaultNamePrefix} #${numberOfDocumentsForThisPlayer + 1}",
         createdForCampagneId: CampagneIdentifier(value: campagneId),
@@ -495,10 +607,17 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
           groupedDocuments[newDocument.groupName]!.add(newDocument);
 
           groupedDocuments[newDocument.groupName]!.sortBy((e) => e.title);
+          if (!groupLabels.contains(newDocument.groupName)) {
+            groupLabels = [...groupLabels, newDocument.groupName]..sort();
+          }
+          numberOfDocumentsForThisPlayer++;
 
-          // select new document
+          // select new document; on phones close the list to show it
           selectedDocument = newDocument;
           selectedDocumentId = newDocument.id;
+          if (_isOverlayLayout) {
+            _isNavbarCollapsed = true;
+          }
         }
       });
     }
@@ -694,29 +813,40 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                     ],
                   )
                 else
-                  Row(
-                    children: [
-                      Text(
-                        ("${S.of(context).authorLabel} $authorName"),
-                        style:
-                            Theme.of(context).textTheme.labelLarge!.copyWith(
-                                  color: ink,
-                                  fontSize: 12,
-                                ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        // The server sends UTC; show the reader's local time.
-                        selectedDocument!.lastModifiedAt!.toLocal().format(
-                            S.of(context).hourMinutesDayMonthYearFormatString),
-                        textAlign: TextAlign.end,
-                        style:
-                            Theme.of(context).textTheme.labelSmall!.copyWith(
-                                  color: ink,
-                                  fontSize: 12,
-                                ),
-                      ),
-                    ],
+                  // Author left, time right; on a narrow page the time
+                  // moves to the next line instead of overflowing (B7).
+                  SizedBox(
+                    key: const ValueKey('loreDocumentAuthorAndTime'),
+                    width: double.infinity,
+                    child: Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 12,
+                      runSpacing: 2,
+                      children: [
+                        Text(
+                          ("${S.of(context).authorLabel} $authorName"),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: ink,
+                                    fontSize: 12,
+                                  ),
+                        ),
+                        Text(
+                          // The server sends UTC; show the reader's local time.
+                          selectedDocument!.lastModifiedAt!.toLocal().format(
+                              S.of(context).hourMinutesDayMonthYearFormatString),
+                          textAlign: TextAlign.end,
+                          style:
+                              Theme.of(context).textTheme.labelSmall!.copyWith(
+                                    color: ink,
+                                    fontSize: 12,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
               ],
             ],
@@ -1053,6 +1183,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                   selectedDocument!.imageBlocks
                       .removeWhere((b) => b.id == block.id);
                 }
+                _markSelectedDocumentChangedNow();
               });
               return true;
             },
@@ -1250,6 +1381,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
     setState(() {
       selectedDocument!.textBlocks.add(createResult.result!);
+      _markSelectedDocumentChangedNow();
     });
   }
 
@@ -1290,6 +1422,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
     setState(() {
       selectedDocument!.imageBlocks.add(createResult.result!);
+      _markSelectedDocumentChangedNow();
     });
   }
 
@@ -1340,7 +1473,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
               uniqueId:
                   "invalidImageFileSelected-df3316eb-aefa-4ed8-bedb-22efdde25522",
               snack: SnackBar(
-                content: Text("Invalid image file selected."),
+                content: Text(S.of(context).invalidImageFileSelected),
               ),
             );
         return null;
@@ -1465,6 +1598,26 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     _showUpdatedDocument(response.result!);
   }
 
+  /// The server dates a document by its latest change, its blocks included.
+  /// After an own change show that time right away, not the time the
+  /// document was loaded (B11). Call inside `setState`.
+  void _markSelectedDocumentChangedNow() {
+    final document = selectedDocument;
+    if (document == null) return;
+
+    final now =
+        DependencyProvider.of(context).getService<ISystemClockService>().now();
+    final touched = document.copyWith(lastModifiedAt: now);
+
+    final group = groupedDocuments[document.groupName];
+    final index =
+        group?.indexWhere((d) => d.id?.value == document.id?.value) ?? -1;
+    if (index >= 0) {
+      group![index] = touched;
+    }
+    selectedDocument = touched;
+  }
+
   /// Shows [document] in place of its older version.
   void _showUpdatedDocument(NoteDocumentDto document) {
     setState(() {
@@ -1509,6 +1662,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
       selectedDocument = selectedDocument!
           .copyWith(textBlocks: [...selectedDocument!.textBlocks]);
+      _markSelectedDocumentChangedNow();
     });
 
     return updateResult.isSuccessful;
@@ -1542,6 +1696,7 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
 
       selectedDocument = selectedDocument!
           .copyWith(imageBlocks: [...selectedDocument!.imageBlocks]);
+      _markSelectedDocumentChangedNow();
     });
 
     return updateResult.isSuccessful;
@@ -1632,25 +1787,12 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
     });
   }
 
-  /// Matches `arcane-ledger-mock-lore.png` manuscript date line.
+  /// Matches `arcane-ledger-mock-lore.png` manuscript date line, in the
+  /// reader's language ("December 9, 2024, 1:34 PM" / "9. Dezember 2024, 13:34").
   String _ledgerManuscriptDate(DateTime dt) {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    final hour12 = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-    final ampm = dt.hour >= 12 ? 'PM' : 'AM';
-    final minute = dt.minute.toString().padLeft(2, '0');
-    return '${months[dt.month - 1]} ${dt.day}, ${dt.year}, $hour12:$minute $ampm';
+    return DateFormat(
+      S.of(context).ledgerManuscriptDateFormat,
+      Localizations.localeOf(context).toString(),
+    ).format(dt);
   }
 }

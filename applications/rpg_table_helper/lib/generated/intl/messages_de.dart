@@ -282,7 +282,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "calculatedValueShort": MessageLookupByLibrary.simpleMessage("ber."),
     "campagneSettingsChangedAt": m4,
     "campaignManagement": MessageLookupByLibrary.simpleMessage(
-      "Kampagnen Management",
+      "Kampagnenverwaltung",
     ),
     "campaignName": MessageLookupByLibrary.simpleMessage("Kampagnenname"),
     "campaigneName": MessageLookupByLibrary.simpleMessage("Name"),
@@ -320,7 +320,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Noch in keiner Kampagne. Tippe, um mit einem Code beizutreten.",
     ),
     "characterOverview": MessageLookupByLibrary.simpleMessage(
-      "Charakter Übersicht",
+      "Charakterübersicht",
     ),
     "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
       "Porträtbeschreibung",
@@ -529,7 +529,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.",
     ),
     "fightingOrdering": MessageLookupByLibrary.simpleMessage(
-      "Kampf Reihenfolge",
+      "Kampfreihenfolge",
     ),
     "firstValue": MessageLookupByLibrary.simpleMessage("Erster Wert"),
     "firstValuePlaceholder": MessageLookupByLibrary.simpleMessage(
@@ -653,7 +653,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Zahlen-Wert mit maximal Wert",
     ),
     "invalidImageFileSelected": MessageLookupByLibrary.simpleMessage(
-      "Ungültige Bilddatei ausgewählt.",
+      "Die gewählte Datei ist kein Bild.",
     ),
     "invitePlayersAction": MessageLookupByLibrary.simpleMessage(
       "Spieler einladen",
@@ -729,6 +729,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "lastGrantedItemsMarkdownPrefix": MessageLookupByLibrary.simpleMessage(
       "Zuletzt wurden diese Items verteilt:",
     ),
+    "ledgerManuscriptDateFormat": MessageLookupByLibrary.simpleMessage(
+      "d. MMMM y, HH:mm",
+    ),
     "level": MessageLookupByLibrary.simpleMessage("Level"),
     "levelAbbr": MessageLookupByLibrary.simpleMessage("LVL"),
     "listOfIntegersWithIcons": MessageLookupByLibrary.simpleMessage(
@@ -752,7 +755,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Nutzername oder Passwort stimmt nicht.",
     ),
     "logout": MessageLookupByLibrary.simpleMessage("Abmelden"),
-    "lore": MessageLookupByLibrary.simpleMessage("Weltgeschichte"),
+    "lore": MessageLookupByLibrary.simpleMessage("Notizen"),
     "maxValue": MessageLookupByLibrary.simpleMessage("Maximaler Wert"),
     "maxValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "Der maximaler Wert für diese Eigenschaft",
@@ -777,6 +780,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Optionen können mehrmals ausgewählt werden",
         ),
+    "myNotesGroupName": MessageLookupByLibrary.simpleMessage("Meine Notizen"),
     "nameOfCharacterHelperText": MessageLookupByLibrary.simpleMessage(
       "Wie heißt dein Charakter?",
     ),
@@ -788,7 +792,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "navBarHeaderCrafting": MessageLookupByLibrary.simpleMessage("Herstellen"),
     "navBarHeaderInventory": MessageLookupByLibrary.simpleMessage("Inventar"),
-    "navBarHeaderLore": MessageLookupByLibrary.simpleMessage("Weltgeschichte"),
+    "navBarHeaderLore": MessageLookupByLibrary.simpleMessage("Notizen"),
     "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Währung"),
     "newBalance": MessageLookupByLibrary.simpleMessage("Neues Guthaben"),
     "newCampagneIntro": MessageLookupByLibrary.simpleMessage(
@@ -905,6 +909,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "ownedIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "in Besitz:",
     ),
+    "pageTabShortCampaign": MessageLookupByLibrary.simpleMessage("Kampagne"),
+    "pageTabShortCharacters": MessageLookupByLibrary.simpleMessage(
+      "Charaktere",
+    ),
+    "pageTabShortFight": MessageLookupByLibrary.simpleMessage("Kampf"),
+    "pageTabShortImages": MessageLookupByLibrary.simpleMessage("Bilder"),
+    "pageTabShortItems": MessageLookupByLibrary.simpleMessage("Items"),
+    "pageTabShortNotes": MessageLookupByLibrary.simpleMessage("Notizen"),
     "password": MessageLookupByLibrary.simpleMessage("Passwort"),
     "passwordRuleMaxLength": m17,
     "passwordRuleMet": MessageLookupByLibrary.simpleMessage("erfüllt"),

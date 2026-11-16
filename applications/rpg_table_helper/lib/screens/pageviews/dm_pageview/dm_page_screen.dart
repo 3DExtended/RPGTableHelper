@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/page_tab_strip.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/phone_layout.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
@@ -71,6 +73,18 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
     ];
   }
 
+  /// Short names for the phone tabs, in the order of [getDmScreens].
+  List<String> getDmScreenShortLabels(BuildContext context) {
+    return [
+      S.of(context).pageTabShortCampaign,
+      S.of(context).pageTabShortCharacters,
+      S.of(context).pageTabShortFight,
+      S.of(context).pageTabShortItems,
+      S.of(context).pageTabShortNotes,
+      S.of(context).pageTabShortImages,
+    ];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -121,7 +135,7 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
         backgroundColor: scaffoldBg,
         body: ValueListenableBuilder<String>(
           valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
-          builder: (context, skinId, __) {
+          builder: (context, skinId, _) {
             if (_lastSyncedSkinIdForPageView != skinId) {
               _lastSyncedSkinIdForPageView = skinId;
               final stepToKeep = _currentStep;
@@ -148,6 +162,19 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                   hideWhileKeyboardVisible: true,
                   backInsteadOfCloseIcon: false,
                   useTopSafePadding: true,
+                  // Phones: page names under the bar instead of bare
+                  // diamonds (SL-10).
+                  bottom: !context.isPhone
+                      ? null
+                      : PageTabStrip(
+                          items: [
+                            for (final label
+                                in getDmScreenShortLabels(context))
+                              PageTabStripItem(label: label),
+                          ],
+                          currentIndex: _currentStep,
+                          onSelected: (index) => _goToStepId(index),
+                        ),
                   closeFunction: () {
                     // close connection
                     ref
@@ -185,23 +212,46 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                     final titleColor =
                         ledger ? ledgerNavbarAccent(context) : textColor;
 
+                    if (context.isPhone) {
+                      return Text(
+                        currentTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: titleColor,
+                              fontSize: ledger ? 24 : 20,
+                              fontFamily: ledger ? 'Ruwudu' : null,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: ledger ? 0.4 : null,
+                              height: 1.0,
+                            ),
+                      );
+                    }
+
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Spacer(),
                         ...List.generate(
                           _currentStep + 1,
-                          (index) => CupertinoButton(
-                            minSize: 0,
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              await _goToStepId(index);
-                            },
-                            child: ColoredRotatedSquare(
-                              isSolidSquare: index == _currentStep,
-                              color: index == _currentStep
-                                  ? selectedIconColor
-                                  : unselectedIconColor,
+                          (index) => Tooltip(
+                            message: dmScreensToSwipe[index].$1,
+                            child: CupertinoButton(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                await _goToStepId(index);
+                              },
+                              child: ColoredRotatedSquare(
+                                isSolidSquare: index == _currentStep,
+                                color: index == _currentStep
+                                    ? selectedIconColor
+                                    : unselectedIconColor,
+                              ),
                             ),
                           ),
                         ),
@@ -229,15 +279,19 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
                           ),
                         ...List.generate(
                           dmScreensToSwipe.length - (_currentStep + 1),
-                          (index) => CupertinoButton(
-                            minSize: 0,
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              _goToStepId(index + _currentStep + 1);
-                            },
-                            child: ColoredRotatedSquare(
-                              isSolidSquare: false,
-                              color: unselectedIconColor,
+                          (index) => Tooltip(
+                            message:
+                                dmScreensToSwipe[index + _currentStep + 1].$1,
+                            child: CupertinoButton(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                _goToStepId(index + _currentStep + 1);
+                              },
+                              child: ColoredRotatedSquare(
+                                isSolidSquare: false,
+                                color: unselectedIconColor,
+                              ),
                             ),
                           ),
                         ),

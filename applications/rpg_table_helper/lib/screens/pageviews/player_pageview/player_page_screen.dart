@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/colored_rotated_square.dart';
 import 'package:quest_keeper/components/long_press_scale_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
+import 'package:quest_keeper/components/page_tab_strip.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
@@ -14,6 +15,7 @@ import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_
 import 'package:quest_keeper/helpers/character_stats/has_missing_required_campaign_stats.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/context_extension.dart';
+import 'package:quest_keeper/helpers/phone_layout.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modals/show_character_sheet_appearance_modal.dart';
 import 'package:quest_keeper/helpers/modals/show_tab_icon_configuration.dart';
@@ -25,6 +27,7 @@ import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/lore_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
+import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_tabs.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_inventar.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_money.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_screen_character_stats_for_tab.dart';
@@ -107,8 +110,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       RpgConfigurationModel rpgConfig) {
     List<(String title, Widget child, String uuid)> result = [];
 
-    for (var tabDef in (rpgConfig.characterStatTabsDefinition ??
-        List<CharacterStatsTabDefinition>.empty())) {
+    for (var tabDef in visibleCharacterStatTabs(rpgConfig)) {
       result.add((
         tabDef.tabName,
         PlayerScreenCharacterStatsForTab(
@@ -250,7 +252,15 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
 
     // Honor startScreenOverride on the controller itself so the first paint
     // (and golden captures) land on the intended tab without a post-frame jump.
-    final initialStep = widget.startScreenOverride ?? 0;
+    // Without it, start on the campaign's default tab right away: a jump in a
+    // post-frame callback is undone by the skin sync in build, which left
+    // players on the first tab with a "<" back to the stats (SP-5).
+    final loadedRpgConfig = ref.read(rpgConfigurationProvider).value;
+    final initialStep = widget.startScreenOverride ??
+        (loadedRpgConfig == null
+            ? null
+            : defaultVisibleCharacterStatTabIndex(loadedRpgConfig)) ??
+        0;
     _currentStep = initialStep;
     pageViewController = PageController(initialPage: initialStep);
 
@@ -276,10 +286,9 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       // Live player sessions without startScreenOverride open the default tab.
       if (widget.startScreenOverride != null) return;
       final rpgConfig = ref.read(rpgConfigurationProvider).value;
-      if (rpgConfig?.characterStatTabsDefinition == null) return;
-      final defaultIdx = rpgConfig!.characterStatTabsDefinition!
-          .indexWhere((tab) => tab.isDefaultTab == true);
-      if (defaultIdx >= 0 && defaultIdx != _currentStep) {
+      if (rpgConfig == null) return;
+      final defaultIdx = defaultVisibleCharacterStatTabIndex(rpgConfig);
+      if (defaultIdx != null && defaultIdx != _currentStep) {
         _goToStepId(defaultIdx);
       }
     });
@@ -398,7 +407,12 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         : getPlayerScreens(context, charToRender, rpgConfig);
     var currentTitle = playerScreensToSwipe.isEmpty
         ? ""
-        : playerScreensToSwipe[_currentStep].$1;
+        : playerScreensToSwipe[
+                _currentStep.clamp(0, playerScreensToSwipe.length - 1)]
+            .$1;
+    final visibleStatTabCount =
+        rpgConfig == null ? 0 : visibleCharacterStatTabs(rpgConfig).length;
+    final isPhone = context.isPhone;
 
     final ledger = isDecoratedSheetSkinActive(context);
     var selectedIconColor = ledger
@@ -434,7 +448,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         backgroundColor: scaffoldBg,
         body: ValueListenableBuilder<String>(
           valueListenable: CustomThemeProvider.of(context).skinIdNotifier,
-          builder: (context, skinId, __) {
+          builder: (context, skinId, _) {
             if (_lastSyncedSkinIdForPageView != skinId) {
               _lastSyncedSkinIdForPageView = skinId;
               final stepToKeep = _currentStep;
@@ -459,43 +473,76 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
               children: [
                 Navbar(
                   hideWhileKeyboardVisible: true,
-                  backInsteadOfCloseIcon: rpgConfig
-                              ?.characterStatTabsDefinition!
-                              .indexWhere((tab) => tab.isDefaultTab == true) !=
-                          _currentStep,
+                  // Always "X" (SP-5): it used to be a "<" that jumped to the
+                  // default tab and only turned into "X" there. The pages
+                  // are reached through the diamonds / tabs instead.
+                  backInsteadOfCloseIcon: false,
                   useTopSafePadding: true,
                   closeFunction: () {
-                    if (rpgConfig?.characterStatTabsDefinition!.indexWhere(
-                            (tab) => tab.isDefaultTab == true) !=
-                        _currentStep) {
-                      setState(() {
-                        _goToStepId(rpgConfig!.characterStatTabsDefinition!
-                            .indexWhere((tab) => tab.isDefaultTab == true));
-                      });
-                    } else {
-                      // Player leaving their own live session: mark out of session.
-                      // Do NOT clear isDm when the DM is only previewing another
-                      // character via characterConfigurationOverride — that would
-                      // make the next open look like a player session and crash on
-                      // AsyncLoading character provider.
-                      final details =
-                          ref.read(connectionDetailsProvider).requireValue;
-                      final isPreviewOnly = rpgCharacterToRender != null ||
-                          details.isDm ||
-                          disableEdit;
-                      if (!isPreviewOnly) {
-                        ref
-                            .read(connectionDetailsProvider.notifier)
-                            .updateConfiguration(details.copyWith(
-                              isInSession: false,
-                              isDm: false,
-                            ));
-                      }
-
-                      navigatorKey.currentState!.pop();
+                    // Player leaving their own live session: mark out of session.
+                    // Do NOT clear isDm when the DM is only previewing another
+                    // character via characterConfigurationOverride — that would
+                    // make the next open look like a player session and crash on
+                    // AsyncLoading character provider.
+                    final details =
+                        ref.read(connectionDetailsProvider).requireValue;
+                    final isPreviewOnly = rpgCharacterToRender != null ||
+                        details.isDm ||
+                        disableEdit;
+                    if (!isPreviewOnly) {
+                      ref
+                          .read(connectionDetailsProvider.notifier)
+                          .updateConfiguration(details.copyWith(
+                            isInSession: false,
+                            isDm: false,
+                          ));
                     }
+
+                    navigatorKey.currentState!.pop();
                   },
-                  titleWidget: Center(
+                  bottom: !isPhone
+                      ? null
+                      : PageTabStrip(
+                          items: [
+                            for (final screen in playerScreensToSwipe)
+                              PageTabStripItem(
+                                label: screen.$1,
+                                iconBuilder: _configuredTabIconBuilder(
+                                    tempLoadedRpgCharacter, screen.$3),
+                              ),
+                          ],
+                          currentIndex: _currentStep,
+                          onSelected: (index) => _goToStepId(index),
+                          onLongPress: connectionDetails == null ||
+                                  connectionDetails.isDm ||
+                                  rpgConfig == null ||
+                                  tempLoadedRpgCharacter == null
+                              ? null
+                              : (_) => openTabIconConfigurationDialog(context,
+                                  rpgConfig, tempLoadedRpgCharacter),
+                          // The notes come last; keep them in sight (B8).
+                          pinLastItem: playerScreensToSwipe.isNotEmpty &&
+                              playerScreensToSwipe.last.$3 == "lore_tab_uuid",
+                        ),
+                  titleWidget: isPhone
+                      ? Text(
+                          currentTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color: titleColor,
+                                fontSize: ledger ? 24 : 20,
+                                fontFamily: ledger ? 'Ruwudu' : null,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: ledger ? 0.4 : null,
+                                height: 1.0,
+                              ),
+                        )
+                      : Center(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -647,10 +694,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                   menuOpen: connectionDetails == null ||
                           connectionDetails.isDm ||
                           disableEdit ||
-                          (rpgConfig?.characterStatTabsDefinition ??
-                                      List<CharacterStatsTabDefinition>.empty())
-                                  .length <=
-                              _currentStep ||
+                          visibleStatTabCount <= _currentStep ||
                           rpgConfig == null ||
                           charToRender == null
                       ? null
@@ -763,7 +807,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       PlayerPageHelpers.handlePossiblyMissingCharacterStats(
         ref: ref,
         context: context,
-        filterTabId: rpgConfig.characterStatTabsDefinition![_currentStep].uuid,
+        filterTabId: visibleCharacterStatTabs(rpgConfig)[_currentStep].uuid,
         rpgConfig: rpgConfig,
         selectedCharacter: charToRender,
       );
@@ -799,6 +843,17 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
       );
       CustomThemeProvider.of(context).setActiveSkinId(resolved.renderSkinId);
     }
+  }
+
+  /// The tab icon the player chose for the page [tabUuid], if any.
+  Widget Function(Color color)? _configuredTabIconBuilder(
+      RpgCharacterConfiguration? character, String tabUuid) {
+    final tabIcon = character?.tabConfigurations
+        ?.firstWhereOrNull((e) => e.tabUuid == tabUuid)
+        ?.tabIcon;
+    if (tabIcon == null || tabIcon == "square") return null;
+    return (color) =>
+        getIconForIdentifier(name: tabIcon, color: color, size: 16).$2;
   }
 
   void openTabIconConfigurationDialog(BuildContext context,

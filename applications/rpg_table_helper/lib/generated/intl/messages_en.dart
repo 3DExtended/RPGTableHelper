@@ -308,7 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Not in a campaign yet. Tap to join with a code.",
     ),
     "characterOverview": MessageLookupByLibrary.simpleMessage(
-      "Charakter overview",
+      "Character overview",
     ),
     "characterPortraitImagePrompt": MessageLookupByLibrary.simpleMessage(
       "Portrait description",
@@ -566,7 +566,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "generatedImage": MessageLookupByLibrary.simpleMessage("Generated image"),
     "generatedImagesTabTitle": MessageLookupByLibrary.simpleMessage(
-      "Generierte Bilder",
+      "Generated images",
     ),
     "genericErrorModalHeader": MessageLookupByLibrary.simpleMessage(
       "That didn\'t work",
@@ -633,7 +633,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Number value with max value",
     ),
     "invalidImageFileSelected": MessageLookupByLibrary.simpleMessage(
-      "Invalid image file selected.",
+      "The selected file is not an image.",
     ),
     "invitePlayersAction": MessageLookupByLibrary.simpleMessage(
       "Invite players",
@@ -707,6 +707,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "lastGrantedItemsMarkdownPrefix": MessageLookupByLibrary.simpleMessage(
       "Last granted items:",
     ),
+    "ledgerManuscriptDateFormat": MessageLookupByLibrary.simpleMessage(
+      "MMMM d, y, h:mm a",
+    ),
     "level": MessageLookupByLibrary.simpleMessage("Level"),
     "levelAbbr": MessageLookupByLibrary.simpleMessage("LVL"),
     "listOfIntegersWithIcons": MessageLookupByLibrary.simpleMessage(
@@ -730,7 +733,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Username or password is incorrect.",
     ),
     "logout": MessageLookupByLibrary.simpleMessage("Logout"),
-    "lore": MessageLookupByLibrary.simpleMessage("Lore"),
+    "lore": MessageLookupByLibrary.simpleMessage("Notes"),
     "maxValue": MessageLookupByLibrary.simpleMessage("Max value"),
     "maxValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "The max value for this property",
@@ -753,6 +756,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Multiselect options are selectable multiple times",
         ),
+    "myNotesGroupName": MessageLookupByLibrary.simpleMessage("My notes"),
     "nameOfCharacterHelperText": MessageLookupByLibrary.simpleMessage(
       "The name of the character",
     ),
@@ -764,7 +768,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "navBarHeaderCrafting": MessageLookupByLibrary.simpleMessage("Crafting"),
     "navBarHeaderInventory": MessageLookupByLibrary.simpleMessage("Inventory"),
-    "navBarHeaderLore": MessageLookupByLibrary.simpleMessage("Lore"),
+    "navBarHeaderLore": MessageLookupByLibrary.simpleMessage("Notes"),
     "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Currency"),
     "newBalance": MessageLookupByLibrary.simpleMessage("New balance"),
     "newCampagneIntro": MessageLookupByLibrary.simpleMessage(
@@ -875,6 +879,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "ownedIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "owned:",
     ),
+    "pageTabShortCampaign": MessageLookupByLibrary.simpleMessage("Campaign"),
+    "pageTabShortCharacters": MessageLookupByLibrary.simpleMessage(
+      "Characters",
+    ),
+    "pageTabShortFight": MessageLookupByLibrary.simpleMessage("Combat"),
+    "pageTabShortImages": MessageLookupByLibrary.simpleMessage("Images"),
+    "pageTabShortItems": MessageLookupByLibrary.simpleMessage("Items"),
+    "pageTabShortNotes": MessageLookupByLibrary.simpleMessage("Notes"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordRuleMaxLength": m17,
     "passwordRuleMet": MessageLookupByLibrary.simpleMessage("met"),

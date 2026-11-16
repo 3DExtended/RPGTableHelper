@@ -275,10 +275,10 @@ class S {
     );
   }
 
-  /// `Invalid image file selected.`
+  /// `The selected file is not an image.`
   String get invalidImageFileSelected {
     return Intl.message(
-      'Invalid image file selected.',
+      'The selected file is not an image.',
       name: 'invalidImageFileSelected',
       desc: '',
       args: [],
@@ -760,10 +760,10 @@ class S {
     );
   }
 
-  /// `Charakter overview`
+  /// `Character overview`
   String get characterOverview {
     return Intl.message(
-      'Charakter overview',
+      'Character overview',
       name: 'characterOverview',
       desc: '',
       args: [],
@@ -785,9 +785,9 @@ class S {
     return Intl.message('Grant items', name: 'grantItems', desc: '', args: []);
   }
 
-  /// `Lore`
+  /// `Notes`
   String get lore {
-    return Intl.message('Lore', name: 'lore', desc: '', args: []);
+    return Intl.message('Notes', name: 'lore', desc: '', args: []);
   }
 
   /// `Online`
@@ -1655,9 +1655,9 @@ class S {
     );
   }
 
-  /// `Lore`
+  /// `Notes`
   String get navBarHeaderLore {
-    return Intl.message('Lore', name: 'navBarHeaderLore', desc: '', args: []);
+    return Intl.message('Notes', name: 'navBarHeaderLore', desc: '', args: []);
   }
 
   /// `Inventory`
@@ -2191,10 +2191,10 @@ class S {
     );
   }
 
-  /// `Generierte Bilder`
+  /// `Generated images`
   String get generatedImagesTabTitle {
     return Intl.message(
-      'Generierte Bilder',
+      'Generated images',
       name: 'generatedImagesTabTitle',
       desc: '',
       args: [],
@@ -4863,6 +4863,76 @@ class S {
     return Intl.message(
       'Something went wrong. Please try again.',
       name: 'errorMessageUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My notes`
+  String get myNotesGroupName {
+    return Intl.message(
+      'My notes',
+      name: 'myNotesGroupName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Campaign`
+  String get pageTabShortCampaign {
+    return Intl.message(
+      'Campaign',
+      name: 'pageTabShortCampaign',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Characters`
+  String get pageTabShortCharacters {
+    return Intl.message(
+      'Characters',
+      name: 'pageTabShortCharacters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Combat`
+  String get pageTabShortFight {
+    return Intl.message(
+      'Combat',
+      name: 'pageTabShortFight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Items`
+  String get pageTabShortItems {
+    return Intl.message('Items', name: 'pageTabShortItems', desc: '', args: []);
+  }
+
+  /// `Notes`
+  String get pageTabShortNotes {
+    return Intl.message('Notes', name: 'pageTabShortNotes', desc: '', args: []);
+  }
+
+  /// `Images`
+  String get pageTabShortImages {
+    return Intl.message(
+      'Images',
+      name: 'pageTabShortImages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MMMM d, y, h:mm a`
+  String get ledgerManuscriptDateFormat {
+    return Intl.message(
+      'MMMM d, y, h:mm a',
+      name: 'ledgerManuscriptDateFormat',
       desc: '',
       args: [],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Tooltip;
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
@@ -24,6 +25,7 @@ class Navbar extends StatelessWidget {
     this.subTitle,
     this.logoutFunction,
     this.hideWhileKeyboardVisible = false,
+    this.bottom,
   });
 
   final bool useTopSafePadding;
@@ -38,6 +40,10 @@ class Navbar extends StatelessWidget {
   /// keyboard is open, so text editors below get the room (TestFlight
   /// feedback 262, #3).
   final bool hideWhileKeyboardVisible;
+
+  /// Full-width row below the bar on the bar's background, e.g. the page
+  /// tabs on phones. Hidden together with the bar while the keyboard is open.
+  final Widget? bottom;
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +62,8 @@ class Navbar extends StatelessWidget {
     });
   }
 
-  Color _backgroundColor(BuildContext context) {
-    final theme = CustomThemeProvider.of(context).theme;
-    if (isArcaneLedgerActive(context)) {
-      return const Color(0xff15100C);
-    } else if (isNightCartographerActive(context)) {
-      return theme.secondaryNavbarColor;
-    } else if (CustomThemeProvider.of(context).brightnessNotifier.value ==
-        Brightness.light) {
-      return theme.darkColor;
-    }
-    return theme.bgColor.darker(0.4);
-  }
+  Color _backgroundColor(BuildContext context) =>
+      navbarBackgroundColor(context);
 
   Widget _buildBar(BuildContext context) {
     final theme = CustomThemeProvider.of(context).theme;
@@ -135,7 +131,9 @@ class Navbar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                titleWidget,
+                // Many diamonds (e.g. a 10-step wizard on a phone) are wider
+                // than the bar: shrink them instead of overflowing.
+                ScaleDownToFitWidth(child: titleWidget),
                 if (subTitle != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -308,8 +306,151 @@ class Navbar extends StatelessWidget {
       );
     }
 
-    return barBody;
+    if (bottom == null) return barBody;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        barBody,
+        ColoredBox(color: backgroundColor, child: bottom!),
+      ],
+    );
   }
+}
+
+/// Lays [child] out as usual while it fits. When its smallest possible
+/// width is wider than the room it gets, it is laid out at that width and
+/// scaled down, so it never overflows.
+///
+/// Unlike [FittedBox], a child that fits keeps the normal constraints, so a
+/// [Text] still wraps and a [Row] with [Spacer]s still spreads out.
+class ScaleDownToFitWidth extends SingleChildRenderObjectWidget {
+  const ScaleDownToFitWidth({super.key, super.child});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderScaleDownToFitWidth();
+}
+
+class _RenderScaleDownToFitWidth extends RenderProxyBox {
+  double _scale = 1.0;
+
+  @override
+  Size computeDryLayout(covariant BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) return constraints.smallest;
+    final maxWidth = constraints.maxWidth;
+    final neededWidth = maxWidth.isFinite
+        ? child.getMinIntrinsicWidth(constraints.maxHeight)
+        : 0.0;
+    if (!maxWidth.isFinite || neededWidth <= maxWidth) {
+      return child.getDryLayout(constraints);
+    }
+    final scale = maxWidth / neededWidth;
+    final childSize = child.getDryLayout(BoxConstraints.tightFor(
+      width: neededWidth,
+    ));
+    return constraints.constrain(Size(maxWidth, childSize.height * scale));
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+
+    final maxWidth = constraints.maxWidth;
+    final neededWidth = maxWidth.isFinite
+        ? child.getMinIntrinsicWidth(constraints.maxHeight)
+        : 0.0;
+
+    if (!maxWidth.isFinite || neededWidth <= maxWidth) {
+      _scale = 1.0;
+      child.layout(constraints, parentUsesSize: true);
+      size = child.size;
+      return;
+    }
+
+    _scale = maxWidth / neededWidth;
+    child.layout(
+      BoxConstraints(
+        minWidth: neededWidth,
+        maxWidth: neededWidth,
+        maxHeight: constraints.maxHeight.isFinite
+            ? constraints.maxHeight / _scale
+            : double.infinity,
+      ),
+      parentUsesSize: true,
+    );
+    size = constraints.constrain(
+      Size(maxWidth, child.size.height * _scale),
+    );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final child = this.child;
+    if (child == null) return;
+    if (_scale == 1.0) {
+      context.paintChild(child, offset);
+      return;
+    }
+    layer = context.pushTransform(
+      needsCompositing,
+      offset,
+      Matrix4.diagonal3Values(_scale, _scale, 1.0),
+      (context, offset) => context.paintChild(child, offset),
+      oldLayer: layer is TransformLayer ? layer as TransformLayer : null,
+    );
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    final child = this.child;
+    if (child == null) return false;
+    if (_scale == 1.0) {
+      return child.hitTest(result, position: position);
+    }
+    return result.addWithPaintTransform(
+      transform: Matrix4.diagonal3Values(_scale, _scale, 1.0),
+      position: position,
+      hitTest: (result, position) => child.hitTest(result, position: position),
+    );
+  }
+
+  @override
+  void applyPaintTransform(RenderBox child, Matrix4 transform) {
+    if (_scale != 1.0) {
+      transform.multiply(Matrix4.diagonal3Values(_scale, _scale, 1.0));
+    }
+  }
+}
+
+/// Solid colour of the [Navbar] for the active skin.
+Color navbarBackgroundColor(BuildContext context) {
+  final theme = CustomThemeProvider.of(context).theme;
+  if (isArcaneLedgerActive(context)) {
+    return const Color(0xff15100C);
+  } else if (isNightCartographerActive(context)) {
+    return theme.secondaryNavbarColor;
+  } else if (CustomThemeProvider.of(context).brightnessNotifier.value ==
+      Brightness.light) {
+    return theme.darkColor;
+  }
+  return theme.bgColor.darker(0.4);
+}
+
+/// Text and inactive-icon colour on the [Navbar] for the active skin.
+Color navbarForegroundColor(BuildContext context) {
+  final theme = CustomThemeProvider.of(context).theme;
+  if (isArcaneLedgerActive(context)) return const Color(0xffEDE3D4);
+  if (isNightCartographerActive(context)) return const Color(0xffF0E6D4);
+  return CustomThemeProvider.of(context).brightnessNotifier.value ==
+          Brightness.light
+      ? theme.textColor
+      : theme.darkTextColor;
 }
 
 /// Navbar title / active diamond accent.

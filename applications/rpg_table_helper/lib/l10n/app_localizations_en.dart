@@ -96,7 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadImageBtnLabel => 'Upload image';
 
   @override
-  String get invalidImageFileSelected => 'Invalid image file selected.';
+  String get invalidImageFileSelected => 'The selected file is not an image.';
 
   @override
   String get additionalSettings => 'Additional settings';
@@ -261,7 +261,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get campaignManagement => 'Campaign management';
 
   @override
-  String get characterOverview => 'Charakter overview';
+  String get characterOverview => 'Character overview';
 
   @override
   String get fightingOrdering => 'Fight order';
@@ -270,7 +270,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantItems => 'Grant items';
 
   @override
-  String get lore => 'Lore';
+  String get lore => 'Notes';
 
   @override
   String get online => 'Online';
@@ -592,7 +592,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navBarHeaderCrafting => 'Crafting';
 
   @override
-  String get navBarHeaderLore => 'Lore';
+  String get navBarHeaderLore => 'Notes';
 
   @override
   String get navBarHeaderInventory => 'Inventory';
@@ -796,7 +796,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Describe your character for image generation';
 
   @override
-  String get generatedImagesTabTitle => 'Generierte Bilder';
+  String get generatedImagesTabTitle => 'Generated images';
 
   @override
   String get noImagesInCampagne =>
@@ -1815,4 +1815,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorMessageUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get myNotesGroupName => 'My notes';
+
+  @override
+  String get pageTabShortCampaign => 'Campaign';
+
+  @override
+  String get pageTabShortCharacters => 'Characters';
+
+  @override
+  String get pageTabShortFight => 'Combat';
+
+  @override
+  String get pageTabShortItems => 'Items';
+
+  @override
+  String get pageTabShortNotes => 'Notes';
+
+  @override
+  String get pageTabShortImages => 'Images';
+
+  @override
+  String get ledgerManuscriptDateFormat => 'MMMM d, y, h:mm a';
 }

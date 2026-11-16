@@ -86,8 +86,22 @@ class _LoreBlockRenderingEditableState
     super.dispose();
   }
 
+  /// Narrower than this (phones), the share list goes below the block
+  /// instead of beside it, where it would get only a few pixels.
+  static const double narrowLayoutMaxWidth = 500;
+
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return _buildBlock(
+        context,
+        permittedUsersBelow: constraints.maxWidth < narrowLayoutMaxWidth,
+      );
+    });
+  }
+
+  Widget _buildBlock(BuildContext context,
+      {required bool permittedUsersBelow}) {
     Widget? blockRendering;
 
     if (widget.block is TextBlock) {
@@ -106,7 +120,34 @@ class _LoreBlockRenderingEditableState
 
     assert(blockRendering != null);
 
-    return Row(
+    final showPermittedUsers =
+        widget.isShowingPermittedUsers == true && widget.isUserAllowedToEdit;
+    Widget permittedUsersPanel() => Column(
+          children: [
+            Text(
+              S.of(context).noteblockVisibleFor,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  fontSize: 16,
+                  color: CustomThemeProvider.of(context).theme.darkTextColor),
+            ),
+
+            SizedBox(
+              height: 5,
+            ),
+
+            // for every user create a pill which indicates
+            ...getPillsToIndicateVisibilityForPlayers(
+              widget.block.id,
+              widget.block.permittedUsers ?? [],
+              widget.usersInCampagne,
+              widget.block,
+              widget.updatePermittedUsersOnBlock,
+              context,
+            ),
+          ],
+        );
+
+    final row = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(flex: 3, child: blockRendering!),
@@ -158,38 +199,12 @@ class _LoreBlockRenderingEditableState
               ],
             ),
           ),
-        if (widget.isShowingPermittedUsers == true &&
-            widget.isUserAllowedToEdit)
+        if (showPermittedUsers && !permittedUsersBelow)
           Expanded(
             flex: 1,
             child: Padding(
               padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-              child: Column(
-                children: [
-                  Text(
-                    S.of(context).noteblockVisibleFor,
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        fontSize: 16,
-                        color: CustomThemeProvider.of(context)
-                            .theme
-                            .darkTextColor),
-                  ),
-
-                  SizedBox(
-                    height: 5,
-                  ),
-
-                  // for every user create a pill which indicates
-                  ...getPillsToIndicateVisibilityForPlayers(
-                    widget.block.id,
-                    widget.block.permittedUsers ?? [],
-                    widget.usersInCampagne,
-                    widget.block,
-                    widget.updatePermittedUsersOnBlock,
-                    context,
-                  ),
-                ],
-              ),
+              child: permittedUsersPanel(),
             ),
           ),
         if (widget.isUserAllowedToEdit == true)
@@ -206,6 +221,20 @@ class _LoreBlockRenderingEditableState
               ),
             ),
           )
+      ],
+    );
+
+    if (!showPermittedUsers || !permittedUsersBelow) return row;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        row,
+        Padding(
+          key: const ValueKey('noteBlockPermittedUsersBelow'),
+          padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
+          child: permittedUsersPanel(),
+        ),
       ],
     );
   }

@@ -97,7 +97,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get uploadImageBtnLabel => 'Bild hochladen';
 
   @override
-  String get invalidImageFileSelected => 'Ungültige Bilddatei ausgewählt.';
+  String get invalidImageFileSelected => 'Die gewählte Datei ist kein Bild.';
 
   @override
   String get additionalSettings => 'Erweiterte Optionen';
@@ -259,19 +259,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select => 'Auswählen';
 
   @override
-  String get campaignManagement => 'Kampagnen Management';
+  String get campaignManagement => 'Kampagnenverwaltung';
 
   @override
-  String get characterOverview => 'Charakter Übersicht';
+  String get characterOverview => 'Charakterübersicht';
 
   @override
-  String get fightingOrdering => 'Kampf Reihenfolge';
+  String get fightingOrdering => 'Kampfreihenfolge';
 
   @override
   String get grantItems => 'Items verteilen';
 
   @override
-  String get lore => 'Weltgeschichte';
+  String get lore => 'Notizen';
 
   @override
   String get online => 'Online';
@@ -596,7 +596,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navBarHeaderCrafting => 'Herstellen';
 
   @override
-  String get navBarHeaderLore => 'Weltgeschichte';
+  String get navBarHeaderLore => 'Notizen';
 
   @override
   String get navBarHeaderInventory => 'Inventar';
@@ -1832,4 +1832,28 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get errorMessageUnknown =>
       'Etwas ist schiefgelaufen. Versuche es noch einmal.';
+
+  @override
+  String get myNotesGroupName => 'Meine Notizen';
+
+  @override
+  String get pageTabShortCampaign => 'Kampagne';
+
+  @override
+  String get pageTabShortCharacters => 'Charaktere';
+
+  @override
+  String get pageTabShortFight => 'Kampf';
+
+  @override
+  String get pageTabShortItems => 'Items';
+
+  @override
+  String get pageTabShortNotes => 'Notizen';
+
+  @override
+  String get pageTabShortImages => 'Bilder';
+
+  @override
+  String get ledgerManuscriptDateFormat => 'd. MMMM y, HH:mm';
 }

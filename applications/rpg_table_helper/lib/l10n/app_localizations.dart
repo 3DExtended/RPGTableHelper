@@ -263,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @invalidImageFileSelected.
   ///
   /// In de, this message translates to:
-  /// **'Ungültige Bilddatei ausgewählt.'**
+  /// **'Die gewählte Datei ist kein Bild.'**
   String get invalidImageFileSelected;
 
   /// No description provided for @additionalSettings.
@@ -563,19 +563,19 @@ abstract class AppLocalizations {
   /// No description provided for @campaignManagement.
   ///
   /// In de, this message translates to:
-  /// **'Kampagnen Management'**
+  /// **'Kampagnenverwaltung'**
   String get campaignManagement;
 
   /// No description provided for @characterOverview.
   ///
   /// In de, this message translates to:
-  /// **'Charakter Übersicht'**
+  /// **'Charakterübersicht'**
   String get characterOverview;
 
   /// No description provided for @fightingOrdering.
   ///
   /// In de, this message translates to:
-  /// **'Kampf Reihenfolge'**
+  /// **'Kampfreihenfolge'**
   String get fightingOrdering;
 
   /// No description provided for @grantItems.
@@ -587,7 +587,7 @@ abstract class AppLocalizations {
   /// No description provided for @lore.
   ///
   /// In de, this message translates to:
-  /// **'Weltgeschichte'**
+  /// **'Notizen'**
   String get lore;
 
   /// No description provided for @online.
@@ -1199,7 +1199,7 @@ abstract class AppLocalizations {
   /// No description provided for @navBarHeaderLore.
   ///
   /// In de, this message translates to:
-  /// **'Weltgeschichte'**
+  /// **'Notizen'**
   String get navBarHeaderLore;
 
   /// No description provided for @navBarHeaderInventory.
@@ -3223,6 +3223,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Etwas ist schiefgelaufen. Versuche es noch einmal.'**
   String get errorMessageUnknown;
+
+  /// No description provided for @myNotesGroupName.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Notizen'**
+  String get myNotesGroupName;
+
+  /// No description provided for @pageTabShortCampaign.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagne'**
+  String get pageTabShortCampaign;
+
+  /// No description provided for @pageTabShortCharacters.
+  ///
+  /// In de, this message translates to:
+  /// **'Charaktere'**
+  String get pageTabShortCharacters;
+
+  /// No description provided for @pageTabShortFight.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampf'**
+  String get pageTabShortFight;
+
+  /// No description provided for @pageTabShortItems.
+  ///
+  /// In de, this message translates to:
+  /// **'Items'**
+  String get pageTabShortItems;
+
+  /// No description provided for @pageTabShortNotes.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen'**
+  String get pageTabShortNotes;
+
+  /// No description provided for @pageTabShortImages.
+  ///
+  /// In de, this message translates to:
+  /// **'Bilder'**
+  String get pageTabShortImages;
+
+  /// No description provided for @ledgerManuscriptDateFormat.
+  ///
+  /// In de, this message translates to:
+  /// **'d. MMMM y, HH:mm'**
+  String get ledgerManuscriptDateFormat;
 }
 
 class _AppLocalizationsDelegate
