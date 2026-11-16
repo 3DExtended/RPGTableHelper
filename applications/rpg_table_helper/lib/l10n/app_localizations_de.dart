@@ -2108,4 +2108,23 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get showLevelHint =>
       'Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins.';
+
+  @override
+  String get playerPreviewButton => 'So sieht es der Spieler';
+
+  @override
+  String get playerPreviewTitle => 'Spieleransicht';
+
+  @override
+  String get playerPreviewPhone => 'Handy';
+
+  @override
+  String get playerPreviewTablet => 'Tablet';
+
+  @override
+  String get playerPreviewHint =>
+      'Eine Beispielfigur mit Standardwerten. Hier wird nichts gespeichert.';
+
+  @override
+  String get playerPreviewSampleCharacterName => 'Beispielfigur';
 }

@@ -1068,6 +1068,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "petDefaultNamePrefix": MessageLookupByLibrary.simpleMessage("Begleiter"),
     "placeOfFinding": MessageLookupByLibrary.simpleMessage("Fundort"),
     "player": MessageLookupByLibrary.simpleMessage("Spieler"),
+    "playerPreviewButton": MessageLookupByLibrary.simpleMessage(
+      "So sieht es der Spieler",
+    ),
+    "playerPreviewHint": MessageLookupByLibrary.simpleMessage(
+      "Eine Beispielfigur mit Standardwerten. Hier wird nichts gespeichert.",
+    ),
+    "playerPreviewPhone": MessageLookupByLibrary.simpleMessage("Handy"),
+    "playerPreviewSampleCharacterName": MessageLookupByLibrary.simpleMessage(
+      "Beispielfigur",
+    ),
+    "playerPreviewTablet": MessageLookupByLibrary.simpleMessage("Tablet"),
+    "playerPreviewTitle": MessageLookupByLibrary.simpleMessage(
+      "Spieleransicht",
+    ),
     "playerRolls": MessageLookupByLibrary.simpleMessage("Würfe der Spieler"),
     "preview": MessageLookupByLibrary.simpleMessage("Vorschau"),
     "previewAndVariantTileTitle": MessageLookupByLibrary.simpleMessage(

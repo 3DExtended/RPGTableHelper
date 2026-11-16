@@ -3697,6 +3697,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins.'**
   String get showLevelHint;
+
+  /// No description provided for @playerPreviewButton.
+  ///
+  /// In de, this message translates to:
+  /// **'So sieht es der Spieler'**
+  String get playerPreviewButton;
+
+  /// No description provided for @playerPreviewTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieleransicht'**
+  String get playerPreviewTitle;
+
+  /// No description provided for @playerPreviewPhone.
+  ///
+  /// In de, this message translates to:
+  /// **'Handy'**
+  String get playerPreviewPhone;
+
+  /// No description provided for @playerPreviewTablet.
+  ///
+  /// In de, this message translates to:
+  /// **'Tablet'**
+  String get playerPreviewTablet;
+
+  /// No description provided for @playerPreviewHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Beispielfigur mit Standardwerten. Hier wird nichts gespeichert.'**
+  String get playerPreviewHint;
+
+  /// No description provided for @playerPreviewSampleCharacterName.
+  ///
+  /// In de, this message translates to:
+  /// **'Beispielfigur'**
+  String get playerPreviewSampleCharacterName;
 }
 
 class _AppLocalizationsDelegate

@@ -894,5 +894,11 @@
   "singleSelectOptionsHeadline": "Options",
   "singleSelectNothingChosen": "Nothing chosen yet",
   "showLevelToggle": "Show level",
-  "showLevelHint": "Off: the character form does not ask for a level and the sheet shows none."
+  "showLevelHint": "Off: the character form does not ask for a level and the sheet shows none.",
+  "playerPreviewButton": "Player's view",
+  "playerPreviewTitle": "Player's view",
+  "playerPreviewPhone": "Phone",
+  "playerPreviewTablet": "Tablet",
+  "playerPreviewHint": "A sample character with default values. Nothing here is saved.",
+  "playerPreviewSampleCharacterName": "Sample character"
 }

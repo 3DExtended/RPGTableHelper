@@ -21,6 +21,7 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/wizards/player_sheet_preview_screen.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/character_stat_group_editing.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
@@ -321,6 +322,27 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
       sideBarFlex: 1,
       contentFlex: 2,
       contentChildren: [
+        // Phase 3: the sheet as a player sees it, before anyone has joined.
+        Align(
+          alignment: Alignment.centerRight,
+          child: CustomButton(
+            key: const ValueKey('openPlayerSheetPreview'),
+            isSubbutton: true,
+            variant: CustomButtonVariant.FlatButton,
+            icon: CustomFaIcon(
+                size: 16,
+                color: CustomThemeProvider.of(context).theme.darkColor,
+                icon: FontAwesomeIcons.eye),
+            label: S.of(context).playerPreviewButton,
+            onPressed: () {
+              _persistToProviderIfReady();
+              final config = ref.read(rpgConfigurationProvider).value;
+              if (config == null) return;
+              PlayerSheetPreviewScreen.open(config);
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
         ...tabsToEdit.asMap().entries.map((tab) {
           return Column(
             mainAxisSize: MainAxisSize.max,

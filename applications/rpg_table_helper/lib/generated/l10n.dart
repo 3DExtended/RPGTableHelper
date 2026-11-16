@@ -5629,6 +5629,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Player's view`
+  String get playerPreviewButton {
+    return Intl.message(
+      'Player\'s view',
+      name: 'playerPreviewButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Player's view`
+  String get playerPreviewTitle {
+    return Intl.message(
+      'Player\'s view',
+      name: 'playerPreviewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone`
+  String get playerPreviewPhone {
+    return Intl.message(
+      'Phone',
+      name: 'playerPreviewPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tablet`
+  String get playerPreviewTablet {
+    return Intl.message(
+      'Tablet',
+      name: 'playerPreviewTablet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A sample character with default values. Nothing here is saved.`
+  String get playerPreviewHint {
+    return Intl.message(
+      'A sample character with default values. Nothing here is saved.',
+      name: 'playerPreviewHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sample character`
+  String get playerPreviewSampleCharacterName {
+    return Intl.message(
+      'Sample character',
+      name: 'playerPreviewSampleCharacterName',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

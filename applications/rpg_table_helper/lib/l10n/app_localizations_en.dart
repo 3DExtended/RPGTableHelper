@@ -2089,4 +2089,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get showLevelHint =>
       'Off: the character form does not ask for a level and the sheet shows none.';
+
+  @override
+  String get playerPreviewButton => 'Player\'s view';
+
+  @override
+  String get playerPreviewTitle => 'Player\'s view';
+
+  @override
+  String get playerPreviewPhone => 'Phone';
+
+  @override
+  String get playerPreviewTablet => 'Tablet';
+
+  @override
+  String get playerPreviewHint =>
+      'A sample character with default values. Nothing here is saved.';
+
+  @override
+  String get playerPreviewSampleCharacterName => 'Sample character';
 }

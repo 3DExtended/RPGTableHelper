@@ -942,5 +942,11 @@
   "singleSelectOptionsHeadline": "Optionen",
   "singleSelectNothingChosen": "Noch nichts gewählt",
   "showLevelToggle": "Level anzeigen",
-  "showLevelHint": "Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins."
+  "showLevelHint": "Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins.",
+  "playerPreviewButton": "So sieht es der Spieler",
+  "playerPreviewTitle": "Spieleransicht",
+  "playerPreviewPhone": "Handy",
+  "playerPreviewTablet": "Tablet",
+  "playerPreviewHint": "Eine Beispielfigur mit Standardwerten. Hier wird nichts gespeichert.",
+  "playerPreviewSampleCharacterName": "Beispielfigur"
 }

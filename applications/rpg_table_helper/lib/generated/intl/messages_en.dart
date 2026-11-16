@@ -1028,6 +1028,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "petDefaultNamePrefix": MessageLookupByLibrary.simpleMessage("Pet"),
     "placeOfFinding": MessageLookupByLibrary.simpleMessage("Place of finding"),
     "player": MessageLookupByLibrary.simpleMessage("Player"),
+    "playerPreviewButton": MessageLookupByLibrary.simpleMessage(
+      "Player\'s view",
+    ),
+    "playerPreviewHint": MessageLookupByLibrary.simpleMessage(
+      "A sample character with default values. Nothing here is saved.",
+    ),
+    "playerPreviewPhone": MessageLookupByLibrary.simpleMessage("Phone"),
+    "playerPreviewSampleCharacterName": MessageLookupByLibrary.simpleMessage(
+      "Sample character",
+    ),
+    "playerPreviewTablet": MessageLookupByLibrary.simpleMessage("Tablet"),
+    "playerPreviewTitle": MessageLookupByLibrary.simpleMessage(
+      "Player\'s view",
+    ),
     "playerRolls": MessageLookupByLibrary.simpleMessage("Player rolls"),
     "preview": MessageLookupByLibrary.simpleMessage("Preview"),
     "previewAndVariantTileTitle": MessageLookupByLibrary.simpleMessage(
