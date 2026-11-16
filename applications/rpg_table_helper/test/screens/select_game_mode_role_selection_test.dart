@@ -79,6 +79,50 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
   }
 
+  group('the order of the lists', () {
+    test('phones put the characters first unless someone only leads', () {
+      bool first({required bool phone, int campagnes = 0, int chars = 0}) =>
+          SelectGameModeScreen.charactersFirstOnHome(
+            isPhone: phone,
+            campagneCount: campagnes,
+            characterCount: chars,
+          );
+      expect(first(phone: true), isTrue, reason: 'new users mostly play');
+      expect(first(phone: true, chars: 2), isTrue);
+      expect(first(phone: true, campagnes: 1, chars: 1), isTrue);
+      expect(first(phone: true, campagnes: 1), isFalse);
+      expect(first(phone: false, chars: 2), isFalse);
+      expect(first(phone: false), isFalse);
+    });
+
+    double top(WidgetTester tester, Key key) =>
+        tester.getTopLeft(find.byKey(key)).dy;
+
+    testWidgets('a player on a phone sees the characters above', (
+      tester,
+    ) async {
+      await pumpScreen(tester, campagnes: [_varn], characters: [_kardan]);
+      // pumpScreen sets a tablet; a (wide) phone instead. The test font is
+      // wider than the app's, so a real phone width would overflow buttons.
+      tester.view.physicalSize = const Size(560, 1000);
+      await tester.pumpAndSettle();
+
+      expect(
+        top(tester, SelectGameModeScreen.charactersSectionKey),
+        lessThan(top(tester, SelectGameModeScreen.campagnesSectionKey)),
+      );
+    });
+
+    testWidgets('a tablet keeps the game master first', (tester) async {
+      await pumpScreen(tester, campagnes: [_varn], characters: [_kardan]);
+
+      expect(
+        top(tester, SelectGameModeScreen.campagnesSectionKey),
+        lessThan(top(tester, SelectGameModeScreen.charactersSectionKey)),
+      );
+    });
+  });
+
   testWidgets('starts with the two ways in and German counts', (tester) async {
     await pumpScreen(tester, campagnes: [_varn], characters: [_kardan, _mira]);
 

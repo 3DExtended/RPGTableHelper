@@ -61,6 +61,17 @@ class SelectGameModeScreen extends ConsumerStatefulWidget {
   static const route = 'selectgamemode';
 
   static const runAGamePathKey = ValueKey('runAGamePath');
+  static const campagnesSectionKey = ValueKey('homeCampagnesSection');
+  static const charactersSectionKey = ValueKey('homeCharactersSection');
+
+  /// On phones most people come to play: their characters come first,
+  /// unless they only lead campagnes. Tablets keep the game master first.
+  static bool charactersFirstOnHome({
+    required bool isPhone,
+    required int campagneCount,
+    required int characterCount,
+  }) =>
+      isPhone && !(campagneCount > 0 && characterCount == 0);
   static const joinAGamePathKey = ValueKey('joinAGamePath');
   static const noCampagnesCtaKey = ValueKey('noCampagnesCta');
   static const noCharactersCtaKey = ValueKey('noCharactersCta');
@@ -469,81 +480,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            AddableColumnHeader(
-                              title: S.of(context).chooseACampagne,
-                              subtitle: S.of(context).startAsDm,
-                              subsubtitle: S
-                                  .of(context)
-                                  .youOwnXCampaigns(campagnes?.length ?? 0),
-                              actionLabel: (campagnes ?? []).isEmpty
-                                  ? null
-                                  : S.of(context).newCampaign,
-                              onPressedHandler: () async {
-                                await createNewCampagne();
-                              },
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            if ((campagnes ?? []).isEmpty)
-                              EmptyListCallToAction(
-                                key: SelectGameModeScreen.noCampagnesCtaKey,
-                                text: S.of(context).noCampagnesYetHint,
-                                actionLabel: S.of(context).createCampagneAction,
-                                onPressed: () async {
-                                  await createNewCampagne();
-                                },
-                              )
-                            else
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...getOpenCampagnes(),
-                                ],
-                              ),
-                            SizedBox(
-                              height: 20,
-                              width: 20,
-                            ),
-                            HorizontalLine(),
-                            SizedBox(
-                              height: 20,
-                              width: 20,
-                            ),
-                            AddableColumnHeader(
-                              title: S.of(context).chooseACharacter,
-                              subtitle: S.of(context).joinAsPlayer,
-                              subsubtitle: S
-                                  .of(context)
-                                  .youOwnXCharacters(characters?.length ?? 0),
-                              actionLabel: (characters ?? []).isEmpty
-                                  ? null
-                                  : S.of(context).joinCampagneAction,
-                              onPressedHandler: () async {
-                                await _joinCampagne();
-                              },
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            if ((characters ?? []).isEmpty)
-                              EmptyListCallToAction(
-                                key: SelectGameModeScreen.noCharactersCtaKey,
-                                text: S.of(context).noCharactersYetHint,
-                                actionLabel: S.of(context).joinCampagneAction,
-                                onPressed: () async {
-                                  await _joinCampagne();
-                                },
-                              )
-                            else
-                              Wrap(
-                                runSpacing: 10,
-                                spacing: 10,
-                                children: [
-                                  ...getCharacters(),
-                                ],
-                              ),
+                            ..._buildRoleLists(context),
                             SizedBox(
                               height: 20,
                               width: 20,
@@ -557,6 +494,83 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         ),
       ),
     );
+  }
+
+  /// "Als Spielleitung" and "Als Spieler", in the order of
+  /// [charactersFirstOnHome].
+  List<Widget> _buildRoleLists(BuildContext context) {
+    final campagneList = <Widget>[
+      AddableColumnHeader(
+        key: SelectGameModeScreen.campagnesSectionKey,
+        title: S.of(context).chooseACampagne,
+        subtitle: S.of(context).startAsDm,
+        subsubtitle: S.of(context).youOwnXCampaigns(campagnes?.length ?? 0),
+        actionLabel: (campagnes ?? []).isEmpty
+            ? null
+            : S.of(context).newCampaign,
+        onPressedHandler: () async {
+          await createNewCampagne();
+        },
+      ),
+      SizedBox(height: 20),
+      if ((campagnes ?? []).isEmpty)
+        EmptyListCallToAction(
+          key: SelectGameModeScreen.noCampagnesCtaKey,
+          text: S.of(context).noCampagnesYetHint,
+          actionLabel: S.of(context).createCampagneAction,
+          onPressed: () async {
+            await createNewCampagne();
+          },
+        )
+      else
+        Wrap(
+          runSpacing: 10,
+          spacing: 10,
+          children: [...getOpenCampagnes()],
+        ),
+    ];
+    final characterList = <Widget>[
+      AddableColumnHeader(
+        key: SelectGameModeScreen.charactersSectionKey,
+        title: S.of(context).chooseACharacter,
+        subtitle: S.of(context).joinAsPlayer,
+        subsubtitle: S.of(context).youOwnXCharacters(characters?.length ?? 0),
+        actionLabel: (characters ?? []).isEmpty
+            ? null
+            : S.of(context).joinCampagneAction,
+        onPressedHandler: () async {
+          await _joinCampagne();
+        },
+      ),
+      SizedBox(height: 20),
+      if ((characters ?? []).isEmpty)
+        EmptyListCallToAction(
+          key: SelectGameModeScreen.noCharactersCtaKey,
+          text: S.of(context).noCharactersYetHint,
+          actionLabel: S.of(context).joinCampagneAction,
+          onPressed: () async {
+            await _joinCampagne();
+          },
+        )
+      else
+        Wrap(
+          runSpacing: 10,
+          spacing: 10,
+          children: [...getCharacters()],
+        ),
+    ];
+    final charactersFirst = SelectGameModeScreen.charactersFirstOnHome(
+      isPhone: MediaQuery.sizeOf(context).shortestSide < 600,
+      campagneCount: campagnes?.length ?? 0,
+      characterCount: characters?.length ?? 0,
+    );
+    return [
+      ...(charactersFirst ? characterList : campagneList),
+      SizedBox(height: 20, width: 20),
+      HorizontalLine(),
+      SizedBox(height: 20, width: 20),
+      ...(charactersFirst ? campagneList : characterList),
+    ];
   }
 
   /// SL-3 / SP-1: what the app is, and the two ways in.
