@@ -231,20 +231,24 @@ class _RecipeCardDetailsModalContentState
                                                   .darkRed,
                                               size: 18,
                                             ),
-                                      Text(
-                                        widget.recipe.requiredItems
-                                            .map((i) => "${i.name} (1x)")
-                                            .join(", "),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                              color: CustomThemeProvider.of(
-                                                      context)
-                                                  .theme
-                                                  .darkTextColor,
-                                              fontSize: 16,
-                                            ),
+                                      // Long item names wrap instead of
+                                      // overflowing the column.
+                                      Flexible(
+                                        child: Text(
+                                          widget.recipe.requiredItems
+                                              .map((i) => "${i.name} (1x)")
+                                              .join(", "),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                color: CustomThemeProvider.of(
+                                                        context)
+                                                    .theme
+                                                    .darkTextColor,
+                                                fontSize: 16,
+                                              ),
+                                        ),
                                       ),
                                     ],
                                   ),
