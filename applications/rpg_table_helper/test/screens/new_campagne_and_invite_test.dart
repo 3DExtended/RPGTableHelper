@@ -15,7 +15,7 @@ final _create = find.byKey(AskForNewCampagneNameModalContent.submitButtonKey);
 
 void main() {
   group('Neue Kampagne', () {
-    String? result;
+    NewCampagneChoice? result;
     var closed = false;
 
     Future<void> open(WidgetTester tester) async {
@@ -59,7 +59,21 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(closed, isTrue);
-      expect(result, 'Die Klingen von Varn');
+      expect((result as NamedNewCampagne).name, 'Die Klingen von Varn');
+    });
+
+    testWidgets('offers the demo campaign instead of a name', (tester) async {
+      await open(tester);
+
+      expect(find.text('Erst mal ausprobieren?'), findsOneWidget);
+      final demo = find.byKey(AskForNewCampagneNameModalContent.demoButtonKey);
+      await tester.ensureVisible(demo);
+      await tester.pumpAndSettle();
+      await tester.tap(demo);
+      await tester.pumpAndSettle();
+
+      expect(closed, isTrue);
+      expect(result, isA<DemoCampagne>());
     });
 
     testWidgets('Abbrechen returns nothing', (tester) async {

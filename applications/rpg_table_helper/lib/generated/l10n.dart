@@ -7152,6 +7152,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Want to try it first?`
+  String get newCampagneDemoTitle {
+    return Intl.message(
+      'Want to try it first?',
+      name: 'newCampagneDemoTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The demo campaign comes with a finished character sheet, three ready-to-play characters and a note with ideas to try. You can change everything in it.`
+  String get newCampagneDemoText {
+    return Intl.message(
+      'The demo campaign comes with a finished character sheet, three ready-to-play characters and a note with ideas to try. You can change everything in it.',
+      name: 'newCampagneDemoText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create demo campaign`
+  String get newCampagneDemoButton {
+    return Intl.message(
+      'Create demo campaign',
+      name: 'newCampagneDemoButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Demo campaign`
+  String get demoCampaignName {
+    return Intl.message(
+      'Demo campaign',
+      name: 'demoCampaignName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to the demo`
+  String get demoNoteTitle {
+    return Intl.message(
+      'Welcome to the demo',
+      name: 'demoNoteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This campaign is here to try things out. Change and experiment as much as you like.\n\n**Prepared characters:** Brom, Lyra and Pip are waiting in campaign management. The eye shows their sheet the way players see it.\n\n**Setup:** The gear at the top right changes the look, the character sheet, the currency and the items.\n\n**Notes:** This is your first note. Add one of your own next to it, for example for your first game night.\n\n**Invite players:** "Invite players" gives you a code. Whoever joins with it can take over one of the prepared characters. To test it, a second device with a second account is enough.`
+  String get demoNoteText {
+    return Intl.message(
+      'This campaign is here to try things out. Change and experiment as much as you like.\n\n**Prepared characters:** Brom, Lyra and Pip are waiting in campaign management. The eye shows their sheet the way players see it.\n\n**Setup:** The gear at the top right changes the look, the character sheet, the currency and the items.\n\n**Notes:** This is your first note. Add one of your own next to it, for example for your first game night.\n\n**Invite players:** "Invite players" gives you a code. Whoever joins with it can take over one of the prepared characters. To test it, a second device with a second account is enough.',
+      name: 'demoNoteText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View sheet`
+  String get preparedCharacterPreview {
+    return Intl.message(
+      'View sheet',
+      name: 'preparedCharacterPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is how players see {name}. Nothing is saved here.`
+  String preparedCharacterPreviewHint(String name) {
+    return Intl.message(
+      'This is how players see $name. Nothing is saved here.',
+      name: 'preparedCharacterPreviewHint',
+      desc: '',
+      args: [name],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

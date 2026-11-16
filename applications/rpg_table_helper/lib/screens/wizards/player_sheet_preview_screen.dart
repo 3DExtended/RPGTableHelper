@@ -13,22 +13,32 @@ import 'package:quest_keeper/services/custom_theme_provider.dart';
 /// with a sample character, on a phone or a tablet. Lets the game master
 /// check the setup before anyone has joined. Nothing here is saved.
 class PlayerSheetPreviewScreen extends StatefulWidget {
-  const PlayerSheetPreviewScreen({super.key, required this.rpgConfig});
+  const PlayerSheetPreviewScreen({
+    super.key,
+    required this.rpgConfig,
+    this.character,
+  });
 
   /// The configuration to show; the sheet itself reads the campaign
   /// configuration from the provider, so persist edits before opening.
   final RpgConfigurationModel rpgConfig;
 
+  /// The character to show (a prepared one); a sample character when null.
+  final RpgCharacterConfiguration? character;
+
   /// A typical phone (iPhone 17) and a tablet in landscape (iPad Air 11").
   static const phoneSize = Size(402, 874);
   static const tabletSize = Size(1180, 820);
 
-  static Future<void> open(RpgConfigurationModel rpgConfig) =>
-      navigatorKey.currentState!.push(
-        MaterialPageRoute(
-          builder: (_) => PlayerSheetPreviewScreen(rpgConfig: rpgConfig),
-        ),
-      );
+  static Future<void> open(
+    RpgConfigurationModel rpgConfig, {
+    RpgCharacterConfiguration? character,
+  }) => navigatorKey.currentState!.push(
+    MaterialPageRoute(
+      builder: (_) =>
+          PlayerSheetPreviewScreen(rpgConfig: rpgConfig, character: character),
+    ),
+  );
 
   /// Types without a generic sample value (nothing to show in a preview).
   static const _typesWithoutSample = {
@@ -97,10 +107,11 @@ class _PlayerSheetPreviewScreenState extends State<PlayerSheetPreviewScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    sample ??= PlayerSheetPreviewScreen.sampleCharacter(
-      widget.rpgConfig,
-      S.of(context).playerPreviewSampleCharacterName,
-    );
+    sample ??= widget.character ??
+        PlayerSheetPreviewScreen.sampleCharacter(
+          widget.rpgConfig,
+          S.of(context).playerPreviewSampleCharacterName,
+        );
   }
 
   @override
@@ -168,7 +179,11 @@ class _PlayerSheetPreviewScreenState extends State<PlayerSheetPreviewScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                s.playerPreviewHint,
+                widget.character == null
+                    ? s.playerPreviewHint
+                    : s.preparedCharacterPreviewHint(
+                        widget.character!.characterName,
+                      ),
                 textAlign: TextAlign.center,
                 style: textTheme.bodySmall!.copyWith(
                   color: theme.darkTextColor.withValues(alpha: 0.8),

@@ -17,6 +17,7 @@ Widget appTestShell({
   Map<Type, dynamic Function()>? mockOverrides,
   List<dynamic> providerOverrides = const [],
   Locale locale = const Locale('de'),
+  RouteFactory? onGenerateRoute,
 }) {
   return ProviderScope(
     overrides: providerOverrides.cast(),
@@ -35,6 +36,7 @@ Widget appTestShell({
             locale: locale,
             supportedLocales: AppLocalizations.supportedLocales,
             home: home,
+            onGenerateRoute: onGenerateRoute,
           ),
         ),
       ),

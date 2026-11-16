@@ -9,6 +9,7 @@ import 'package:quest_keeper/helpers/character_stats/show_character_stats_form.d
 import 'package:quest_keeper/helpers/modals/show_confirm_delete_dialog.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/prepared_character.dart';
+import 'package:quest_keeper/screens/wizards/player_sheet_preview_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 /// "Vorbereitete Charaktere" on the game master's campaign page: characters
@@ -25,6 +26,9 @@ class PreparedCharactersSection extends ConsumerWidget {
 
   static ValueKey<String> deleteKeyFor(String uuid) =>
       ValueKey('preparedCharacterDelete-$uuid');
+
+  static ValueKey<String> previewKeyFor(String uuid) =>
+      ValueKey('preparedCharacterPreview-$uuid');
 
   Future<void> _edit(
     BuildContext context,
@@ -172,6 +176,27 @@ class PreparedCharactersSection extends ConsumerWidget {
                                       ),
                                     ),
                                 ],
+                              ),
+                            ),
+                            Semantics(
+                              label: s.preparedCharacterPreview,
+                              button: true,
+                              child: CustomButton(
+                                key: previewKeyFor(character.uuid),
+                                isSubbutton: true,
+                                variant: CustomButtonVariant.FlatButton,
+                                icon: CustomFaIcon(
+                                  icon: FontAwesomeIcons.eye,
+                                  size: 16,
+                                  color: theme.darkColor,
+                                ),
+                                onPressed: () => PlayerSheetPreviewScreen.open(
+                                  config,
+                                  character: preparedCharacterAsCharacter(
+                                    config,
+                                    character,
+                                  ),
+                                ),
                               ),
                             ),
                             Semantics(

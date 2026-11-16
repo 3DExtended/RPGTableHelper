@@ -2671,4 +2671,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preparedCharactersTake => 'Take over';
+
+  @override
+  String get newCampagneDemoTitle => 'Want to try it first?';
+
+  @override
+  String get newCampagneDemoText =>
+      'The demo campaign comes with a finished character sheet, three ready-to-play characters and a note with ideas to try. You can change everything in it.';
+
+  @override
+  String get newCampagneDemoButton => 'Create demo campaign';
+
+  @override
+  String get demoCampaignName => 'Demo campaign';
+
+  @override
+  String get demoNoteTitle => 'Welcome to the demo';
+
+  @override
+  String get demoNoteText =>
+      'This campaign is here to try things out. Change and experiment as much as you like.\n\n**Prepared characters:** Brom, Lyra and Pip are waiting in campaign management. The eye shows their sheet the way players see it.\n\n**Setup:** The gear at the top right changes the look, the character sheet, the currency and the items.\n\n**Notes:** This is your first note. Add one of your own next to it, for example for your first game night.\n\n**Invite players:** \"Invite players\" gives you a code. Whoever joins with it can take over one of the prepared characters. To test it, a second device with a second account is enough.';
+
+  @override
+  String get preparedCharacterPreview => 'View sheet';
+
+  @override
+  String preparedCharacterPreviewHint(String name) {
+    return 'This is how players see $name. Nothing is saved here.';
+  }
 }

@@ -4657,6 +4657,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Übernehmen'**
   String get preparedCharactersTake;
+
+  /// No description provided for @newCampagneDemoTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Erst mal ausprobieren?'**
+  String get newCampagneDemoTitle;
+
+  /// No description provided for @newCampagneDemoText.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Demo-Kampagne hat einen fertigen Charakterbogen, drei spielbereite Charaktere und eine Notiz mit Ideen zum Ausprobieren. Du kannst alles darin ändern.'**
+  String get newCampagneDemoText;
+
+  /// No description provided for @newCampagneDemoButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Demo-Kampagne anlegen'**
+  String get newCampagneDemoButton;
+
+  /// No description provided for @demoCampaignName.
+  ///
+  /// In de, this message translates to:
+  /// **'Demo-Kampagne'**
+  String get demoCampaignName;
+
+  /// No description provided for @demoNoteTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Willkommen in der Demo'**
+  String get demoNoteTitle;
+
+  /// No description provided for @demoNoteText.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Kampagne ist zum Ausprobieren da. Ändere und probiere, so viel du willst.\n\n**Vorbereitete Charaktere:** In der Kampagnenverwaltung warten Brom, Lyra und Pip. Mit dem Auge siehst du ihren Bogen so, wie Spieler ihn sehen.\n\n**Einrichten:** Über das Zahnrad oben rechts änderst du Aussehen, Charakterbogen, Währung und Gegenstände.\n\n**Notizen:** Das hier ist deine erste Notiz. Leg daneben eine eigene an, etwa für den ersten Spielabend.\n\n**Spieler einladen:** Mit „Spieler einladen“ bekommst du einen Code. Wer damit beitritt, kann einen der vorbereiteten Charaktere übernehmen. Zum Testen reicht ein zweites Gerät mit einem zweiten Konto.'**
+  String get demoNoteText;
+
+  /// No description provided for @preparedCharacterPreview.
+  ///
+  /// In de, this message translates to:
+  /// **'Bogen ansehen'**
+  String get preparedCharacterPreview;
+
+  /// No description provided for @preparedCharacterPreviewHint.
+  ///
+  /// In de, this message translates to:
+  /// **'So sieht {name} für Spieler aus. Hier wird nichts gespeichert.'**
+  String preparedCharacterPreviewHint(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -19,6 +19,7 @@ import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/prepared_characters_section.dart';
+import 'package:quest_keeper/screens/wizards/player_sheet_preview_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
@@ -152,6 +153,15 @@ void main() {
           .characterName,
       'Mira',
     );
+  });
+
+  test('its sheet shows its values and nothing else', () {
+    final character = preparedCharacterAsCharacter(srd, thorin());
+    expect(character.characterName, 'Thorin');
+    expect(character.characterStats.map((s) => s.statUuid),
+        unorderedEquals([summary.statUuid, 'origin']));
+    expect(character.companionCharacters, isEmpty);
+    expect(character.inventory, isEmpty);
   });
 
   Widget harness({
@@ -336,6 +346,22 @@ void main() {
     prepared =
         widgetRef.read(rpgConfigurationProvider).value!.preparedCharacters!;
     expect(prepared.single.characterName, 'Ayla Sturm');
+
+    // "Bogen ansehen": the sheet the way players see it.
+    await tapLast(tester,
+        find.byKey(PreparedCharactersSection.previewKeyFor(prepared.single.uuid)));
+    expect(find.byType(PlayerSheetPreviewScreen), findsOneWidget);
+    expect(find.text(S.current.preparedCharacterPreviewHint('Ayla Sturm')),
+        findsOneWidget);
+    expect(
+        tester
+            .widget<PlayerSheetPreviewScreen>(
+                find.byType(PlayerSheetPreviewScreen))
+            .character!
+            .characterName,
+        'Ayla Sturm');
+    navigatorKey.currentState!.pop();
+    await tester.pumpAndSettle();
 
     await tapLast(tester,
         find.byKey(PreparedCharactersSection.deleteKeyFor(prepared.single.uuid)));

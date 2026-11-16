@@ -1179,5 +1179,20 @@
   "preparedCharactersOfferButton": "Choose a character",
   "preparedCharactersPickerTitle": "Take over a prepared character",
   "preparedCharactersPickerHint": "The name and values go into your character. You can change everything on the character sheet afterwards.",
-  "preparedCharactersTake": "Take over"
+  "preparedCharactersTake": "Take over",
+  "newCampagneDemoTitle": "Want to try it first?",
+  "newCampagneDemoText": "The demo campaign comes with a finished character sheet, three ready-to-play characters and a note with ideas to try. You can change everything in it.",
+  "newCampagneDemoButton": "Create demo campaign",
+  "demoCampaignName": "Demo campaign",
+  "demoNoteTitle": "Welcome to the demo",
+  "demoNoteText": "This campaign is here to try things out. Change and experiment as much as you like.\n\n**Prepared characters:** Brom, Lyra and Pip are waiting in campaign management. The eye shows their sheet the way players see it.\n\n**Setup:** The gear at the top right changes the look, the character sheet, the currency and the items.\n\n**Notes:** This is your first note. Add one of your own next to it, for example for your first game night.\n\n**Invite players:** \"Invite players\" gives you a code. Whoever joins with it can take over one of the prepared characters. To test it, a second device with a second account is enough.",
+  "preparedCharacterPreview": "View sheet",
+  "preparedCharacterPreviewHint": "This is how players see {name}. Nothing is saved here.",
+  "@preparedCharacterPreviewHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

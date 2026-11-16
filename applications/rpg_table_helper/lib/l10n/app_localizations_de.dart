@@ -2692,4 +2692,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get preparedCharactersTake => 'Übernehmen';
+
+  @override
+  String get newCampagneDemoTitle => 'Erst mal ausprobieren?';
+
+  @override
+  String get newCampagneDemoText =>
+      'Die Demo-Kampagne hat einen fertigen Charakterbogen, drei spielbereite Charaktere und eine Notiz mit Ideen zum Ausprobieren. Du kannst alles darin ändern.';
+
+  @override
+  String get newCampagneDemoButton => 'Demo-Kampagne anlegen';
+
+  @override
+  String get demoCampaignName => 'Demo-Kampagne';
+
+  @override
+  String get demoNoteTitle => 'Willkommen in der Demo';
+
+  @override
+  String get demoNoteText =>
+      'Diese Kampagne ist zum Ausprobieren da. Ändere und probiere, so viel du willst.\n\n**Vorbereitete Charaktere:** In der Kampagnenverwaltung warten Brom, Lyra und Pip. Mit dem Auge siehst du ihren Bogen so, wie Spieler ihn sehen.\n\n**Einrichten:** Über das Zahnrad oben rechts änderst du Aussehen, Charakterbogen, Währung und Gegenstände.\n\n**Notizen:** Das hier ist deine erste Notiz. Leg daneben eine eigene an, etwa für den ersten Spielabend.\n\n**Spieler einladen:** Mit „Spieler einladen“ bekommst du einen Code. Wer damit beitritt, kann einen der vorbereiteten Charaktere übernehmen. Zum Testen reicht ein zweites Gerät mit einem zweiten Konto.';
+
+  @override
+  String get preparedCharacterPreview => 'Bogen ansehen';
+
+  @override
+  String preparedCharacterPreviewHint(String name) {
+    return 'So sieht $name für Spieler aus. Hier wird nichts gespeichert.';
+  }
 }

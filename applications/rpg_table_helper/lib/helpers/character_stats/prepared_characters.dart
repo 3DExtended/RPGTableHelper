@@ -124,6 +124,25 @@ String preparedCharacterSummary(
   ].join(' · ');
 }
 
+/// [prepared] as a character of [config], to show its sheet the way the
+/// player who takes it over sees it: its values and nothing else, so the
+/// fields it leaves open read "Noch leer" there too.
+RpgCharacterConfiguration preparedCharacterAsCharacter(
+  RpgConfigurationModel config,
+  PreparedCharacter prepared,
+) => takePreparedCharacter(
+  RpgCharacterConfiguration.getBaseConfiguration(config).copyWith(
+    characterStats: [],
+    companionCharacters: [],
+    transformationComponents: [],
+    alternateForms: [],
+    alternateForm: null,
+    isAlternateFormActive: null,
+    inventory: [],
+  ),
+  prepared,
+);
+
 /// [own] taking over [prepared]: its name and sheet values. Values of the
 /// player's own character the prepared one does not have stay.
 RpgCharacterConfiguration takePreparedCharacter(

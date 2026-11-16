@@ -22,6 +22,7 @@ import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/current_fight_provider.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
+import 'package:quest_keeper/helpers/demo_campaign.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_new_campagne_name.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
@@ -41,6 +42,7 @@ import 'package:quest_keeper/services/config_sync/config_sync_session_controller
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/join_requests/pending_join_request_store.dart';
+import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/join_requests/join_request_notification_controller.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/session/connected_players_mapper.dart';
@@ -51,6 +53,7 @@ import 'package:quest_keeper/services/session/session_presence_keeper.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
+import 'package:quest_keeper/services/systemclock_service.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
@@ -1400,18 +1403,26 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   Future createNewCampagne() async {
     var service =
         DependencyProvider.of(context).getService<IRpgEntityService>();
-    var result = await askForNewCampagneName(context);
-    if (result == null || !mounted) return;
+    var choice = await askForNewCampagneName(context);
+    if (choice == null || !mounted) return;
+    final s = S.of(context);
+    final isDemo = choice is DemoCampagne;
+    final name = switch (choice) {
+      NamedNewCampagne(:final name) => name,
+      DemoCampagne() => s.demoCampaignName,
+    };
 
     setState(() {
       showLoadingSpinner = true;
     });
     var createResponse = await service.createNewCampagne(
-      campagneName: result,
-      // Fantasy 5E (SRD) until the DM picks a template in the assistant.
-      baseConfig: RpgConfigurationTemplates.build(
-        RpgConfigurationTemplates.defaultId,
-      ).copyWith(rpgName: result),
+      campagneName: name,
+      baseConfig: isDemo
+          ? demoCampaignConfig(name)
+          // Fantasy 5E (SRD) until the DM picks a template in the assistant.
+          : RpgConfigurationTemplates.build(
+              RpgConfigurationTemplates.defaultId,
+            ).copyWith(rpgName: name),
     );
 
     if (!mounted) {
@@ -1447,11 +1458,26 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
     campagnes = campagnesResponse.result ?? [];
 
+    // The demo is set up already; its welcome note is a bonus, so the demo
+    // opens without it when the note could not be created.
+    if (isDemo) {
+      final dependencies = DependencyProvider.of(context);
+      await createDemoWelcomeNote(
+        service: dependencies.getService<INoteDocumentService>(),
+        campagneId: createResponse.result!,
+        groupName: s.defaultGroupNameForDocuments,
+        title: s.demoNoteTitle,
+        markdown: s.demoNoteText,
+        now: dependencies.getService<ISystemClockService>().now(),
+      );
+      if (!mounted) return;
+    }
+
     // SL-4: a new campagne goes straight into the setup assistant.
     await onCampagneSelected(
         campagnes!
             .singleWhere((e) => e.id!.value! == createResponse.result!.value!),
-        openSetupWizard: true);
+        openSetupWizard: !isDemo);
   }
 }
 
