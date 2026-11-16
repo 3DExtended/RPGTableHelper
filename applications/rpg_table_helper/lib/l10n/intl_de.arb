@@ -455,7 +455,7 @@
   "removeImageBtnLabel": "Bild entfernen",
   "uploadImageMenuLabel": "Bild hochladen",
   "insertParagraphMenuLabel": "Absatz hier einfügen",
-  "connectionLostReconnecting": "Keine Verbindung – verbinde neu\u00a0…",
+  "connectionLostReconnecting": "Verbindung unterbrochen – verbinde neu\u00a0…",
   "appName": "QuestKeeper",
   "welcomeTagline": "Dein Begleiter für Pen-&-Paper-Runden am Tisch.",
   "welcomeDescription": "Die Spielleitung verwaltet die Kampagne. Die Spieler haben ihren Charakterbogen, ihre Notizen und die Live-Werte auf dem Handy.",

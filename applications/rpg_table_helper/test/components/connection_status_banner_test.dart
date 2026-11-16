@@ -33,7 +33,7 @@ void main() {
   ) async {
     final status = ValueNotifier(EventsConnectionStatus.connected);
     await pumpBanner(tester, status);
-    final hint = find.text('Keine Verbindung – verbinde neu\u00a0…');
+    final hint = find.text('Verbindung unterbrochen – verbinde neu\u00a0…');
 
     expect(hint, findsNothing);
 
@@ -76,7 +76,7 @@ void main() {
     );
 
     await tester.tap(
-      find.text('Keine Verbindung – verbinde neu\u00a0…'),
+      find.text('Verbindung unterbrochen – verbinde neu\u00a0…'),
       warnIfMissed: false,
     );
     expect(taps, 1);

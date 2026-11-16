@@ -411,7 +411,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "configurePropertiesForCharacterNameSuffix": m8,
     "confirmDeleteBtnLabel": MessageLookupByLibrary.simpleMessage("Delete"),
     "connectionLostReconnecting": MessageLookupByLibrary.simpleMessage(
-      "No connection – reconnecting…",
+      "Connection lost – reconnecting…",
     ),
     "copiedConfirmation": MessageLookupByLibrary.simpleMessage("Copied"),
     "copyCodeAction": MessageLookupByLibrary.simpleMessage("Copy code"),

@@ -2261,7 +2261,7 @@ abstract class AppLocalizations {
   /// No description provided for @connectionLostReconnecting.
   ///
   /// In de, this message translates to:
-  /// **'Keine Verbindung – verbinde neu …'**
+  /// **'Verbindung unterbrochen – verbinde neu …'**
   String get connectionLostReconnecting;
 
   /// No description provided for @appName.

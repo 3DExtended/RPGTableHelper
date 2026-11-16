@@ -3266,10 +3266,10 @@ class S {
     );
   }
 
-  /// `No connection – reconnecting…`
+  /// `Connection lost – reconnecting…`
   String get connectionLostReconnecting {
     return Intl.message(
-      'No connection – reconnecting…',
+      'Connection lost – reconnecting…',
       name: 'connectionLostReconnecting',
       desc: '',
       args: [],

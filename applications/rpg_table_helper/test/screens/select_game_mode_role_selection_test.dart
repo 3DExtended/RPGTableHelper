@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
+import 'package:quest_keeper/helpers/modals/ask_for_new_campagne_name.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/join_requests/pending_join_request_store.dart';
+import 'package:quest_keeper/services/onboarding_intent_store.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../fakes/fake_join_rpg_entity_service.dart';
 import '../fakes/modal_test_host.dart';
@@ -249,4 +252,49 @@ void main() {
       await unmount(tester);
     },
   );
+
+  group('the choice from the welcome screen', () {
+    tearDown(() => SharedPreferences.setMockInitialValues({}));
+
+    testWidgets('"join" opens the join dialog for a new user, once', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        onboardingIntentPrefsKey: OnboardingIntent.join.name,
+      });
+      await pumpScreen(tester);
+
+      expect(find.byType(AskForCampagneJoinCodeModalContent), findsOneWidget);
+      expect(await readOnboardingIntent(), isNull);
+
+      await unmount(tester);
+    });
+
+    testWidgets('"lead" opens the new campagne dialog for a new user', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        onboardingIntentPrefsKey: OnboardingIntent.lead.name,
+      });
+      await pumpScreen(tester);
+
+      expect(find.byType(AskForNewCampagneNameModalContent), findsOneWidget);
+
+      await unmount(tester);
+    });
+
+    testWidgets('someone who already plays sees the list, not a dialog', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        onboardingIntentPrefsKey: OnboardingIntent.join.name,
+      });
+      await pumpScreen(tester, characters: [_kardan]);
+
+      expect(find.byType(AskForCampagneJoinCodeModalContent), findsNothing);
+      expect(await readOnboardingIntent(), isNull);
+
+      await unmount(tester);
+    });
+  });
 }

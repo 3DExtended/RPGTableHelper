@@ -1190,7 +1190,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get insertParagraphMenuLabel => 'Absatz hier einfügen';
 
   @override
-  String get connectionLostReconnecting => 'Keine Verbindung – verbinde neu …';
+  String get connectionLostReconnecting =>
+      'Verbindung unterbrochen – verbinde neu …';
 
   @override
   String get appName => 'QuestKeeper';

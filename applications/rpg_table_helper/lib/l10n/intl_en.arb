@@ -415,7 +415,7 @@
   "removeImageBtnLabel": "Remove image",
   "uploadImageMenuLabel": "Upload image",
   "insertParagraphMenuLabel": "Insert paragraph here",
-  "connectionLostReconnecting": "No connection – reconnecting…",
+  "connectionLostReconnecting": "Connection lost – reconnecting…",
   "appName": "QuestKeeper",
   "welcomeTagline": "Your companion for pen & paper sessions at the table.",
   "welcomeDescription": "The game master runs the campaign. Players keep their character sheet, their notes and the live stats on their phone.",

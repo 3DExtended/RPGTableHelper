@@ -1180,7 +1180,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insertParagraphMenuLabel => 'Insert paragraph here';
 
   @override
-  String get connectionLostReconnecting => 'No connection – reconnecting…';
+  String get connectionLostReconnecting => 'Connection lost – reconnecting…';
 
   @override
   String get appName => 'QuestKeeper';

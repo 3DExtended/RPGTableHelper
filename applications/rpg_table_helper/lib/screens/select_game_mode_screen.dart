@@ -44,6 +44,8 @@ import 'package:quest_keeper/services/join_requests/join_request_notification_co
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/session/connected_players_mapper.dart';
 import 'package:quest_keeper/services/session/session_entry_coordinator.dart';
+import 'package:quest_keeper/services/onboarding_intent_store.dart';
+import 'package:quest_keeper/services/session/dm_roster_refresh.dart';
 import 'package:quest_keeper/services/session/session_presence_keeper.dart';
 import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
@@ -89,6 +91,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       await loadCampagnesAndPlayersFromServer();
       if (!mounted) return;
       await _startJoinRequestNotifications();
+      if (!mounted) return;
+      await _openPathFromOnboardingIntent();
     });
 
     // auth-04: every successful auth path (login, register, Apple/Google,
@@ -282,6 +286,25 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       return;
     }
     getIt.get<ISessionRefreshCoordinator>().stopMonitoring();
+  }
+
+  /// SL-1: the welcome screen asked "lead or join?" before sign-in. Someone
+  /// who has no campagne and no character yet lands right in the matching
+  /// dialog. The choice is used once.
+  Future<void> _openPathFromOnboardingIntent() async {
+    final intent = await readOnboardingIntent();
+    if (intent == null || !mounted) return;
+    await clearOnboardingIntent();
+    if (!mounted) return;
+    final hasNothingYet =
+        (campagnes ?? const []).isEmpty && (characters ?? const []).isEmpty;
+    if (!hasNothingYet) return;
+    switch (intent) {
+      case OnboardingIntent.lead:
+        await createNewCampagne();
+      case OnboardingIntent.join:
+        await _joinCampagne();
+    }
   }
 
   Future loadCampagnesAndPlayersFromServer() async {
@@ -935,19 +958,50 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   SessionPresenceKeeper _buildSessionPresenceKeeper(
     IRpgEntityService rpgService,
     CampagneIdentifier campagneId,
-    ConfigSyncSessionController configSyncSessionController,
-  ) {
+    ConfigSyncSessionController configSyncSessionController, {
+    Future<void> Function(List<String> onlineUserIds)? onPresenceSnapshot,
+  }) {
     final serverMethodsService =
         DependencyProvider.of(context).getService<IServerMethodsService>();
     return SessionPresenceKeeper(
       eventsClient: DependencyProvider.of(context).getService<EventsClient>(),
       rpgEntityService: rpgService,
       campagneId: campagneId,
+      onPresenceSnapshot: onPresenceSnapshot,
       onReentered: () async {
         await configSyncSessionController.catchUpAfterReconnect();
         await serverMethodsService.catchUpOnFight();
       },
     )..start();
+  }
+
+  /// While the stream was down the DM missed character and presence
+  /// notifies, so HP values and online states would stay stale. Loads the
+  /// roster again, the same way entering the table does.
+  Future<void> _refreshDmRosterAfterReconnect(
+    IRpgEntityService rpgService,
+    CampagneIdentifier campagneId,
+    String? dmUserId,
+    List<String> onlineUserIds,
+  ) async {
+    final roster = await refreshDmRoster(
+      rpgEntityService: rpgService,
+      campagneId: campagneId,
+      campagneConfig: ref.read(rpgConfigurationProvider).value,
+      onlineUserIds: onlineUserIds,
+      dmUserId: dmUserId,
+    );
+    if (roster == null || !mounted) return;
+    final details = ref.read(connectionDetailsProvider).value;
+    // The DM may have left the table while the request was running.
+    if (details == null ||
+        !details.isDm ||
+        details.campagneId != campagneId.value) {
+      return;
+    }
+    ref
+        .read(connectionDetailsProvider.notifier)
+        .updateConfiguration(details.copyWith(connectedPlayers: roster));
   }
 
   Future onCampagneSelected(Campagne campagne,
@@ -1068,7 +1122,12 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     var sessionCommandController = _buildSessionCommandNotificationController();
     sessionCommandController.start();
     var sessionPresenceKeeper = _buildSessionPresenceKeeper(
-        rpgService, campagne.id!, configSyncSessionController);
+      rpgService,
+      campagne.id!,
+      configSyncSessionController,
+      onPresenceSnapshot: (onlineUserIds) => _refreshDmRosterAfterReconnect(
+          rpgService, campagne.id!, dmUserId, onlineUserIds),
+    );
 
     if (!mounted || !context.mounted) return;
 
