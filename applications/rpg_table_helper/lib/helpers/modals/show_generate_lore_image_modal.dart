@@ -92,16 +92,14 @@ class _ShowGenerateLoreImageModalModalContentState
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomMarkdownBody(
-                text: "Beschreibe das Bild, das du generieren möchtest. "
-                    "Die Beschreibung sollte so detailliert wie möglich sein,"
-                    "damit die KI ein passendes Bild generieren kann."),
+                text: S.of(context).generateImageDescriptionHint),
             SizedBox(
               height: 10,
             ),
             CustomTextField(
               keyboardType: TextInputType.multiline,
-              labelText: S.of(context).documentTitleLabel,
-              placeholderText: "z.B. 'Ein mystischer Wald mit Elfen'",
+              labelText: S.of(context).generateImagePromptLabel,
+              placeholderText: S.of(context).generateImagePromptExample,
               textEditingController: imageDescriptionController,
             ),
             SizedBox(
@@ -205,7 +203,7 @@ class _ShowGenerateLoreImageModalModalContentState
                             isLoading = false;
                           });
                         },
-                  label: "Neues Bild",
+                  label: S.of(context).newImageBtnLabel,
                   variant: CustomButtonVariant.AccentButton,
                   icon: CustomFaIcon(icon: FontAwesomeIcons.arrowRotateLeft),
                 ),

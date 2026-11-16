@@ -408,7 +408,7 @@ class _CreateNewCharacterTransformationWizardModalContentState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Konfiguration für ${asdf.statName}", // TODO localize
+              S.of(context).transformationStatSettingsFor(asdf.statName),
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: CustomThemeProvider.of(context).theme.darkTextColor,
                     fontSize: 24,

@@ -346,7 +346,7 @@ class _RpgConfigurationWizardStep7CraftingRecipesState
   }
 
   String getItemCategoryPathName(List<ItemCategory>? path) {
-    if (path == null) return "N/A";
+    if (path == null) return "–";
 
     return path.map((c) => c.name).join(" > ");
   }

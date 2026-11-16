@@ -9,6 +9,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
@@ -40,8 +41,8 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
       return true;
     }
 
-    if (playerRolls.any((t) => t.$3.text.isEmpty)) return true;
-    if (playerRolls.any((t) => int.tryParse(t.$3.text) == null)) return true;
+    // Rolls with a modifier can be negative.
+    if (playerRolls.any((t) => parseSignedInt(t.$3.text) == null)) return true;
 
     return false;
   }
@@ -202,7 +203,12 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
                                     child: CustomTextField(
                                       labelText: S.of(context).diceRoll,
                                       textEditingController: playerRollPair.$3,
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: signedIntKeyboardType,
+                                      errorText: numberFieldError(
+                                        playerRollPair.$3.text,
+                                        parseSignedInt,
+                                        S.of(context).invalidWholeNumberShort,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(
@@ -267,7 +273,7 @@ class _DmScreenGrantItemsState extends ConsumerState<DmScreenGrantItems> {
     for (var playerTuple in playerRolls) {
       var playerId = playerTuple.$1;
       var playerName = playerTuple.$2;
-      var playerRoll = int.parse(playerTuple.$3.text);
+      var playerRoll = parseSignedInt(playerTuple.$3.text)!;
 
       List<RpgCharacterOwnedItemPair> itemsGrantedForPlayer = [];
 

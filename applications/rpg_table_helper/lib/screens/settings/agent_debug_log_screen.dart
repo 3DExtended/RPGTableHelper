@@ -7,7 +7,10 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/helpers/agent_debug_log.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
-/// In-app viewer for campaign-save diagnostic logs (TestFlight / production).
+/// In-app viewer for campaign-save diagnostic logs.
+///
+/// Developer tool: the settings only link here in debug builds, so its texts
+/// are not localized.
 class AgentDebugLogScreen extends StatefulWidget {
   static const route = '/settings/diagnostic-logs';
 

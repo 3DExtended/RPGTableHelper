@@ -104,7 +104,9 @@ class _SelectTransformationComponentsForTransformationModalContentState
                           child: Column(
                             children: [
                               Text(
-                                "Wähle die Komponenten/Verwandlungen aus, die du für die Verwandlung verwenden möchtest.", // TODO localize
+                                S
+                                    .of(context)
+                                    .selectTransformationComponentsHint,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -122,7 +124,9 @@ class _SelectTransformationComponentsForTransformationModalContentState
                                       ?.isNotEmpty !=
                                   true)
                                 Text(
-                                    "Keine Komponenten/Verwandlungen vorhanden. Bitte gehe zurück und konfiguriere die Verwandlungen in den Charakter Einstellungen", // TODO localize
+                                    S
+                                        .of(context)
+                                        .noTransformationComponentsHint,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium!
@@ -509,7 +513,7 @@ class _SelectTransformationComponentsForTransformationModalContentState
       menuOpen: null,
       useTopSafePadding: false,
       titleWidget: Text(
-        "Verwandlung auswählen", // TODO localize
+        S.of(context).selectTransformationTitle,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
             color: CustomThemeProvider.of(context).brightnessNotifier.value ==

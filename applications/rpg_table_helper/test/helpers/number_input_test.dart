@@ -63,4 +63,51 @@ void main() {
       expect(parseCharacterLevel('-1'), isNull);
     });
   });
+
+  group('parseNonNegativeInt (prices, difficulty classes)', () {
+    test('accepts 0 and more', () {
+      expect(parseNonNegativeInt('0'), 0);
+      expect(parseNonNegativeInt(' 250 '), 250);
+    });
+
+    test('rejects text, empty and negative values instead of using 0', () {
+      expect(parseNonNegativeInt('viel'), isNull);
+      expect(parseNonNegativeInt(''), isNull);
+      expect(parseNonNegativeInt('-3'), isNull);
+      expect(parseNonNegativeInt('−3'), isNull);
+    });
+  });
+
+  group('parsePositiveInt (amounts)', () {
+    test('accepts 1 and more', () {
+      expect(parsePositiveInt('1'), 1);
+      expect(parsePositiveInt('12'), 12);
+    });
+
+    test('rejects text, empty, 0 and negative values instead of using 1', () {
+      expect(parsePositiveInt('zwei'), isNull);
+      expect(parsePositiveInt(''), isNull);
+      expect(parsePositiveInt('0'), isNull);
+      expect(parsePositiveInt('-2'), isNull);
+    });
+  });
+
+  group('numberFieldError', () {
+    test('an empty field shows no error yet', () {
+      expect(numberFieldError(null, parseSignedInt, 'error'), isNull);
+      expect(numberFieldError('  ', parseSignedInt, 'error'), isNull);
+    });
+
+    test('shows the message when the parser rejects the text', () {
+      expect(numberFieldError('abc', parseSignedInt, 'error'), 'error');
+      expect(numberFieldError('-1', parseNonNegativeInt, 'error'), 'error');
+      expect(numberFieldError('0', parsePositiveInt, 'error'), 'error');
+    });
+
+    test('shows nothing when the parser accepts the text', () {
+      expect(numberFieldError('-1', parseSignedInt, 'error'), isNull);
+      expect(numberFieldError('0', parseNonNegativeInt, 'error'), isNull);
+      expect(numberFieldError('3', parsePositiveInt, 'error'), isNull);
+    });
+  });
 }

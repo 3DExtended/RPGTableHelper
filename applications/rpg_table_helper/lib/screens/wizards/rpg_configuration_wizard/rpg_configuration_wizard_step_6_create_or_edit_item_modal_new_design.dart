@@ -22,6 +22,7 @@ import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/color_extension.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
@@ -139,6 +140,7 @@ class _CreateOrEditItemModalContentState
             .map((pair) => (
                   pair.placeOfFindingId,
                   TextEditingController(text: pair.diceChallenge.toString())
+                    ..addListener(_updateStateForFormValidation)
                 ))
             .toList();
       });
@@ -349,9 +351,17 @@ class _CreateOrEditItemModalContentState
                     0,
                   ),
                   child: CustomTextField(
-                    keyboardType: TextInputType.number,
-                    labelText: "${e.value.name}:", // TODO localize
+                    // Signed keyboard: on iOS it has a return key, so the
+                    // keyboard can be closed.
+                    keyboardType: signedIntKeyboardType,
+                    // The currency name from the currency step.
+                    labelText: "${e.value.name}:",
                     textEditingController: currencyControllers[e.key],
+                    errorText: numberFieldError(
+                      currencyControllers[e.key].text,
+                      parseNonNegativeInt,
+                      S.of(context).invalidNonNegativeNumberShort,
+                    ),
                   ),
                 ),
               );
@@ -448,9 +458,14 @@ class _CreateOrEditItemModalContentState
                     SizedBox(
                       width: 75,
                       child: CustomTextField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: signedIntKeyboardType,
                         labelText: "${S.of(context).diceChallengeAbbr}:",
                         textEditingController: tuple.value.$2,
+                        // The difficulty class is required.
+                        errorText:
+                            parseNonNegativeInt(tuple.value.$2.text) == null
+                                ? S.of(context).invalidNonNegativeNumberShort
+                                : null,
                       ),
                     ),
                     Container(
@@ -492,6 +507,7 @@ class _CreateOrEditItemModalContentState
                           ? _allPlacesOfFindings[0].uuid
                           : "",
                       TextEditingController(text: "10")
+                        ..addListener(_updateStateForFormValidation)
                     ));
                   });
                 },
@@ -539,7 +555,9 @@ class _CreateOrEditItemModalContentState
       var currencyType =
           _currencyDefinition!.currencyTypes.reversed.toList()[i];
 
-      var parsedUserInput = int.tryParse(controller.text) ?? 0;
+      // An empty field means none of this currency; invalid input blocks
+      // saving (see [hasInvalidNumberInput]).
+      var parsedUserInput = parseNonNegativeInt(controller.text) ?? 0;
 
       result += parsedUserInput;
 
@@ -845,33 +863,42 @@ class _CreateOrEditItemModalContentState
             child: CustomButton(
               variant: CustomButtonVariant.AccentButton,
               label: S.of(context).save,
-              onPressed: () {
-                if (selectedItemCategoryId == null ||
-                    selectedItemCategoryId!.isEmpty) return;
+              onPressed: hasInvalidNumberInput
+                  ? null
+                  : () {
+                      if (selectedItemCategoryId == null ||
+                          selectedItemCategoryId!.isEmpty) return;
 
-                navigatorKey.currentState!.pop(RpgItem(
-                    imageUrlWithoutBasePath: _urlsOfGeneratedImages.isEmpty
-                        ? null
-                        : _urlsOfGeneratedImages[_selectedGeneratedImage!],
-                    uuid: widget.itemToEdit.uuid,
-                    name: nameController.text,
-                    categoryId: selectedItemCategoryId!,
-                    description: descriptionController.text,
-                    imageDescription: imageDescriptionController.text,
-                    patchSize: getPatchSize(),
-                    baseCurrencyPrice: getBaseCurrencyPrice(),
-                    placeOfFindings: _placesOfFinding
-                        .map((pair) => RpgItemRarity(
-                            placeOfFindingId: pair.$1!,
-                            diceChallenge: int.parse(pair.$2.text)))
-                        .toList()));
-              },
+                      navigatorKey.currentState!.pop(RpgItem(
+                          imageUrlWithoutBasePath: _urlsOfGeneratedImages.isEmpty
+                              ? null
+                              : _urlsOfGeneratedImages[_selectedGeneratedImage!],
+                          uuid: widget.itemToEdit.uuid,
+                          name: nameController.text,
+                          categoryId: selectedItemCategoryId!,
+                          description: descriptionController.text,
+                          imageDescription: imageDescriptionController.text,
+                          patchSize: getPatchSize(),
+                          baseCurrencyPrice: getBaseCurrencyPrice(),
+                          placeOfFindings: _placesOfFinding
+                              .map((pair) => RpgItemRarity(
+                                  placeOfFindingId: pair.$1!,
+                                  diceChallenge: parseNonNegativeInt(pair.$2.text)!))
+                              .toList()));
+                    },
             ),
           ),
         ),
       ],
     );
   }
+
+  /// True while a price or a difficulty class is not a whole number of 0 or
+  /// more. Saving would otherwise turn the text into 0 or crash.
+  bool get hasInvalidNumberInput =>
+      currencyControllers.any((c) =>
+          c.text.trim().isNotEmpty && parseNonNegativeInt(c.text) == null) ||
+      _placesOfFinding.any((p) => parseNonNegativeInt(p.$2.text) == null);
 
   bool get isShowPreviousGeneratedImageButtonDisabled {
     return _selectedGeneratedImage == null || _selectedGeneratedImage == 0;

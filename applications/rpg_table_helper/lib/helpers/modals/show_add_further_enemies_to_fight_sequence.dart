@@ -9,6 +9,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -53,6 +54,14 @@ class AddFurtherEnemiesToFightSequenceModalContent
 class _AddFurtherEnemiesToFightSequenceModalContentState
     extends ConsumerState<AddFurtherEnemiesToFightSequenceModalContent> {
   List<(TextEditingController, TextEditingController)> enemiesToAdd = [];
+
+  /// Rebuilds the form, so roll errors and the add button follow the input.
+  void _onRollChanged() => setState(() {});
+
+  /// True while an enemy has no initiative roll or one that is not a whole
+  /// number. Initiative can be negative.
+  bool get _hasInvalidRoll =>
+      enemiesToAdd.any((enemy) => parseSignedInt(enemy.$2.text) == null);
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +155,13 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                                     textEditingController:
                                                         en.value.$2,
                                                     keyboardType:
-                                                        TextInputType.number),
+                                                        signedIntKeyboardType,
+                                                    errorText: numberFieldError(
+                                                        en.value.$2.text,
+                                                        parseSignedInt,
+                                                        S
+                                                            .of(context)
+                                                            .invalidWholeNumberShort)),
                                               ),
                                             ],
                                           ),
@@ -200,6 +215,7 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                         text:
                                             "${S.of(context).enemy} #${numberOfEnemies + 1 + enemiesToAdd.length}"),
                                     TextEditingController()
+                                      ..addListener(_onRollChanged)
                                   ));
                                 });
                               },
@@ -223,23 +239,26 @@ class _AddFurtherEnemiesToFightSequenceModalContentState
                                 const Spacer(),
                                 CustomButton(
                                   label: S.of(context).add,
-                                  onPressed: () async {
-                                    // add enemies to the fight (on the server
-                                    // when it keeps the fight)
-                                    var response =
-                                        await DependencyProvider.of(context)
-                                            .getService<IServerMethodsService>()
-                                            .addEnemiesToFight(enemiesToAdd
-                                                .map((tu) => (
-                                                      tu.$1.text,
-                                                      int.parse(tu.$2.text)
-                                                    ))
-                                                .toList());
-                                    if (!context.mounted) return;
-                                    await response.possiblyHandleError(context);
+                                  onPressed: _hasInvalidRoll
+                                      ? null
+                                      : () async {
+                                        // add enemies to the fight (on the server
+                                        // when it keeps the fight)
+                                        var response =
+                                            await DependencyProvider.of(context)
+                                                .getService<IServerMethodsService>()
+                                                .addEnemiesToFight(enemiesToAdd
+                                                    .map((tu) => (
+                                                          tu.$1.text,
+                                                          parseSignedInt(
+                                                              tu.$2.text)!
+                                                        ))
+                                                    .toList());
+                                        if (!context.mounted) return;
+                                        await response.possiblyHandleError(context);
 
-                                    navigatorKey.currentState!.pop(null);
-                                  },
+                                        navigatorKey.currentState!.pop(null);
+                                      },
                                 ),
                                 const Spacer(),
                               ],

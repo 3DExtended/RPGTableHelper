@@ -328,7 +328,7 @@ class _RpgConfigurationWizardStep6ItemsState
   }
 
   String getItemCategoryPathName(List<ItemCategory>? path) {
-    if (path == null) return "N/A";
+    if (path == null) return "–";
 
     return path.map((c) => c.name).join(" > ");
   }
@@ -374,7 +374,7 @@ class _RpgConfigurationWizardStep6ItemsState
 
   String getValueOfItem(int baseCurrencyPrice) {
     var provider = ref.read(rpgConfigurationProvider);
-    if (!provider.hasValue) return "N/A";
+    if (!provider.hasValue) return "–";
     var currencySetting =
         provider.requireValue.currencyDefinition.currencyTypes;
 

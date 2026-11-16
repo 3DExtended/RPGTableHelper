@@ -341,19 +341,19 @@ abstract class AppLocalizations {
   /// No description provided for @propertyEditTypeOneTap.
   ///
   /// In de, this message translates to:
-  /// **'Häufig verändert (bspw. jede Session)'**
+  /// **'Häufig geändert (z. B. jede Sitzung)'**
   String get propertyEditTypeOneTap;
 
   /// No description provided for @propertyEditTypeStatic.
   ///
   /// In de, this message translates to:
-  /// **'Selten verändert (bspw. je Level-Up)'**
+  /// **'Selten geändert (z. B. beim Levelaufstieg)'**
   String get propertyEditTypeStatic;
 
   /// No description provided for @propertyEditTypeLabel.
   ///
   /// In de, this message translates to:
-  /// **'Veränderungshäufigkeit'**
+  /// **'Änderungshäufigkeit'**
   String get propertyEditTypeLabel;
 
   /// No description provided for @generatedImage.
@@ -377,49 +377,49 @@ abstract class AppLocalizations {
   /// No description provided for @integerValue.
   ///
   /// In de, this message translates to:
-  /// **'Zahlen-Wert'**
+  /// **'Zahlenwert'**
   String get integerValue;
 
   /// No description provided for @listOfIntegersWithIcons.
   ///
   /// In de, this message translates to:
-  /// **'Liste von Zahlen-Werten mit Icons'**
+  /// **'Liste von Zahlenwerten mit Icons'**
   String get listOfIntegersWithIcons;
 
   /// No description provided for @integerValueWithMaxValue.
   ///
   /// In de, this message translates to:
-  /// **'Zahlen-Wert mit maximal Wert'**
+  /// **'Zahlenwert mit Maximalwert'**
   String get integerValueWithMaxValue;
 
   /// No description provided for @listOfInterValuesWithCalculatedIntegerValues.
   ///
   /// In de, this message translates to:
-  /// **'Gruppe von Zahlen-Werten mit zusätzlicher Zahl'**
+  /// **'Gruppe von Zahlenwerten mit zusätzlicher Zahl'**
   String get listOfInterValuesWithCalculatedIntegerValues;
 
   /// No description provided for @integerValueWithCalculatedValue.
   ///
   /// In de, this message translates to:
-  /// **'Zahlen-Wert mit zusätzlicher Zahl'**
+  /// **'Zahlenwert mit zusätzlicher Zahl'**
   String get integerValueWithCalculatedValue;
 
   /// No description provided for @characterNameWithLevelAndConfigurableDetails.
   ///
   /// In de, this message translates to:
-  /// **'Charakter Basis Eigenschaften (LVL, Name und weitere optionale)'**
+  /// **'Charakter-Grundwerte (Level, Name und weitere, optionale Angaben)'**
   String get characterNameWithLevelAndConfigurableDetails;
 
   /// No description provided for @multiselectOption.
   ///
   /// In de, this message translates to:
-  /// **'Mehrfach-Auswahl'**
+  /// **'Mehrfachauswahl'**
   String get multiselectOption;
 
   /// No description provided for @companionOverview.
   ///
   /// In de, this message translates to:
-  /// **'Begleiter Übersicht'**
+  /// **'Begleiterübersicht'**
   String get companionOverview;
 
   /// No description provided for @companionSelectorIconHeadline.
@@ -467,7 +467,7 @@ abstract class AppLocalizations {
   /// No description provided for @optionsForMultiselect.
   ///
   /// In de, this message translates to:
-  /// **'Optionen für Mehrfach-Auswahl'**
+  /// **'Optionen für die Mehrfachauswahl'**
   String get optionsForMultiselect;
 
   /// No description provided for @multiselectOptionName.
@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @forIntegerValueWithName.
   ///
   /// In de, this message translates to:
-  /// **'für Zahlen-Wert'**
+  /// **'für Zahlenwert'**
   String get forIntegerValueWithName;
 
   /// No description provided for @propertyNameLabel.
@@ -647,7 +647,7 @@ abstract class AppLocalizations {
   /// No description provided for @noItemsGranted.
   ///
   /// In de, this message translates to:
-  /// **'Noch keine Items verteilt...'**
+  /// **'Noch keine Items verteilt.'**
   String get noItemsGranted;
 
   /// No description provided for @placeOfFinding.
@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// No description provided for @playerRolls.
   ///
   /// In de, this message translates to:
-  /// **'Spieler Würfe'**
+  /// **'Würfe der Spieler'**
   String get playerRolls;
 
   /// No description provided for @diceRoll.
@@ -683,7 +683,7 @@ abstract class AppLocalizations {
   /// No description provided for @itemsToBeFoundInPlaceMarkdown.
   ///
   /// In de, this message translates to:
-  /// **'## Auffindbare Items in Fundort: '**
+  /// **'## Items an diesem Fundort'**
   String get itemsToBeFoundInPlaceMarkdown;
 
   /// No description provided for @noPlaceOfFindingSelected.
@@ -695,7 +695,7 @@ abstract class AppLocalizations {
   /// No description provided for @followingItemsArePossibleAtPlaceOfFinding.
   ///
   /// In de, this message translates to:
-  /// **'Diese Items gibt es am/im Fundort:'**
+  /// **'Diese Items gibt es hier:'**
   String get followingItemsArePossibleAtPlaceOfFinding;
 
   /// No description provided for @diceChallengeAbbr.
@@ -743,7 +743,7 @@ abstract class AppLocalizations {
   /// No description provided for @createNewAccount.
   ///
   /// In de, this message translates to:
-  /// **'Neuen Account anlegen'**
+  /// **'Neues Konto anlegen'**
   String get createNewAccount;
 
   /// No description provided for @email.
@@ -761,7 +761,7 @@ abstract class AppLocalizations {
   /// No description provided for @itemDetailsForPrefix.
   ///
   /// In de, this message translates to:
-  /// **'Item Details für'**
+  /// **'Item-Details für'**
   String get itemDetailsForPrefix;
 
   /// No description provided for @itemDetailsDescriptionHeader.
@@ -809,7 +809,7 @@ abstract class AppLocalizations {
   /// No description provided for @receivedXNewItems.
   ///
   /// In de, this message translates to:
-  /// **'Du hast {amount} neue Items erhalten:'**
+  /// **'{amount, plural, one{Du hast ein neues Item erhalten:} other{Du hast {amount} neue Items erhalten:}}'**
   String receivedXNewItems(int amount);
 
   /// No description provided for @ok.
@@ -845,7 +845,7 @@ abstract class AppLocalizations {
   /// No description provided for @rollOfInititive.
   ///
   /// In de, this message translates to:
-  /// **'Reihenfolgenwurf'**
+  /// **'Initiativewurf'**
   String get rollOfInititive;
 
   /// No description provided for @addAnAdditionalEnemyBtnLabel.
@@ -869,19 +869,19 @@ abstract class AppLocalizations {
   /// No description provided for @initiativeRollForCharacterPrefix.
   ///
   /// In de, this message translates to:
-  /// **'Kampf Reihenfolge Wurf'**
+  /// **'Initiativewurf'**
   String get initiativeRollForCharacterPrefix;
 
   /// No description provided for @initiativeRollText.
   ///
   /// In de, this message translates to:
-  /// **'Ein Kampf startet: Würfel deinen Platz in der Reihenfolge!'**
+  /// **'Ein Kampf beginnt. Würfle deine Initiative!'**
   String get initiativeRollText;
 
   /// No description provided for @initiativeRollTextFieldLabel.
   ///
   /// In de, this message translates to:
-  /// **'Kampf Wurf'**
+  /// **'Dein Wurf'**
   String get initiativeRollTextFieldLabel;
 
   /// No description provided for @initiativeBonusHelperSentence.
@@ -899,7 +899,7 @@ abstract class AppLocalizations {
   /// No description provided for @fightInitiativeStepTutorial.
   ///
   /// In de, this message translates to:
-  /// **'Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.'**
+  /// **'Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler die Initiative würfeln soll, zeigt die App ihm diesen Bonus an. So muss er ihn nicht im Kopf haben, während das Wurffenster den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Sonst wähle unten einen Wert aus. Ist es eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator oder aktuell und maximal), wähle, welche davon als Bonus zählt.'**
   String get fightInitiativeStepTutorial;
 
   /// No description provided for @initiativeBonusNoneOption.
@@ -935,7 +935,7 @@ abstract class AppLocalizations {
   /// No description provided for @initiativeBonusIncompleteWarningBody.
   ///
   /// In de, this message translates to:
-  /// **'Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.'**
+  /// **'Deine Auswahl für den Initiative-Bonus ist unvollständig. Wenn du die Seite verlässt, wird sie gelöscht.'**
   String get initiativeBonusIncompleteWarningBody;
 
   /// No description provided for @initiativeBonusIncompleteStay.
@@ -965,7 +965,7 @@ abstract class AppLocalizations {
   /// No description provided for @editPageModalText.
   ///
   /// In de, this message translates to:
-  /// **'Hier kannst du sowohl den Titel als auch die Gruppierung deiner Seite verändern.'**
+  /// **'Hier änderst du den Titel und die Gruppe deiner Seite.'**
   String get editPageModalText;
 
   /// No description provided for @documentTitleLabel.
@@ -1007,7 +1007,7 @@ abstract class AppLocalizations {
   /// No description provided for @ownedIngredientCountPrefix.
   ///
   /// In de, this message translates to:
-  /// **'in Besitz:'**
+  /// **'im Besitz:'**
   String get ownedIngredientCountPrefix;
 
   /// No description provided for @amountToCraftFieldLabel.
@@ -1055,7 +1055,7 @@ abstract class AppLocalizations {
   /// No description provided for @dm.
   ///
   /// In de, this message translates to:
-  /// **'DM'**
+  /// **'Spielleitung'**
   String get dm;
 
   /// No description provided for @hourMinutesDayMonthYearFormatString.
@@ -1349,7 +1349,7 @@ abstract class AppLocalizations {
   /// No description provided for @noPlayersOnline.
   ///
   /// In de, this message translates to:
-  /// **'Aktuell keine Spieler online'**
+  /// **'Gerade ist kein Spieler online'**
   String get noPlayersOnline;
 
   /// No description provided for @currentFightOrdering.
@@ -1361,7 +1361,7 @@ abstract class AppLocalizations {
   /// No description provided for @noFIghtStarted.
   ///
   /// In de, this message translates to:
-  /// **'Aktuell kein Kampf gestartet'**
+  /// **'Gerade läuft kein Kampf'**
   String get noFIghtStarted;
 
   /// No description provided for @newFightOrdering.
@@ -1415,13 +1415,13 @@ abstract class AppLocalizations {
   /// No description provided for @transformIntoAlternateForm.
   ///
   /// In de, this message translates to:
-  /// **'Verwandeln in eine andere Form'**
+  /// **'In eine andere Form verwandeln'**
   String get transformIntoAlternateForm;
 
   /// No description provided for @addNewTransformationComponent.
   ///
   /// In de, this message translates to:
-  /// **'Füge neue Verwandlungsformen hinzu'**
+  /// **'Verwandlung hinzufügen'**
   String get addNewTransformationComponent;
 
   /// No description provided for @createNewTransformationTitle.
@@ -1445,7 +1445,7 @@ abstract class AppLocalizations {
   /// No description provided for @createTransformationHelperText.
   ///
   /// In de, this message translates to:
-  /// **'Um eine neue Transformation zu erstellen, musst du die Eigenschaften auswählen, die durch diese Verwandlung verändert werden. (Wenn die Eigenschaft nicht verändert wird, muss sie auch nicht ausgewählt werden.)'**
+  /// **'Wähle die Eigenschaften aus, die sich durch diese Verwandlung ändern. Alle anderen bleiben, wie sie sind.'**
   String get createTransformationHelperText;
 
   /// No description provided for @back.
@@ -1469,7 +1469,7 @@ abstract class AppLocalizations {
   /// No description provided for @youAreEditingAnAlternateFormWarningText.
   ///
   /// In de, this message translates to:
-  /// **'Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).'**
+  /// **'Du bearbeitest gerade eine Verwandlung. Änderungen gelten nur für diese Verwandlung und gehen verloren, wenn du dich zurückverwandelst. Für dauerhafte Änderungen verwandle dich zurück und bearbeite deine Grundform.'**
   String get youAreEditingAnAlternateFormWarningText;
 
   /// No description provided for @transformationIsEditedWarningTitle.
@@ -1487,7 +1487,7 @@ abstract class AppLocalizations {
   /// No description provided for @youAreEditingACopiedPropertyChangesWillNotAffect.
   ///
   /// In de, this message translates to:
-  /// **'Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf den Haupt-Charakter übertragen.'**
+  /// **'Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen gelten nur hier und werden nicht auf den Hauptcharakter übertragen.'**
   String get youAreEditingACopiedPropertyChangesWillNotAffect;
 
   /// No description provided for @previousTransformationSelectionBtn.
@@ -1517,13 +1517,13 @@ abstract class AppLocalizations {
   /// No description provided for @yourAreDisconnectedBody.
   ///
   /// In de, this message translates to:
-  /// **'Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...'**
+  /// **'Die Verbindung ist unterbrochen. Entweder du oder deine Spielleitung ist offline.'**
   String get yourAreDisconnectedBody;
 
   /// No description provided for @characterNameStatTitle.
   ///
   /// In de, this message translates to:
-  /// **'Charakter-Name'**
+  /// **'Charaktername'**
   String get characterNameStatTitle;
 
   /// No description provided for @characterNameStatHelperText.
@@ -1541,7 +1541,7 @@ abstract class AppLocalizations {
   /// No description provided for @generateLoreImageTitle.
   ///
   /// In de, this message translates to:
-  /// **'Generiere ein Bild'**
+  /// **'Bild generieren'**
   String get generateLoreImageTitle;
 
   /// No description provided for @characterPortraitImagePrompt.
@@ -1565,25 +1565,25 @@ abstract class AppLocalizations {
   /// No description provided for @noImagesInCampagne.
   ///
   /// In de, this message translates to:
-  /// **'In dieser Kampagne sind noch keine Bilder von dir generiert worden.'**
+  /// **'Du hast in dieser Kampagne noch keine Bilder generiert.'**
   String get noImagesInCampagne;
 
   /// No description provided for @enterANameDefaultLabel.
   ///
   /// In de, this message translates to:
-  /// **'Gebe Namen ein'**
+  /// **'Gib einen Namen ein'**
   String get enterANameDefaultLabel;
 
   /// No description provided for @enterSomeDescriptionOnTheLeft.
   ///
   /// In de, this message translates to:
-  /// **'Gebe eine Beschreibung auf der linken Seite ein.'**
+  /// **'Gib links eine Beschreibung ein.'**
   String get enterSomeDescriptionOnTheLeft;
 
   /// No description provided for @tabIconsConfigurationTitle.
   ///
   /// In de, this message translates to:
-  /// **'Tab Icons'**
+  /// **'Tab-Icons'**
   String get tabIconsConfigurationTitle;
 
   /// No description provided for @realtimeSessionIosHint.
@@ -1607,7 +1607,7 @@ abstract class AppLocalizations {
   /// No description provided for @characterConfigSaveFailedBody.
   ///
   /// In de, this message translates to:
-  /// **'Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert.'**
+  /// **'Deine Änderungen am Charakter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.'**
   String get characterConfigSaveFailedBody;
 
   /// No description provided for @logout.
@@ -1637,7 +1637,7 @@ abstract class AppLocalizations {
   /// No description provided for @characterSheetSkinArcaneLedger.
   ///
   /// In de, this message translates to:
-  /// **'Arkanes Foliant'**
+  /// **'Arkaner Foliant'**
   String get characterSheetSkinArcaneLedger;
 
   /// No description provided for @characterSheetSkinNightCartographer.
@@ -1859,7 +1859,7 @@ abstract class AppLocalizations {
   /// No description provided for @apiKeyScopeFightsPlay.
   ///
   /// In de, this message translates to:
-  /// **'Initiative würfeln, wenn der DM einen Kampf startet'**
+  /// **'Initiative würfeln, wenn die Spielleitung einen Kampf startet'**
   String get apiKeyScopeFightsPlay;
 
   /// No description provided for @apiKeyScopeEvents.
@@ -3361,6 +3361,114 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Unbenannte Eigenschaft'**
   String get missingStatUnnamed;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen'**
+  String get settingsTitle;
+
+  /// No description provided for @apiKeysSettingsSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine persönlichen API-Schlüssel verwalten'**
+  String get apiKeysSettingsSubtitle;
+
+  /// No description provided for @noteBlockTextLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Text'**
+  String get noteBlockTextLabel;
+
+  /// No description provided for @generateImageDescriptionHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibe das Bild, das du generieren möchtest. Je genauer die Beschreibung, desto besser passt das Bild.'**
+  String get generateImageDescriptionHint;
+
+  /// No description provided for @generateImagePromptLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Bildbeschreibung'**
+  String get generateImagePromptLabel;
+
+  /// No description provided for @generateImagePromptExample.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. „Ein mystischer Wald mit Elfen“'**
+  String get generateImagePromptExample;
+
+  /// No description provided for @reactivateTransformationTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alte Verwandlung reaktivieren'**
+  String get reactivateTransformationTitle;
+
+  /// No description provided for @reactivateTransformationQuestion.
+  ///
+  /// In de, this message translates to:
+  /// **'Möchtest du deine letzte Verwandlung wieder aufnehmen oder eine neue Gestalt annehmen?'**
+  String get reactivateTransformationQuestion;
+
+  /// No description provided for @newTransformationDeletesOldTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alte Verwandlungen werden gelöscht'**
+  String get newTransformationDeletesOldTitle;
+
+  /// No description provided for @newTransformationDeletesOldText.
+  ///
+  /// In de, this message translates to:
+  /// **'Wenn du eine neue Verwandlung erstellst, werden alle alten gelöscht.'**
+  String get newTransformationDeletesOldText;
+
+  /// No description provided for @selectTransformationTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Verwandlung auswählen'**
+  String get selectTransformationTitle;
+
+  /// No description provided for @selectTransformationComponentsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle die Verwandlungen aus, aus denen deine neue Gestalt bestehen soll.'**
+  String get selectTransformationComponentsHint;
+
+  /// No description provided for @noTransformationComponentsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Es gibt noch keine Verwandlungen. Lege sie zuerst in den Einstellungen deines Charakters an.'**
+  String get noTransformationComponentsHint;
+
+  /// No description provided for @transformationStatSettingsFor.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen für {statName}'**
+  String transformationStatSettingsFor(String statName);
+
+  /// No description provided for @invalidWholeNumberShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Ganze Zahl eingeben'**
+  String get invalidWholeNumberShort;
+
+  /// No description provided for @invalidNonNegativeNumberShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Zahl ab 0 eingeben'**
+  String get invalidNonNegativeNumberShort;
+
+  /// No description provided for @invalidPositiveNumberShort.
+  ///
+  /// In de, this message translates to:
+  /// **'Zahl ab 1 eingeben'**
+  String get invalidPositiveNumberShort;
+
+  /// No description provided for @invalidCurrencyMultiple.
+  ///
+  /// In de, this message translates to:
+  /// **'Gib eine ganze Zahl größer als 1 ein, z. B. 10.'**
+  String get invalidCurrencyMultiple;
 }
 
 class _AppLocalizationsDelegate

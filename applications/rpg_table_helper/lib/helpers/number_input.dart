@@ -37,8 +37,34 @@ bool isEmptyOrSignedInt(String? text) =>
 
 /// Parses a character level: a whole number of 0 or more. Returns null for
 /// empty, negative or non-numeric input.
-int? parseCharacterLevel(String? text) {
+int? parseCharacterLevel(String? text) => parseNonNegativeInt(text);
+
+/// Parses a whole number of 0 or more (prices, difficulty classes). Returns
+/// null for empty, negative or non-numeric input.
+int? parseNonNegativeInt(String? text) {
   final value = parseSignedInt(text);
   if (value == null || value < 0) return null;
   return value;
+}
+
+/// Parses a whole number of 1 or more (amounts). Returns null for empty, zero,
+/// negative or non-numeric input.
+int? parsePositiveInt(String? text) {
+  final value = parseSignedInt(text);
+  if (value == null || value < 1) return null;
+  return value;
+}
+
+/// The error a number field shows below itself: null while [text] is empty or
+/// [parse] accepts it, otherwise [message].
+///
+/// An empty field is "not filled in yet", not an error; forms that need a
+/// value still block saving until [parse] accepts it.
+String? numberFieldError(
+  String? text,
+  int? Function(String? text) parse,
+  String message,
+) {
+  if (text == null || text.trim().isEmpty) return null;
+  return parse(text) == null ? message : null;
 }

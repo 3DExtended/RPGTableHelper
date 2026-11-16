@@ -137,7 +137,7 @@ void main() {
 
     setOnline(container, false);
     await tester.pumpAndSettle();
-    expect(find.text("Aktuell keine Spieler online"), findsOneWidget);
+    expect(find.text("Gerade ist kein Spieler online"), findsOneWidget);
 
     setOnline(container, true);
     await tester.pumpAndSettle();

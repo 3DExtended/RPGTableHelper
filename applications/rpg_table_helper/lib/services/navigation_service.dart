@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:quest_keeper/screens/character_screen.dart';
 import 'package:quest_keeper/screens/crafting_screen.dart';
 import 'package:quest_keeper/screens/inventory_screen.dart';
 import 'package:quest_keeper/screens/search_screen.dart';
@@ -28,8 +27,6 @@ abstract class INavigationService {
     switch (tabItem) {
       case TabItem.search:
         return SearchScreen.route; // TODO make me
-      case TabItem.character:
-        return CharacterScreen.route; // TODO make me
       case TabItem.inventory:
         return InventoryScreen.route; // TODO make me
       case TabItem.crafting:

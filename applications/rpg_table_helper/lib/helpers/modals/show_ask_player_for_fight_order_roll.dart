@@ -10,6 +10,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/initiative_bonus_resolver.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -73,6 +74,8 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
   @override
   void initState() {
     super.initState();
+    // Rebuild on input, so the error and the send button follow the text.
+    textEditingController.addListener(() => setState(() {}));
     widget.noLongerNeeded?.then((_) {
       if (!mounted) {
         return;
@@ -93,6 +96,7 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
   @override
   Widget build(BuildContext context) {
     final hint = widget.initiativeBonusHint;
+    final roll = parseSignedInt(textEditingController.text);
     // Cartographer chrome needs a bit more vertical room; other skins keep classic sizes.
     final maxHeight = (hint == null ? 300.0 : 360.0);
 
@@ -187,7 +191,13 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                                 labelText:
                                     S.of(context).initiativeRollTextFieldLabel,
                                 textEditingController: textEditingController,
-                                keyboardType: TextInputType.number,
+                                // Initiative with a modifier can be negative.
+                                keyboardType: signedIntKeyboardType,
+                                errorText: numberFieldError(
+                                  textEditingController.text,
+                                  parseSignedInt,
+                                  S.of(context).invalidWholeNumberInput,
+                                ),
                               )
                             ],
                           ),
@@ -205,14 +215,9 @@ class _PlayerHasBeenAskedToRollForFightOrderModalContentState
                           const Spacer(),
                           CustomButton(
                             label: S.of(context).send,
-                            onPressed: () {
-                              // TODO add validation
-                              var numberParsed =
-                                  int.tryParse(textEditingController.text);
-                              if (numberParsed == null) return;
-
-                              navigatorKey.currentState!.pop(numberParsed);
-                            },
+                            onPressed: roll == null
+                                ? null
+                                : () => navigatorKey.currentState!.pop(roll),
                           ),
                           const Spacer(),
                         ],

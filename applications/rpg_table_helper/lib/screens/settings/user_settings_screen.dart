@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
@@ -42,7 +42,7 @@ class UserSettingsScreen extends StatelessWidget {
               menuOpen: null,
               useTopSafePadding: true,
               titleWidget: Text(
-                'Settings',
+                AppLocalizations.of(context)!.settingsTitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: CustomThemeProvider.of(context)
@@ -80,24 +80,29 @@ class UserSettingsScreen extends StatelessWidget {
                       _buildSettingsCard(
                         context,
                         icon: FontAwesomeIcons.key,
-                        title: 'API Keys',
-                        subtitle: 'Manage your personal API keys',
+                        title: AppLocalizations.of(context)!.apiKeysTitle,
+                        subtitle: AppLocalizations.of(context)!
+                            .apiKeysSettingsSubtitle,
                         onTap: () {
                           Navigator.of(context).pushNamed(ApiKeysScreen.route);
                         },
                       ),
-                      const SizedBox(height: 16),
-                      _buildSettingsCard(
-                        context,
-                        icon: FontAwesomeIcons.bug,
-                        title: 'Diagnostic logs',
-                        subtitle:
-                            'Campaign save debug log (for TestFlight troubleshooting)',
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(AgentDebugLogScreen.route);
-                        },
-                      ),
+                      // Developer tool: nothing in the app writes this log
+                      // any more, so release builds do not show it.
+                      if (kDebugMode) ...[
+                        const SizedBox(height: 16),
+                        _buildSettingsCard(
+                          context,
+                          icon: FontAwesomeIcons.bug,
+                          title: 'Diagnostic logs',
+                          subtitle:
+                              'Campaign save debug log (for TestFlight troubleshooting)',
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(AgentDebugLogScreen.route);
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),

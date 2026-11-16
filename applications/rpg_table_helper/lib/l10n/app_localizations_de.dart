@@ -140,13 +140,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get descriptionOfProperty => 'Hilfstext für die Eigenschaft';
 
   @override
-  String get propertyEditTypeOneTap => 'Häufig verändert (bspw. jede Session)';
+  String get propertyEditTypeOneTap => 'Häufig geändert (z. B. jede Sitzung)';
 
   @override
-  String get propertyEditTypeStatic => 'Selten verändert (bspw. je Level-Up)';
+  String get propertyEditTypeStatic =>
+      'Selten geändert (z. B. beim Levelaufstieg)';
 
   @override
-  String get propertyEditTypeLabel => 'Veränderungshäufigkeit';
+  String get propertyEditTypeLabel => 'Änderungshäufigkeit';
 
   @override
   String get generatedImage => 'Generiertes Bild';
@@ -158,31 +159,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get singleLineText => 'Einzeiliger Text';
 
   @override
-  String get integerValue => 'Zahlen-Wert';
+  String get integerValue => 'Zahlenwert';
 
   @override
-  String get listOfIntegersWithIcons => 'Liste von Zahlen-Werten mit Icons';
+  String get listOfIntegersWithIcons => 'Liste von Zahlenwerten mit Icons';
 
   @override
-  String get integerValueWithMaxValue => 'Zahlen-Wert mit maximal Wert';
+  String get integerValueWithMaxValue => 'Zahlenwert mit Maximalwert';
 
   @override
   String get listOfInterValuesWithCalculatedIntegerValues =>
-      'Gruppe von Zahlen-Werten mit zusätzlicher Zahl';
+      'Gruppe von Zahlenwerten mit zusätzlicher Zahl';
 
   @override
   String get integerValueWithCalculatedValue =>
-      'Zahlen-Wert mit zusätzlicher Zahl';
+      'Zahlenwert mit zusätzlicher Zahl';
 
   @override
   String get characterNameWithLevelAndConfigurableDetails =>
-      'Charakter Basis Eigenschaften (LVL, Name und weitere optionale)';
+      'Charakter-Grundwerte (Level, Name und weitere, optionale Angaben)';
 
   @override
-  String get multiselectOption => 'Mehrfach-Auswahl';
+  String get multiselectOption => 'Mehrfachauswahl';
 
   @override
-  String get companionOverview => 'Begleiter Übersicht';
+  String get companionOverview => 'Begleiterübersicht';
 
   @override
   String get companionSelectorIconHeadline => 'Icon';
@@ -210,7 +211,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Optionale Eigenschaft für andere Formen';
 
   @override
-  String get optionsForMultiselect => 'Optionen für Mehrfach-Auswahl';
+  String get optionsForMultiselect => 'Optionen für die Mehrfachauswahl';
 
   @override
   String get multiselectOptionName => 'Name:';
@@ -232,7 +233,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get moreValues => 'Weitere Werte';
 
   @override
-  String get forIntegerValueWithName => 'für Zahlen-Wert';
+  String get forIntegerValueWithName => 'für Zahlenwert';
 
   @override
   String get propertyNameLabel => 'Name:';
@@ -303,13 +304,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lastGrantedItems => 'Letzte verteilte Items';
 
   @override
-  String get noItemsGranted => 'Noch keine Items verteilt...';
+  String get noItemsGranted => 'Noch keine Items verteilt.';
 
   @override
   String get placeOfFinding => 'Fundort';
 
   @override
-  String get playerRolls => 'Spieler Würfe';
+  String get playerRolls => 'Würfe der Spieler';
 
   @override
   String get diceRoll => 'Wurf';
@@ -321,8 +322,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sendItems => 'Items verschicken';
 
   @override
-  String get itemsToBeFoundInPlaceMarkdown =>
-      '## Auffindbare Items in Fundort: ';
+  String get itemsToBeFoundInPlaceMarkdown => '## Items an diesem Fundort';
 
   @override
   String get noPlaceOfFindingSelected =>
@@ -330,7 +330,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get followingItemsArePossibleAtPlaceOfFinding =>
-      'Diese Items gibt es am/im Fundort:';
+      'Diese Items gibt es hier:';
 
   @override
   String get diceChallengeAbbr => 'SG';
@@ -357,7 +357,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get signInWithGoogle => 'Mit Google anmelden';
 
   @override
-  String get createNewAccount => 'Neuen Account anlegen';
+  String get createNewAccount => 'Neues Konto anlegen';
 
   @override
   String get email => 'E-Mail';
@@ -366,7 +366,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get register => 'Registrieren';
 
   @override
-  String get itemDetailsForPrefix => 'Item Details für';
+  String get itemDetailsForPrefix => 'Item-Details für';
 
   @override
   String get itemDetailsDescriptionHeader => 'Beschreibung:';
@@ -391,7 +391,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String receivedXNewItems(int amount) {
-    return 'Du hast $amount neue Items erhalten:';
+    String _temp0 = intl.Intl.pluralLogic(
+      amount,
+      locale: localeName,
+      other: 'Du hast $amount neue Items erhalten:',
+      one: 'Du hast ein neues Item erhalten:',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -411,7 +417,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enemyName => 'Gegnername';
 
   @override
-  String get rollOfInititive => 'Reihenfolgenwurf';
+  String get rollOfInititive => 'Initiativewurf';
 
   @override
   String get addAnAdditionalEnemyBtnLabel => 'Weiterer Gegner';
@@ -423,14 +429,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add => 'Hinzufügen';
 
   @override
-  String get initiativeRollForCharacterPrefix => 'Kampf Reihenfolge Wurf';
+  String get initiativeRollForCharacterPrefix => 'Initiativewurf';
 
   @override
   String get initiativeRollText =>
-      'Ein Kampf startet: Würfel deinen Platz in der Reihenfolge!';
+      'Ein Kampf beginnt. Würfle deine Initiative!';
 
   @override
-  String get initiativeRollTextFieldLabel => 'Kampf Wurf';
+  String get initiativeRollTextFieldLabel => 'Dein Wurf';
 
   @override
   String initiativeBonusHelperSentence(Object formattedBonus, Object label) {
@@ -442,7 +448,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get fightInitiativeStepTutorial =>
-      'Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler zum Würfeln der Initiative aufgefordert wird, sieht er einen Hinweis mit diesem Bonus, damit er ihn sich nicht merken muss, während das Wurf-Popup den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Wähle ansonsten unten einen Wert aus. Handelt es sich um eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator, oder aktuell und maximal), wähle, welche davon als Bonus zählt.';
+      'Markiere, welcher Wert der Initiative-Bonus ist.\n\nWenn ein Spieler die Initiative würfeln soll, zeigt die App ihm diesen Bonus an. So muss er ihn nicht im Kopf haben, während das Wurffenster den Charakterbogen verdeckt.\n\nWähle **Keine**, falls dein System keinen Bonus verwendet. Sonst wähle unten einen Wert aus. Ist es eine Gruppe von Werten (z. B. Fähigkeiten), wähle zusätzlich den passenden Eintrag. Besteht der Wert aus zwei Zahlen (z. B. Wert und Modifikator oder aktuell und maximal), wähle, welche davon als Bonus zählt.';
 
   @override
   String get initiativeBonusNoneOption => 'Keine';
@@ -461,7 +467,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get initiativeBonusIncompleteWarningBody =>
-      'Deine Initiative-Bonus-Auswahl ist unvollständig und wird gelöscht, wenn du fortfährst.';
+      'Deine Auswahl für den Initiative-Bonus ist unvollständig. Wenn du die Seite verlässt, wird sie gelöscht.';
 
   @override
   String get initiativeBonusIncompleteStay => 'Bleiben';
@@ -477,7 +483,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get editPageModalText =>
-      'Hier kannst du sowohl den Titel als auch die Gruppierung deiner Seite verändern.';
+      'Hier änderst du den Titel und die Gruppe deiner Seite.';
 
   @override
   String get documentTitleLabel => 'Titel';
@@ -498,7 +504,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get requiredIngredientCountPrefix => 'Benötigt:';
 
   @override
-  String get ownedIngredientCountPrefix => 'in Besitz:';
+  String get ownedIngredientCountPrefix => 'im Besitz:';
 
   @override
   String get amountToCraftFieldLabel => 'Anzahl';
@@ -522,7 +528,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get you => 'Du';
 
   @override
-  String get dm => 'DM';
+  String get dm => 'Spielleitung';
 
   @override
   String get hourMinutesDayMonthYearFormatString => '%H:%M %d.%m.%Y';
@@ -689,13 +695,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get newCampaign => 'Neue Kampagne';
 
   @override
-  String get noPlayersOnline => 'Aktuell keine Spieler online';
+  String get noPlayersOnline => 'Gerade ist kein Spieler online';
 
   @override
   String get currentFightOrdering => 'Aktuelle Kampfreihenfolge';
 
   @override
-  String get noFIghtStarted => 'Aktuell kein Kampf gestartet';
+  String get noFIghtStarted => 'Gerade läuft kein Kampf';
 
   @override
   String get newFightOrdering => 'Neue Kampfreihenfolge';
@@ -722,11 +728,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tranformToAlternateForm => 'Verwandeln';
 
   @override
-  String get transformIntoAlternateForm => 'Verwandeln in eine andere Form';
+  String get transformIntoAlternateForm => 'In eine andere Form verwandeln';
 
   @override
-  String get addNewTransformationComponent =>
-      'Füge neue Verwandlungsformen hinzu';
+  String get addNewTransformationComponent => 'Verwandlung hinzufügen';
 
   @override
   String get createNewTransformationTitle => 'Neue Verwandlung erstellen';
@@ -739,7 +744,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get createTransformationHelperText =>
-      'Um eine neue Transformation zu erstellen, musst du die Eigenschaften auswählen, die durch diese Verwandlung verändert werden. (Wenn die Eigenschaft nicht verändert wird, muss sie auch nicht ausgewählt werden.)';
+      'Wähle die Eigenschaften aus, die sich durch diese Verwandlung ändern. Alle anderen bleiben, wie sie sind.';
 
   @override
   String get back => 'Zurück';
@@ -752,7 +757,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get youAreEditingAnAlternateFormWarningText =>
-      'Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).';
+      'Du bearbeitest gerade eine Verwandlung. Änderungen gelten nur für diese Verwandlung und gehen verloren, wenn du dich zurückverwandelst. Für dauerhafte Änderungen verwandle dich zurück und bearbeite deine Grundform.';
 
   @override
   String get transformationIsEditedWarningTitle =>
@@ -763,7 +768,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get youAreEditingACopiedPropertyChangesWillNotAffect =>
-      'Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen werden nur auf dieser Eigenschaft gespeichert und werden nicht auf den Haupt-Charakter übertragen.';
+      'Du bearbeitest gerade eine kopierte Eigenschaft. Änderungen gelten nur hier und werden nicht auf den Hauptcharakter übertragen.';
 
   @override
   String get previousTransformationSelectionBtn => 'Alte Gestalt';
@@ -779,10 +784,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yourAreDisconnectedBody =>
-      'Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...';
+      'Die Verbindung ist unterbrochen. Entweder du oder deine Spielleitung ist offline.';
 
   @override
-  String get characterNameStatTitle => 'Charakter-Name';
+  String get characterNameStatTitle => 'Charaktername';
 
   @override
   String get characterNameStatHelperText => 'Wie heißt dein Charakter?';
@@ -791,7 +796,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get generateImageBtnLabel => 'Bild generieren';
 
   @override
-  String get generateLoreImageTitle => 'Generiere ein Bild';
+  String get generateLoreImageTitle => 'Bild generieren';
 
   @override
   String get characterPortraitImagePrompt => 'Porträtbeschreibung';
@@ -805,17 +810,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noImagesInCampagne =>
-      'In dieser Kampagne sind noch keine Bilder von dir generiert worden.';
+      'Du hast in dieser Kampagne noch keine Bilder generiert.';
 
   @override
-  String get enterANameDefaultLabel => 'Gebe Namen ein';
+  String get enterANameDefaultLabel => 'Gib einen Namen ein';
 
   @override
   String get enterSomeDescriptionOnTheLeft =>
-      'Gebe eine Beschreibung auf der linken Seite ein.';
+      'Gib links eine Beschreibung ein.';
 
   @override
-  String get tabIconsConfigurationTitle => 'Tab Icons';
+  String get tabIconsConfigurationTitle => 'Tab-Icons';
 
   @override
   String get realtimeSessionIosHint =>
@@ -830,7 +835,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get characterConfigSaveFailedBody =>
-      'Deine Charakteränderungen konnten nicht auf dem Server gespeichert werden. Prüfe deine Verbindung und versuche es erneut — es wurde nichts persistiert.';
+      'Deine Änderungen am Charakter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.';
 
   @override
   String get logout => 'Abmelden';
@@ -846,7 +851,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get characterSheetSkinClassicDark => 'Klassisch Dunkel';
 
   @override
-  String get characterSheetSkinArcaneLedger => 'Arkanes Foliant';
+  String get characterSheetSkinArcaneLedger => 'Arkaner Foliant';
 
   @override
   String get characterSheetSkinNightCartographer => 'Nachtkartograph';
@@ -974,7 +979,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get apiKeyScopeFightsPlay =>
-      'Initiative würfeln, wenn der DM einen Kampf startet';
+      'Initiative würfeln, wenn die Spielleitung einen Kampf startet';
 
   @override
   String get apiKeyScopeEvents => 'Live-Updates empfangen';
@@ -1906,4 +1911,69 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get missingStatUnnamed => 'Unbenannte Eigenschaft';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get apiKeysSettingsSubtitle =>
+      'Deine persönlichen API-Schlüssel verwalten';
+
+  @override
+  String get noteBlockTextLabel => 'Text';
+
+  @override
+  String get generateImageDescriptionHint =>
+      'Beschreibe das Bild, das du generieren möchtest. Je genauer die Beschreibung, desto besser passt das Bild.';
+
+  @override
+  String get generateImagePromptLabel => 'Bildbeschreibung';
+
+  @override
+  String get generateImagePromptExample =>
+      'z. B. „Ein mystischer Wald mit Elfen“';
+
+  @override
+  String get reactivateTransformationTitle => 'Alte Verwandlung reaktivieren';
+
+  @override
+  String get reactivateTransformationQuestion =>
+      'Möchtest du deine letzte Verwandlung wieder aufnehmen oder eine neue Gestalt annehmen?';
+
+  @override
+  String get newTransformationDeletesOldTitle =>
+      'Alte Verwandlungen werden gelöscht';
+
+  @override
+  String get newTransformationDeletesOldText =>
+      'Wenn du eine neue Verwandlung erstellst, werden alle alten gelöscht.';
+
+  @override
+  String get selectTransformationTitle => 'Verwandlung auswählen';
+
+  @override
+  String get selectTransformationComponentsHint =>
+      'Wähle die Verwandlungen aus, aus denen deine neue Gestalt bestehen soll.';
+
+  @override
+  String get noTransformationComponentsHint =>
+      'Es gibt noch keine Verwandlungen. Lege sie zuerst in den Einstellungen deines Charakters an.';
+
+  @override
+  String transformationStatSettingsFor(String statName) {
+    return 'Einstellungen für $statName';
+  }
+
+  @override
+  String get invalidWholeNumberShort => 'Ganze Zahl eingeben';
+
+  @override
+  String get invalidNonNegativeNumberShort => 'Zahl ab 0 eingeben';
+
+  @override
+  String get invalidPositiveNumberShort => 'Zahl ab 1 eingeben';
+
+  @override
+  String get invalidCurrencyMultiple =>
+      'Gib eine ganze Zahl größer als 1 ein, z. B. 10.';
 }

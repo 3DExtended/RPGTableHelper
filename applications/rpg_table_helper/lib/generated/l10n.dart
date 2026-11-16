@@ -900,10 +900,10 @@ class S {
     return Intl.message('Send items', name: 'sendItems', desc: '', args: []);
   }
 
-  /// `## Items to be found in place:`
+  /// `## Items at this place`
   String get itemsToBeFoundInPlaceMarkdown {
     return Intl.message(
-      '## Items to be found in place:',
+      '## Items at this place',
       name: 'itemsToBeFoundInPlaceMarkdown',
       desc: '',
       args: [],
@@ -920,10 +920,10 @@ class S {
     );
   }
 
-  /// `The following items are possible at the place of finding:`
+  /// `These items can be found here:`
   String get followingItemsArePossibleAtPlaceOfFinding {
     return Intl.message(
-      'The following items are possible at the place of finding:',
+      'These items can be found here:',
       name: 'followingItemsArePossibleAtPlaceOfFinding',
       desc: '',
       args: [],
@@ -1000,9 +1000,9 @@ class S {
     );
   }
 
-  /// `E-Mail`
+  /// `Email`
   String get email {
-    return Intl.message('E-Mail', name: 'email', desc: '', args: []);
+    return Intl.message('Email', name: 'email', desc: '', args: []);
   }
 
   /// `Register`
@@ -1085,10 +1085,12 @@ class S {
     );
   }
 
-  /// `You received {amount} new items:`
-  String receivedXNewItems(Object amount) {
-    return Intl.message(
-      'You received $amount new items:',
+  /// `{amount, plural, one{You received one new item:} other{You received {amount} new items:}}`
+  String receivedXNewItems(num amount) {
+    return Intl.plural(
+      amount,
+      one: 'You received one new item:',
+      other: 'You received $amount new items:',
       name: 'receivedXNewItems',
       desc: '',
       args: [amount],
@@ -1130,10 +1132,10 @@ class S {
     return Intl.message('Enemy name', name: 'enemyName', desc: '', args: []);
   }
 
-  /// `Roll of initiative`
+  /// `Initiative roll`
   String get rollOfInititive {
     return Intl.message(
-      'Roll of initiative',
+      'Initiative roll',
       name: 'rollOfInititive',
       desc: '',
       args: [],
@@ -1170,20 +1172,20 @@ class S {
     );
   }
 
-  /// `A fight has started. Please roll for initiative.`
+  /// `A fight is starting. Roll for initiative!`
   String get initiativeRollText {
     return Intl.message(
-      'A fight has started. Please roll for initiative.',
+      'A fight is starting. Roll for initiative!',
       name: 'initiativeRollText',
       desc: '',
       args: [],
     );
   }
 
-  /// `Initiative roll`
+  /// `Your roll`
   String get initiativeRollTextFieldLabel {
     return Intl.message(
-      'Initiative roll',
+      'Your roll',
       name: 'initiativeRollTextFieldLabel',
       desc: '',
       args: [],
@@ -1300,9 +1302,9 @@ class S {
     );
   }
 
-  /// `Absenden`
+  /// `Send`
   String get send {
-    return Intl.message('Absenden', name: 'send', desc: '', args: []);
+    return Intl.message('Send', name: 'send', desc: '', args: []);
   }
 
   /// `Edit document`
@@ -1325,10 +1327,10 @@ class S {
     );
   }
 
-  /// `Titel`
+  /// `Title`
   String get documentTitleLabel {
     return Intl.message(
-      'Titel',
+      'Title',
       name: 'documentTitleLabel',
       desc: '',
       args: [],
@@ -1445,9 +1447,9 @@ class S {
     return Intl.message('You', name: 'you', desc: '', args: []);
   }
 
-  /// `DM`
+  /// `Game master`
   String get dm {
-    return Intl.message('DM', name: 'dm', desc: '', args: []);
+    return Intl.message('Game master', name: 'dm', desc: '', args: []);
   }
 
   /// `%H:%M %m-%d-%Y`
@@ -1740,10 +1742,10 @@ class S {
     );
   }
 
-  /// `- Nothinge selected -`
+  /// `- Nothing selected -`
   String get nothingSelected {
     return Intl.message(
-      '- Nothinge selected -',
+      '- Nothing selected -',
       name: 'nothingSelected',
       desc: '',
       args: [],
@@ -1775,10 +1777,10 @@ class S {
     return Intl.message('Add items', name: 'addItems', desc: '', args: []);
   }
 
-  /// `Select Game Mode`
+  /// `Choose your role`
   String get selectGameMode {
     return Intl.message(
-      'Select Game Mode',
+      'Choose your role',
       name: 'selectGameMode',
       desc: '',
       args: [],
@@ -1891,10 +1893,10 @@ class S {
     );
   }
 
-  /// `No fight started yet`
+  /// `No fight is running`
   String get noFIghtStarted {
     return Intl.message(
-      'No fight started yet',
+      'No fight is running',
       name: 'noFIghtStarted',
       desc: '',
       args: [],
@@ -1986,10 +1988,10 @@ class S {
     );
   }
 
-  /// `Add new transformations`
+  /// `Add transformation`
   String get addNewTransformationComponent {
     return Intl.message(
-      'Add new transformations',
+      'Add transformation',
       name: 'addNewTransformationComponent',
       desc: '',
       args: [],
@@ -2026,10 +2028,10 @@ class S {
     );
   }
 
-  /// `In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn't change this property, you don't have to select it.)`
+  /// `Choose the properties this transformation changes. All others stay as they are.`
   String get createTransformationHelperText {
     return Intl.message(
-      'In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn\'t change this property, you don\'t have to select it.)',
+      'Choose the properties this transformation changes. All others stay as they are.',
       name: 'createTransformationHelperText',
       desc: '',
       args: [],
@@ -2051,10 +2053,10 @@ class S {
     return Intl.message('Warning', name: 'warning', desc: '', args: []);
   }
 
-  /// `You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.`
+  /// `You are editing a transformation. Changes only apply to this transformation and are lost when you change back. For lasting changes, change back and edit your base form.`
   String get youAreEditingAnAlternateFormWarningText {
     return Intl.message(
-      'You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.',
+      'You are editing a transformation. Changes only apply to this transformation and are lost when you change back. For lasting changes, change back and edit your base form.',
       name: 'youAreEditingAnAlternateFormWarningText',
       desc: '',
       args: [],
@@ -2121,20 +2123,20 @@ class S {
     return Intl.message('No', name: 'no', desc: '', args: []);
   }
 
-  /// `Your are disconnected... Either you or the DM has lost the connection.`
+  /// `You are disconnected. Either you or your game master is offline.`
   String get yourAreDisconnectedBody {
     return Intl.message(
-      'Your are disconnected... Either you or the DM has lost the connection.',
+      'You are disconnected. Either you or your game master is offline.',
       name: 'yourAreDisconnectedBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `Character Name`
+  /// `Character name`
   String get characterNameStatTitle {
     return Intl.message(
-      'Character Name',
+      'Character name',
       name: 'characterNameStatTitle',
       desc: '',
       args: [],
@@ -2201,10 +2203,10 @@ class S {
     );
   }
 
-  /// `You did not generate any images in this campaign.`
+  /// `You haven't generated any images in this campaign yet.`
   String get noImagesInCampagne {
     return Intl.message(
-      'You did not generate any images in this campaign.',
+      'You haven\'t generated any images in this campaign yet.',
       name: 'noImagesInCampagne',
       desc: '',
       args: [],
@@ -2221,20 +2223,20 @@ class S {
     );
   }
 
-  /// `Enter some description on the left`
+  /// `Enter a description on the left.`
   String get enterSomeDescriptionOnTheLeft {
     return Intl.message(
-      'Enter some description on the left',
+      'Enter a description on the left.',
       name: 'enterSomeDescriptionOnTheLeft',
       desc: '',
       args: [],
     );
   }
 
-  /// `Tab Icons`
+  /// `Tab icons`
   String get tabIconsConfigurationTitle {
     return Intl.message(
-      'Tab Icons',
+      'Tab icons',
       name: 'tabIconsConfigurationTitle',
       desc: '',
       args: [],
@@ -2271,19 +2273,19 @@ class S {
     );
   }
 
-  /// `Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.`
+  /// `Your character changes could not be saved. Check your connection and try again.`
   String get characterConfigSaveFailedBody {
     return Intl.message(
-      'Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.',
+      'Your character changes could not be saved. Check your connection and try again.',
       name: 'characterConfigSaveFailedBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `Logout`
+  /// `Sign out`
   String get logout {
-    return Intl.message('Logout', name: 'logout', desc: '', args: []);
+    return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
   /// `Your session has expired. Please sign in again.`
@@ -2671,10 +2673,10 @@ class S {
     );
   }
 
-  /// `Roll initiative when the DM starts a fight`
+  /// `Roll initiative when the game master starts a fight`
   String get apiKeyScopeFightsPlay {
     return Intl.message(
-      'Roll initiative when the DM starts a fight',
+      'Roll initiative when the game master starts a fight',
       name: 'apiKeyScopeFightsPlay',
       desc: '',
       args: [],
@@ -5073,6 +5075,176 @@ class S {
     return Intl.message(
       'Unnamed property',
       name: 'missingStatUnnamed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get settingsTitle {
+    return Intl.message('Settings', name: 'settingsTitle', desc: '', args: []);
+  }
+
+  /// `Manage your personal API keys`
+  String get apiKeysSettingsSubtitle {
+    return Intl.message(
+      'Manage your personal API keys',
+      name: 'apiKeysSettingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text`
+  String get noteBlockTextLabel {
+    return Intl.message('Text', name: 'noteBlockTextLabel', desc: '', args: []);
+  }
+
+  /// `Describe the image you want to generate. The more detail you give, the better the image fits.`
+  String get generateImageDescriptionHint {
+    return Intl.message(
+      'Describe the image you want to generate. The more detail you give, the better the image fits.',
+      name: 'generateImageDescriptionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image description`
+  String get generateImagePromptLabel {
+    return Intl.message(
+      'Image description',
+      name: 'generateImagePromptLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `e.g. “A mystical forest with elves”`
+  String get generateImagePromptExample {
+    return Intl.message(
+      'e.g. “A mystical forest with elves”',
+      name: 'generateImagePromptExample',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reactivate previous transformation`
+  String get reactivateTransformationTitle {
+    return Intl.message(
+      'Reactivate previous transformation',
+      name: 'reactivateTransformationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to resume your last transformation or take on a new form?`
+  String get reactivateTransformationQuestion {
+    return Intl.message(
+      'Do you want to resume your last transformation or take on a new form?',
+      name: 'reactivateTransformationQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Old transformations will be deleted`
+  String get newTransformationDeletesOldTitle {
+    return Intl.message(
+      'Old transformations will be deleted',
+      name: 'newTransformationDeletesOldTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating a new transformation deletes all old ones.`
+  String get newTransformationDeletesOldText {
+    return Intl.message(
+      'Creating a new transformation deletes all old ones.',
+      name: 'newTransformationDeletesOldText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose transformation`
+  String get selectTransformationTitle {
+    return Intl.message(
+      'Choose transformation',
+      name: 'selectTransformationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the transformations your new form should be made of.`
+  String get selectTransformationComponentsHint {
+    return Intl.message(
+      'Choose the transformations your new form should be made of.',
+      name: 'selectTransformationComponentsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no transformations yet. Set them up in your character settings first.`
+  String get noTransformationComponentsHint {
+    return Intl.message(
+      'There are no transformations yet. Set them up in your character settings first.',
+      name: 'noTransformationComponentsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings for {statName}`
+  String transformationStatSettingsFor(String statName) {
+    return Intl.message(
+      'Settings for $statName',
+      name: 'transformationStatSettingsFor',
+      desc: '',
+      args: [statName],
+    );
+  }
+
+  /// `Enter a whole number`
+  String get invalidWholeNumberShort {
+    return Intl.message(
+      'Enter a whole number',
+      name: 'invalidWholeNumberShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter 0 or more`
+  String get invalidNonNegativeNumberShort {
+    return Intl.message(
+      'Enter 0 or more',
+      name: 'invalidNonNegativeNumberShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter 1 or more`
+  String get invalidPositiveNumberShort {
+    return Intl.message(
+      'Enter 1 or more',
+      name: 'invalidPositiveNumberShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a whole number greater than 1, e.g. 10.`
+  String get invalidCurrencyMultiple {
+    return Intl.message(
+      'Enter a whole number greater than 1, e.g. 10.',
+      name: 'invalidCurrencyMultiple',
       desc: '',
       args: [],
     );

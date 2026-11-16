@@ -451,7 +451,7 @@ class _LoreBlockRenderingEditableState
         children: [
           CustomTextField(
             keyboardType: TextInputType.multiline,
-            labelText: "Text",
+            labelText: S.of(context).noteBlockTextLabel,
             password: false,
             textEditingController: _textEditingController,
             disableMaxLineLimit: true,

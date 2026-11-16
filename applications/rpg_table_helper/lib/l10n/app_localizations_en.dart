@@ -320,14 +320,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendItems => 'Send items';
 
   @override
-  String get itemsToBeFoundInPlaceMarkdown => '## Items to be found in place:';
+  String get itemsToBeFoundInPlaceMarkdown => '## Items at this place';
 
   @override
   String get noPlaceOfFindingSelected => 'No place of finding selected.';
 
   @override
   String get followingItemsArePossibleAtPlaceOfFinding =>
-      'The following items are possible at the place of finding:';
+      'These items can be found here:';
 
   @override
   String get diceChallengeAbbr => 'DC';
@@ -356,7 +356,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createNewAccount => 'Create new account';
 
   @override
-  String get email => 'E-Mail';
+  String get email => 'Email';
 
   @override
   String get register => 'Register';
@@ -387,7 +387,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String receivedXNewItems(int amount) {
-    return 'You received $amount new items:';
+    String _temp0 = intl.Intl.pluralLogic(
+      amount,
+      locale: localeName,
+      other: 'You received $amount new items:',
+      one: 'You received one new item:',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -407,7 +413,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enemyName => 'Enemy name';
 
   @override
-  String get rollOfInititive => 'Roll of initiative';
+  String get rollOfInititive => 'Initiative roll';
 
   @override
   String get addAnAdditionalEnemyBtnLabel => 'Add more';
@@ -422,11 +428,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initiativeRollForCharacterPrefix => 'Initiative roll';
 
   @override
-  String get initiativeRollText =>
-      'A fight has started. Please roll for initiative.';
+  String get initiativeRollText => 'A fight is starting. Roll for initiative!';
 
   @override
-  String get initiativeRollTextFieldLabel => 'Initiative roll';
+  String get initiativeRollTextFieldLabel => 'Your roll';
 
   @override
   String initiativeBonusHelperSentence(Object formattedBonus, Object label) {
@@ -466,7 +471,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initiativeBonusIncompleteLeave => 'Leave anyway';
 
   @override
-  String get send => 'Absenden';
+  String get send => 'Send';
 
   @override
   String get editPageTitle => 'Edit document';
@@ -476,7 +481,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'You can edit both the title and the grouping of your document here.';
 
   @override
-  String get documentTitleLabel => 'Titel';
+  String get documentTitleLabel => 'Title';
 
   @override
   String get documentGroupLabel => 'Grouping';
@@ -518,7 +523,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get you => 'You';
 
   @override
-  String get dm => 'DM';
+  String get dm => 'Game master';
 
   @override
   String get hourMinutesDayMonthYearFormatString => '%H:%M %m-%d-%Y';
@@ -622,7 +627,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteblockVisibleFor => 'Visible for:';
 
   @override
-  String get nothingSelected => '- Nothinge selected -';
+  String get nothingSelected => '- Nothing selected -';
 
   @override
   String get characterNameLabel => 'Name:';
@@ -637,7 +642,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addItems => 'Add items';
 
   @override
-  String get selectGameMode => 'Select Game Mode';
+  String get selectGameMode => 'Choose your role';
 
   @override
   String get chooseACampagne => 'Choose a campaign';
@@ -691,7 +696,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currentFightOrdering => 'Current fight ordering';
 
   @override
-  String get noFIghtStarted => 'No fight started yet';
+  String get noFIghtStarted => 'No fight is running';
 
   @override
   String get newFightOrdering => 'New fight ordering';
@@ -721,7 +726,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transformIntoAlternateForm => 'Transform into alternate form';
 
   @override
-  String get addNewTransformationComponent => 'Add new transformations';
+  String get addNewTransformationComponent => 'Add transformation';
 
   @override
   String get createNewTransformationTitle => 'Create new transformation';
@@ -734,7 +739,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createTransformationHelperText =>
-      'In order to create a new transformation, you have to select the properties which are modified by this transformation. (If this transformation doesn\'t change this property, you don\'t have to select it.)';
+      'Choose the properties this transformation changes. All others stay as they are.';
 
   @override
   String get back => 'Back';
@@ -747,7 +752,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get youAreEditingAnAlternateFormWarningText =>
-      'You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.';
+      'You are editing a transformation. Changes only apply to this transformation and are lost when you change back. For lasting changes, change back and edit your base form.';
 
   @override
   String get transformationIsEditedWarningTitle => 'Transformation is edited';
@@ -773,10 +778,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yourAreDisconnectedBody =>
-      'Your are disconnected... Either you or the DM has lost the connection.';
+      'You are disconnected. Either you or your game master is offline.';
 
   @override
-  String get characterNameStatTitle => 'Character Name';
+  String get characterNameStatTitle => 'Character name';
 
   @override
   String get characterNameStatHelperText =>
@@ -800,17 +805,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noImagesInCampagne =>
-      'You did not generate any images in this campaign.';
+      'You haven\'t generated any images in this campaign yet.';
 
   @override
   String get enterANameDefaultLabel => 'Enter a name';
 
   @override
   String get enterSomeDescriptionOnTheLeft =>
-      'Enter some description on the left';
+      'Enter a description on the left.';
 
   @override
-  String get tabIconsConfigurationTitle => 'Tab Icons';
+  String get tabIconsConfigurationTitle => 'Tab icons';
 
   @override
   String get realtimeSessionIosHint =>
@@ -825,10 +830,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get characterConfigSaveFailedBody =>
-      'Your character changes could not be saved to the server. Check your connection and try again — nothing was persisted.';
+      'Your character changes could not be saved. Check your connection and try again.';
 
   @override
-  String get logout => 'Logout';
+  String get logout => 'Sign out';
 
   @override
   String get sessionExpiredMessage =>
@@ -967,7 +972,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get apiKeyScopeFightsPlay =>
-      'Roll initiative when the DM starts a fight';
+      'Roll initiative when the game master starts a fight';
 
   @override
   String get apiKeyScopeEvents => 'Receive live updates';
@@ -1889,4 +1894,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missingStatUnnamed => 'Unnamed property';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get apiKeysSettingsSubtitle => 'Manage your personal API keys';
+
+  @override
+  String get noteBlockTextLabel => 'Text';
+
+  @override
+  String get generateImageDescriptionHint =>
+      'Describe the image you want to generate. The more detail you give, the better the image fits.';
+
+  @override
+  String get generateImagePromptLabel => 'Image description';
+
+  @override
+  String get generateImagePromptExample =>
+      'e.g. “A mystical forest with elves”';
+
+  @override
+  String get reactivateTransformationTitle =>
+      'Reactivate previous transformation';
+
+  @override
+  String get reactivateTransformationQuestion =>
+      'Do you want to resume your last transformation or take on a new form?';
+
+  @override
+  String get newTransformationDeletesOldTitle =>
+      'Old transformations will be deleted';
+
+  @override
+  String get newTransformationDeletesOldText =>
+      'Creating a new transformation deletes all old ones.';
+
+  @override
+  String get selectTransformationTitle => 'Choose transformation';
+
+  @override
+  String get selectTransformationComponentsHint =>
+      'Choose the transformations your new form should be made of.';
+
+  @override
+  String get noTransformationComponentsHint =>
+      'There are no transformations yet. Set them up in your character settings first.';
+
+  @override
+  String transformationStatSettingsFor(String statName) {
+    return 'Settings for $statName';
+  }
+
+  @override
+  String get invalidWholeNumberShort => 'Enter a whole number';
+
+  @override
+  String get invalidNonNegativeNumberShort => 'Enter 0 or more';
+
+  @override
+  String get invalidPositiveNumberShort => 'Enter 1 or more';
+
+  @override
+  String get invalidCurrencyMultiple =>
+      'Enter a whole number greater than 1, e.g. 10.';
 }

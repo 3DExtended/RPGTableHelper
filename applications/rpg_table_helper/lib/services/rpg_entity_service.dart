@@ -1067,7 +1067,7 @@ class MockRpgEntityService extends IRpgEntityService {
         HRResponse.fromResult([
           PlayerCharacter(
             campagneId: campagneId,
-            characterName: "Frodo",
+            characterName: "Mira",
             creationDate: DateTime(2024, 11, 7, 11, 11, 11),
             lastModifiedAt: DateTime(2024, 11, 7, 11, 11, 11),
             id: PlayerCharacterIdentifier(
@@ -1078,11 +1078,11 @@ class MockRpgEntityService extends IRpgEntityService {
                 RpgCharacterConfiguration.getBaseConfiguration(
                         RpgConfigurationModel.getBaseConfiguration(),
                         variant: 1)
-                    .copyWith(characterName: "Frodo")),
+                    .copyWith(characterName: "Mira")),
           ),
           PlayerCharacter(
             campagneId: campagneId,
-            characterName: "Gandalf",
+            characterName: "Taron",
             creationDate: DateTime(2024, 11, 7, 11, 11, 11),
             lastModifiedAt: DateTime(2024, 11, 7, 11, 11, 11),
             id: PlayerCharacterIdentifier(
@@ -1093,7 +1093,7 @@ class MockRpgEntityService extends IRpgEntityService {
               RpgCharacterConfiguration.getBaseConfiguration(
                       RpgConfigurationModel.getBaseConfiguration(),
                       variant: 0)
-                  .copyWith(characterName: "Gandalf"),
+                  .copyWith(characterName: "Taron"),
             ),
           )
         ]));

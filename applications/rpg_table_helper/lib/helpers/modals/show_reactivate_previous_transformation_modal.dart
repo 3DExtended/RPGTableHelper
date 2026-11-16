@@ -84,7 +84,7 @@ class _ShowReactivatePreviousTransformationModalContentState
                           child: Column(
                             children: [
                               Text(
-                                "Möchtest du deine letzte Verwandlung wieder aufgreifen oder eine neue Gestalt annehmen?", // TODO localize
+                                S.of(context).reactivateTransformationQuestion,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -97,10 +97,12 @@ class _ShowReactivatePreviousTransformationModalContentState
                               ),
                               SizedBox(height: 20),
                               WarningBox(
-                                warningTitle:
-                                    "Alte Verwandlungen werden gelöscht",
-                                warningText:
-                                    "Beim Erstellen einer neuen Verwandlung werden alle alten Verwandlungen gelöscht.",
+                                warningTitle: S
+                                    .of(context)
+                                    .newTransformationDeletesOldTitle,
+                                warningText: S
+                                    .of(context)
+                                    .newTransformationDeletesOldText,
                               ),
                             ],
                           ),
@@ -153,7 +155,7 @@ class _ShowReactivatePreviousTransformationModalContentState
       menuOpen: null,
       useTopSafePadding: false,
       titleWidget: Text(
-        "Alte Verwandlung reaktivieren", // TODO localize
+        S.of(context).reactivateTransformationTitle,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
             color: CustomThemeProvider.of(context).brightnessNotifier.value ==

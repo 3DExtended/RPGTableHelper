@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
-import 'package:quest_keeper/screens/character_screen.dart';
 import 'package:quest_keeper/screens/crafting_screen.dart';
 import 'package:quest_keeper/screens/inventory_screen.dart';
 import 'package:quest_keeper/screens/search_screen.dart';
@@ -29,14 +28,9 @@ class _AuthorizedScreenWrapperState
     extends ConsumerState<AuthorizedScreenWrapper> {
   var _currentTab = TabItem.character;
 
-  var characterScreenKey = LabeledGlobalKey("characterScreenKey");
-
   Map<String, Widget Function(BuildContext)> _routeBuilders(
       BuildContext context) {
     var result = {
-      CharacterScreen.route: (context) => CharacterScreen(
-            key: characterScreenKey,
-          ),
       InventoryScreen.route: (context) => const InventoryScreen(),
       CraftingScreen.route: (context) => const CraftingScreen(),
       SearchScreen.route: (context) => const SearchScreen(),

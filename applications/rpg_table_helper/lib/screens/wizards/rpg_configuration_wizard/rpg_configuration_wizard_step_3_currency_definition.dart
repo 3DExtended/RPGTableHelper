@@ -10,6 +10,7 @@ import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
@@ -207,9 +208,14 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
                   ),
                   Expanded(
                     child: CustomTextField(
-                      keyboardType: TextInputType.number,
+                      // Signed keyboard: on iOS it has a return key, so the
+                      // keyboard can be closed.
+                      keyboardType: signedIntKeyboardType,
                       labelText: S.of(context).wizardCurrencyMultipleLabel,
                       textEditingController: e.value.$2,
+                      errorText: parseCurrencyMultiple(e.value.$2.text) == null
+                          ? S.of(context).invalidCurrencyMultiple
+                          : null,
                     ),
                   ),
                   SizedBox(
@@ -285,7 +291,7 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
     for (var pair in currencyControllerPairs) {
       newCurrencyMapping.currencyTypes.add(CurrencyType(
           name: pair.$1.text,
-          multipleOfPreviousValue: int.parse(pair.$2.text)));
+          multipleOfPreviousValue: parseCurrencyMultiple(pair.$2.text)!));
     }
 
     ref
@@ -309,15 +315,8 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
         return false;
       }
 
-      // second entry is value
-      if (editPair.$2.text.isEmpty || editPair.$2.text.isEmpty) {
-        return false;
-      }
-
-      // check if editPair.$2 contains int > 1
-      var value = editPair.$2.text;
-      var parsedInt = int.tryParse(value);
-      if (parsedInt == null || parsedInt <= 1) {
+      // second entry is the multiple of the previous currency
+      if (parseCurrencyMultiple(editPair.$2.text) == null) {
         return false;
       }
     }
@@ -349,4 +348,12 @@ class _RpgConfigurationWizardStep3CurrencyDefinition
 
     return result;
   }
+}
+
+/// How many of the previous currency one unit is worth: a whole number
+/// greater than 1. Null for anything else, including an empty field.
+int? parseCurrencyMultiple(String? text) {
+  final value = parseSignedInt(text);
+  if (value == null || value <= 1) return null;
+  return value;
 }

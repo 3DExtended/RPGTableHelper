@@ -228,7 +228,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(fightApi.calls, ['end']);
-    expect(find.text('Aktuell kein Kampf gestartet'), findsOneWidget);
+    expect(find.text('Gerade läuft kein Kampf'), findsOneWidget);
     final endButton = tester
         .widget<CustomButton>(find.byKey(const ValueKey('endFightButton')));
     expect(endButton.onPressed, isNull);

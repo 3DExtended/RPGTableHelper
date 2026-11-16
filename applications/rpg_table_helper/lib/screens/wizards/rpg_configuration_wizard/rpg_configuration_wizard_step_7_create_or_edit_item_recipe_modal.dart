@@ -12,6 +12,7 @@ import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/custom_iterator_extensions.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/main.dart';
@@ -60,12 +61,27 @@ class _CreateOrEditCraftingRecipeModalContentState
     TextEditingController quantityController
   ) selectedCreatingItem = (null, TextEditingController(text: "1"));
 
+  /// Rebuilds the form, so amount errors and the save button follow the input.
+  void _onAmountChanged() => setState(() {});
+
+  /// True while an amount is not a whole number of 1 or more. Saving would
+  /// otherwise silently store 1.
+  bool get _hasInvalidAmount =>
+      parsePositiveInt(selectedCreatingItem.$2.text) == null ||
+      selectedIngredient.any((pair) => parsePositiveInt(pair.$2.text) == null);
+
+  String? _amountError(TextEditingController controller) =>
+      parsePositiveInt(controller.text) == null
+          ? S.of(context).invalidPositiveNumberShort
+          : null;
+
   bool hasDataLoaded = false;
 
   List<RpgItem> _allItems = [];
 
   @override
   void initState() {
+    selectedCreatingItem.$2.addListener(_onAmountChanged);
     Future.delayed(Duration.zero, () {
       setState(() {
         requiredItemIdsSelected = widget.itemToEdit.requiredItemIds;
@@ -73,6 +89,7 @@ class _CreateOrEditCraftingRecipeModalContentState
             .map((e) => (
                   e.itemUuid,
                   TextEditingController(text: e.amountOfUsedItem.toString())
+                    ..addListener(_onAmountChanged)
                 ))
             .toList();
 
@@ -186,10 +203,14 @@ class _CreateOrEditCraftingRecipeModalContentState
                                     SizedBox(
                                       width: 70,
                                       child: CustomTextField(
-                                        keyboardType: TextInputType.number,
+                                        // Signed keyboard: on iOS it has a
+                                        // return key to close the keyboard.
+                                        keyboardType: signedIntKeyboardType,
                                         labelText: S.of(context).amount,
                                         textEditingController:
                                             selectedCreatingItem.$2,
+                                        errorText: _amountError(
+                                            selectedCreatingItem.$2),
                                       ),
                                     ),
                                   ],
@@ -396,11 +417,13 @@ class _CreateOrEditCraftingRecipeModalContentState
                                               width: 70,
                                               child: CustomTextField(
                                                 keyboardType:
-                                                    TextInputType.number,
+                                                    signedIntKeyboardType,
                                                 labelText:
                                                     S.of(context).amount,
                                                 textEditingController:
                                                     tuple.value.$2,
+                                                errorText: _amountError(
+                                                    tuple.value.$2),
                                               ),
                                             ),
                                             const SizedBox(
@@ -450,6 +473,7 @@ class _CreateOrEditCraftingRecipeModalContentState
                                             selectedIngredient.add((
                                               "",
                                               TextEditingController(text: "1")
+                                                ..addListener(_onAmountChanged)
                                             ));
                                           });
                                         },
@@ -500,38 +524,38 @@ class _CreateOrEditCraftingRecipeModalContentState
                             const Spacer(),
                             CustomButton(
                               label: S.of(context).save,
-                              onPressed: () {
-                                try {
-                                  navigatorKey.currentState!.pop(
-                                    CraftingRecipe(
-                                      recipeUuid: widget.itemToEdit.recipeUuid,
-                                      requiredItemIds: requiredItemIdsSelected
-                                          .where((str) => str != null)
-                                          .map((str) => str!)
-                                          .toList(),
-                                      ingredients: selectedIngredient
-                                          .map(
-                                            (pair) =>
-                                                CraftingRecipeIngredientPair(
-                                              itemUuid: pair.$1!,
-                                              amountOfUsedItem:
-                                                  int.tryParse(pair.$2.text) ??
-                                                      1,
-                                            ),
-                                          )
-                                          .toList(),
-                                      createdItem: CraftingRecipeIngredientPair(
-                                          itemUuid: selectedCreatingItem.$1!,
-                                          amountOfUsedItem: int.tryParse(
-                                                  selectedCreatingItem
-                                                      .$2.text) ??
-                                              1),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  log(e.toString());
-                                }
-                              },
+                              onPressed: _hasInvalidAmount
+                                  ? null
+                                  : () {
+                                      try {
+                                        navigatorKey.currentState!.pop(
+                                          CraftingRecipe(
+                                            recipeUuid: widget.itemToEdit.recipeUuid,
+                                            requiredItemIds: requiredItemIdsSelected
+                                                .where((str) => str != null)
+                                                .map((str) => str!)
+                                                .toList(),
+                                            ingredients: selectedIngredient
+                                                .map(
+                                                  (pair) =>
+                                                      CraftingRecipeIngredientPair(
+                                                    itemUuid: pair.$1!,
+                                                    amountOfUsedItem:
+                                                        parsePositiveInt(
+                                                            pair.$2.text)!,
+                                                  ),
+                                                )
+                                                .toList(),
+                                            createdItem: CraftingRecipeIngredientPair(
+                                                itemUuid: selectedCreatingItem.$1!,
+                                                amountOfUsedItem: parsePositiveInt(
+                                                    selectedCreatingItem.$2.text)!),
+                                          ),
+                                        );
+                                      } catch (e) {
+                                        log(e.toString());
+                                      }
+                                    },
                             ),
                           ],
                         ),
