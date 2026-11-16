@@ -911,7 +911,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Währung"),
     "newBalance": MessageLookupByLibrary.simpleMessage("Neues Guthaben"),
     "newCampagneIntro": MessageLookupByLibrary.simpleMessage(
-      "Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.",
+      "Wie soll deine Kampagne heißen? Danach wählst du eine Vorlage, und der Assistent führt dich durch Charakterbogen, Währung und Gegenstände.",
     ),
     "newCampaign": MessageLookupByLibrary.simpleMessage("Neue Kampagne"),
     "newFightOrdering": MessageLookupByLibrary.simpleMessage(
@@ -1430,7 +1430,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Willkommen bei QuestKeeper",
     ),
     "wizardCampaignNameStepHelper": MessageLookupByLibrary.simpleMessage(
-      "## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.",
+      "## Kampagnenname\n\nWie heißt deine Kampagne? Du kannst den Namen später jederzeit ändern.\n\nDer Name braucht mindestens vier Zeichen.",
     ),
     "wizardCategoryItemCount": m27,
     "wizardCategoryNameLabel": MessageLookupByLibrary.simpleMessage(

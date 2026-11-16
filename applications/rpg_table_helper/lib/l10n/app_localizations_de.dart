@@ -1372,7 +1372,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wizardCampaignNameStepHelper =>
-      '## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.';
+      '## Kampagnenname\n\nWie heißt deine Kampagne? Du kannst den Namen später jederzeit ändern.\n\nDer Name braucht mindestens vier Zeichen.';
 
   @override
   String get wizardCharacterSheetStepTitle => 'Charakterbogen';
@@ -1756,7 +1756,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get newCampagneIntro =>
-      'Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.';
+      'Wie soll deine Kampagne heißen? Danach wählst du eine Vorlage, und der Assistent führt dich durch Charakterbogen, Währung und Gegenstände.';
 
   @override
   String get createAction => 'Anlegen';

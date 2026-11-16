@@ -537,7 +537,7 @@
   "confirmDeleteBtnLabel": "Löschen",
   "wizardUndo": "Rückgängig",
   "wizardSkinStepHelper": "## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.",
-  "wizardCampaignNameStepHelper": "## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.",
+  "wizardCampaignNameStepHelper": "## Kampagnenname\n\nWie heißt deine Kampagne? Du kannst den Namen später jederzeit ändern.\n\nDer Name braucht mindestens vier Zeichen.",
   "wizardCharacterSheetStepTitle": "Charakterbogen",
   "wizardTabNameLabel": "Name des Tabs",
   "wizardUnnamedTab": "Unbenannter Tab",
@@ -792,7 +792,7 @@
     }
   },
   "enterCodeAgainAction": "Code neu eingeben",
-  "newCampagneIntro": "Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.",
+  "newCampagneIntro": "Wie soll deine Kampagne heißen? Danach wählst du eine Vorlage, und der Assistent führt dich durch Charakterbogen, Währung und Gegenstände.",
   "createAction": "Anlegen",
   "invitePlayersAction": "Spieler einladen",
   "noPlayersYetHint": "Noch keine Spieler dabei. Lade deine Gruppe über „Spieler einladen“ ein.",

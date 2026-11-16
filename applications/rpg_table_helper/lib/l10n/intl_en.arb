@@ -497,7 +497,7 @@
   "confirmDeleteBtnLabel": "Delete",
   "wizardUndo": "Undo",
   "wizardSkinStepHelper": "## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.",
-  "wizardCampaignNameStepHelper": "## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.",
+  "wizardCampaignNameStepHelper": "## Campaign name\n\nWhat is your campaign called? You can change the name any time later.\n\nThe name needs at least four characters.",
   "wizardCharacterSheetStepTitle": "Character sheet",
   "wizardTabNameLabel": "Tab name",
   "wizardUnnamedTab": "Unnamed tab",
@@ -768,7 +768,7 @@
     }
   },
   "enterCodeAgainAction": "Enter code again",
-  "newCampagneIntro": "What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.",
+  "newCampagneIntro": "What should your campaign be called? Next you pick a template, and the assistant guides you through character sheet, currency and items.",
   "createAction": "Create",
   "invitePlayersAction": "Invite players",
   "noPlayersYetHint": "No players yet. Invite your group with “Invite players”.",

@@ -3748,10 +3748,10 @@ class S {
     );
   }
 
-  /// `## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.`
+  /// `## Campaign name\n\nWhat is your campaign called? You can change the name any time later.\n\nThe name needs at least four characters.`
   String get wizardCampaignNameStepHelper {
     return Intl.message(
-      '## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.',
+      '## Campaign name\n\nWhat is your campaign called? You can change the name any time later.\n\nThe name needs at least four characters.',
       name: 'wizardCampaignNameStepHelper',
       desc: '',
       args: [],
@@ -4650,10 +4650,10 @@ class S {
     );
   }
 
-  /// `What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.`
+  /// `What should your campaign be called? Next you pick a template, and the assistant guides you through character sheet, currency and items.`
   String get newCampagneIntro {
     return Intl.message(
-      'What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.',
+      'What should your campaign be called? Next you pick a template, and the assistant guides you through character sheet, currency and items.',
       name: 'newCampagneIntro',
       desc: '',
       args: [],

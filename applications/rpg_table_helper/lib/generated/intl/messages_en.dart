@@ -883,7 +883,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "navBarHeaderMoney": MessageLookupByLibrary.simpleMessage("Currency"),
     "newBalance": MessageLookupByLibrary.simpleMessage("New balance"),
     "newCampagneIntro": MessageLookupByLibrary.simpleMessage(
-      "What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.",
+      "What should your campaign be called? Next you pick a template, and the assistant guides you through character sheet, currency and items.",
     ),
     "newCampaign": MessageLookupByLibrary.simpleMessage("New campaign"),
     "newFightOrdering": MessageLookupByLibrary.simpleMessage(
@@ -1372,7 +1372,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Welcome to QuestKeeper",
     ),
     "wizardCampaignNameStepHelper": MessageLookupByLibrary.simpleMessage(
-      "## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.",
+      "## Campaign name\n\nWhat is your campaign called? You can change the name any time later.\n\nThe name needs at least four characters.",
     ),
     "wizardCategoryItemCount": m27,
     "wizardCategoryNameLabel": MessageLookupByLibrary.simpleMessage(

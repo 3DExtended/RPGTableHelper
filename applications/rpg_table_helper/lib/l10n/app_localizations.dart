@@ -2561,7 +2561,7 @@ abstract class AppLocalizations {
   /// No description provided for @wizardCampaignNameStepHelper.
   ///
   /// In de, this message translates to:
-  /// **'## Kampagnenname\n\nWir beginnen mit der wohl schwierigsten Frage überhaupt: Wie heißt deine Kampagne?\n\nDer Name braucht mindestens vier Zeichen.'**
+  /// **'## Kampagnenname\n\nWie heißt deine Kampagne? Du kannst den Namen später jederzeit ändern.\n\nDer Name braucht mindestens vier Zeichen.'**
   String get wizardCampaignNameStepHelper;
 
   /// No description provided for @wizardCharacterSheetStepTitle.
@@ -3089,7 +3089,7 @@ abstract class AppLocalizations {
   /// No description provided for @newCampagneIntro.
   ///
   /// In de, this message translates to:
-  /// **'Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.'**
+  /// **'Wie soll deine Kampagne heißen? Danach wählst du eine Vorlage, und der Assistent führt dich durch Charakterbogen, Währung und Gegenstände.'**
   String get newCampagneIntro;
 
   /// No description provided for @createAction.
