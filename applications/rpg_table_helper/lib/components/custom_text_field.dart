@@ -14,7 +14,11 @@ class CustomTextField extends StatelessWidget {
       this.placeholderText,
       this.disableMaxLineLimit,
       this.errorText,
+      this.hintText,
       this.textCapitalization});
+
+  /// Grey text inside the empty field, e.g. an example answer.
+  final String? hintText;
   final bool? disableMaxLineLimit;
 
   /// Overrides the default: sentences, except for e-mail addresses, links and
@@ -76,6 +80,12 @@ class CustomTextField extends StatelessWidget {
                   )
                 : null,
             helperText: placeholderText,
+            hintText: hintText,
+            hintMaxLines: 3,
+            // The label stays above, so the example shows in the empty field
+            // before it is tapped.
+            floatingLabelBehavior:
+                hintText == null ? null : FloatingLabelBehavior.always,
             // Long helper texts wrap instead of being cut off ("Der Wert von K…").
             helperMaxLines: 4,
             errorText: errorText,
@@ -94,7 +104,10 @@ class CustomTextField extends StatelessWidget {
             ),
             hintStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
                 fontFamily: "Ruwudu",
-                color: CustomThemeProvider.of(context).theme.darkTextColor),
+                color: CustomThemeProvider.of(context)
+                    .theme
+                    .darkTextColor
+                    .withValues(alpha: hintText == null ? 1 : 0.5)),
             labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(
                 fontFamily: "Ruwudu",
                 color: CustomThemeProvider.of(context).theme.darkTextColor),

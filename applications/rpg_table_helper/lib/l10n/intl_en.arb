@@ -1121,5 +1121,16 @@
     }
   },
   "optionCardMore": "More",
-  "optionCardLess": "Less"
+  "optionCardLess": "Less",
+  "statExampleHint": "e.g. {example}",
+  "@statExampleHint": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "propertyExampleLabel": "Example answer (optional)",
+  "propertyExampleHelp": "Shown in grey in the empty field so players see what is meant.",
+  "templateUpdateNewExample": "New example answer"
 }

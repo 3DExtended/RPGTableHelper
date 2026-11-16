@@ -43,6 +43,7 @@ String describeTemplateStatChange(S s, TemplateStatChange change) {
     if (change.helperTextChanged) s.templateUpdateNewHelperText,
     if (change.newEntries > 0) s.templateUpdateNewEntries(change.newEntries),
     if (change.entriesRevised) s.templateUpdateEntriesRevised,
+    if (change.exampleChanged) s.templateUpdateNewExample,
     if (change.otherSettingsChanged) s.templateUpdateOtherSettings,
   ].join(' · ');
 }

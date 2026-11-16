@@ -14,6 +14,7 @@ import 'package:quest_keeper/helpers/character_stats/computed_stat_editor.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/property_purposes.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_example.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -81,6 +82,9 @@ class ShowGetDmConfigurationModalContent extends StatefulWidget {
 class _ShowGetDmConfigurationModalContentState
     extends State<ShowGetDmConfigurationModalContent> {
   var nameTextEditor = TextEditingController();
+
+  /// Text types: an example answer for the character form.
+  var exampleTextEditor = TextEditingController();
   var helperTextEditor = TextEditingController();
 
   // stored as options with label/description(/summary) in additionalValues
@@ -140,6 +144,8 @@ class _ShowGetDmConfigurationModalContentState
 
           selectedEditType = initial.editType;
           selectedValueType = initial.valueType;
+          exampleTextEditor =
+              TextEditingController(text: statExampleOf(initial) ?? '');
 
           isOptionalForAlternateForms =
               initial.isOptionalForAlternateForms ??
@@ -289,6 +295,18 @@ class _ShowGetDmConfigurationModalContentState
               textEditingController: helperTextEditor,
               keyboardType: TextInputType.text,
             ),
+            if (statTypesWithExample.contains(selectedValueType)) ...[
+              SizedBox(
+                height: 10,
+              ),
+              CustomTextField(
+                key: const ValueKey('propertyExampleField'),
+                labelText: S.of(context).propertyExampleLabel,
+                placeholderText: S.of(context).propertyExampleHelp,
+                textEditingController: exampleTextEditor,
+                keyboardType: TextInputType.text,
+              ),
+            ],
             SizedBox(
               height: 10,
             ),
@@ -394,6 +412,10 @@ class _ShowGetDmConfigurationModalContentState
                   .toList(),
               allowCustomEntries: textListAllowCustomEntries,
             ).toAdditionalData());
+          } else if (statTypesWithExample.contains(selectedValueType)) {
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData:
+                    statExampleAdditionalData(exampleTextEditor.text));
           } else if (selectedValueType == CharacterStatValueType.unsupported) {
             // A type from a newer app version: keep its data and type name.
             tempResult = tempResult.copyWith(
@@ -673,6 +695,7 @@ class _ShowGetDmConfigurationModalContentState
   Listenable _previewInputs() => Listenable.merge([
         nameTextEditor,
         helperTextEditor,
+        exampleTextEditor,
         for (final option in multiselectOptions) ...[
           option.$2,
           option.$3,

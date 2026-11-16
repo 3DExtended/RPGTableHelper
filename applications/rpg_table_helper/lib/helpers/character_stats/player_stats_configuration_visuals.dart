@@ -26,6 +26,7 @@ import 'package:quest_keeper/helpers/character_stats/character_portrait.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_example.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_style_names.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_create_new_character_transformation_wizard.dart';
@@ -935,12 +936,19 @@ class _PlayerStatsConfigurationVisualsState
     );
   }
 
+  /// "z. B. …" with the property's example answer, if it has one.
+  String? _exampleHint() {
+    final example = statExampleOf(widget.statConfiguration);
+    return example == null ? null : S.of(context).statExampleHint(example);
+  }
+
   Widget getConfigurationWidgetsForTextBlock() {
     // characterValue.serializedValue = {"value": "asdf"}
 
     return CustomTextField(
       labelText: widget.statConfiguration.name,
       placeholderText: widget.statConfiguration.helperText,
+      hintText: _exampleHint(),
       textEditingController: textController,
       keyboardType: widget.statConfiguration.valueType ==
               CharacterStatValueType.multiLineText
@@ -956,6 +964,7 @@ class _PlayerStatsConfigurationVisualsState
         CustomTextField(
           labelText: widget.statConfiguration.name,
           placeholderText: widget.statConfiguration.helperText,
+          hintText: _exampleHint(),
           textEditingController: textController,
           keyboardType: TextInputType.multiline,
         ),

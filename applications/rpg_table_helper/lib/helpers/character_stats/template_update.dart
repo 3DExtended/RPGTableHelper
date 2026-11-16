@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:quest_keeper/helpers/character_stats/stat_example.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/models/rpg_configuration_templates.dart';
@@ -105,6 +106,12 @@ class TemplateStatChange {
     return before.entries
         .any((e) => after.containsKey(e.key) && after[e.key] != e.value);
   }
+
+  /// The example answer the character form shows reads differently.
+  bool get exampleChanged =>
+      current != null &&
+      _additionalData(current!)[statExampleKey] !=
+          _additionalData(updated)[statExampleKey];
 
   /// Anything else differs (how often it changes, further settings).
   bool get otherSettingsChanged =>
@@ -332,9 +339,11 @@ String _normalized(CharacterStatDefinition stat) => jsonEncode({
       },
     });
 
+/// For comparing the other settings: without list entries and example.
 String _withoutEntries(CharacterStatDefinition stat) {
   final data = _additionalData(stat)
-    ..removeWhere((_, v) => v is List && _isEntryList(v));
+    ..removeWhere((_, v) => v is List && _isEntryList(v))
+    ..remove(statExampleKey);
   return jsonEncode({
     ...stat.toJson(),
     'groupId': null,

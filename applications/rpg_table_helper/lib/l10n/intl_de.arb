@@ -1169,5 +1169,16 @@
     }
   },
   "optionCardMore": "Mehr",
-  "optionCardLess": "Weniger"
+  "optionCardLess": "Weniger",
+  "statExampleHint": "z. B. {example}",
+  "@statExampleHint": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "propertyExampleLabel": "Beispielantwort (optional)",
+  "propertyExampleHelp": "Steht grau im leeren Feld, damit Spieler sehen, was gemeint ist.",
+  "templateUpdateNewExample": "Neue Beispielantwort"
 }

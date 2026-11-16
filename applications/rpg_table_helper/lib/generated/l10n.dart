@@ -6892,6 +6892,46 @@ class S {
   String get optionCardLess {
     return Intl.message('Less', name: 'optionCardLess', desc: '', args: []);
   }
+
+  /// `e.g. {example}`
+  String statExampleHint(String example) {
+    return Intl.message(
+      'e.g. $example',
+      name: 'statExampleHint',
+      desc: '',
+      args: [example],
+    );
+  }
+
+  /// `Example answer (optional)`
+  String get propertyExampleLabel {
+    return Intl.message(
+      'Example answer (optional)',
+      name: 'propertyExampleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shown in grey in the empty field so players see what is meant.`
+  String get propertyExampleHelp {
+    return Intl.message(
+      'Shown in grey in the empty field so players see what is meant.',
+      name: 'propertyExampleHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New example answer`
+  String get templateUpdateNewExample {
+    return Intl.message(
+      'New example answer',
+      name: 'templateUpdateNewExample',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

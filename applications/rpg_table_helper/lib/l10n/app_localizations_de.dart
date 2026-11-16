@@ -2594,4 +2594,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get optionCardLess => 'Weniger';
+
+  @override
+  String statExampleHint(String example) {
+    return 'z. B. $example';
+  }
+
+  @override
+  String get propertyExampleLabel => 'Beispielantwort (optional)';
+
+  @override
+  String get propertyExampleHelp =>
+      'Steht grau im leeren Feld, damit Spieler sehen, was gemeint ist.';
+
+  @override
+  String get templateUpdateNewExample => 'Neue Beispielantwort';
 }

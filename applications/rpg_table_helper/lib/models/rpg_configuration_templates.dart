@@ -95,6 +95,10 @@ class RpgConfigurationTemplates {
                 "Wer ist dein Charakter? Wie sieht er aus, woher kommt er, "
                 "was treibt ihn an?",
             type: CharacterStatValueType.multiLineText,
+            additionalData: _example(
+              "Mira, 34, Schmugglerin aus dem Hafenviertel. Trägt immer den "
+              "Ring ihrer Mutter und will die Schulden der Familie tilgen.",
+            ),
           ),
         ],
       ),
@@ -130,6 +134,10 @@ class RpgConfigurationTemplates {
             name: "Porträt",
             helperText: "Erstelle ein Bild von deinem Charakter.",
             type: CharacterStatValueType.singleImage,
+            additionalData: _example(
+              "Junge Frau mit wildem Lockenkopf und abgewetzter Lederjacke, "
+              "lacht verschmitzt.",
+            ),
           ),
           _stat(
             uuid: "7ecd3603-7c86-4717-bd99-bb6974355b13",
@@ -321,6 +329,9 @@ class RpgConfigurationTemplates {
       CurrencyType(name: "Münzen", multipleOfPreviousValue: null),
     ],
   );
+
+  /// Additional data with the example answer the character form shows.
+  static String _example(String text) => jsonEncode({"example": text});
 
   static CharacterStatDefinition _stat({
     required String uuid,

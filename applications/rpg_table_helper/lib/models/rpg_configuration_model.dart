@@ -399,6 +399,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "30e18433-748d-458c-bd5e-373c38e762bf",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Ein Fischerdorf an der Nordküste, aufgewachsen bei der Großmutter."}',
                   name: "Herkunft",
                   helperText: "Wo kommt dein Charakter her?",
                   valueType: CharacterStatValueType.multiLineText,
@@ -412,6 +414,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "0070b224-95ac-4f0f-ab07-1ddb0d3d2ac8",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Ehemalige Stadtwache, die nach einem Skandal den Dienst quittiert hat."}',
                   name: "Hintergrund",
                   helperText: "Welchen Hintergrund hat dein Charakter?",
                   valueType: CharacterStatValueType.multiLineText,
@@ -422,6 +426,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "37862834-261a-47b5-bd5c-9e315b8d26aa",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Will den Mörder des Bruders finden – und fürchtet, was dann kommt."}',
                   name: "Antrieb",
                   helperText: "Was treibt deinen Charakter an?",
                   valueType: CharacterStatValueType.multiLineText,
@@ -432,6 +438,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "a464bfe4-d99f-475d-a4af-0f1e5f73290e",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Groß und hager, rote Zöpfe, eine Narbe über der linken Braue."}',
                   name: "Aussehen",
                   helperText: "Wie sieht dein Charakter aus?",
                   valueType: CharacterStatValueType.multiLineText,
@@ -442,6 +450,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "5accd34c-eade-4754-b955-21e1d902c4d9",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Elfisch, Zwergisch; Diebeswerkzeug, Laute."}',
                   name: "Weitere Übungen und Sprachen",
                   helperText: "Was kann dein Charakter noch?",
                   valueType: CharacterStatValueType.multiLineText,
@@ -472,6 +482,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "273f7ce3-59db-4c34-bc90-83c53f3ea553",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Halbelfin mit kurzen silbernen Haaren, in dunklem Reisemantel."}',
                   name: "Porträt",
                   helperText: "Erstelle ein Bild von deinem Charakter.",
                   valueType: CharacterStatValueType.singleImage,
@@ -564,6 +576,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "893bab17-6c13-4ed5-a287-8eaa135a54ef",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Dunkelsicht 18 m; Vorteil gegen Vergiftung."}',
                   name: "Merkmale",
                   helperText:
                       "Klassenmerkmale, Merkmale deiner Spezies und Talente",
@@ -582,6 +596,8 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "3219934b-09fc-409b-8413-9e56b864c664",
+                  jsonSerializedAdditionalData:
+                      '{"example": "Langschwert +5, 1W8+3 Hieb; Kurzbogen +4, 1W6+2 Stich."}',
                   name: "Angriffe",
                   helperText: "Angriffe mit Waffen und waffenlose Angriffe",
                   valueType: CharacterStatValueType.multiLineText,

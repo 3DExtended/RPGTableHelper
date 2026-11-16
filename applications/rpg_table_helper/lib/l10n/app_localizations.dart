@@ -4495,6 +4495,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Weniger'**
   String get optionCardLess;
+
+  /// No description provided for @statExampleHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. {example}'**
+  String statExampleHint(String example);
+
+  /// No description provided for @propertyExampleLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Beispielantwort (optional)'**
+  String get propertyExampleLabel;
+
+  /// No description provided for @propertyExampleHelp.
+  ///
+  /// In de, this message translates to:
+  /// **'Steht grau im leeren Feld, damit Spieler sehen, was gemeint ist.'**
+  String get propertyExampleHelp;
+
+  /// No description provided for @templateUpdateNewExample.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Beispielantwort'**
+  String get templateUpdateNewExample;
 }
 
 class _AppLocalizationsDelegate
