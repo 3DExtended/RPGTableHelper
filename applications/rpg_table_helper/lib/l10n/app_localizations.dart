@@ -4549,6 +4549,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen.'**
   String get quickStartPageHint;
+
+  /// No description provided for @levelUpTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Stufenaufstieg'**
+  String get levelUpTitle;
+
+  /// No description provided for @levelUpIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Von Stufe {from} auf {to}. Trag ein, was sich mit der neuen Stufe ändert – was gleich bleibt, lässt du einfach stehen.'**
+  String levelUpIntro(int from, int to);
+
+  /// No description provided for @levelUpOnlyLevelHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Spielleitung kann im Bogen festlegen, welche Eigenschaften hier zusätzlich abgefragt werden.'**
+  String get levelUpOnlyLevelHint;
+
+  /// No description provided for @levelUpMenuEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Stufenaufstieg'**
+  String get levelUpMenuEntry;
+
+  /// No description provided for @propertyAskOnLevelUp.
+  ///
+  /// In de, this message translates to:
+  /// **'Beim Stufenaufstieg abfragen'**
+  String get propertyAskOnLevelUp;
+
+  /// No description provided for @templateUpdateLevelUpChanged.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird beim Stufenaufstieg abgefragt'**
+  String get templateUpdateLevelUpChanged;
 }
 
 class _AppLocalizationsDelegate

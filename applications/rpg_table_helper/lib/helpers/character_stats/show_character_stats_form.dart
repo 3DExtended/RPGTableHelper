@@ -24,6 +24,10 @@ enum CharacterStatsFormMode {
 
   /// Editing all fields of one tab from the sheet menu: Cancel / Save.
   editTab,
+
+  /// The guided level-up: the level one up, then the properties marked
+  /// "Beim Stufenaufstieg abfragen", tab by tab, with progress.
+  levelUp,
 }
 
 /// How the character form was closed.
@@ -64,6 +68,7 @@ Future<CharacterStatsFormOutcome?> showCharacterStatsForm({
   required bool isEditingAlternateForm,
   required CharacterStatsFormPersist onPersist,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
+  int? previousLevel,
 }) {
   return customShowCupertinoModalBottomSheet<CharacterStatsFormOutcome>(
     isDismissible: true,
@@ -82,6 +87,7 @@ Future<CharacterStatsFormOutcome?> showCharacterStatsForm({
       isEditingAlternateForm: isEditingAlternateForm,
       onPersist: onPersist,
       overrideNavigatorKey: overrideNavigatorKey,
+      previousLevel: previousLevel,
     ),
   );
 }
@@ -97,6 +103,7 @@ class CharacterStatsFormContent extends StatefulWidget {
     required this.isEditingAlternateForm,
     required this.onPersist,
     this.overrideNavigatorKey,
+    this.previousLevel,
   });
 
   final List<CharacterStatsFormPage> pages;
@@ -107,6 +114,9 @@ class CharacterStatsFormContent extends StatefulWidget {
   final bool isEditingAlternateForm;
   final CharacterStatsFormPersist onPersist;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
+
+  /// The level before the level-up ([CharacterStatsFormMode.levelUp]).
+  final int? previousLevel;
 
   /// "Schnell starten" on the first page of the setup.
   static const quickStartKey = ValueKey('character-stats-form-quick-start');
@@ -147,6 +157,10 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
       _quick ? _quickPage! : widget.pages[_pageIndex];
   bool get _isLastPage => _quick || _pageIndex >= widget.pages.length - 1;
   bool get _isSetup => widget.mode == CharacterStatsFormMode.setup;
+  bool get _isLevelUp => widget.mode == CharacterStatsFormMode.levelUp;
+
+  /// Page by page with progress: the setup and the level-up.
+  bool get _isGuided => widget.mode != CharacterStatsFormMode.editTab;
 
   /// The quick start is the first choice on the first page.
   bool get _offersQuickStart =>
@@ -306,6 +320,19 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
         '${s.quickStartAnd} ${names.last}';
   }
 
+  /// On the first page of the level-up: from which level to which, and,
+  /// when it asks for nothing but the level, where that is set.
+  String? _levelUpHint(BuildContext context) {
+    if (!_isLevelUp || _pageIndex > 0) return null;
+    final s = S.of(context);
+    final from = widget.previousLevel ?? 1;
+    final onlyLevel = widget.pages.length == 1 && _page.stats.length == 1;
+    return [
+      s.levelUpIntro(from, from + 1),
+      if (onlyLevel) s.levelUpOnlyLevelHint,
+    ].join('\n\n');
+  }
+
   void _onFillInLater() {
     if (!_isPageValid) return;
     _persistEdits();
@@ -318,6 +345,7 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
 
   String get _title {
     if (_isSetup) return S.of(context).characterSetupTitle;
+    if (_isLevelUp) return S.of(context).levelUpTitle;
     return S.of(context).configureProperties +
         (widget.characterName.isEmpty
             ? ""
@@ -400,7 +428,7 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (_isSetup) ...[
+        if (_isGuided) ...[
           if (_offersQuickStart) ...[
             _QuickStartCard(
               fields: _quickStartFields(context),
@@ -436,12 +464,19 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
             ),
           ],
           const SizedBox(height: 10),
-          Text(
-            _quick
-                ? S.of(context).quickStartPageHint
-                : S.of(context).characterSetupHint,
-            style: textStyle.copyWith(fontSize: 14),
-          ),
+          if (_levelUpHint(context) case final hint?)
+            Text(
+              hint,
+              key: const ValueKey('character-stats-form-level-up-hint'),
+              style: textStyle.copyWith(fontSize: 14),
+            )
+          else if (_isSetup)
+            Text(
+              _quick
+                  ? S.of(context).quickStartPageHint
+                  : S.of(context).characterSetupHint,
+              style: textStyle.copyWith(fontSize: 14),
+            ),
           const SizedBox(height: 10),
         ] else ...[
           Text(tabName, style: textStyle.copyWith(fontSize: 20)),
@@ -542,7 +577,7 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
               ),
               trailing: const SizedBox.shrink(),
             ),
-          ] else if (_isSetup) ...[
+          ] else if (_isGuided) ...[
             _ButtonRow(
               leading: _pageIndex > 0
                   ? CustomButton(label: S.of(context).back, onPressed: _onBack)
@@ -562,11 +597,13 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
                 variant: CustomButtonVariant.FlatButton,
                 onPressed: _onCancel,
               ),
-              trailing: CustomButton(
-                label: S.of(context).fillInLater,
-                variant: CustomButtonVariant.FlatButton,
-                onPressed: pageValid ? _onFillInLater : null,
-              ),
+              trailing: _isSetup
+                  ? CustomButton(
+                      label: S.of(context).fillInLater,
+                      variant: CustomButtonVariant.FlatButton,
+                      onPressed: pageValid ? _onFillInLater : null,
+                    )
+                  : const SizedBox.shrink(),
             ),
           ] else
             _ButtonRow(

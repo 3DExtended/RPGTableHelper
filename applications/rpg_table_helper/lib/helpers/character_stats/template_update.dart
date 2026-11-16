@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:quest_keeper/helpers/character_stats/level_up.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_example.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -112,6 +113,12 @@ class TemplateStatChange {
       current != null &&
       _additionalData(current!)[statExampleKey] !=
           _additionalData(updated)[statExampleKey];
+
+  /// The level-up asks for it now, or no longer.
+  bool get levelUpChanged =>
+      current != null &&
+      (_additionalData(current!)[statAskOnLevelUpKey] == true) !=
+          (_additionalData(updated)[statAskOnLevelUpKey] == true);
 
   /// Anything else differs (how often it changes, further settings).
   bool get otherSettingsChanged =>
@@ -339,11 +346,13 @@ String _normalized(CharacterStatDefinition stat) => jsonEncode({
       },
     });
 
-/// For comparing the other settings: without list entries and example.
+/// For comparing the other settings: without list entries, example and
+/// level-up mark.
 String _withoutEntries(CharacterStatDefinition stat) {
   final data = _additionalData(stat)
     ..removeWhere((_, v) => v is List && _isEntryList(v))
-    ..remove(statExampleKey);
+    ..remove(statExampleKey)
+    ..remove(statAskOnLevelUpKey);
   return jsonEncode({
     ...stat.toJson(),
     'groupId': null,

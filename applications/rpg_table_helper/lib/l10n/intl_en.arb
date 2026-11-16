@@ -1144,5 +1144,21 @@
   },
   "quickStartAnd": "and",
   "quickStartAllSections": "All sections",
-  "quickStartPageHint": "Everything else stays open and can be filled in on the character sheet at any time."
+  "quickStartPageHint": "Everything else stays open and can be filled in on the character sheet at any time.",
+  "levelUpTitle": "Level up",
+  "levelUpIntro": "From level {from} to {to}. Enter what changes with the new level – leave what stays the same as it is.",
+  "@levelUpIntro": {
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "levelUpOnlyLevelHint": "The game master can choose in the sheet setup which properties are asked for here as well.",
+  "levelUpMenuEntry": "Level up",
+  "propertyAskOnLevelUp": "Ask for it on level-up",
+  "templateUpdateLevelUpChanged": "Asked for on level-up"
 }

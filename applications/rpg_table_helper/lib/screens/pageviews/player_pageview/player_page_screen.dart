@@ -10,6 +10,7 @@ import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/components/page_tab_strip.dart';
 import 'package:quest_keeper/components/prevent_swipe_navigation.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/level_up.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/has_missing_required_campaign_stats.dart';
@@ -794,6 +795,16 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
                       ),
                       onTap: () => Navigator.of(ctx).pop('stats'),
                     ),
+                    if (levelStatOf(rpgConfig) != null &&
+                        PlayerPageHelpers.isOwnCharacter(ref, charToRender))
+                      ListTile(
+                        key: const ValueKey('sheetMenuLevelUp'),
+                        title: Text(
+                          S.of(ctx).levelUpMenuEntry,
+                          style: TextStyle(color: theme.darkTextColor),
+                        ),
+                        onTap: () => Navigator.of(ctx).pop('levelUp'),
+                      ),
                   ],
                 ),
               ),
@@ -810,6 +821,16 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
         ref: ref,
         context: context,
         filterTabId: visibleCharacterStatTabs(rpgConfig)[_currentStep].uuid,
+        rpgConfig: rpgConfig,
+        selectedCharacter: charToRender,
+      );
+      return;
+    }
+
+    if (choice == 'levelUp') {
+      await PlayerPageHelpers.startLevelUp(
+        ref: ref,
+        context: context,
         rpgConfig: rpgConfig,
         selectedCharacter: charToRender,
       );

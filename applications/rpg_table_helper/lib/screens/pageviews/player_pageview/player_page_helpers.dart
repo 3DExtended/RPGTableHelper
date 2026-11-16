@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/character_stats_form_pages.dart';
+import 'package:quest_keeper/helpers/character_stats/level_up.dart';
 import 'package:quest_keeper/helpers/character_stats/show_character_stats_form.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
@@ -149,6 +150,70 @@ class PlayerPageHelpers {
         ),
       );
     });
+  }
+
+  /// Whether [character] is the player's own: the main character, one of
+  /// its companions or its alternate form (not a character the game master
+  /// looks at).
+  static bool isOwnCharacter(
+    WidgetRef ref,
+    RpgCharacterConfigurationBase character,
+  ) {
+    final main = ref.read(rpgCharacterConfigurationProvider).value;
+    if (main == null) return false;
+    return main.uuid == character.uuid ||
+        main.alternateForm?.uuid == character.uuid ||
+        (main.companionCharacters ?? []).any((c) => c.uuid == character.uuid);
+  }
+
+  /// The guided level-up of [selectedCharacter]: the level one up, then
+  /// the properties the campaign marked "Beim Stufenaufstieg abfragen", tab
+  /// by tab. Nothing opens when the campaign has no level.
+  static Future<void> startLevelUp({
+    required WidgetRef ref,
+    required BuildContext context,
+    required RpgConfigurationModel rpgConfig,
+    required RpgCharacterConfigurationBase selectedCharacter,
+  }) async {
+    final levelStat = levelStatOf(rpgConfig);
+    if (levelStat == null || !isOwnCharacter(ref, selectedCharacter)) return;
+
+    final main = ref.read(rpgCharacterConfigurationProvider).value;
+    final isCompanion = (main?.companionCharacters ?? [])
+        .any((c) => c.uuid == selectedCharacter.uuid);
+    final isAlternateForm = main?.alternateForm != null &&
+        main!.alternateForm!.uuid == selectedCharacter.uuid;
+
+    final pages =
+        buildLevelUpPages(rpgConfig: rpgConfig, isCompanion: isCompanion);
+    if (pages.isEmpty) return;
+
+    final values = {
+      for (final stat in selectedCharacter.characterStats) stat.statUuid: stat,
+    };
+    final levelValue = values[levelStat.statUuid];
+
+    await showCharacterStatsForm(
+      context: context,
+      pages: pages,
+      mode: CharacterStatsFormMode.levelUp,
+      characterName: selectedCharacter.characterName,
+      initialValues: {
+        ...values,
+        levelStat.statUuid: nextLevelValue(levelStat, levelValue),
+      },
+      characterToRenderStatFor: selectedCharacter is RpgCharacterConfiguration
+          ? selectedCharacter
+          : null,
+      isEditingAlternateForm: isAlternateForm,
+      previousLevel: levelOf(levelValue),
+      onPersist: (stats, characterName) => persistCharacterStats(
+        ref: ref,
+        characterId: selectedCharacter.uuid,
+        stats: stats,
+        characterName: characterName,
+      ),
+    );
   }
 
   static Future<void> _editSingleStat({

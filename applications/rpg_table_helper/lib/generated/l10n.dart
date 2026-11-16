@@ -6977,6 +6977,61 @@ class S {
       args: [],
     );
   }
+
+  /// `Level up`
+  String get levelUpTitle {
+    return Intl.message('Level up', name: 'levelUpTitle', desc: '', args: []);
+  }
+
+  /// `From level {from} to {to}. Enter what changes with the new level – leave what stays the same as it is.`
+  String levelUpIntro(int from, int to) {
+    return Intl.message(
+      'From level $from to $to. Enter what changes with the new level – leave what stays the same as it is.',
+      name: 'levelUpIntro',
+      desc: '',
+      args: [from, to],
+    );
+  }
+
+  /// `The game master can choose in the sheet setup which properties are asked for here as well.`
+  String get levelUpOnlyLevelHint {
+    return Intl.message(
+      'The game master can choose in the sheet setup which properties are asked for here as well.',
+      name: 'levelUpOnlyLevelHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level up`
+  String get levelUpMenuEntry {
+    return Intl.message(
+      'Level up',
+      name: 'levelUpMenuEntry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ask for it on level-up`
+  String get propertyAskOnLevelUp {
+    return Intl.message(
+      'Ask for it on level-up',
+      name: 'propertyAskOnLevelUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Asked for on level-up`
+  String get templateUpdateLevelUpChanged {
+    return Intl.message(
+      'Asked for on level-up',
+      name: 'templateUpdateLevelUpChanged',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -2608,4 +2608,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get quickStartPageHint =>
       'Everything else stays open and can be filled in on the character sheet at any time.';
+
+  @override
+  String get levelUpTitle => 'Level up';
+
+  @override
+  String levelUpIntro(int from, int to) {
+    return 'From level $from to $to. Enter what changes with the new level – leave what stays the same as it is.';
+  }
+
+  @override
+  String get levelUpOnlyLevelHint =>
+      'The game master can choose in the sheet setup which properties are asked for here as well.';
+
+  @override
+  String get levelUpMenuEntry => 'Level up';
+
+  @override
+  String get propertyAskOnLevelUp => 'Ask for it on level-up';
+
+  @override
+  String get templateUpdateLevelUpChanged => 'Asked for on level-up';
 }

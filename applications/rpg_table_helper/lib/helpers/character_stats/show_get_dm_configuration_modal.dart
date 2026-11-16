@@ -12,6 +12,7 @@ import 'package:quest_keeper/components/modal_content_wrapper.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/computed_stat_editor.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:quest_keeper/helpers/character_stats/level_up.dart';
 import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/property_purposes.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_example.dart';
@@ -120,6 +121,9 @@ class _ShowGetDmConfigurationModalContentState
 
   // TODO add "advanced options" to edit those...
   bool isOptionalForCompanionCharacters = false;
+
+  /// The guided level-up asks for the property.
+  bool askOnLevelUp = false;
   bool isOptionalForAlternateForms = false;
   bool multiselectIsAllowedToBeSelectedMultipleTimes = false;
 
@@ -146,6 +150,7 @@ class _ShowGetDmConfigurationModalContentState
           selectedValueType = initial.valueType;
           exampleTextEditor =
               TextEditingController(text: statExampleOf(initial) ?? '');
+          askOnLevelUp = statAsksOnLevelUp(initial);
 
           isOptionalForAlternateForms =
               initial.isOptionalForAlternateForms ??
@@ -471,6 +476,15 @@ class _ShowGetDmConfigurationModalContentState
             tempResult = tempResult.copyWith(
                 jsonSerializedAdditionalData:
                     computedFormula.toAdditionalData());
+          }
+
+          if (askOnLevelUp &&
+              canAskOnLevelUp(selectedValueType!) &&
+              !(selectedValueType == CharacterStatValueType.int &&
+                  isComputed)) {
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: withAskOnLevelUp(
+                    tempResult.jsonSerializedAdditionalData, true));
           }
 
     return tempResult;
@@ -845,6 +859,23 @@ class _ShowGetDmConfigurationModalContentState
                     label: S.of(context).optionalPropertyForAlternateForms),
               )
             ]),
+            if (selectedValueType != null &&
+                canAskOnLevelUp(selectedValueType!) &&
+                !(selectedValueType == CharacterStatValueType.int &&
+                    isComputed))
+              Row(mainAxisSize: MainAxisSize.max, children: [
+                Expanded(
+                  child: SelectableTile(
+                      key: const ValueKey('propertyAskOnLevelUp'),
+                      onValueChange: () {
+                        setState(() {
+                          askOnLevelUp = !askOnLevelUp;
+                        });
+                      },
+                      isSet: askOnLevelUp,
+                      label: S.of(context).propertyAskOnLevelUp),
+                )
+              ]),
           ],
         ),
       ),

@@ -497,7 +497,7 @@ class RpgConfigurationModel {
                   name: "Attribute",
                   helperText: "",
                   jsonSerializedAdditionalData:
-                      '{"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
+                      '{"askOnLevelUp":true,"values":[{"uuid":"76183b57-d6f3-4414-962c-837488ed0384", "label": "Charisma"}, {"uuid":"529d0912-e1ae-41e2-beea-55bd194bfb20", "label": "Stärke"}, {"uuid":"0f6557a8-c3b6-4832-a673-a8903f87ff24", "label": "Intelligenz"}, {"uuid":"a7aa4151-8c7c-41d4-91d2-2ff0a3d084a4", "label": "Geschicklichkeit"}, {"uuid":"81ffc65e-156a-4042-8bd6-5ed4d400e4bc", "label": "Konstitution"}, {"uuid":"167b94e6-d674-43a4-a25b-fca1309a12b0", "label": "Weisheit"}]}',
                   valueType:
                       CharacterStatValueType.listOfIntWithCalculatedValues,
                   editType: CharacterStatEditType.static,
@@ -512,12 +512,13 @@ class RpgConfigurationModel {
                     isOptionalForAlternateForms: false,
                     isOptionalForCompanionCharacters: false,
                     jsonSerializedAdditionalData:
-                        "{\"values\":[{\"uuid\":\"01933512-97e4-70fe-877d-0e1f64224a00\",\"label\":\"RK\",\"iconName\":\"shield-halved\"},{\"uuid\":\"01933512-997d-7628-9de3-72827cf4f419\",\"label\":\"Bewegung\",\"iconName\":\"person-running\"},{\"uuid\":\"01933512-9cb6-7466-9977-0768e0dda2a7\",\"label\":\"ÜB\",\"iconName\":\"trophy\"},{\"uuid\":\"01933512-a096-701e-875d-05ad93810ba2\",\"label\":\"Temp. TP\",\"iconName\":\"shield-heart\"}]}"),
+                        "{\"askOnLevelUp\":true,\"values\":[{\"uuid\":\"01933512-97e4-70fe-877d-0e1f64224a00\",\"label\":\"RK\",\"iconName\":\"shield-halved\"},{\"uuid\":\"01933512-997d-7628-9de3-72827cf4f419\",\"label\":\"Bewegung\",\"iconName\":\"person-running\"},{\"uuid\":\"01933512-9cb6-7466-9977-0768e0dda2a7\",\"label\":\"ÜB\",\"iconName\":\"trophy\"},{\"uuid\":\"01933512-a096-701e-875d-05ad93810ba2\",\"label\":\"Temp. TP\",\"iconName\":\"shield-heart\"}]}"),
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "803f55cb-5d7e-425d-8054-0cb293620481",
+                  jsonSerializedAdditionalData: '{"askOnLevelUp": true}',
                   name: "TP",
                   helperText: "Trefferpunkte",
                   valueType: CharacterStatValueType.intWithMaxValue,
@@ -577,7 +578,7 @@ class RpgConfigurationModel {
                   isOptionalForCompanionCharacters: false,
                   statUuid: "893bab17-6c13-4ed5-a287-8eaa135a54ef",
                   jsonSerializedAdditionalData:
-                      '{"example": "Dunkelsicht 18 m; Vorteil gegen Vergiftung."}',
+                      '{"askOnLevelUp":true,"example": "Dunkelsicht 18 m; Vorteil gegen Vergiftung."}',
                   name: "Merkmale",
                   helperText:
                       "Klassenmerkmale, Merkmale deiner Spezies und Talente",
@@ -597,7 +598,7 @@ class RpgConfigurationModel {
                   isOptionalForCompanionCharacters: false,
                   statUuid: "3219934b-09fc-409b-8413-9e56b864c664",
                   jsonSerializedAdditionalData:
-                      '{"example": "Langschwert +5, 1W8+3 Hieb; Kurzbogen +4, 1W6+2 Stich."}',
+                      '{"askOnLevelUp":true,"example": "Langschwert +5, 1W8+3 Hieb; Kurzbogen +4, 1W6+2 Stich."}',
                   name: "Angriffe",
                   helperText: "Angriffe mit Waffen und waffenlose Angriffe",
                   valueType: CharacterStatValueType.multiLineText,
@@ -615,6 +616,7 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "2438aac8-4a67-41ca-aad9-3c838b7c5cf3",
+                  jsonSerializedAdditionalData: '{"askOnLevelUp": true}',
                   name: "Zauberplätze gesamt",
                   helperText: "Wie viele Zauberplätze hast du insgesamt noch?",
                   valueType: CharacterStatValueType.intWithMaxValue,
@@ -630,7 +632,7 @@ class RpgConfigurationModel {
                     valueType: CharacterStatValueType.multiselect,
                     editType: CharacterStatEditType.static,
                     jsonSerializedAdditionalData:
-                        '{"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
+                        '{"askOnLevelUp":true,"multiselectIsAllowedToBeSelectedMultipleTimes":false,"options":['
                         '{"uuid": "1e720492-1520-4bf3-86a3-98c4f61be329", "label": "Botschaft", "summary": "Flüstere eine Botschaft zu einem Ziel; nur ihr beide hört sie.", "description": "Zaubertrick der Verwandlung (Barde, Druide, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 36 Meter\\nKomponenten: G, M (ein Stück Kupferdraht)\\nWirkungsdauer: 1 Runde\\nDu deutest auf eine Kreatur in Reichweite und flüsterst eine Botschaft. Das Ziel (und nur dieses) hört die Botschaft und kann mit einem Flüstern antworten, das nur du hörst.\\nDu kannst diesen Zauber durch massive Gegenstände hindurch wirken, wenn du mit dem Ziel vertraut bist und weißt, dass es sich hinter der Barriere befindet. Magische Stille, 30 Zentimeter Stein, Metall oder Holz sowie dünnes Bleiblech blockieren den Zauber."},'
                         '{"uuid": "bc6ddcc2-ccf5-4a70-9b0f-afbf17c7be47", "label": "Magierhand", "summary": "Geisterhafte Hand erscheint und manipuliert leichte Gegenstände.", "description": "Zaubertrick der Beschwörung (Barde, Hexenmeister, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 9 Meter\\nKomponenten: V, G\\nWirkungsdauer: 1 Minute\\nAn einem Punkt deiner Wahl in Reichweite erscheint eine geisterhafte schwebende Hand. Sie bleibt für die Wirkungsdauer bestehen. Die Hand verschwindet, wenn sie weiter als neun Meter von dir entfernt ist oder du den Zauber erneut wirkst.\\nWenn du den Zauber wirkst, kannst du mithilfe der Hand mit Gegenständen interagieren, unverschlossene Türen oder Behälter öffnen, Gegenstände in einem Behälter verstauen oder daraus hervorholen oder den Inhalt einer Phiole ausgießen.\\nIn deinen folgenden Zügen kannst du die Hand als magische Aktion erneut auf diese Art kontrollieren. Als Teil dieser Aktion kannst du die Hand bis zu neun Meter weit bewegen.\\nDie Hand kann nicht angreifen, keine magischen Gegenstände aktivieren und nicht mehr als fünf Kilogramm Gewicht tragen."},'
                         '{"uuid": "5b9c7345-8cda-469b-8e00-4ff47f50ce9c", "label": "Gift versprühen", "summary": "Giftnebel auf eine Kreatur; Fernkampf-Zauberangriff mit Giftschaden.", "description": "Zaubertrick der Nekromantie (Druide, Hexenmeister, Magier, Zauberer)\\nZeitaufwand: Aktion\\nReichweite: 9 Meter\\nKomponenten: V, G\\nWirkungsdauer: Unmittelbar\\nDu sprühst giftigen Nebel auf eine Kreatur in Reichweite. Führe einen Fernkampf-Zauberangriff gegen das Ziel aus. Bei einem Treffer erleidet das Ziel 1W12 Giftschaden.\\nZaubertrick-Aufwertung: Der Schaden wird um jeweils 1W12 erhöht, wenn du die 5. (2W12), die 11. (3W12) und die 17. (4W12) Stufe erreichst."},'

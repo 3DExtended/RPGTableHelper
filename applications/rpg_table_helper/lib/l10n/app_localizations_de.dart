@@ -2627,4 +2627,26 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get quickStartPageHint =>
       'Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen.';
+
+  @override
+  String get levelUpTitle => 'Stufenaufstieg';
+
+  @override
+  String levelUpIntro(int from, int to) {
+    return 'Von Stufe $from auf $to. Trag ein, was sich mit der neuen Stufe ändert – was gleich bleibt, lässt du einfach stehen.';
+  }
+
+  @override
+  String get levelUpOnlyLevelHint =>
+      'Die Spielleitung kann im Bogen festlegen, welche Eigenschaften hier zusätzlich abgefragt werden.';
+
+  @override
+  String get levelUpMenuEntry => 'Stufenaufstieg';
+
+  @override
+  String get propertyAskOnLevelUp => 'Beim Stufenaufstieg abfragen';
+
+  @override
+  String get templateUpdateLevelUpChanged =>
+      'Wird beim Stufenaufstieg abgefragt';
 }

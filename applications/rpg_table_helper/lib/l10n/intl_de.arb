@@ -1192,5 +1192,21 @@
   },
   "quickStartAnd": "und",
   "quickStartAllSections": "Alle Abschnitte",
-  "quickStartPageHint": "Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen."
+  "quickStartPageHint": "Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen.",
+  "levelUpTitle": "Stufenaufstieg",
+  "levelUpIntro": "Von Stufe {from} auf {to}. Trag ein, was sich mit der neuen Stufe ändert – was gleich bleibt, lässt du einfach stehen.",
+  "@levelUpIntro": {
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "levelUpOnlyLevelHint": "Die Spielleitung kann im Bogen festlegen, welche Eigenschaften hier zusätzlich abgefragt werden.",
+  "levelUpMenuEntry": "Stufenaufstieg",
+  "propertyAskOnLevelUp": "Beim Stufenaufstieg abfragen",
+  "templateUpdateLevelUpChanged": "Wird beim Stufenaufstieg abgefragt"
 }
