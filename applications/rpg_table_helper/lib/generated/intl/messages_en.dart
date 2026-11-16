@@ -34,19 +34,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m6(username) => " (for ${username})";
 
-  static String m7(characterNames) =>
+  static String m7(email) =>
+      "We sent a code to ${email}. It\'s valid for two hours.";
+
+  static String m8(characterNames) =>
       "Could not grant the items to ${characterNames}. Please try again.";
 
-  static String m8(label, formattedBonus) =>
+  static String m9(label, formattedBonus) =>
       "Add ${label} ${formattedBonus} to your roll";
 
-  static String m9(amount) => "You received ${amount} new items:";
+  static String m10(count) => "at most ${count} characters";
 
-  static String m10(property) => "The value of ${property}";
+  static String m11(count) => "at least ${count} characters";
 
-  static String m11(count) => "You own ${count} campaigns";
+  static String m12(amount) => "You received ${amount} new items:";
 
-  static String m12(count) => "You own ${count} characters";
+  static String m13(privacyPolicyLink) =>
+      "You can read how we handle your data in our ${privacyPolicyLink}.";
+
+  static String m14(property) => "The value of ${property}";
+
+  static String m15(count) => "You own ${count} campaigns";
+
+  static String m16(count) => "You own ${count} characters";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -181,11 +191,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "apiKeysViewDocs": MessageLookupByLibrary.simpleMessage(
       "View API documentation",
     ),
+    "appName": MessageLookupByLibrary.simpleMessage("QuestKeeper"),
     "assignCharacterToCampagneModalContent":
         MessageLookupByLibrary.simpleMessage(
           "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
         ),
     "attachImageBtnLabel": MessageLookupByLibrary.simpleMessage("Add image"),
+    "authNoConnection": MessageLookupByLibrary.simpleMessage(
+      "The server can\'t be reached right now. Please try again in a moment.",
+    ),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Author:"),
     "automaticCardStatsHint": MessageLookupByLibrary.simpleMessage(
       "Automatic: the first value with a maximum as bar and the first numbers of the default tab.",
@@ -406,6 +420,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "forIntegerValueWithName": MessageLookupByLibrary.simpleMessage(
       "for number value",
     ),
+    "forgotPasswordBackToLogin": MessageLookupByLibrary.simpleMessage(
+      "Back to sign in",
+    ),
+    "forgotPasswordCodeSent": m7,
+    "forgotPasswordLink": MessageLookupByLibrary.simpleMessage(
+      "Forgot password?",
+    ),
+    "forgotPasswordRequestButton": MessageLookupByLibrary.simpleMessage(
+      "Send code",
+    ),
+    "forgotPasswordRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t send a code. Check your username and email address. If you sign in with Apple, you don\'t need a password.",
+    ),
+    "forgotPasswordRequestIntro": MessageLookupByLibrary.simpleMessage(
+      "Enter your username and the email address of your account. We\'ll send you a code.",
+    ),
+    "forgotPasswordRequestNewCode": MessageLookupByLibrary.simpleMessage(
+      "Request a new code",
+    ),
+    "forgotPasswordResetFailed": MessageLookupByLibrary.simpleMessage(
+      "That didn\'t work: the code is wrong or has expired. Request a new one if needed.",
+    ),
+    "forgotPasswordSaveButton": MessageLookupByLibrary.simpleMessage(
+      "Save password",
+    ),
+    "forgotPasswordSuccess": MessageLookupByLibrary.simpleMessage(
+      "Your password has been changed. Sign in with your new password now.",
+    ),
+    "forgotPasswordTitle": MessageLookupByLibrary.simpleMessage(
+      "Reset password",
+    ),
     "generateImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Generate image",
     ),
@@ -424,7 +469,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technical details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Grant items"),
-    "grantItemsFailedForPlayers": m7,
+    "grantItemsFailedForPlayers": m8,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "The name of the campaign",
     ),
@@ -439,7 +484,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Field",
     ),
-    "initiativeBonusHelperSentence": m8,
+    "initiativeBonusHelperSentence": m9,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Leave anyway",
     ),
@@ -527,7 +572,19 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Group of number values with additional number",
         ),
-    "login": MessageLookupByLibrary.simpleMessage("Login"),
+    "login": MessageLookupByLibrary.simpleMessage("Sign in"),
+    "loginIntroJoin": MessageLookupByLibrary.simpleMessage(
+      "Sign in or create an account. Then you enter the code from your game master.",
+    ),
+    "loginIntroLead": MessageLookupByLibrary.simpleMessage(
+      "Sign in or create an account. Then you set up your campaign.",
+    ),
+    "loginMissingInput": MessageLookupByLibrary.simpleMessage(
+      "Please enter your username and password.",
+    ),
+    "loginWrongCredentials": MessageLookupByLibrary.simpleMessage(
+      "Username or password is incorrect.",
+    ),
     "logout": MessageLookupByLibrary.simpleMessage("Logout"),
     "lore": MessageLookupByLibrary.simpleMessage("Lore"),
     "maxValue": MessageLookupByLibrary.simpleMessage("Max value"),
@@ -577,6 +634,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "newItemsMarkdownSingular": MessageLookupByLibrary.simpleMessage(
       "# New item",
     ),
+    "newPasswordLabel": MessageLookupByLibrary.simpleMessage("New password"),
     "newPetBtnLabel": MessageLookupByLibrary.simpleMessage("New pet"),
     "newPropertyBtnLabel": MessageLookupByLibrary.simpleMessage("New property"),
     "newTabBtnLabel": MessageLookupByLibrary.simpleMessage("New tab"),
@@ -658,6 +716,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "owned:",
     ),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
+    "passwordRuleMaxLength": m10,
+    "passwordRuleMet": MessageLookupByLibrary.simpleMessage("met"),
+    "passwordRuleMinLength": m11,
+    "passwordRuleNotMet": MessageLookupByLibrary.simpleMessage("not met yet"),
+    "passwordRulesTitle": MessageLookupByLibrary.simpleMessage(
+      "Your password needs",
+    ),
     "pendingHubSyncBanner": MessageLookupByLibrary.simpleMessage(
       "Some changes are still syncing to the session…",
     ),
@@ -672,6 +737,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "previewTestReset": MessageLookupByLibrary.simpleMessage("Reset"),
     "previousTransformationSelectionBtn": MessageLookupByLibrary.simpleMessage(
       "Previous transformation",
+    ),
+    "privacyPolicyLinkLabel": MessageLookupByLibrary.simpleMessage(
+      "privacy policy",
     ),
     "propertyEditTypeLabel": MessageLookupByLibrary.simpleMessage(
       "Change frequency",
@@ -695,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "You received one new item:",
     ),
-    "receivedXNewItems": m9,
+    "receivedXNewItems": m12,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Recipe for"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Ingredients:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -703,12 +771,35 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "reduceBalance": MessageLookupByLibrary.simpleMessage("Reduce balance"),
     "register": MessageLookupByLibrary.simpleMessage("Register"),
+    "registerEmailInvalid": MessageLookupByLibrary.simpleMessage(
+      "Please enter a valid email address.",
+    ),
+    "registerPasswordInvalid": MessageLookupByLibrary.simpleMessage(
+      "The password doesn\'t meet all the rules yet.",
+    ),
+    "registerPrivacyNotice": m13,
+    "registerPrivacyNoticeWithoutLink": MessageLookupByLibrary.simpleMessage(
+      "We only use your email address for your account, for example to reset your password.",
+    ),
+    "registerUsernameInvalid": MessageLookupByLibrary.simpleMessage(
+      "The username needs 3 to 13 characters, letters and digits only.",
+    ),
+    "registerUsernameTaken": MessageLookupByLibrary.simpleMessage(
+      "This username is already taken. Please pick another one.",
+    ),
     "removeImageBtnLabel": MessageLookupByLibrary.simpleMessage("Remove image"),
     "replaceImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Replace image",
     ),
     "requiredIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "Required:",
+    ),
+    "resetCodeHint": MessageLookupByLibrary.simpleMessage("e.g. 123-456"),
+    "resetCodeInvalid": MessageLookupByLibrary.simpleMessage(
+      "The code has six digits, e.g. 123-456.",
+    ),
+    "resetCodeLabel": MessageLookupByLibrary.simpleMessage(
+      "Code from the email",
     ),
     "rollForInitiative": MessageLookupByLibrary.simpleMessage(
       "Roll for initiative",
@@ -771,7 +862,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "valueOfPropertyWithName": m10,
+    "usernameRuleHint": MessageLookupByLibrary.simpleMessage(
+      "3 to 13 characters, letters and digits only",
+    ),
+    "valueOfPropertyWithName": m14,
     "visibleCards": MessageLookupByLibrary.simpleMessage("Visible cards"),
     "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
       "Hidden cards stay hidden on this device, even if a player was offline in between.",
@@ -780,6 +874,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Waiting for initiative",
     ),
     "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+    "welcomeDescription": MessageLookupByLibrary.simpleMessage(
+      "The game master runs the campaign. Players keep their character sheet, their notes and the live stats on their phone.",
+    ),
+    "welcomeJoinButton": MessageLookupByLibrary.simpleMessage(
+      "I\'m joining a game",
+    ),
+    "welcomeJoinHint": MessageLookupByLibrary.simpleMessage(
+      "After signing in, you enter the code from your game master.",
+    ),
+    "welcomeLeadButton": MessageLookupByLibrary.simpleMessage("I run a game"),
+    "welcomeLeadHint": MessageLookupByLibrary.simpleMessage(
+      "You create a campaign and invite your group.",
+    ),
+    "welcomeTagline": MessageLookupByLibrary.simpleMessage(
+      "Your companion for pen & paper sessions at the table.",
+    ),
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "you": MessageLookupByLibrary.simpleMessage("You"),
     "youAreEditingACopiedPropertyChangesWillNotAffect":
@@ -790,8 +900,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You are editing an alternate form of the character. Changes made here will not affect the main character. If you want to change the main character, go back to the main character screen. Any changes made here will be saved to the alternate form, which will be reset after reverting your transformation.",
         ),
-    "youOwnXCampaigns": m11,
-    "youOwnXCharacters": m12,
+    "youOwnXCampaigns": m15,
+    "youOwnXCharacters": m16,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Your are disconnected... Either you or the DM has lost the connection.",
     ),

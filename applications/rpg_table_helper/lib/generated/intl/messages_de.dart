@@ -34,19 +34,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m6(username) => " (für ${username})";
 
-  static String m7(characterNames) =>
+  static String m7(email) =>
+      "Wir haben dir einen Code an ${email} geschickt. Er gilt zwei Stunden.";
+
+  static String m8(characterNames) =>
       "Die Items konnten nicht an ${characterNames} verteilt werden. Bitte versuche es erneut.";
 
-  static String m8(label, formattedBonus) =>
+  static String m9(label, formattedBonus) =>
       "Addiere ${label} ${formattedBonus} zu deinem Wurf";
 
-  static String m9(amount) => "Du hast ${amount} neue Items erhalten:";
+  static String m10(count) => "höchstens ${count} Zeichen";
 
-  static String m10(property) => "Der Wert von ${property}";
+  static String m11(count) => "mindestens ${count} Zeichen";
 
-  static String m11(count) => "Dir gehören ${count} Kampagnen";
+  static String m12(amount) => "Du hast ${amount} neue Items erhalten:";
 
-  static String m12(count) => "Dir gehören ${count} Charaktere";
+  static String m13(privacyPolicyLink) =>
+      "Wie wir mit deinen Daten umgehen, steht in unserer ${privacyPolicyLink}.";
+
+  static String m14(property) => "Der Wert von ${property}";
+
+  static String m15(count) => "Dir gehören ${count} Kampagnen";
+
+  static String m16(count) => "Dir gehören ${count} Charaktere";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -191,12 +201,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "apiKeysViewDocs": MessageLookupByLibrary.simpleMessage(
       "API-Dokumentation öffnen",
     ),
+    "appName": MessageLookupByLibrary.simpleMessage("QuestKeeper"),
     "assignCharacterToCampagneModalContent":
         MessageLookupByLibrary.simpleMessage(
           "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
         ),
     "attachImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Bild hinzufügen",
+    ),
+    "authNoConnection": MessageLookupByLibrary.simpleMessage(
+      "Der Server ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
     ),
     "authorLabel": MessageLookupByLibrary.simpleMessage("Autor:"),
     "automaticCardStatsHint": MessageLookupByLibrary.simpleMessage(
@@ -424,6 +438,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "forIntegerValueWithName": MessageLookupByLibrary.simpleMessage(
       "für Zahlen-Wert",
     ),
+    "forgotPasswordBackToLogin": MessageLookupByLibrary.simpleMessage(
+      "Zur Anmeldung",
+    ),
+    "forgotPasswordCodeSent": m7,
+    "forgotPasswordLink": MessageLookupByLibrary.simpleMessage(
+      "Passwort vergessen?",
+    ),
+    "forgotPasswordRequestButton": MessageLookupByLibrary.simpleMessage(
+      "Code anfordern",
+    ),
+    "forgotPasswordRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "Wir konnten keinen Code schicken. Prüfe Nutzername und E-Mail-Adresse. Wenn du dich mit Apple anmeldest, brauchst du kein Passwort.",
+    ),
+    "forgotPasswordRequestIntro": MessageLookupByLibrary.simpleMessage(
+      "Gib deinen Nutzernamen und die E-Mail-Adresse deines Kontos ein. Wir schicken dir einen Code.",
+    ),
+    "forgotPasswordRequestNewCode": MessageLookupByLibrary.simpleMessage(
+      "Neuen Code anfordern",
+    ),
+    "forgotPasswordResetFailed": MessageLookupByLibrary.simpleMessage(
+      "Das hat nicht geklappt: Der Code stimmt nicht oder ist abgelaufen. Fordere bei Bedarf einen neuen an.",
+    ),
+    "forgotPasswordSaveButton": MessageLookupByLibrary.simpleMessage(
+      "Passwort speichern",
+    ),
+    "forgotPasswordSuccess": MessageLookupByLibrary.simpleMessage(
+      "Dein Passwort ist geändert. Melde dich jetzt mit dem neuen Passwort an.",
+    ),
+    "forgotPasswordTitle": MessageLookupByLibrary.simpleMessage(
+      "Passwort zurücksetzen",
+    ),
     "generateImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Bild generieren",
     ),
@@ -442,7 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technische Details: "),
     "grantItems": MessageLookupByLibrary.simpleMessage("Items verteilen"),
-    "grantItemsFailedForPlayers": m7,
+    "grantItemsFailedForPlayers": m8,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "Wie soll die Kampagne heißen?",
     ),
@@ -459,7 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Feld",
     ),
-    "initiativeBonusHelperSentence": m8,
+    "initiativeBonusHelperSentence": m9,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Trotzdem verlassen",
     ),
@@ -551,7 +596,19 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Gruppe von Zahlen-Werten mit zusätzlicher Zahl",
         ),
-    "login": MessageLookupByLibrary.simpleMessage("Login"),
+    "login": MessageLookupByLibrary.simpleMessage("Anmelden"),
+    "loginIntroJoin": MessageLookupByLibrary.simpleMessage(
+      "Melde dich an oder lege ein Konto an. Danach gibst du den Code deiner Spielleitung ein.",
+    ),
+    "loginIntroLead": MessageLookupByLibrary.simpleMessage(
+      "Melde dich an oder lege ein Konto an. Danach legst du deine Kampagne an.",
+    ),
+    "loginMissingInput": MessageLookupByLibrary.simpleMessage(
+      "Bitte gib Nutzername und Passwort ein.",
+    ),
+    "loginWrongCredentials": MessageLookupByLibrary.simpleMessage(
+      "Nutzername oder Passwort stimmt nicht.",
+    ),
     "logout": MessageLookupByLibrary.simpleMessage("Abmelden"),
     "lore": MessageLookupByLibrary.simpleMessage("Weltgeschichte"),
     "maxValue": MessageLookupByLibrary.simpleMessage("Maximaler Wert"),
@@ -603,6 +660,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "newItemsMarkdownSingular": MessageLookupByLibrary.simpleMessage(
       "# Neues Item",
     ),
+    "newPasswordLabel": MessageLookupByLibrary.simpleMessage("Neues Passwort"),
     "newPetBtnLabel": MessageLookupByLibrary.simpleMessage("Neuer Begleiter"),
     "newPropertyBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Neue Eigenschaft",
@@ -688,6 +746,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "in Besitz:",
     ),
     "password": MessageLookupByLibrary.simpleMessage("Passwort"),
+    "passwordRuleMaxLength": m10,
+    "passwordRuleMet": MessageLookupByLibrary.simpleMessage("erfüllt"),
+    "passwordRuleMinLength": m11,
+    "passwordRuleNotMet": MessageLookupByLibrary.simpleMessage(
+      "noch nicht erfüllt",
+    ),
+    "passwordRulesTitle": MessageLookupByLibrary.simpleMessage(
+      "Dein Passwort braucht",
+    ),
     "pendingHubSyncBanner": MessageLookupByLibrary.simpleMessage(
       "Einige Änderungen werden noch mit der Sitzung synchronisiert…",
     ),
@@ -702,6 +769,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "previewTestReset": MessageLookupByLibrary.simpleMessage("Zurücksetzen"),
     "previousTransformationSelectionBtn": MessageLookupByLibrary.simpleMessage(
       "Alte Gestalt",
+    ),
+    "privacyPolicyLinkLabel": MessageLookupByLibrary.simpleMessage(
+      "Datenschutzerklärung",
     ),
     "propertyEditTypeLabel": MessageLookupByLibrary.simpleMessage(
       "Veränderungshäufigkeit",
@@ -725,7 +795,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "Du hast ein neues Item erhalten:",
     ),
-    "receivedXNewItems": m9,
+    "receivedXNewItems": m12,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Rezept für"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -733,6 +803,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "reduceBalance": MessageLookupByLibrary.simpleMessage("Guthaben abziehen"),
     "register": MessageLookupByLibrary.simpleMessage("Registrieren"),
+    "registerEmailInvalid": MessageLookupByLibrary.simpleMessage(
+      "Bitte gib eine gültige E-Mail-Adresse ein.",
+    ),
+    "registerPasswordInvalid": MessageLookupByLibrary.simpleMessage(
+      "Das Passwort erfüllt noch nicht alle Regeln.",
+    ),
+    "registerPrivacyNotice": m13,
+    "registerPrivacyNoticeWithoutLink": MessageLookupByLibrary.simpleMessage(
+      "Deine E-Mail-Adresse brauchen wir nur für dein Konto, zum Beispiel zum Zurücksetzen des Passworts.",
+    ),
+    "registerUsernameInvalid": MessageLookupByLibrary.simpleMessage(
+      "Der Nutzername braucht 3 bis 13 Zeichen, nur Buchstaben und Ziffern.",
+    ),
+    "registerUsernameTaken": MessageLookupByLibrary.simpleMessage(
+      "Diesen Nutzernamen gibt es schon. Bitte wähle einen anderen.",
+    ),
     "removeImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Bild entfernen",
     ),
@@ -741,6 +827,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "requiredIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "Benötigt:",
+    ),
+    "resetCodeHint": MessageLookupByLibrary.simpleMessage("z. B. 123-456"),
+    "resetCodeInvalid": MessageLookupByLibrary.simpleMessage(
+      "Der Code hat sechs Ziffern, z. B. 123-456.",
+    ),
+    "resetCodeLabel": MessageLookupByLibrary.simpleMessage(
+      "Code aus der E-Mail",
     ),
     "rollForInitiative": MessageLookupByLibrary.simpleMessage(
       "Kampfreihenfolge würfeln",
@@ -805,7 +898,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "user": MessageLookupByLibrary.simpleMessage("User:"),
     "username": MessageLookupByLibrary.simpleMessage("Nutzername"),
-    "valueOfPropertyWithName": m10,
+    "usernameRuleHint": MessageLookupByLibrary.simpleMessage(
+      "3 bis 13 Zeichen, nur Buchstaben und Ziffern",
+    ),
+    "valueOfPropertyWithName": m14,
     "visibleCards": MessageLookupByLibrary.simpleMessage("Sichtbare Karten"),
     "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
       "Ausgeblendete Karten bleiben auf diesem Gerät ausgeblendet, auch wenn ein Spieler zwischendurch offline war.",
@@ -814,6 +910,24 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wartet auf Initiative",
     ),
     "warning": MessageLookupByLibrary.simpleMessage("Warnung"),
+    "welcomeDescription": MessageLookupByLibrary.simpleMessage(
+      "Die Spielleitung verwaltet die Kampagne. Die Spieler haben ihren Charakterbogen, ihre Notizen und die Live-Werte auf dem Handy.",
+    ),
+    "welcomeJoinButton": MessageLookupByLibrary.simpleMessage(
+      "Ich trete einer Runde bei",
+    ),
+    "welcomeJoinHint": MessageLookupByLibrary.simpleMessage(
+      "Nach der Anmeldung gibst du den Code deiner Spielleitung ein.",
+    ),
+    "welcomeLeadButton": MessageLookupByLibrary.simpleMessage(
+      "Ich leite eine Runde",
+    ),
+    "welcomeLeadHint": MessageLookupByLibrary.simpleMessage(
+      "Du legst eine Kampagne an und lädst deine Gruppe ein.",
+    ),
+    "welcomeTagline": MessageLookupByLibrary.simpleMessage(
+      "Dein Begleiter für Pen-&-Paper-Runden am Tisch.",
+    ),
     "yes": MessageLookupByLibrary.simpleMessage("Ja"),
     "you": MessageLookupByLibrary.simpleMessage("Du"),
     "youAreEditingACopiedPropertyChangesWillNotAffect":
@@ -824,8 +938,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine Verwandlungs-Form. Änderungen werden nur auf dieser Verwandlung gespeichert und werden resettet, wenn du dich zurück verwandelst. Wenn du dauerhafte Veränderungen deiner Form möchtest, bearbeite die Basis-Form (indem du dich zurück verwandelst und dort die Veränderungen einpflegst).",
         ),
-    "youOwnXCampaigns": m11,
-    "youOwnXCharacters": m12,
+    "youOwnXCampaigns": m15,
+    "youOwnXCharacters": m16,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Du bist nicht mehr verbunden... Entweder bist du oder der DM offline...",
     ),

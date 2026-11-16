@@ -18,9 +18,11 @@ import 'package:quest_keeper/screens/authorized_screen_wrapper.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/complete_sso_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/forgot_password_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/session_restorer_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/welcome_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/screens/settings/agent_debug_log_screen.dart';
 import 'package:quest_keeper/screens/settings/api_keys_screen.dart';
@@ -98,7 +100,7 @@ class AppRoutingShell extends ConsumerWidget {
               ]),
               builder: (context, child) {
                 return MaterialApp(
-                  title: 'Flutter Demo',
+                  title: 'QuestKeeper',
                   debugShowCheckedModeBanner: false,
                   localizationsDelegates: [
                     ...AppLocalizations.localizationsDelegates,
@@ -176,6 +178,20 @@ class AppRoutingShell extends ConsumerWidget {
                       case RegisterScreen.route:
                         return MaterialWithModalsPageRoute(
                           builder: (_) => RegisterScreen(),
+                          settings: settings,
+                        );
+                      case WelcomeScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => const WelcomeScreen(),
+                          settings: settings,
+                        );
+                      case ForgotPasswordScreen.route:
+                        return MaterialWithModalsPageRoute(
+                          builder: (_) => ForgotPasswordScreen(
+                            initialUsername: settings.arguments is String
+                                ? settings.arguments as String
+                                : null,
+                          ),
                           settings: settings,
                         );
                       case CompleteSsoScreen.route:

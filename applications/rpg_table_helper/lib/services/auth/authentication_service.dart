@@ -67,6 +67,23 @@ abstract class IAuthenticationService {
   /// Returns, whether the login was successfull.
   Future<HRResponse<bool>> loginWithUsernameAndPassword(
       {required String username, required String password});
+
+  /// Asks the server to email a password reset code to the user. The server
+  /// only sends it when [username] and [email] belong to the same password
+  /// account (not to accounts that sign in with Apple or Google).
+  Future<HRResponse<bool>> requestPasswordReset(
+      {required String username, required String email});
+
+  /// Sets [newPassword] for the user, using the [resetCode] from the email.
+  ///
+  /// The password is turned into the same user secret as at registration and
+  /// login, so the user can sign in with the new password right away.
+  Future<HRResponse<bool>> resetPassword({
+    required String username,
+    required String email,
+    required String resetCode,
+    required String newPassword,
+  });
 }
 
 class AuthenticationService extends IAuthenticationService {
@@ -91,6 +108,51 @@ class AuthenticationService extends IAuthenticationService {
           "c369c269-6628-4c82-978e-6fd85a4c0fcd");
     }
 
+    var hashedPasswordResult = await _userSecretForExistingUser(
+      client,
+      username: username,
+      password: password,
+      humanReadableError:
+          "Could not load encryption challenge for login request",
+      errorCode: "9c8a0470-486a-4b0e-83cd-0f20636671e7",
+    );
+    if (!hashedPasswordResult.isSuccessful) {
+      return hashedPasswordResult.asT();
+    }
+    var hashedPassword = hashedPasswordResult.result!;
+
+    var result = await HRResponse.fromApiFuture(
+        client.signInLoginPost(
+            body: LoginWithUsernameAndPasswordDto(
+          username: username,
+          userSecretByEncryptionChallenge: hashedPassword,
+        )),
+        "Could not login with username and password.",
+        "cb704a30-c113-424f-9f51-bc11f0dd479c");
+
+    // A wrong username or password must not count as a successful login.
+    if (!result.isSuccessful) {
+      return result.asT();
+    }
+
+    await persistTokenPair(result.result!);
+
+    return HRResponse.fromResult(true, statusCode: result.statusCode);
+  }
+
+  /// Derives the user secret the server stores for a password account.
+  ///
+  /// Registration hashes the password with the user's encryption challenge,
+  /// and the server keeps that challenge linked to the user. Login and
+  /// password reset load it again by username and hash the same way, so the
+  /// server can compare (login) or replace (reset) the stored secret.
+  Future<HRResponse<String>> _userSecretForExistingUser(
+    Swagger client, {
+    required String username,
+    required String password,
+    required String humanReadableError,
+    required String errorCode,
+  }) async {
     // 0. we need to generate a public and private key pair for this app client
     var keyPairTuple = await encryptionService.getKeysAndPublicPem();
 
@@ -101,8 +163,8 @@ class AuthenticationService extends IAuthenticationService {
             body: EncryptedMessageWrapperDto(
               encryptedMessage: keyPairTuple.$2,
             )),
-        "Could not load encryption challenge for login request",
-        "9c8a0470-486a-4b0e-83cd-0f20636671e7");
+        humanReadableError,
+        errorCode);
 
     if (!encryptionChallengeResult.isSuccessful) {
       return encryptionChallengeResult.asT();
@@ -115,23 +177,76 @@ class AuthenticationService extends IAuthenticationService {
 
     Map<String, dynamic> challenge = jsonDecode(decryptedMessage);
 
-    String hashedPassword = encryptionService
-        .calculateUserSecretForEncryptionChallenge(challenge, password);
+    return HRResponse.fromResult(
+      encryptionService.calculateUserSecretForEncryptionChallenge(
+          challenge, password),
+      statusCode: encryptionChallengeResult.statusCode,
+    );
+  }
 
-    var result = await HRResponse.fromApiFuture(
-        client.signInLoginPost(
-            body: LoginWithUsernameAndPasswordDto(
-          username: username,
-          userSecretByEncryptionChallenge: hashedPassword,
-        )),
-        "Could not login with username and password.",
-        "cb704a30-c113-424f-9f51-bc11f0dd479c");
-
-    if (!result.isSuccessful) {
-      return HRResponse.fromResult(true, statusCode: result.statusCode);
+  @override
+  Future<HRResponse<bool>> requestPasswordReset(
+      {required String username, required String email}) async {
+    var client = await apiConnectorService.getApiConnector(
+      requiresJwt: false, // the user is not signed in
+    );
+    if (client == null) {
+      return HRResponse.error("Could not load apiConnectorClient",
+          "0d5e0b8e-5d0b-4d6c-9f5e-2f3c8a1e7b41");
     }
 
-    await persistTokenPair(result.result!);
+    var result = await HRResponse.fromApiFuture(
+        client.signInRequestresetpasswordPost(
+            body: ResetPasswordRequestDto(email: email, username: username)),
+        "Could not request a password reset code.",
+        "a7f3c2d1-4b6e-4e8a-9c0d-5f1b2e3a4c5d");
+
+    if (!result.isSuccessful) return result.asT();
+
+    return HRResponse.fromResult(true, statusCode: result.statusCode);
+  }
+
+  @override
+  Future<HRResponse<bool>> resetPassword({
+    required String username,
+    required String email,
+    required String resetCode,
+    required String newPassword,
+  }) async {
+    var client = await apiConnectorService.getApiConnector(
+      requiresJwt: false, // the user is not signed in
+    );
+    if (client == null) {
+      return HRResponse.error("Could not load apiConnectorClient",
+          "3c9e1f7a-2b8d-4a6c-8e0f-1d2c3b4a5e6f");
+    }
+
+    // The server stores the new value as it is, so it has to be the same
+    // user secret that login sends for this password.
+    var newUserSecretResult = await _userSecretForExistingUser(
+      client,
+      username: username,
+      password: newPassword,
+      humanReadableError:
+          "Could not load encryption challenge for password reset",
+      errorCode: "8b2d4f6a-1c3e-4a5b-9d7f-0e2a4c6b8d1f",
+    );
+    if (!newUserSecretResult.isSuccessful) {
+      return newUserSecretResult.asT();
+    }
+
+    var result = await HRResponse.fromApiFuture(
+        client.signInResetpasswordPost(
+            body: ResetPasswordDto(
+          email: email,
+          newHashedPassword: newUserSecretResult.result!,
+          resetCode: resetCode,
+          username: username,
+        )),
+        "Could not reset the password.",
+        "e4a6c8b0-3d5f-4e7a-8c9b-2a1d3f5e7c9b");
+
+    if (!result.isSuccessful) return result.asT();
 
     return HRResponse.fromResult(true, statusCode: result.statusCode);
   }
@@ -347,18 +462,52 @@ class AuthenticationService extends IAuthenticationService {
 
 class MockAuthenticationService extends IAuthenticationService {
   final DateTime? nowOverride;
-  const MockAuthenticationService({
+
+  /// Returned by [loginWithUsernameAndPassword]; unset keeps the old
+  /// "not implemented" behaviour.
+  final HRResponse<bool>? loginResultOverride;
+
+  /// Returned by [registerWithUsernameAndPassword]; unset keeps the old
+  /// "not implemented" behaviour.
+  final HRResponse<SignInResult>? registerResultOverride;
+
+  /// Returned by [requestPasswordReset]; defaults to success.
+  final HRResponse<bool>? requestPasswordResetResultOverride;
+
+  /// Returned by [resetPassword]; defaults to success.
+  final HRResponse<bool>? resetPasswordResultOverride;
+
+  final List<({String username, String password})> loginCalls = [];
+  final List<({String username, String email, String password})>
+      registerCalls = [];
+  final List<({String username, String email})> requestPasswordResetCalls =
+      [];
+  final List<
+      ({
+        String username,
+        String email,
+        String resetCode,
+        String newPassword
+      })> resetPasswordCalls = [];
+
+  MockAuthenticationService({
     required super.apiConnectorService,
     required super.encryptionService,
     required super.secureRefreshTokenStorage,
     required super.accessTokenExpiryStore,
     required super.systemClockService,
     this.nowOverride,
+    this.loginResultOverride,
+    this.registerResultOverride,
+    this.requestPasswordResetResultOverride,
+    this.resetPasswordResultOverride,
   }) : super(isMock: true);
 
   @override
   Future<HRResponse<bool>> loginWithUsernameAndPassword(
-      {required String username, required String password}) {
+      {required String username, required String password}) async {
+    loginCalls.add((username: username, password: password));
+    if (loginResultOverride != null) return loginResultOverride!;
     // TODO: implement loginWithUsernameAndPassword
     throw UnimplementedError();
   }
@@ -368,9 +517,34 @@ class MockAuthenticationService extends IAuthenticationService {
     required String username,
     required String email,
     required String password,
-  }) {
+  }) async {
+    registerCalls.add((username: username, email: email, password: password));
+    if (registerResultOverride != null) return registerResultOverride!;
     // TODO: implement registerWithUsernameAndPassword
     throw UnimplementedError();
+  }
+
+  @override
+  Future<HRResponse<bool>> requestPasswordReset(
+      {required String username, required String email}) async {
+    requestPasswordResetCalls.add((username: username, email: email));
+    return requestPasswordResetResultOverride ?? HRResponse.fromResult(true);
+  }
+
+  @override
+  Future<HRResponse<bool>> resetPassword({
+    required String username,
+    required String email,
+    required String resetCode,
+    required String newPassword,
+  }) async {
+    resetPasswordCalls.add((
+      username: username,
+      email: email,
+      resetCode: resetCode,
+      newPassword: newPassword,
+    ));
+    return resetPasswordResultOverride ?? HRResponse.fromResult(true);
   }
 
   @override

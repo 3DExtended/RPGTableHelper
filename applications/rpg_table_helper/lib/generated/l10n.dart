@@ -965,9 +965,9 @@ class S {
     );
   }
 
-  /// `Login`
+  /// `Sign in`
   String get login {
-    return Intl.message('Login', name: 'login', desc: '', args: []);
+    return Intl.message('Sign in', name: 'login', desc: '', args: []);
   }
 
   /// `Sign in with Apple`
@@ -3265,6 +3265,396 @@ class S {
     return Intl.message(
       'No connection – reconnecting…',
       name: 'connectionLostReconnecting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QuestKeeper`
+  String get appName {
+    return Intl.message('QuestKeeper', name: 'appName', desc: '', args: []);
+  }
+
+  /// `Your companion for pen & paper sessions at the table.`
+  String get welcomeTagline {
+    return Intl.message(
+      'Your companion for pen & paper sessions at the table.',
+      name: 'welcomeTagline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The game master runs the campaign. Players keep their character sheet, their notes and the live stats on their phone.`
+  String get welcomeDescription {
+    return Intl.message(
+      'The game master runs the campaign. Players keep their character sheet, their notes and the live stats on their phone.',
+      name: 'welcomeDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I run a game`
+  String get welcomeLeadButton {
+    return Intl.message(
+      'I run a game',
+      name: 'welcomeLeadButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You create a campaign and invite your group.`
+  String get welcomeLeadHint {
+    return Intl.message(
+      'You create a campaign and invite your group.',
+      name: 'welcomeLeadHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm joining a game`
+  String get welcomeJoinButton {
+    return Intl.message(
+      'I\'m joining a game',
+      name: 'welcomeJoinButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After signing in, you enter the code from your game master.`
+  String get welcomeJoinHint {
+    return Intl.message(
+      'After signing in, you enter the code from your game master.',
+      name: 'welcomeJoinHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in or create an account. Then you set up your campaign.`
+  String get loginIntroLead {
+    return Intl.message(
+      'Sign in or create an account. Then you set up your campaign.',
+      name: 'loginIntroLead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in or create an account. Then you enter the code from your game master.`
+  String get loginIntroJoin {
+    return Intl.message(
+      'Sign in or create an account. Then you enter the code from your game master.',
+      name: 'loginIntroJoin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your username and password.`
+  String get loginMissingInput {
+    return Intl.message(
+      'Please enter your username and password.',
+      name: 'loginMissingInput',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Username or password is incorrect.`
+  String get loginWrongCredentials {
+    return Intl.message(
+      'Username or password is incorrect.',
+      name: 'loginWrongCredentials',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot password?`
+  String get forgotPasswordLink {
+    return Intl.message(
+      'Forgot password?',
+      name: 'forgotPasswordLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3 to 13 characters, letters and digits only`
+  String get usernameRuleHint {
+    return Intl.message(
+      '3 to 13 characters, letters and digits only',
+      name: 'usernameRuleHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your password needs`
+  String get passwordRulesTitle {
+    return Intl.message(
+      'Your password needs',
+      name: 'passwordRulesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `at least {count} characters`
+  String passwordRuleMinLength(int count) {
+    return Intl.message(
+      'at least $count characters',
+      name: 'passwordRuleMinLength',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `at most {count} characters`
+  String passwordRuleMaxLength(int count) {
+    return Intl.message(
+      'at most $count characters',
+      name: 'passwordRuleMaxLength',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `met`
+  String get passwordRuleMet {
+    return Intl.message('met', name: 'passwordRuleMet', desc: '', args: []);
+  }
+
+  /// `not met yet`
+  String get passwordRuleNotMet {
+    return Intl.message(
+      'not met yet',
+      name: 'passwordRuleNotMet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The username needs 3 to 13 characters, letters and digits only.`
+  String get registerUsernameInvalid {
+    return Intl.message(
+      'The username needs 3 to 13 characters, letters and digits only.',
+      name: 'registerUsernameInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid email address.`
+  String get registerEmailInvalid {
+    return Intl.message(
+      'Please enter a valid email address.',
+      name: 'registerEmailInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password doesn't meet all the rules yet.`
+  String get registerPasswordInvalid {
+    return Intl.message(
+      'The password doesn\'t meet all the rules yet.',
+      name: 'registerPasswordInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This username is already taken. Please pick another one.`
+  String get registerUsernameTaken {
+    return Intl.message(
+      'This username is already taken. Please pick another one.',
+      name: 'registerUsernameTaken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can read how we handle your data in our {privacyPolicyLink}.`
+  String registerPrivacyNotice(String privacyPolicyLink) {
+    return Intl.message(
+      'You can read how we handle your data in our $privacyPolicyLink.',
+      name: 'registerPrivacyNotice',
+      desc: '',
+      args: [privacyPolicyLink],
+    );
+  }
+
+  /// `privacy policy`
+  String get privacyPolicyLinkLabel {
+    return Intl.message(
+      'privacy policy',
+      name: 'privacyPolicyLinkLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We only use your email address for your account, for example to reset your password.`
+  String get registerPrivacyNoticeWithoutLink {
+    return Intl.message(
+      'We only use your email address for your account, for example to reset your password.',
+      name: 'registerPrivacyNoticeWithoutLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset password`
+  String get forgotPasswordTitle {
+    return Intl.message(
+      'Reset password',
+      name: 'forgotPasswordTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your username and the email address of your account. We'll send you a code.`
+  String get forgotPasswordRequestIntro {
+    return Intl.message(
+      'Enter your username and the email address of your account. We\'ll send you a code.',
+      name: 'forgotPasswordRequestIntro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send code`
+  String get forgotPasswordRequestButton {
+    return Intl.message(
+      'Send code',
+      name: 'forgotPasswordRequestButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't send a code. Check your username and email address. If you sign in with Apple, you don't need a password.`
+  String get forgotPasswordRequestFailed {
+    return Intl.message(
+      'We couldn\'t send a code. Check your username and email address. If you sign in with Apple, you don\'t need a password.',
+      name: 'forgotPasswordRequestFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We sent a code to {email}. It's valid for two hours.`
+  String forgotPasswordCodeSent(String email) {
+    return Intl.message(
+      'We sent a code to $email. It\'s valid for two hours.',
+      name: 'forgotPasswordCodeSent',
+      desc: '',
+      args: [email],
+    );
+  }
+
+  /// `Code from the email`
+  String get resetCodeLabel {
+    return Intl.message(
+      'Code from the email',
+      name: 'resetCodeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `e.g. 123-456`
+  String get resetCodeHint {
+    return Intl.message(
+      'e.g. 123-456',
+      name: 'resetCodeHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The code has six digits, e.g. 123-456.`
+  String get resetCodeInvalid {
+    return Intl.message(
+      'The code has six digits, e.g. 123-456.',
+      name: 'resetCodeInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New password`
+  String get newPasswordLabel {
+    return Intl.message(
+      'New password',
+      name: 'newPasswordLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save password`
+  String get forgotPasswordSaveButton {
+    return Intl.message(
+      'Save password',
+      name: 'forgotPasswordSaveButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `That didn't work: the code is wrong or has expired. Request a new one if needed.`
+  String get forgotPasswordResetFailed {
+    return Intl.message(
+      'That didn\'t work: the code is wrong or has expired. Request a new one if needed.',
+      name: 'forgotPasswordResetFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request a new code`
+  String get forgotPasswordRequestNewCode {
+    return Intl.message(
+      'Request a new code',
+      name: 'forgotPasswordRequestNewCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your password has been changed. Sign in with your new password now.`
+  String get forgotPasswordSuccess {
+    return Intl.message(
+      'Your password has been changed. Sign in with your new password now.',
+      name: 'forgotPasswordSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to sign in`
+  String get forgotPasswordBackToLogin {
+    return Intl.message(
+      'Back to sign in',
+      name: 'forgotPasswordBackToLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The server can't be reached right now. Please try again in a moment.`
+  String get authNoConnection {
+    return Intl.message(
+      'The server can\'t be reached right now. Please try again in a moment.',
+      name: 'authNoConnection',
       desc: '',
       args: [],
     );

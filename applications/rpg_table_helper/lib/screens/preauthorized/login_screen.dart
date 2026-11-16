@@ -9,15 +9,26 @@ import 'package:quest_keeper/components/signinbuttons/button_list.dart';
 import 'package:quest_keeper/components/signinbuttons/button_view.dart';
 import 'package:quest_keeper/components/signinbuttons/custom_sign_in_with_apple.dart';
 import 'package:quest_keeper/generated/l10n.dart';
-import 'package:quest_keeper/helpers/validation_helpers.dart';
 import 'package:quest_keeper/main.dart';
+import 'package:quest_keeper/screens/preauthorized/auth_form_widgets.dart';
 import 'package:quest_keeper/screens/preauthorized/complete_sso_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/forgot_password_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/register_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/services/auth/authentication_service.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/onboarding_intent_store.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+/// Google sign-in is not wired up yet: the app service is not implemented,
+/// there is no server client ID, and the backend still answers with a legacy
+/// JWT instead of a token pair. The button stays hidden until that is done.
+const bool kGoogleSignInEnabled = false;
+
+/// Status codes the backend uses for an unknown username (400, no login
+/// challenge) or a wrong password (401).
+const _wrongCredentialsStatusCodes = [400, 401];
 
 // The reversed client ID has to be registered as URL scheme in ios/Runner/Info.plist.
 const _googleClientId =
@@ -50,53 +61,103 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   var usernameTextEditingController = TextEditingController();
   var passwordTextEditingController = TextEditingController();
 
-  var isLoginButtonDisabled = true;
   var isLoading = false;
+
+  /// Friendly message under the fields, e.g. for a wrong password.
+  String? loginErrorMessage;
 
   @override
   void initState() {
-    usernameTextEditingController.addListener(_updateStateForFormValidation);
-    passwordTextEditingController.addListener(_updateStateForFormValidation);
+    usernameTextEditingController.addListener(_clearLoginErrorMessage);
+    passwordTextEditingController.addListener(_clearLoginErrorMessage);
     super.initState();
   }
 
   @override
   void dispose() {
-    usernameTextEditingController.removeListener(_updateStateForFormValidation);
-    passwordTextEditingController.removeListener(_updateStateForFormValidation);
+    usernameTextEditingController.removeListener(_clearLoginErrorMessage);
+    passwordTextEditingController.removeListener(_clearLoginErrorMessage);
 
     super.dispose();
   }
 
-  void _updateStateForFormValidation() {
-    var newIsStartBtnInvalid = getIsLoginButtonDisabled();
-
+  void _clearLoginErrorMessage() {
+    if (loginErrorMessage == null || !mounted) return;
     setState(() {
-      isLoginButtonDisabled = newIsStartBtnInvalid;
+      loginErrorMessage = null;
     });
   }
 
-  bool getIsLoginButtonDisabled() {
-    if (usernameTextEditingController.text.isEmpty ||
-        usernameTextEditingController.text.length < 3) {
-      return true;
-    }
-    if (passwordTextEditingController.text.isEmpty ||
-        passwordTextEditingController.text.length < 3) {
-      return true;
-    }
-    if (!usernameValid(usernameTextEditingController.text)) {
-      return true;
-    }
-    if (!passwordValid(passwordTextEditingController.text)) {
-      return true;
+  Future<void> _loginWithPassword() async {
+    var username = usernameTextEditingController.text.trim();
+    var password = passwordTextEditingController.text;
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        loginErrorMessage = S.of(context).loginMissingInput;
+      });
+      return;
     }
 
-    return false;
+    setState(() {
+      isLoading = true;
+      loginErrorMessage = null;
+    });
+
+    var service =
+        DependencyProvider.of(context).getService<IAuthenticationService>();
+
+    var signinResponse = await service.loginWithUsernameAndPassword(
+        username: username, password: password);
+    if (!mounted || !context.mounted) {
+      return;
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (!signinResponse.isSuccessful &&
+        _wrongCredentialsStatusCodes.contains(signinResponse.statusCode)) {
+      setState(() {
+        loginErrorMessage = S.of(context).loginWrongCredentials;
+      });
+      return;
+    }
+
+    await signinResponse.possiblyHandleError(context);
+    if (!mounted || !context.mounted) {
+      return;
+    }
+
+    if (signinResponse.isSuccessful && signinResponse.result == true) {
+      // proceed to campagne or character selection
+      navigatorKey.currentState!
+          .pushNamedAndRemoveUntil(SelectGameModeScreen.route, (r) => false);
+    }
+  }
+
+  Future<void> _openForgotPassword() async {
+    var changedPasswordForUsername = await Navigator.of(context).pushNamed(
+      ForgotPasswordScreen.route,
+      arguments: usernameTextEditingController.text.trim(),
+    );
+    if (!mounted) return;
+
+    // After a successful reset the user signs in with the new password.
+    if (changedPasswordForUsername is String &&
+        changedPasswordForUsername.isNotEmpty) {
+      usernameTextEditingController.text = changedPasswordForUsername;
+      passwordTextEditingController.clear();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    var routeArgument = ModalRoute.of(context)?.settings.arguments;
+    var onboardingIntent =
+        routeArgument is OnboardingIntent ? routeArgument : null;
+    var canGoBack = Navigator.of(context).canPop();
+
     return Scaffold(
       backgroundColor: CustomThemeProvider.of(context).theme.bgColor,
       resizeToAvoidBottomInset: true,
@@ -116,8 +177,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           constraints: BoxConstraints(maxWidth: 400),
                           child: Column(
                             children: [
+                              if (canGoBack)
+                                Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: BackButton(
+                                    color: CustomThemeProvider.of(context)
+                                        .theme
+                                        .darkTextColor,
+                                  ),
+                                ),
                               SizedBox(
-                                height: 40,
+                                height: canGoBack ? 0 : 40,
                               ),
                               ConstrainedBox(
                                 constraints: BoxConstraints(
@@ -130,8 +200,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: 40,
+                                height: onboardingIntent == null ? 40 : 20,
                               ),
+                              if (onboardingIntent != null) ...[
+                                AuthMessageBox(
+                                  message:
+                                      onboardingIntent == OnboardingIntent.join
+                                          ? S.of(context).loginIntroJoin
+                                          : S.of(context).loginIntroLead,
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                              ],
                               // LOGIN
                               // Username Textfield
                               CustomTextField(
@@ -150,11 +231,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 keyboardType: TextInputType.visiblePassword,
                               ),
 
+                              Align(
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: CustomButton(
+                                  key: const ValueKey('login-forgot-password'),
+                                  variant: CustomButtonVariant.FlatButton,
+                                  label: S.of(context).forgotPasswordLink,
+                                  onPressed: _openForgotPassword,
+                                ),
+                              ),
+
+                              if (loginErrorMessage != null)
+                                AuthMessageBox(
+                                  message: loginErrorMessage!,
+                                  isError: true,
+                                ),
+
                               // login button
                               Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(20),
                                   child: CustomButton(
+                                    key: const ValueKey('login-submit'),
                                     boderRadiusOverride: 7,
                                     icon: Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -174,41 +272,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                                     ),
                                     variant: CustomButtonVariant.AccentButton,
-                                    onPressed: isLoginButtonDisabled
-                                        ? null
-                                        : () async {
-                                            // TODO perform login
-                                            var service = DependencyProvider.of(
-                                                    context)
-                                                .getService<
-                                                    IAuthenticationService>();
-
-                                            var signinResponse = await service
-                                                .loginWithUsernameAndPassword(
-                                                    username:
-                                                        usernameTextEditingController
-                                                            .text,
-                                                    password:
-                                                        passwordTextEditingController
-                                                            .text);
-                                            if (!mounted || !context.mounted) {
-                                              return;
-                                            }
-
-                                            await signinResponse
-                                                .possiblyHandleError(context);
-
-                                            if (signinResponse.result == true) {
-                                              // proceed to campagne or character selection
-                                              navigatorKey.currentState!
-                                                  .pushNamedAndRemoveUntil(
-                                                      SelectGameModeScreen
-                                                          .route,
-                                                      (r) => false);
-                                            } else {
-                                              // TODO mark password and username fields as invalid
-                                            }
-                                          },
+                                    onPressed: _loginWithPassword,
                                   ),
                                 ),
                               ),
@@ -327,6 +391,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
 
                                   // GOOGLE SIGN IN BUTTON
+                                  if (kGoogleSignInEnabled)
                                   SizedBox(
                                     width: 300,
                                     child: Center(

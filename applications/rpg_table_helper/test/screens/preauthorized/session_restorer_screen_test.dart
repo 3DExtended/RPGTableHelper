@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/session_restorer_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/welcome_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/services/auth/secure_refresh_token_storage.dart';
 import 'package:quest_keeper/services/auth/session_restorer.dart';
@@ -12,8 +13,9 @@ import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 
 /// Minimal route stubs so navigation assertions do not depend on the real
-/// `LoginScreen`/`SelectGameModeScreen` widgets (and their Riverpod
-/// providers/localization setup).
+/// `WelcomeScreen`/`LoginScreen`/`SelectGameModeScreen` widgets (and their
+/// Riverpod providers/localization setup).
+const _welcomeStubText = 'welcome-screen-stub';
 const _loginStubText = 'login-screen-stub';
 const _selectGameModeStubText = 'select-game-mode-stub';
 
@@ -27,6 +29,11 @@ Widget _appUnderTest() {
         case SessionRestorerScreen.route:
           return MaterialPageRoute(
             builder: (_) => const SessionRestorerScreen(),
+            settings: settings,
+          );
+        case WelcomeScreen.route:
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(body: Text(_welcomeStubText)),
             settings: settings,
           );
         case LoginScreen.route:
@@ -82,7 +89,7 @@ void main() {
     });
 
     testWidgets(
-        'navigates to Login when there is no refresh token to restore from',
+        'navigates to the welcome screen when there is no refresh token to restore from',
         (tester) async {
       // arrange
       DependencyProvider.getIt = GetIt.asNewInstance()
@@ -97,7 +104,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // assert
-      expect(find.text(_loginStubText), findsOneWidget);
+      expect(find.text(_welcomeStubText), findsOneWidget);
+      expect(find.text(_loginStubText), findsNothing);
       expect(find.text(_selectGameModeStubText), findsNothing);
     });
 
@@ -168,7 +176,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // assert
-      expect(find.text(_loginStubText), findsOneWidget);
+      expect(find.text(_welcomeStubText), findsOneWidget);
       expect(snackBarService.showSnackBarCallCount, 0);
     });
   });

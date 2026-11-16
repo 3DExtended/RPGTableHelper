@@ -111,7 +111,7 @@
       }
     }
   },
-  "login": "Login",
+  "login": "Sign in",
   "signInWithApple": "Sign in with Apple",
   "signInWithGoogle": "Sign in with Google",
   "createNewAccount": "Create new account",
@@ -415,5 +415,77 @@
   "removeImageBtnLabel": "Remove image",
   "uploadImageMenuLabel": "Upload image",
   "insertParagraphMenuLabel": "Insert paragraph here",
-  "connectionLostReconnecting": "No connection – reconnecting…"
+  "connectionLostReconnecting": "No connection – reconnecting…",
+  "appName": "QuestKeeper",
+  "welcomeTagline": "Your companion for pen & paper sessions at the table.",
+  "welcomeDescription": "The game master runs the campaign. Players keep their character sheet, their notes and the live stats on their phone.",
+  "welcomeLeadButton": "I run a game",
+  "welcomeLeadHint": "You create a campaign and invite your group.",
+  "welcomeJoinButton": "I'm joining a game",
+  "welcomeJoinHint": "After signing in, you enter the code from your game master.",
+  "loginIntroLead": "Sign in or create an account. Then you set up your campaign.",
+  "loginIntroJoin": "Sign in or create an account. Then you enter the code from your game master.",
+  "loginMissingInput": "Please enter your username and password.",
+  "loginWrongCredentials": "Username or password is incorrect.",
+  "forgotPasswordLink": "Forgot password?",
+  "usernameRuleHint": "3 to 13 characters, letters and digits only",
+  "passwordRulesTitle": "Your password needs",
+  "passwordRuleMinLength": "at least {count} characters",
+  "@passwordRuleMinLength": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "passwordRuleMaxLength": "at most {count} characters",
+  "@passwordRuleMaxLength": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "41"
+      }
+    }
+  },
+  "passwordRuleMet": "met",
+  "passwordRuleNotMet": "not met yet",
+  "registerUsernameInvalid": "The username needs 3 to 13 characters, letters and digits only.",
+  "registerEmailInvalid": "Please enter a valid email address.",
+  "registerPasswordInvalid": "The password doesn't meet all the rules yet.",
+  "registerUsernameTaken": "This username is already taken. Please pick another one.",
+  "registerPrivacyNotice": "You can read how we handle your data in our {privacyPolicyLink}.",
+  "@registerPrivacyNotice": {
+    "placeholders": {
+      "privacyPolicyLink": {
+        "type": "String",
+        "example": "privacy policy"
+      }
+    }
+  },
+  "privacyPolicyLinkLabel": "privacy policy",
+  "registerPrivacyNoticeWithoutLink": "We only use your email address for your account, for example to reset your password.",
+  "forgotPasswordTitle": "Reset password",
+  "forgotPasswordRequestIntro": "Enter your username and the email address of your account. We'll send you a code.",
+  "forgotPasswordRequestButton": "Send code",
+  "forgotPasswordRequestFailed": "We couldn't send a code. Check your username and email address. If you sign in with Apple, you don't need a password.",
+  "forgotPasswordCodeSent": "We sent a code to {email}. It's valid for two hours.",
+  "@forgotPasswordCodeSent": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "resetCodeLabel": "Code from the email",
+  "resetCodeHint": "e.g. 123-456",
+  "resetCodeInvalid": "The code has six digits, e.g. 123-456.",
+  "newPasswordLabel": "New password",
+  "forgotPasswordSaveButton": "Save password",
+  "forgotPasswordResetFailed": "That didn't work: the code is wrong or has expired. Request a new one if needed.",
+  "forgotPasswordRequestNewCode": "Request a new code",
+  "forgotPasswordSuccess": "Your password has been changed. Sign in with your new password now.",
+  "forgotPasswordBackToLogin": "Back to sign in",
+  "authNoConnection": "The server can't be reached right now. Please try again in a moment."
 }

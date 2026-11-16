@@ -3,22 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
+import 'package:quest_keeper/screens/preauthorized/welcome_screen.dart';
 import 'package:quest_keeper/screens/select_game_mode_screen.dart';
 import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/auth/session_restorer.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 
-/// Cold-start gate shown before the user ever sees `LoginScreen` or
-/// `SelectGameModeScreen`.
+/// Cold-start gate shown before the user ever sees `WelcomeScreen`,
+/// `LoginScreen` or `SelectGameModeScreen`.
 ///
 /// Briefly shows a loading indicator while [ISessionRestorer] checks for a
 /// stored refresh token and, if present, exchanges it for a fresh token
-/// pair. Lands on [SelectGameModeScreen] only on a successful restore;
-/// everything else (no refresh token — e.g. an upgrade from an older,
-/// JWT-only install — an expired/revoked refresh token, or an unreachable
-/// API) falls back to [LoginScreen]. The cached access JWT alone is never
-/// trusted to enter the app.
+/// pair. Lands on [SelectGameModeScreen] only on a successful restore.
+/// Without a refresh token (fresh install, logged out, or an upgrade from an
+/// older, JWT-only install) it shows [WelcomeScreen]; an expired/revoked
+/// refresh token or an unreachable API falls back to [LoginScreen]. The
+/// cached access JWT alone is never trusted to enter the app.
 class SessionRestorerScreen extends StatefulWidget {
   static const route = 'session-restorer';
 
@@ -52,11 +53,20 @@ class _SessionRestorerScreenState extends State<SessionRestorerScreen> {
       _startSessionMonitoringIfPossible();
     }
 
-    Navigator.of(context).pushReplacementNamed(
-      result == SessionRestoreResult.restored
-          ? SelectGameModeScreen.route
-          : LoginScreen.route,
-    );
+    Navigator.of(context).pushReplacementNamed(_routeFor(result));
+  }
+
+  /// Someone who was never signed in on this device first sees what the app
+  /// is for; an expired session goes straight back to the login.
+  static String _routeFor(SessionRestoreResult result) {
+    switch (result) {
+      case SessionRestoreResult.restored:
+        return SelectGameModeScreen.route;
+      case SessionRestoreResult.needsLogin:
+        return WelcomeScreen.route;
+      case SessionRestoreResult.sessionExpired:
+        return LoginScreen.route;
+    }
   }
 
   /// Best-effort, same reasoning as [_showSessionExpiredMessageIfPossible]:

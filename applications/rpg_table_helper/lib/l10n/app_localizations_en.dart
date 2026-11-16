@@ -342,7 +342,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get login => 'Login';
+  String get login => 'Sign in';
 
   @override
   String get signInWithApple => 'Sign in with Apple';
@@ -1165,4 +1165,146 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionLostReconnecting => 'No connection – reconnecting…';
+
+  @override
+  String get appName => 'QuestKeeper';
+
+  @override
+  String get welcomeTagline =>
+      'Your companion for pen & paper sessions at the table.';
+
+  @override
+  String get welcomeDescription =>
+      'The game master runs the campaign. Players keep their character sheet, their notes and the live stats on their phone.';
+
+  @override
+  String get welcomeLeadButton => 'I run a game';
+
+  @override
+  String get welcomeLeadHint => 'You create a campaign and invite your group.';
+
+  @override
+  String get welcomeJoinButton => 'I\'m joining a game';
+
+  @override
+  String get welcomeJoinHint =>
+      'After signing in, you enter the code from your game master.';
+
+  @override
+  String get loginIntroLead =>
+      'Sign in or create an account. Then you set up your campaign.';
+
+  @override
+  String get loginIntroJoin =>
+      'Sign in or create an account. Then you enter the code from your game master.';
+
+  @override
+  String get loginMissingInput => 'Please enter your username and password.';
+
+  @override
+  String get loginWrongCredentials => 'Username or password is incorrect.';
+
+  @override
+  String get forgotPasswordLink => 'Forgot password?';
+
+  @override
+  String get usernameRuleHint => '3 to 13 characters, letters and digits only';
+
+  @override
+  String get passwordRulesTitle => 'Your password needs';
+
+  @override
+  String passwordRuleMinLength(int count) {
+    return 'at least $count characters';
+  }
+
+  @override
+  String passwordRuleMaxLength(int count) {
+    return 'at most $count characters';
+  }
+
+  @override
+  String get passwordRuleMet => 'met';
+
+  @override
+  String get passwordRuleNotMet => 'not met yet';
+
+  @override
+  String get registerUsernameInvalid =>
+      'The username needs 3 to 13 characters, letters and digits only.';
+
+  @override
+  String get registerEmailInvalid => 'Please enter a valid email address.';
+
+  @override
+  String get registerPasswordInvalid =>
+      'The password doesn\'t meet all the rules yet.';
+
+  @override
+  String get registerUsernameTaken =>
+      'This username is already taken. Please pick another one.';
+
+  @override
+  String registerPrivacyNotice(String privacyPolicyLink) {
+    return 'You can read how we handle your data in our $privacyPolicyLink.';
+  }
+
+  @override
+  String get privacyPolicyLinkLabel => 'privacy policy';
+
+  @override
+  String get registerPrivacyNoticeWithoutLink =>
+      'We only use your email address for your account, for example to reset your password.';
+
+  @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordRequestIntro =>
+      'Enter your username and the email address of your account. We\'ll send you a code.';
+
+  @override
+  String get forgotPasswordRequestButton => 'Send code';
+
+  @override
+  String get forgotPasswordRequestFailed =>
+      'We couldn\'t send a code. Check your username and email address. If you sign in with Apple, you don\'t need a password.';
+
+  @override
+  String forgotPasswordCodeSent(String email) {
+    return 'We sent a code to $email. It\'s valid for two hours.';
+  }
+
+  @override
+  String get resetCodeLabel => 'Code from the email';
+
+  @override
+  String get resetCodeHint => 'e.g. 123-456';
+
+  @override
+  String get resetCodeInvalid => 'The code has six digits, e.g. 123-456.';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get forgotPasswordSaveButton => 'Save password';
+
+  @override
+  String get forgotPasswordResetFailed =>
+      'That didn\'t work: the code is wrong or has expired. Request a new one if needed.';
+
+  @override
+  String get forgotPasswordRequestNewCode => 'Request a new code';
+
+  @override
+  String get forgotPasswordSuccess =>
+      'Your password has been changed. Sign in with your new password now.';
+
+  @override
+  String get forgotPasswordBackToLogin => 'Back to sign in';
+
+  @override
+  String get authNoConnection =>
+      'The server can\'t be reached right now. Please try again in a moment.';
 }

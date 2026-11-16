@@ -725,7 +725,7 @@ abstract class AppLocalizations {
   /// No description provided for @login.
   ///
   /// In de, this message translates to:
-  /// **'Login'**
+  /// **'Anmelden'**
   String get login;
 
   /// No description provided for @signInWithApple.
@@ -2263,6 +2263,246 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Keine Verbindung – verbinde neu …'**
   String get connectionLostReconnecting;
+
+  /// No description provided for @appName.
+  ///
+  /// In de, this message translates to:
+  /// **'QuestKeeper'**
+  String get appName;
+
+  /// No description provided for @welcomeTagline.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Begleiter für Pen-&-Paper-Runden am Tisch.'**
+  String get welcomeTagline;
+
+  /// No description provided for @welcomeDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Spielleitung verwaltet die Kampagne. Die Spieler haben ihren Charakterbogen, ihre Notizen und die Live-Werte auf dem Handy.'**
+  String get welcomeDescription;
+
+  /// No description provided for @welcomeLeadButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich leite eine Runde'**
+  String get welcomeLeadButton;
+
+  /// No description provided for @welcomeLeadHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Du legst eine Kampagne an und lädst deine Gruppe ein.'**
+  String get welcomeLeadHint;
+
+  /// No description provided for @welcomeJoinButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich trete einer Runde bei'**
+  String get welcomeJoinButton;
+
+  /// No description provided for @welcomeJoinHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach der Anmeldung gibst du den Code deiner Spielleitung ein.'**
+  String get welcomeJoinHint;
+
+  /// No description provided for @loginIntroLead.
+  ///
+  /// In de, this message translates to:
+  /// **'Melde dich an oder lege ein Konto an. Danach legst du deine Kampagne an.'**
+  String get loginIntroLead;
+
+  /// No description provided for @loginIntroJoin.
+  ///
+  /// In de, this message translates to:
+  /// **'Melde dich an oder lege ein Konto an. Danach gibst du den Code deiner Spielleitung ein.'**
+  String get loginIntroJoin;
+
+  /// No description provided for @loginMissingInput.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib Nutzername und Passwort ein.'**
+  String get loginMissingInput;
+
+  /// No description provided for @loginWrongCredentials.
+  ///
+  /// In de, this message translates to:
+  /// **'Nutzername oder Passwort stimmt nicht.'**
+  String get loginWrongCredentials;
+
+  /// No description provided for @forgotPasswordLink.
+  ///
+  /// In de, this message translates to:
+  /// **'Passwort vergessen?'**
+  String get forgotPasswordLink;
+
+  /// No description provided for @usernameRuleHint.
+  ///
+  /// In de, this message translates to:
+  /// **'3 bis 13 Zeichen, nur Buchstaben und Ziffern'**
+  String get usernameRuleHint;
+
+  /// No description provided for @passwordRulesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Passwort braucht'**
+  String get passwordRulesTitle;
+
+  /// No description provided for @passwordRuleMinLength.
+  ///
+  /// In de, this message translates to:
+  /// **'mindestens {count} Zeichen'**
+  String passwordRuleMinLength(int count);
+
+  /// No description provided for @passwordRuleMaxLength.
+  ///
+  /// In de, this message translates to:
+  /// **'höchstens {count} Zeichen'**
+  String passwordRuleMaxLength(int count);
+
+  /// No description provided for @passwordRuleMet.
+  ///
+  /// In de, this message translates to:
+  /// **'erfüllt'**
+  String get passwordRuleMet;
+
+  /// No description provided for @passwordRuleNotMet.
+  ///
+  /// In de, this message translates to:
+  /// **'noch nicht erfüllt'**
+  String get passwordRuleNotMet;
+
+  /// No description provided for @registerUsernameInvalid.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Nutzername braucht 3 bis 13 Zeichen, nur Buchstaben und Ziffern.'**
+  String get registerUsernameInvalid;
+
+  /// No description provided for @registerEmailInvalid.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib eine gültige E-Mail-Adresse ein.'**
+  String get registerEmailInvalid;
+
+  /// No description provided for @registerPasswordInvalid.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Passwort erfüllt noch nicht alle Regeln.'**
+  String get registerPasswordInvalid;
+
+  /// No description provided for @registerUsernameTaken.
+  ///
+  /// In de, this message translates to:
+  /// **'Diesen Nutzernamen gibt es schon. Bitte wähle einen anderen.'**
+  String get registerUsernameTaken;
+
+  /// No description provided for @registerPrivacyNotice.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie wir mit deinen Daten umgehen, steht in unserer {privacyPolicyLink}.'**
+  String registerPrivacyNotice(String privacyPolicyLink);
+
+  /// No description provided for @privacyPolicyLinkLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Datenschutzerklärung'**
+  String get privacyPolicyLinkLabel;
+
+  /// No description provided for @registerPrivacyNoticeWithoutLink.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine E-Mail-Adresse brauchen wir nur für dein Konto, zum Beispiel zum Zurücksetzen des Passworts.'**
+  String get registerPrivacyNoticeWithoutLink;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Passwort zurücksetzen'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordRequestIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Gib deinen Nutzernamen und die E-Mail-Adresse deines Kontos ein. Wir schicken dir einen Code.'**
+  String get forgotPasswordRequestIntro;
+
+  /// No description provided for @forgotPasswordRequestButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Code anfordern'**
+  String get forgotPasswordRequestButton;
+
+  /// No description provided for @forgotPasswordRequestFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir konnten keinen Code schicken. Prüfe Nutzername und E-Mail-Adresse. Wenn du dich mit Apple anmeldest, brauchst du kein Passwort.'**
+  String get forgotPasswordRequestFailed;
+
+  /// No description provided for @forgotPasswordCodeSent.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir haben dir einen Code an {email} geschickt. Er gilt zwei Stunden.'**
+  String forgotPasswordCodeSent(String email);
+
+  /// No description provided for @resetCodeLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Code aus der E-Mail'**
+  String get resetCodeLabel;
+
+  /// No description provided for @resetCodeHint.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. 123-456'**
+  String get resetCodeHint;
+
+  /// No description provided for @resetCodeInvalid.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Code hat sechs Ziffern, z. B. 123-456.'**
+  String get resetCodeInvalid;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Passwort'**
+  String get newPasswordLabel;
+
+  /// No description provided for @forgotPasswordSaveButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Passwort speichern'**
+  String get forgotPasswordSaveButton;
+
+  /// No description provided for @forgotPasswordResetFailed.
+  ///
+  /// In de, this message translates to:
+  /// **'Das hat nicht geklappt: Der Code stimmt nicht oder ist abgelaufen. Fordere bei Bedarf einen neuen an.'**
+  String get forgotPasswordResetFailed;
+
+  /// No description provided for @forgotPasswordRequestNewCode.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuen Code anfordern'**
+  String get forgotPasswordRequestNewCode;
+
+  /// No description provided for @forgotPasswordSuccess.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Passwort ist geändert. Melde dich jetzt mit dem neuen Passwort an.'**
+  String get forgotPasswordSuccess;
+
+  /// No description provided for @forgotPasswordBackToLogin.
+  ///
+  /// In de, this message translates to:
+  /// **'Zur Anmeldung'**
+  String get forgotPasswordBackToLogin;
+
+  /// No description provided for @authNoConnection.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Server ist gerade nicht erreichbar. Versuch es gleich noch einmal.'**
+  String get authNoConnection;
 }
 
 class _AppLocalizationsDelegate

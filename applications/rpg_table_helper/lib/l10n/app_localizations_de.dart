@@ -347,7 +347,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get login => 'Login';
+  String get login => 'Anmelden';
 
   @override
   String get signInWithApple => 'Mit Apple anmelden';
@@ -1176,4 +1176,148 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get connectionLostReconnecting => 'Keine Verbindung – verbinde neu …';
+
+  @override
+  String get appName => 'QuestKeeper';
+
+  @override
+  String get welcomeTagline =>
+      'Dein Begleiter für Pen-&-Paper-Runden am Tisch.';
+
+  @override
+  String get welcomeDescription =>
+      'Die Spielleitung verwaltet die Kampagne. Die Spieler haben ihren Charakterbogen, ihre Notizen und die Live-Werte auf dem Handy.';
+
+  @override
+  String get welcomeLeadButton => 'Ich leite eine Runde';
+
+  @override
+  String get welcomeLeadHint =>
+      'Du legst eine Kampagne an und lädst deine Gruppe ein.';
+
+  @override
+  String get welcomeJoinButton => 'Ich trete einer Runde bei';
+
+  @override
+  String get welcomeJoinHint =>
+      'Nach der Anmeldung gibst du den Code deiner Spielleitung ein.';
+
+  @override
+  String get loginIntroLead =>
+      'Melde dich an oder lege ein Konto an. Danach legst du deine Kampagne an.';
+
+  @override
+  String get loginIntroJoin =>
+      'Melde dich an oder lege ein Konto an. Danach gibst du den Code deiner Spielleitung ein.';
+
+  @override
+  String get loginMissingInput => 'Bitte gib Nutzername und Passwort ein.';
+
+  @override
+  String get loginWrongCredentials => 'Nutzername oder Passwort stimmt nicht.';
+
+  @override
+  String get forgotPasswordLink => 'Passwort vergessen?';
+
+  @override
+  String get usernameRuleHint => '3 bis 13 Zeichen, nur Buchstaben und Ziffern';
+
+  @override
+  String get passwordRulesTitle => 'Dein Passwort braucht';
+
+  @override
+  String passwordRuleMinLength(int count) {
+    return 'mindestens $count Zeichen';
+  }
+
+  @override
+  String passwordRuleMaxLength(int count) {
+    return 'höchstens $count Zeichen';
+  }
+
+  @override
+  String get passwordRuleMet => 'erfüllt';
+
+  @override
+  String get passwordRuleNotMet => 'noch nicht erfüllt';
+
+  @override
+  String get registerUsernameInvalid =>
+      'Der Nutzername braucht 3 bis 13 Zeichen, nur Buchstaben und Ziffern.';
+
+  @override
+  String get registerEmailInvalid =>
+      'Bitte gib eine gültige E-Mail-Adresse ein.';
+
+  @override
+  String get registerPasswordInvalid =>
+      'Das Passwort erfüllt noch nicht alle Regeln.';
+
+  @override
+  String get registerUsernameTaken =>
+      'Diesen Nutzernamen gibt es schon. Bitte wähle einen anderen.';
+
+  @override
+  String registerPrivacyNotice(String privacyPolicyLink) {
+    return 'Wie wir mit deinen Daten umgehen, steht in unserer $privacyPolicyLink.';
+  }
+
+  @override
+  String get privacyPolicyLinkLabel => 'Datenschutzerklärung';
+
+  @override
+  String get registerPrivacyNoticeWithoutLink =>
+      'Deine E-Mail-Adresse brauchen wir nur für dein Konto, zum Beispiel zum Zurücksetzen des Passworts.';
+
+  @override
+  String get forgotPasswordTitle => 'Passwort zurücksetzen';
+
+  @override
+  String get forgotPasswordRequestIntro =>
+      'Gib deinen Nutzernamen und die E-Mail-Adresse deines Kontos ein. Wir schicken dir einen Code.';
+
+  @override
+  String get forgotPasswordRequestButton => 'Code anfordern';
+
+  @override
+  String get forgotPasswordRequestFailed =>
+      'Wir konnten keinen Code schicken. Prüfe Nutzername und E-Mail-Adresse. Wenn du dich mit Apple anmeldest, brauchst du kein Passwort.';
+
+  @override
+  String forgotPasswordCodeSent(String email) {
+    return 'Wir haben dir einen Code an $email geschickt. Er gilt zwei Stunden.';
+  }
+
+  @override
+  String get resetCodeLabel => 'Code aus der E-Mail';
+
+  @override
+  String get resetCodeHint => 'z. B. 123-456';
+
+  @override
+  String get resetCodeInvalid => 'Der Code hat sechs Ziffern, z. B. 123-456.';
+
+  @override
+  String get newPasswordLabel => 'Neues Passwort';
+
+  @override
+  String get forgotPasswordSaveButton => 'Passwort speichern';
+
+  @override
+  String get forgotPasswordResetFailed =>
+      'Das hat nicht geklappt: Der Code stimmt nicht oder ist abgelaufen. Fordere bei Bedarf einen neuen an.';
+
+  @override
+  String get forgotPasswordRequestNewCode => 'Neuen Code anfordern';
+
+  @override
+  String get forgotPasswordSuccess =>
+      'Dein Passwort ist geändert. Melde dich jetzt mit dem neuen Passwort an.';
+
+  @override
+  String get forgotPasswordBackToLogin => 'Zur Anmeldung';
+
+  @override
+  String get authNoConnection =>
+      'Der Server ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
 }

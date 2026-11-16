@@ -127,7 +127,7 @@
       }
     }
   },
-  "login": "Login",
+  "login": "Anmelden",
   "signInWithApple": "Mit Apple anmelden",
   "signInWithGoogle": "Mit Google anmelden",
   "createNewAccount": "Neuen Account anlegen",
@@ -455,5 +455,77 @@
   "removeImageBtnLabel": "Bild entfernen",
   "uploadImageMenuLabel": "Bild hochladen",
   "insertParagraphMenuLabel": "Absatz hier einfügen",
-  "connectionLostReconnecting": "Keine Verbindung – verbinde neu\u00a0…"
+  "connectionLostReconnecting": "Keine Verbindung – verbinde neu\u00a0…",
+  "appName": "QuestKeeper",
+  "welcomeTagline": "Dein Begleiter für Pen-&-Paper-Runden am Tisch.",
+  "welcomeDescription": "Die Spielleitung verwaltet die Kampagne. Die Spieler haben ihren Charakterbogen, ihre Notizen und die Live-Werte auf dem Handy.",
+  "welcomeLeadButton": "Ich leite eine Runde",
+  "welcomeLeadHint": "Du legst eine Kampagne an und lädst deine Gruppe ein.",
+  "welcomeJoinButton": "Ich trete einer Runde bei",
+  "welcomeJoinHint": "Nach der Anmeldung gibst du den Code deiner Spielleitung ein.",
+  "loginIntroLead": "Melde dich an oder lege ein Konto an. Danach legst du deine Kampagne an.",
+  "loginIntroJoin": "Melde dich an oder lege ein Konto an. Danach gibst du den Code deiner Spielleitung ein.",
+  "loginMissingInput": "Bitte gib Nutzername und Passwort ein.",
+  "loginWrongCredentials": "Nutzername oder Passwort stimmt nicht.",
+  "forgotPasswordLink": "Passwort vergessen?",
+  "usernameRuleHint": "3 bis 13 Zeichen, nur Buchstaben und Ziffern",
+  "passwordRulesTitle": "Dein Passwort braucht",
+  "passwordRuleMinLength": "mindestens {count} Zeichen",
+  "@passwordRuleMinLength": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "passwordRuleMaxLength": "höchstens {count} Zeichen",
+  "@passwordRuleMaxLength": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "41"
+      }
+    }
+  },
+  "passwordRuleMet": "erfüllt",
+  "passwordRuleNotMet": "noch nicht erfüllt",
+  "registerUsernameInvalid": "Der Nutzername braucht 3 bis 13 Zeichen, nur Buchstaben und Ziffern.",
+  "registerEmailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+  "registerPasswordInvalid": "Das Passwort erfüllt noch nicht alle Regeln.",
+  "registerUsernameTaken": "Diesen Nutzernamen gibt es schon. Bitte wähle einen anderen.",
+  "registerPrivacyNotice": "Wie wir mit deinen Daten umgehen, steht in unserer {privacyPolicyLink}.",
+  "@registerPrivacyNotice": {
+    "placeholders": {
+      "privacyPolicyLink": {
+        "type": "String",
+        "example": "Datenschutzerklärung"
+      }
+    }
+  },
+  "privacyPolicyLinkLabel": "Datenschutzerklärung",
+  "registerPrivacyNoticeWithoutLink": "Deine E-Mail-Adresse brauchen wir nur für dein Konto, zum Beispiel zum Zurücksetzen des Passworts.",
+  "forgotPasswordTitle": "Passwort zurücksetzen",
+  "forgotPasswordRequestIntro": "Gib deinen Nutzernamen und die E-Mail-Adresse deines Kontos ein. Wir schicken dir einen Code.",
+  "forgotPasswordRequestButton": "Code anfordern",
+  "forgotPasswordRequestFailed": "Wir konnten keinen Code schicken. Prüfe Nutzername und E-Mail-Adresse. Wenn du dich mit Apple anmeldest, brauchst du kein Passwort.",
+  "forgotPasswordCodeSent": "Wir haben dir einen Code an {email} geschickt. Er gilt zwei Stunden.",
+  "@forgotPasswordCodeSent": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "resetCodeLabel": "Code aus der E-Mail",
+  "resetCodeHint": "z. B. 123-456",
+  "resetCodeInvalid": "Der Code hat sechs Ziffern, z. B. 123-456.",
+  "newPasswordLabel": "Neues Passwort",
+  "forgotPasswordSaveButton": "Passwort speichern",
+  "forgotPasswordResetFailed": "Das hat nicht geklappt: Der Code stimmt nicht oder ist abgelaufen. Fordere bei Bedarf einen neuen an.",
+  "forgotPasswordRequestNewCode": "Neuen Code anfordern",
+  "forgotPasswordSuccess": "Dein Passwort ist geändert. Melde dich jetzt mit dem neuen Passwort an.",
+  "forgotPasswordBackToLogin": "Zur Anmeldung",
+  "authNoConnection": "Der Server ist gerade nicht erreichbar. Versuch es gleich noch einmal."
 }
