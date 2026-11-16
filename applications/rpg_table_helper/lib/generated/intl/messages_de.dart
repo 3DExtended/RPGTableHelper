@@ -1503,7 +1503,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Name, Level, eine Währung",
     ),
     "wizardTemplateEmptyDescription": MessageLookupByLibrary.simpleMessage(
-      "Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.",
+      "Ein schlichter Bogen mit Name, Level und Beschreibung. Alles Weitere legst du selbst an.",
     ),
     "wizardTemplateEmptyName": MessageLookupByLibrary.simpleMessage("Leer"),
     "wizardTemplateFantasyContents": MessageLookupByLibrary.simpleMessage(

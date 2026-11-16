@@ -954,7 +954,7 @@
   "wizardTemplateStepHelper": "## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Vorlage, Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Vorlage\n\nWähle, womit du startest. Die Vorlage füllt Charakterbogen und Währung vor. In den nächsten Schritten passt du alles an.\n\nDie Vorlage wählst du nur beim Anlegen. Über das Zahnrad änderst du später jeden Teil einzeln.",
   "wizardTemplateContentsLabel": "Enthält",
   "wizardTemplateEmptyName": "Leer",
-  "wizardTemplateEmptyDescription": "Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.",
+  "wizardTemplateEmptyDescription": "Ein schlichter Bogen mit Name, Level und Beschreibung. Alles Weitere legst du selbst an.",
   "wizardTemplateEmptyContents": "Name, Level, eine Währung",
   "wizardTemplateFantasyName": "Fantasy 5E (SRD)",
   "wizardTemplateFantasyDescription": "Klassische Fantasy mit Attributen, Trefferpunkten und Zaubern.",

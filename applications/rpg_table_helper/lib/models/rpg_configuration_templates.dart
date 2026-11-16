@@ -64,8 +64,8 @@ class RpgConfigurationTemplates {
         craftingRecipes: [],
       );
 
-  /// "Leer": one sheet tab with the character's name and level, one
-  /// currency, nothing else.
+  /// "Leer": one sheet tab with the character's name, level and a free
+  /// description, one currency, nothing else.
   static RpgConfigurationModel empty() => RpgConfigurationModel(
     rpgName: "Leer",
     // The app shows amounts in the first currency, so one is needed.
@@ -87,6 +87,14 @@ class RpgConfigurationTemplates {
             type: CharacterStatValueType
                 .characterNameWithLevelAndAdditionalDetails,
             additionalData: jsonEncode({"values": []}),
+          ),
+          _stat(
+            uuid: "667aaa95-fee5-4237-81b1-42b79f99a60b",
+            name: "Beschreibung",
+            helperText:
+                "Wer ist dein Charakter? Wie sieht er aus, woher kommt er, "
+                "was treibt ihn an?",
+            type: CharacterStatValueType.multiLineText,
           ),
         ],
       ),

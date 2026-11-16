@@ -115,13 +115,19 @@ void main() {
     expect(template.initiativeBonusStatUuid, base.initiativeBonusStatUuid);
   });
 
-  test('"Leer" has one tab with name and level and one currency', () {
+  test('"Leer" has one tab with name, level, description and one currency',
+      () {
     final config = RpgConfigurationTemplates.empty();
 
     final tab = config.characterStatTabsDefinition!.single;
     expect(tab.tabName, "Charakter");
     expect(tab.isDefaultTab, isTrue);
-    final summary = tab.statsInTab.single;
+    expect(tab.statsInTab.map((s) => (s.name, s.valueType)), [
+      ("Grundwerte",
+          CharacterStatValueType.characterNameWithLevelAndAdditionalDetails),
+      ("Beschreibung", CharacterStatValueType.multiLineText),
+    ]);
+    final summary = tab.statsInTab.first;
     expect(
       summary.valueType,
       CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,

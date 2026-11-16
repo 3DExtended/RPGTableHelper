@@ -1431,7 +1431,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Name, level, one currency",
     ),
     "wizardTemplateEmptyDescription": MessageLookupByLibrary.simpleMessage(
-      "A plain sheet with name and level. You add everything else yourself.",
+      "A plain sheet with name, level and a description. You add everything else yourself.",
     ),
     "wizardTemplateEmptyName": MessageLookupByLibrary.simpleMessage("Blank"),
     "wizardTemplateFantasyContents": MessageLookupByLibrary.simpleMessage(

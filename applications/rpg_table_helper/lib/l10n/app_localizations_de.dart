@@ -2146,7 +2146,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wizardTemplateEmptyDescription =>
-      'Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.';
+      'Ein schlichter Bogen mit Name, Level und Beschreibung. Alles Weitere legst du selbst an.';
 
   @override
   String get wizardTemplateEmptyContents => 'Name, Level, eine Währung';

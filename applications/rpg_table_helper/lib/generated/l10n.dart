@@ -5740,10 +5740,10 @@ class S {
     );
   }
 
-  /// `A plain sheet with name and level. You add everything else yourself.`
+  /// `A plain sheet with name, level and a description. You add everything else yourself.`
   String get wizardTemplateEmptyDescription {
     return Intl.message(
-      'A plain sheet with name and level. You add everything else yourself.',
+      'A plain sheet with name, level and a description. You add everything else yourself.',
       name: 'wizardTemplateEmptyDescription',
       desc: '',
       args: [],

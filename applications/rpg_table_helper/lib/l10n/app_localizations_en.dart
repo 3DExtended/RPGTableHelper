@@ -2127,7 +2127,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wizardTemplateEmptyDescription =>
-      'A plain sheet with name and level. You add everything else yourself.';
+      'A plain sheet with name, level and a description. You add everything else yourself.';
 
   @override
   String get wizardTemplateEmptyContents => 'Name, level, one currency';

@@ -166,7 +166,9 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('"Leer" asks for name and level on one page', (tester) async {
+    testWidgets('"Leer" asks for name, level and description on one page', (
+      tester,
+    ) async {
       final config = RpgConfigurationTemplates.empty();
       final form = await openSetupForm(tester, config);
       expect(tester.takeException(), isNull);
@@ -184,9 +186,15 @@ void main() {
       expect(form.outcome(), CharacterStatsFormOutcome.completed);
       expect(form.name(), 'Mira Dornwald');
 
-      final summary = form.stored().single;
-      expect(summary.statUuid, statNamed(config, "Grundwerte").statUuid);
+      final summary = form.stored().firstWhere(
+        (s) => s.statUuid == statNamed(config, "Grundwerte").statUuid,
+      );
       expect(jsonDecode(summary.serializedValue)['level'], 3);
+      expect(
+        form.stored().map((s) => s.statUuid),
+        contains(statNamed(config, "Beschreibung").statUuid),
+        reason: 'the description is on the same page (empty is fine)',
+      );
     });
 
     testWidgets('"Erzählerisch" asks for every field, without a level', (
@@ -257,6 +265,10 @@ void main() {
               "imageUrl": "assets/images/charactercard_placeholder.png",
             }),
             CharacterStatValueType.int => jsonEncode({"value": 3}),
+            CharacterStatValueType.multiLineText => jsonEncode({
+              "value": "Eine Schmugglerin aus dem Hafenviertel, die lieber "
+                  "redet als kämpft.",
+            }),
             CharacterStatValueType.checkboxTrack => serializeCheckedBoxes([1]),
             CharacterStatValueType.textList => serializeTextListEntries([
               for (final slot in TextListConfig.of(stat).slots)

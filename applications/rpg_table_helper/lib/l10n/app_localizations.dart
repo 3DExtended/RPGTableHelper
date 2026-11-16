@@ -3767,7 +3767,7 @@ abstract class AppLocalizations {
   /// No description provided for @wizardTemplateEmptyDescription.
   ///
   /// In de, this message translates to:
-  /// **'Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.'**
+  /// **'Ein schlichter Bogen mit Name, Level und Beschreibung. Alles Weitere legst du selbst an.'**
   String get wizardTemplateEmptyDescription;
 
   /// No description provided for @wizardTemplateEmptyContents.
