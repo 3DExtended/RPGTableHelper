@@ -828,5 +828,7 @@
   "fixMarkedFieldsHint": "Please fix the marked fields.",
   "moneyModeDeposit": "+ Add",
   "moneyModeSpend": "− Spend",
-  "activeAlternateFormBannerTitle": "Alternate form"
+  "activeAlternateFormBannerTitle": "Alternate form",
+  "missingStatTapToFill": "Still empty – tap to fill in",
+  "missingStatUnnamed": "Unnamed property"
 }

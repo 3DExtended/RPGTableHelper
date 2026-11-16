@@ -3349,6 +3349,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Verwandelte Gestalt'**
   String get activeAlternateFormBannerTitle;
+
+  /// No description provided for @missingStatTapToFill.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch leer – tippen zum Ausfüllen'**
+  String get missingStatTapToFill;
+
+  /// No description provided for @missingStatUnnamed.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbenannte Eigenschaft'**
+  String get missingStatUnnamed;
 }
 
 class _AppLocalizationsDelegate

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/components/dynamic_height_column_layout.dart';
 import 'package:quest_keeper/components/long_press_scale_widget.dart';
+import 'package:quest_keeper/components/missing_stat_placeholder.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
@@ -32,6 +33,11 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Whether missing values show as fillable placeholders depends on these.
+    ref.watch(connectionDetailsProvider
+        .select((d) => (d.value?.isDm, d.value?.isInSession)));
+    ref.watch(rpgCharacterConfigurationProvider.select((c) => c.hasValue));
+
     return LayoutBuilder(builder: (context, constraints) {
       // we need to define the width of each widget for the upcoming columnized view
       var numberOfColumns = 1;
@@ -115,12 +121,40 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
         : StatNumbers.withComputedValues(rpgConfig, charToRender!,
             isCompanion: charToRender is! RpgCharacterConfiguration,
             isAlternateForm: charToRender is! RpgCharacterConfiguration);
-    var statsOfCharacterInTab = statsInTab
-        .where((st) => characterStats.any((cs) => cs.statUuid == st.statUuid))
-        .toList();
+    // Only the player's own live session can fill in a missing value;
+    // previews and the DM's views of a character skip missing properties.
+    bool canFillMissingValues() {
+      final connectionDetails = ref.read(connectionDetailsProvider).value;
+      return charToRender != null &&
+          connectionDetails != null &&
+          !connectionDetails.isDm &&
+          connectionDetails.isInSession &&
+          ref.read(rpgCharacterConfigurationProvider).hasValue;
+    }
 
-    for (var statToRender in statsOfCharacterInTab) {
+    for (var statToRender in statsInTab) {
       var isComputed = StatNumbers.isComputed(statToRender);
+      var hasValue =
+          characterStats.any((cs) => cs.statUuid == statToRender.statUuid);
+      if (!hasValue) {
+        // "Später ausfüllen" leaves properties without a value; show them
+        // so the player can still fill them in on the sheet.
+        if (!isComputed && canFillMissingValues()) {
+          result.add(SizedBox(
+            width: columnWidth,
+            child: MissingStatPlaceholder(
+              statName: statToRender.name,
+              onTap: () => PlayerPageHelpers.handlePossiblyMissingCharacterStats(
+                  ref: ref,
+                  context: context,
+                  filterStatUuid: statToRender.statUuid,
+                  rpgConfig: rpgConfig,
+                  selectedCharacter: charToRender!),
+            ),
+          ));
+        }
+        continue;
+      }
       var matchingPlayerCharacterStat = characterStats
           .firstWhereOrNull((stat) =>
               statToRender.statUuid == stat.statUuid &&
@@ -135,14 +169,7 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
             if (isComputed) return;
             // Preview / DM views may not have hydrated the player character
             // provider; missing-stats edits only apply to the live player session.
-            final connectionDetails =
-                ref.read(connectionDetailsProvider).value;
-            if (connectionDetails == null ||
-                connectionDetails.isDm ||
-                !connectionDetails.isInSession ||
-                !ref.read(rpgCharacterConfigurationProvider).hasValue) {
-              return;
-            }
+            if (!canFillMissingValues()) return;
 
             Future.delayed(Duration.zero, () async {
               if (!context.mounted) return;

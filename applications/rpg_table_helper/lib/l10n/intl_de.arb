@@ -868,5 +868,7 @@
   "fixMarkedFieldsHint": "Bitte korrigiere die markierten Felder.",
   "moneyModeDeposit": "+ Einzahlen",
   "moneyModeSpend": "− Ausgeben",
-  "activeAlternateFormBannerTitle": "Verwandelte Gestalt"
+  "activeAlternateFormBannerTitle": "Verwandelte Gestalt",
+  "missingStatTapToFill": "Noch leer – tippen zum Ausfüllen",
+  "missingStatUnnamed": "Unbenannte Eigenschaft"
 }

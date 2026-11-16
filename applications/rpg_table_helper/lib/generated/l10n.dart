@@ -5057,6 +5057,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Still empty – tap to fill in`
+  String get missingStatTapToFill {
+    return Intl.message(
+      'Still empty – tap to fill in',
+      name: 'missingStatTapToFill',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unnamed property`
+  String get missingStatUnnamed {
+    return Intl.message(
+      'Unnamed property',
+      name: 'missingStatUnnamed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

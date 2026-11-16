@@ -1900,4 +1900,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get activeAlternateFormBannerTitle => 'Verwandelte Gestalt';
+
+  @override
+  String get missingStatTapToFill => 'Noch leer – tippen zum Ausfüllen';
+
+  @override
+  String get missingStatUnnamed => 'Unbenannte Eigenschaft';
 }

@@ -1883,4 +1883,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activeAlternateFormBannerTitle => 'Alternate form';
+
+  @override
+  String get missingStatTapToFill => 'Still empty – tap to fill in';
+
+  @override
+  String get missingStatUnnamed => 'Unnamed property';
 }

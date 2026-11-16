@@ -788,6 +788,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Der maximale Wert für diese Eigenschaft",
     ),
     "maxValueShort": MessageLookupByLibrary.simpleMessage("Max."),
+    "missingStatTapToFill": MessageLookupByLibrary.simpleMessage(
+      "Noch leer – tippen zum Ausfüllen",
+    ),
+    "missingStatUnnamed": MessageLookupByLibrary.simpleMessage(
+      "Unbenannte Eigenschaft",
+    ),
     "moneyModeDeposit": MessageLookupByLibrary.simpleMessage("+ Einzahlen"),
     "moneyModeSpend": MessageLookupByLibrary.simpleMessage("− Ausgeben"),
     "moreValues": MessageLookupByLibrary.simpleMessage("Weitere Werte"),
