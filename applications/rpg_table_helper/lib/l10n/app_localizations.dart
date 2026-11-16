@@ -3835,6 +3835,282 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.'**
   String get wizardSkinStepHelperAfterTemplate;
+
+  /// No description provided for @statStyleNumberAndMax.
+  ///
+  /// In de, this message translates to:
+  /// **'Zahl und Maximum'**
+  String get statStyleNumberAndMax;
+
+  /// No description provided for @statStyleRing.
+  ///
+  /// In de, this message translates to:
+  /// **'Ring'**
+  String get statStyleRing;
+
+  /// No description provided for @statStylePentagon.
+  ///
+  /// In de, this message translates to:
+  /// **'Fünfeck'**
+  String get statStylePentagon;
+
+  /// No description provided for @statStyleRingHealthColors.
+  ///
+  /// In de, this message translates to:
+  /// **'Ring in Lebensfarben'**
+  String get statStyleRingHealthColors;
+
+  /// No description provided for @statStylePips.
+  ///
+  /// In de, this message translates to:
+  /// **'Punkte'**
+  String get statStylePips;
+
+  /// No description provided for @statStyleHearts.
+  ///
+  /// In de, this message translates to:
+  /// **'Herzen'**
+  String get statStyleHearts;
+
+  /// No description provided for @statStyleCrystals.
+  ///
+  /// In de, this message translates to:
+  /// **'Kristalle'**
+  String get statStyleCrystals;
+
+  /// No description provided for @statStyleSegmentedBar.
+  ///
+  /// In de, this message translates to:
+  /// **'Balken in Abschnitten'**
+  String get statStyleSegmentedBar;
+
+  /// No description provided for @statStyleCombatChip.
+  ///
+  /// In de, this message translates to:
+  /// **'Kompakt'**
+  String get statStyleCombatChip;
+
+  /// No description provided for @statStyleStacked.
+  ///
+  /// In de, this message translates to:
+  /// **'Übereinander'**
+  String get statStyleStacked;
+
+  /// No description provided for @statStyleModifierFirst.
+  ///
+  /// In de, this message translates to:
+  /// **'Modifikator vorn'**
+  String get statStyleModifierFirst;
+
+  /// No description provided for @statStyleClassicBlock.
+  ///
+  /// In de, this message translates to:
+  /// **'Klassischer Block'**
+  String get statStyleClassicBlock;
+
+  /// No description provided for @statStylePentagons.
+  ///
+  /// In de, this message translates to:
+  /// **'Fünfecke'**
+  String get statStylePentagons;
+
+  /// No description provided for @statStyleModifierTiles.
+  ///
+  /// In de, this message translates to:
+  /// **'Kacheln, Modifikator vorn'**
+  String get statStyleModifierTiles;
+
+  /// No description provided for @statStyleShields.
+  ///
+  /// In de, this message translates to:
+  /// **'Wappenschilde'**
+  String get statStyleShields;
+
+  /// No description provided for @statStyleClassicBlocks.
+  ///
+  /// In de, this message translates to:
+  /// **'Klassische Blöcke'**
+  String get statStyleClassicBlocks;
+
+  /// No description provided for @statStyleIconAndValue.
+  ///
+  /// In de, this message translates to:
+  /// **'Symbol und Wert'**
+  String get statStyleIconAndValue;
+
+  /// No description provided for @statStyleValueOverLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Wert über Name'**
+  String get statStyleValueOverLabel;
+
+  /// No description provided for @statStyleMedallions.
+  ///
+  /// In de, this message translates to:
+  /// **'Medaillons'**
+  String get statStyleMedallions;
+
+  /// No description provided for @statStyleRibbon.
+  ///
+  /// In de, this message translates to:
+  /// **'Band'**
+  String get statStyleRibbon;
+
+  /// No description provided for @statStyleMainValueLarge.
+  ///
+  /// In de, this message translates to:
+  /// **'Erster Wert groß'**
+  String get statStyleMainValueLarge;
+
+  /// No description provided for @statStyleSelectedOnly.
+  ///
+  /// In de, this message translates to:
+  /// **'Nur die gewählten'**
+  String get statStyleSelectedOnly;
+
+  /// No description provided for @statStyleAllOptions.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Optionen'**
+  String get statStyleAllOptions;
+
+  /// No description provided for @statStyleChips.
+  ///
+  /// In de, this message translates to:
+  /// **'Chips'**
+  String get statStyleChips;
+
+  /// No description provided for @statStyleTiles.
+  ///
+  /// In de, this message translates to:
+  /// **'Kacheln'**
+  String get statStyleTiles;
+
+  /// No description provided for @statStyleSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Zusammenfassung'**
+  String get statStyleSummary;
+
+  /// No description provided for @statStyleLevelCircle.
+  ///
+  /// In de, this message translates to:
+  /// **'Level-Kreis'**
+  String get statStyleLevelCircle;
+
+  /// No description provided for @statStyleBanner.
+  ///
+  /// In de, this message translates to:
+  /// **'Banner'**
+  String get statStyleBanner;
+
+  /// No description provided for @statStylePortraitCard.
+  ///
+  /// In de, this message translates to:
+  /// **'Porträtkarte'**
+  String get statStylePortraitCard;
+
+  /// No description provided for @statStyleSingleLine.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Zeile'**
+  String get statStyleSingleLine;
+
+  /// No description provided for @statStyleText.
+  ///
+  /// In de, this message translates to:
+  /// **'Text'**
+  String get statStyleText;
+
+  /// No description provided for @statStyleCollapsible.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufklappbar'**
+  String get statStyleCollapsible;
+
+  /// No description provided for @statStyleParchment.
+  ///
+  /// In de, this message translates to:
+  /// **'Pergament'**
+  String get statStyleParchment;
+
+  /// No description provided for @statStyleImage.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild'**
+  String get statStyleImage;
+
+  /// No description provided for @statStylePawAndButtons.
+  ///
+  /// In de, this message translates to:
+  /// **'Pfote und Knöpfe'**
+  String get statStylePawAndButtons;
+
+  /// No description provided for @statStyleSmallCards.
+  ///
+  /// In de, this message translates to:
+  /// **'Kleine Karten'**
+  String get statStyleSmallCards;
+
+  /// No description provided for @statStyleWand.
+  ///
+  /// In de, this message translates to:
+  /// **'Zauberstab'**
+  String get statStyleWand;
+
+  /// No description provided for @statStyleActiveFormBanner.
+  ///
+  /// In de, this message translates to:
+  /// **'Banner der aktiven Form'**
+  String get statStyleActiveFormBanner;
+
+  /// No description provided for @statStyleNumberOverName.
+  ///
+  /// In de, this message translates to:
+  /// **'Zahl über Name'**
+  String get statStyleNumberOverName;
+
+  /// No description provided for @statStyleLargeNumber.
+  ///
+  /// In de, this message translates to:
+  /// **'Große Zahl'**
+  String get statStyleLargeNumber;
+
+  /// No description provided for @statStyleBoxes.
+  ///
+  /// In de, this message translates to:
+  /// **'Kästchen'**
+  String get statStyleBoxes;
+
+  /// No description provided for @statStyleList.
+  ///
+  /// In de, this message translates to:
+  /// **'Liste'**
+  String get statStyleList;
+
+  /// No description provided for @statStyleChosenOption.
+  ///
+  /// In de, this message translates to:
+  /// **'Nur die Wahl'**
+  String get statStyleChosenOption;
+
+  /// No description provided for @statStylePosition.
+  ///
+  /// In de, this message translates to:
+  /// **'{index} von {count}'**
+  String statStylePosition(int index, int count);
+
+  /// No description provided for @statStylePrevious.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorheriger Stil'**
+  String get statStylePrevious;
+
+  /// No description provided for @statStyleNext.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Stil'**
+  String get statStyleNext;
 }
 
 class _AppLocalizationsDelegate

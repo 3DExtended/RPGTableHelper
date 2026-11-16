@@ -2186,4 +2186,144 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get wizardSkinStepHelperAfterTemplate =>
       '## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.';
+
+  @override
+  String get statStyleNumberAndMax => 'Zahl und Maximum';
+
+  @override
+  String get statStyleRing => 'Ring';
+
+  @override
+  String get statStylePentagon => 'Fünfeck';
+
+  @override
+  String get statStyleRingHealthColors => 'Ring in Lebensfarben';
+
+  @override
+  String get statStylePips => 'Punkte';
+
+  @override
+  String get statStyleHearts => 'Herzen';
+
+  @override
+  String get statStyleCrystals => 'Kristalle';
+
+  @override
+  String get statStyleSegmentedBar => 'Balken in Abschnitten';
+
+  @override
+  String get statStyleCombatChip => 'Kompakt';
+
+  @override
+  String get statStyleStacked => 'Übereinander';
+
+  @override
+  String get statStyleModifierFirst => 'Modifikator vorn';
+
+  @override
+  String get statStyleClassicBlock => 'Klassischer Block';
+
+  @override
+  String get statStylePentagons => 'Fünfecke';
+
+  @override
+  String get statStyleModifierTiles => 'Kacheln, Modifikator vorn';
+
+  @override
+  String get statStyleShields => 'Wappenschilde';
+
+  @override
+  String get statStyleClassicBlocks => 'Klassische Blöcke';
+
+  @override
+  String get statStyleIconAndValue => 'Symbol und Wert';
+
+  @override
+  String get statStyleValueOverLabel => 'Wert über Name';
+
+  @override
+  String get statStyleMedallions => 'Medaillons';
+
+  @override
+  String get statStyleRibbon => 'Band';
+
+  @override
+  String get statStyleMainValueLarge => 'Erster Wert groß';
+
+  @override
+  String get statStyleSelectedOnly => 'Nur die gewählten';
+
+  @override
+  String get statStyleAllOptions => 'Alle Optionen';
+
+  @override
+  String get statStyleChips => 'Chips';
+
+  @override
+  String get statStyleTiles => 'Kacheln';
+
+  @override
+  String get statStyleSummary => 'Zusammenfassung';
+
+  @override
+  String get statStyleLevelCircle => 'Level-Kreis';
+
+  @override
+  String get statStyleBanner => 'Banner';
+
+  @override
+  String get statStylePortraitCard => 'Porträtkarte';
+
+  @override
+  String get statStyleSingleLine => 'Eine Zeile';
+
+  @override
+  String get statStyleText => 'Text';
+
+  @override
+  String get statStyleCollapsible => 'Aufklappbar';
+
+  @override
+  String get statStyleParchment => 'Pergament';
+
+  @override
+  String get statStyleImage => 'Bild';
+
+  @override
+  String get statStylePawAndButtons => 'Pfote und Knöpfe';
+
+  @override
+  String get statStyleSmallCards => 'Kleine Karten';
+
+  @override
+  String get statStyleWand => 'Zauberstab';
+
+  @override
+  String get statStyleActiveFormBanner => 'Banner der aktiven Form';
+
+  @override
+  String get statStyleNumberOverName => 'Zahl über Name';
+
+  @override
+  String get statStyleLargeNumber => 'Große Zahl';
+
+  @override
+  String get statStyleBoxes => 'Kästchen';
+
+  @override
+  String get statStyleList => 'Liste';
+
+  @override
+  String get statStyleChosenOption => 'Nur die Wahl';
+
+  @override
+  String statStylePosition(int index, int count) {
+    return '$index von $count';
+  }
+
+  @override
+  String get statStylePrevious => 'Vorheriger Stil';
+
+  @override
+  String get statStyleNext => 'Nächster Stil';
 }

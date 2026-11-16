@@ -26,6 +26,7 @@ import 'package:quest_keeper/helpers/character_stats/character_portrait.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_style_names.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_create_new_character_transformation_wizard.dart';
 import 'package:quest_keeper/helpers/number_input.dart';
@@ -787,24 +788,7 @@ class _PlayerStatsConfigurationVisualsState
         SizedBox(
           height: 10,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-          child: PageViewDotIndicator(
-            currentItem: currentlyVisibleVariant,
-            count: numberOfVariantsForValueTypes(
-                widget.statConfiguration.valueType),
-            unselectedColor:
-                CustomThemeProvider.of(context).brightnessNotifier.value ==
-                        Brightness.light
-                    ? CustomThemeProvider.of(context).theme.middleBgColor
-                    : CustomThemeProvider.of(context).theme.middleBgColor,
-            selectedColor: CustomThemeProvider.of(context).theme.accentColor,
-            duration: const Duration(milliseconds: 200),
-            boxShape: BoxShape.circle,
-            unselectedSize: Size(6, 6),
-            size: Size(6, 6),
-          ),
-        ),
+        _buildStylePicker(context),
         SizedBox(
           height: 400,
           child: PageView(
@@ -858,6 +842,82 @@ class _PlayerStatsConfigurationVisualsState
               }),
         ),
       ],
+    );
+  }
+
+  /// Name and position of the visible style, with buttons to the previous
+  /// and next one (the preview below can also be swiped). Nothing for a
+  /// type with a single style.
+  Widget _buildStylePicker(BuildContext context) {
+    final s = S.of(context);
+    final theme = CustomThemeProvider.of(context).theme;
+    final count =
+        numberOfVariantsForValueTypes(widget.statConfiguration.valueType);
+    if (count < 2) return const SizedBox(height: 10);
+
+    final names = statStyleNames(s, widget.statConfiguration.valueType);
+    final index = currentlyVisibleVariant.clamp(0, count - 1);
+    void goTo(int page) => pageController.animateToPage(page,
+        duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+
+    Widget arrow(String key, FaIconData icon, String tooltip, int? target) =>
+        IconButton(
+          key: ValueKey(key),
+          tooltip: tooltip,
+          onPressed: target == null ? null : () => goTo(target),
+          icon: CustomFaIcon(
+            icon: icon,
+            size: 18,
+            color: target == null
+                ? theme.darkTextColor.withValues(alpha: 0.3)
+                : theme.darkColor,
+          ),
+        );
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          arrow('statStylePrevious', FontAwesomeIcons.chevronLeft,
+              s.statStylePrevious, index > 0 ? index - 1 : null),
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  index < names.length ? names[index] : '',
+                  key: const ValueKey('statStyleName'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: theme.darkTextColor,
+                        fontSize: 16,
+                      ),
+                ),
+                Text(
+                  s.statStylePosition(index + 1, count),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        color: theme.darkTextColor.withValues(alpha: 0.7),
+                        fontSize: 12,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                PageViewDotIndicator(
+                  currentItem: index,
+                  count: count,
+                  unselectedColor: theme.middleBgColor,
+                  selectedColor: theme.accentColor,
+                  duration: const Duration(milliseconds: 200),
+                  boxShape: BoxShape.circle,
+                  unselectedSize: const Size(6, 6),
+                  size: const Size(6, 6),
+                ),
+              ],
+            ),
+          ),
+          arrow('statStyleNext', FontAwesomeIcons.chevronRight,
+              s.statStyleNext, index < count - 1 ? index + 1 : null),
+        ],
+      ),
     );
   }
 

@@ -75,53 +75,55 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m22(privacyPolicyLink) =>
       "You can read how we handle your data in our ${privacyPolicyLink}.";
 
-  static String m23(statName) => "Settings for ${statName}";
+  static String m23(index, count) => "${index} of ${count}";
 
-  static String m24(property) => "The value of ${property}";
+  static String m24(statName) => "Settings for ${statName}";
 
-  static String m25(characterName) =>
+  static String m25(property) => "The value of ${property}";
+
+  static String m26(characterName) =>
       "Your request for “${characterName}” is with your game master. As soon as they approve, you can play here.";
 
-  static String m26(count) =>
+  static String m27(count) =>
       "${Intl.plural(count, zero: 'No items in this category yet.', one: 'One item in this category.', other: '${count} items in this category.')}";
 
-  static String m27(count, name) =>
+  static String m28(count, name) =>
       "${Intl.plural(count, one: 'Delete property “${name}”? One character already has a value for it, which will be lost.', other: 'Delete property “${name}”? ${count} characters already have values for it, which will be lost.')}";
 
-  static String m28(count, tabName) =>
+  static String m29(count, tabName) =>
       "${Intl.plural(count, zero: 'Delete the empty tab “${tabName}”?', one: 'Delete tab “${tabName}” with one property? Character values will be lost.', other: 'Delete tab “${tabName}” with ${count} properties? Character values will be lost.')}";
 
-  static String m29(number) => "Group ${number}";
+  static String m30(number) => "Group ${number}";
 
-  static String m30(name) => " (for category ${name})";
+  static String m31(name) => " (for category ${name})";
 
-  static String m31(count) =>
+  static String m32(count) =>
       "${Intl.plural(count, zero: 'No items can be found here yet.', one: 'One item can be found here.', other: '${count} items can be found here.')}";
 
-  static String m32(number) => "Place #${number}";
+  static String m33(number) => "Place #${number}";
 
-  static String m33(name) => "Property “${name}” deleted";
+  static String m34(name) => "Property “${name}” deleted";
 
-  static String m34(number) => "Ingredient #${number}";
+  static String m35(number) => "Ingredient #${number}";
 
-  static String m35(number) => "Prerequisite #${number}";
-
-  static String m36(count) =>
-      "${Intl.plural(count, zero: 'No items', one: '1 item', other: '${count} items')}";
+  static String m36(number) => "Prerequisite #${number}";
 
   static String m37(count) =>
-      "${Intl.plural(count, one: '1 property', other: '${count} properties')}";
+      "${Intl.plural(count, zero: 'No items', one: '1 item', other: '${count} items')}";
 
   static String m38(count) =>
-      "${Intl.plural(count, zero: 'No recipes', one: '1 recipe', other: '${count} recipes')}";
+      "${Intl.plural(count, one: '1 property', other: '${count} properties')}";
 
   static String m39(count) =>
-      "${Intl.plural(count, one: '1 tab', other: '${count} tabs')}";
+      "${Intl.plural(count, zero: 'No recipes', one: '1 recipe', other: '${count} recipes')}";
 
   static String m40(count) =>
-      "${Intl.plural(count, zero: 'You don\'t run a campaign yet.', one: 'You run 1 campaign.', other: 'You run ${count} campaigns.')}";
+      "${Intl.plural(count, one: '1 tab', other: '${count} tabs')}";
 
   static String m41(count) =>
+      "${Intl.plural(count, zero: 'You don\'t run a campaign yet.', one: 'You run 1 campaign.', other: 'You run ${count} campaigns.')}";
+
+  static String m42(count) =>
       "${Intl.plural(count, zero: 'You don\'t have a character yet.', one: 'You have 1 character.', other: 'You have ${count} characters.')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1187,6 +1189,88 @@ class MessageLookup extends MessageLookupByLibrary {
       "Options",
     ),
     "startAsDm": MessageLookupByLibrary.simpleMessage("As game master"),
+    "statStyleActiveFormBanner": MessageLookupByLibrary.simpleMessage(
+      "Active form banner",
+    ),
+    "statStyleAllOptions": MessageLookupByLibrary.simpleMessage("All options"),
+    "statStyleBanner": MessageLookupByLibrary.simpleMessage("Banner"),
+    "statStyleBoxes": MessageLookupByLibrary.simpleMessage("Boxes"),
+    "statStyleChips": MessageLookupByLibrary.simpleMessage("Chips"),
+    "statStyleChosenOption": MessageLookupByLibrary.simpleMessage(
+      "Chosen option",
+    ),
+    "statStyleClassicBlock": MessageLookupByLibrary.simpleMessage(
+      "Classic block",
+    ),
+    "statStyleClassicBlocks": MessageLookupByLibrary.simpleMessage(
+      "Classic blocks",
+    ),
+    "statStyleCollapsible": MessageLookupByLibrary.simpleMessage("Collapsible"),
+    "statStyleCombatChip": MessageLookupByLibrary.simpleMessage("Compact"),
+    "statStyleCrystals": MessageLookupByLibrary.simpleMessage("Crystals"),
+    "statStyleHearts": MessageLookupByLibrary.simpleMessage("Hearts"),
+    "statStyleIconAndValue": MessageLookupByLibrary.simpleMessage(
+      "Icon and value",
+    ),
+    "statStyleImage": MessageLookupByLibrary.simpleMessage("Image"),
+    "statStyleLargeNumber": MessageLookupByLibrary.simpleMessage(
+      "Large number",
+    ),
+    "statStyleLevelCircle": MessageLookupByLibrary.simpleMessage(
+      "Level circle",
+    ),
+    "statStyleList": MessageLookupByLibrary.simpleMessage("List"),
+    "statStyleMainValueLarge": MessageLookupByLibrary.simpleMessage(
+      "First value large",
+    ),
+    "statStyleMedallions": MessageLookupByLibrary.simpleMessage("Medallions"),
+    "statStyleModifierFirst": MessageLookupByLibrary.simpleMessage(
+      "Modifier first",
+    ),
+    "statStyleModifierTiles": MessageLookupByLibrary.simpleMessage(
+      "Tiles, modifier first",
+    ),
+    "statStyleNext": MessageLookupByLibrary.simpleMessage("Next style"),
+    "statStyleNumberAndMax": MessageLookupByLibrary.simpleMessage(
+      "Number and maximum",
+    ),
+    "statStyleNumberOverName": MessageLookupByLibrary.simpleMessage(
+      "Number over name",
+    ),
+    "statStyleParchment": MessageLookupByLibrary.simpleMessage("Parchment"),
+    "statStylePawAndButtons": MessageLookupByLibrary.simpleMessage(
+      "Paw and buttons",
+    ),
+    "statStylePentagon": MessageLookupByLibrary.simpleMessage("Pentagon"),
+    "statStylePentagons": MessageLookupByLibrary.simpleMessage("Pentagons"),
+    "statStylePips": MessageLookupByLibrary.simpleMessage("Pips"),
+    "statStylePortraitCard": MessageLookupByLibrary.simpleMessage(
+      "Portrait card",
+    ),
+    "statStylePosition": m23,
+    "statStylePrevious": MessageLookupByLibrary.simpleMessage("Previous style"),
+    "statStyleRibbon": MessageLookupByLibrary.simpleMessage("Ribbon"),
+    "statStyleRing": MessageLookupByLibrary.simpleMessage("Ring"),
+    "statStyleRingHealthColors": MessageLookupByLibrary.simpleMessage(
+      "Ring in health colours",
+    ),
+    "statStyleSegmentedBar": MessageLookupByLibrary.simpleMessage(
+      "Segmented bar",
+    ),
+    "statStyleSelectedOnly": MessageLookupByLibrary.simpleMessage(
+      "Selected only",
+    ),
+    "statStyleShields": MessageLookupByLibrary.simpleMessage("Shields"),
+    "statStyleSingleLine": MessageLookupByLibrary.simpleMessage("Single line"),
+    "statStyleSmallCards": MessageLookupByLibrary.simpleMessage("Small cards"),
+    "statStyleStacked": MessageLookupByLibrary.simpleMessage("Stacked"),
+    "statStyleSummary": MessageLookupByLibrary.simpleMessage("Summary"),
+    "statStyleText": MessageLookupByLibrary.simpleMessage("Text"),
+    "statStyleTiles": MessageLookupByLibrary.simpleMessage("Tiles"),
+    "statStyleValueOverLabel": MessageLookupByLibrary.simpleMessage(
+      "Value over name",
+    ),
+    "statStyleWand": MessageLookupByLibrary.simpleMessage("Wand"),
     "statTypeCheckboxTrack": MessageLookupByLibrary.simpleMessage(
       "Checkbox track",
     ),
@@ -1242,7 +1326,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transformationName": MessageLookupByLibrary.simpleMessage(
       "Transformation name",
     ),
-    "transformationStatSettingsFor": m23,
+    "transformationStatSettingsFor": m24,
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage("Upload image"),
     "uploadImageMenuLabel": MessageLookupByLibrary.simpleMessage(
       "Upload image",
@@ -1252,12 +1336,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "usernameRuleHint": MessageLookupByLibrary.simpleMessage(
       "3 to 13 characters, letters and digits only",
     ),
-    "valueOfPropertyWithName": m24,
+    "valueOfPropertyWithName": m25,
     "visibleCards": MessageLookupByLibrary.simpleMessage("Visible cards"),
     "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
       "Hidden cards stay hidden on this device, even if a player was offline in between.",
     ),
-    "waitingForApprovalText": m25,
+    "waitingForApprovalText": m26,
     "waitingForApprovalTitle": MessageLookupByLibrary.simpleMessage(
       "Waiting for approval",
     ),
@@ -1290,7 +1374,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardCampaignNameStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Campaign name\n\nWe start with the hardest question of all: what is your campaign called?\n\nThe name needs at least four characters.",
     ),
-    "wizardCategoryItemCount": m26,
+    "wizardCategoryItemCount": m27,
     "wizardCategoryNameLabel": MessageLookupByLibrary.simpleMessage(
       "Category name:",
     ),
@@ -1304,22 +1388,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "## Currency\n\nSet up which currencies exist in your world and how they convert.\n\nStart with the smallest unit (e.g. copper) and work your way up to the largest. For each further currency, enter how many of the previous one it is worth (in many fantasy RPGs: 10 copper = 1 silver).",
     ),
     "wizardCurrencyStepTitle": MessageLookupByLibrary.simpleMessage("Currency"),
-    "wizardDeletePropertyMessage": m27,
+    "wizardDeletePropertyMessage": m28,
     "wizardDeletePropertyTitle": MessageLookupByLibrary.simpleMessage(
       "Delete property?",
     ),
-    "wizardDeleteTabMessage": m28,
+    "wizardDeleteTabMessage": m29,
     "wizardDeleteTabTitle": MessageLookupByLibrary.simpleMessage("Delete tab?"),
     "wizardEditItemTitle": MessageLookupByLibrary.simpleMessage("Edit item"),
     "wizardEditRecipeTitle": MessageLookupByLibrary.simpleMessage(
       "Edit recipe",
     ),
     "wizardFinishBtnLabel": MessageLookupByLibrary.simpleMessage("Done"),
-    "wizardGroupLabel": m29,
+    "wizardGroupLabel": m30,
     "wizardHideExplanation": MessageLookupByLibrary.simpleMessage(
       "Hide explanation",
     ),
-    "wizardIconForCategorySuffix": m30,
+    "wizardIconForCategorySuffix": m31,
     "wizardInvalidImageFile": MessageLookupByLibrary.simpleMessage(
       "This file is not a valid image.",
     ),
@@ -1344,8 +1428,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "## Items (optional)\n\nAdd the items of your world here: healing potions, weapons, quest items or ingredients for poisons, anything that can end up in the bags of your players.\n\nYou can also note what a potion does.\n\nTip: put effects, damage and the like at the start of the description. Then your players see the most important facts at a glance.",
     ),
     "wizardItemsStepTitle": MessageLookupByLibrary.simpleMessage("Items"),
-    "wizardLocationItemCount": m31,
-    "wizardLocationLabel": m32,
+    "wizardLocationItemCount": m32,
+    "wizardLocationLabel": m33,
     "wizardLocationsStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Places of finding (optional)\n\nFrom here on it is about items and crafting. You only need this and the following steps (places of finding, item categories, items, recipes) if you play with them. **Skip** takes you straight to the summary; data you already entered stays.\n\nSome items can be found in certain places: on the beach, in caves, in grottos and so on. Add those places here so you can link them to items in the next steps.",
     ),
@@ -1369,7 +1453,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardPickImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Choose image",
     ),
-    "wizardPropertyDeletedSnackbar": m33,
+    "wizardPropertyDeletedSnackbar": m34,
     "wizardRecipeAddIngredient": MessageLookupByLibrary.simpleMessage(
       "Add ingredient",
     ),
@@ -1385,11 +1469,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardRecipeDuplicateAndOpen": MessageLookupByLibrary.simpleMessage(
       "Duplicate and open",
     ),
-    "wizardRecipeIngredientLabel": m34,
+    "wizardRecipeIngredientLabel": m35,
     "wizardRecipeOpenDetails": MessageLookupByLibrary.simpleMessage(
       "Open details",
     ),
-    "wizardRecipeRequirementLabel": m35,
+    "wizardRecipeRequirementLabel": m36,
     "wizardRecipesStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Recipes (optional)\n\nRecipes let your players craft things themselves, for example healing potions.\n\nSome recipes require a tool, such as a herbalism kit. You can note that in the recipe too; players then need the tool to use the recipe.\n\nTap a recipe to edit it. Press and hold it for more actions.",
     ),
@@ -1414,15 +1498,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardSummaryCampaignLabel": MessageLookupByLibrary.simpleMessage(
       "Campaign",
     ),
-    "wizardSummaryItemCount": m36,
+    "wizardSummaryItemCount": m37,
     "wizardSummaryNotSet": MessageLookupByLibrary.simpleMessage("Not set yet"),
-    "wizardSummaryPropertyCount": m37,
-    "wizardSummaryRecipeCount": m38,
+    "wizardSummaryPropertyCount": m38,
+    "wizardSummaryRecipeCount": m39,
     "wizardSummaryStepHelper": MessageLookupByLibrary.simpleMessage(
       "## All set!\n\nYour campaign is set up and everything is saved. The overview shows what is set up.\n\nYou can change everything later via the gear icon in the top right.\n\n**Done** closes the wizard.",
     ),
     "wizardSummaryStepTitle": MessageLookupByLibrary.simpleMessage("Summary"),
-    "wizardSummaryTabCount": m39,
+    "wizardSummaryTabCount": m40,
     "wizardTabNameLabel": MessageLookupByLibrary.simpleMessage("Tab name"),
     "wizardTemplateContentsLabel": MessageLookupByLibrary.simpleMessage(
       "Includes",
@@ -1480,8 +1564,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "You are editing a transformation. Changes only apply to this transformation and are lost when you change back. For lasting changes, change back and edit your base form.",
         ),
-    "youOwnXCampaigns": m40,
-    "youOwnXCharacters": m41,
+    "youOwnXCampaigns": m41,
+    "youOwnXCharacters": m42,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "You are disconnected. Either you or your game master is offline.",
     ),

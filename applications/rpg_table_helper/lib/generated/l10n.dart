@@ -5859,6 +5859,406 @@ class S {
       args: [],
     );
   }
+
+  /// `Number and maximum`
+  String get statStyleNumberAndMax {
+    return Intl.message(
+      'Number and maximum',
+      name: 'statStyleNumberAndMax',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ring`
+  String get statStyleRing {
+    return Intl.message('Ring', name: 'statStyleRing', desc: '', args: []);
+  }
+
+  /// `Pentagon`
+  String get statStylePentagon {
+    return Intl.message(
+      'Pentagon',
+      name: 'statStylePentagon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ring in health colours`
+  String get statStyleRingHealthColors {
+    return Intl.message(
+      'Ring in health colours',
+      name: 'statStyleRingHealthColors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pips`
+  String get statStylePips {
+    return Intl.message('Pips', name: 'statStylePips', desc: '', args: []);
+  }
+
+  /// `Hearts`
+  String get statStyleHearts {
+    return Intl.message('Hearts', name: 'statStyleHearts', desc: '', args: []);
+  }
+
+  /// `Crystals`
+  String get statStyleCrystals {
+    return Intl.message(
+      'Crystals',
+      name: 'statStyleCrystals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Segmented bar`
+  String get statStyleSegmentedBar {
+    return Intl.message(
+      'Segmented bar',
+      name: 'statStyleSegmentedBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compact`
+  String get statStyleCombatChip {
+    return Intl.message(
+      'Compact',
+      name: 'statStyleCombatChip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stacked`
+  String get statStyleStacked {
+    return Intl.message(
+      'Stacked',
+      name: 'statStyleStacked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modifier first`
+  String get statStyleModifierFirst {
+    return Intl.message(
+      'Modifier first',
+      name: 'statStyleModifierFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic block`
+  String get statStyleClassicBlock {
+    return Intl.message(
+      'Classic block',
+      name: 'statStyleClassicBlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pentagons`
+  String get statStylePentagons {
+    return Intl.message(
+      'Pentagons',
+      name: 'statStylePentagons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tiles, modifier first`
+  String get statStyleModifierTiles {
+    return Intl.message(
+      'Tiles, modifier first',
+      name: 'statStyleModifierTiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shields`
+  String get statStyleShields {
+    return Intl.message(
+      'Shields',
+      name: 'statStyleShields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic blocks`
+  String get statStyleClassicBlocks {
+    return Intl.message(
+      'Classic blocks',
+      name: 'statStyleClassicBlocks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Icon and value`
+  String get statStyleIconAndValue {
+    return Intl.message(
+      'Icon and value',
+      name: 'statStyleIconAndValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value over name`
+  String get statStyleValueOverLabel {
+    return Intl.message(
+      'Value over name',
+      name: 'statStyleValueOverLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medallions`
+  String get statStyleMedallions {
+    return Intl.message(
+      'Medallions',
+      name: 'statStyleMedallions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ribbon`
+  String get statStyleRibbon {
+    return Intl.message('Ribbon', name: 'statStyleRibbon', desc: '', args: []);
+  }
+
+  /// `First value large`
+  String get statStyleMainValueLarge {
+    return Intl.message(
+      'First value large',
+      name: 'statStyleMainValueLarge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected only`
+  String get statStyleSelectedOnly {
+    return Intl.message(
+      'Selected only',
+      name: 'statStyleSelectedOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All options`
+  String get statStyleAllOptions {
+    return Intl.message(
+      'All options',
+      name: 'statStyleAllOptions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chips`
+  String get statStyleChips {
+    return Intl.message('Chips', name: 'statStyleChips', desc: '', args: []);
+  }
+
+  /// `Tiles`
+  String get statStyleTiles {
+    return Intl.message('Tiles', name: 'statStyleTiles', desc: '', args: []);
+  }
+
+  /// `Summary`
+  String get statStyleSummary {
+    return Intl.message(
+      'Summary',
+      name: 'statStyleSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level circle`
+  String get statStyleLevelCircle {
+    return Intl.message(
+      'Level circle',
+      name: 'statStyleLevelCircle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Banner`
+  String get statStyleBanner {
+    return Intl.message('Banner', name: 'statStyleBanner', desc: '', args: []);
+  }
+
+  /// `Portrait card`
+  String get statStylePortraitCard {
+    return Intl.message(
+      'Portrait card',
+      name: 'statStylePortraitCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Single line`
+  String get statStyleSingleLine {
+    return Intl.message(
+      'Single line',
+      name: 'statStyleSingleLine',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text`
+  String get statStyleText {
+    return Intl.message('Text', name: 'statStyleText', desc: '', args: []);
+  }
+
+  /// `Collapsible`
+  String get statStyleCollapsible {
+    return Intl.message(
+      'Collapsible',
+      name: 'statStyleCollapsible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Parchment`
+  String get statStyleParchment {
+    return Intl.message(
+      'Parchment',
+      name: 'statStyleParchment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image`
+  String get statStyleImage {
+    return Intl.message('Image', name: 'statStyleImage', desc: '', args: []);
+  }
+
+  /// `Paw and buttons`
+  String get statStylePawAndButtons {
+    return Intl.message(
+      'Paw and buttons',
+      name: 'statStylePawAndButtons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Small cards`
+  String get statStyleSmallCards {
+    return Intl.message(
+      'Small cards',
+      name: 'statStyleSmallCards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wand`
+  String get statStyleWand {
+    return Intl.message('Wand', name: 'statStyleWand', desc: '', args: []);
+  }
+
+  /// `Active form banner`
+  String get statStyleActiveFormBanner {
+    return Intl.message(
+      'Active form banner',
+      name: 'statStyleActiveFormBanner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number over name`
+  String get statStyleNumberOverName {
+    return Intl.message(
+      'Number over name',
+      name: 'statStyleNumberOverName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Large number`
+  String get statStyleLargeNumber {
+    return Intl.message(
+      'Large number',
+      name: 'statStyleLargeNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boxes`
+  String get statStyleBoxes {
+    return Intl.message('Boxes', name: 'statStyleBoxes', desc: '', args: []);
+  }
+
+  /// `List`
+  String get statStyleList {
+    return Intl.message('List', name: 'statStyleList', desc: '', args: []);
+  }
+
+  /// `Chosen option`
+  String get statStyleChosenOption {
+    return Intl.message(
+      'Chosen option',
+      name: 'statStyleChosenOption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{index} of {count}`
+  String statStylePosition(int index, int count) {
+    return Intl.message(
+      '$index of $count',
+      name: 'statStylePosition',
+      desc: '',
+      args: [index, count],
+    );
+  }
+
+  /// `Previous style`
+  String get statStylePrevious {
+    return Intl.message(
+      'Previous style',
+      name: 'statStylePrevious',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next style`
+  String get statStyleNext {
+    return Intl.message(
+      'Next style',
+      name: 'statStyleNext',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

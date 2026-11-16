@@ -965,5 +965,61 @@
   "wizardTemplateReplaceTitle": "Vorlage wechseln?",
   "wizardTemplateReplaceMessage": "Du hast seit der Vorlagenwahl etwas angepasst. Diese Änderungen gehen verloren. Kampagnenname und Darstellung bleiben.",
   "wizardTemplateReplaceConfirm": "Vorlage wechseln",
-  "wizardSkinStepHelperAfterTemplate": "## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern."
+  "wizardSkinStepHelperAfterTemplate": "## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.",
+  "statStyleNumberAndMax": "Zahl und Maximum",
+  "statStyleRing": "Ring",
+  "statStylePentagon": "Fünfeck",
+  "statStyleRingHealthColors": "Ring in Lebensfarben",
+  "statStylePips": "Punkte",
+  "statStyleHearts": "Herzen",
+  "statStyleCrystals": "Kristalle",
+  "statStyleSegmentedBar": "Balken in Abschnitten",
+  "statStyleCombatChip": "Kompakt",
+  "statStyleStacked": "Übereinander",
+  "statStyleModifierFirst": "Modifikator vorn",
+  "statStyleClassicBlock": "Klassischer Block",
+  "statStylePentagons": "Fünfecke",
+  "statStyleModifierTiles": "Kacheln, Modifikator vorn",
+  "statStyleShields": "Wappenschilde",
+  "statStyleClassicBlocks": "Klassische Blöcke",
+  "statStyleIconAndValue": "Symbol und Wert",
+  "statStyleValueOverLabel": "Wert über Name",
+  "statStyleMedallions": "Medaillons",
+  "statStyleRibbon": "Band",
+  "statStyleMainValueLarge": "Erster Wert groß",
+  "statStyleSelectedOnly": "Nur die gewählten",
+  "statStyleAllOptions": "Alle Optionen",
+  "statStyleChips": "Chips",
+  "statStyleTiles": "Kacheln",
+  "statStyleSummary": "Zusammenfassung",
+  "statStyleLevelCircle": "Level-Kreis",
+  "statStyleBanner": "Banner",
+  "statStylePortraitCard": "Porträtkarte",
+  "statStyleSingleLine": "Eine Zeile",
+  "statStyleText": "Text",
+  "statStyleCollapsible": "Aufklappbar",
+  "statStyleParchment": "Pergament",
+  "statStyleImage": "Bild",
+  "statStylePawAndButtons": "Pfote und Knöpfe",
+  "statStyleSmallCards": "Kleine Karten",
+  "statStyleWand": "Zauberstab",
+  "statStyleActiveFormBanner": "Banner der aktiven Form",
+  "statStyleNumberOverName": "Zahl über Name",
+  "statStyleLargeNumber": "Große Zahl",
+  "statStyleBoxes": "Kästchen",
+  "statStyleList": "Liste",
+  "statStyleChosenOption": "Nur die Wahl",
+  "statStylePosition": "{index} von {count}",
+  "@statStylePosition": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statStylePrevious": "Vorheriger Stil",
+  "statStyleNext": "Nächster Stil"
 }

@@ -2167,4 +2167,144 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get wizardSkinStepHelperAfterTemplate =>
       '## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.';
+
+  @override
+  String get statStyleNumberAndMax => 'Number and maximum';
+
+  @override
+  String get statStyleRing => 'Ring';
+
+  @override
+  String get statStylePentagon => 'Pentagon';
+
+  @override
+  String get statStyleRingHealthColors => 'Ring in health colours';
+
+  @override
+  String get statStylePips => 'Pips';
+
+  @override
+  String get statStyleHearts => 'Hearts';
+
+  @override
+  String get statStyleCrystals => 'Crystals';
+
+  @override
+  String get statStyleSegmentedBar => 'Segmented bar';
+
+  @override
+  String get statStyleCombatChip => 'Compact';
+
+  @override
+  String get statStyleStacked => 'Stacked';
+
+  @override
+  String get statStyleModifierFirst => 'Modifier first';
+
+  @override
+  String get statStyleClassicBlock => 'Classic block';
+
+  @override
+  String get statStylePentagons => 'Pentagons';
+
+  @override
+  String get statStyleModifierTiles => 'Tiles, modifier first';
+
+  @override
+  String get statStyleShields => 'Shields';
+
+  @override
+  String get statStyleClassicBlocks => 'Classic blocks';
+
+  @override
+  String get statStyleIconAndValue => 'Icon and value';
+
+  @override
+  String get statStyleValueOverLabel => 'Value over name';
+
+  @override
+  String get statStyleMedallions => 'Medallions';
+
+  @override
+  String get statStyleRibbon => 'Ribbon';
+
+  @override
+  String get statStyleMainValueLarge => 'First value large';
+
+  @override
+  String get statStyleSelectedOnly => 'Selected only';
+
+  @override
+  String get statStyleAllOptions => 'All options';
+
+  @override
+  String get statStyleChips => 'Chips';
+
+  @override
+  String get statStyleTiles => 'Tiles';
+
+  @override
+  String get statStyleSummary => 'Summary';
+
+  @override
+  String get statStyleLevelCircle => 'Level circle';
+
+  @override
+  String get statStyleBanner => 'Banner';
+
+  @override
+  String get statStylePortraitCard => 'Portrait card';
+
+  @override
+  String get statStyleSingleLine => 'Single line';
+
+  @override
+  String get statStyleText => 'Text';
+
+  @override
+  String get statStyleCollapsible => 'Collapsible';
+
+  @override
+  String get statStyleParchment => 'Parchment';
+
+  @override
+  String get statStyleImage => 'Image';
+
+  @override
+  String get statStylePawAndButtons => 'Paw and buttons';
+
+  @override
+  String get statStyleSmallCards => 'Small cards';
+
+  @override
+  String get statStyleWand => 'Wand';
+
+  @override
+  String get statStyleActiveFormBanner => 'Active form banner';
+
+  @override
+  String get statStyleNumberOverName => 'Number over name';
+
+  @override
+  String get statStyleLargeNumber => 'Large number';
+
+  @override
+  String get statStyleBoxes => 'Boxes';
+
+  @override
+  String get statStyleList => 'List';
+
+  @override
+  String get statStyleChosenOption => 'Chosen option';
+
+  @override
+  String statStylePosition(int index, int count) {
+    return '$index of $count';
+  }
+
+  @override
+  String get statStylePrevious => 'Previous style';
+
+  @override
+  String get statStyleNext => 'Next style';
 }

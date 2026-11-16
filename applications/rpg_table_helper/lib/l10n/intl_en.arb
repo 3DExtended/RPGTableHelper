@@ -917,5 +917,61 @@
   "wizardTemplateReplaceTitle": "Switch template?",
   "wizardTemplateReplaceMessage": "You changed things since picking the template. These changes will be lost. The campaign name and appearance stay.",
   "wizardTemplateReplaceConfirm": "Switch template",
-  "wizardSkinStepHelperAfterTemplate": "## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters."
+  "wizardSkinStepHelperAfterTemplate": "## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.",
+  "statStyleNumberAndMax": "Number and maximum",
+  "statStyleRing": "Ring",
+  "statStylePentagon": "Pentagon",
+  "statStyleRingHealthColors": "Ring in health colours",
+  "statStylePips": "Pips",
+  "statStyleHearts": "Hearts",
+  "statStyleCrystals": "Crystals",
+  "statStyleSegmentedBar": "Segmented bar",
+  "statStyleCombatChip": "Compact",
+  "statStyleStacked": "Stacked",
+  "statStyleModifierFirst": "Modifier first",
+  "statStyleClassicBlock": "Classic block",
+  "statStylePentagons": "Pentagons",
+  "statStyleModifierTiles": "Tiles, modifier first",
+  "statStyleShields": "Shields",
+  "statStyleClassicBlocks": "Classic blocks",
+  "statStyleIconAndValue": "Icon and value",
+  "statStyleValueOverLabel": "Value over name",
+  "statStyleMedallions": "Medallions",
+  "statStyleRibbon": "Ribbon",
+  "statStyleMainValueLarge": "First value large",
+  "statStyleSelectedOnly": "Selected only",
+  "statStyleAllOptions": "All options",
+  "statStyleChips": "Chips",
+  "statStyleTiles": "Tiles",
+  "statStyleSummary": "Summary",
+  "statStyleLevelCircle": "Level circle",
+  "statStyleBanner": "Banner",
+  "statStylePortraitCard": "Portrait card",
+  "statStyleSingleLine": "Single line",
+  "statStyleText": "Text",
+  "statStyleCollapsible": "Collapsible",
+  "statStyleParchment": "Parchment",
+  "statStyleImage": "Image",
+  "statStylePawAndButtons": "Paw and buttons",
+  "statStyleSmallCards": "Small cards",
+  "statStyleWand": "Wand",
+  "statStyleActiveFormBanner": "Active form banner",
+  "statStyleNumberOverName": "Number over name",
+  "statStyleLargeNumber": "Large number",
+  "statStyleBoxes": "Boxes",
+  "statStyleList": "List",
+  "statStyleChosenOption": "Chosen option",
+  "statStylePosition": "{index} of {count}",
+  "@statStylePosition": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statStylePrevious": "Previous style",
+  "statStyleNext": "Next style"
 }
