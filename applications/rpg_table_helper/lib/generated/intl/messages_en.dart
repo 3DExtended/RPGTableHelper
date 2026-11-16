@@ -328,6 +328,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Configure properties",
     ),
     "configurePropertiesForCharacterNameSuffix": m6,
+    "connectionLostReconnecting": MessageLookupByLibrary.simpleMessage(
+      "No connection – reconnecting…",
+    ),
     "count": MessageLookupByLibrary.simpleMessage("Count"),
     "craft": MessageLookupByLibrary.simpleMessage("Craft"),
     "craftableAmountText": MessageLookupByLibrary.simpleMessage("Craftable:"),

@@ -1162,4 +1162,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get insertParagraphMenuLabel => 'Insert paragraph here';
+
+  @override
+  String get connectionLostReconnecting => 'No connection – reconnecting…';
 }

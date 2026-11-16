@@ -3259,6 +3259,16 @@ class S {
       args: [],
     );
   }
+
+  /// `No connection – reconnecting…`
+  String get connectionLostReconnecting {
+    return Intl.message(
+      'No connection – reconnecting…',
+      name: 'connectionLostReconnecting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -414,5 +414,6 @@
   "replaceImageBtnLabel": "Replace image",
   "removeImageBtnLabel": "Remove image",
   "uploadImageMenuLabel": "Upload image",
-  "insertParagraphMenuLabel": "Insert paragraph here"
+  "insertParagraphMenuLabel": "Insert paragraph here",
+  "connectionLostReconnecting": "No connection – reconnecting…"
 }

@@ -340,6 +340,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eigenschaften konfigurieren",
     ),
     "configurePropertiesForCharacterNameSuffix": m6,
+    "connectionLostReconnecting": MessageLookupByLibrary.simpleMessage(
+      "Keine Verbindung – verbinde neu …",
+    ),
     "count": MessageLookupByLibrary.simpleMessage("Anzahl"),
     "craft": MessageLookupByLibrary.simpleMessage("Herstellen"),
     "craftableAmountText": MessageLookupByLibrary.simpleMessage("Herstellbar:"),

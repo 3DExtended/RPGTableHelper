@@ -1173,4 +1173,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get insertParagraphMenuLabel => 'Absatz hier einfügen';
+
+  @override
+  String get connectionLostReconnecting => 'Keine Verbindung – verbinde neu …';
 }

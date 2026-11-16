@@ -454,5 +454,6 @@
   "replaceImageBtnLabel": "Bild ersetzen",
   "removeImageBtnLabel": "Bild entfernen",
   "uploadImageMenuLabel": "Bild hochladen",
-  "insertParagraphMenuLabel": "Absatz hier einfügen"
+  "insertParagraphMenuLabel": "Absatz hier einfügen",
+  "connectionLostReconnecting": "Keine Verbindung – verbinde neu\u00a0…"
 }

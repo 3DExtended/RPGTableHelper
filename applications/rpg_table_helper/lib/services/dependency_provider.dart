@@ -252,6 +252,10 @@ class DependencyProvider extends InheritedWidget {
         // timer use; on failure it clears tokens and navigates to
         // LoginScreen itself, so we just forward its result here.
         refreshJwt: sessionRefreshCoordinator.refreshOrHandleFailure,
+        // The backend writes a keepalive every 15 s; a stream that stays
+        // silent past EventsClient.staleAfter is replaced without waiting
+        // for an app resume.
+        staleCheckInterval: const Duration(seconds: 15),
       );
     }, () {
       final api = getService<IApiConnectorService>();

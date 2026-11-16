@@ -2257,6 +2257,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Absatz hier einfügen'**
   String get insertParagraphMenuLabel;
+
+  /// No description provided for @connectionLostReconnecting.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Verbindung – verbinde neu …'**
+  String get connectionLostReconnecting;
 }
 
 class _AppLocalizationsDelegate

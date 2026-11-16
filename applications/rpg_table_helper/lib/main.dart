@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:quest_keeper/components/connection_status_banner.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
@@ -68,25 +69,34 @@ class AppRoutingShell extends ConsumerWidget {
   const AppRoutingShell({
     super.key,
     required this.widget,
+    this.useMockedServices = false,
   });
 
   final MyApp widget;
 
+  /// Tests run the real shell with the mocked services.
+  final bool useMockedServices;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomThemeProvider(
-      child: Builder(builder: (context) {
-        final themeProvider = CustomThemeProvider.of(context);
-        return ListenableBuilder(
-            listenable: Listenable.merge([
-              themeProvider.skinIdNotifier,
-              themeProvider.brightnessNotifier,
-            ]),
-            builder: (context, child) {
-              return DependencyProvider(
-                widgetRef: ref,
-                isMocked: false,
-                child: MaterialApp(
+      // The services sit above the skin listener: entering a campaign with
+      // another default skin rebuilds everything below it, and services
+      // created there were replaced mid-session (a second EventsClient means
+      // a second /events stream). DependencyProvider registers them in its
+      // constructor, so it must only be built when this shell is.
+      child: DependencyProvider(
+        widgetRef: ref,
+        isMocked: useMockedServices,
+        child: Builder(builder: (context) {
+          final themeProvider = CustomThemeProvider.of(context);
+          return ListenableBuilder(
+              listenable: Listenable.merge([
+                themeProvider.skinIdNotifier,
+                themeProvider.brightnessNotifier,
+              ]),
+              builder: (context, child) {
+                return MaterialApp(
                   title: 'Flutter Demo',
                   debugShowCheckedModeBanner: false,
                   localizationsDelegates: [
@@ -109,7 +119,21 @@ class AppRoutingShell extends ConsumerWidget {
                   ),
                   builder: (context, child) {
                     return ThemeConfigurationForApp(
-                        key: globalThemeWrapperKey, child: child!);
+                      key: globalThemeWrapperKey,
+                      // Above the navigator, so the hint stays visible on
+                      // every screen and over open modals.
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          child!,
+                          ConnectionStatusBanner(
+                            status: DependencyProvider.of(context)
+                                .getService<EventsClient>()
+                                .status,
+                          ),
+                        ],
+                      ),
+                    );
                   },
                   navigatorKey: navigatorKey,
                   initialRoute:
@@ -194,10 +218,10 @@ class AppRoutingShell extends ConsumerWidget {
 
                     return null;
                   },
-                ),
-              );
-            });
-      }),
+                );
+              });
+        }),
+      ),
     );
   }
 }
