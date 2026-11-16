@@ -74,4 +74,39 @@ void main() {
       'Meine Notizen',
     );
   });
+
+  group('heading of a group', () {
+    String label(List<NoteDocumentDto> docs, {String group = 'Meine Notizen'}) =>
+        noteGroupDisplayLabel(
+          groupName: group,
+          documents: docs,
+          myUserId: _dm,
+          myNotesGroupNames: const ['Meine Notizen', 'My notes'],
+          othersNotesLabel: 'Notizen der Spieler',
+        );
+
+    test("the DM does not see a player's notes under 'Meine Notizen'", () {
+      expect(label([_doc(creator: _me, group: 'Meine Notizen')]),
+          'Notizen der Spieler');
+    });
+
+    test('also when the player uses the app in English', () {
+      expect(label([_doc(creator: _me, group: 'My notes')], group: 'My notes'),
+          'Notizen der Spieler');
+    });
+
+    test('a group with own documents keeps its name', () {
+      expect(
+          label([
+            _doc(creator: _dm, group: 'Meine Notizen'),
+            _doc(creator: _me, group: 'Meine Notizen'),
+          ]),
+          'Meine Notizen');
+    });
+
+    test('other group names and empty groups stay as they are', () {
+      expect(label([_doc(creator: _me, group: 'NSCs')], group: 'NSCs'), 'NSCs');
+      expect(label([]), 'Meine Notizen');
+    });
+  });
 }

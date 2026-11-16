@@ -19,6 +19,7 @@ import 'package:quest_keeper/components/notes/lore_block_rendering_editable.dart
 import 'package:quest_keeper/components/notes/note_block_menu.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/arcane_ledger_lore_chrome.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
@@ -126,6 +127,17 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
   String get otherGroupName => _amIDm
       ? S.of(context).defaultGroupNameForDocuments
       : S.of(context).myNotesGroupName;
+
+  /// A player's "Meine Notizen" reads as "Notizen der Spieler" to everyone
+  /// else, in whatever language the player created it.
+  String _groupDisplayLabel(String group) => noteGroupDisplayLabel(
+        groupName: group,
+        documents: groupedDocuments[group] ?? const [],
+        myUserId: _myUser?.value,
+        myNotesGroupNames: AppLocalizations.supportedLocales
+            .map((l) => lookupAppLocalizations(l).myNotesGroupName),
+        othersNotesLabel: S.of(context).othersNotesGroupName,
+      );
 
   var refreshController = RefreshController(
     initialRefreshStatus: RefreshStatus.refreshing,
@@ -446,7 +458,8 @@ class _LoreScreenState extends ConsumerState<LoreScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        _buildNavItem(group),
+                                        _buildNavItem(
+                                            _groupDisplayLabel(group)),
                                         ListView.builder(
                                           shrinkWrap: true,
                                           physics:

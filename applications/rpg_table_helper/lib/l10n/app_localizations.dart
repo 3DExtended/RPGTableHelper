@@ -3733,6 +3733,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Beispielfigur'**
   String get playerPreviewSampleCharacterName;
+
+  /// No description provided for @othersNotesGroupName.
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen der Spieler'**
+  String get othersNotesGroupName;
 }
 
 class _AppLocalizationsDelegate

@@ -2108,4 +2108,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get playerPreviewSampleCharacterName => 'Sample character';
+
+  @override
+  String get othersNotesGroupName => 'Players\' notes';
 }

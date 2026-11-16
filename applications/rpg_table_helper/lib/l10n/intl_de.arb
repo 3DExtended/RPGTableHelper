@@ -948,5 +948,6 @@
   "playerPreviewPhone": "Handy",
   "playerPreviewTablet": "Tablet",
   "playerPreviewHint": "Eine Beispielfigur mit Standardwerten. Hier wird nichts gespeichert.",
-  "playerPreviewSampleCharacterName": "Beispielfigur"
+  "playerPreviewSampleCharacterName": "Beispielfigur",
+  "othersNotesGroupName": "Notizen der Spieler"
 }

@@ -1029,6 +1029,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "otherValuePlaceholder": MessageLookupByLibrary.simpleMessage(
       "Der andere Wert",
     ),
+    "othersNotesGroupName": MessageLookupByLibrary.simpleMessage(
+      "Notizen der Spieler",
+    ),
     "ownedIngredientCountPrefix": MessageLookupByLibrary.simpleMessage(
       "im Besitz:",
     ),

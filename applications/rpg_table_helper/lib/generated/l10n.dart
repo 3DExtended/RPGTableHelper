@@ -5689,6 +5689,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Players' notes`
+  String get othersNotesGroupName {
+    return Intl.message(
+      'Players\' notes',
+      name: 'othersNotesGroupName',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
