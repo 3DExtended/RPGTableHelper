@@ -22,6 +22,7 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/dm_pageview/prepared_characters_section.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
@@ -164,6 +165,14 @@ class _DmScreenCampagneManagementState
                 Wrap(spacing: 20, runSpacing: 20, children: [
                   ...playerWidgets,
                 ]),
+              SizedBox(
+                height: 10,
+              ),
+              HorizontalLine(),
+              SizedBox(
+                height: 10,
+              ),
+              const PreparedCharactersSection(),
               SizedBox(
                 height: 10,
               ),

@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/character_stats_form_pages.dart';
 import 'package:quest_keeper/helpers/character_stats/level_up.dart';
+import 'package:quest_keeper/helpers/character_stats/prepared_characters.dart';
+import 'package:quest_keeper/helpers/character_stats/show_prepared_character_picker.dart';
 import 'package:quest_keeper/helpers/character_stats/show_character_stats_form.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
@@ -127,12 +129,39 @@ class PlayerPageHelpers {
         if (!context.mounted) return;
       }
 
+      // A fresh main character may take over one the game master prepared.
+      final mayTakePrepared = filterTabId == null &&
+          (rpgConfig.preparedCharacters ?? const []).isNotEmpty &&
+          !isUpdatingCompanionCharacter &&
+          !isEditingAlternateForm &&
+          selectedCharacter is RpgCharacterConfiguration &&
+          selectedCharacter.characterStats.isEmpty;
+
       await showCharacterStatsForm(
         context: context,
         pages: pages,
         mode: filterTabId == null
             ? CharacterStatsFormMode.setup
             : CharacterStatsFormMode.editTab,
+        onChoosePrepared: !mayTakePrepared
+            ? null
+            : (formContext) async {
+                final chosen = await showPreparedCharacterPicker(
+                  context: formContext,
+                  config: rpgConfig,
+                );
+                if (chosen == null) return false;
+                final latest =
+                    ref.read(rpgCharacterConfigurationProvider).value;
+                if (latest == null || latest.uuid != selectedCharacterId) {
+                  return false;
+                }
+                ref
+                    .read(rpgCharacterConfigurationProvider.notifier)
+                    .updateConfiguration(
+                        takePreparedCharacter(latest, chosen));
+                return true;
+              },
         characterName: selectedCharacter.characterName,
         initialValues: {
           for (final stat in selectedCharacter.characterStats)

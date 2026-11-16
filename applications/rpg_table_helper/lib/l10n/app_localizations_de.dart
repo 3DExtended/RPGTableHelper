@@ -2649,4 +2649,47 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get templateUpdateLevelUpChanged =>
       'Wird beim Stufenaufstieg abgefragt';
+
+  @override
+  String get preparedCharactersTitle => 'Vorbereitete Charaktere';
+
+  @override
+  String get preparedCharactersHint =>
+      'Bereite Charaktere vor, die Spieler beim Beitreten übernehmen können – praktisch für One-Shots und für alle, die zum ersten Mal spielen.';
+
+  @override
+  String get preparedCharactersAdd => 'Charakter vorbereiten';
+
+  @override
+  String get preparedCharacterUnnamed => 'Ohne Namen';
+
+  @override
+  String get preparedCharacterDeleteTitle => 'Vorbereiteten Charakter löschen?';
+
+  @override
+  String preparedCharacterDeleteMessage(String name) {
+    return '„$name“ wird gelöscht. Wer ihn schon übernommen hat, behält seinen Charakter.';
+  }
+
+  @override
+  String get preparedCharactersOfferTitle =>
+      'Die Spielleitung hat Charaktere vorbereitet';
+
+  @override
+  String get preparedCharactersOfferText =>
+      'Übernimm einen davon, statt den Bogen selbst auszufüllen.';
+
+  @override
+  String get preparedCharactersOfferButton => 'Charakter auswählen';
+
+  @override
+  String get preparedCharactersPickerTitle =>
+      'Vorbereiteten Charakter übernehmen';
+
+  @override
+  String get preparedCharactersPickerHint =>
+      'Name und Werte kommen in deinen Charakter. Danach kannst du alles im Charakterbogen ändern.';
+
+  @override
+  String get preparedCharactersTake => 'Übernehmen';
 }

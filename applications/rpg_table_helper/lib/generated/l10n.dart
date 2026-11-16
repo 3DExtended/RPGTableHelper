@@ -7032,6 +7032,126 @@ class S {
       args: [],
     );
   }
+
+  /// `Prepared characters`
+  String get preparedCharactersTitle {
+    return Intl.message(
+      'Prepared characters',
+      name: 'preparedCharactersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prepare characters that players can take over when they join – handy for one-shots and for anyone playing for the first time.`
+  String get preparedCharactersHint {
+    return Intl.message(
+      'Prepare characters that players can take over when they join – handy for one-shots and for anyone playing for the first time.',
+      name: 'preparedCharactersHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prepare a character`
+  String get preparedCharactersAdd {
+    return Intl.message(
+      'Prepare a character',
+      name: 'preparedCharactersAdd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unnamed`
+  String get preparedCharacterUnnamed {
+    return Intl.message(
+      'Unnamed',
+      name: 'preparedCharacterUnnamed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete the prepared character?`
+  String get preparedCharacterDeleteTitle {
+    return Intl.message(
+      'Delete the prepared character?',
+      name: 'preparedCharacterDeleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `“{name}” will be deleted. Players who already took it over keep their character.`
+  String preparedCharacterDeleteMessage(String name) {
+    return Intl.message(
+      '“$name” will be deleted. Players who already took it over keep their character.',
+      name: 'preparedCharacterDeleteMessage',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Your game master prepared characters`
+  String get preparedCharactersOfferTitle {
+    return Intl.message(
+      'Your game master prepared characters',
+      name: 'preparedCharactersOfferTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take one of them over instead of filling in the sheet yourself.`
+  String get preparedCharactersOfferText {
+    return Intl.message(
+      'Take one of them over instead of filling in the sheet yourself.',
+      name: 'preparedCharactersOfferText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a character`
+  String get preparedCharactersOfferButton {
+    return Intl.message(
+      'Choose a character',
+      name: 'preparedCharactersOfferButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take over a prepared character`
+  String get preparedCharactersPickerTitle {
+    return Intl.message(
+      'Take over a prepared character',
+      name: 'preparedCharactersPickerTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The name and values go into your character. You can change everything on the character sheet afterwards.`
+  String get preparedCharactersPickerHint {
+    return Intl.message(
+      'The name and values go into your character. You can change everything on the character sheet afterwards.',
+      name: 'preparedCharactersPickerHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Take over`
+  String get preparedCharactersTake {
+    return Intl.message(
+      'Take over',
+      name: 'preparedCharactersTake',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

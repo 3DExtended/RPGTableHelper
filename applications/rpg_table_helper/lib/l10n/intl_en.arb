@@ -1160,5 +1160,24 @@
   "levelUpOnlyLevelHint": "The game master can choose in the sheet setup which properties are asked for here as well.",
   "levelUpMenuEntry": "Level up",
   "propertyAskOnLevelUp": "Ask for it on level-up",
-  "templateUpdateLevelUpChanged": "Asked for on level-up"
+  "templateUpdateLevelUpChanged": "Asked for on level-up",
+  "preparedCharactersTitle": "Prepared characters",
+  "preparedCharactersHint": "Prepare characters that players can take over when they join – handy for one-shots and for anyone playing for the first time.",
+  "preparedCharactersAdd": "Prepare a character",
+  "preparedCharacterUnnamed": "Unnamed",
+  "preparedCharacterDeleteTitle": "Delete the prepared character?",
+  "preparedCharacterDeleteMessage": "“{name}” will be deleted. Players who already took it over keep their character.",
+  "@preparedCharacterDeleteMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "preparedCharactersOfferTitle": "Your game master prepared characters",
+  "preparedCharactersOfferText": "Take one of them over instead of filling in the sheet yourself.",
+  "preparedCharactersOfferButton": "Choose a character",
+  "preparedCharactersPickerTitle": "Take over a prepared character",
+  "preparedCharactersPickerHint": "The name and values go into your character. You can change everything on the character sheet afterwards.",
+  "preparedCharactersTake": "Take over"
 }

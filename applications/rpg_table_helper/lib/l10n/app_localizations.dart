@@ -4585,6 +4585,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Wird beim Stufenaufstieg abgefragt'**
   String get templateUpdateLevelUpChanged;
+
+  /// No description provided for @preparedCharactersTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorbereitete Charaktere'**
+  String get preparedCharactersTitle;
+
+  /// No description provided for @preparedCharactersHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Bereite Charaktere vor, die Spieler beim Beitreten übernehmen können – praktisch für One-Shots und für alle, die zum ersten Mal spielen.'**
+  String get preparedCharactersHint;
+
+  /// No description provided for @preparedCharactersAdd.
+  ///
+  /// In de, this message translates to:
+  /// **'Charakter vorbereiten'**
+  String get preparedCharactersAdd;
+
+  /// No description provided for @preparedCharacterUnnamed.
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Namen'**
+  String get preparedCharacterUnnamed;
+
+  /// No description provided for @preparedCharacterDeleteTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorbereiteten Charakter löschen?'**
+  String get preparedCharacterDeleteTitle;
+
+  /// No description provided for @preparedCharacterDeleteMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'„{name}“ wird gelöscht. Wer ihn schon übernommen hat, behält seinen Charakter.'**
+  String preparedCharacterDeleteMessage(String name);
+
+  /// No description provided for @preparedCharactersOfferTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Spielleitung hat Charaktere vorbereitet'**
+  String get preparedCharactersOfferTitle;
+
+  /// No description provided for @preparedCharactersOfferText.
+  ///
+  /// In de, this message translates to:
+  /// **'Übernimm einen davon, statt den Bogen selbst auszufüllen.'**
+  String get preparedCharactersOfferText;
+
+  /// No description provided for @preparedCharactersOfferButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Charakter auswählen'**
+  String get preparedCharactersOfferButton;
+
+  /// No description provided for @preparedCharactersPickerTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorbereiteten Charakter übernehmen'**
+  String get preparedCharactersPickerTitle;
+
+  /// No description provided for @preparedCharactersPickerHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Name und Werte kommen in deinen Charakter. Danach kannst du alles im Charakterbogen ändern.'**
+  String get preparedCharactersPickerHint;
+
+  /// No description provided for @preparedCharactersTake.
+  ///
+  /// In de, this message translates to:
+  /// **'Übernehmen'**
+  String get preparedCharactersTake;
 }
 
 class _AppLocalizationsDelegate

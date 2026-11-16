@@ -1208,5 +1208,24 @@
   "levelUpOnlyLevelHint": "Die Spielleitung kann im Bogen festlegen, welche Eigenschaften hier zusätzlich abgefragt werden.",
   "levelUpMenuEntry": "Stufenaufstieg",
   "propertyAskOnLevelUp": "Beim Stufenaufstieg abfragen",
-  "templateUpdateLevelUpChanged": "Wird beim Stufenaufstieg abgefragt"
+  "templateUpdateLevelUpChanged": "Wird beim Stufenaufstieg abgefragt",
+  "preparedCharactersTitle": "Vorbereitete Charaktere",
+  "preparedCharactersHint": "Bereite Charaktere vor, die Spieler beim Beitreten übernehmen können – praktisch für One-Shots und für alle, die zum ersten Mal spielen.",
+  "preparedCharactersAdd": "Charakter vorbereiten",
+  "preparedCharacterUnnamed": "Ohne Namen",
+  "preparedCharacterDeleteTitle": "Vorbereiteten Charakter löschen?",
+  "preparedCharacterDeleteMessage": "„{name}“ wird gelöscht. Wer ihn schon übernommen hat, behält seinen Charakter.",
+  "@preparedCharacterDeleteMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "preparedCharactersOfferTitle": "Die Spielleitung hat Charaktere vorbereitet",
+  "preparedCharactersOfferText": "Übernimm einen davon, statt den Bogen selbst auszufüllen.",
+  "preparedCharactersOfferButton": "Charakter auswählen",
+  "preparedCharactersPickerTitle": "Vorbereiteten Charakter übernehmen",
+  "preparedCharactersPickerHint": "Name und Werte kommen in deinen Charakter. Danach kannst du alles im Charakterbogen ändern.",
+  "preparedCharactersTake": "Übernehmen"
 }

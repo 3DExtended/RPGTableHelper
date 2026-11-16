@@ -39,6 +39,10 @@ abstract class _$RpgConfigurationModelCWProxy {
 
   RpgConfigurationModel defaultSkinId(String? defaultSkinId);
 
+  RpgConfigurationModel preparedCharacters(
+    List<PreparedCharacter>? preparedCharacters,
+  );
+
   /// Creates a new instance with the provided field values.
   /// Omitted fields keep their values; explicit `null` clears nullable fields.
   /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgConfigurationModel(...).copyWith.fieldName(value)`.
@@ -59,6 +63,7 @@ abstract class _$RpgConfigurationModelCWProxy {
     String? initiativeBonusListEntryUuid,
     InitiativeBonusField? initiativeBonusField,
     String? defaultSkinId,
+    List<PreparedCharacter>? preparedCharacters,
   });
 }
 
@@ -119,6 +124,11 @@ class _$RpgConfigurationModelCWProxyImpl
   RpgConfigurationModel defaultSkinId(String? defaultSkinId) =>
       call(defaultSkinId: defaultSkinId);
 
+  @override
+  RpgConfigurationModel preparedCharacters(
+    List<PreparedCharacter>? preparedCharacters,
+  ) => call(preparedCharacters: preparedCharacters);
+
   /// Creates a new instance with the provided field values.
   /// Omitted fields keep their values; explicit `null` clears nullable fields.
   /// The public API rejects `null` for non-nullable fields. To update a single field use `RpgConfigurationModel(...).copyWith.fieldName(value)`.
@@ -140,6 +150,7 @@ class _$RpgConfigurationModelCWProxyImpl
     Object? initiativeBonusListEntryUuid = const $CopyWithPlaceholder(),
     Object? initiativeBonusField = const $CopyWithPlaceholder(),
     Object? defaultSkinId = const $CopyWithPlaceholder(),
+    Object? preparedCharacters = const $CopyWithPlaceholder(),
   }) {
     return RpgConfigurationModel(
       rpgName: rpgName == const $CopyWithPlaceholder() || rpgName == null
@@ -197,6 +208,10 @@ class _$RpgConfigurationModelCWProxyImpl
           ? _value.defaultSkinId
           // ignore: cast_nullable_to_non_nullable
           : defaultSkinId as String?,
+      preparedCharacters: preparedCharacters == const $CopyWithPlaceholder()
+          ? _value.preparedCharacters
+          // ignore: cast_nullable_to_non_nullable
+          : preparedCharacters as List<PreparedCharacter>?,
     );
   }
 }
@@ -1285,6 +1300,9 @@ RpgConfigurationModel _$RpgConfigurationModelFromJson(
     json['initiativeBonusField'],
   ),
   defaultSkinId: json['defaultSkinId'] as String?,
+  preparedCharacters: (json['preparedCharacters'] as List<dynamic>?)
+      ?.map((e) => PreparedCharacter.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$RpgConfigurationModelToJson(
@@ -1302,6 +1320,7 @@ Map<String, dynamic> _$RpgConfigurationModelToJson(
   'initiativeBonusField':
       _$InitiativeBonusFieldEnumMap[instance.initiativeBonusField],
   'defaultSkinId': ?instance.defaultSkinId,
+  'preparedCharacters': ?instance.preparedCharacters,
 };
 
 const _$InitiativeBonusFieldEnumMap = {

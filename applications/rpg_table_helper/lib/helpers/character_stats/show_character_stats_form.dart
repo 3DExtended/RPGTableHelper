@@ -28,6 +28,9 @@ enum CharacterStatsFormMode {
   /// The guided level-up: the level one up, then the properties marked
   /// "Beim Stufenaufstieg abfragen", tab by tab, with progress.
   levelUp,
+
+  /// The game master fills in a prepared character, tab by tab.
+  prepare,
 }
 
 /// How the character form was closed.
@@ -41,7 +44,16 @@ enum CharacterStatsFormOutcome {
   /// Closed with Cancel / X: confirmed pages are kept, the edits on the open
   /// page are dropped.
   cancelled,
+
+  /// The player took over a character the game master prepared.
+  tookPrepared,
 }
+
+/// Lets the player pick a prepared character and takes it over; true when
+/// one was taken.
+typedef CharacterStatsFormChoosePrepared = Future<bool> Function(
+  BuildContext context,
+);
 
 /// Persists [stats] (and the [characterName] when it changed) to the
 /// character. Called while the form is open, page by page.
@@ -69,6 +81,7 @@ Future<CharacterStatsFormOutcome?> showCharacterStatsForm({
   required CharacterStatsFormPersist onPersist,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
   int? previousLevel,
+  CharacterStatsFormChoosePrepared? onChoosePrepared,
 }) {
   return customShowCupertinoModalBottomSheet<CharacterStatsFormOutcome>(
     isDismissible: true,
@@ -88,6 +101,7 @@ Future<CharacterStatsFormOutcome?> showCharacterStatsForm({
       onPersist: onPersist,
       overrideNavigatorKey: overrideNavigatorKey,
       previousLevel: previousLevel,
+      onChoosePrepared: onChoosePrepared,
     ),
   );
 }
@@ -104,6 +118,7 @@ class CharacterStatsFormContent extends StatefulWidget {
     required this.onPersist,
     this.overrideNavigatorKey,
     this.previousLevel,
+    this.onChoosePrepared,
   });
 
   final List<CharacterStatsFormPage> pages;
@@ -117,6 +132,14 @@ class CharacterStatsFormContent extends StatefulWidget {
 
   /// The level before the level-up ([CharacterStatsFormMode.levelUp]).
   final int? previousLevel;
+
+  /// Set when the game master prepared characters the player may take over:
+  /// the setup offers them on its first page.
+  final CharacterStatsFormChoosePrepared? onChoosePrepared;
+
+  /// "Charakter auswählen" on the offer of prepared characters.
+  static const choosePreparedKey =
+      ValueKey('character-stats-form-choose-prepared');
 
   /// "Schnell starten" on the first page of the setup.
   static const quickStartKey = ValueKey('character-stats-form-quick-start');
@@ -165,6 +188,16 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
   /// The quick start is the first choice on the first page.
   bool get _offersQuickStart =>
       _quickPage != null && !_quick && _pageIndex == 0;
+
+  bool get _offersPrepared =>
+      _isSetup && widget.onChoosePrepared != null && !_quick &&
+      _pageIndex == 0;
+
+  Future<void> _onChoosePrepared() async {
+    final took = await widget.onChoosePrepared!(context);
+    if (!mounted || !took) return;
+    _close(CharacterStatsFormOutcome.tookPrepared);
+  }
 
   @override
   void initState() {
@@ -346,6 +379,9 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
   String get _title {
     if (_isSetup) return S.of(context).characterSetupTitle;
     if (_isLevelUp) return S.of(context).levelUpTitle;
+    if (widget.mode == CharacterStatsFormMode.prepare) {
+      return S.of(context).preparedCharactersAdd;
+    }
     return S.of(context).configureProperties +
         (widget.characterName.isEmpty
             ? ""
@@ -429,10 +465,25 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (_isGuided) ...[
+          if (_offersPrepared) ...[
+            _OfferCard(
+              icon: FontAwesomeIcons.usersViewfinder,
+              title: S.of(context).preparedCharactersOfferTitle,
+              text: S.of(context).preparedCharactersOfferText,
+              buttonKey: CharacterStatsFormContent.choosePreparedKey,
+              buttonLabel: S.of(context).preparedCharactersOfferButton,
+              onPressed: _onChoosePrepared,
+            ),
+            const SizedBox(height: 12),
+          ],
           if (_offersQuickStart) ...[
-            _QuickStartCard(
-              fields: _quickStartFields(context),
-              onStart: _onQuickStart,
+            _OfferCard(
+              icon: FontAwesomeIcons.bolt,
+              title: S.of(context).quickStartTitle,
+              text: S.of(context).quickStartText(_quickStartFields(context)),
+              buttonKey: CharacterStatsFormContent.quickStartKey,
+              buttonLabel: S.of(context).quickStartTitle,
+              onPressed: _onQuickStart,
             ),
             const SizedBox(height: 16),
           ],
@@ -622,17 +673,27 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
   }
 }
 
-/// "Schnell starten": the first choice of the setup, above the first page.
-class _QuickStartCard extends StatelessWidget {
-  const _QuickStartCard({required this.fields, required this.onStart});
+/// A choice above the first page of the setup ("Schnell starten", prepared
+/// characters): icon, title, a line on what it does and its button.
+class _OfferCard extends StatelessWidget {
+  const _OfferCard({
+    required this.icon,
+    required this.title,
+    required this.text,
+    required this.buttonKey,
+    required this.buttonLabel,
+    required this.onPressed,
+  });
 
-  /// What the quick start asks for, e.g. "Name, Porträt und Grundwerte".
-  final String fields;
-  final VoidCallback onStart;
+  final FaIconData icon;
+  final String title;
+  final String text;
+  final Key buttonKey;
+  final String buttonLabel;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final theme = CustomThemeProvider.of(context).theme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -652,7 +713,7 @@ class _QuickStartCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: CustomFaIcon(
-                  icon: FontAwesomeIcons.bolt,
+                  icon: icon,
                   size: 18,
                   color: theme.accentColor,
                 ),
@@ -663,7 +724,7 @@ class _QuickStartCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      s.quickStartTitle,
+                      title,
                       style: textTheme.titleSmall!.copyWith(
                         color: theme.darkTextColor,
                         fontSize: 17,
@@ -671,7 +732,7 @@ class _QuickStartCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      s.quickStartText(fields),
+                      text,
                       style: textTheme.bodySmall!.copyWith(
                         color: theme.darkTextColor.withValues(alpha: 0.85),
                         fontSize: 14,
@@ -686,11 +747,11 @@ class _QuickStartCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: CustomButton(
-              key: CharacterStatsFormContent.quickStartKey,
+              key: buttonKey,
               isSubbutton: true,
               variant: CustomButtonVariant.AccentButton,
-              label: s.quickStartTitle,
-              onPressed: onStart,
+              label: buttonLabel,
+              onPressed: onPressed,
             ),
           ),
         ],

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:quest_keeper/models/prepared_character.dart';
 
 part 'rpg_configuration_model.g.dart';
 
@@ -33,6 +34,11 @@ class RpgConfigurationModel {
   @JsonKey(includeIfNull: false)
   final String? defaultSkinId;
 
+  /// Characters the game master prepared; a joining player can take one
+  /// over. Older app versions ignore the key.
+  @JsonKey(includeIfNull: false)
+  final List<PreparedCharacter>? preparedCharacters;
+
   factory RpgConfigurationModel.fromJson(Map<String, dynamic> json) =>
       _$RpgConfigurationModelFromJson(json);
 
@@ -48,6 +54,7 @@ class RpgConfigurationModel {
     this.initiativeBonusListEntryUuid,
     this.initiativeBonusField,
     this.defaultSkinId,
+    this.preparedCharacters,
   });
 
   Map<String, dynamic> toJson() => _$RpgConfigurationModelToJson(this);

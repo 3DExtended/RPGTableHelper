@@ -2629,4 +2629,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get templateUpdateLevelUpChanged => 'Asked for on level-up';
+
+  @override
+  String get preparedCharactersTitle => 'Prepared characters';
+
+  @override
+  String get preparedCharactersHint =>
+      'Prepare characters that players can take over when they join – handy for one-shots and for anyone playing for the first time.';
+
+  @override
+  String get preparedCharactersAdd => 'Prepare a character';
+
+  @override
+  String get preparedCharacterUnnamed => 'Unnamed';
+
+  @override
+  String get preparedCharacterDeleteTitle => 'Delete the prepared character?';
+
+  @override
+  String preparedCharacterDeleteMessage(String name) {
+    return '“$name” will be deleted. Players who already took it over keep their character.';
+  }
+
+  @override
+  String get preparedCharactersOfferTitle =>
+      'Your game master prepared characters';
+
+  @override
+  String get preparedCharactersOfferText =>
+      'Take one of them over instead of filling in the sheet yourself.';
+
+  @override
+  String get preparedCharactersOfferButton => 'Choose a character';
+
+  @override
+  String get preparedCharactersPickerTitle => 'Take over a prepared character';
+
+  @override
+  String get preparedCharactersPickerHint =>
+      'The name and values go into your character. You can change everything on the character sheet afterwards.';
+
+  @override
+  String get preparedCharactersTake => 'Take over';
 }
