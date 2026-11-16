@@ -1469,6 +1469,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardSkinStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.",
     ),
+    "wizardSkinStepHelperAfterTemplate": MessageLookupByLibrary.simpleMessage(
+      "## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.",
+    ),
     "wizardSkipBtnLabel": MessageLookupByLibrary.simpleMessage("Überspringen"),
     "wizardSmallestCurrencyLabel": MessageLookupByLibrary.simpleMessage(
       "Name der kleinsten Währung:",
@@ -1493,6 +1496,47 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "wizardSummaryTabCount": m39,
     "wizardTabNameLabel": MessageLookupByLibrary.simpleMessage("Name des Tabs"),
+    "wizardTemplateContentsLabel": MessageLookupByLibrary.simpleMessage(
+      "Enthält",
+    ),
+    "wizardTemplateEmptyContents": MessageLookupByLibrary.simpleMessage(
+      "Name, Level, eine Währung",
+    ),
+    "wizardTemplateEmptyDescription": MessageLookupByLibrary.simpleMessage(
+      "Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.",
+    ),
+    "wizardTemplateEmptyName": MessageLookupByLibrary.simpleMessage("Leer"),
+    "wizardTemplateFantasyContents": MessageLookupByLibrary.simpleMessage(
+      "Attribute, Fertigkeiten, Zauber, Kupfer bis Platin",
+    ),
+    "wizardTemplateFantasyDescription": MessageLookupByLibrary.simpleMessage(
+      "Klassische Fantasy mit Attributen, Trefferpunkten und Zaubern.",
+    ),
+    "wizardTemplateFantasyName": MessageLookupByLibrary.simpleMessage(
+      "Fantasy 5E (SRD)",
+    ),
+    "wizardTemplateNarrativeContents": MessageLookupByLibrary.simpleMessage(
+      "Aspekte, Fertigkeiten, Stunts, Stress, Konsequenzen, Erzählpunkte",
+    ),
+    "wizardTemplateNarrativeDescription": MessageLookupByLibrary.simpleMessage(
+      "Für Runden, in denen die Geschichte zählt: Aspekte beschreiben die Charaktere, Stress fängt Treffer ab.",
+    ),
+    "wizardTemplateNarrativeName": MessageLookupByLibrary.simpleMessage(
+      "Erzählerisch (Aspekte & Stress)",
+    ),
+    "wizardTemplateReplaceConfirm": MessageLookupByLibrary.simpleMessage(
+      "Vorlage wechseln",
+    ),
+    "wizardTemplateReplaceMessage": MessageLookupByLibrary.simpleMessage(
+      "Du hast seit der Vorlagenwahl etwas angepasst. Diese Änderungen gehen verloren. Kampagnenname und Darstellung bleiben.",
+    ),
+    "wizardTemplateReplaceTitle": MessageLookupByLibrary.simpleMessage(
+      "Vorlage wechseln?",
+    ),
+    "wizardTemplateStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Vorlage, Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Vorlage\n\nWähle, womit du startest. Die Vorlage füllt Charakterbogen und Währung vor. In den nächsten Schritten passt du alles an.\n\nDie Vorlage wählst du nur beim Anlegen. Über das Zahnrad änderst du später jeden Teil einzeln.",
+    ),
+    "wizardTemplateStepTitle": MessageLookupByLibrary.simpleMessage("Vorlage"),
     "wizardUndo": MessageLookupByLibrary.simpleMessage("Rückgängig"),
     "wizardUnnamedProperty": MessageLookupByLibrary.simpleMessage(
       "Unbenannte Eigenschaft",

@@ -29,6 +29,7 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
@@ -1153,10 +1154,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     });
 
     if (openSetupWizard) {
-      // SL-4: the same assistant the gear icon on the DM page opens; closing
-      // it lands on the DM page.
-      unawaited(navigatorKey.currentState!
-          .pushNamed(allWizardConfigurations.entries.first.key));
+      // SL-4: the same assistant the gear icon on the DM page opens, plus
+      // the template choice for a new campaign; closing it lands on the DM
+      // page.
+      unawaited(openSetupWizardForNewCampagne(navigatorKey.currentState!));
     }
 
     // A fight stored on the server goes on where the DM left it.
@@ -1407,12 +1408,10 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     });
     var createResponse = await service.createNewCampagne(
       campagneName: result,
-      baseConfig: RpgConfigurationModel.getBaseConfiguration().copyWith(
-        rpgName: result,
-        allItems: [],
-        // The template's recipes use its items; without them they are empty.
-        craftingRecipes: [],
-      ),
+      // Fantasy 5E (SRD) until the DM picks a template in the assistant.
+      baseConfig: RpgConfigurationTemplates.build(
+        RpgConfigurationTemplates.defaultId,
+      ).copyWith(rpgName: result),
     );
 
     if (!mounted) {

@@ -238,6 +238,9 @@ class AppRoutingShell extends ConsumerWidget {
                         return MaterialWithModalsPageRoute(
                           builder: (_) => WizardRendererForConfiguration(
                             configuration: config.value,
+                            isNewSetup: WizardRouteArguments.of(
+                                    settings.arguments)
+                                .isNewSetup,
                           ),
                           settings: settings,
                         );

@@ -1401,6 +1401,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardSkinStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.",
     ),
+    "wizardSkinStepHelperAfterTemplate": MessageLookupByLibrary.simpleMessage(
+      "## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.",
+    ),
     "wizardSkipBtnLabel": MessageLookupByLibrary.simpleMessage("Skip"),
     "wizardSmallestCurrencyLabel": MessageLookupByLibrary.simpleMessage(
       "Name of the smallest currency:",
@@ -1421,6 +1424,47 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardSummaryStepTitle": MessageLookupByLibrary.simpleMessage("Summary"),
     "wizardSummaryTabCount": m39,
     "wizardTabNameLabel": MessageLookupByLibrary.simpleMessage("Tab name"),
+    "wizardTemplateContentsLabel": MessageLookupByLibrary.simpleMessage(
+      "Includes",
+    ),
+    "wizardTemplateEmptyContents": MessageLookupByLibrary.simpleMessage(
+      "Name, level, one currency",
+    ),
+    "wizardTemplateEmptyDescription": MessageLookupByLibrary.simpleMessage(
+      "A plain sheet with name and level. You add everything else yourself.",
+    ),
+    "wizardTemplateEmptyName": MessageLookupByLibrary.simpleMessage("Blank"),
+    "wizardTemplateFantasyContents": MessageLookupByLibrary.simpleMessage(
+      "Abilities, skills, spells, copper to platinum",
+    ),
+    "wizardTemplateFantasyDescription": MessageLookupByLibrary.simpleMessage(
+      "Classic fantasy with abilities, hit points and spells.",
+    ),
+    "wizardTemplateFantasyName": MessageLookupByLibrary.simpleMessage(
+      "Fantasy 5E (SRD)",
+    ),
+    "wizardTemplateNarrativeContents": MessageLookupByLibrary.simpleMessage(
+      "Aspects, skills, stunts, stress, consequences, story points",
+    ),
+    "wizardTemplateNarrativeDescription": MessageLookupByLibrary.simpleMessage(
+      "For tables where the story comes first: aspects describe the characters, stress takes the hits.",
+    ),
+    "wizardTemplateNarrativeName": MessageLookupByLibrary.simpleMessage(
+      "Narrative (aspects & stress)",
+    ),
+    "wizardTemplateReplaceConfirm": MessageLookupByLibrary.simpleMessage(
+      "Switch template",
+    ),
+    "wizardTemplateReplaceMessage": MessageLookupByLibrary.simpleMessage(
+      "You changed things since picking the template. These changes will be lost. The campaign name and appearance stay.",
+    ),
+    "wizardTemplateReplaceTitle": MessageLookupByLibrary.simpleMessage(
+      "Switch template?",
+    ),
+    "wizardTemplateStepHelper": MessageLookupByLibrary.simpleMessage(
+      "## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: template, appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Template\n\nPick what you start with. The template fills in the character sheet and the currency. You can change everything in the next steps.\n\nYou only pick a template when you create the campaign. Later, the gear icon lets you change each part on its own.",
+    ),
+    "wizardTemplateStepTitle": MessageLookupByLibrary.simpleMessage("Template"),
     "wizardUndo": MessageLookupByLibrary.simpleMessage("Undo"),
     "wizardUnnamedProperty": MessageLookupByLibrary.simpleMessage(
       "Unnamed property",

@@ -2111,4 +2111,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get othersNotesGroupName => 'Players\' notes';
+
+  @override
+  String get wizardTemplateStepTitle => 'Template';
+
+  @override
+  String get wizardTemplateStepHelper =>
+      '## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: template, appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Template\n\nPick what you start with. The template fills in the character sheet and the currency. You can change everything in the next steps.\n\nYou only pick a template when you create the campaign. Later, the gear icon lets you change each part on its own.';
+
+  @override
+  String get wizardTemplateContentsLabel => 'Includes';
+
+  @override
+  String get wizardTemplateEmptyName => 'Blank';
+
+  @override
+  String get wizardTemplateEmptyDescription =>
+      'A plain sheet with name and level. You add everything else yourself.';
+
+  @override
+  String get wizardTemplateEmptyContents => 'Name, level, one currency';
+
+  @override
+  String get wizardTemplateFantasyName => 'Fantasy 5E (SRD)';
+
+  @override
+  String get wizardTemplateFantasyDescription =>
+      'Classic fantasy with abilities, hit points and spells.';
+
+  @override
+  String get wizardTemplateFantasyContents =>
+      'Abilities, skills, spells, copper to platinum';
+
+  @override
+  String get wizardTemplateNarrativeName => 'Narrative (aspects & stress)';
+
+  @override
+  String get wizardTemplateNarrativeDescription =>
+      'For tables where the story comes first: aspects describe the characters, stress takes the hits.';
+
+  @override
+  String get wizardTemplateNarrativeContents =>
+      'Aspects, skills, stunts, stress, consequences, story points';
+
+  @override
+  String get wizardTemplateReplaceTitle => 'Switch template?';
+
+  @override
+  String get wizardTemplateReplaceMessage =>
+      'You changed things since picking the template. These changes will be lost. The campaign name and appearance stay.';
+
+  @override
+  String get wizardTemplateReplaceConfirm => 'Switch template';
+
+  @override
+  String get wizardSkinStepHelperAfterTemplate =>
+      '## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.';
 }

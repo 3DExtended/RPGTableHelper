@@ -2130,4 +2130,60 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get othersNotesGroupName => 'Notizen der Spieler';
+
+  @override
+  String get wizardTemplateStepTitle => 'Vorlage';
+
+  @override
+  String get wizardTemplateStepHelper =>
+      '## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Vorlage, Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Vorlage\n\nWähle, womit du startest. Die Vorlage füllt Charakterbogen und Währung vor. In den nächsten Schritten passt du alles an.\n\nDie Vorlage wählst du nur beim Anlegen. Über das Zahnrad änderst du später jeden Teil einzeln.';
+
+  @override
+  String get wizardTemplateContentsLabel => 'Enthält';
+
+  @override
+  String get wizardTemplateEmptyName => 'Leer';
+
+  @override
+  String get wizardTemplateEmptyDescription =>
+      'Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.';
+
+  @override
+  String get wizardTemplateEmptyContents => 'Name, Level, eine Währung';
+
+  @override
+  String get wizardTemplateFantasyName => 'Fantasy 5E (SRD)';
+
+  @override
+  String get wizardTemplateFantasyDescription =>
+      'Klassische Fantasy mit Attributen, Trefferpunkten und Zaubern.';
+
+  @override
+  String get wizardTemplateFantasyContents =>
+      'Attribute, Fertigkeiten, Zauber, Kupfer bis Platin';
+
+  @override
+  String get wizardTemplateNarrativeName => 'Erzählerisch (Aspekte & Stress)';
+
+  @override
+  String get wizardTemplateNarrativeDescription =>
+      'Für Runden, in denen die Geschichte zählt: Aspekte beschreiben die Charaktere, Stress fängt Treffer ab.';
+
+  @override
+  String get wizardTemplateNarrativeContents =>
+      'Aspekte, Fertigkeiten, Stunts, Stress, Konsequenzen, Erzählpunkte';
+
+  @override
+  String get wizardTemplateReplaceTitle => 'Vorlage wechseln?';
+
+  @override
+  String get wizardTemplateReplaceMessage =>
+      'Du hast seit der Vorlagenwahl etwas angepasst. Diese Änderungen gehen verloren. Kampagnenname und Darstellung bleiben.';
+
+  @override
+  String get wizardTemplateReplaceConfirm => 'Vorlage wechseln';
+
+  @override
+  String get wizardSkinStepHelperAfterTemplate =>
+      '## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.';
 }

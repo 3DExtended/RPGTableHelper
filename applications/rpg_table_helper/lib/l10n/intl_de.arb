@@ -949,5 +949,21 @@
   "playerPreviewTablet": "Tablet",
   "playerPreviewHint": "Eine Beispielfigur mit Standardwerten. Hier wird nichts gespeichert.",
   "playerPreviewSampleCharacterName": "Beispielfigur",
-  "othersNotesGroupName": "Notizen der Spieler"
+  "othersNotesGroupName": "Notizen der Spieler",
+  "wizardTemplateStepTitle": "Vorlage",
+  "wizardTemplateStepHelper": "## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Vorlage, Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Vorlage\n\nWähle, womit du startest. Die Vorlage füllt Charakterbogen und Währung vor. In den nächsten Schritten passt du alles an.\n\nDie Vorlage wählst du nur beim Anlegen. Über das Zahnrad änderst du später jeden Teil einzeln.",
+  "wizardTemplateContentsLabel": "Enthält",
+  "wizardTemplateEmptyName": "Leer",
+  "wizardTemplateEmptyDescription": "Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.",
+  "wizardTemplateEmptyContents": "Name, Level, eine Währung",
+  "wizardTemplateFantasyName": "Fantasy 5E (SRD)",
+  "wizardTemplateFantasyDescription": "Klassische Fantasy mit Attributen, Trefferpunkten und Zaubern.",
+  "wizardTemplateFantasyContents": "Attribute, Fertigkeiten, Zauber, Kupfer bis Platin",
+  "wizardTemplateNarrativeName": "Erzählerisch (Aspekte & Stress)",
+  "wizardTemplateNarrativeDescription": "Für Runden, in denen die Geschichte zählt: Aspekte beschreiben die Charaktere, Stress fängt Treffer ab.",
+  "wizardTemplateNarrativeContents": "Aspekte, Fertigkeiten, Stunts, Stress, Konsequenzen, Erzählpunkte",
+  "wizardTemplateReplaceTitle": "Vorlage wechseln?",
+  "wizardTemplateReplaceMessage": "Du hast seit der Vorlagenwahl etwas angepasst. Diese Änderungen gehen verloren. Kampagnenname und Darstellung bleiben.",
+  "wizardTemplateReplaceConfirm": "Vorlage wechseln",
+  "wizardSkinStepHelperAfterTemplate": "## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern."
 }

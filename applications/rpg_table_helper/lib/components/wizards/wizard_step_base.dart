@@ -25,8 +25,14 @@ class WizardStepDefinition {
   /// directly following optional steps.
   final bool isOptional;
 
+  /// Shown only while a new campaign is set up (the wizard opened right
+  /// after creating it), not when the wizard is opened later to edit the
+  /// campaign. For steps that replace the whole configuration.
+  final bool onlyForNewSetup;
+
   const WizardStepDefinition({
     required this.builder,
     this.isOptional = false,
+    this.onlyForNewSetup = false,
   });
 }

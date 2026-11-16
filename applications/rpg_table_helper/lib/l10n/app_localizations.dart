@@ -3739,6 +3739,102 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Notizen der Spieler'**
   String get othersNotesGroupName;
+
+  /// No description provided for @wizardTemplateStepTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage'**
+  String get wizardTemplateStepTitle;
+
+  /// No description provided for @wizardTemplateStepHelper.
+  ///
+  /// In de, this message translates to:
+  /// **'## Willkommen bei QuestKeeper!\n\nIn den nächsten Schritten richtest du deine Kampagne ein: Vorlage, Darstellung, Name, Charakterbogen, Initiative und Währung. Danach folgen optionale Schritte für Items und Crafting, die du überspringen kannst.\n\nAlles wird automatisch gespeichert. Mit dem X oben links schließt du den Assistenten jederzeit; über das Zahnrad oben rechts kommst du später wieder hierher.\n\n## Vorlage\n\nWähle, womit du startest. Die Vorlage füllt Charakterbogen und Währung vor. In den nächsten Schritten passt du alles an.\n\nDie Vorlage wählst du nur beim Anlegen. Über das Zahnrad änderst du später jeden Teil einzeln.'**
+  String get wizardTemplateStepHelper;
+
+  /// No description provided for @wizardTemplateContentsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Enthält'**
+  String get wizardTemplateContentsLabel;
+
+  /// No description provided for @wizardTemplateEmptyName.
+  ///
+  /// In de, this message translates to:
+  /// **'Leer'**
+  String get wizardTemplateEmptyName;
+
+  /// No description provided for @wizardTemplateEmptyDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein schlichter Bogen mit Name und Level. Alles Weitere legst du selbst an.'**
+  String get wizardTemplateEmptyDescription;
+
+  /// No description provided for @wizardTemplateEmptyContents.
+  ///
+  /// In de, this message translates to:
+  /// **'Name, Level, eine Währung'**
+  String get wizardTemplateEmptyContents;
+
+  /// No description provided for @wizardTemplateFantasyName.
+  ///
+  /// In de, this message translates to:
+  /// **'Fantasy 5E (SRD)'**
+  String get wizardTemplateFantasyName;
+
+  /// No description provided for @wizardTemplateFantasyDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Klassische Fantasy mit Attributen, Trefferpunkten und Zaubern.'**
+  String get wizardTemplateFantasyDescription;
+
+  /// No description provided for @wizardTemplateFantasyContents.
+  ///
+  /// In de, this message translates to:
+  /// **'Attribute, Fertigkeiten, Zauber, Kupfer bis Platin'**
+  String get wizardTemplateFantasyContents;
+
+  /// No description provided for @wizardTemplateNarrativeName.
+  ///
+  /// In de, this message translates to:
+  /// **'Erzählerisch (Aspekte & Stress)'**
+  String get wizardTemplateNarrativeName;
+
+  /// No description provided for @wizardTemplateNarrativeDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Für Runden, in denen die Geschichte zählt: Aspekte beschreiben die Charaktere, Stress fängt Treffer ab.'**
+  String get wizardTemplateNarrativeDescription;
+
+  /// No description provided for @wizardTemplateNarrativeContents.
+  ///
+  /// In de, this message translates to:
+  /// **'Aspekte, Fertigkeiten, Stunts, Stress, Konsequenzen, Erzählpunkte'**
+  String get wizardTemplateNarrativeContents;
+
+  /// No description provided for @wizardTemplateReplaceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage wechseln?'**
+  String get wizardTemplateReplaceTitle;
+
+  /// No description provided for @wizardTemplateReplaceMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast seit der Vorlagenwahl etwas angepasst. Diese Änderungen gehen verloren. Kampagnenname und Darstellung bleiben.'**
+  String get wizardTemplateReplaceMessage;
+
+  /// No description provided for @wizardTemplateReplaceConfirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage wechseln'**
+  String get wizardTemplateReplaceConfirm;
+
+  /// No description provided for @wizardSkinStepHelperAfterTemplate.
+  ///
+  /// In de, this message translates to:
+  /// **'## Darstellung\n\nWähle das Standard-Aussehen der Charakterbögen in dieser Kampagne. Spieler können es später für ihre eigenen Charaktere ändern.'**
+  String get wizardSkinStepHelperAfterTemplate;
 }
 
 class _AppLocalizationsDelegate

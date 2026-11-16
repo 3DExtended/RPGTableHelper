@@ -6,21 +6,50 @@ import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class WizardConfiguration {
+  /// Every step, including those only shown for a new campaign.
   final List<WizardStepDefinition> steps;
 
   WizardConfiguration({required this.steps});
 
+  /// The steps the wizard shows: all of them while a new campaign is set
+  /// up, without the [WizardStepDefinition.onlyForNewSetup] ones otherwise.
+  List<WizardStepDefinition> stepsFor({required bool isNewSetup}) => isNewSetup
+      ? steps
+      : steps.where((s) => !s.onlyForNewSetup).toList();
+
+  /// Builders of the steps shown when the wizard edits a campaign.
   List<WizardStepBuilder> get stepBuilders =>
-      steps.map((s) => s.builder).toList();
+      stepsFor(isNewSetup: false).map((s) => s.builder).toList();
+}
+
+/// Arguments of a wizard route. Without them the wizard opens to edit the
+/// campaign (gear icon on the DM page).
+class WizardRouteArguments {
+  /// The wizard opens right after creating a campaign and also shows the
+  /// steps only a new campaign gets (the template choice).
+  final bool isNewSetup;
+
+  const WizardRouteArguments({this.isNewSetup = false});
+
+  /// [arguments] of a route, or the defaults when they are something else.
+  static WizardRouteArguments of(Object? arguments) =>
+      arguments is WizardRouteArguments
+          ? arguments
+          : const WizardRouteArguments();
 }
 
 class WizardRendererForConfiguration extends StatelessWidget {
   final WizardConfiguration configuration;
   final int? startStepIndex;
+
+  /// See [WizardRouteArguments.isNewSetup].
+  final bool isNewSetup;
+
   const WizardRendererForConfiguration({
     super.key,
     required this.configuration,
     this.startStepIndex,
+    this.isNewSetup = false,
   });
 
   @override
@@ -36,7 +65,7 @@ class WizardRendererForConfiguration extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       body: WizardManager(
         startStepIndex: startStepIndex,
-        steps: configuration.steps,
+        steps: configuration.stepsFor(isNewSetup: isNewSetup),
         onFinish: () {
           // Everything is already saved step by step; confirm it once the
           // wizard is done.

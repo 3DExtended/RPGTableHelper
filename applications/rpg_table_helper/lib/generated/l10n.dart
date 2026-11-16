@@ -5699,6 +5699,166 @@ class S {
       args: [],
     );
   }
+
+  /// `Template`
+  String get wizardTemplateStepTitle {
+    return Intl.message(
+      'Template',
+      name: 'wizardTemplateStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: template, appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Template\n\nPick what you start with. The template fills in the character sheet and the currency. You can change everything in the next steps.\n\nYou only pick a template when you create the campaign. Later, the gear icon lets you change each part on its own.`
+  String get wizardTemplateStepHelper {
+    return Intl.message(
+      '## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: template, appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Template\n\nPick what you start with. The template fills in the character sheet and the currency. You can change everything in the next steps.\n\nYou only pick a template when you create the campaign. Later, the gear icon lets you change each part on its own.',
+      name: 'wizardTemplateStepHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Includes`
+  String get wizardTemplateContentsLabel {
+    return Intl.message(
+      'Includes',
+      name: 'wizardTemplateContentsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blank`
+  String get wizardTemplateEmptyName {
+    return Intl.message(
+      'Blank',
+      name: 'wizardTemplateEmptyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A plain sheet with name and level. You add everything else yourself.`
+  String get wizardTemplateEmptyDescription {
+    return Intl.message(
+      'A plain sheet with name and level. You add everything else yourself.',
+      name: 'wizardTemplateEmptyDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name, level, one currency`
+  String get wizardTemplateEmptyContents {
+    return Intl.message(
+      'Name, level, one currency',
+      name: 'wizardTemplateEmptyContents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fantasy 5E (SRD)`
+  String get wizardTemplateFantasyName {
+    return Intl.message(
+      'Fantasy 5E (SRD)',
+      name: 'wizardTemplateFantasyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classic fantasy with abilities, hit points and spells.`
+  String get wizardTemplateFantasyDescription {
+    return Intl.message(
+      'Classic fantasy with abilities, hit points and spells.',
+      name: 'wizardTemplateFantasyDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Abilities, skills, spells, copper to platinum`
+  String get wizardTemplateFantasyContents {
+    return Intl.message(
+      'Abilities, skills, spells, copper to platinum',
+      name: 'wizardTemplateFantasyContents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Narrative (aspects & stress)`
+  String get wizardTemplateNarrativeName {
+    return Intl.message(
+      'Narrative (aspects & stress)',
+      name: 'wizardTemplateNarrativeName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For tables where the story comes first: aspects describe the characters, stress takes the hits.`
+  String get wizardTemplateNarrativeDescription {
+    return Intl.message(
+      'For tables where the story comes first: aspects describe the characters, stress takes the hits.',
+      name: 'wizardTemplateNarrativeDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aspects, skills, stunts, stress, consequences, story points`
+  String get wizardTemplateNarrativeContents {
+    return Intl.message(
+      'Aspects, skills, stunts, stress, consequences, story points',
+      name: 'wizardTemplateNarrativeContents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Switch template?`
+  String get wizardTemplateReplaceTitle {
+    return Intl.message(
+      'Switch template?',
+      name: 'wizardTemplateReplaceTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You changed things since picking the template. These changes will be lost. The campaign name and appearance stay.`
+  String get wizardTemplateReplaceMessage {
+    return Intl.message(
+      'You changed things since picking the template. These changes will be lost. The campaign name and appearance stay.',
+      name: 'wizardTemplateReplaceMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Switch template`
+  String get wizardTemplateReplaceConfirm {
+    return Intl.message(
+      'Switch template',
+      name: 'wizardTemplateReplaceConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.`
+  String get wizardSkinStepHelperAfterTemplate {
+    return Intl.message(
+      '## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters.',
+      name: 'wizardSkinStepHelperAfterTemplate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -357,6 +357,32 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   serializedValue:
                       '${'${'{"values": ["' + options[0]["uuid"]}", "' + options[2]["uuid"]}"]}',
                 );
+              // Empty values: no box ticked, no entry, nothing chosen (the
+              // narrative template has these on its default tab).
+              case CharacterStatValueType.checkboxTrack:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"checked": []}',
+                );
+              case CharacterStatValueType.textList:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"values": []}',
+                );
+              case CharacterStatValueType.singleSelect:
+                return RpgCharacterStatValue(
+                  hideFromCharacterScreen: false,
+                  hideLabelOfStat: false,
+                  variant: null,
+                  statUuid: stat.statUuid,
+                  serializedValue: '{"value": null}',
+                );
 
               default:
                 throw UnimplementedError();

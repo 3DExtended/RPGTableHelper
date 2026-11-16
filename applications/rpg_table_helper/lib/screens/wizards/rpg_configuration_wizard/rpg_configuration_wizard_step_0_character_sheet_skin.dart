@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/components/character_sheet_skin_picker.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
+import 'package:quest_keeper/components/wizards/wizard_navigation_scope.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_base.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
@@ -54,7 +55,13 @@ class _RpgConfigurationWizardStep0CharacterSheetSkinState
       }
     });
 
-    final helper = S.of(context).wizardSkinStepHelper;
+    // As first step the explanation welcomes the DM; after the template
+    // choice (new campaign) that welcome was already shown.
+    final isFirstStep =
+        WizardNavigationScope.maybeOf(context)?.isFirstStep ?? true;
+    final helper = isFirstStep
+        ? S.of(context).wizardSkinStepHelper
+        : S.of(context).wizardSkinStepHelperAfterTemplate;
 
     return TwoPartWizardStepBody(
       isLandscapeMode: MediaQuery.of(context).size.width >

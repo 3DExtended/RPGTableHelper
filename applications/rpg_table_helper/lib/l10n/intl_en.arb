@@ -901,5 +901,21 @@
   "playerPreviewTablet": "Tablet",
   "playerPreviewHint": "A sample character with default values. Nothing here is saved.",
   "playerPreviewSampleCharacterName": "Sample character",
-  "othersNotesGroupName": "Players' notes"
+  "othersNotesGroupName": "Players' notes",
+  "wizardTemplateStepTitle": "Template",
+  "wizardTemplateStepHelper": "## Welcome to QuestKeeper!\n\nIn the next steps you set up your campaign: template, appearance, name, character sheet, initiative and currency. Optional steps for items and crafting follow, which you can skip.\n\nEverything is saved automatically. Close the wizard at any time with the X in the top left; the gear icon in the top right brings you back here later.\n\n## Template\n\nPick what you start with. The template fills in the character sheet and the currency. You can change everything in the next steps.\n\nYou only pick a template when you create the campaign. Later, the gear icon lets you change each part on its own.",
+  "wizardTemplateContentsLabel": "Includes",
+  "wizardTemplateEmptyName": "Blank",
+  "wizardTemplateEmptyDescription": "A plain sheet with name and level. You add everything else yourself.",
+  "wizardTemplateEmptyContents": "Name, level, one currency",
+  "wizardTemplateFantasyName": "Fantasy 5E (SRD)",
+  "wizardTemplateFantasyDescription": "Classic fantasy with abilities, hit points and spells.",
+  "wizardTemplateFantasyContents": "Abilities, skills, spells, copper to platinum",
+  "wizardTemplateNarrativeName": "Narrative (aspects & stress)",
+  "wizardTemplateNarrativeDescription": "For tables where the story comes first: aspects describe the characters, stress takes the hits.",
+  "wizardTemplateNarrativeContents": "Aspects, skills, stunts, stress, consequences, story points",
+  "wizardTemplateReplaceTitle": "Switch template?",
+  "wizardTemplateReplaceMessage": "You changed things since picking the template. These changes will be lost. The campaign name and appearance stay.",
+  "wizardTemplateReplaceConfirm": "Switch template",
+  "wizardSkinStepHelperAfterTemplate": "## Appearance\n\nPick the default look for character sheets in this campaign. Players can change it later for their own characters."
 }
