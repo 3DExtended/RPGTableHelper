@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
@@ -10,6 +11,8 @@ import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/helpers/character_stats/sheet_building_blocks.dart';
 import 'package:quest_keeper/helpers/character_stats/show_building_block_picker.dart';
 import 'package:quest_keeper/helpers/character_stats/show_property_purpose_picker.dart';
+import 'package:quest_keeper/helpers/character_stats/show_template_update_picker.dart';
+import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
@@ -89,6 +92,7 @@ Future<ProviderContainer> _pumpStep(
   WidgetTester tester, {
   List<OpenPlayerConnection> players = const [],
   bool withUnnamedStat = false,
+  RpgConfigurationModel? config,
 }) async {
   tester.view.physicalSize = const Size(2400, 1800);
   tester.view.devicePixelRatio = 1.0;
@@ -98,7 +102,8 @@ Future<ProviderContainer> _pumpStep(
     overrides: [
       rpgConfigurationProvider.overrideWith((ref) {
         return RpgConfigurationNotifier(
-          decks: AsyncValue.data(_config(withUnnamedStat: withUnnamedStat)),
+          decks: AsyncValue.data(
+              config ?? _config(withUnnamedStat: withUnnamedStat)),
           ref: ref,
           runningInTests: true,
         );
@@ -346,6 +351,91 @@ void main() {
         ['s-hp', abilities.stat.statUuid]);
     expect(tabs[1].statsInTab.last.valueType,
         CharacterStatValueType.listOfIntWithCalculatedValues);
+  });
+
+  group('template update', () {
+    /// Fantasy 5E from before: "HP" instead of "TP", no portrait.
+    RpgConfigurationModel oldCampaign() {
+      final template = RpgConfigurationTemplates.fantasySrd();
+      return template.copyWith(characterStatTabsDefinition: [
+        for (final tab in template.characterStatTabsDefinition!)
+          tab.copyWith(statsInTab: [
+            for (final stat in tab.statsInTab)
+              if (stat.name == 'TP')
+                stat.copyWith(name: 'HP')
+              else if (stat.name != 'Porträt')
+                stat,
+          ]),
+      ]);
+    }
+
+    Finder bannerTitle() => find.text(S.current.templateUpdateBannerTitle(
+        S.current.wizardTemplateFantasyName));
+
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
+    testWidgets('no note for a sheet as the template has it', (tester) async {
+      await _pumpStep(tester, config: RpgConfigurationTemplates.fantasySrd());
+      expect(find.byType(TemplateUpdateBanner), findsNothing);
+    });
+
+    testWidgets('takes over what is chosen', (tester) async {
+      final container = await _pumpStep(tester, config: oldCampaign());
+      final portrait = StatNumbers.allStats(RpgConfigurationTemplates.fantasySrd())
+          .firstWhere((s) => s.name == 'Porträt');
+
+      expect(bannerTitle(), findsOneWidget);
+      expect(find.text(S.current.templateUpdateBannerText(2)), findsOneWidget);
+
+      await tester.tap(find.byKey(TemplateUpdateBanner.reviewKey));
+      await tester.pumpAndSettle();
+      expect(find.text(S.current.templateUpdateNewName('TP')), findsWidgets);
+      await tester.tap(
+          find.byKey(TemplateUpdatePicker.keyFor(portrait.statUuid)).last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(S.current.templateUpdateApplyCount(1)).last);
+      await tester.pumpAndSettle();
+
+      final names = [
+        for (final tab in _savedTabs(container))
+          ...tab.statsInTab.map((s) => s.name),
+      ];
+      expect(names, contains('TP'));
+      expect(names, isNot(contains('HP')));
+      expect(names, isNot(contains('Porträt')));
+      // The editor shows the new name.
+      expect(find.textContaining('TP', findRichText: true), findsWidgets);
+      // The portrait is still on offer.
+      expect(find.text(S.current.templateUpdateBannerText(1)), findsOneWidget);
+    });
+
+    testWidgets('set aside, it stays away until the template changes', (
+      tester,
+    ) async {
+      await _pumpStep(tester, config: oldCampaign());
+      await tester.tap(find.byKey(TemplateUpdateBanner.dismissKey));
+      await tester.pumpAndSettle();
+      expect(bannerTitle(), findsNothing);
+
+      await tester.pumpWidget(const SizedBox());
+      await _pumpStep(tester, config: oldCampaign());
+      expect(bannerTitle(), findsNothing);
+
+      // Something else is new: the note is back.
+      final other = oldCampaign();
+      await tester.pumpWidget(const SizedBox());
+      await _pumpStep(
+        tester,
+        config: other.copyWith(characterStatTabsDefinition: [
+          for (final tab in other.characterStatTabsDefinition!)
+            tab.copyWith(statsInTab: [
+              for (final stat in tab.statsInTab)
+                if (stat.name != 'Antrieb') stat,
+            ]),
+        ]),
+      );
+      expect(bannerTitle(), findsOneWidget);
+    });
   });
 
   test('countCharactersWithValuesForStat counts characters, not values', () {

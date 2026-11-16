@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
+import 'package:quest_keeper/components/pick_tile.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/sheet_building_blocks.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -113,11 +113,13 @@ class _BuildingBlockPickerState extends State<BuildingBlockPicker> {
         ));
       }
       final onSheet = block.isOn(widget.existingStats);
-      children.add(_BlockTile(
+      children.add(PickTile(
         key: BuildingBlockPicker.keyFor(block.stat.statUuid),
         title: block.stat.name,
-        kind: block.kind(s),
-        description: block.stat.helperText,
+        subtitle: [
+          block.kind(s),
+          block.stat.helperText.trim(),
+        ].where((t) => t.isNotEmpty).join(' · '),
         isSelected: _selected.contains(block.stat.statUuid),
         disabledReason: onSheet ? s.buildingBlocksAlreadyOnSheet : null,
         onTap: onSheet
@@ -147,103 +149,6 @@ class _BuildingBlockPickerState extends State<BuildingBlockPicker> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
-      ),
-    );
-  }
-}
-
-class _BlockTile extends StatelessWidget {
-  const _BlockTile({
-    super.key,
-    required this.title,
-    required this.kind,
-    required this.description,
-    required this.isSelected,
-    required this.disabledReason,
-    required this.onTap,
-  });
-
-  final String title;
-  final String kind;
-  final String description;
-  final bool isSelected;
-
-  /// Why it cannot be ticked, or null.
-  final String? disabledReason;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = CustomThemeProvider.of(context).theme;
-    final textTheme = Theme.of(context).textTheme;
-    final enabled = disabledReason == null;
-    final color = enabled
-        ? theme.darkTextColor
-        : theme.darkTextColor.withValues(alpha: 0.45);
-    final subtitle = [
-      if (disabledReason != null) disabledReason!,
-      if (kind.isNotEmpty) kind,
-      if (description.trim().isNotEmpty) description.trim(),
-    ].join(' · ');
-
-    return Semantics(
-      checked: isSelected,
-      enabled: enabled,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(6),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 24,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: CustomFaIcon(
-                      icon: !enabled
-                          ? FontAwesomeIcons.check
-                          : isSelected
-                              ? FontAwesomeIcons.solidSquareCheck
-                              : FontAwesomeIcons.square,
-                      size: 18,
-                      color: isSelected ? theme.accentColor : color,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: textTheme.titleSmall!.copyWith(
-                          color: color,
-                          fontSize: 16,
-                        ),
-                      ),
-                      if (subtitle.isNotEmpty)
-                        Text(
-                          subtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: textTheme.bodySmall!.copyWith(
-                            color: color.withValues(
-                                alpha: enabled ? 0.8 : 0.45),
-                            fontSize: 13,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

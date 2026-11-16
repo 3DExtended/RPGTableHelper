@@ -2502,4 +2502,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String wizardTemplateFromCampagneDescription(String tabs) {
     return 'Sheet with the tabs $tabs';
   }
+
+  @override
+  String templateUpdateBannerTitle(String template) {
+    return 'New in the template “$template”';
+  }
+
+  @override
+  String templateUpdateBannerText(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count properties',
+      one: 'one property',
+    );
+    return 'The template has added or revised $_temp0 since. You decide what to take over.';
+  }
+
+  @override
+  String get templateUpdateReview => 'Review';
+
+  @override
+  String get templateUpdateDismiss => 'Hide';
+
+  @override
+  String get templateUpdateTitle => 'Update from template';
+
+  @override
+  String get templateUpdateHint =>
+      'Tick what you want to take over. The characters\' values stay, and so do your own properties and your own list entries.';
+
+  @override
+  String templateUpdateAdded(String tabName) {
+    return 'New, goes into the tab “$tabName”';
+  }
+
+  @override
+  String templateUpdateNewName(String name) {
+    return 'New name: $name';
+  }
+
+  @override
+  String get templateUpdateNewHelperText => 'New help text';
+
+  @override
+  String templateUpdateNewEntries(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new entries',
+      one: '1 new entry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get templateUpdateEntriesRevised => 'Entries revised';
+
+  @override
+  String get templateUpdateOtherSettings => 'Other settings';
+
+  @override
+  String get templateUpdateApply => 'Apply';
+
+  @override
+  String templateUpdateApplyCount(int count) {
+    return 'Apply $count';
+  }
 }

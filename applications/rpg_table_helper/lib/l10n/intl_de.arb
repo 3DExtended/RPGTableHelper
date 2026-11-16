@@ -1111,5 +1111,61 @@
         "type": "String"
       }
     }
+  },
+  "templateUpdateBannerTitle": "Neues in der Vorlage „{template}“",
+  "@templateUpdateBannerTitle": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      }
+    }
+  },
+  "templateUpdateBannerText": "Die Vorlage hat inzwischen {count, plural, one{eine Eigenschaft} other{{count} Eigenschaften}} ergänzt oder überarbeitet. Du entscheidest, was du übernimmst.",
+  "@templateUpdateBannerText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateUpdateReview": "Ansehen",
+  "templateUpdateDismiss": "Ausblenden",
+  "templateUpdateTitle": "Vorlage aktualisieren",
+  "templateUpdateHint": "Hake an, was du übernehmen willst. Die Werte der Charaktere bleiben erhalten, ebenso deine eigenen Eigenschaften und eigene Einträge in Listen.",
+  "templateUpdateAdded": "Neu, kommt in den Reiter „{tabName}“",
+  "@templateUpdateAdded": {
+    "placeholders": {
+      "tabName": {
+        "type": "String"
+      }
+    }
+  },
+  "templateUpdateNewName": "Neuer Name: {name}",
+  "@templateUpdateNewName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "templateUpdateNewHelperText": "Neuer Hilfetext",
+  "templateUpdateNewEntries": "{count, plural, one{1 neuer Eintrag} other{{count} neue Einträge}}",
+  "@templateUpdateNewEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateUpdateEntriesRevised": "Einträge überarbeitet",
+  "templateUpdateOtherSettings": "Weitere Einstellungen",
+  "templateUpdateApply": "Übernehmen",
+  "templateUpdateApplyCount": "{count} übernehmen",
+  "@templateUpdateApplyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

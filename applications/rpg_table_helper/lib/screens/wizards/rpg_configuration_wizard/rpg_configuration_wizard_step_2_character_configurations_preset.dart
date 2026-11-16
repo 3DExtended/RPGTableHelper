@@ -15,6 +15,8 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/character_stats/show_property_purpose_picker.dart';
+import 'package:quest_keeper/helpers/character_stats/show_template_update_picker.dart';
+import 'package:quest_keeper/helpers/character_stats/template_update.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_confirm_delete_dialog.dart';
@@ -25,6 +27,7 @@ import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/wizards/player_sheet_preview_screen.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/character_stat_group_editing.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:quest_keeper/services/template_update_dismissal_store.dart';
 import 'package:uuid/v7.dart';
 
 /// How many of the campaign's characters (or their companions) hold a value
@@ -87,6 +90,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
 
   bool isFormValid = true;
   RpgConfigurationNotifier? _configNotifier;
+
+  /// What the campaign's base template offers since, unless set aside.
+  TemplateUpdate? _templateUpdate;
 
   /// Every stat being edited, all tabs in order: sources for computed stats.
   List<StatWithTab> _statsWithTabs() => [
@@ -265,6 +271,57 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
     }
   }
 
+  String _campagneKey() =>
+      ref.read(connectionDetailsProvider).value?.campagneId ?? 'local';
+
+  Future<void> _checkTemplateUpdate(RpgConfigurationModel config) async {
+    final update = templateUpdateFor(config);
+    if (update != null &&
+        await isTemplateUpdateDismissed(_campagneKey(), update.signature)) {
+      return;
+    }
+    if (!mounted) return;
+    setState(() => _templateUpdate = update);
+  }
+
+  Future<void> _dismissTemplateUpdate() async {
+    final update = _templateUpdate;
+    if (update == null) return;
+    setState(() => _templateUpdate = null);
+    await dismissTemplateUpdate(_campagneKey(), update.signature);
+  }
+
+  /// The sheet as edited so far, with the chosen template changes; the
+  /// editors start over from it.
+  Future<void> _reviewTemplateUpdate() async {
+    _persistToProviderIfReady();
+    final config = ref.read(rpgConfigurationProvider).value;
+    final update = config == null ? null : templateUpdateFor(config);
+    if (update == null) {
+      setState(() => _templateUpdate = null);
+      return;
+    }
+    final chosen = await showTemplateUpdatePicker(
+      context: context,
+      update: update,
+    );
+    if (chosen == null || chosen.isEmpty || !mounted) return;
+
+    final next = applyTemplateUpdate(config!, update, chosen);
+    ref
+        .read(rpgConfigurationProvider.notifier)
+        .updateCharacterScreenStatsTabs(next.characterStatTabsDefinition!);
+    setState(() {
+      for (final tab in tabsToEdit) {
+        tab.$2.dispose();
+      }
+      tabsToEdit = [];
+      statsUnderTab = {};
+      _populateEditorsFromConfig(next);
+    });
+    await _checkTemplateUpdate(next);
+  }
+
   void _persistToProviderIfReady() {
     if (!hasDataLoaded) {
       return;
@@ -296,6 +353,7 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
             hasDataLoaded = true;
             _populateEditorsFromConfig(data);
           });
+          _checkTemplateUpdate(data);
         });
       }
     });
@@ -323,6 +381,12 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
       sideBarFlex: 1,
       contentFlex: 2,
       contentChildren: [
+        if (_templateUpdate case final update?)
+          TemplateUpdateBanner(
+            update: update,
+            onReview: _reviewTemplateUpdate,
+            onDismiss: _dismissTemplateUpdate,
+          ),
         // Phase 3: the sheet as a player sees it, before anyone has joined.
         Align(
           alignment: Alignment.centerRight,

@@ -2521,4 +2521,71 @@ class AppLocalizationsDe extends AppLocalizations {
   String wizardTemplateFromCampagneDescription(String tabs) {
     return 'Bogen mit den Reitern $tabs';
   }
+
+  @override
+  String templateUpdateBannerTitle(String template) {
+    return 'Neues in der Vorlage „$template“';
+  }
+
+  @override
+  String templateUpdateBannerText(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Eigenschaften',
+      one: 'eine Eigenschaft',
+    );
+    return 'Die Vorlage hat inzwischen $_temp0 ergänzt oder überarbeitet. Du entscheidest, was du übernimmst.';
+  }
+
+  @override
+  String get templateUpdateReview => 'Ansehen';
+
+  @override
+  String get templateUpdateDismiss => 'Ausblenden';
+
+  @override
+  String get templateUpdateTitle => 'Vorlage aktualisieren';
+
+  @override
+  String get templateUpdateHint =>
+      'Hake an, was du übernehmen willst. Die Werte der Charaktere bleiben erhalten, ebenso deine eigenen Eigenschaften und eigene Einträge in Listen.';
+
+  @override
+  String templateUpdateAdded(String tabName) {
+    return 'Neu, kommt in den Reiter „$tabName“';
+  }
+
+  @override
+  String templateUpdateNewName(String name) {
+    return 'Neuer Name: $name';
+  }
+
+  @override
+  String get templateUpdateNewHelperText => 'Neuer Hilfetext';
+
+  @override
+  String templateUpdateNewEntries(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count neue Einträge',
+      one: '1 neuer Eintrag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get templateUpdateEntriesRevised => 'Einträge überarbeitet';
+
+  @override
+  String get templateUpdateOtherSettings => 'Weitere Einstellungen';
+
+  @override
+  String get templateUpdateApply => 'Übernehmen';
+
+  @override
+  String templateUpdateApplyCount(int count) {
+    return '$count übernehmen';
+  }
 }

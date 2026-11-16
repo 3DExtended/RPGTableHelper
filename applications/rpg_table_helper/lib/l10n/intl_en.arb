@@ -1063,5 +1063,61 @@
         "type": "String"
       }
     }
+  },
+  "templateUpdateBannerTitle": "New in the template “{template}”",
+  "@templateUpdateBannerTitle": {
+    "placeholders": {
+      "template": {
+        "type": "String"
+      }
+    }
+  },
+  "templateUpdateBannerText": "The template has added or revised {count, plural, one{one property} other{{count} properties}} since. You decide what to take over.",
+  "@templateUpdateBannerText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateUpdateReview": "Review",
+  "templateUpdateDismiss": "Hide",
+  "templateUpdateTitle": "Update from template",
+  "templateUpdateHint": "Tick what you want to take over. The characters' values stay, and so do your own properties and your own list entries.",
+  "templateUpdateAdded": "New, goes into the tab “{tabName}”",
+  "@templateUpdateAdded": {
+    "placeholders": {
+      "tabName": {
+        "type": "String"
+      }
+    }
+  },
+  "templateUpdateNewName": "New name: {name}",
+  "@templateUpdateNewName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "templateUpdateNewHelperText": "New help text",
+  "templateUpdateNewEntries": "{count, plural, one{1 new entry} other{{count} new entries}}",
+  "@templateUpdateNewEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateUpdateEntriesRevised": "Entries revised",
+  "templateUpdateOtherSettings": "Other settings",
+  "templateUpdateApply": "Apply",
+  "templateUpdateApplyCount": "Apply {count}",
+  "@templateUpdateApplyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

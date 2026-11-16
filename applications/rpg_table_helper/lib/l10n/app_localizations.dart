@@ -4399,6 +4399,90 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bogen mit den Reitern {tabs}'**
   String wizardTemplateFromCampagneDescription(String tabs);
+
+  /// No description provided for @templateUpdateBannerTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Neues in der Vorlage „{template}“'**
+  String templateUpdateBannerTitle(String template);
+
+  /// No description provided for @templateUpdateBannerText.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Vorlage hat inzwischen {count, plural, one{eine Eigenschaft} other{{count} Eigenschaften}} ergänzt oder überarbeitet. Du entscheidest, was du übernimmst.'**
+  String templateUpdateBannerText(int count);
+
+  /// No description provided for @templateUpdateReview.
+  ///
+  /// In de, this message translates to:
+  /// **'Ansehen'**
+  String get templateUpdateReview;
+
+  /// No description provided for @templateUpdateDismiss.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausblenden'**
+  String get templateUpdateDismiss;
+
+  /// No description provided for @templateUpdateTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorlage aktualisieren'**
+  String get templateUpdateTitle;
+
+  /// No description provided for @templateUpdateHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Hake an, was du übernehmen willst. Die Werte der Charaktere bleiben erhalten, ebenso deine eigenen Eigenschaften und eigene Einträge in Listen.'**
+  String get templateUpdateHint;
+
+  /// No description provided for @templateUpdateAdded.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu, kommt in den Reiter „{tabName}“'**
+  String templateUpdateAdded(String tabName);
+
+  /// No description provided for @templateUpdateNewName.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Name: {name}'**
+  String templateUpdateNewName(String name);
+
+  /// No description provided for @templateUpdateNewHelperText.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Hilfetext'**
+  String get templateUpdateNewHelperText;
+
+  /// No description provided for @templateUpdateNewEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 neuer Eintrag} other{{count} neue Einträge}}'**
+  String templateUpdateNewEntries(int count);
+
+  /// No description provided for @templateUpdateEntriesRevised.
+  ///
+  /// In de, this message translates to:
+  /// **'Einträge überarbeitet'**
+  String get templateUpdateEntriesRevised;
+
+  /// No description provided for @templateUpdateOtherSettings.
+  ///
+  /// In de, this message translates to:
+  /// **'Weitere Einstellungen'**
+  String get templateUpdateOtherSettings;
+
+  /// No description provided for @templateUpdateApply.
+  ///
+  /// In de, this message translates to:
+  /// **'Übernehmen'**
+  String get templateUpdateApply;
+
+  /// No description provided for @templateUpdateApplyCount.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} übernehmen'**
+  String templateUpdateApplyCount(int count);
 }
 
 class _AppLocalizationsDelegate

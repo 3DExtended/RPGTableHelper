@@ -6740,6 +6740,148 @@ class S {
       args: [tabs],
     );
   }
+
+  /// `New in the template “{template}”`
+  String templateUpdateBannerTitle(String template) {
+    return Intl.message(
+      'New in the template “$template”',
+      name: 'templateUpdateBannerTitle',
+      desc: '',
+      args: [template],
+    );
+  }
+
+  /// `The template has added or revised {count, plural, one{one property} other{{count} properties}} since. You decide what to take over.`
+  String templateUpdateBannerText(int count) {
+    return Intl.message(
+      'The template has added or revised ${Intl.plural(count, one: 'one property', other: '$count properties')} since. You decide what to take over.',
+      name: 'templateUpdateBannerText',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Review`
+  String get templateUpdateReview {
+    return Intl.message(
+      'Review',
+      name: 'templateUpdateReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide`
+  String get templateUpdateDismiss {
+    return Intl.message(
+      'Hide',
+      name: 'templateUpdateDismiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update from template`
+  String get templateUpdateTitle {
+    return Intl.message(
+      'Update from template',
+      name: 'templateUpdateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tick what you want to take over. The characters' values stay, and so do your own properties and your own list entries.`
+  String get templateUpdateHint {
+    return Intl.message(
+      'Tick what you want to take over. The characters\' values stay, and so do your own properties and your own list entries.',
+      name: 'templateUpdateHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New, goes into the tab “{tabName}”`
+  String templateUpdateAdded(String tabName) {
+    return Intl.message(
+      'New, goes into the tab “$tabName”',
+      name: 'templateUpdateAdded',
+      desc: '',
+      args: [tabName],
+    );
+  }
+
+  /// `New name: {name}`
+  String templateUpdateNewName(String name) {
+    return Intl.message(
+      'New name: $name',
+      name: 'templateUpdateNewName',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `New help text`
+  String get templateUpdateNewHelperText {
+    return Intl.message(
+      'New help text',
+      name: 'templateUpdateNewHelperText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one{1 new entry} other{{count} new entries}}`
+  String templateUpdateNewEntries(int count) {
+    return Intl.plural(
+      count,
+      one: '1 new entry',
+      other: '$count new entries',
+      name: 'templateUpdateNewEntries',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Entries revised`
+  String get templateUpdateEntriesRevised {
+    return Intl.message(
+      'Entries revised',
+      name: 'templateUpdateEntriesRevised',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other settings`
+  String get templateUpdateOtherSettings {
+    return Intl.message(
+      'Other settings',
+      name: 'templateUpdateOtherSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply`
+  String get templateUpdateApply {
+    return Intl.message(
+      'Apply',
+      name: 'templateUpdateApply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply {count}`
+  String templateUpdateApplyCount(int count) {
+    return Intl.message(
+      'Apply $count',
+      name: 'templateUpdateApplyCount',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
