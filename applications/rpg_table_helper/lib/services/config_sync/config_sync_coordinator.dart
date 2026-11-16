@@ -128,9 +128,20 @@ class ConfigSyncCoordinator {
   /// Fetches and applies whatever changed on the server since the last known
   /// revision, e.g. after a reconnect during which `*ConfigChanged` notifies
   /// may have been missed. No-op while a write is in flight (it rebases).
+  ///
+  /// An edit that could not be saved while offline is sent first, so the
+  /// catch-up does not overwrite it with the server's older state.
   Future<void> catchUpNow() async {
     if (_disposed || _writeInFlight) {
       return;
+    }
+    if (_pendingDesiredJson != null) {
+      _debounceTimer?.cancel();
+      _debounceTimer = null;
+      await _flush();
+      if (_disposed || _writeInFlight) {
+        return;
+      }
     }
     await _catchUp();
   }
@@ -151,6 +162,7 @@ class ConfigSyncCoordinator {
 
     _writeInFlight = true;
     var needsImmediateRetry = false;
+    var writeFailedOffline = false;
     var nextAttempt = conflictRetryAttempt;
     try {
       final desired = _pendingDesiredJson!;
@@ -165,17 +177,30 @@ class ConfigSyncCoordinator {
         nextAttempt = conflictRetryAttempt + 1;
       } else if (result.isSuccessful && result.result != null) {
         _revision = result.result!.revision;
+      } else if (_isRetryableFailure(result.statusCode)) {
+        // No connection (or the server is down): keep the edit, unless a
+        // newer one came in meanwhile, so the next flush sends it, e.g.
+        // [catchUpNow] after the reconnect.
+        _pendingDesiredJson ??= desired;
+        writeFailedOffline = true;
       }
     } finally {
       _writeInFlight = false;
     }
 
-    if (needsImmediateRetry || _pendingDesiredJson != null) {
+    // After an offline failure, do not retry in a loop; the next edit or the
+    // reconnect flushes again.
+    if (!writeFailedOffline &&
+        (needsImmediateRetry || _pendingDesiredJson != null)) {
       await _flush(
         conflictRetryAttempt: needsImmediateRetry ? nextAttempt : 0,
       );
     }
   }
+
+  /// A missing status code means the request never reached the server.
+  static bool _isRetryableFailure(int? statusCode) =>
+      statusCode == null || statusCode >= 500;
 
   Future<void> _catchUp() async {
     final result = await read(_revision);

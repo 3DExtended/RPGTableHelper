@@ -285,5 +285,109 @@ void main() {
 
       expect(writeCalls, 0);
     });
+    group('an edit made while the server is unreachable', () {
+      test('stays pending without a retry loop', () async {
+        var writeCalls = 0;
+        final coordinator = ConfigSyncCoordinator(
+          write: (fromRevision, json) async {
+            writeCalls++;
+            // No status code: the request never reached the server.
+            return HRResponse.error<ConfigWriteResult>('offline', 'offline');
+          },
+          read: (sinceRevision) async => HRResponse.error('unused', 'unused'),
+          applyFull: (json, revision) {},
+          applyPatch: (ops, revision) {},
+        );
+        coordinator.seed(revision: 1);
+
+        coordinator.notifyLocalEdit('{"hp":19}');
+        await coordinator.flushNow();
+
+        expect(writeCalls, 1);
+        expect(coordinator.hasPendingLocalEdit, isTrue);
+      });
+
+      test('is sent on the reconnect catch-up before the server state is read',
+          () async {
+        final calls = <String>[];
+        var online = false;
+        final coordinator = ConfigSyncCoordinator(
+          write: (fromRevision, json) async {
+            calls.add('write $json from $fromRevision');
+            if (!online) {
+              return HRResponse.error<ConfigWriteResult>('offline', 'offline');
+            }
+            return HRResponse.fromResult(const ConfigWriteResult(revision: 2));
+          },
+          read: (sinceRevision) async {
+            calls.add('read since $sinceRevision');
+            return HRResponse.fromResult(
+              const ConfigSnapshot(kind: 'patch', revision: 2, patch: '[]'),
+            );
+          },
+          applyFull: (json, revision) =>
+              fail('the server state must not overwrite the local edit'),
+          applyPatch: (ops, revision) {},
+        );
+        coordinator.seed(revision: 1);
+
+        coordinator.notifyLocalEdit('{"hp":19}');
+        await coordinator.flushNow();
+        online = true;
+        await coordinator.catchUpNow();
+
+        expect(calls, [
+          'write {"hp":19} from 1',
+          'write {"hp":19} from 1',
+          'read since 2',
+        ]);
+        expect(coordinator.hasPendingLocalEdit, isFalse);
+        expect(coordinator.revision, 2);
+      });
+
+      test('a newer edit replaces the one that failed', () async {
+        final writes = <String>[];
+        var online = false;
+        final coordinator = ConfigSyncCoordinator(
+          write: (fromRevision, json) async {
+            writes.add(json);
+            if (!online) {
+              return HRResponse.error<ConfigWriteResult>('down', 'down',
+                  statusCode: 503);
+            }
+            return HRResponse.fromResult(const ConfigWriteResult(revision: 2));
+          },
+          read: (sinceRevision) async => HRResponse.error('unused', 'unused'),
+          applyFull: (json, revision) {},
+          applyPatch: (ops, revision) {},
+        );
+        coordinator.seed(revision: 1);
+
+        coordinator.notifyLocalEdit('{"hp":19}');
+        await coordinator.flushNow();
+        online = true;
+        coordinator.notifyLocalEdit('{"hp":18}');
+        await coordinator.flushNow();
+
+        expect(writes, ['{"hp":19}', '{"hp":18}']);
+        expect(coordinator.hasPendingLocalEdit, isFalse);
+      });
+    });
+
+    test('a rejected edit (4xx) is not kept for a retry', () async {
+      final coordinator = ConfigSyncCoordinator(
+        write: (fromRevision, json) async =>
+            HRResponse.error<ConfigWriteResult>('bad', 'bad', statusCode: 400),
+        read: (sinceRevision) async => HRResponse.error('unused', 'unused'),
+        applyFull: (json, revision) {},
+        applyPatch: (ops, revision) {},
+      );
+      coordinator.seed(revision: 1);
+
+      coordinator.notifyLocalEdit('{"hp":-5}');
+      await coordinator.flushNow();
+
+      expect(coordinator.hasPendingLocalEdit, isFalse);
+    });
   });
 }
