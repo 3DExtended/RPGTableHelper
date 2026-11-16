@@ -17,7 +17,7 @@ import 'package:quest_keeper/components/custom_int_edit_field.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/stat_types/checkbox_track_view.dart';
-import 'package:quest_keeper/components/stat_types/single_select_view.dart';
+import 'package:quest_keeper/components/stat_types/option_card.dart';
 import 'package:quest_keeper/components/stat_types/unsupported_stat_view.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
@@ -1559,63 +1559,39 @@ class _PlayerStatsConfigurationVisualsState
       children: [
         _PlayerConfigModalNonDefaultTitleAndHelperText(
             statTitle: statTitle, statDescription: statDescription),
-        ...multiselectOptions.asMap().entries.sortedBy((e) => e.value.$1).map(
-              (e) => multiselectIsAllowedToBeSelectedMultipleTimes == false
-                  ? CheckboxListTile.adaptive(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
-                      splashRadius: 0,
-                      dense: true,
-                      checkColor: const Color.fromARGB(255, 57, 245, 88),
-                      activeColor: CustomThemeProvider.of(context)
-                                  .brightnessNotifier
-                                  .value ==
-                              Brightness.light
-                          ? CustomThemeProvider.of(context).theme.darkColor
-                          : Colors.transparent,
-                      visualDensity: VisualDensity(vertical: -2),
-                      title: Text(
+        if (multiselectIsAllowedToBeSelectedMultipleTimes == false)
+          OptionCardGrid(
+            cards: [
+              for (final e in multiselectOptions
+                  .asMap()
+                  .entries
+                  .sortedBy((e) => e.value.$1))
+                OptionCard(
+                  optionUuid: e.value.$4,
+                  label: e.value.$1,
+                  description: e.value.$2,
+                  isSelected: e.value.$3,
+                  multiple: true,
+                  onTap: () {
+                    setState(() {
+                      var deepCopy = [...multiselectOptions];
+                      deepCopy[e.key] = (
                         e.value.$1,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(
-                                color: CustomThemeProvider.of(context)
-                                    .theme
-                                    .darkTextColor,
-                                fontSize: 16),
-                      ),
-                      subtitle: Text(
                         e.value.$2,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(
-                                color: CustomThemeProvider.of(context)
-                                    .theme
-                                    .darkTextColor),
-                      ),
-                      value: e.value.$3,
-                      onChanged: (val) {
-                        if (val == null) return;
-
-                        setState(() {
-                          var deepCopy = [...multiselectOptions];
-
-                          deepCopy[e.key] = (
-                            e.value.$1,
-                            e.value.$2,
-                            val,
-                            e.value.$4,
-                            e.value.$5
-                          );
-
-                          multiselectOptions = deepCopy;
-                          onChanged();
-                        });
-                      },
-                    )
-                  : Row(
+                        !e.value.$3,
+                        e.value.$4,
+                        e.value.$5
+                      );
+                      multiselectOptions = deepCopy;
+                      onChanged();
+                    });
+                  },
+                ),
+            ],
+          ),
+        if (multiselectIsAllowedToBeSelectedMultipleTimes != false)
+        ...multiselectOptions.asMap().entries.sortedBy((e) => e.value.$1).map(
+              (e) => Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -2283,19 +2259,24 @@ class _PlayerStatsConfigurationVisualsState
             statTitle: widget.statConfiguration.name,
             statDescription: widget.statConfiguration.helperText),
         // In the DM's order: options of one choice are often ranked.
-        ...selectOptionsOf(widget.statConfiguration).map(
-          (option) => SingleSelectOptionTile(
-            option: option,
-            isSelected: option.uuid == singleSelectSelectedUuid,
-            showFullDescription: true,
-            onTap: () {
-              setState(() {
-                singleSelectSelectedUuid = option.uuid;
-                onChanged();
-              });
-              clearPreviewSandboxOnConfigEdit();
-            },
-          ),
+        OptionCardGrid(
+          cards: [
+            for (final option in selectOptionsOf(widget.statConfiguration))
+              OptionCard(
+                optionUuid: option.uuid,
+                label: option.label,
+                description: option.description,
+                isSelected: option.uuid == singleSelectSelectedUuid,
+                multiple: false,
+                onTap: () {
+                  setState(() {
+                    singleSelectSelectedUuid = option.uuid;
+                    onChanged();
+                  });
+                  clearPreviewSandboxOnConfigEdit();
+                },
+              ),
+          ],
         ),
       ],
     );

@@ -6882,6 +6882,16 @@ class S {
       args: [count],
     );
   }
+
+  /// `More`
+  String get optionCardMore {
+    return Intl.message('More', name: 'optionCardMore', desc: '', args: []);
+  }
+
+  /// `Less`
+  String get optionCardLess {
+    return Intl.message('Less', name: 'optionCardLess', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

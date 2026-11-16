@@ -1062,6 +1062,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Beitrittsanfragen",
     ),
     "openJoinRequestsBadge": m20,
+    "optionCardLess": MessageLookupByLibrary.simpleMessage("Weniger"),
+    "optionCardMore": MessageLookupByLibrary.simpleMessage("Mehr"),
     "optionalPropertyForAlternateForms": MessageLookupByLibrary.simpleMessage(
       "Optionale Eigenschaft für andere Formen",
     ),

@@ -2588,4 +2588,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String templateUpdateApplyCount(int count) {
     return '$count übernehmen';
   }
+
+  @override
+  String get optionCardMore => 'Mehr';
+
+  @override
+  String get optionCardLess => 'Weniger';
 }

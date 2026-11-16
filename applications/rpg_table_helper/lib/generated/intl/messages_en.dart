@@ -1028,6 +1028,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "online": MessageLookupByLibrary.simpleMessage("Online"),
     "openJoinRequests": MessageLookupByLibrary.simpleMessage("Join requests"),
     "openJoinRequestsBadge": m20,
+    "optionCardLess": MessageLookupByLibrary.simpleMessage("Less"),
+    "optionCardMore": MessageLookupByLibrary.simpleMessage("More"),
     "optionalPropertyForAlternateForms": MessageLookupByLibrary.simpleMessage(
       "Optional property for alternate forms",
     ),

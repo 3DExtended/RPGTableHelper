@@ -4483,6 +4483,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count} übernehmen'**
   String templateUpdateApplyCount(int count);
+
+  /// No description provided for @optionCardMore.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr'**
+  String get optionCardMore;
+
+  /// No description provided for @optionCardLess.
+  ///
+  /// In de, this message translates to:
+  /// **'Weniger'**
+  String get optionCardLess;
 }
 
 class _AppLocalizationsDelegate

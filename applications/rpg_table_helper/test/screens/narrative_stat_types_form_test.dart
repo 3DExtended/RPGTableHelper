@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/components/stat_types/checkbox_track_view.dart';
-import 'package:quest_keeper/components/stat_types/single_select_view.dart';
+import 'package:quest_keeper/components/stat_types/option_card.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/character_stats_form_pages.dart';
 import 'package:quest_keeper/helpers/character_stats/show_character_stats_form.dart';
@@ -253,11 +253,11 @@ void main() {
     // Single select: the second choice replaces the first.
     await tapReal(
       tester,
-      find.byKey(SingleSelectOptionTile.keyFor("opt-noble")),
+      find.byKey(OptionCard.keyFor("opt-noble")),
     );
     await tapReal(
       tester,
-      find.byKey(SingleSelectOptionTile.keyFor("opt-street")),
+      find.byKey(OptionCard.keyFor("opt-street")),
     );
     expect(tester.takeException(), isNull);
 

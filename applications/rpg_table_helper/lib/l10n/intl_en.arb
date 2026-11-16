@@ -1119,5 +1119,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "optionCardMore": "More",
+  "optionCardLess": "Less"
 }
