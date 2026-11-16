@@ -1242,5 +1242,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "gettingStartedTitle": "Erste Schritte ({done} von {total})",
+  "@gettingStartedTitle": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "gettingStartedSheet": "Charakterbogen einrichten",
+  "gettingStartedSheetAction": "Einrichten",
+  "gettingStartedPlayers": "Spieler einladen",
+  "gettingStartedNote": "Erste Notiz schreiben",
+  "gettingStartedNoteAction": "Zu den Notizen",
+  "gettingStartedDone": "Erledigt",
+  "gettingStartedDismiss": "Erste Schritte ausblenden",
+  "gettingStartedPlayersAction": "Einladen"
 }

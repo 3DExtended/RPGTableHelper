@@ -7232,6 +7232,91 @@ class S {
       args: [name],
     );
   }
+
+  /// `Getting started ({done} of {total})`
+  String gettingStartedTitle(int done, int total) {
+    return Intl.message(
+      'Getting started ($done of $total)',
+      name: 'gettingStartedTitle',
+      desc: '',
+      args: [done, total],
+    );
+  }
+
+  /// `Set up the character sheet`
+  String get gettingStartedSheet {
+    return Intl.message(
+      'Set up the character sheet',
+      name: 'gettingStartedSheet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set up`
+  String get gettingStartedSheetAction {
+    return Intl.message(
+      'Set up',
+      name: 'gettingStartedSheetAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite players`
+  String get gettingStartedPlayers {
+    return Intl.message(
+      'Invite players',
+      name: 'gettingStartedPlayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write a first note`
+  String get gettingStartedNote {
+    return Intl.message(
+      'Write a first note',
+      name: 'gettingStartedNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to notes`
+  String get gettingStartedNoteAction {
+    return Intl.message(
+      'Go to notes',
+      name: 'gettingStartedNoteAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get gettingStartedDone {
+    return Intl.message('Done', name: 'gettingStartedDone', desc: '', args: []);
+  }
+
+  /// `Hide getting started`
+  String get gettingStartedDismiss {
+    return Intl.message(
+      'Hide getting started',
+      name: 'gettingStartedDismiss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite`
+  String get gettingStartedPlayersAction {
+    return Intl.message(
+      'Invite',
+      name: 'gettingStartedPlayersAction',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

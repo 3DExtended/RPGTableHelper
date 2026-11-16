@@ -50,123 +50,125 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m13(email) =>
       "Wir haben dir einen Code an ${email} geschickt. Er gilt zwei Stunden.";
 
-  static String m14(characterNames) =>
+  static String m14(done, total) => "Erste Schritte (${done} von ${total})";
+
+  static String m15(characterNames) =>
       "Die Items konnten nicht an ${characterNames} verteilt werden. Bitte versuche es erneut.";
 
-  static String m15(label, formattedBonus) =>
+  static String m16(label, formattedBonus) =>
       "Addiere ${label} ${formattedBonus} zu deinem Wurf";
 
-  static String m16(campagneName) => "Einladung zu „${campagneName}“";
+  static String m17(campagneName) => "Einladung zu „${campagneName}“";
 
-  static String m17(campagneName, code) =>
+  static String m18(campagneName, code) =>
       "Spiel mit in meiner Runde „${campagneName}“! Öffne QuestKeeper, tippe auf „Kampagne beitreten“ und gib diesen Code ein: ${code}";
 
-  static String m18(code) => "Beitrittscode: ${code}";
+  static String m19(code) => "Beitrittscode: ${code}";
 
-  static String m19(playerName, username) =>
+  static String m20(playerName, username) =>
       "${playerName} (${username}) möchte deiner Kampagne beitreten.";
 
-  static String m20(from, to) =>
+  static String m21(from, to) =>
       "Von Stufe ${from} auf ${to}. Trag ein, was sich mit der neuen Stufe ändert – was gleich bleibt, lässt du einfach stehen.";
 
-  static String m21(count) =>
+  static String m22(count) =>
       "${Intl.plural(count, one: '1 offene Anfrage', other: '${count} offene Anfragen')}";
 
-  static String m22(count) => "höchstens ${count} Zeichen";
+  static String m23(count) => "höchstens ${count} Zeichen";
 
-  static String m23(count) => "mindestens ${count} Zeichen";
-
-  static String m24(name) =>
-      "„${name}“ wird gelöscht. Wer ihn schon übernommen hat, behält seinen Charakter.";
+  static String m24(count) => "mindestens ${count} Zeichen";
 
   static String m25(name) =>
+      "„${name}“ wird gelöscht. Wer ihn schon übernommen hat, behält seinen Charakter.";
+
+  static String m26(name) =>
       "So sieht ${name} für Spieler aus. Hier wird nichts gespeichert.";
 
-  static String m26(fields) =>
+  static String m27(fields) =>
       "Nur ${fields}. Den Rest füllst du später im Charakterbogen aus, wenn er gebraucht wird.";
 
-  static String m27(amount) =>
+  static String m28(amount) =>
       "${Intl.plural(amount, one: 'Du hast ein neues Item erhalten:', other: 'Du hast ${amount} neue Items erhalten:')}";
 
-  static String m28(privacyPolicyLink) =>
+  static String m29(privacyPolicyLink) =>
       "Wie wir mit deinen Daten umgehen, steht in unserer ${privacyPolicyLink}.";
 
-  static String m29(example) => "z. B. ${example}";
+  static String m30(example) => "z. B. ${example}";
 
-  static String m30(index, count) => "${index} von ${count}";
+  static String m31(index, count) => "${index} von ${count}";
 
-  static String m31(tabName) => "Neu, kommt in den Reiter „${tabName}“";
+  static String m32(tabName) => "Neu, kommt in den Reiter „${tabName}“";
 
-  static String m32(count) => "${count} übernehmen";
+  static String m33(count) => "${count} übernehmen";
 
-  static String m33(count) =>
+  static String m34(count) =>
       "Die Vorlage hat inzwischen ${Intl.plural(count, one: 'eine Eigenschaft', other: '${count} Eigenschaften')} ergänzt oder überarbeitet. Du entscheidest, was du übernimmst.";
 
-  static String m34(template) => "Neues in der Vorlage „${template}“";
+  static String m35(template) => "Neues in der Vorlage „${template}“";
 
-  static String m35(count) =>
+  static String m36(count) =>
       "${Intl.plural(count, one: '1 neuer Eintrag', other: '${count} neue Einträge')}";
 
-  static String m36(name) => "Neuer Name: ${name}";
+  static String m37(name) => "Neuer Name: ${name}";
 
-  static String m37(statName) => "Einstellungen für ${statName}";
+  static String m38(statName) => "Einstellungen für ${statName}";
 
-  static String m38(property) => "Der Wert von ${property}";
+  static String m39(property) => "Der Wert von ${property}";
 
-  static String m39(characterName) =>
+  static String m40(characterName) =>
       "Deine Anfrage für „${characterName}“ liegt bei deiner Spielleitung. Sobald sie zustimmt, kannst du hier mitspielen.";
 
-  static String m40(count) =>
+  static String m41(count) =>
       "${Intl.plural(count, zero: 'In dieser Kategorie sind noch keine Items.', one: 'In dieser Kategorie ist ein Item.', other: 'In dieser Kategorie sind ${count} Items.')}";
 
-  static String m41(count, name) =>
+  static String m42(count, name) =>
       "${Intl.plural(count, one: 'Eigenschaft „${name}“ löschen? Ein Charakter hat dafür schon einen Wert, er geht verloren.', other: 'Eigenschaft „${name}“ löschen? ${count} Charaktere haben dafür schon Werte, sie gehen verloren.')}";
 
-  static String m42(count, tabName) =>
+  static String m43(count, tabName) =>
       "${Intl.plural(count, zero: 'Den leeren Tab „${tabName}“ löschen?', one: 'Tab „${tabName}“ mit einer Eigenschaft löschen? Werte der Charaktere gehen verloren.', other: 'Tab „${tabName}“ mit ${count} Eigenschaften löschen? Werte der Charaktere gehen verloren.')}";
 
-  static String m43(number) => "Gruppe ${number}";
+  static String m44(number) => "Gruppe ${number}";
 
-  static String m44(name) => " (für Kategorie ${name})";
+  static String m45(name) => " (für Kategorie ${name})";
 
-  static String m45(count) =>
+  static String m46(count) =>
       "${Intl.plural(count, zero: 'An diesem Fundort gibt es noch keine Items.', one: 'An diesem Fundort kann ein Item gefunden werden.', other: 'An diesem Fundort können ${count} Items gefunden werden.')}";
 
-  static String m46(number) => "Fundort #${number}";
+  static String m47(number) => "Fundort #${number}";
 
-  static String m47(name) => "Eigenschaft „${name}“ gelöscht";
+  static String m48(name) => "Eigenschaft „${name}“ gelöscht";
 
-  static String m48(number) => "Zutat #${number}";
+  static String m49(number) => "Zutat #${number}";
 
-  static String m49(number) => "Voraussetzung #${number}";
-
-  static String m50(count) =>
-      "${Intl.plural(count, zero: 'Keine Items', one: '1 Item', other: '${count} Items')}";
+  static String m50(number) => "Voraussetzung #${number}";
 
   static String m51(count) =>
-      "${Intl.plural(count, one: '1 Eigenschaft', other: '${count} Eigenschaften')}";
+      "${Intl.plural(count, zero: 'Keine Items', one: '1 Item', other: '${count} Items')}";
 
   static String m52(count) =>
-      "${Intl.plural(count, zero: 'Keine Rezepte', one: '1 Rezept', other: '${count} Rezepte')}";
-
-  static String m53(count) =>
-      "${Intl.plural(count, one: '1 Tab', other: '${count} Tabs')}";
-
-  static String m54(tabs) => "Bogen mit den Reitern ${tabs}";
-
-  static String m55(count) =>
-      "${Intl.plural(count, one: '1 Item', other: '${count} Items')}";
-
-  static String m56(count) =>
       "${Intl.plural(count, one: '1 Eigenschaft', other: '${count} Eigenschaften')}";
 
+  static String m53(count) =>
+      "${Intl.plural(count, zero: 'Keine Rezepte', one: '1 Rezept', other: '${count} Rezepte')}";
+
+  static String m54(count) =>
+      "${Intl.plural(count, one: '1 Tab', other: '${count} Tabs')}";
+
+  static String m55(tabs) => "Bogen mit den Reitern ${tabs}";
+
+  static String m56(count) =>
+      "${Intl.plural(count, one: '1 Item', other: '${count} Items')}";
+
   static String m57(count) =>
-      "${Intl.plural(count, one: '1 Rezept', other: '${count} Rezepte')}";
+      "${Intl.plural(count, one: '1 Eigenschaft', other: '${count} Eigenschaften')}";
 
   static String m58(count) =>
-      "${Intl.plural(count, zero: 'Du leitest noch keine Kampagne.', one: 'Du leitest 1 Kampagne.', other: 'Du leitest ${count} Kampagnen.')}";
+      "${Intl.plural(count, one: '1 Rezept', other: '${count} Rezepte')}";
 
   static String m59(count) =>
+      "${Intl.plural(count, zero: 'Du leitest noch keine Kampagne.', one: 'Du leitest 1 Kampagne.', other: 'Du leitest ${count} Kampagnen.')}";
+
+  static String m60(count) =>
       "${Intl.plural(count, zero: 'Du hast noch keinen Charakter.', one: 'Du hast 1 Charakter.', other: 'Du hast ${count} Charaktere.')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -749,8 +751,31 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Fehlertext:"),
     "genericErrorModalTechnicalDetailsHeader":
         MessageLookupByLibrary.simpleMessage("Technische Details"),
+    "gettingStartedDismiss": MessageLookupByLibrary.simpleMessage(
+      "Erste Schritte ausblenden",
+    ),
+    "gettingStartedDone": MessageLookupByLibrary.simpleMessage("Erledigt"),
+    "gettingStartedNote": MessageLookupByLibrary.simpleMessage(
+      "Erste Notiz schreiben",
+    ),
+    "gettingStartedNoteAction": MessageLookupByLibrary.simpleMessage(
+      "Zu den Notizen",
+    ),
+    "gettingStartedPlayers": MessageLookupByLibrary.simpleMessage(
+      "Spieler einladen",
+    ),
+    "gettingStartedPlayersAction": MessageLookupByLibrary.simpleMessage(
+      "Einladen",
+    ),
+    "gettingStartedSheet": MessageLookupByLibrary.simpleMessage(
+      "Charakterbogen einrichten",
+    ),
+    "gettingStartedSheetAction": MessageLookupByLibrary.simpleMessage(
+      "Einrichten",
+    ),
+    "gettingStartedTitle": m14,
     "grantItems": MessageLookupByLibrary.simpleMessage("Items verteilen"),
-    "grantItemsFailedForPlayers": m14,
+    "grantItemsFailedForPlayers": m15,
     "helperTextForNameOfCampaign": MessageLookupByLibrary.simpleMessage(
       "Wie soll die Kampagne heißen?",
     ),
@@ -767,7 +792,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "initiativeBonusFieldPickerLabel": MessageLookupByLibrary.simpleMessage(
       "Feld",
     ),
-    "initiativeBonusHelperSentence": m15,
+    "initiativeBonusHelperSentence": m16,
     "initiativeBonusIncompleteLeave": MessageLookupByLibrary.simpleMessage(
       "Trotzdem verlassen",
     ),
@@ -836,8 +861,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "invitePlayersInstruction": MessageLookupByLibrary.simpleMessage(
       "In QuestKeeper auf „Kampagne beitreten“ tippen und diesen Code eingeben.",
     ),
-    "inviteShareSubject": m16,
-    "inviteShareText": m17,
+    "inviteShareSubject": m17,
+    "inviteShareText": m18,
     "item": MessageLookupByLibrary.simpleMessage("Item"),
     "itemCardDescRequires": MessageLookupByLibrary.simpleMessage("Braucht:"),
     "itemCategoryFilterAll": MessageLookupByLibrary.simpleMessage("Alles"),
@@ -875,7 +900,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "joinCodeEmptyError": MessageLookupByLibrary.simpleMessage(
       "Bitte gib den Beitrittscode ein.",
     ),
-    "joinCodeForNewPlayers": m18,
+    "joinCodeForNewPlayers": m19,
     "joinCodeIncompleteError": MessageLookupByLibrary.simpleMessage(
       "Der Code hat sechs Ziffern, zum Beispiel 123-456.",
     ),
@@ -885,7 +910,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "joinRequestAcceptedMessage": MessageLookupByLibrary.simpleMessage(
       "Deine Beitrittsanfrage wurde angenommen. Du kannst jetzt mitspielen.",
     ),
-    "joinRequestCreatedForDm": m19,
+    "joinRequestCreatedForDm": m20,
     "joinRequestDeniedMessage": MessageLookupByLibrary.simpleMessage(
       "Deine Beitrittsanfrage wurde abgelehnt.",
     ),
@@ -906,7 +931,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "level": MessageLookupByLibrary.simpleMessage("Level"),
     "levelAbbr": MessageLookupByLibrary.simpleMessage("LVL"),
-    "levelUpIntro": m20,
+    "levelUpIntro": m21,
     "levelUpMenuEntry": MessageLookupByLibrary.simpleMessage("Stufenaufstieg"),
     "levelUpOnlyLevelHint": MessageLookupByLibrary.simpleMessage(
       "Die Spielleitung kann im Bogen festlegen, welche Eigenschaften hier zusätzlich abgefragt werden.",
@@ -1097,7 +1122,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "openJoinRequests": MessageLookupByLibrary.simpleMessage(
       "Beitrittsanfragen",
     ),
-    "openJoinRequestsBadge": m21,
+    "openJoinRequestsBadge": m22,
     "optionCardLess": MessageLookupByLibrary.simpleMessage("Weniger"),
     "optionCardMore": MessageLookupByLibrary.simpleMessage("Mehr"),
     "optionalPropertyForAlternateForms": MessageLookupByLibrary.simpleMessage(
@@ -1128,9 +1153,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "pageTabShortItems": MessageLookupByLibrary.simpleMessage("Items"),
     "pageTabShortNotes": MessageLookupByLibrary.simpleMessage("Notizen"),
     "password": MessageLookupByLibrary.simpleMessage("Passwort"),
-    "passwordRuleMaxLength": m22,
+    "passwordRuleMaxLength": m23,
     "passwordRuleMet": MessageLookupByLibrary.simpleMessage("erfüllt"),
-    "passwordRuleMinLength": m23,
+    "passwordRuleMinLength": m24,
     "passwordRuleNotMet": MessageLookupByLibrary.simpleMessage(
       "noch nicht erfüllt",
     ),
@@ -1170,14 +1195,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Spieleransicht",
     ),
     "playerRolls": MessageLookupByLibrary.simpleMessage("Würfe der Spieler"),
-    "preparedCharacterDeleteMessage": m24,
+    "preparedCharacterDeleteMessage": m25,
     "preparedCharacterDeleteTitle": MessageLookupByLibrary.simpleMessage(
       "Vorbereiteten Charakter löschen?",
     ),
     "preparedCharacterPreview": MessageLookupByLibrary.simpleMessage(
       "Bogen ansehen",
     ),
-    "preparedCharacterPreviewHint": m25,
+    "preparedCharacterPreviewHint": m26,
     "preparedCharacterUnnamed": MessageLookupByLibrary.simpleMessage(
       "Ohne Namen",
     ),
@@ -1363,7 +1388,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartPageHint": MessageLookupByLibrary.simpleMessage(
       "Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen.",
     ),
-    "quickStartText": m26,
+    "quickStartText": m27,
     "quickStartTitle": MessageLookupByLibrary.simpleMessage("Schnell starten"),
     "reactivateTransformationQuestion": MessageLookupByLibrary.simpleMessage(
       "Möchtest du deine letzte Verwandlung wieder aufnehmen oder eine neue Gestalt annehmen?",
@@ -1380,7 +1405,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "receivedOneNewItemText": MessageLookupByLibrary.simpleMessage(
       "Du hast ein neues Item erhalten:",
     ),
-    "receivedXNewItems": m27,
+    "receivedXNewItems": m28,
     "recipeForTitlePrefix": MessageLookupByLibrary.simpleMessage("Rezept für"),
     "recipeIngredients": MessageLookupByLibrary.simpleMessage("Zutaten:"),
     "recipeRequirements": MessageLookupByLibrary.simpleMessage(
@@ -1394,7 +1419,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "registerPasswordInvalid": MessageLookupByLibrary.simpleMessage(
       "Das Passwort erfüllt noch nicht alle Regeln.",
     ),
-    "registerPrivacyNotice": m28,
+    "registerPrivacyNotice": m29,
     "registerPrivacyNoticeWithoutLink": MessageLookupByLibrary.simpleMessage(
       "Deine E-Mail-Adresse brauchen wir nur für dein Konto, zum Beispiel zum Zurücksetzen des Passworts.",
     ),
@@ -1477,7 +1502,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Optionen",
     ),
     "startAsDm": MessageLookupByLibrary.simpleMessage("Als Spielleitung"),
-    "statExampleHint": m29,
+    "statExampleHint": m30,
     "statStyleActiveFormBanner": MessageLookupByLibrary.simpleMessage(
       "Banner der aktiven Form",
     ),
@@ -1534,7 +1559,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "statStylePortraitCard": MessageLookupByLibrary.simpleMessage(
       "Porträtkarte",
     ),
-    "statStylePosition": m30,
+    "statStylePosition": m31,
     "statStylePrevious": MessageLookupByLibrary.simpleMessage(
       "Vorheriger Stil",
     ),
@@ -1587,11 +1612,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "tabIconsConfigurationTitle": MessageLookupByLibrary.simpleMessage(
       "Tab-Icons",
     ),
-    "templateUpdateAdded": m31,
+    "templateUpdateAdded": m32,
     "templateUpdateApply": MessageLookupByLibrary.simpleMessage("Übernehmen"),
-    "templateUpdateApplyCount": m32,
-    "templateUpdateBannerText": m33,
-    "templateUpdateBannerTitle": m34,
+    "templateUpdateApplyCount": m33,
+    "templateUpdateBannerText": m34,
+    "templateUpdateBannerTitle": m35,
     "templateUpdateDismiss": MessageLookupByLibrary.simpleMessage("Ausblenden"),
     "templateUpdateEntriesRevised": MessageLookupByLibrary.simpleMessage(
       "Einträge überarbeitet",
@@ -1602,14 +1627,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "templateUpdateLevelUpChanged": MessageLookupByLibrary.simpleMessage(
       "Wird beim Stufenaufstieg abgefragt",
     ),
-    "templateUpdateNewEntries": m35,
+    "templateUpdateNewEntries": m36,
     "templateUpdateNewExample": MessageLookupByLibrary.simpleMessage(
       "Neue Beispielantwort",
     ),
     "templateUpdateNewHelperText": MessageLookupByLibrary.simpleMessage(
       "Neuer Hilfetext",
     ),
-    "templateUpdateNewName": m36,
+    "templateUpdateNewName": m37,
     "templateUpdateOtherSettings": MessageLookupByLibrary.simpleMessage(
       "Weitere Einstellungen",
     ),
@@ -1655,7 +1680,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transformationName": MessageLookupByLibrary.simpleMessage(
       "Verwandlungsname",
     ),
-    "transformationStatSettingsFor": m37,
+    "transformationStatSettingsFor": m38,
     "uploadImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Bild hochladen",
     ),
@@ -1667,12 +1692,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "usernameRuleHint": MessageLookupByLibrary.simpleMessage(
       "3 bis 13 Zeichen, nur Buchstaben und Ziffern",
     ),
-    "valueOfPropertyWithName": m38,
+    "valueOfPropertyWithName": m39,
     "visibleCards": MessageLookupByLibrary.simpleMessage("Sichtbare Karten"),
     "visibleCardsHint": MessageLookupByLibrary.simpleMessage(
       "Ausgeblendete Karten bleiben auf diesem Gerät ausgeblendet, auch wenn ein Spieler zwischendurch offline war.",
     ),
-    "waitingForApprovalText": m39,
+    "waitingForApprovalText": m40,
     "waitingForApprovalTitle": MessageLookupByLibrary.simpleMessage(
       "Warte auf Freigabe",
     ),
@@ -1707,7 +1732,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardCampaignNameStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Kampagnenname\n\nWie heißt deine Kampagne? Du kannst den Namen später jederzeit ändern.\n\nDer Name braucht mindestens vier Zeichen.",
     ),
-    "wizardCategoryItemCount": m40,
+    "wizardCategoryItemCount": m41,
     "wizardCategoryNameLabel": MessageLookupByLibrary.simpleMessage(
       "Name der Kategorie:",
     ),
@@ -1721,11 +1746,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "## Währung\n\nStelle ein, welche Währungen es in deiner Welt gibt und wie sie umgerechnet werden.\n\nFang mit der kleinsten Einheit an (z. B. Kupfer) und arbeite dich bis zur größten hoch. Gib bei jeder weiteren Währung an, wie viele der vorherigen sie wert ist (in vielen Fantasy-Rollenspielen: 10 Kupfer = 1 Silber).",
     ),
     "wizardCurrencyStepTitle": MessageLookupByLibrary.simpleMessage("Währung"),
-    "wizardDeletePropertyMessage": m41,
+    "wizardDeletePropertyMessage": m42,
     "wizardDeletePropertyTitle": MessageLookupByLibrary.simpleMessage(
       "Eigenschaft löschen?",
     ),
-    "wizardDeleteTabMessage": m42,
+    "wizardDeleteTabMessage": m43,
     "wizardDeleteTabTitle": MessageLookupByLibrary.simpleMessage(
       "Tab löschen?",
     ),
@@ -1736,11 +1761,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Rezept bearbeiten",
     ),
     "wizardFinishBtnLabel": MessageLookupByLibrary.simpleMessage("Fertig"),
-    "wizardGroupLabel": m43,
+    "wizardGroupLabel": m44,
     "wizardHideExplanation": MessageLookupByLibrary.simpleMessage(
       "Erklärung einklappen",
     ),
-    "wizardIconForCategorySuffix": m44,
+    "wizardIconForCategorySuffix": m45,
     "wizardInvalidImageFile": MessageLookupByLibrary.simpleMessage(
       "Diese Datei ist kein gültiges Bild.",
     ),
@@ -1769,8 +1794,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "## Items (optional)\n\nHier legst du die Items deiner Welt an: Heiltränke, Waffen, Questgegenstände oder Zutaten für Gifte, also alles, was in den Taschen deiner Spieler landen kann.\n\nAuch die Wirkung eines Tranks kannst du hier hinterlegen.\n\nTipp: Schreib Wirkung, Schaden und Ähnliches an den Anfang der Beschreibung. Dann sehen deine Spieler das Wichtigste auf einen Blick.",
     ),
     "wizardItemsStepTitle": MessageLookupByLibrary.simpleMessage("Items"),
-    "wizardLocationItemCount": m45,
-    "wizardLocationLabel": m46,
+    "wizardLocationItemCount": m46,
+    "wizardLocationLabel": m47,
     "wizardLocationsStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Fundorte (optional)\n\nAb hier geht es um Items und Crafting. Diesen und die folgenden Schritte (Fundorte, Item-Kategorien, Items, Rezepte) brauchst du nur, wenn ihr damit spielt. Mit **Überspringen** geht es direkt zur Zusammenfassung; schon angelegte Daten bleiben erhalten.\n\nManche Items lassen sich an bestimmten Orten finden: am Strand, in Höhlen, in Grotten und so weiter. Lege hier die Orte an, damit du sie in den nächsten Schritten mit Items verknüpfen kannst.",
     ),
@@ -1796,7 +1821,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardPickImageBtnLabel": MessageLookupByLibrary.simpleMessage(
       "Bild auswählen",
     ),
-    "wizardPropertyDeletedSnackbar": m47,
+    "wizardPropertyDeletedSnackbar": m48,
     "wizardRecipeAddIngredient": MessageLookupByLibrary.simpleMessage(
       "Weitere Zutat",
     ),
@@ -1812,11 +1837,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardRecipeDuplicateAndOpen": MessageLookupByLibrary.simpleMessage(
       "Duplizieren und öffnen",
     ),
-    "wizardRecipeIngredientLabel": m48,
+    "wizardRecipeIngredientLabel": m49,
     "wizardRecipeOpenDetails": MessageLookupByLibrary.simpleMessage(
       "Details öffnen",
     ),
-    "wizardRecipeRequirementLabel": m49,
+    "wizardRecipeRequirementLabel": m50,
     "wizardRecipesStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Rezepte (optional)\n\nMit Rezepten können deine Spieler selbst Dinge herstellen, zum Beispiel Heiltränke.\n\nManche Rezepte setzen ein Werkzeug voraus, etwa ein Kräuterkunde-Set. Auch das kannst du im Rezept hinterlegen; die Spieler brauchen das Werkzeug dann, um das Rezept zu nutzen.\n\nTippe auf ein Rezept, um es zu bearbeiten. Halte es gedrückt für weitere Aktionen.",
     ),
@@ -1843,19 +1868,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardSummaryCampaignLabel": MessageLookupByLibrary.simpleMessage(
       "Kampagne",
     ),
-    "wizardSummaryItemCount": m50,
+    "wizardSummaryItemCount": m51,
     "wizardSummaryNotSet": MessageLookupByLibrary.simpleMessage(
       "Noch nicht festgelegt",
     ),
-    "wizardSummaryPropertyCount": m51,
-    "wizardSummaryRecipeCount": m52,
+    "wizardSummaryPropertyCount": m52,
+    "wizardSummaryRecipeCount": m53,
     "wizardSummaryStepHelper": MessageLookupByLibrary.simpleMessage(
       "## Fertig!\n\nDeine Kampagne ist eingerichtet und alles ist gespeichert. Die Übersicht zeigt, was eingerichtet ist.\n\nÄndern kannst du alles später über das Zahnrad oben rechts.\n\nMit **Fertig** schließt du den Assistenten.",
     ),
     "wizardSummaryStepTitle": MessageLookupByLibrary.simpleMessage(
       "Zusammenfassung",
     ),
-    "wizardSummaryTabCount": m53,
+    "wizardSummaryTabCount": m54,
     "wizardTabNameLabel": MessageLookupByLibrary.simpleMessage("Name des Tabs"),
     "wizardTemplateContentsLabel": MessageLookupByLibrary.simpleMessage(
       "Enthält",
@@ -1876,16 +1901,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardTemplateFantasyName": MessageLookupByLibrary.simpleMessage(
       "Fantasy 5E (SRD)",
     ),
-    "wizardTemplateFromCampagneDescription": m54,
+    "wizardTemplateFromCampagneDescription": m55,
     "wizardTemplateFromCampagneHeader": MessageLookupByLibrary.simpleMessage(
       "Aus einer deiner Kampagnen",
     ),
     "wizardTemplateFromCampagneHint": MessageLookupByLibrary.simpleMessage(
       "Übernimmt Charakterbogen, Währung, Items und Rezepte. Charaktere, Notizen und Spieler bleiben in der anderen Kampagne.",
     ),
-    "wizardTemplateFromCampagneItems": m55,
-    "wizardTemplateFromCampagneProperties": m56,
-    "wizardTemplateFromCampagneRecipes": m57,
+    "wizardTemplateFromCampagneItems": m56,
+    "wizardTemplateFromCampagneProperties": m57,
+    "wizardTemplateFromCampagneRecipes": m58,
     "wizardTemplateNarrativeContents": MessageLookupByLibrary.simpleMessage(
       "Aspekte, Fertigkeiten, Stunts, Stress, Konsequenzen, Erzählpunkte",
     ),
@@ -1923,8 +1948,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine Verwandlung. Änderungen gelten nur für diese Verwandlung und gehen verloren, wenn du dich zurückverwandelst. Für dauerhafte Änderungen verwandle dich zurück und bearbeite deine Grundform.",
         ),
-    "youOwnXCampaigns": m58,
-    "youOwnXCharacters": m59,
+    "youOwnXCampaigns": m59,
+    "youOwnXCharacters": m60,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Die Verbindung ist unterbrochen. Entweder du oder deine Spielleitung ist offline.",
     ),

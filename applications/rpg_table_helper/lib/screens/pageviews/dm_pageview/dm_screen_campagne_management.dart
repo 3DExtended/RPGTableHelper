@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
@@ -22,10 +23,14 @@ import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/screens/pageviews/dm_pageview/getting_started_checklist.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/prepared_characters_section.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/getting_started_dismissal_store.dart';
+import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/session/connected_players_mapper.dart';
 import 'package:themed/themed.dart';
@@ -33,7 +38,11 @@ import 'package:themed/themed.dart';
 class DmScreenCampagneManagement extends ConsumerStatefulWidget {
   const DmScreenCampagneManagement({
     super.key,
+    this.onOpenNotes,
   });
+
+  /// Shows the "Notizen" page of the game master (for "Erste Schritte").
+  final VoidCallback? onOpenNotes;
 
   static const invitePlayersButtonKey = ValueKey('invitePlayersButton');
 
@@ -47,6 +56,14 @@ class _DmScreenCampagneManagementState
   List<PlayerCharacter>? fromServerLoadedPlayers;
 
   bool isLoadingFromServer = true;
+
+  /// Note documents of the campagne, for "Erste Schritte"; null until
+  /// loaded.
+  int? _noteCount;
+
+  /// "Erste Schritte" hidden for this campagne (on this device); hidden
+  /// until known.
+  bool _gettingStartedDismissed = true;
 
   @override
   void initState() {
@@ -72,8 +89,71 @@ class _DmScreenCampagneManagementState
         }
         isLoadingFromServer = false;
       });
+
+      await _loadGettingStarted(connectionDetails.campagneId!);
     });
     super.initState();
+  }
+
+  /// What "Erste Schritte" needs beyond the players: the notes and whether
+  /// it was hidden. Without the notes (an error) it counts none.
+  Future<void> _loadGettingStarted(String campagneId) async {
+    final dismissed = await isGettingStartedDismissed(campagneId);
+    if (!mounted) return;
+    if (dismissed) {
+      setState(() => _gettingStartedDismissed = true);
+      return;
+    }
+    final notes = await DependencyProvider.of(context)
+        .getService<INoteDocumentService>()
+        .getDocumentsForCampagne(
+          campagneId: CampagneIdentifier(value: campagneId),
+        );
+    if (!mounted) return;
+    setState(() {
+      _noteCount = notes.isSuccessful
+          ? (notes.result ?? const []).where((d) => d.isDeleted != true).length
+          : 0;
+      _gettingStartedDismissed = false;
+    });
+  }
+
+  Widget? _buildGettingStarted({
+    required RpgConfigurationModel? rpgConfig,
+    required int playerCount,
+    required String? joinCode,
+    required String campagneName,
+  }) {
+    final noteCount = _noteCount;
+    if (isLoadingFromServer || _gettingStartedDismissed || noteCount == null) {
+      return null;
+    }
+    final progress = GettingStartedProgress.of(
+      config: rpgConfig,
+      playerCount: playerCount,
+      noteCount: noteCount,
+    );
+    if (progress.isComplete) return null;
+    final campagneId = ref.read(connectionDetailsProvider).value?.campagneId;
+
+    return GettingStartedChecklist(
+      progress: progress,
+      // The assistant of the gear icon.
+      onSetUpSheet: () => Navigator.of(context)
+          .pushNamed(allWizardConfigurations.entries.first.key),
+      onInvite: joinCode == null
+          ? null
+          : () => showInvitePlayersSheet(
+                context,
+                joinCode: joinCode,
+                campagneName: campagneName,
+              ),
+      onOpenNotes: widget.onOpenNotes,
+      onDismiss: () {
+        setState(() => _gettingStartedDismissed = true);
+        if (campagneId != null) unawaited(dismissGettingStarted(campagneId));
+      },
+    );
   }
 
   @override
@@ -84,6 +164,12 @@ class _DmScreenCampagneManagementState
     var campagneName = rpgConfig?.rpgName ?? "";
     var playerWidgets =
         getAllPlayersOfflineStatusWidgets(connectionDetails, rpgConfig);
+    final gettingStarted = _buildGettingStarted(
+      rpgConfig: rpgConfig,
+      playerCount: playerWidgets.length,
+      joinCode: joinCode,
+      campagneName: campagneName,
+    );
 
     return Container(
       color: characterSheetSurfaceColor(context),
@@ -140,6 +226,10 @@ class _DmScreenCampagneManagementState
               SizedBox(
                 height: 20,
               ),
+              if (gettingStarted != null) ...[
+                gettingStarted,
+                SizedBox(height: 20),
+              ],
               Text(
                 S.of(context).allPlayers,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(

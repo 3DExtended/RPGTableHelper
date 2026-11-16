@@ -4705,6 +4705,60 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'So sieht {name} für Spieler aus. Hier wird nichts gespeichert.'**
   String preparedCharacterPreviewHint(String name);
+
+  /// No description provided for @gettingStartedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Schritte ({done} von {total})'**
+  String gettingStartedTitle(int done, int total);
+
+  /// No description provided for @gettingStartedSheet.
+  ///
+  /// In de, this message translates to:
+  /// **'Charakterbogen einrichten'**
+  String get gettingStartedSheet;
+
+  /// No description provided for @gettingStartedSheetAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Einrichten'**
+  String get gettingStartedSheetAction;
+
+  /// No description provided for @gettingStartedPlayers.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler einladen'**
+  String get gettingStartedPlayers;
+
+  /// No description provided for @gettingStartedNote.
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Notiz schreiben'**
+  String get gettingStartedNote;
+
+  /// No description provided for @gettingStartedNoteAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu den Notizen'**
+  String get gettingStartedNoteAction;
+
+  /// No description provided for @gettingStartedDone.
+  ///
+  /// In de, this message translates to:
+  /// **'Erledigt'**
+  String get gettingStartedDone;
+
+  /// No description provided for @gettingStartedDismiss.
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Schritte ausblenden'**
+  String get gettingStartedDismiss;
+
+  /// No description provided for @gettingStartedPlayersAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Einladen'**
+  String get gettingStartedPlayersAction;
 }
 
 class _AppLocalizationsDelegate

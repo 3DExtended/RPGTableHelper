@@ -1194,5 +1194,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "gettingStartedTitle": "Getting started ({done} of {total})",
+  "@gettingStartedTitle": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "gettingStartedSheet": "Set up the character sheet",
+  "gettingStartedSheetAction": "Set up",
+  "gettingStartedPlayers": "Invite players",
+  "gettingStartedNote": "Write a first note",
+  "gettingStartedNoteAction": "Go to notes",
+  "gettingStartedDone": "Done",
+  "gettingStartedDismiss": "Hide getting started",
+  "gettingStartedPlayersAction": "Invite"
 }

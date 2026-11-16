@@ -2700,4 +2700,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String preparedCharacterPreviewHint(String name) {
     return 'This is how players see $name. Nothing is saved here.';
   }
+
+  @override
+  String gettingStartedTitle(int done, int total) {
+    return 'Getting started ($done of $total)';
+  }
+
+  @override
+  String get gettingStartedSheet => 'Set up the character sheet';
+
+  @override
+  String get gettingStartedSheetAction => 'Set up';
+
+  @override
+  String get gettingStartedPlayers => 'Invite players';
+
+  @override
+  String get gettingStartedNote => 'Write a first note';
+
+  @override
+  String get gettingStartedNoteAction => 'Go to notes';
+
+  @override
+  String get gettingStartedDone => 'Done';
+
+  @override
+  String get gettingStartedDismiss => 'Hide getting started';
+
+  @override
+  String get gettingStartedPlayersAction => 'Invite';
 }

@@ -55,7 +55,14 @@ class _DmPageScreenState extends ConsumerState<DmPageScreen> {
 
   List<(String title, Widget child)> getDmScreens(BuildContext context) {
     return [
-      (S.of(context).campaignManagement, DmScreenCampagneManagement()),
+      (
+        S.of(context).campaignManagement,
+        DmScreenCampagneManagement(
+          onOpenNotes: () => _goToStepId(
+            getDmScreens(context).indexWhere((e) => e.$2 is LoreScreen),
+          ),
+        ),
+      ),
       (S.of(context).characterOverview, DmScreenCharacterOverview()),
       (S.of(context).fightingOrdering, DmScreenFightSquence()),
       (
