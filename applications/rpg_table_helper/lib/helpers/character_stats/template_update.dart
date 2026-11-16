@@ -14,16 +14,49 @@ import 'package:uuid/v7.dart';
 /// template's first, then the campaign's own, so no choice of a character
 /// loses its entry.
 class TemplateUpdate {
-  const TemplateUpdate({required this.template, required this.changes});
+  const TemplateUpdate({
+    required this.template,
+    required this.changes,
+    this.tabChanges = const [],
+  });
 
   final RpgConfigurationTemplateId template;
   final List<TemplateStatChange> changes;
 
+  /// Tabs the template names differently (same uuid).
+  final List<TemplateTabChange> tabChanges;
+
+  /// Everything on offer: tab renames and property changes.
+  int get count => tabChanges.length + changes.length;
+
+  /// The ids [applyTemplateUpdate] takes, all of them.
+  Set<String> get allIds => {
+        for (final t in tabChanges) t.id,
+        for (final c in changes) c.id,
+      };
+
   /// Same changes, same signature: to remember an update the game master
   /// set aside, until the template changes again.
-  String get signature => changes
-      .map((c) => '${c.updated.statUuid}:${_normalized(c.updated).hashCode}')
-      .join('|');
+  String get signature => [
+        for (final t in tabChanges) '${t.id}:${t.templateName}',
+        for (final c in changes)
+          '${c.id}:${_normalized(c.updated).hashCode}',
+      ].join('|');
+}
+
+/// A tab of the campaign the template names differently.
+class TemplateTabChange {
+  const TemplateTabChange({
+    required this.uuid,
+    required this.currentName,
+    required this.templateName,
+  });
+
+  final String uuid;
+  final String currentName;
+  final String templateName;
+
+  String get id => 'tab:$uuid';
 }
 
 enum TemplateStatChangeKind { added, changed }
@@ -34,9 +67,13 @@ class TemplateStatChange {
     required this.current,
     required this.updated,
     required this.templateTabName,
+    required this.templateTabUuid,
   });
 
   final TemplateStatChangeKind kind;
+
+  /// What [applyTemplateUpdate] knows the change by.
+  String get id => updated.statUuid;
 
   /// The campaign's property, null for an added one.
   final CharacterStatDefinition? current;
@@ -45,8 +82,9 @@ class TemplateStatChange {
   final CharacterStatDefinition updated;
 
   /// Where the template has it; an added property goes into the campaign's
-  /// tab of this name.
+  /// tab with this uuid, or else of this name.
   final String templateTabName;
+  final String templateTabUuid;
 
   bool get nameChanged => current != null && current!.name != updated.name;
 
@@ -111,10 +149,27 @@ TemplateUpdate? templateUpdateFor(RpgConfigurationModel config) {
       s.valueType ==
       CharacterStatValueType.characterNameWithLevelAndAdditionalDetails);
 
-  final changes = <TemplateStatChange>[];
-  for (final tab in RpgConfigurationTemplates.build(id)
+  final ownTabs = {
+    for (final tab in config.characterStatTabsDefinition ??
+        const <CharacterStatsTabDefinition>[])
+      tab.uuid: tab,
+  };
+  final templateTabs = RpgConfigurationTemplates.build(id)
           .characterStatTabsDefinition ??
-      const <CharacterStatsTabDefinition>[]) {
+      const <CharacterStatsTabDefinition>[];
+  final tabChanges = [
+    for (final tab in templateTabs)
+      if (ownTabs[tab.uuid] case final own?
+          when own.tabName.trim() != tab.tabName.trim())
+        TemplateTabChange(
+          uuid: tab.uuid,
+          currentName: own.tabName,
+          templateName: tab.tabName,
+        ),
+  ];
+
+  final changes = <TemplateStatChange>[];
+  for (final tab in templateTabs) {
     for (final stat in tab.statsInTab) {
       final current = own[stat.statUuid];
       if (current == null) {
@@ -129,6 +184,7 @@ TemplateUpdate? templateUpdateFor(RpgConfigurationModel config) {
           current: null,
           updated: _withoutGroup(stat),
           templateTabName: tab.tabName,
+          templateTabUuid: tab.uuid,
         ));
         continue;
       }
@@ -141,22 +197,28 @@ TemplateUpdate? templateUpdateFor(RpgConfigurationModel config) {
         current: current,
         updated: updated,
         templateTabName: tab.tabName,
+        templateTabUuid: tab.uuid,
       ));
     }
   }
-  return changes.isEmpty ? null : TemplateUpdate(template: id, changes: changes);
+  return changes.isEmpty && tabChanges.isEmpty
+      ? null
+      : TemplateUpdate(template: id, changes: changes, tabChanges: tabChanges);
 }
 
-/// [config] with the [chosen] changes (by property uuid) of [update]:
-/// changed properties in place, added ones at the end of the tab named like
-/// the template's, or of a new tab of that name.
+/// [config] with the [chosen] changes (by their ids) of [update]: tabs
+/// renamed, changed properties in place, added ones at the end of the
+/// template's tab (found by uuid, else by name), or of a new tab like it.
 RpgConfigurationModel applyTemplateUpdate(
   RpgConfigurationModel config,
   TemplateUpdate update,
   Set<String> chosen,
 ) {
-  final picked =
-      update.changes.where((c) => chosen.contains(c.updated.statUuid));
+  final picked = update.changes.where((c) => chosen.contains(c.id));
+  final renamed = {
+    for (final t in update.tabChanges)
+      if (chosen.contains(t.id)) t.uuid: t.templateName,
+  };
   final changed = {
     for (final c in picked)
       if (c.kind == TemplateStatChangeKind.changed)
@@ -165,7 +227,7 @@ RpgConfigurationModel applyTemplateUpdate(
   final tabs = [
     for (final tab in config.characterStatTabsDefinition ??
         const <CharacterStatsTabDefinition>[])
-      tab.copyWith(statsInTab: [
+      tab.copyWith(tabName: renamed[tab.uuid] ?? tab.tabName, statsInTab: [
         for (final stat in tab.statsInTab)
           if (changed[stat.statUuid] case final updated?)
             _withGroup(updated, stat.groupId)
@@ -176,12 +238,17 @@ RpgConfigurationModel applyTemplateUpdate(
 
   for (final c in picked) {
     if (c.kind != TemplateStatChangeKind.added) continue;
-    var index = tabs.indexWhere((t) =>
-        t.tabName.trim().toLowerCase() ==
-        c.templateTabName.trim().toLowerCase());
+    var index = tabs.indexWhere((t) => t.uuid == c.templateTabUuid);
+    if (index < 0) {
+      index = tabs.indexWhere((t) =>
+          t.tabName.trim().toLowerCase() ==
+          c.templateTabName.trim().toLowerCase());
+    }
     if (index < 0) {
       tabs.add(CharacterStatsTabDefinition(
-        uuid: const UuidV7().generate(),
+        uuid: tabs.any((t) => t.uuid == c.templateTabUuid)
+            ? const UuidV7().generate()
+            : c.templateTabUuid,
         tabName: c.templateTabName,
         isOptional: false,
         isDefaultTab: tabs.isEmpty,

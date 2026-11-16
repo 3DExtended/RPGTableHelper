@@ -57,17 +57,30 @@ class TemplateUpdatePicker extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final TemplateUpdate update;
 
-  static ValueKey<String> keyFor(String statUuid) =>
-      ValueKey('templateUpdate-$statUuid');
+  /// By the id of a change: a property's uuid, "tab:" and a tab's uuid.
+  static ValueKey<String> keyFor(String id) => ValueKey('templateUpdate-$id');
 
   @override
   State<TemplateUpdatePicker> createState() => _TemplateUpdatePickerState();
 }
 
 class _TemplateUpdatePickerState extends State<TemplateUpdatePicker> {
-  late final Set<String> _selected = {
-    for (final c in widget.update.changes) c.updated.statUuid,
-  };
+  late final Set<String> _selected = widget.update.allIds;
+
+  Widget _tile({
+    required String id,
+    required String title,
+    required String subtitle,
+  }) => PickTile(
+    key: TemplateUpdatePicker.keyFor(id),
+    title: title,
+    subtitle: subtitle,
+    isSelected: _selected.contains(id),
+    disabledReason: null,
+    onTap: () => setState(() {
+      if (!_selected.remove(id)) _selected.add(id);
+    }),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -115,18 +128,17 @@ class _TemplateUpdatePickerState extends State<TemplateUpdatePicker> {
             ),
           ),
           const SizedBox(height: 12),
+          for (final tab in widget.update.tabChanges)
+            _tile(
+              id: tab.id,
+              title: s.buildingBlocksTabLabel(tab.currentName),
+              subtitle: s.templateUpdateNewName(tab.templateName),
+            ),
           for (final change in widget.update.changes)
-            PickTile(
-              key: TemplateUpdatePicker.keyFor(change.updated.statUuid),
+            _tile(
+              id: change.id,
               title: change.current?.name ?? change.updated.name,
               subtitle: describeTemplateStatChange(s, change),
-              isSelected: _selected.contains(change.updated.statUuid),
-              disabledReason: null,
-              onTap: () => setState(() {
-                if (!_selected.remove(change.updated.statUuid)) {
-                  _selected.add(change.updated.statUuid);
-                }
-              }),
             ),
         ],
       ),
@@ -195,7 +207,7 @@ class TemplateUpdateBanner extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      s.templateUpdateBannerText(update.changes.length),
+                      s.templateUpdateBannerText(update.count),
                       style: textTheme.bodySmall!.copyWith(
                         color: theme.darkTextColor.withValues(alpha: 0.85),
                         fontSize: 14,

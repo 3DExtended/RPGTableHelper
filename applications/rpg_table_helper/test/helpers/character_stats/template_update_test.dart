@@ -268,6 +268,47 @@ void main() {
       );
     });
 
+    test('tabs under their old names are renamed and found by uuid', () {
+      const english = {
+        'Hintergrund': 'Background',
+        'Werte': 'Stats',
+        'Merkmale': 'Features',
+        'Angriffe': 'Attacks',
+        'Zauber': 'Spells',
+      };
+      final old = _oldCampaign();
+      final campaign = old.copyWith(characterStatTabsDefinition: [
+        for (final tab in old.characterStatTabsDefinition!)
+          tab.copyWith(tabName: english[tab.tabName]!),
+      ]);
+      final update = templateUpdateFor(campaign)!;
+
+      expect(update.tabChanges.map((t) => (t.currentName, t.templateName)), [
+        for (final MapEntry(:key, :value) in english.entries) (value, key),
+      ]);
+      expect(update.count, update.changes.length + 5);
+
+      // The portrait goes into "Stats" even while it keeps that name.
+      final portrait =
+          update.changes.singleWhere((c) => c.updated.name == 'Porträt');
+      final kept = applyTemplateUpdate(campaign, update, {portrait.id});
+      expect(kept.characterStatTabsDefinition!.map((t) => t.tabName),
+          english.values);
+      expect(
+        kept.characterStatTabsDefinition!
+            .singleWhere((t) => t.tabName == 'Stats')
+            .statsInTab
+            .last
+            .name,
+        'Porträt',
+      );
+
+      final all = applyTemplateUpdate(campaign, update, update.allIds);
+      expect(all.characterStatTabsDefinition!.map((t) => t.tabName),
+          english.keys);
+      expect(templateUpdateFor(all), isNull);
+    });
+
     test('the signature follows the changes', () {
       final again = templateUpdateFor(_oldCampaign())!;
       expect(again.signature, update.signature);
