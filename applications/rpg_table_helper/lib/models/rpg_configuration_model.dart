@@ -396,28 +396,9 @@ class RpgConfigurationModel {
                   valueType: CharacterStatValueType.multiLineText,
                   editType: CharacterStatEditType.static,
                 ),
-                CharacterStatDefinition(
-                  groupId: null,
-                  isOptionalForAlternateForms: false,
-                  isOptionalForCompanionCharacters: false,
-                  statUuid: "cb2ee5ff-73d9-43e7-9e45-eca3a585bf11",
-                  name: "Klasse",
-                  helperText:
-                      "Welche Klasse (bspw. Zauberer) hat dein Charakter?",
-                  valueType: CharacterStatValueType.singleLineText,
-                  editType: CharacterStatEditType.static,
-                ),
-                CharacterStatDefinition(
-                  groupId: null,
-                  isOptionalForAlternateForms: false,
-                  isOptionalForCompanionCharacters: false,
-                  statUuid: "64be408b-ebbb-49fb-97af-da69c6c91fe3",
-                  name: "Volk",
-                  helperText:
-                      "Aus welchem Volk (bspw. Zwerg) kommt dein Charakter?",
-                  valueType: CharacterStatValueType.singleLineText,
-                  editType: CharacterStatEditType.static,
-                ),
+                // Klasse and Volk are asked once, in the character summary on
+                // the Stats tab (characterNameWithLevelAndAdditionalDetails).
+                // Campaigns created before keep their own copy of this config.
                 CharacterStatDefinition(
                   groupId: null,
                   isOptionalForAlternateForms: false,

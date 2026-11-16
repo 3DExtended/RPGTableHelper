@@ -555,13 +555,21 @@ Widget renderMultiselectStat(
                     SizedBox(
                       width: 10,
                     ),
-                    Text(
-                      e.$2.$2,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: CustomThemeProvider.of(context)
-                              .theme
-                              .darkTextColor,
-                          fontSize: 16),
+                    // Wraps between words in narrow columns; never breaks
+                    // an option like "Geschicklichkeit" mid-word.
+                    Flexible(
+                      child: AutoSizeText(
+                        e.$2.$2,
+                        maxLines: 2,
+                        minFontSize: 10,
+                        wrapWords: false,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: CustomThemeProvider.of(context)
+                                .theme
+                                .darkTextColor,
+                            fontSize: 16),
+                      ),
                     ),
                   ],
                 ),

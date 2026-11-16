@@ -815,5 +815,18 @@
   "pageTabShortItems": "Items",
   "pageTabShortNotes": "Notes",
   "pageTabShortImages": "Images",
-  "ledgerManuscriptDateFormat": "MMMM d, y, h:mm a"
+  "ledgerManuscriptDateFormat": "MMMM d, y, h:mm a",
+  "invalidWholeNumberInput": "Please enter a whole number, e.g. -1 or 3.",
+  "invalidLevelInput": "The level must be a whole number of 0 or more, e.g. 3.",
+  "previewAndVariantTileTitle": "Preview and layout",
+  "characterSetupTitle": "Set up character",
+  "characterSetupProgress": "Section {current} of {total}: {tabName}",
+  "characterSetupHint": "Anything you leave empty now can be filled in later right on the character sheet.",
+  "characterSetupFinish": "Done",
+  "fillInLater": "Fill in later",
+  "characterNameRequired": "Please enter a name.",
+  "fixMarkedFieldsHint": "Please fix the marked fields.",
+  "moneyModeDeposit": "+ Add",
+  "moneyModeSpend": "− Spend",
+  "activeAlternateFormBannerTitle": "Alternate form"
 }

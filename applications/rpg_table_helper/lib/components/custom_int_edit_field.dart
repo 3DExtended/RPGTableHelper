@@ -8,6 +8,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
 class CustomIntEditField extends StatefulWidget {
@@ -101,7 +102,9 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
               child: Center(
                 child: TextField(
                   controller: textEditingController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: signedIntKeyboardType,
+                  onTapOutside: (_) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: ink,
@@ -171,7 +174,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
             child: CustomTextField(
               labelText: widget.label,
               textEditingController: textEditingController,
-              keyboardType: TextInputType.number,
+              keyboardType: signedIntKeyboardType,
             ),
           ),
         ),
@@ -202,7 +205,7 @@ class _CustomIntEditFieldState extends State<CustomIntEditField> {
   }
 
   void onTextEditControllerValueChange() {
-    var tempValue = int.tryParse(textEditingController.text);
+    var tempValue = parseSignedInt(textEditingController.text);
     if (tempValue == null) return;
 
     if (widget.minValue != null) {

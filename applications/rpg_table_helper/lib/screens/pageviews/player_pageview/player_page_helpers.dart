@@ -4,6 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/character_stats_form_pages.dart';
+import 'package:quest_keeper/helpers/character_stats/show_character_stats_form.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_player_configuration_modal.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
@@ -50,6 +52,14 @@ class PlayerPageHelpers {
     return parsedValue;
   }
 
+  /// Asks the player for character fields.
+  ///
+  /// - Without filters (first setup, or resuming it): the per-tab form with
+  ///   one page per tab that still has fields without a value. Nothing opens
+  ///   when nothing is missing.
+  /// - [filterTabId] (sheet menu "Configure properties"): the form with every
+  ///   field of that tab.
+  /// - [filterStatUuid] (long press on a stat): the dialog for that one field.
   static void handlePossiblyMissingCharacterStats({
     required WidgetRef ref,
     required BuildContext context,
@@ -63,9 +73,6 @@ class PlayerPageHelpers {
     }
 
     Future.delayed(Duration.zero, () async {
-      var tabsToValidate = rpgConfig.characterStatTabsDefinition
-          ?.where((tab) => filterTabId == null || tab.uuid == filterTabId);
-
       final characterAsync = ref.read(rpgCharacterConfigurationProvider);
       // DM (and other) views use characterConfigurationOverride and may never
       // hydrate rpgCharacterConfigurationProvider — do not crash on loading.
@@ -75,8 +82,6 @@ class PlayerPageHelpers {
       var tempLoadedCharacterConfig = characterAsync.requireValue;
 
       var selectedCharacterId = selectedCharacter.uuid;
-      var isUpdatingMainCharacter =
-          selectedCharacterId == tempLoadedCharacterConfig.uuid;
       var isUpdatingCompanionCharacter =
           (tempLoadedCharacterConfig.companionCharacters ?? [])
               .any((e) => e.uuid == selectedCharacterId);
@@ -85,137 +90,171 @@ class PlayerPageHelpers {
               null &&
           tempLoadedCharacterConfig.alternateForm!.uuid == selectedCharacterId;
 
-      // find all stat uuids:
-      var listOfStats = tabsToValidate
-              ?.map((t) => t.statsInTab)
-              .expand((i) => i)
-              .where(
-                  (s) => s.statUuid == filterStatUuid || filterStatUuid == null)
-              // Computed stats are never typed in.
-              .where((s) => !StatNumbers.isComputed(s))
-              .toList() ??
-          [];
+      if (!context.mounted) return;
 
-      var selectedCharacterStats = selectedCharacter.characterStats;
-
-      var anyStatNotFilledYet = listOfStats
-          .where((st) =>
-              (!isUpdatingCompanionCharacter ||
-                  st.valueType !=
-                      CharacterStatValueType
-                          .companionSelector // we are not allowing the companionSelector stat on companions
-              ) &&
-              ((filterTabId != null || filterStatUuid != null) ||
-                  !(selectedCharacterStats
-                      .map((charstat) => charstat.statUuid)
-                      .contains(st.statUuid))))
-          .toList();
-
-      if (anyStatNotFilledYet.isNotEmpty ||
-          selectedCharacter.characterName.trim().isEmpty) {
-        List<RpgCharacterStatValue> updatedCharacterStats = [];
-
-        String? updatedCharacterName = selectedCharacter.characterName;
-        if (updatedCharacterName.trim().isEmpty ||
-            (filterTabId != null &&
-                tabsToValidate?.firstOrNull?.isDefaultTab == true)) {
-          if (!context.mounted) return;
-
-          updatedCharacterName = await askPlayerForCharacterName(
-              context: context,
-              currentCharacterName: selectedCharacter.characterName);
-
-          if (updatedCharacterName == null) return;
-        }
-
-        for (var statToFill in anyStatNotFilledYet) {
-          // check if the user already configured some stats
-          var possiblyFilledStat = selectedCharacterStats
-              .firstWhereOrNull((s) => s.statUuid == statToFill.statUuid);
-          if (!context.mounted) return;
-
-          var modalResult = await showGetPlayerConfigurationModal(
-            characterToRenderStatFor:
-                selectedCharacter is RpgCharacterConfiguration
-                    ? selectedCharacter
-                    : null,
-            context: context,
-            statConfiguration: statToFill,
-            characterValue: possiblyFilledStat,
-            characterName: updatedCharacterName,
-            isEditingAlternateForm: isEditingAlternateForm,
-          );
-
-          if (modalResult != null) {
-            updatedCharacterStats.add(modalResult);
-          } else {
-            // cancelled once cancells all configuration
-            break;
-          }
-        }
-
-        // add modalResult to characterConfiguration
-        if (updatedCharacterStats.isNotEmpty ||
-            updatedCharacterName != selectedCharacter.characterName) {
-          var newestCharacterConfig =
-              ref.read(rpgCharacterConfigurationProvider).requireValue;
-
-          // Copy before merge — mutating selectedCharacter.characterStats in
-          // place would also mutate the provider's current state list, so
-          // updateConfiguration's json-equality guard would skip the notify
-          // and ConfigSync would never persist the edit.
-          var mergedStats = List<RpgCharacterStatValue>.from(
-              selectedCharacter.characterStats);
-          mergedStats.removeWhere((st) => updatedCharacterStats
-              .any((upst) => upst.statUuid == st.statUuid));
-          mergedStats.addAll(updatedCharacterStats);
-
-          if (isUpdatingMainCharacter) {
-            ref
-                .read(rpgCharacterConfigurationProvider.notifier)
-                .updateConfiguration(newestCharacterConfig.copyWith(
-                    characterName: updatedCharacterName,
-                    characterStats: mergedStats));
-          } else {
-            List<RpgAlternateCharacterConfiguration> companionCharactersCopy = [
-              ...(newestCharacterConfig.companionCharacters ?? [])
-            ];
-
-            var indexOfSelectedCompChar = companionCharactersCopy
-                .indexWhere((e) => e.uuid == selectedCharacterId);
-
-            if (indexOfSelectedCompChar == -1) {
-              // check altforms
-              if (newestCharacterConfig.alternateForm == null) {
-                throw UnimplementedError();
-              }
-
-              var altCharactersCopy = (newestCharacterConfig.alternateForm!);
-
-              altCharactersCopy = altCharactersCopy.copyWith(
-                characterStats: mergedStats,
-                characterName: updatedCharacterName,
-              );
-
-              ref
-                  .read(rpgCharacterConfigurationProvider.notifier)
-                  .updateConfiguration(newestCharacterConfig.copyWith(
-                      alternateForm: altCharactersCopy));
-            } else {
-              companionCharactersCopy[indexOfSelectedCompChar] =
-                  companionCharactersCopy[indexOfSelectedCompChar].copyWith(
-                characterStats: mergedStats,
-                characterName: updatedCharacterName,
-              );
-
-              ref
-                  .read(rpgCharacterConfigurationProvider.notifier)
-                  .updateConfiguration(newestCharacterConfig.copyWith(
-                      companionCharacters: companionCharactersCopy));
-            }
-          }
-        }
+      if (filterStatUuid != null) {
+        await _editSingleStat(
+          ref: ref,
+          context: context,
+          rpgConfig: rpgConfig,
+          selectedCharacter: selectedCharacter,
+          filterTabId: filterTabId,
+          filterStatUuid: filterStatUuid,
+          isUpdatingCompanionCharacter: isUpdatingCompanionCharacter,
+          isEditingAlternateForm: isEditingAlternateForm,
+        );
+        return;
       }
+
+      final pages = buildCharacterStatsFormPages(
+        rpgConfig: rpgConfig,
+        character: selectedCharacter,
+        isCompanion: isUpdatingCompanionCharacter,
+        filterTabId: filterTabId,
+      );
+      if (pages.isEmpty) return;
+
+      await showCharacterStatsForm(
+        context: context,
+        pages: pages,
+        mode: filterTabId == null
+            ? CharacterStatsFormMode.setup
+            : CharacterStatsFormMode.editTab,
+        characterName: selectedCharacter.characterName,
+        initialValues: {
+          for (final stat in selectedCharacter.characterStats)
+            stat.statUuid: stat,
+        },
+        characterToRenderStatFor: selectedCharacter is RpgCharacterConfiguration
+            ? selectedCharacter
+            : null,
+        isEditingAlternateForm: isEditingAlternateForm,
+        onPersist: (stats, characterName) => persistCharacterStats(
+          ref: ref,
+          characterId: selectedCharacterId,
+          stats: stats,
+          characterName: characterName,
+        ),
+      );
     });
+  }
+
+  static Future<void> _editSingleStat({
+    required WidgetRef ref,
+    required BuildContext context,
+    required RpgConfigurationModel rpgConfig,
+    required RpgCharacterConfigurationBase selectedCharacter,
+    required String? filterTabId,
+    required String filterStatUuid,
+    required bool isUpdatingCompanionCharacter,
+    required bool isEditingAlternateForm,
+  }) async {
+    final statToFill = (rpgConfig.characterStatTabsDefinition ?? [])
+        .where((tab) => filterTabId == null || tab.uuid == filterTabId)
+        .expand((tab) => tab.statsInTab)
+        .where((s) => s.statUuid == filterStatUuid)
+        // Computed stats are never typed in.
+        .where((s) => !StatNumbers.isComputed(s))
+        // we are not allowing the companionSelector stat on companions
+        .where((s) =>
+            !isUpdatingCompanionCharacter ||
+            s.valueType != CharacterStatValueType.companionSelector)
+        .firstOrNull;
+    if (statToFill == null) return;
+
+    String? updatedCharacterName = selectedCharacter.characterName;
+    if (updatedCharacterName.trim().isEmpty) {
+      updatedCharacterName = await askPlayerForCharacterName(
+          context: context,
+          currentCharacterName: selectedCharacter.characterName);
+      if (updatedCharacterName == null) return;
+    }
+    if (!context.mounted) return;
+
+    final modalResult = await showGetPlayerConfigurationModal(
+      characterToRenderStatFor: selectedCharacter is RpgCharacterConfiguration
+          ? selectedCharacter
+          : null,
+      context: context,
+      statConfiguration: statToFill,
+      characterValue: selectedCharacter.characterStats
+          .firstWhereOrNull((s) => s.statUuid == statToFill.statUuid),
+      characterName: updatedCharacterName,
+      isEditingAlternateForm: isEditingAlternateForm,
+    );
+
+    final nameChanged = updatedCharacterName != selectedCharacter.characterName;
+    if (modalResult == null && !nameChanged) return;
+
+    persistCharacterStats(
+      ref: ref,
+      characterId: selectedCharacter.uuid,
+      stats: modalResult == null ? const [] : [modalResult],
+      characterName: nameChanged ? updatedCharacterName : null,
+    );
+  }
+
+  /// Merges [stats] (and a new [characterName], if given) into the character
+  /// with [characterId]: the player's main character, one of its companions
+  /// or its alternate form.
+  ///
+  /// Reads the newest provider state on every call, so the per-tab form can
+  /// store page after page without dropping earlier pages.
+  static void persistCharacterStats({
+    required WidgetRef ref,
+    required String characterId,
+    required List<RpgCharacterStatValue> stats,
+    String? characterName,
+  }) {
+    final newestCharacterConfig =
+        ref.read(rpgCharacterConfigurationProvider).requireValue;
+    final notifier = ref.read(rpgCharacterConfigurationProvider.notifier);
+
+    // Copy before merge — mutating the stored characterStats in place would
+    // also mutate the provider's current state list, so updateConfiguration's
+    // json-equality guard would skip the notify and ConfigSync would never
+    // persist the edit.
+    List<RpgCharacterStatValue> merge(List<RpgCharacterStatValue> existing) {
+      final merged = List<RpgCharacterStatValue>.from(existing);
+      merged.removeWhere(
+          (st) => stats.any((upst) => upst.statUuid == st.statUuid));
+      merged.addAll(stats);
+      return merged;
+    }
+
+    if (newestCharacterConfig.uuid == characterId) {
+      notifier.updateConfiguration(newestCharacterConfig.copyWith(
+        characterName: characterName ?? newestCharacterConfig.characterName,
+        characterStats: merge(newestCharacterConfig.characterStats),
+      ));
+      return;
+    }
+
+    final companionCharactersCopy = [
+      ...(newestCharacterConfig.companionCharacters ??
+          <RpgAlternateCharacterConfiguration>[])
+    ];
+    final indexOfSelectedCompChar =
+        companionCharactersCopy.indexWhere((e) => e.uuid == characterId);
+    if (indexOfSelectedCompChar != -1) {
+      final companion = companionCharactersCopy[indexOfSelectedCompChar];
+      companionCharactersCopy[indexOfSelectedCompChar] = companion.copyWith(
+        characterName: characterName ?? companion.characterName,
+        characterStats: merge(companion.characterStats),
+      );
+      notifier.updateConfiguration(newestCharacterConfig.copyWith(
+          companionCharacters: companionCharactersCopy));
+      return;
+    }
+
+    final alternateForm = newestCharacterConfig.alternateForm;
+    if (alternateForm != null && alternateForm.uuid == characterId) {
+      notifier.updateConfiguration(newestCharacterConfig.copyWith(
+        alternateForm: alternateForm.copyWith(
+          characterName: characterName ?? alternateForm.characterName,
+          characterStats: merge(alternateForm.characterStats),
+        ),
+      ));
+    }
   }
 }

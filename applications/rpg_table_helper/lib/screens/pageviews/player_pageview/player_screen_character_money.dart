@@ -247,30 +247,43 @@ class _PlayerScreenCharacterMoneyState
         }
       },
       children: <MoneyChangeMode, Widget>{
+        // Short labels: the long "Guthaben hinzufügen" / "Guthaben abziehen"
+        // wrapped on phones and both segments read "Guthaben".
         MoneyChangeMode.addMoney: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Text(
-            S.of(context).addBalance,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontSize: 16,
-                  fontFamily: ledger ? 'Ruwudu' : null,
-                  color: _selectedMoneyChangeMode == MoneyChangeMode.addMoney
-                      ? selectedLabelColor
-                      : unselectedLabelColor,
-                ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              S.of(context).moneyModeDeposit,
+              maxLines: 1,
+              softWrap: false,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontSize: 16,
+                    fontFamily: ledger ? 'Ruwudu' : null,
+                    color: _selectedMoneyChangeMode == MoneyChangeMode.addMoney
+                        ? selectedLabelColor
+                        : unselectedLabelColor,
+                  ),
+            ),
           ),
         ),
         MoneyChangeMode.spendMoney: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Text(
-            S.of(context).reduceBalance,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontSize: 16,
-                  fontFamily: ledger ? 'Ruwudu' : null,
-                  color: _selectedMoneyChangeMode == MoneyChangeMode.spendMoney
-                      ? selectedLabelColor
-                      : unselectedLabelColor,
-                ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              S.of(context).moneyModeSpend,
+              maxLines: 1,
+              softWrap: false,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    fontSize: 16,
+                    fontFamily: ledger ? 'Ruwudu' : null,
+                    color:
+                        _selectedMoneyChangeMode == MoneyChangeMode.spendMoney
+                            ? selectedLabelColor
+                            : unselectedLabelColor,
+                  ),
+            ),
           ),
         ),
       },

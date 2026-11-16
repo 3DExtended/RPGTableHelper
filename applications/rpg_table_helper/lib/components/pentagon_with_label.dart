@@ -78,7 +78,7 @@ class PentagonWithLabel extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 1,
             maxFontSize: 14,
-            minFontSize: 14,
+            minFontSize: 10,
             overflow: TextOverflow.ellipsis,
           ),
         ],

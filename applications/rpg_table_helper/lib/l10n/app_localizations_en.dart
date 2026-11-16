@@ -1839,4 +1839,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ledgerManuscriptDateFormat => 'MMMM d, y, h:mm a';
+
+  @override
+  String get invalidWholeNumberInput =>
+      'Please enter a whole number, e.g. -1 or 3.';
+
+  @override
+  String get invalidLevelInput =>
+      'The level must be a whole number of 0 or more, e.g. 3.';
+
+  @override
+  String get previewAndVariantTileTitle => 'Preview and layout';
+
+  @override
+  String get characterSetupTitle => 'Set up character';
+
+  @override
+  String characterSetupProgress(int current, int total, String tabName) {
+    return 'Section $current of $total: $tabName';
+  }
+
+  @override
+  String get characterSetupHint =>
+      'Anything you leave empty now can be filled in later right on the character sheet.';
+
+  @override
+  String get characterSetupFinish => 'Done';
+
+  @override
+  String get fillInLater => 'Fill in later';
+
+  @override
+  String get characterNameRequired => 'Please enter a name.';
+
+  @override
+  String get fixMarkedFieldsHint => 'Please fix the marked fields.';
+
+  @override
+  String get moneyModeDeposit => '+ Add';
+
+  @override
+  String get moneyModeSpend => '− Spend';
+
+  @override
+  String get activeAlternateFormBannerTitle => 'Alternate form';
 }

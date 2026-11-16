@@ -23,6 +23,7 @@ import 'package:quest_keeper/helpers/character_stats/get_player_visualization_wi
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_create_new_character_transformation_wizard.dart';
+import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
@@ -46,8 +47,20 @@ class PlayerStatsConfigurationVisuals extends ConsumerStatefulWidget {
     this.characterValue,
     this.hideVariantSelection = false,
     this.hideAdditionalSetting = false,
+    this.collapsiblePreview = false,
+    this.onValidityChanged,
   });
   final void Function(RpgCharacterStatValue) onNewStatValue;
+
+  /// Called with false while a number field holds input that is not a valid
+  /// whole number (or the level is not a valid level), and with true once all
+  /// inputs are valid again. Hosts block saving while it is false, so text is
+  /// never stored as 0.
+  final void Function(bool isValid)? onValidityChanged;
+
+  /// Shows the preview and variant selector folded in an expandable tile
+  /// (used by the per-tab form, where many fields share one page).
+  final bool collapsiblePreview;
 
   final bool hideVariantSelection;
   final bool hideAdditionalSetting;
@@ -159,6 +172,80 @@ class _PlayerStatsConfigurationVisualsState
     var newStatValue = getCurrentStatValueOrDefault();
     newStatValue = newStatValue.copyWith(variant: currentlyVisibleVariant);
     widget.onNewStatValue(newStatValue);
+    _reportValidity();
+  }
+
+  /// Last valid level, so an invalid entry never turns into level 0.
+  int? _lastValidLevel;
+
+  bool? _lastReportedValidity;
+  void _reportValidity() {
+    final isValid = areAllInputsValid;
+    if (_lastReportedValidity == isValid) return;
+    _lastReportedValidity = isValid;
+    widget.onValidityChanged?.call(isValid);
+  }
+
+  /// The level entry of a characterNameWithLevelAndAdditionalDetails stat
+  /// (stored under the empty uuid next to the configurable detail values).
+  TextEditingController? get _levelController => listOfSingleValueOptions
+      .firstWhereOrNull((t) => t.uuid.isEmpty)
+      ?.valueTextController;
+
+  /// False while a number field holds text that is not a whole number, or
+  /// the level is not a whole number of 0 or more.
+  bool get areAllInputsValid {
+    switch (widget.statConfiguration.valueType) {
+      case CharacterStatValueType.int:
+      case CharacterStatValueType.intWithMaxValue:
+      case CharacterStatValueType.intWithCalculatedValue:
+        return isEmptyOrSignedInt(textController.text) &&
+            isEmptyOrSignedInt(textController2.text);
+      case CharacterStatValueType.listOfIntWithCalculatedValues:
+        return listOfIntWithOtherValueOptions.every((e) =>
+            isEmptyOrSignedInt(e.valueTextController.text) &&
+            isEmptyOrSignedInt(e.otherValueTextController.text));
+      case CharacterStatValueType.listOfIntsWithIcons:
+        return listOfSingleValueOptions
+            .every((e) => isEmptyOrSignedInt(e.valueTextController.text));
+      case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
+        final level = _levelController;
+        return level == null || parseCharacterLevel(level.text) != null;
+      default:
+        return true;
+    }
+  }
+
+  /// A whole-number input with a signed keyboard (so -1 can be typed) and an
+  /// inline error while the text is not a whole number.
+  Widget _intTextField({
+    required String labelText,
+    required TextEditingController controller,
+    String? placeholderText,
+    bool isLevel = false,
+  }) {
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: controller,
+      builder: (context, value, _) {
+        final String? errorText;
+        if (isLevel) {
+          errorText = parseCharacterLevel(value.text) == null
+              ? S.of(context).invalidLevelInput
+              : null;
+        } else {
+          errorText = isEmptyOrSignedInt(value.text)
+              ? null
+              : S.of(context).invalidWholeNumberInput;
+        }
+        return CustomTextField(
+          labelText: labelText,
+          placeholderText: placeholderText,
+          textEditingController: controller,
+          keyboardType: signedIntKeyboardType,
+          errorText: errorText,
+        );
+      },
+    );
   }
 
   /// Drops any throwaway preview test state when the configured value changes,
@@ -335,7 +422,7 @@ class _PlayerStatsConfigurationVisualsState
             CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
           filledListOfValues.add((
             uuid: "",
-            value: (tempDecode["level"] as int?)?.toString() ?? "0"
+            value: tempDecode["level"]?.toString() ?? "1"
           ));
 
           // Optional portrait fields (same shape idea as singleImage)
@@ -360,9 +447,19 @@ class _PlayerStatsConfigurationVisualsState
             (element) => element.uuid == e.uuid,
           );
 
+          // A new character starts at level 1 (visible in the field) instead
+          // of an empty level that would be stored as 0.
+          final isLevelEntry = widget.statConfiguration.valueType ==
+                  CharacterStatValueType
+                      .characterNameWithLevelAndAdditionalDetails &&
+              e.uuid.isEmpty;
           var textEditingController = TextEditingController(
-              text:
-                  matchingValue == null ? "" : matchingValue.value.toString());
+              text: matchingValue == null
+                  ? (isLevelEntry ? "1" : "")
+                  : matchingValue.value.toString());
+          if (isLevelEntry) {
+            _lastValidLevel = parseCharacterLevel(textEditingController.text);
+          }
           textEditingController.addListener(onChanged);
 
           return (
@@ -524,7 +621,25 @@ class _PlayerStatsConfigurationVisualsState
         // additional settings
         if (!widget.hideAdditionalSetting) getAdditionalSettingsTile(),
 
-        if (showPreview) getPreviewAndVariantSelector(context),
+        if (showPreview && !widget.collapsiblePreview)
+          getPreviewAndVariantSelector(context),
+        if (showPreview && widget.collapsiblePreview)
+          ThemeConfigurationForApp(
+            child: ExpansionTile(
+              enableFeedback: false,
+              tilePadding: EdgeInsets.zero,
+              title: Text(S.of(context).previewAndVariantTileTitle),
+              textColor: CustomThemeProvider.of(context).theme.darkTextColor,
+              iconColor: CustomThemeProvider.of(context).theme.darkColor,
+              collapsedIconColor:
+                  CustomThemeProvider.of(context).theme.darkColor,
+              collapsedTextColor:
+                  CustomThemeProvider.of(context).theme.darkTextColor,
+              shape: Border.all(color: Colors.transparent, width: 0),
+              collapsedShape: Border.all(color: Colors.transparent, width: 0),
+              children: [getPreviewAndVariantSelector(context)],
+            ),
+          ),
       ],
     );
   }
@@ -640,7 +755,8 @@ class _PlayerStatsConfigurationVisualsState
                           context: context,
                           statConfiguration: widget.statConfiguration,
                           characterValue: statValue,
-                          characterName: widget.characterName ?? "Player Name"),
+                          characterName: widget.characterName ??
+                              S.of(context).characterNameDefault),
                     ),
                   );
                 },
@@ -661,11 +777,10 @@ class _PlayerStatsConfigurationVisualsState
 
     return Column(
       children: [
-        CustomTextField(
+        _intTextField(
           labelText: widget.statConfiguration.name,
           placeholderText: widget.statConfiguration.helperText,
-          textEditingController: textController,
-          keyboardType: TextInputType.number,
+          controller: textController,
         ),
       ],
     );
@@ -1060,12 +1175,17 @@ class _PlayerStatsConfigurationVisualsState
         ?.valueTextController
         .text;
 
+    // Never store text as level 0: an invalid entry keeps the last valid
+    // level (hosts block saving while the field shows its error).
+    final parsedLevel = parseCharacterLevel(foundLevel);
+    if (parsedLevel != null) _lastValidLevel = parsedLevel;
+
     return RpgCharacterStatValue(
       hideFromCharacterScreen: hideStatFromCharacterScreens,
       hideLabelOfStat: hideLabelOfStat,
       variant: 0,
       serializedValue: jsonEncode({
-        "level": (foundLevel != null ? int.tryParse(foundLevel) : null) ?? 0,
+        "level": parsedLevel ?? _lastValidLevel ?? 1,
         "values": filledValuesForlistOfSingleValueOptions,
         "imagePrompt": textController.text,
         "imageUrl":
@@ -1083,9 +1203,9 @@ class _PlayerStatsConfigurationVisualsState
         listOfIntWithOtherValueOptions
             .map((e) => {
                   "uuid": e.uuid,
-                  "value": int.tryParse(e.valueTextController.text) ?? 0,
+                  "value": parseSignedInt(e.valueTextController.text) ?? 0,
                   "otherValue":
-                      int.tryParse(e.otherValueTextController.text) ?? 0,
+                      parseSignedInt(e.otherValueTextController.text) ?? 0,
                 })
             .toList();
     // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
@@ -1107,7 +1227,7 @@ class _PlayerStatsConfigurationVisualsState
             .where((t) => t.uuid.isNotEmpty)
             .map((e) => {
                   "uuid": e.uuid,
-                  "value": int.tryParse(e.valueTextController.text) ?? 0,
+                  "value": parseSignedInt(e.valueTextController.text) ?? 0,
                 })
             .toList();
     // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12,}]}
@@ -1158,8 +1278,9 @@ class _PlayerStatsConfigurationVisualsState
 
   RpgCharacterStatValue
       getCurrentStatValueOrDefaultForIntWithCalculatedValueType() {
-    var currentOrDefaultIntValue = int.tryParse(textController.text) ?? 0;
-    var currentOrDefaultOtherIntValue = int.tryParse(textController2.text) ?? 0;
+    var currentOrDefaultIntValue = parseSignedInt(textController.text) ?? 0;
+    var currentOrDefaultOtherIntValue =
+        parseSignedInt(textController2.text) ?? 0;
     return RpgCharacterStatValue(
       hideLabelOfStat: hideLabelOfStat,
       hideFromCharacterScreen: hideStatFromCharacterScreens,
@@ -1173,8 +1294,8 @@ class _PlayerStatsConfigurationVisualsState
   }
 
   RpgCharacterStatValue getCurrentStatValueOrDefaultForIntWithMaxValueType() {
-    var currentOrDefaultIntValue = int.tryParse(textController.text) ?? 0;
-    var currentOrDefaultMaxIntValue = int.tryParse(textController2.text) ?? 0;
+    var currentOrDefaultIntValue = parseSignedInt(textController.text) ?? 0;
+    var currentOrDefaultMaxIntValue = parseSignedInt(textController2.text) ?? 0;
     return RpgCharacterStatValue(
       hideLabelOfStat: hideLabelOfStat,
       hideFromCharacterScreen: hideStatFromCharacterScreens,
@@ -1188,7 +1309,7 @@ class _PlayerStatsConfigurationVisualsState
   }
 
   RpgCharacterStatValue getCurrentStatValueOrDefaultForIntType() {
-    var currentOrDefaultIntValue = int.tryParse(textController.text) ?? 0;
+    var currentOrDefaultIntValue = parseSignedInt(textController.text) ?? 0;
     return RpgCharacterStatValue(
       hideLabelOfStat: hideLabelOfStat,
       hideFromCharacterScreen: hideStatFromCharacterScreens,
@@ -1384,70 +1505,89 @@ class _PlayerStatsConfigurationVisualsState
     );
   }
 
+  /// Below this width a value label and its input fields no longer fit side
+  /// by side: labels broke mid-word ("Geschickl|ichkeit") and field labels
+  /// were cut ("Erste…"). Narrow layouts put the label on its own line.
+  static const double _sideBySideMinWidth = 520;
+
+  Widget _valueLabel(String text) => Text(
+        text,
+        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 16,
+            ),
+      );
+
   Widget getConfigurationWidgetsForListOfIntsWithCalculatedValues() {
     // => RpgCharacterStatValue.serializedValue == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "value": 12, "otherValue": 2}]}
     // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
     var statTitle = widget.statConfiguration.name;
     var statDescription = widget.statConfiguration.helperText;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _PlayerConfigModalNonDefaultTitleAndHelperText(
-            statTitle: statTitle, statDescription: statDescription),
-        ...listOfIntWithOtherValueOptions
-            .asMap()
-            .entries
-            .sortedBy((e) => e.value.label)
-            .map((e) => Row(
+    return LayoutBuilder(builder: (context, constraints) {
+      final sideBySide = constraints.maxWidth >= _sideBySideMinWidth;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _PlayerConfigModalNonDefaultTitleAndHelperText(
+              statTitle: statTitle, statDescription: statDescription),
+          ...listOfIntWithOtherValueOptions
+              .asMap()
+              .entries
+              .sortedBy((e) => e.value.label)
+              .map((e) {
+            final fields = <Widget>[
+              Expanded(
+                child: _intTextField(
+                  labelText: S.of(context).firstValue,
+                  controller: e.value.valueTextController,
+                  placeholderText: S.of(context).firstValuePlaceholder,
+                ),
+              ),
+              SizedBox(width: sideBySide ? 20 : 10),
+              Expanded(
+                child: _intTextField(
+                  labelText: S.of(context).secondValue,
+                  controller: e.value.otherValueTextController,
+                  placeholderText: S.of(context).secondValuePlaceholder,
+                ),
+              ),
+            ];
+
+            if (!sideBySide) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "${e.value.label}:",
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    color: CustomThemeProvider.of(context)
-                                        .theme
-                                        .darkTextColor,
-                                    fontSize: 16,
-                                  ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: CustomTextField(
-                        labelText: S.of(context).firstValue,
-                        textEditingController: e.value.valueTextController,
-                        placeholderText: S.of(context).firstValuePlaceholder,
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: CustomTextField(
-                        labelText: S.of(context).secondValue,
-                        textEditingController: e.value.otherValueTextController,
-                        keyboardType: TextInputType.number,
-                        placeholderText: S.of(context).secondValuePlaceholder,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
+                    _valueLabel("${e.value.label}:"),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: fields,
                     ),
                   ],
-                )),
-      ],
-    );
+                ),
+              );
+            }
+
+            return Row(
+              children: [
+                SizedBox(width: 20),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: _valueLabel("${e.value.label}:"),
+                  ),
+                ),
+                SizedBox(width: 20),
+                ...fields,
+                SizedBox(width: 20),
+              ],
+            );
+          }),
+        ],
+      );
+    });
   }
 
   Widget getConfigurationWidgetsForBunchOfTextValues() {
@@ -1455,6 +1595,8 @@ class _PlayerStatsConfigurationVisualsState
     // => statConfiguration.jsonSerializedAdditionalData! == {"level": 0, "values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP"}]}
     var statTitle = widget.statConfiguration.name;
     var statDescription = widget.statConfiguration.helperText;
+    final isNameWithLevel = widget.statConfiguration.valueType ==
+        CharacterStatValueType.characterNameWithLevelAndAdditionalDetails;
 
     if ((statTitle == "") &&
         widget.statConfiguration.valueType ==
@@ -1467,72 +1609,71 @@ class _PlayerStatsConfigurationVisualsState
           .join(", ");
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _PlayerConfigModalNonDefaultTitleAndHelperText(
-            statTitle: statTitle, statDescription: statDescription),
-        ...listOfSingleValueOptions
-            .asMap()
-            .entries
-            .sortedBy((e) => e.value.label)
-            .map((e) => Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "${e.value.label}:",
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    color: CustomThemeProvider.of(context)
-                                        .theme
-                                        .darkTextColor,
-                                    fontSize: 16,
-                                  ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: CustomTextField(
-                        labelText: e.value.label,
-                        textEditingController: e.value.valueTextController,
-                        placeholderText: S
-                            .of(context)
-                            .valueOfPropertyWithName(e.value.label),
-                        keyboardType: widget.statConfiguration.valueType ==
-                                CharacterStatValueType.listOfIntsWithIcons
-                            ? TextInputType.number
-                            : TextInputType.text,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                )),
-        if (widget.statConfiguration.valueType ==
-            CharacterStatValueType
-                .characterNameWithLevelAndAdditionalDetails) ...[
-          SizedBox(height: 16),
-          CustomTextField(
-            labelText: S.of(context).characterPortraitImagePrompt,
-            placeholderText:
-                S.of(context).characterPortraitImagePromptPlaceholder,
-            textEditingController: textController,
-            keyboardType: TextInputType.multiline,
-          ),
-          SizedBox(height: 10),
-          getGeneratedImagePickerControls(context),
+    return LayoutBuilder(builder: (context, constraints) {
+      final sideBySide = constraints.maxWidth >= _sideBySideMinWidth;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _PlayerConfigModalNonDefaultTitleAndHelperText(
+              statTitle: statTitle, statDescription: statDescription),
+          ...listOfSingleValueOptions
+              .asMap()
+              .entries
+              .sortedBy((e) => e.value.label)
+              .map((e) {
+            final isLevel = isNameWithLevel && e.value.uuid.isEmpty;
+            final placeholder =
+                S.of(context).valueOfPropertyWithName(e.value.label);
+            final Widget field = isLevel ||
+                    widget.statConfiguration.valueType ==
+                        CharacterStatValueType.listOfIntsWithIcons
+                ? _intTextField(
+                    labelText: e.value.label,
+                    controller: e.value.valueTextController,
+                    placeholderText: placeholder,
+                    isLevel: isLevel,
+                  )
+                : CustomTextField(
+                    labelText: e.value.label,
+                    textEditingController: e.value.valueTextController,
+                    placeholderText: placeholder,
+                    keyboardType: TextInputType.text,
+                  );
+
+            // Narrow: the field's own label names the value; a second label
+            // column would squeeze both (and cut the helper text).
+            if (!sideBySide) return field;
+
+            return Row(
+              children: [
+                SizedBox(width: 20),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: _valueLabel("${e.value.label}:"),
+                  ),
+                ),
+                SizedBox(width: 20),
+                Expanded(child: field),
+                SizedBox(width: 20),
+              ],
+            );
+          }),
+          if (isNameWithLevel) ...[
+            SizedBox(height: 16),
+            CustomTextField(
+              labelText: S.of(context).characterPortraitImagePrompt,
+              placeholderText:
+                  S.of(context).characterPortraitImagePromptPlaceholder,
+              textEditingController: textController,
+              keyboardType: TextInputType.multiline,
+            ),
+            SizedBox(height: 10),
+            getGeneratedImagePickerControls(context),
+          ],
         ],
-      ],
-    );
+      );
+    });
   }
 
   Widget getConfigurationWidgetsForIntWithMaxValue() {
@@ -1544,24 +1685,23 @@ class _PlayerStatsConfigurationVisualsState
         _PlayerConfigModalNonDefaultTitleAndHelperText(
             statTitle: statTitle, statDescription: statDescription),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: CustomTextField(
+              child: _intTextField(
                 labelText: S.of(context).currentValue,
                 placeholderText: S.of(context).currentValuePlaceholder,
-                textEditingController: textController,
-                keyboardType: TextInputType.number,
+                controller: textController,
               ),
             ),
             SizedBox(
               width: 10,
             ),
             Expanded(
-              child: CustomTextField(
+              child: _intTextField(
                 labelText: S.of(context).maxValue,
                 placeholderText: S.of(context).maxValuePlaceholder,
-                textEditingController: textController2,
-                keyboardType: TextInputType.number,
+                controller: textController2,
               ),
             ),
           ],
@@ -1579,24 +1719,23 @@ class _PlayerStatsConfigurationVisualsState
         _PlayerConfigModalNonDefaultTitleAndHelperText(
             statTitle: statTitle, statDescription: statDescription),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: CustomTextField(
+              child: _intTextField(
                 labelText: S.of(context).firstValue,
                 placeholderText: S.of(context).firstValuePlaceholder,
-                textEditingController: textController,
-                keyboardType: TextInputType.number,
+                controller: textController,
               ),
             ),
             SizedBox(
               width: 10,
             ),
             Expanded(
-              child: CustomTextField(
+              child: _intTextField(
                 labelText: S.of(context).calculatedValue,
                 placeholderText: S.of(context).calculatedValuePlaceholder,
-                textEditingController: textController2,
-                keyboardType: TextInputType.number,
+                controller: textController2,
               ),
             ),
           ],

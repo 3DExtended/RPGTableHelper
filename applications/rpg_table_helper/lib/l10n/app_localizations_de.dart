@@ -28,7 +28,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get firstValue => 'Erster Wert';
 
   @override
-  String get firstValuePlaceholder => 'Der erster Wert';
+  String get firstValuePlaceholder => 'Der erste Wert';
 
   @override
   String get currentValue => 'Aktueller Wert';
@@ -41,13 +41,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get maxValue => 'Maximaler Wert';
 
   @override
-  String get maxValuePlaceholder => 'Der maximaler Wert für diese Eigenschaft';
+  String get maxValuePlaceholder => 'Der maximale Wert für diese Eigenschaft';
 
   @override
   String get secondValue => 'Zweiter Wert';
 
   @override
-  String get secondValuePlaceholder => 'Der zweiter Wert';
+  String get secondValuePlaceholder => 'Der zweite Wert';
 
   @override
   String get otherValue => 'Anderer Wert';
@@ -1856,4 +1856,48 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get ledgerManuscriptDateFormat => 'd. MMMM y, HH:mm';
+
+  @override
+  String get invalidWholeNumberInput =>
+      'Bitte gib eine ganze Zahl ein, z. B. -1 oder 3.';
+
+  @override
+  String get invalidLevelInput =>
+      'Das Level muss eine ganze Zahl ab 0 sein, z. B. 3.';
+
+  @override
+  String get previewAndVariantTileTitle => 'Vorschau und Darstellung';
+
+  @override
+  String get characterSetupTitle => 'Charakter einrichten';
+
+  @override
+  String characterSetupProgress(int current, int total, String tabName) {
+    return 'Abschnitt $current von $total: $tabName';
+  }
+
+  @override
+  String get characterSetupHint =>
+      'Was du jetzt leer lässt, kannst du später direkt im Charakterbogen ausfüllen.';
+
+  @override
+  String get characterSetupFinish => 'Fertig';
+
+  @override
+  String get fillInLater => 'Später ausfüllen';
+
+  @override
+  String get characterNameRequired => 'Bitte gib einen Namen ein.';
+
+  @override
+  String get fixMarkedFieldsHint => 'Bitte korrigiere die markierten Felder.';
+
+  @override
+  String get moneyModeDeposit => '+ Einzahlen';
+
+  @override
+  String get moneyModeSpend => '− Ausgeben';
+
+  @override
+  String get activeAlternateFormBannerTitle => 'Verwandelte Gestalt';
 }

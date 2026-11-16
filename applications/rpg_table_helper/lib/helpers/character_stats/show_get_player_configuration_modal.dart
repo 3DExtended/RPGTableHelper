@@ -77,6 +77,10 @@ class _ShowGetPlayerConfigurationModalContentState
     extends ConsumerState<ShowGetPlayerConfigurationModalContent> {
   RpgCharacterStatValue? newestStatValue;
 
+  /// False while a number field holds invalid input; Save is disabled then,
+  /// so text is never stored as 0 (e.g. the level).
+  bool areInputsValid = true;
+
   @override
   void initState() {
     newestStatValue = widget.characterValue;
@@ -94,9 +98,11 @@ class _ShowGetPlayerConfigurationModalContentState
                   widget.characterName)),
       navigatorKey: widget.overrideNavigatorKey ?? navigatorKey,
       onCancel: () async {},
-      onSave: () {
-        return Future.value(newestStatValue);
-      },
+      onSave: areInputsValid
+          ? () {
+              return Future.value(newestStatValue);
+            }
+          : null,
       child: Column(
         children: [
           if (widget.isStatCopied == true)
@@ -130,6 +136,12 @@ class _ShowGetPlayerConfigurationModalContentState
             hideAdditionalSetting: widget.hideAdditionalSetting,
             onNewStatValue: (newStatValue) {
               newestStatValue = newStatValue;
+            },
+            onValidityChanged: (isValid) {
+              if (!mounted || areInputsValid == isValid) return;
+              setState(() {
+                areInputsValid = isValid;
+              });
             },
           ),
         ],

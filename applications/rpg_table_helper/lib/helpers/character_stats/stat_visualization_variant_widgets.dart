@@ -9,6 +9,7 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/constants.dart';
+import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
@@ -559,9 +560,12 @@ class ModifierFirstBlock extends StatelessWidget {
                   fontSize: 28,
                 ),
           ),
-          Text(
+          // Attribute names shrink to fit on one line instead of being cut
+          // or broken mid-word ("Geschickl|ichkeit").
+          AutoSizeText(
             label,
             maxLines: 1,
+            minFontSize: 8,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: StatVizTheme.darkText(context),
@@ -602,9 +606,10 @@ class ClassicAbilityBlock extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          AutoSizeText(
             label.toUpperCase(),
             maxLines: 1,
+            minFontSize: 7,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: StatVizTheme.darkText(context),
@@ -711,7 +716,8 @@ class HexAbilityTile extends StatelessWidget {
           AutoSizeText(
             label,
             maxLines: 1,
-            minFontSize: 10,
+            minFontSize: 8,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: StatVizTheme.darkText(context),
                   fontSize: 13,
@@ -1165,8 +1171,14 @@ class MultiselectChecklist extends StatelessWidget {
                       ),
                       SizedBox(width: 6),
                       Expanded(
-                        child: Text(
+                        // Wraps between words only; a word too long for the
+                        // column shrinks instead of breaking mid-word.
+                        child: AutoSizeText(
                           e.label,
+                          maxLines: 2,
+                          minFontSize: 9,
+                          wrapWords: false,
+                          overflow: TextOverflow.ellipsis,
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: StatVizTheme.darkText(context),
@@ -1234,10 +1246,14 @@ class MultiselectTileGrid extends StatelessWidget {
               child: Center(
                 child: Padding(
                   padding: EdgeInsets.all(4),
-                  child: Text(
+                  // 72pt tiles: "Geschicklichkeit" broke mid-word. Wrap only
+                  // between words and shrink a long word to fit.
+                  child: AutoSizeText(
                     e.label,
                     textAlign: TextAlign.center,
                     maxLines: 3,
+                    minFontSize: 6,
+                    wrapWords: false,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: selected
@@ -1935,7 +1951,7 @@ class ActiveFormBanner extends StatelessWidget {
               SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  'Alternate form',
+                  S.of(context).activeAlternateFormBannerTitle,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: StatVizTheme.darkText(context),
                         fontWeight: FontWeight.bold,

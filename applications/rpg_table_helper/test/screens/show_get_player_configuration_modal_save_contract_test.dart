@@ -18,9 +18,10 @@ import 'package:quest_keeper/services/dependency_provider.dart';
 /// Regression coverage for the first-time stat wizard aborting after the
 /// character portrait.
 ///
-/// `handlePossiblyMissingCharacterStats` walks every unconfigured stat, opens
-/// `showGetPlayerConfigurationModal` for each, and treats a `null` result as
-/// "user cancelled -> stop configuring the rest". The modal must therefore
+/// The first-time setup is now one form page per tab
+/// (`showCharacterStatsForm`); the single-field dialog is still used when one
+/// stat is edited (long press), where a `null` result means "cancelled, keep
+/// the old value". The modal must therefore
 /// return `null` ONLY for the explicit Cancel/close buttons — never for a
 /// Save on a stat the user opened but left at its default. The singleImage
 /// portrait is the stat players routinely skip (generating an image costs an
@@ -345,7 +346,10 @@ void main() {
 
       // Drive the health bar in the preview, as a player "testing" it would.
       // hitTestable() picks the button on the visible page (adjacent pages are
-      // built offstage and would not receive the tap).
+      // built offstage and would not receive the tap). Helper texts wrap
+      // instead of being cut off, so first scroll the preview into view.
+      await tester.ensureVisible(find.byType(PageView).last);
+      await tester.pumpAndSettle();
       final previewPlus = find
           .descendant(
             of: find.byType(PageView),

@@ -12,8 +12,12 @@ class CustomTextField extends StatelessWidget {
       required this.keyboardType,
       this.password,
       this.placeholderText,
-      this.disableMaxLineLimit});
+      this.disableMaxLineLimit,
+      this.errorText});
   final bool? disableMaxLineLimit;
+
+  /// Shown below the field in the error style; null when the input is valid.
+  final String? errorText;
   final TextInputType keyboardType;
   final String labelText;
   final TextEditingController textEditingController;
@@ -42,6 +46,9 @@ class CustomTextField extends StatelessWidget {
               ? NeverScrollableScrollPhysics()
               : null,
           scribbleEnabled: true,
+          // Number pads (and multi-line fields) have no key that closes the
+          // keyboard, so tapping anywhere outside the field closes it.
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: InputDecoration(
             suffixIcon: contraints.maxWidth > 350 &&
                     keyboardType != TextInputType.multiline
@@ -58,6 +65,10 @@ class CustomTextField extends StatelessWidget {
                   )
                 : null,
             helperText: placeholderText,
+            // Long helper texts wrap instead of being cut off ("Der Wert von K…").
+            helperMaxLines: 4,
+            errorText: errorText,
+            errorMaxLines: 3,
             labelText: labelText,
             alignLabelWithHint: true,
             enabledBorder: OutlineInputBorder(

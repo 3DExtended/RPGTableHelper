@@ -4937,6 +4937,126 @@ class S {
       args: [],
     );
   }
+
+  /// `Please enter a whole number, e.g. -1 or 3.`
+  String get invalidWholeNumberInput {
+    return Intl.message(
+      'Please enter a whole number, e.g. -1 or 3.',
+      name: 'invalidWholeNumberInput',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The level must be a whole number of 0 or more, e.g. 3.`
+  String get invalidLevelInput {
+    return Intl.message(
+      'The level must be a whole number of 0 or more, e.g. 3.',
+      name: 'invalidLevelInput',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preview and layout`
+  String get previewAndVariantTileTitle {
+    return Intl.message(
+      'Preview and layout',
+      name: 'previewAndVariantTileTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set up character`
+  String get characterSetupTitle {
+    return Intl.message(
+      'Set up character',
+      name: 'characterSetupTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Section {current} of {total}: {tabName}`
+  String characterSetupProgress(Object current, Object total, Object tabName) {
+    return Intl.message(
+      'Section $current of $total: $tabName',
+      name: 'characterSetupProgress',
+      desc: '',
+      args: [current, total, tabName],
+    );
+  }
+
+  /// `Anything you leave empty now can be filled in later right on the character sheet.`
+  String get characterSetupHint {
+    return Intl.message(
+      'Anything you leave empty now can be filled in later right on the character sheet.',
+      name: 'characterSetupHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get characterSetupFinish {
+    return Intl.message(
+      'Done',
+      name: 'characterSetupFinish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill in later`
+  String get fillInLater {
+    return Intl.message(
+      'Fill in later',
+      name: 'fillInLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a name.`
+  String get characterNameRequired {
+    return Intl.message(
+      'Please enter a name.',
+      name: 'characterNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please fix the marked fields.`
+  String get fixMarkedFieldsHint {
+    return Intl.message(
+      'Please fix the marked fields.',
+      name: 'fixMarkedFieldsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `+ Add`
+  String get moneyModeDeposit {
+    return Intl.message('+ Add', name: 'moneyModeDeposit', desc: '', args: []);
+  }
+
+  /// `− Spend`
+  String get moneyModeSpend {
+    return Intl.message('− Spend', name: 'moneyModeSpend', desc: '', args: []);
+  }
+
+  /// `Alternate form`
+  String get activeAlternateFormBannerTitle {
+    return Intl.message(
+      'Alternate form',
+      name: 'activeAlternateFormBannerTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

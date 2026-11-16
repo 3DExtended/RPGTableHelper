@@ -5,13 +5,13 @@
   "save": "Speichern",
   "cancel": "Abbrechen",
   "firstValue": "Erster Wert",
-  "firstValuePlaceholder": "Der erster Wert",
+  "firstValuePlaceholder": "Der erste Wert",
   "currentValue": "Aktueller Wert",
   "currentValuePlaceholder": "Der aktuelle Wert für diese Eigenschaft",
   "maxValue": "Maximaler Wert",
-  "maxValuePlaceholder": "Der maximaler Wert für diese Eigenschaft",
+  "maxValuePlaceholder": "Der maximale Wert für diese Eigenschaft",
   "secondValue": "Zweiter Wert",
-  "secondValuePlaceholder": "Der zweiter Wert",
+  "secondValuePlaceholder": "Der zweite Wert",
   "otherValue": "Anderer Wert",
   "otherValuePlaceholder": "Der andere Wert",
   "calculatedValue": "Berechneter Wert",
@@ -839,5 +839,34 @@
   "pageTabShortItems": "Items",
   "pageTabShortNotes": "Notizen",
   "pageTabShortImages": "Bilder",
-  "ledgerManuscriptDateFormat": "d. MMMM y, HH:mm"
+  "ledgerManuscriptDateFormat": "d. MMMM y, HH:mm",
+  "invalidWholeNumberInput": "Bitte gib eine ganze Zahl ein, z. B. -1 oder 3.",
+  "invalidLevelInput": "Das Level muss eine ganze Zahl ab 0 sein, z. B. 3.",
+  "previewAndVariantTileTitle": "Vorschau und Darstellung",
+  "characterSetupTitle": "Charakter einrichten",
+  "characterSetupProgress": "Abschnitt {current} von {total}: {tabName}",
+  "@characterSetupProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "2"
+      },
+      "total": {
+        "type": "int",
+        "example": "5"
+      },
+      "tabName": {
+        "type": "String",
+        "example": "Background"
+      }
+    }
+  },
+  "characterSetupHint": "Was du jetzt leer lässt, kannst du später direkt im Charakterbogen ausfüllen.",
+  "characterSetupFinish": "Fertig",
+  "fillInLater": "Später ausfüllen",
+  "characterNameRequired": "Bitte gib einen Namen ein.",
+  "fixMarkedFieldsHint": "Bitte korrigiere die markierten Felder.",
+  "moneyModeDeposit": "+ Einzahlen",
+  "moneyModeSpend": "− Ausgeben",
+  "activeAlternateFormBannerTitle": "Verwandelte Gestalt"
 }

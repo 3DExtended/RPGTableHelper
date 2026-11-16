@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @firstValuePlaceholder.
   ///
   /// In de, this message translates to:
-  /// **'Der erster Wert'**
+  /// **'Der erste Wert'**
   String get firstValuePlaceholder;
 
   /// No description provided for @currentValue.
@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @maxValuePlaceholder.
   ///
   /// In de, this message translates to:
-  /// **'Der maximaler Wert für diese Eigenschaft'**
+  /// **'Der maximale Wert für diese Eigenschaft'**
   String get maxValuePlaceholder;
 
   /// No description provided for @secondValue.
@@ -173,7 +173,7 @@ abstract class AppLocalizations {
   /// No description provided for @secondValuePlaceholder.
   ///
   /// In de, this message translates to:
-  /// **'Der zweiter Wert'**
+  /// **'Der zweite Wert'**
   String get secondValuePlaceholder;
 
   /// No description provided for @otherValue.
@@ -3271,6 +3271,84 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'d. MMMM y, HH:mm'**
   String get ledgerManuscriptDateFormat;
+
+  /// No description provided for @invalidWholeNumberInput.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib eine ganze Zahl ein, z. B. -1 oder 3.'**
+  String get invalidWholeNumberInput;
+
+  /// No description provided for @invalidLevelInput.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Level muss eine ganze Zahl ab 0 sein, z. B. 3.'**
+  String get invalidLevelInput;
+
+  /// No description provided for @previewAndVariantTileTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschau und Darstellung'**
+  String get previewAndVariantTileTitle;
+
+  /// No description provided for @characterSetupTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Charakter einrichten'**
+  String get characterSetupTitle;
+
+  /// No description provided for @characterSetupProgress.
+  ///
+  /// In de, this message translates to:
+  /// **'Abschnitt {current} von {total}: {tabName}'**
+  String characterSetupProgress(int current, int total, String tabName);
+
+  /// No description provided for @characterSetupHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Was du jetzt leer lässt, kannst du später direkt im Charakterbogen ausfüllen.'**
+  String get characterSetupHint;
+
+  /// No description provided for @characterSetupFinish.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get characterSetupFinish;
+
+  /// No description provided for @fillInLater.
+  ///
+  /// In de, this message translates to:
+  /// **'Später ausfüllen'**
+  String get fillInLater;
+
+  /// No description provided for @characterNameRequired.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Namen ein.'**
+  String get characterNameRequired;
+
+  /// No description provided for @fixMarkedFieldsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte korrigiere die markierten Felder.'**
+  String get fixMarkedFieldsHint;
+
+  /// No description provided for @moneyModeDeposit.
+  ///
+  /// In de, this message translates to:
+  /// **'+ Einzahlen'**
+  String get moneyModeDeposit;
+
+  /// No description provided for @moneyModeSpend.
+  ///
+  /// In de, this message translates to:
+  /// **'− Ausgeben'**
+  String get moneyModeSpend;
+
+  /// No description provided for @activeAlternateFormBannerTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Verwandelte Gestalt'**
+  String get activeAlternateFormBannerTitle;
 }
 
 class _AppLocalizationsDelegate
