@@ -467,4 +467,45 @@ void main() {
       },
     );
   });
+
+  group('EventsClient after a network change', () {
+    test('replaces an open stream right away', () async {
+      var opens = 0;
+      final client = EventsClient(
+        getJwt: () async => 't',
+        baseUrl: 'http://example.test/',
+        openStream: ({required uri, required jwt}) async {
+          opens++;
+          return http.ByteStream(StreamController<List<int>>().stream);
+        },
+        sleep: (_) async {},
+      );
+
+      await client.start();
+      await client.reconnectAfterNetworkChange();
+
+      expect(opens, 2);
+      expect(client.status.value, EventsConnectionStatus.connected);
+      await client.dispose();
+    });
+
+    test('does not start a stream nobody asked for', () async {
+      var opens = 0;
+      final client = EventsClient(
+        getJwt: () async => 't',
+        baseUrl: 'http://example.test/',
+        openStream: ({required uri, required jwt}) async {
+          opens++;
+          return http.ByteStream(StreamController<List<int>>().stream);
+        },
+        sleep: (_) async {},
+      );
+
+      await client.reconnectAfterNetworkChange();
+
+      expect(opens, 0);
+      expect(client.status.value, EventsConnectionStatus.idle);
+      await client.dispose();
+    });
+  });
 }

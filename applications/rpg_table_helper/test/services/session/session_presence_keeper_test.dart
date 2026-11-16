@@ -10,7 +10,8 @@ import 'package:quest_keeper/services/session/session_presence_keeper.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
 
 class _RecordingRpgEntityService extends MockRpgEntityService {
-  _RecordingRpgEntityService() : super(apiConnectorService: MockApiConnectorService());
+  _RecordingRpgEntityService()
+    : super(apiConnectorService: MockApiConnectorService());
 
   final enteredCampagneIds = <String>[];
 
@@ -41,27 +42,29 @@ void main() {
 
   tearDown(() => eventsClient.dispose());
 
-  test('re-enters the session and catches up after the SSE stream reconnects',
-      () async {
-    await eventsClient.start();
-    final rpg = _RecordingRpgEntityService();
-    var catchUps = 0;
-    final keeper = SessionPresenceKeeper(
-      eventsClient: eventsClient,
-      rpgEntityService: rpg,
-      campagneId: CampagneIdentifier(value: 'campagne-1'),
-      onReentered: () async => catchUps++,
-    )..start();
+  test(
+    're-enters the session and catches up after the SSE stream reconnects',
+    () async {
+      await eventsClient.start();
+      final rpg = _RecordingRpgEntityService();
+      var catchUps = 0;
+      final keeper = SessionPresenceKeeper(
+        eventsClient: eventsClient,
+        rpgEntityService: rpg,
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
+        onReentered: () async => catchUps++,
+      )..start();
 
-    // Connection drops (e.g. iPad locked) and comes back.
-    await current.close();
-    await Future<void>.delayed(const Duration(milliseconds: 20));
+      // Connection drops (e.g. iPad locked) and comes back.
+      await current.close();
+      await Future<void>.delayed(const Duration(milliseconds: 20));
 
-    expect(rpg.enteredCampagneIds, ['campagne-1']);
-    expect(catchUps, 1);
+      expect(rpg.enteredCampagneIds, ['campagne-1']);
+      expect(catchUps, 1);
 
-    await keeper.stop();
-  });
+      await keeper.stop();
+    },
+  );
 
   test('does nothing after stop', () async {
     await eventsClient.start();
@@ -78,4 +81,28 @@ void main() {
 
     expect(rpg.enteredCampagneIds, isEmpty);
   });
+
+  test(
+    'hands the presence snapshot of the re-enter to onPresenceSnapshot',
+    () async {
+      await eventsClient.start();
+      final rpg = _RecordingRpgEntityService();
+      final snapshots = <List<String>>[];
+      final keeper = SessionPresenceKeeper(
+        eventsClient: eventsClient,
+        rpgEntityService: rpg,
+        campagneId: CampagneIdentifier(value: 'campagne-1'),
+        onPresenceSnapshot: (onlineUserIds) async =>
+            snapshots.add(onlineUserIds),
+      )..start();
+
+      await current.close();
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(snapshots, [
+        ['me'],
+      ]);
+      await keeper.stop();
+    },
+  );
 }

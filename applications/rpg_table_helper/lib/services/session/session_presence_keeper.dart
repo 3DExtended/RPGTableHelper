@@ -17,6 +17,7 @@ class SessionPresenceKeeper {
     required this.rpgEntityService,
     required this.campagneId,
     this.onReentered,
+    this.onPresenceSnapshot,
   });
 
   final EventsClient eventsClient;
@@ -26,6 +27,11 @@ class SessionPresenceKeeper {
   /// Called after a successful re-enter, e.g. to catch up on config changes
   /// whose notifies were lost while disconnected.
   final Future<void> Function()? onReentered;
+
+  /// Called after a successful re-enter with the user ids that are online in
+  /// the session, e.g. for the DM to rebuild the roster: presence notifies
+  /// sent while disconnected are lost.
+  final Future<void> Function(List<String> onlineUserIds)? onPresenceSnapshot;
 
   StreamSubscription<void>? _subscription;
   bool _isEntering = false;
@@ -47,6 +53,7 @@ class SessionPresenceKeeper {
       final response =
           await rpgEntityService.enterSession(campagneId: campagneId);
       if (response.isSuccessful && _subscription != null) {
+        await onPresenceSnapshot?.call(response.result ?? const []);
         await onReentered?.call();
       }
     } finally {

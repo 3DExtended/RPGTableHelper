@@ -30,6 +30,7 @@ import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
+import 'package:quest_keeper/services/sse/network_change_reconnect.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -261,13 +262,21 @@ class _ThemeConfigurationForAppState
       });
       _connectivitySub =
           Connectivity().onConnectivityChanged.listen((results) async {
-        final hadNone = _lastConnectivity.contains(ConnectivityResult.none);
+        final reaction = reactionToNetworkChange(_lastConnectivity, results);
         _lastConnectivity = results;
-        final hasNetwork = !results.contains(ConnectivityResult.none);
-        if (!hadNone || !hasNetwork || !mounted) {
+        if (!mounted) {
           return;
         }
-        await _recoverSseSession();
+        switch (reaction) {
+          case NetworkChangeReaction.none:
+            return;
+          case NetworkChangeReaction.ensure:
+            await _recoverSseSession();
+          case NetworkChangeReaction.reconnect:
+            await DependencyProvider.getIt!
+                .get<EventsClient>()
+                .reconnectAfterNetworkChange();
+        }
       });
     }
     WidgetsBinding.instance.addObserver(observer!);

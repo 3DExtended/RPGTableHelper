@@ -164,6 +164,15 @@ class EventsClient {
     }
   }
 
+  /// Replaces the stream right away after the device switched networks (e.g.
+  /// Wi-Fi to mobile data), when the open connection may hang on the previous
+  /// interface. Does nothing while the stream is not wanted, e.g. signed out.
+  Future<void> reconnectAfterNetworkChange() async {
+    if (_wanted) {
+      await forceReconnect();
+    }
+  }
+
   /// Replaces a stream that looks open but has been silent for longer than
   /// [staleAfter]. Runs every [staleCheckInterval] while the stream is wanted.
   Future<void> reconnectIfStale() async {
