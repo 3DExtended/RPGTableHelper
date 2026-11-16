@@ -5,6 +5,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
@@ -29,20 +30,60 @@ class PlayerSheetPreviewScreen extends StatefulWidget {
         ),
       );
 
-  /// A character with the default value of every property and nothing of
-  /// the template's sample data (companions, transformations, items).
+  /// Types without a generic sample value (nothing to show in a preview).
+  static const _typesWithoutSample = {
+    CharacterStatValueType.companionSelector,
+    CharacterStatValueType.transformIntoAlternateFormBtn,
+    CharacterStatValueType.unsupported,
+  };
+
+  /// A character with a sample value for every property of every tab and
+  /// nothing of the template's sample data (companions, transformations,
+  /// items). Properties of the templates get values that fit them
+  /// ([RpgConfigurationTemplates.sampleValues]).
   static RpgCharacterConfiguration sampleCharacter(
     RpgConfigurationModel rpgConfig,
     String name,
-  ) => RpgCharacterConfiguration.getBaseConfiguration(rpgConfig).copyWith(
-    characterName: name,
-    companionCharacters: [],
-    transformationComponents: [],
-    alternateForms: [],
-    alternateForm: null,
-    isAlternateFormActive: null,
-    inventory: [],
-  );
+  ) {
+    final base = RpgCharacterConfiguration.getBaseConfiguration(rpgConfig);
+    final stats = {for (final s in base.characterStats) s.statUuid: s};
+
+    // The generic samples cover the start tab; the other tabs get the same.
+    for (final tab in rpgConfig.characterStatTabsDefinition ??
+        const <CharacterStatsTabDefinition>[]) {
+      if (tab.isDefaultTab == true) continue;
+      final asStartTab = rpgConfig.copyWith(characterStatTabsDefinition: [
+        tab.copyWith(
+          isDefaultTab: true,
+          statsInTab: tab.statsInTab
+              .where((s) => !_typesWithoutSample.contains(s.valueType))
+              .toList(),
+        ),
+      ]);
+      for (final stat in RpgCharacterConfiguration.getDefaultStats(
+          asStartTab, false, null)) {
+        stats.putIfAbsent(stat.statUuid, () => stat);
+      }
+    }
+
+    final fitting = RpgConfigurationTemplates.sampleValues();
+    return base.copyWith(
+      characterName: name,
+      characterStats: [
+        for (final stat in stats.values)
+          if (fitting[stat.statUuid] case final value?)
+            stat.copyWith(serializedValue: value)
+          else
+            stat,
+      ],
+      companionCharacters: [],
+      transformationComponents: [],
+      alternateForms: [],
+      alternateForm: null,
+      isAlternateFormActive: null,
+      inventory: [],
+    );
+  }
 
   @override
   State<PlayerSheetPreviewScreen> createState() =>

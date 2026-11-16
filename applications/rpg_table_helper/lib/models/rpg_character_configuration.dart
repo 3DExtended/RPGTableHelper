@@ -370,8 +370,14 @@ class RpgCharacterConfiguration extends RpgCharacterConfigurationBase {
                   hideLabelOfStat: false,
                   variant: null,
                   statUuid: stat.statUuid,
-                  serializedValue:
-                      '${'${'{"values": ["' + options[0]["uuid"]}", "' + options[2]["uuid"]}"]}',
+                  // The first and the third option, as far as there are
+                  // that many.
+                  serializedValue: jsonEncode({
+                    "values": [
+                      if (options.isNotEmpty) options[0]["uuid"],
+                      if (options.length > 2) options[2]["uuid"],
+                    ],
+                  }),
                 );
               // Empty values: no box ticked, no entry, nothing chosen (the
               // narrative template has these on its default tab).

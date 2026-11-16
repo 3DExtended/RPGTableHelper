@@ -251,6 +251,63 @@ class RpgConfigurationTemplates {
     ],
   );
 
+  /// Values the "So sieht es der Spieler" preview shows for properties of
+  /// the templates where the generic sample (e.g. 17 for every number) would
+  /// not fit, by property uuid. Properties the game master added keep the
+  /// generic sample.
+  static Map<String, String> sampleValues() => {
+    // Erzählerisch: Aspekte, Erzählpunkte, Erholung, Stress, Konsequenzen
+    "7ecd3603-7c86-4717-bd99-bb6974355b13": jsonEncode({
+      "values": [
+        {
+          "uuid": "3050573c-5409-48fb-ac5d-4ba4f19ad679",
+          "value": "Ehemalige Schmugglerin mit Gewissen",
+        },
+        {
+          "uuid": "8b60b1b8-6609-4875-babf-13e76fa586be",
+          "value": "Alte Schulden bei der Hafengilde",
+        },
+      ],
+    }),
+    "63eb8d94-d582-4460-a703-25597bc4d2d7": '{"value": 3}',
+    "de0ea003-373d-4ca8-b4ef-f45814ce62b2": '{"value": 3}',
+    "5f7c6bed-5a71-4614-8556-1d65d426930a": '{"checked": [0]}',
+    "0ad9d2ec-60bd-4426-86ce-142cc5a5a29b": jsonEncode({
+      "values": [
+        {
+          "uuid": "7201cd7d-e3b2-41e4-ae31-d03793a84aac",
+          "value": "Verstauchter Knöchel",
+        },
+      ],
+    }),
+    // Erzählerisch: Fertigkeiten, Stunts
+    "87aa9951-499a-45d7-bc27-35a44f667066": jsonEncode({
+      "values": [
+        {"uuid": "231c98a6-cd4d-4ddf-9179-2488e12dbb1b", "value": "Heimlichkeit"},
+        {
+          "uuid": "324aa3c4-9fb7-40dd-8d25-63e0c7deb318",
+          "value": "Feilschen, Klettern",
+        },
+        {
+          "uuid": "8191a508-15c8-4fc8-a14c-11cba7a599ba",
+          "value": "Wahrnehmung, Kontakte",
+        },
+        {
+          "uuid": "87261fde-72a7-41fa-b31d-b9c78fe87a84",
+          "value": "Fechten, Wissen, Schwimmen",
+        },
+      ],
+    }),
+    "0896462e-2a2c-4905-b763-0e91e8c33ad6": jsonEncode({
+      "values": [
+        {
+          "uuid": "d877f7e6-861f-4f26-ade1-4fb4bf121a91",
+          "value": "Schattenläuferin: +2 auf Heimlichkeit, wenn es dunkel ist.",
+        },
+      ],
+    }),
+  };
+
   static CurrencyDefinition _coinsOnly() => CurrencyDefinition(
     currencyTypes: [
       CurrencyType(name: "Münzen", multipleOfPreviousValue: null),
