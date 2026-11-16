@@ -74,6 +74,22 @@ abstract class RpgCharacterConfigurationBase {
       }
     }
 
+    // A sheet without an image property: the portrait of the character
+    // summary.
+    final summaryUuids = rpgConfig.characterStatTabsDefinition
+            ?.expand((t) => t.statsInTab)
+            .where((s) =>
+                s.valueType ==
+                CharacterStatValueType.characterNameWithLevelAndAdditionalDetails)
+            .map((s) => s.statUuid)
+            .toSet() ??
+        const <String>{};
+    for (final stat in characterStats) {
+      if (!summaryUuids.contains(stat.statUuid)) continue;
+      final imageUrl = jsonDecode(stat.serializedValue)["imageUrl"];
+      if (imageUrl is String && imageUrl.isNotEmpty) return imageUrl;
+    }
+
     return result;
   }
 }

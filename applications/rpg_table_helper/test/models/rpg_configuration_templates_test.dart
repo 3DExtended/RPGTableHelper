@@ -150,7 +150,7 @@ void main() {
         {
           "Grundwerte":
               CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
-          "Bild": CharacterStatValueType.singleImage,
+          "Porträt": CharacterStatValueType.singleImage,
           "Aspekte": CharacterStatValueType.textList,
           "Erzählpunkte": CharacterStatValueType.int,
           "Erholung": CharacterStatValueType.int,

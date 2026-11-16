@@ -119,7 +119,7 @@ class RpgConfigurationTemplates {
           ),
           _stat(
             uuid: "ae8ebe43-6fe4-4acc-aaaa-225888916c61",
-            name: "Bild",
+            name: "Porträt",
             helperText: "Erstelle ein Bild von deinem Charakter.",
             type: CharacterStatValueType.singleImage,
           ),

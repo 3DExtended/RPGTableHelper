@@ -472,7 +472,7 @@ class RpgConfigurationModel {
                   isOptionalForAlternateForms: false,
                   isOptionalForCompanionCharacters: false,
                   statUuid: "273f7ce3-59db-4c34-bc90-83c53f3ea553",
-                  name: "Aussehen",
+                  name: "Porträt",
                   helperText: "Erstelle ein Bild von deinem Charakter.",
                   valueType: CharacterStatValueType.singleImage,
                   editType: CharacterStatEditType.static,

@@ -22,6 +22,7 @@ import 'package:quest_keeper/components/stat_types/unsupported_stat_view.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/character_stats/character_portrait.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
@@ -29,6 +30,7 @@ import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_create_new_character_transformation_wizard.dart';
 import 'package:quest_keeper/helpers/number_input.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
+import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -1773,7 +1775,11 @@ class _PlayerStatsConfigurationVisualsState
               ],
             );
           }),
-          if (isNameWithLevel) ...[
+          // The portrait only when the sheet has no image property of its
+          // own: one image picker per character.
+          if (isNameWithLevel &&
+              !sheetHasImageProperty(
+                  ref.watch(rpgConfigurationProvider).value)) ...[
             SizedBox(height: 16),
             CustomTextField(
               labelText: S.of(context).characterPortraitImagePrompt,
