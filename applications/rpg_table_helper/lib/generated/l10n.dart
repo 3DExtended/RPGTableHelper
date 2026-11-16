@@ -6674,6 +6674,72 @@ class S {
       args: [count],
     );
   }
+
+  /// `From one of your campaigns`
+  String get wizardTemplateFromCampagneHeader {
+    return Intl.message(
+      'From one of your campaigns',
+      name: 'wizardTemplateFromCampagneHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Takes over the character sheet, currency, items and recipes. Characters, notes and players stay in the other campaign.`
+  String get wizardTemplateFromCampagneHint {
+    return Intl.message(
+      'Takes over the character sheet, currency, items and recipes. Characters, notes and players stay in the other campaign.',
+      name: 'wizardTemplateFromCampagneHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one{1 property} other{{count} properties}}`
+  String wizardTemplateFromCampagneProperties(int count) {
+    return Intl.plural(
+      count,
+      one: '1 property',
+      other: '$count properties',
+      name: 'wizardTemplateFromCampagneProperties',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, one{1 item} other{{count} items}}`
+  String wizardTemplateFromCampagneItems(int count) {
+    return Intl.plural(
+      count,
+      one: '1 item',
+      other: '$count items',
+      name: 'wizardTemplateFromCampagneItems',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, one{1 recipe} other{{count} recipes}}`
+  String wizardTemplateFromCampagneRecipes(int count) {
+    return Intl.plural(
+      count,
+      one: '1 recipe',
+      other: '$count recipes',
+      name: 'wizardTemplateFromCampagneRecipes',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Sheet with the tabs {tabs}`
+  String wizardTemplateFromCampagneDescription(String tabs) {
+    return Intl.message(
+      'Sheet with the tabs $tabs',
+      name: 'wizardTemplateFromCampagneDescription',
+      desc: '',
+      args: [tabs],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

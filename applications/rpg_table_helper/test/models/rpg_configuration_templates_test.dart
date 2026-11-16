@@ -302,7 +302,7 @@ void main() {
                 .where((e) => newKeys.hasMatch(e.key)))
           "$locale ${entry.key}": entry.value as String,
     };
-    expect(texts.keys.where((k) => k.startsWith("de ")), hasLength(16));
+    expect(texts.keys.where((k) => k.startsWith("de ")), hasLength(22));
 
     for (final MapEntry(:key, :value) in texts.entries) {
       final lower = value.toLowerCase();

@@ -2457,4 +2457,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String buildingBlocksAddCount(int count) {
     return 'Add $count';
   }
+
+  @override
+  String get wizardTemplateFromCampagneHeader => 'From one of your campaigns';
+
+  @override
+  String get wizardTemplateFromCampagneHint =>
+      'Takes over the character sheet, currency, items and recipes. Characters, notes and players stay in the other campaign.';
+
+  @override
+  String wizardTemplateFromCampagneProperties(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count properties',
+      one: '1 property',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardTemplateFromCampagneItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardTemplateFromCampagneRecipes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipes',
+      one: '1 recipe',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardTemplateFromCampagneDescription(String tabs) {
+    return 'Sheet with the tabs $tabs';
+  }
 }

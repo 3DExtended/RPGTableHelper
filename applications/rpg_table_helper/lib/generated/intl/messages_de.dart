@@ -124,10 +124,21 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m42(count) =>
       "${Intl.plural(count, one: '1 Tab', other: '${count} Tabs')}";
 
-  static String m43(count) =>
-      "${Intl.plural(count, zero: 'Du leitest noch keine Kampagne.', one: 'Du leitest 1 Kampagne.', other: 'Du leitest ${count} Kampagnen.')}";
+  static String m43(tabs) => "Bogen mit den Reitern ${tabs}";
 
   static String m44(count) =>
+      "${Intl.plural(count, one: '1 Item', other: '${count} Items')}";
+
+  static String m45(count) =>
+      "${Intl.plural(count, one: '1 Eigenschaft', other: '${count} Eigenschaften')}";
+
+  static String m46(count) =>
+      "${Intl.plural(count, one: '1 Rezept', other: '${count} Rezepte')}";
+
+  static String m47(count) =>
+      "${Intl.plural(count, zero: 'Du leitest noch keine Kampagne.', one: 'Du leitest 1 Kampagne.', other: 'Du leitest ${count} Kampagnen.')}";
+
+  static String m48(count) =>
       "${Intl.plural(count, zero: 'Du hast noch keinen Charakter.', one: 'Du hast 1 Charakter.', other: 'Du hast ${count} Charaktere.')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1726,6 +1737,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "wizardTemplateFantasyName": MessageLookupByLibrary.simpleMessage(
       "Fantasy 5E (SRD)",
     ),
+    "wizardTemplateFromCampagneDescription": m43,
+    "wizardTemplateFromCampagneHeader": MessageLookupByLibrary.simpleMessage(
+      "Aus einer deiner Kampagnen",
+    ),
+    "wizardTemplateFromCampagneHint": MessageLookupByLibrary.simpleMessage(
+      "Übernimmt Charakterbogen, Währung, Items und Rezepte. Charaktere, Notizen und Spieler bleiben in der anderen Kampagne.",
+    ),
+    "wizardTemplateFromCampagneItems": m44,
+    "wizardTemplateFromCampagneProperties": m45,
+    "wizardTemplateFromCampagneRecipes": m46,
     "wizardTemplateNarrativeContents": MessageLookupByLibrary.simpleMessage(
       "Aspekte, Fertigkeiten, Stunts, Stress, Konsequenzen, Erzählpunkte",
     ),
@@ -1763,8 +1784,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Du bearbeitest gerade eine Verwandlung. Änderungen gelten nur für diese Verwandlung und gehen verloren, wenn du dich zurückverwandelst. Für dauerhafte Änderungen verwandle dich zurück und bearbeite deine Grundform.",
         ),
-    "youOwnXCampaigns": m43,
-    "youOwnXCharacters": m44,
+    "youOwnXCampaigns": m47,
+    "youOwnXCharacters": m48,
     "yourAreDisconnectedBody": MessageLookupByLibrary.simpleMessage(
       "Die Verbindung ist unterbrochen. Entweder du oder deine Spielleitung ist offline.",
     ),

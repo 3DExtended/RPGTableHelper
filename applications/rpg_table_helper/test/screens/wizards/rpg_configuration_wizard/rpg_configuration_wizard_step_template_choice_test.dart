@@ -6,11 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:quest_keeper/components/wizards/two_part_wizard_step_body.dart';
 import 'package:quest_keeper/components/wizards/wizard_renderer_for_configuration.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin.dart';
 import 'package:quest_keeper/helpers/initiative_bonus_wizard_draft_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_confirm_delete_dialog.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/l10n/app_localizations.dart';
+import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
@@ -18,7 +20,9 @@ import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_config
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_1_campagne_name.dart';
 import 'package:quest_keeper/screens/wizards/rpg_configuration_wizard/rpg_configuration_wizard_step_template_choice.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:quest_keeper/services/auth/api_connector_service.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/rpg_entity_service.dart';
 
 import '../../../custom_font_loader.dart';
 
@@ -39,6 +43,7 @@ Future<ProviderContainer> _pumpWizard(
   Size? size,
   String skinId = CharacterSheetSkinIds.classicDark,
   Locale locale = const Locale('de'),
+  List<Campagne>? ownCampagnes,
 }) async {
   if (size != null) {
     // Real fonts: the test font draws every glyph as a wide square.
@@ -67,6 +72,15 @@ Future<ProviderContainer> _pumpWizard(
       child: CustomThemeProvider(
         overrideSkinId: skinId,
         child: DependencyProvider.getMockedDependecyProvider(
+          mockOverrides: {
+            IRpgEntityService: () => MockRpgEntityService(
+              apiConnectorService: DependencyProvider.getIt!
+                  .get<IApiConnectorService>(),
+              getCampagnesWithPlayerAsDmOverride: HRResponse.fromResult(
+                ownCampagnes ?? const [],
+              ),
+            ),
+          },
           child: MaterialApp(
             localizationsDelegates: [
               ...AppLocalizations.localizationsDelegates,
@@ -133,7 +147,142 @@ void _expectTemplate(
   expect(RpgConfigurationTemplates.matchingTemplateOf(config), id);
 }
 
+/// A campaign of the game master with [config].
+Campagne _ownCampagne(
+  String id,
+  String name, {
+  RpgConfigurationModel? config,
+  String? json,
+  DateTime? lastModifiedAt,
+}) => Campagne(
+  id: CampagneIdentifier(value: id),
+  campagneName: name,
+  joinCode: '111-222',
+  dmUserId: UserIdentifier(value: 'dm'),
+  creationDate: DateTime(2026, 1, 1),
+  lastModifiedAt: lastModifiedAt ?? DateTime(2026, 1, 1),
+  rpgConfiguration: json ?? (config == null ? null : jsonEncode(config)),
+);
+
+/// "Die Ödlande": the narrative template with an extra currency, an item
+/// and its own sheet skin.
+RpgConfigurationModel _ownConfig() => RpgConfigurationTemplates.narrative()
+    .copyWith(
+      rpgName: 'Die Ödlande',
+      defaultSkinId: CharacterSheetSkinIds.arcaneLedger,
+      allItems: RpgConfigurationModel.getBaseConfiguration().allItems.take(2)
+          .toList(),
+    );
+
 void main() {
+  group('another campaign of the game master', () {
+    test('only others with a readable configuration, newest first', () {
+      final config = _ownConfig();
+      final list = ownCampagneConfigurations([
+        _ownCampagne('current', 'Diese', config: config),
+        _ownCampagne('old', 'Alt', config: config,
+            lastModifiedAt: DateTime(2025, 1, 1)),
+        _ownCampagne('none', 'Ohne'),
+        _ownCampagne('broken', 'Kaputt', json: '{"rpgName": 3'),
+        _ownCampagne('new', 'Neu', config: config,
+            lastModifiedAt: DateTime(2026, 6, 1)),
+      ], 'current');
+
+      expect(list.map((c) => c.campagne.campagneName), ['Neu', 'Alt']);
+      expect(list.first.config.allItems, hasLength(2));
+    });
+
+    test('everything but the name is taken over', () {
+      final current = _newCampaign();
+      final copied = configurationCopiedFrom(_ownConfig(), current);
+
+      expect(copied.rpgName, _campaignName);
+      expect(copied.defaultSkinId, CharacterSheetSkinIds.arcaneLedger);
+      expect(copied.allItems, hasLength(2));
+      expect(
+        RpgConfigurationTemplates.comparableJson(copied),
+        RpgConfigurationTemplates.comparableJson(
+          _ownConfig().copyWith(rpgName: _campaignName),
+        ),
+      );
+      // Without a skin of its own the current one stays.
+      final current2 = current.copyWith(
+          defaultSkinId: CharacterSheetSkinIds.nightCartographer);
+      expect(
+        configurationCopiedFrom(
+          RpgConfigurationTemplates.narrative(),
+          current2,
+        ).defaultSkinId,
+        CharacterSheetSkinIds.nightCartographer,
+      );
+    });
+
+    testWidgets('no section without other campaigns', (tester) async {
+      await _pumpWizard(tester);
+      expect(find.text(S.current.wizardTemplateFromCampagneHeader),
+          findsNothing);
+    });
+
+    testWidgets('picking one takes over its configuration', (tester) async {
+      final container = await _pumpWizard(
+        tester,
+        ownCampagnes: [_ownCampagne('own-1', 'Die Ödlande', config: _ownConfig())],
+      );
+      final card = find.byKey(RpgTemplateCard.keyForCampagne('own-1'));
+
+      expect(find.text(S.current.wizardTemplateFromCampagneHeader),
+          findsOneWidget);
+      expect(find.text('Die Ödlande'), findsOneWidget);
+      expect(
+        find.textContaining('2 Items', findRichText: true),
+        findsOneWidget,
+      );
+
+      await _tap(tester, card);
+      expect(find.byKey(confirmDeleteDialogConfirmKey), findsNothing);
+      expect(tester.widget<RpgTemplateCard>(card).isSelected, isTrue);
+      expect(_selectedCard(tester), isNull);
+
+      final config = _config(container);
+      expect(config.rpgName, _campaignName);
+      expect(config.allItems, hasLength(2));
+      expect(config.defaultSkinId, CharacterSheetSkinIds.arcaneLedger);
+      expect(
+        RpgConfigurationTemplates.matchingTemplateOf(config),
+        isNull,
+        reason: 'the extra items set it apart from the template',
+      );
+
+      // Nothing changed since: a template replaces it without a question.
+      await _tap(tester, _card(RpgConfigurationTemplateId.empty));
+      expect(find.byKey(confirmDeleteDialogConfirmKey), findsNothing);
+      _expectTemplate(container, RpgConfigurationTemplateId.empty);
+      expect(tester.widget<RpgTemplateCard>(card).isSelected, isFalse);
+    });
+
+    testWidgets('asks before changes since the last choice are lost', (
+      tester,
+    ) async {
+      final container = await _pumpWizard(
+        tester,
+        ownCampagnes: [_ownCampagne('own-1', 'Die Ödlande', config: _ownConfig())],
+      );
+      container.read(rpgConfigurationProvider.notifier).updateCurrency(
+            CurrencyDefinition(
+              currencyTypes: [
+                CurrencyType(name: 'Taler', multipleOfPreviousValue: null),
+              ],
+            ),
+          );
+      await tester.pumpAndSettle();
+
+      await _tap(tester, find.byKey(RpgTemplateCard.keyForCampagne('own-1')));
+      expect(find.byKey(confirmDeleteDialogConfirmKey), findsOneWidget);
+      await _tap(tester, find.byKey(confirmDeleteDialogConfirmKey));
+      expect(_config(container).allItems, hasLength(2));
+    });
+  });
+
   group('when the step is shown', () {
     test('only for a new campaign, as first step', () {
       final newSetup = _wizard.stepsFor(isNewSetup: true);
@@ -381,6 +530,13 @@ void main() {
               size: size,
               skinId: skin,
               locale: locale,
+              ownCampagnes: [
+                _ownCampagne(
+                  'own-1',
+                  'Die Chroniken der verlorenen Sternenwächter',
+                  config: _ownConfig(),
+                ),
+              ],
             );
             expect(tester.takeException(), isNull);
 
@@ -389,7 +545,11 @@ void main() {
               await tester.pumpAndSettle();
               expect(tester.takeException(), isNull);
             }
-            expect(find.byType(RpgTemplateCard), findsNWidgets(3));
+            await tester.ensureVisible(
+                find.byKey(RpgTemplateCard.keyForCampagne('own-1')));
+            await tester.pumpAndSettle();
+            expect(tester.takeException(), isNull);
+            expect(find.byType(RpgTemplateCard), findsNWidgets(4));
 
             // The question fits as well.
             container

@@ -1077,5 +1077,39 @@
         "type": "int"
       }
     }
+  },
+  "wizardTemplateFromCampagneHeader": "Aus einer deiner Kampagnen",
+  "wizardTemplateFromCampagneHint": "Übernimmt Charakterbogen, Währung, Items und Rezepte. Charaktere, Notizen und Spieler bleiben in der anderen Kampagne.",
+  "wizardTemplateFromCampagneProperties": "{count, plural, one{1 Eigenschaft} other{{count} Eigenschaften}}",
+  "@wizardTemplateFromCampagneProperties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardTemplateFromCampagneItems": "{count, plural, one{1 Item} other{{count} Items}}",
+  "@wizardTemplateFromCampagneItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardTemplateFromCampagneRecipes": "{count, plural, one{1 Rezept} other{{count} Rezepte}}",
+  "@wizardTemplateFromCampagneRecipes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardTemplateFromCampagneDescription": "Bogen mit den Reitern {tabs}",
+  "@wizardTemplateFromCampagneDescription": {
+    "placeholders": {
+      "tabs": {
+        "type": "String"
+      }
+    }
   }
 }

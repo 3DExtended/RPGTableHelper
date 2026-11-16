@@ -4363,6 +4363,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count} hinzufügen'**
   String buildingBlocksAddCount(int count);
+
+  /// No description provided for @wizardTemplateFromCampagneHeader.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus einer deiner Kampagnen'**
+  String get wizardTemplateFromCampagneHeader;
+
+  /// No description provided for @wizardTemplateFromCampagneHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Übernimmt Charakterbogen, Währung, Items und Rezepte. Charaktere, Notizen und Spieler bleiben in der anderen Kampagne.'**
+  String get wizardTemplateFromCampagneHint;
+
+  /// No description provided for @wizardTemplateFromCampagneProperties.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 Eigenschaft} other{{count} Eigenschaften}}'**
+  String wizardTemplateFromCampagneProperties(int count);
+
+  /// No description provided for @wizardTemplateFromCampagneItems.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 Item} other{{count} Items}}'**
+  String wizardTemplateFromCampagneItems(int count);
+
+  /// No description provided for @wizardTemplateFromCampagneRecipes.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 Rezept} other{{count} Rezepte}}'**
+  String wizardTemplateFromCampagneRecipes(int count);
+
+  /// No description provided for @wizardTemplateFromCampagneDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Bogen mit den Reitern {tabs}'**
+  String wizardTemplateFromCampagneDescription(String tabs);
 }
 
 class _AppLocalizationsDelegate

@@ -2476,4 +2476,49 @@ class AppLocalizationsDe extends AppLocalizations {
   String buildingBlocksAddCount(int count) {
     return '$count hinzufügen';
   }
+
+  @override
+  String get wizardTemplateFromCampagneHeader => 'Aus einer deiner Kampagnen';
+
+  @override
+  String get wizardTemplateFromCampagneHint =>
+      'Übernimmt Charakterbogen, Währung, Items und Rezepte. Charaktere, Notizen und Spieler bleiben in der anderen Kampagne.';
+
+  @override
+  String wizardTemplateFromCampagneProperties(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Eigenschaften',
+      one: '1 Eigenschaft',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardTemplateFromCampagneItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Items',
+      one: '1 Item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardTemplateFromCampagneRecipes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Rezepte',
+      one: '1 Rezept',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wizardTemplateFromCampagneDescription(String tabs) {
+    return 'Bogen mit den Reitern $tabs';
+  }
 }

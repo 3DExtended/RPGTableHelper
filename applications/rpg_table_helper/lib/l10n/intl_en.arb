@@ -1029,5 +1029,39 @@
         "type": "int"
       }
     }
+  },
+  "wizardTemplateFromCampagneHeader": "From one of your campaigns",
+  "wizardTemplateFromCampagneHint": "Takes over the character sheet, currency, items and recipes. Characters, notes and players stay in the other campaign.",
+  "wizardTemplateFromCampagneProperties": "{count, plural, one{1 property} other{{count} properties}}",
+  "@wizardTemplateFromCampagneProperties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardTemplateFromCampagneItems": "{count, plural, one{1 item} other{{count} items}}",
+  "@wizardTemplateFromCampagneItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardTemplateFromCampagneRecipes": "{count, plural, one{1 recipe} other{{count} recipes}}",
+  "@wizardTemplateFromCampagneRecipes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardTemplateFromCampagneDescription": "Sheet with the tabs {tabs}",
+  "@wizardTemplateFromCampagneDescription": {
+    "placeholders": {
+      "tabs": {
+        "type": "String"
+      }
+    }
   }
 }
