@@ -110,21 +110,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hideHeading => 'Überschrift ausblenden';
 
   @override
-  String get addCharacterToCampagneModalTitle =>
-      'Charakter zur Kampagne hinzufügen';
+  String get addCharacterToCampagneModalTitle => 'Kampagne beitreten';
 
   @override
   String get assignCharacterToCampagneModalContent =>
-      'Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.';
+      'Dein Charakter ist noch keiner Kampagne zugeordnet. Gib den Beitrittscode ein, den du von deiner Spielleitung bekommen hast. Sie bestätigt dann deine Anfrage.';
 
   @override
-  String get joinCode => 'Join Code:';
+  String get joinCode => 'Beitrittscode';
 
   @override
-  String get genericErrorModalHeader => 'Fehler';
+  String get genericErrorModalHeader => 'Das hat nicht geklappt';
 
   @override
-  String get genericErrorModalTechnicalDetailsHeader => 'Technische Details: ';
+  String get genericErrorModalTechnicalDetailsHeader => 'Technische Details';
 
   @override
   String get genericErrorModalTechnicalDetailsErrorCodeRowLabel =>
@@ -284,16 +283,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get allPlayers => 'Alle Spieler:';
 
   @override
-  String get openJoinRequests => 'Join Anfragen:';
+  String get openJoinRequests => 'Beitrittsanfragen';
 
   @override
-  String get joinCodeForNewPlayers => 'Join Code (für neue Spieler):';
+  String joinCodeForNewPlayers(String code) {
+    return 'Beitrittscode: $code';
+  }
 
   @override
   String get noOpenJoinRequests => 'Keine offenen Anfragen';
 
   @override
-  String get user => 'User:';
+  String get user => 'Benutzer:';
 
   @override
   String get character => 'Charakter:';
@@ -394,7 +395,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get ok => 'Ok';
+  String get ok => 'OK';
 
   @override
   String get rpgConfigurationDmWizardStep2Tutorial =>
@@ -646,22 +647,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chooseACampagne => 'Kampagne auswählen';
 
   @override
-  String get startAsDm => 'Als DM spielen';
+  String get startAsDm => 'Als Spielleitung';
 
   @override
   String youOwnXCampaigns(int count) {
-    return 'Dir gehören $count Kampagnen';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Du leitest $count Kampagnen.',
+      one: 'Du leitest 1 Kampagne.',
+      zero: 'Du leitest noch keine Kampagne.',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get joinAsPlayer => 'Tritt als Spieler bei';
+  String get joinAsPlayer => 'Als Spieler';
 
   @override
   String get chooseACharacter => 'Charakter auswählen';
 
   @override
   String youOwnXCharacters(int count) {
-    return 'Dir gehören $count Charaktere';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Du hast $count Charaktere.',
+      one: 'Du hast 1 Charakter.',
+      zero: 'Du hast noch keinen Charakter.',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1618,4 +1633,202 @@ class AppLocalizationsDe extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get welcomeToQuestKeeper => 'Willkommen bei QuestKeeper';
+
+  @override
+  String get questKeeperIntro =>
+      'QuestKeeper begleitet eure Pen-&-Paper-Runde am Tisch. Die Spielleitung richtet die Kampagne ein, alle anderen führen ihren Charakterbogen in der App. Trefferpunkte, Gegenstände und geteilte Notizen sind dabei für alle live aktuell.';
+
+  @override
+  String get pathRunAGameTitle => 'Ich leite eine Runde';
+
+  @override
+  String get pathRunAGameSubtitle => 'Kampagne anlegen und Spieler einladen';
+
+  @override
+  String get pathJoinAGameTitle => 'Ich trete einer Runde bei';
+
+  @override
+  String get pathJoinAGameSubtitle => 'Mit dem Code deiner Spielleitung';
+
+  @override
+  String get joinCampagneAction => 'Kampagne beitreten';
+
+  @override
+  String get createCampagneAction => 'Kampagne anlegen';
+
+  @override
+  String get noCampagnesYetHint =>
+      'Leg eine Kampagne an, richte den Charakterbogen ein und lade deine Gruppe mit einem Code ein.';
+
+  @override
+  String get noCharactersYetHint =>
+      'Tritt mit dem Code deiner Spielleitung einer Kampagne bei. Deinen Charakter legst du dabei an.';
+
+  @override
+  String campagneSettingsChangedAt(String date) {
+    return 'Einstellungen geändert: $date';
+  }
+
+  @override
+  String openJoinRequestsBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offene Anfragen',
+      one: '1 offene Anfrage',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String characterLastEditedAt(String date) {
+    return 'Zuletzt bearbeitet: $date';
+  }
+
+  @override
+  String get waitingForDmApproval =>
+      'Warte auf Freigabe durch die Spielleitung';
+
+  @override
+  String get characterNotInCampagneHint =>
+      'Noch in keiner Kampagne. Tippe, um mit einem Code beizutreten.';
+
+  @override
+  String get joinCampagneNewCharacterIntro =>
+      'Gib den Beitrittscode ein, den du von deiner Spielleitung bekommen hast, und wie dein Charakter heißen soll. Den Rest des Charakterbogens füllst du aus, sobald die Spielleitung dich aufgenommen hat.';
+
+  @override
+  String get joinCodeEmptyError => 'Bitte gib den Beitrittscode ein.';
+
+  @override
+  String get joinCodeIncompleteError =>
+      'Der Code hat sechs Ziffern, zum Beispiel 123-456.';
+
+  @override
+  String get joinCodeUnknownError =>
+      'Diesen Code gibt es nicht. Prüfe ihn mit deiner Spielleitung.';
+
+  @override
+  String get characterNameFieldLabel => 'Name deines Charakters';
+
+  @override
+  String get nameRequiredError => 'Bitte gib einen Namen ein';
+
+  @override
+  String get joinAction => 'Beitreten';
+
+  @override
+  String get joinRequestSentConfirmation =>
+      'Anfrage gesendet. Sobald deine Spielleitung zustimmt, kannst du mitspielen.';
+
+  @override
+  String get joinRequestAcceptedMessage =>
+      'Deine Beitrittsanfrage wurde angenommen. Du kannst jetzt mitspielen.';
+
+  @override
+  String get joinRequestDeniedMessage =>
+      'Deine Beitrittsanfrage wurde abgelehnt.';
+
+  @override
+  String joinRequestCreatedForDm(String playerName, String username) {
+    return '$playerName ($username) möchte deiner Kampagne beitreten.';
+  }
+
+  @override
+  String get waitingForApprovalTitle => 'Warte auf Freigabe';
+
+  @override
+  String waitingForApprovalText(String characterName) {
+    return 'Deine Anfrage für „$characterName“ liegt bei deiner Spielleitung. Sobald sie zustimmt, kannst du hier mitspielen.';
+  }
+
+  @override
+  String get enterCodeAgainAction => 'Code neu eingeben';
+
+  @override
+  String get newCampagneIntro =>
+      'Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.';
+
+  @override
+  String get createAction => 'Anlegen';
+
+  @override
+  String get invitePlayersAction => 'Spieler einladen';
+
+  @override
+  String get noPlayersYetHint =>
+      'Noch keine Spieler dabei. Lade deine Gruppe über „Spieler einladen“ ein.';
+
+  @override
+  String get invitePlayersInstruction =>
+      'In QuestKeeper auf „Kampagne beitreten“ tippen und diesen Code eingeben.';
+
+  @override
+  String get invitePlayersApprovalHint =>
+      'Die Anfragen erscheinen danach unter „Beitrittsanfragen“. Mit ✓ nimmst du jemanden auf.';
+
+  @override
+  String get copyCodeAction => 'Code kopieren';
+
+  @override
+  String get copiedConfirmation => 'Kopiert';
+
+  @override
+  String get shareInviteAction => 'Einladung teilen';
+
+  @override
+  String inviteShareText(String campagneName, String code) {
+    return 'Spiel mit in meiner Runde „$campagneName“! Öffne QuestKeeper, tippe auf „Kampagne beitreten“ und gib diesen Code ein: $code';
+  }
+
+  @override
+  String inviteShareSubject(String campagneName) {
+    return 'Einladung zu „$campagneName“';
+  }
+
+  @override
+  String get qrCodeHint => 'Der QR-Code enthält nur den Code.';
+
+  @override
+  String get closeAction => 'Schließen';
+
+  @override
+  String get errorDetailsStatusLabel => 'HTTP-Status:';
+
+  @override
+  String get errorDetailsServerLabel => 'Server-Antwort:';
+
+  @override
+  String get errorDetailsDescriptionLabel => 'Beschreibung:';
+
+  @override
+  String get errorMessageNoConnection =>
+      'Die Verbindung zum Server hat nicht geklappt. Prüfe deine Internetverbindung und versuche es noch einmal.';
+
+  @override
+  String get errorMessageBadRequest =>
+      'Der Server konnte die Eingabe nicht verarbeiten. Prüfe deine Angaben und versuche es noch einmal.';
+
+  @override
+  String get errorMessageUnauthorized =>
+      'Dafür fehlt dir die Berechtigung. Melde dich gegebenenfalls neu an.';
+
+  @override
+  String get errorMessageNotFound =>
+      'Das gesuchte Element gibt es nicht (mehr).';
+
+  @override
+  String get errorMessageConflict =>
+      'Das wurde gerade an anderer Stelle geändert. Lade neu und versuche es noch einmal.';
+
+  @override
+  String get errorMessageServer =>
+      'Auf dem Server ist ein Fehler aufgetreten. Versuche es später noch einmal.';
+
+  @override
+  String get errorMessageUnknown =>
+      'Etwas ist schiefgelaufen. Versuche es noch einmal.';
 }

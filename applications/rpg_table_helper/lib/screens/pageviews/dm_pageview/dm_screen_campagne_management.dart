@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
@@ -15,6 +16,7 @@ import 'package:quest_keeper/generated/swaggen/swagger.enums.swagger.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
+import 'package:quest_keeper/helpers/modals/show_invite_players_sheet.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
@@ -31,6 +33,8 @@ class DmScreenCampagneManagement extends ConsumerStatefulWidget {
   const DmScreenCampagneManagement({
     super.key,
   });
+
+  static const invitePlayersButtonKey = ValueKey('invitePlayersButton');
 
   @override
   ConsumerState<DmScreenCampagneManagement> createState() =>
@@ -75,6 +79,10 @@ class _DmScreenCampagneManagementState
   Widget build(BuildContext context) {
     var connectionDetails = ref.watch(connectionDetailsProvider).value;
     var rpgConfig = ref.watch(rpgConfigurationProvider).value;
+    var joinCode = connectionDetails?.sessionConnectionNumberForPlayers;
+    var campagneName = rpgConfig?.rpgName ?? "";
+    var playerWidgets =
+        getAllPlayersOfflineStatusWidgets(connectionDetails, rpgConfig);
 
     return Container(
       color: characterSheetSurfaceColor(context),
@@ -84,6 +92,53 @@ class _DmScreenCampagneManagementState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // SL-4: the page names the campagne it manages.
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      campagneName,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(
+                              color: CustomThemeProvider.of(context)
+                                  .theme
+                                  .darkTextColor,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  if (joinCode != null) ...[
+                    SizedBox(width: 10),
+                    CustomButton(
+                      key: DmScreenCampagneManagement.invitePlayersButtonKey,
+                      variant: CustomButtonVariant.AccentButton,
+                      icon: CustomFaIcon(
+                        icon: FontAwesomeIcons.userPlus,
+                        size: 16,
+                        color: isNightCartographerActive(context)
+                            ? CustomThemeProvider.of(context).theme.bgColor
+                            : CustomThemeProvider.of(context).theme.textColor,
+                      ),
+                      label: S.of(context).invitePlayersAction,
+                      onPressed: () async {
+                        await showInvitePlayersSheet(
+                          context,
+                          joinCode: joinCode,
+                          campagneName: campagneName,
+                        );
+                      },
+                    ),
+                  ],
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
               Text(
                 S.of(context).allPlayers,
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(
@@ -97,10 +152,17 @@ class _DmScreenCampagneManagementState
               if (isLoadingFromServer) CustomLoadingSpinner(),
 
               // Wrap with player images (black and white for offline) and label for each image
+              if (!isLoadingFromServer && playerWidgets.isEmpty)
+                Text(
+                  S.of(context).noPlayersYetHint,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                      color:
+                          CustomThemeProvider.of(context).theme.darkTextColor),
+                ),
               if (!isLoadingFromServer)
                 Wrap(spacing: 20, runSpacing: 20, children: [
-                  ...getAllPlayersOfflineStatusWidgets(
-                      connectionDetails, rpgConfig),
+                  ...playerWidgets,
                 ]),
               SizedBox(
                 height: 10,
@@ -118,9 +180,9 @@ class _DmScreenCampagneManagementState
                     fontWeight: FontWeight.bold),
               ),
 
-              if (connectionDetails?.sessionConnectionNumberForPlayers != null)
+              if (joinCode != null)
                 Text(
-                  "${S.of(context).joinCodeForNewPlayers}${connectionDetails!.sessionConnectionNumberForPlayers!}",
+                  S.of(context).joinCodeForNewPlayers(joinCode),
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color:
                           CustomThemeProvider.of(context).theme.darkTextColor,
@@ -209,7 +271,7 @@ class _DmScreenCampagneManagementState
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 10),
                                     child: CupertinoButton(
-                                        minSize: 0,
+                                        minimumSize: Size(0, 0),
                                         padding: EdgeInsets.zero,
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -269,7 +331,7 @@ class _DmScreenCampagneManagementState
                                   Padding(
                                     padding: EdgeInsets.only(left: 10),
                                     child: CupertinoButton(
-                                        minSize: 0,
+                                        minimumSize: Size(0, 0),
                                         padding: EdgeInsets.zero,
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -484,7 +546,7 @@ class _DmScreenCampagneManagementState
               showRecipes: false,
             ));
       },
-      minSize: 0,
+      minimumSize: Size(0, 0),
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

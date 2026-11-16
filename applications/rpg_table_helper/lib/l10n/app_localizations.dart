@@ -287,31 +287,31 @@ abstract class AppLocalizations {
   /// No description provided for @addCharacterToCampagneModalTitle.
   ///
   /// In de, this message translates to:
-  /// **'Charakter zur Kampagne hinzufügen'**
+  /// **'Kampagne beitreten'**
   String get addCharacterToCampagneModalTitle;
 
   /// No description provided for @assignCharacterToCampagneModalContent.
   ///
   /// In de, this message translates to:
-  /// **'Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.'**
+  /// **'Dein Charakter ist noch keiner Kampagne zugeordnet. Gib den Beitrittscode ein, den du von deiner Spielleitung bekommen hast. Sie bestätigt dann deine Anfrage.'**
   String get assignCharacterToCampagneModalContent;
 
   /// No description provided for @joinCode.
   ///
   /// In de, this message translates to:
-  /// **'Join Code:'**
+  /// **'Beitrittscode'**
   String get joinCode;
 
   /// No description provided for @genericErrorModalHeader.
   ///
   /// In de, this message translates to:
-  /// **'Fehler'**
+  /// **'Das hat nicht geklappt'**
   String get genericErrorModalHeader;
 
   /// No description provided for @genericErrorModalTechnicalDetailsHeader.
   ///
   /// In de, this message translates to:
-  /// **'Technische Details: '**
+  /// **'Technische Details'**
   String get genericErrorModalTechnicalDetailsHeader;
 
   /// No description provided for @genericErrorModalTechnicalDetailsErrorCodeRowLabel.
@@ -611,14 +611,14 @@ abstract class AppLocalizations {
   /// No description provided for @openJoinRequests.
   ///
   /// In de, this message translates to:
-  /// **'Join Anfragen:'**
+  /// **'Beitrittsanfragen'**
   String get openJoinRequests;
 
   /// No description provided for @joinCodeForNewPlayers.
   ///
   /// In de, this message translates to:
-  /// **'Join Code (für neue Spieler):'**
-  String get joinCodeForNewPlayers;
+  /// **'Beitrittscode: {code}'**
+  String joinCodeForNewPlayers(String code);
 
   /// No description provided for @noOpenJoinRequests.
   ///
@@ -629,7 +629,7 @@ abstract class AppLocalizations {
   /// No description provided for @user.
   ///
   /// In de, this message translates to:
-  /// **'User:'**
+  /// **'Benutzer:'**
   String get user;
 
   /// No description provided for @character.
@@ -815,7 +815,7 @@ abstract class AppLocalizations {
   /// No description provided for @ok.
   ///
   /// In de, this message translates to:
-  /// **'Ok'**
+  /// **'OK'**
   String get ok;
 
   /// No description provided for @rpgConfigurationDmWizardStep2Tutorial.
@@ -1301,19 +1301,19 @@ abstract class AppLocalizations {
   /// No description provided for @startAsDm.
   ///
   /// In de, this message translates to:
-  /// **'Als DM spielen'**
+  /// **'Als Spielleitung'**
   String get startAsDm;
 
   /// No description provided for @youOwnXCampaigns.
   ///
   /// In de, this message translates to:
-  /// **'Dir gehören {count} Kampagnen'**
+  /// **'{count, plural, =0{Du leitest noch keine Kampagne.} one{Du leitest 1 Kampagne.} other{Du leitest {count} Kampagnen.}}'**
   String youOwnXCampaigns(int count);
 
   /// No description provided for @joinAsPlayer.
   ///
   /// In de, this message translates to:
-  /// **'Tritt als Spieler bei'**
+  /// **'Als Spieler'**
   String get joinAsPlayer;
 
   /// No description provided for @chooseACharacter.
@@ -1325,7 +1325,7 @@ abstract class AppLocalizations {
   /// No description provided for @youOwnXCharacters.
   ///
   /// In de, this message translates to:
-  /// **'Dir gehören {count} Charaktere'**
+  /// **'{count, plural, =0{Du hast noch keinen Charakter.} one{Du hast 1 Charakter.} other{Du hast {count} Charaktere.}}'**
   String youOwnXCharacters(int count);
 
   /// No description provided for @campaigneName.
@@ -2911,6 +2911,318 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{count, plural, =0{Keine Rezepte} one{1 Rezept} other{{count} Rezepte}}'**
   String wizardSummaryRecipeCount(int count);
+
+  /// No description provided for @welcomeToQuestKeeper.
+  ///
+  /// In de, this message translates to:
+  /// **'Willkommen bei QuestKeeper'**
+  String get welcomeToQuestKeeper;
+
+  /// No description provided for @questKeeperIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'QuestKeeper begleitet eure Pen-&-Paper-Runde am Tisch. Die Spielleitung richtet die Kampagne ein, alle anderen führen ihren Charakterbogen in der App. Trefferpunkte, Gegenstände und geteilte Notizen sind dabei für alle live aktuell.'**
+  String get questKeeperIntro;
+
+  /// No description provided for @pathRunAGameTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich leite eine Runde'**
+  String get pathRunAGameTitle;
+
+  /// No description provided for @pathRunAGameSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagne anlegen und Spieler einladen'**
+  String get pathRunAGameSubtitle;
+
+  /// No description provided for @pathJoinAGameTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich trete einer Runde bei'**
+  String get pathJoinAGameTitle;
+
+  /// No description provided for @pathJoinAGameSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit dem Code deiner Spielleitung'**
+  String get pathJoinAGameSubtitle;
+
+  /// No description provided for @joinCampagneAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagne beitreten'**
+  String get joinCampagneAction;
+
+  /// No description provided for @createCampagneAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Kampagne anlegen'**
+  String get createCampagneAction;
+
+  /// No description provided for @noCampagnesYetHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Leg eine Kampagne an, richte den Charakterbogen ein und lade deine Gruppe mit einem Code ein.'**
+  String get noCampagnesYetHint;
+
+  /// No description provided for @noCharactersYetHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Tritt mit dem Code deiner Spielleitung einer Kampagne bei. Deinen Charakter legst du dabei an.'**
+  String get noCharactersYetHint;
+
+  /// No description provided for @campagneSettingsChangedAt.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen geändert: {date}'**
+  String campagneSettingsChangedAt(String date);
+
+  /// No description provided for @openJoinRequestsBadge.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, one{1 offene Anfrage} other{{count} offene Anfragen}}'**
+  String openJoinRequestsBadge(int count);
+
+  /// No description provided for @characterLastEditedAt.
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt bearbeitet: {date}'**
+  String characterLastEditedAt(String date);
+
+  /// No description provided for @waitingForDmApproval.
+  ///
+  /// In de, this message translates to:
+  /// **'Warte auf Freigabe durch die Spielleitung'**
+  String get waitingForDmApproval;
+
+  /// No description provided for @characterNotInCampagneHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch in keiner Kampagne. Tippe, um mit einem Code beizutreten.'**
+  String get characterNotInCampagneHint;
+
+  /// No description provided for @joinCampagneNewCharacterIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Gib den Beitrittscode ein, den du von deiner Spielleitung bekommen hast, und wie dein Charakter heißen soll. Den Rest des Charakterbogens füllst du aus, sobald die Spielleitung dich aufgenommen hat.'**
+  String get joinCampagneNewCharacterIntro;
+
+  /// No description provided for @joinCodeEmptyError.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib den Beitrittscode ein.'**
+  String get joinCodeEmptyError;
+
+  /// No description provided for @joinCodeIncompleteError.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Code hat sechs Ziffern, zum Beispiel 123-456.'**
+  String get joinCodeIncompleteError;
+
+  /// No description provided for @joinCodeUnknownError.
+  ///
+  /// In de, this message translates to:
+  /// **'Diesen Code gibt es nicht. Prüfe ihn mit deiner Spielleitung.'**
+  String get joinCodeUnknownError;
+
+  /// No description provided for @characterNameFieldLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Name deines Charakters'**
+  String get characterNameFieldLabel;
+
+  /// No description provided for @nameRequiredError.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Namen ein'**
+  String get nameRequiredError;
+
+  /// No description provided for @joinAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Beitreten'**
+  String get joinAction;
+
+  /// No description provided for @joinRequestSentConfirmation.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage gesendet. Sobald deine Spielleitung zustimmt, kannst du mitspielen.'**
+  String get joinRequestSentConfirmation;
+
+  /// No description provided for @joinRequestAcceptedMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Beitrittsanfrage wurde angenommen. Du kannst jetzt mitspielen.'**
+  String get joinRequestAcceptedMessage;
+
+  /// No description provided for @joinRequestDeniedMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Beitrittsanfrage wurde abgelehnt.'**
+  String get joinRequestDeniedMessage;
+
+  /// No description provided for @joinRequestCreatedForDm.
+  ///
+  /// In de, this message translates to:
+  /// **'{playerName} ({username}) möchte deiner Kampagne beitreten.'**
+  String joinRequestCreatedForDm(String playerName, String username);
+
+  /// No description provided for @waitingForApprovalTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Warte auf Freigabe'**
+  String get waitingForApprovalTitle;
+
+  /// No description provided for @waitingForApprovalText.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfrage für „{characterName}“ liegt bei deiner Spielleitung. Sobald sie zustimmt, kannst du hier mitspielen.'**
+  String waitingForApprovalText(String characterName);
+
+  /// No description provided for @enterCodeAgainAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Code neu eingeben'**
+  String get enterCodeAgainAction;
+
+  /// No description provided for @newCampagneIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.'**
+  String get newCampagneIntro;
+
+  /// No description provided for @createAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Anlegen'**
+  String get createAction;
+
+  /// No description provided for @invitePlayersAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler einladen'**
+  String get invitePlayersAction;
+
+  /// No description provided for @noPlayersYetHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Spieler dabei. Lade deine Gruppe über „Spieler einladen“ ein.'**
+  String get noPlayersYetHint;
+
+  /// No description provided for @invitePlayersInstruction.
+  ///
+  /// In de, this message translates to:
+  /// **'In QuestKeeper auf „Kampagne beitreten“ tippen und diesen Code eingeben.'**
+  String get invitePlayersInstruction;
+
+  /// No description provided for @invitePlayersApprovalHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Anfragen erscheinen danach unter „Beitrittsanfragen“. Mit ✓ nimmst du jemanden auf.'**
+  String get invitePlayersApprovalHint;
+
+  /// No description provided for @copyCodeAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Code kopieren'**
+  String get copyCodeAction;
+
+  /// No description provided for @copiedConfirmation.
+  ///
+  /// In de, this message translates to:
+  /// **'Kopiert'**
+  String get copiedConfirmation;
+
+  /// No description provided for @shareInviteAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Einladung teilen'**
+  String get shareInviteAction;
+
+  /// No description provided for @inviteShareText.
+  ///
+  /// In de, this message translates to:
+  /// **'Spiel mit in meiner Runde „{campagneName}“! Öffne QuestKeeper, tippe auf „Kampagne beitreten“ und gib diesen Code ein: {code}'**
+  String inviteShareText(String campagneName, String code);
+
+  /// No description provided for @inviteShareSubject.
+  ///
+  /// In de, this message translates to:
+  /// **'Einladung zu „{campagneName}“'**
+  String inviteShareSubject(String campagneName);
+
+  /// No description provided for @qrCodeHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Der QR-Code enthält nur den Code.'**
+  String get qrCodeHint;
+
+  /// No description provided for @closeAction.
+  ///
+  /// In de, this message translates to:
+  /// **'Schließen'**
+  String get closeAction;
+
+  /// No description provided for @errorDetailsStatusLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'HTTP-Status:'**
+  String get errorDetailsStatusLabel;
+
+  /// No description provided for @errorDetailsServerLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Server-Antwort:'**
+  String get errorDetailsServerLabel;
+
+  /// No description provided for @errorDetailsDescriptionLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibung:'**
+  String get errorDetailsDescriptionLabel;
+
+  /// No description provided for @errorMessageNoConnection.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Verbindung zum Server hat nicht geklappt. Prüfe deine Internetverbindung und versuche es noch einmal.'**
+  String get errorMessageNoConnection;
+
+  /// No description provided for @errorMessageBadRequest.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Server konnte die Eingabe nicht verarbeiten. Prüfe deine Angaben und versuche es noch einmal.'**
+  String get errorMessageBadRequest;
+
+  /// No description provided for @errorMessageUnauthorized.
+  ///
+  /// In de, this message translates to:
+  /// **'Dafür fehlt dir die Berechtigung. Melde dich gegebenenfalls neu an.'**
+  String get errorMessageUnauthorized;
+
+  /// No description provided for @errorMessageNotFound.
+  ///
+  /// In de, this message translates to:
+  /// **'Das gesuchte Element gibt es nicht (mehr).'**
+  String get errorMessageNotFound;
+
+  /// No description provided for @errorMessageConflict.
+  ///
+  /// In de, this message translates to:
+  /// **'Das wurde gerade an anderer Stelle geändert. Lade neu und versuche es noch einmal.'**
+  String get errorMessageConflict;
+
+  /// No description provided for @errorMessageServer.
+  ///
+  /// In de, this message translates to:
+  /// **'Auf dem Server ist ein Fehler aufgetreten. Versuche es später noch einmal.'**
+  String get errorMessageServer;
+
+  /// No description provided for @errorMessageUnknown.
+  ///
+  /// In de, this message translates to:
+  /// **'Etwas ist schiefgelaufen. Versuche es noch einmal.'**
+  String get errorMessageUnknown;
 }
 
 class _AppLocalizationsDelegate

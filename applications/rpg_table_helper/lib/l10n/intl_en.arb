@@ -30,11 +30,11 @@
   "additionalSettings": "Additional settings",
   "hidePropertyForCharacter": "Hide property for my character",
   "hideHeading": "Hide heading",
-  "addCharacterToCampagneModalTitle": "Add character to campaign",
-  "assignCharacterToCampagneModalContent": "You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.",
-  "joinCode": "Join Code:",
-  "genericErrorModalHeader": "Error",
-  "genericErrorModalTechnicalDetailsHeader": "Technical details: ",
+  "addCharacterToCampagneModalTitle": "Join a campaign",
+  "assignCharacterToCampagneModalContent": "Your character is not part of a campaign yet. Enter the join code you got from your game master. They will then confirm your request.",
+  "joinCode": "Join code",
+  "genericErrorModalHeader": "That didn't work",
+  "genericErrorModalTechnicalDetailsHeader": "Technical details",
   "genericErrorModalTechnicalDetailsErrorCodeRowLabel": "Error code:",
   "genericErrorModalTechnicalDetailsExceptionRowLabel": "Error text:",
   "nameOfPropertyLabel": "Name of property",
@@ -84,8 +84,8 @@
   "online": "Online",
   "offline": "Offline",
   "allPlayers": "All players:",
-  "openJoinRequests": "Join requests:",
-  "joinCodeForNewPlayers": "Join code (for new players):",
+  "openJoinRequests": "Join requests",
+  "joinCodeForNewPlayers": "Join code: {code}",
   "noOpenJoinRequests": "No open requests",
   "user": "User:",
   "character": "Character:",
@@ -126,7 +126,7 @@
   "newItemsMarkdownSingular": "# New item",
   "receivedOneNewItemText": "You received one new item:",
   "receivedXNewItems": "You received {amount} new items:",
-  "ok": "Ok",
+  "ok": "OK",
   "rpgConfigurationDmWizardStep2Tutorial": "Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.",
   "levelAbbr": "LVL",
   "addAdditionalEnemy": "Add additional enemy",
@@ -207,11 +207,11 @@
   "addItems": "Add items",
   "selectGameMode": "Select Game Mode",
   "chooseACampagne": "Choose a campaign",
-  "startAsDm": "Play as DM",
-  "youOwnXCampaigns": "You own {count} campaigns",
-  "joinAsPlayer": "Join as Player",
+  "startAsDm": "As game master",
+  "youOwnXCampaigns": "{count, plural, =0{You don't run a campaign yet.} one{You run 1 campaign.} other{You run {count} campaigns.}}",
+  "joinAsPlayer": "As player",
   "chooseACharacter": "Choose a character",
-  "youOwnXCharacters": "You own {count} characters",
+  "youOwnXCharacters": "{count, plural, =0{You don't have a character yet.} one{You have 1 character.} other{You have {count} characters.}}",
   "campaigneName": "Name",
   "helperTextForNameOfCampaign": "The name of the campaign",
   "newCampaign": "New campaign",
@@ -675,5 +675,137 @@
         "example": "3"
       }
     }
-  }
+  },
+  "@joinCodeForNewPlayers": {
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "699-457"
+      }
+    }
+  },
+  "@youOwnXCampaigns": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@youOwnXCharacters": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "welcomeToQuestKeeper": "Welcome to QuestKeeper",
+  "questKeeperIntro": "QuestKeeper supports your tabletop group at the table. The game master sets up the campaign, everyone else keeps their character sheet in the app. Hit points, items and shared notes stay up to date for everyone, live.",
+  "pathRunAGameTitle": "I run a game",
+  "pathRunAGameSubtitle": "Create a campaign and invite players",
+  "pathJoinAGameTitle": "I join a game",
+  "pathJoinAGameSubtitle": "With the code from your game master",
+  "joinCampagneAction": "Join a campaign",
+  "createCampagneAction": "Create campaign",
+  "noCampagnesYetHint": "Create a campaign, set up the character sheet and invite your group with a code.",
+  "noCharactersYetHint": "Join a campaign with the code from your game master. You create your character along the way.",
+  "campagneSettingsChangedAt": "Settings changed: {date}",
+  "@campagneSettingsChangedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "openJoinRequestsBadge": "{count, plural, one{1 open request} other{{count} open requests}}",
+  "@openJoinRequestsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "characterLastEditedAt": "Last edited: {date}",
+  "@characterLastEditedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForDmApproval": "Waiting for the game master to approve",
+  "characterNotInCampagneHint": "Not in a campaign yet. Tap to join with a code.",
+  "joinCampagneNewCharacterIntro": "Enter the join code you got from your game master and the name of your character. You fill in the rest of the character sheet once the game master has let you in.",
+  "joinCodeEmptyError": "Please enter the join code.",
+  "joinCodeIncompleteError": "The code has six digits, for example 123-456.",
+  "joinCodeUnknownError": "This code does not exist. Check it with your game master.",
+  "characterNameFieldLabel": "Name of your character",
+  "nameRequiredError": "Please enter a name",
+  "joinAction": "Join",
+  "joinRequestSentConfirmation": "Request sent. As soon as your game master approves, you can play.",
+  "joinRequestAcceptedMessage": "Your join request was accepted. You can play now.",
+  "joinRequestDeniedMessage": "Your join request was declined.",
+  "joinRequestCreatedForDm": "{playerName} ({username}) wants to join your campaign.",
+  "@joinRequestCreatedForDm": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      },
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForApprovalTitle": "Waiting for approval",
+  "waitingForApprovalText": "Your request for “{characterName}” is with your game master. As soon as they approve, you can play here.",
+  "@waitingForApprovalText": {
+    "placeholders": {
+      "characterName": {
+        "type": "String"
+      }
+    }
+  },
+  "enterCodeAgainAction": "Enter code again",
+  "newCampagneIntro": "What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.",
+  "createAction": "Create",
+  "invitePlayersAction": "Invite players",
+  "noPlayersYetHint": "No players yet. Invite your group with “Invite players”.",
+  "invitePlayersInstruction": "In QuestKeeper, tap “Join a campaign” and enter this code.",
+  "invitePlayersApprovalHint": "Requests then show up under “Join requests”. Tap ✓ to let someone in.",
+  "copyCodeAction": "Copy code",
+  "copiedConfirmation": "Copied",
+  "shareInviteAction": "Share invitation",
+  "inviteShareText": "Play in my campaign “{campagneName}”! Open QuestKeeper, tap “Join a campaign” and enter this code: {code}",
+  "@inviteShareText": {
+    "placeholders": {
+      "campagneName": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareSubject": "Invitation to “{campagneName}”",
+  "@inviteShareSubject": {
+    "placeholders": {
+      "campagneName": {
+        "type": "String"
+      }
+    }
+  },
+  "qrCodeHint": "The QR code only contains the code.",
+  "closeAction": "Close",
+  "errorDetailsStatusLabel": "HTTP status:",
+  "errorDetailsServerLabel": "Server response:",
+  "errorDetailsDescriptionLabel": "Description:",
+  "errorMessageNoConnection": "Could not reach the server. Check your internet connection and try again.",
+  "errorMessageBadRequest": "The server could not process the input. Check your entries and try again.",
+  "errorMessageUnauthorized": "You are not allowed to do this. Sign in again if needed.",
+  "errorMessageNotFound": "This item does not exist (anymore).",
+  "errorMessageConflict": "This was just changed somewhere else. Reload and try again.",
+  "errorMessageServer": "Something went wrong on the server. Please try again later.",
+  "errorMessageUnknown": "Something went wrong. Please try again."
 }

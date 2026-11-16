@@ -5,165 +5,135 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:quest_keeper/components/static_grid.dart';
+import 'package:quest_keeper/components/app_style_dialog.dart';
+import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/humanreadable_response.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 
+/// Shows a failed [response] as a friendly dialog: a short German message,
+/// an "OK" button and the technical details (error code, status, server
+/// text) folded away.
 Future<void> showGenericErrorModal<T>(
     HRResponseBase response, BuildContext context) async {
-  // show error to user
-  await customShowCupertinoModalBottomSheet(
-    backgroundColor: const Color.fromARGB(192, 21, 21, 21),
+  await showDialog<void>(
     context: context,
-    builder: (context) => Container(
-      color: Colors.red,
-      child: Padding(
-        padding: const EdgeInsets.all(21.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 7,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  S.of(context).genericErrorModalHeader,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontFamily: 'Ruwudu',
-                        color: CustomThemeProvider.of(context).theme.textColor,
-                        fontSize: 32,
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 14,
-            ),
-            Text(
-              "Error: ${response.humanReadableError ?? 'An unknown error occured...'}",
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomThemeProvider.of(context).theme.textColor,
-                    fontSize: 14,
-                  ),
-            ),
-            const SizedBox(
-              height: 28 * 2,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  Text(
-                    S.of(context).genericErrorModalTechnicalDetailsHeader,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontFamily: 'Ruwudu',
-                          color:
-                              CustomThemeProvider.of(context).theme.textColor,
-                          fontSize: 24,
-                        ),
-                  ),
-                  const SizedBox(
-                    height: 14,
-                  ),
-                  StaticGrid(
-                    rowCrossAxisAlignment: CrossAxisAlignment.start,
-                    columnCount: 2,
-                    expandedFlexValues: const [1, 3],
-                    rowGap: 30,
-                    children: [
-                      Text(
-                        S
-                            .of(context)
-                            .genericErrorModalTechnicalDetailsErrorCodeRowLabel,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        response.errorCode ?? '',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        S
-                            .of(context)
-                            .genericErrorModalTechnicalDetailsExceptionRowLabel,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        response.caughtException?.toString() ?? '',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        S
-                            .of(context)
-                            .genericErrorModalTechnicalDetailsExceptionRowLabel,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        response.errorFromServer?.toString() ?? '',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        S
-                            .of(context)
-                            .genericErrorModalTechnicalDetailsErrorCodeRowLabel,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                      Text(
-                        response.statusCode?.toString() ?? '',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: CustomThemeProvider.of(context)
-                                  .theme
-                                  .textColor,
-                              fontSize: 14,
-                            ),
-                      ),
-                    ],
-                  ),
-                ]),
-              ),
-            )
-          ],
-        ),
-      ),
-    ),
+    useRootNavigator: true,
+    builder: (dialogContext) => GenericErrorDialog(response: response),
   );
+}
+
+/// Plain-language message for a failed [response], picked by HTTP status.
+///
+/// The services only carry English developer texts
+/// ([HRResponseBase.humanReadableError]); those stay in the details.
+String genericErrorMessageFor(HRResponseBase response, S s) {
+  final status = response.statusCode;
+  if (status == null) return s.errorMessageNoConnection;
+  if (status == 401 || status == 403) return s.errorMessageUnauthorized;
+  if (status == 404) return s.errorMessageNotFound;
+  if (status == 409) return s.errorMessageConflict;
+  if (status >= 500) return s.errorMessageServer;
+  if (status >= 400) return s.errorMessageBadRequest;
+  return s.errorMessageUnknown;
+}
+
+class GenericErrorDialog extends StatelessWidget {
+  const GenericErrorDialog({super.key, required this.response});
+
+  final HRResponseBase response;
+
+  List<(String, String)> _detailRows(S s) {
+    final rows = <(String, String?)>[
+      (s.genericErrorModalTechnicalDetailsErrorCodeRowLabel, response.errorCode),
+      (s.errorDetailsStatusLabel, response.statusCode?.toString()),
+      (s.errorDetailsDescriptionLabel, response.humanReadableError),
+      (s.errorDetailsServerLabel, response.errorFromServer),
+      (
+        s.genericErrorModalTechnicalDetailsExceptionRowLabel,
+        response.caughtException?.toString()
+      ),
+    ]
+        .where((row) => row.$2 != null && row.$2!.trim().isNotEmpty)
+        .map((row) => (row.$1, row.$2!))
+        .toList();
+    return rows;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = CustomThemeProvider.of(context).theme;
+    final rows = _detailRows(s);
+    final detailStyle = appModalBodyStyle(context, fontSize: 13);
+
+    return AppStyleDialog(
+      title: s.genericErrorModalHeader,
+      onClose: () => Navigator.of(context).pop(),
+      actions: [
+        CustomButton(
+          variant: CustomButtonVariant.AccentButton,
+          label: s.ok,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            genericErrorMessageFor(response, s),
+            style: appModalBodyStyle(context),
+          ),
+          if (rows.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Theme(
+              // no divider lines around the expansion tile
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                key: const ValueKey('genericErrorDetails'),
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: const EdgeInsets.only(bottom: 10),
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                iconColor: theme.darkTextColor,
+                collapsedIconColor: theme.darkTextColor,
+                textColor: theme.darkTextColor,
+                collapsedTextColor: theme.darkTextColor,
+                title: Text(
+                  s.genericErrorModalTechnicalDetailsHeader,
+                  style: appModalBodyStyle(context, fontSize: 14)
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                children: [
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 240),
+                    child: SingleChildScrollView(
+                      child: SelectableText.rich(
+                        TextSpan(
+                          style: detailStyle,
+                          children: [
+                            for (final row in rows) ...[
+                              TextSpan(
+                                text: '${row.$1} ',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: '${row.$2}\n'),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 // -------------------------------------------------------------------------------------

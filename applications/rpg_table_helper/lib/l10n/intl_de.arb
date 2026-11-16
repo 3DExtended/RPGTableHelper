@@ -46,11 +46,11 @@
   "additionalSettings": "Erweiterte Optionen",
   "hidePropertyForCharacter": "Eigenschaft für meinen Charakter ausblenden",
   "hideHeading": "Überschrift ausblenden",
-  "addCharacterToCampagneModalTitle": "Charakter zur Kampagne hinzufügen",
-  "assignCharacterToCampagneModalContent": "Du hast zwar einen Charakter erstellt, dieser ist aber noch keine Season bzw. Kampagne zugeordnet. Gebe hier den Join Code ein, den du von deinem DM erhältst, um eine Anfrage an deinen DM zu senden.",
-  "joinCode": "Join Code:",
-  "genericErrorModalHeader": "Fehler",
-  "genericErrorModalTechnicalDetailsHeader": "Technische Details: ",
+  "addCharacterToCampagneModalTitle": "Kampagne beitreten",
+  "assignCharacterToCampagneModalContent": "Dein Charakter ist noch keiner Kampagne zugeordnet. Gib den Beitrittscode ein, den du von deiner Spielleitung bekommen hast. Sie bestätigt dann deine Anfrage.",
+  "joinCode": "Beitrittscode",
+  "genericErrorModalHeader": "Das hat nicht geklappt",
+  "genericErrorModalTechnicalDetailsHeader": "Technische Details",
   "genericErrorModalTechnicalDetailsErrorCodeRowLabel": "Fehlercode:",
   "genericErrorModalTechnicalDetailsExceptionRowLabel": "Fehlertext:",
   "nameOfPropertyLabel": "Name der Eigenschaft",
@@ -100,10 +100,10 @@
   "online": "Online",
   "offline": "Offline",
   "allPlayers": "Alle Spieler:",
-  "openJoinRequests": "Join Anfragen:",
-  "joinCodeForNewPlayers": "Join Code (für neue Spieler):",
+  "openJoinRequests": "Beitrittsanfragen",
+  "joinCodeForNewPlayers": "Beitrittscode: {code}",
   "noOpenJoinRequests": "Keine offenen Anfragen",
-  "user": "User:",
+  "user": "Benutzer:",
   "character": "Charakter:",
   "lastGrantedItems": "Letzte verteilte Items",
   "noItemsGranted": "Noch keine Items verteilt...",
@@ -150,7 +150,7 @@
       }
     }
   },
-  "ok": "Ok",
+  "ok": "OK",
   "rpgConfigurationDmWizardStep2Tutorial": "Nun kommen wir zu den Charakterbögen.\n\nJedes Rollenspiel hat unterschiedliche Eigenschaften, die die Spieler charakterisieren (z.B. wie viele Lebenspunkte ein Spieler hat).\n\nFür jede Eigenschaft musst du, als Spielleitung, definieren, wie die Spieler mit dieser Eigenschaft interagieren können. Hierbei benötigen wir für jede Eigenschaft drei Informationen von dir:\n\n1. Name der Eigenschaft: Wie soll dieser Wert auf dem Charakterbogen heißen? (z.B. „HP“, „SP“, „Name“, etc.)\n2. Werteart der Eigenschaft: Handelt es sich z.B. um einen Text, den der Spieler anpassen kann (z.B. Hintergrundgeschichte des Charakters) oder um einen Zahlenwert (z.B. die Lebenspunkte)?\n3. Änderungsart: Manche dieser Eigenschaften werden regelmäßig angepasst (z.B. die aktuellen Lebenspunkte), andere hingegen nur selten (z.B. die maximalen Lebenspunkte). Damit dies bei der Erstellung der Charakterbögen berücksichtigt werden kann, musst du uns diese Information mitteilen.\n\nEigenschaften ordnest du in Tabs und Gruppen. Halte eine Eigenschaft gedrückt, um sie zu verschieben.",
   "levelAbbr": "LVL",
   "addAdditionalEnemy": "Neue Gegner hinzufügen",
@@ -231,8 +231,8 @@
   "addItems": "Items hinzufügen",
   "selectGameMode": "Rolle auswählen",
   "chooseACampagne": "Kampagne auswählen",
-  "startAsDm": "Als DM spielen",
-  "youOwnXCampaigns": "Dir gehören {count} Kampagnen",
+  "startAsDm": "Als Spielleitung",
+  "youOwnXCampaigns": "{count, plural, =0{Du leitest noch keine Kampagne.} one{Du leitest 1 Kampagne.} other{Du leitest {count} Kampagnen.}}",
   "@youOwnXCampaigns": {
     "placeholders": {
       "count": {
@@ -241,9 +241,9 @@
       }
     }
   },
-  "joinAsPlayer": "Tritt als Spieler bei",
+  "joinAsPlayer": "Als Spieler",
   "chooseACharacter": "Charakter auswählen",
-  "youOwnXCharacters": "Dir gehören {count} Charaktere",
+  "youOwnXCharacters": "{count, plural, =0{Du hast noch keinen Charakter.} one{Du hast 1 Charakter.} other{Du hast {count} Charaktere.}}",
   "@youOwnXCharacters": {
     "placeholders": {
       "count": {
@@ -715,5 +715,121 @@
         "example": "3"
       }
     }
-  }
+  },
+  "@joinCodeForNewPlayers": {
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "699-457"
+      }
+    }
+  },
+  "welcomeToQuestKeeper": "Willkommen bei QuestKeeper",
+  "questKeeperIntro": "QuestKeeper begleitet eure Pen-&-Paper-Runde am Tisch. Die Spielleitung richtet die Kampagne ein, alle anderen führen ihren Charakterbogen in der App. Trefferpunkte, Gegenstände und geteilte Notizen sind dabei für alle live aktuell.",
+  "pathRunAGameTitle": "Ich leite eine Runde",
+  "pathRunAGameSubtitle": "Kampagne anlegen und Spieler einladen",
+  "pathJoinAGameTitle": "Ich trete einer Runde bei",
+  "pathJoinAGameSubtitle": "Mit dem Code deiner Spielleitung",
+  "joinCampagneAction": "Kampagne beitreten",
+  "createCampagneAction": "Kampagne anlegen",
+  "noCampagnesYetHint": "Leg eine Kampagne an, richte den Charakterbogen ein und lade deine Gruppe mit einem Code ein.",
+  "noCharactersYetHint": "Tritt mit dem Code deiner Spielleitung einer Kampagne bei. Deinen Charakter legst du dabei an.",
+  "campagneSettingsChangedAt": "Einstellungen geändert: {date}",
+  "@campagneSettingsChangedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "openJoinRequestsBadge": "{count, plural, one{1 offene Anfrage} other{{count} offene Anfragen}}",
+  "@openJoinRequestsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "characterLastEditedAt": "Zuletzt bearbeitet: {date}",
+  "@characterLastEditedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForDmApproval": "Warte auf Freigabe durch die Spielleitung",
+  "characterNotInCampagneHint": "Noch in keiner Kampagne. Tippe, um mit einem Code beizutreten.",
+  "joinCampagneNewCharacterIntro": "Gib den Beitrittscode ein, den du von deiner Spielleitung bekommen hast, und wie dein Charakter heißen soll. Den Rest des Charakterbogens füllst du aus, sobald die Spielleitung dich aufgenommen hat.",
+  "joinCodeEmptyError": "Bitte gib den Beitrittscode ein.",
+  "joinCodeIncompleteError": "Der Code hat sechs Ziffern, zum Beispiel 123-456.",
+  "joinCodeUnknownError": "Diesen Code gibt es nicht. Prüfe ihn mit deiner Spielleitung.",
+  "characterNameFieldLabel": "Name deines Charakters",
+  "nameRequiredError": "Bitte gib einen Namen ein",
+  "joinAction": "Beitreten",
+  "joinRequestSentConfirmation": "Anfrage gesendet. Sobald deine Spielleitung zustimmt, kannst du mitspielen.",
+  "joinRequestAcceptedMessage": "Deine Beitrittsanfrage wurde angenommen. Du kannst jetzt mitspielen.",
+  "joinRequestDeniedMessage": "Deine Beitrittsanfrage wurde abgelehnt.",
+  "joinRequestCreatedForDm": "{playerName} ({username}) möchte deiner Kampagne beitreten.",
+  "@joinRequestCreatedForDm": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      },
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForApprovalTitle": "Warte auf Freigabe",
+  "waitingForApprovalText": "Deine Anfrage für „{characterName}“ liegt bei deiner Spielleitung. Sobald sie zustimmt, kannst du hier mitspielen.",
+  "@waitingForApprovalText": {
+    "placeholders": {
+      "characterName": {
+        "type": "String"
+      }
+    }
+  },
+  "enterCodeAgainAction": "Code neu eingeben",
+  "newCampagneIntro": "Wie soll deine Kampagne heißen? Danach führt dich der Assistent durch Charakterbogen, Währung und Gegenstände.",
+  "createAction": "Anlegen",
+  "invitePlayersAction": "Spieler einladen",
+  "noPlayersYetHint": "Noch keine Spieler dabei. Lade deine Gruppe über „Spieler einladen“ ein.",
+  "invitePlayersInstruction": "In QuestKeeper auf „Kampagne beitreten“ tippen und diesen Code eingeben.",
+  "invitePlayersApprovalHint": "Die Anfragen erscheinen danach unter „Beitrittsanfragen“. Mit ✓ nimmst du jemanden auf.",
+  "copyCodeAction": "Code kopieren",
+  "copiedConfirmation": "Kopiert",
+  "shareInviteAction": "Einladung teilen",
+  "inviteShareText": "Spiel mit in meiner Runde „{campagneName}“! Öffne QuestKeeper, tippe auf „Kampagne beitreten“ und gib diesen Code ein: {code}",
+  "@inviteShareText": {
+    "placeholders": {
+      "campagneName": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteShareSubject": "Einladung zu „{campagneName}“",
+  "@inviteShareSubject": {
+    "placeholders": {
+      "campagneName": {
+        "type": "String"
+      }
+    }
+  },
+  "qrCodeHint": "Der QR-Code enthält nur den Code.",
+  "closeAction": "Schließen",
+  "errorDetailsStatusLabel": "HTTP-Status:",
+  "errorDetailsServerLabel": "Server-Antwort:",
+  "errorDetailsDescriptionLabel": "Beschreibung:",
+  "errorMessageNoConnection": "Die Verbindung zum Server hat nicht geklappt. Prüfe deine Internetverbindung und versuche es noch einmal.",
+  "errorMessageBadRequest": "Der Server konnte die Eingabe nicht verarbeiten. Prüfe deine Angaben und versuche es noch einmal.",
+  "errorMessageUnauthorized": "Dafür fehlt dir die Berechtigung. Melde dich gegebenenfalls neu an.",
+  "errorMessageNotFound": "Das gesuchte Element gibt es nicht (mehr).",
+  "errorMessageConflict": "Das wurde gerade an anderer Stelle geändert. Lade neu und versuche es noch einmal.",
+  "errorMessageServer": "Auf dem Server ist ein Fehler aufgetreten. Versuche es später noch einmal.",
+  "errorMessageUnknown": "Etwas ist schiefgelaufen. Versuche es noch einmal."
 }

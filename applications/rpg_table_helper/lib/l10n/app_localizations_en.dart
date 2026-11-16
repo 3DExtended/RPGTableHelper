@@ -108,20 +108,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hideHeading => 'Hide heading';
 
   @override
-  String get addCharacterToCampagneModalTitle => 'Add character to campaign';
+  String get addCharacterToCampagneModalTitle => 'Join a campaign';
 
   @override
   String get assignCharacterToCampagneModalContent =>
-      'You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.';
+      'Your character is not part of a campaign yet. Enter the join code you got from your game master. They will then confirm your request.';
 
   @override
-  String get joinCode => 'Join Code:';
+  String get joinCode => 'Join code';
 
   @override
-  String get genericErrorModalHeader => 'Error';
+  String get genericErrorModalHeader => 'That didn\'t work';
 
   @override
-  String get genericErrorModalTechnicalDetailsHeader => 'Technical details: ';
+  String get genericErrorModalTechnicalDetailsHeader => 'Technical details';
 
   @override
   String get genericErrorModalTechnicalDetailsErrorCodeRowLabel =>
@@ -282,10 +282,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allPlayers => 'All players:';
 
   @override
-  String get openJoinRequests => 'Join requests:';
+  String get openJoinRequests => 'Join requests';
 
   @override
-  String get joinCodeForNewPlayers => 'Join code (for new players):';
+  String joinCodeForNewPlayers(String code) {
+    return 'Join code: $code';
+  }
 
   @override
   String get noOpenJoinRequests => 'No open requests';
@@ -389,7 +391,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get ok => 'Ok';
+  String get ok => 'OK';
 
   @override
   String get rpgConfigurationDmWizardStep2Tutorial =>
@@ -641,22 +643,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseACampagne => 'Choose a campaign';
 
   @override
-  String get startAsDm => 'Play as DM';
+  String get startAsDm => 'As game master';
 
   @override
   String youOwnXCampaigns(int count) {
-    return 'You own $count campaigns';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You run $count campaigns.',
+      one: 'You run 1 campaign.',
+      zero: 'You don\'t run a campaign yet.',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get joinAsPlayer => 'Join as Player';
+  String get joinAsPlayer => 'As player';
 
   @override
   String get chooseACharacter => 'Choose a character';
 
   @override
   String youOwnXCharacters(int count) {
-    return 'You own $count characters';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You have $count characters.',
+      one: 'You have 1 character.',
+      zero: 'You don\'t have a character yet.',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1605,4 +1621,198 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get welcomeToQuestKeeper => 'Welcome to QuestKeeper';
+
+  @override
+  String get questKeeperIntro =>
+      'QuestKeeper supports your tabletop group at the table. The game master sets up the campaign, everyone else keeps their character sheet in the app. Hit points, items and shared notes stay up to date for everyone, live.';
+
+  @override
+  String get pathRunAGameTitle => 'I run a game';
+
+  @override
+  String get pathRunAGameSubtitle => 'Create a campaign and invite players';
+
+  @override
+  String get pathJoinAGameTitle => 'I join a game';
+
+  @override
+  String get pathJoinAGameSubtitle => 'With the code from your game master';
+
+  @override
+  String get joinCampagneAction => 'Join a campaign';
+
+  @override
+  String get createCampagneAction => 'Create campaign';
+
+  @override
+  String get noCampagnesYetHint =>
+      'Create a campaign, set up the character sheet and invite your group with a code.';
+
+  @override
+  String get noCharactersYetHint =>
+      'Join a campaign with the code from your game master. You create your character along the way.';
+
+  @override
+  String campagneSettingsChangedAt(String date) {
+    return 'Settings changed: $date';
+  }
+
+  @override
+  String openJoinRequestsBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count open requests',
+      one: '1 open request',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String characterLastEditedAt(String date) {
+    return 'Last edited: $date';
+  }
+
+  @override
+  String get waitingForDmApproval => 'Waiting for the game master to approve';
+
+  @override
+  String get characterNotInCampagneHint =>
+      'Not in a campaign yet. Tap to join with a code.';
+
+  @override
+  String get joinCampagneNewCharacterIntro =>
+      'Enter the join code you got from your game master and the name of your character. You fill in the rest of the character sheet once the game master has let you in.';
+
+  @override
+  String get joinCodeEmptyError => 'Please enter the join code.';
+
+  @override
+  String get joinCodeIncompleteError =>
+      'The code has six digits, for example 123-456.';
+
+  @override
+  String get joinCodeUnknownError =>
+      'This code does not exist. Check it with your game master.';
+
+  @override
+  String get characterNameFieldLabel => 'Name of your character';
+
+  @override
+  String get nameRequiredError => 'Please enter a name';
+
+  @override
+  String get joinAction => 'Join';
+
+  @override
+  String get joinRequestSentConfirmation =>
+      'Request sent. As soon as your game master approves, you can play.';
+
+  @override
+  String get joinRequestAcceptedMessage =>
+      'Your join request was accepted. You can play now.';
+
+  @override
+  String get joinRequestDeniedMessage => 'Your join request was declined.';
+
+  @override
+  String joinRequestCreatedForDm(String playerName, String username) {
+    return '$playerName ($username) wants to join your campaign.';
+  }
+
+  @override
+  String get waitingForApprovalTitle => 'Waiting for approval';
+
+  @override
+  String waitingForApprovalText(String characterName) {
+    return 'Your request for “$characterName” is with your game master. As soon as they approve, you can play here.';
+  }
+
+  @override
+  String get enterCodeAgainAction => 'Enter code again';
+
+  @override
+  String get newCampagneIntro =>
+      'What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.';
+
+  @override
+  String get createAction => 'Create';
+
+  @override
+  String get invitePlayersAction => 'Invite players';
+
+  @override
+  String get noPlayersYetHint =>
+      'No players yet. Invite your group with “Invite players”.';
+
+  @override
+  String get invitePlayersInstruction =>
+      'In QuestKeeper, tap “Join a campaign” and enter this code.';
+
+  @override
+  String get invitePlayersApprovalHint =>
+      'Requests then show up under “Join requests”. Tap ✓ to let someone in.';
+
+  @override
+  String get copyCodeAction => 'Copy code';
+
+  @override
+  String get copiedConfirmation => 'Copied';
+
+  @override
+  String get shareInviteAction => 'Share invitation';
+
+  @override
+  String inviteShareText(String campagneName, String code) {
+    return 'Play in my campaign “$campagneName”! Open QuestKeeper, tap “Join a campaign” and enter this code: $code';
+  }
+
+  @override
+  String inviteShareSubject(String campagneName) {
+    return 'Invitation to “$campagneName”';
+  }
+
+  @override
+  String get qrCodeHint => 'The QR code only contains the code.';
+
+  @override
+  String get closeAction => 'Close';
+
+  @override
+  String get errorDetailsStatusLabel => 'HTTP status:';
+
+  @override
+  String get errorDetailsServerLabel => 'Server response:';
+
+  @override
+  String get errorDetailsDescriptionLabel => 'Description:';
+
+  @override
+  String get errorMessageNoConnection =>
+      'Could not reach the server. Check your internet connection and try again.';
+
+  @override
+  String get errorMessageBadRequest =>
+      'The server could not process the input. Check your entries and try again.';
+
+  @override
+  String get errorMessageUnauthorized =>
+      'You are not allowed to do this. Sign in again if needed.';
+
+  @override
+  String get errorMessageNotFound => 'This item does not exist (anymore).';
+
+  @override
+  String get errorMessageConflict =>
+      'This was just changed somewhere else. Reload and try again.';
+
+  @override
+  String get errorMessageServer =>
+      'Something went wrong on the server. Please try again later.';
+
+  @override
+  String get errorMessageUnknown => 'Something went wrong. Please try again.';
 }

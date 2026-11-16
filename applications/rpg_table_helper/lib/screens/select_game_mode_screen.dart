@@ -2,41 +2,44 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/bordered_image.dart';
+import 'package:quest_keeper/components/app_style_dialog.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_loading_spinner.dart';
-import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
+import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/current_fight_provider.dart';
 import 'package:quest_keeper/helpers/date_time_extensions.dart';
 import 'package:quest_keeper/helpers/modals/ask_for_campagne_join_code.dart';
+import 'package:quest_keeper/helpers/modals/ask_for_new_campagne_name.dart';
 import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/helpers/rpg_configuration_provider.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/connection_details.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
-import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/dm_pageview/dm_page_screen.dart';
-import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_helpers.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/screens/preauthorized/login_screen.dart';
 import 'package:quest_keeper/screens/settings/user_settings_screen.dart';
+import 'package:quest_keeper/screens/wizards/all_wizard_configurations.dart';
 import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/auth/session_revoker.dart';
 import 'package:quest_keeper/services/config_sync/config_sync_session_controller.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/join_requests/pending_join_request_store.dart';
 import 'package:quest_keeper/services/join_requests/join_request_notification_controller.dart';
 import 'package:quest_keeper/services/rpg_entity_service.dart';
 import 'package:quest_keeper/services/session/connected_players_mapper.dart';
@@ -46,10 +49,14 @@ import 'package:quest_keeper/services/server_methods_service.dart';
 import 'package:quest_keeper/services/session_commands/session_command_notification_controller.dart';
 import 'package:quest_keeper/services/snack_bar_service.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
-import 'package:uuid/v7.dart';
 
 class SelectGameModeScreen extends ConsumerStatefulWidget {
   static const route = 'selectgamemode';
+
+  static const runAGamePathKey = ValueKey('runAGamePath');
+  static const joinAGamePathKey = ValueKey('joinAGamePath');
+  static const noCampagnesCtaKey = ValueKey('noCampagnesCta');
+  static const noCharactersCtaKey = ValueKey('noCharactersCta');
 
   const SelectGameModeScreen({super.key});
 
@@ -68,6 +75,13 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
   /// Character ids for which we already showed join-accepted UI (SSE or poll).
   final Set<String> _joinAcceptNotifiedCharacterIds = {};
+
+  /// Join requests sent from this device that the DM has not answered yet,
+  /// by character id (SP-1: "waiting for approval" on the character card).
+  Map<String, PendingJoinRequest> _pendingJoinRequests = {};
+
+  /// Open join requests per campagne id, for the badge on the DM's cards.
+  Map<String, int> _openJoinRequestCounts = {};
 
   @override
   void initState() {
@@ -137,12 +151,20 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
           );
     }
 
+    if ((campagnes ?? const <Campagne>[])
+        .any((c) => c.id?.value == event.campagneId)) {
+      setState(() {
+        _openJoinRequestCounts[event.campagneId] =
+            (_openJoinRequestCounts[event.campagneId] ?? 0) + 1;
+      });
+    }
+
     final snackService =
         DependencyProvider.of(context).getService<ISnackBarService>();
     snackService.showSnackBar(
       snack: SnackBar(
         content: Text(
-          '${event.playerName} (${event.username}) wants to join your campagne.',
+          S.of(context).joinRequestCreatedForDm(event.playerName, event.username),
         ),
         duration: const Duration(seconds: 8),
         showCloseIcon: true,
@@ -154,7 +176,23 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   void _onJoinRequestResolved(JoinRequestResolvedEvent event) {
     if (!mounted) return;
 
-    _notifyJoinResolved(accepted: event.accepted, source: 'sse');
+    final pending = _pendingJoinRequests.values.firstWhereOrNull(
+        (p) => p.campagneJoinRequestId == event.requestId);
+    if (pending != null) {
+      // Accepted or denied: either way the character is no longer waiting.
+      unawaited(ref
+          .read(pendingJoinRequestStoreProvider)
+          .remove(pending.playerCharacterId));
+      setState(() {
+        _pendingJoinRequests.remove(pending.playerCharacterId);
+      });
+    }
+
+    _notifyJoinResolved(
+      accepted: event.accepted,
+      source: 'sse',
+      playerCharacterId: pending?.playerCharacterId,
+    );
   }
 
   void _notifyJoinResolved({
@@ -174,8 +212,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       snack: SnackBar(
         content: Text(
           accepted
-              ? 'Your join request was accepted! You can now enter the campagne.'
-              : 'Your join request was denied.',
+              ? S.of(context).joinRequestAcceptedMessage
+              : S.of(context).joinRequestDeniedMessage,
         ),
         duration: const Duration(seconds: 8),
         showCloseIcon: true,
@@ -262,10 +300,49 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     await campagnesResponse.possiblyHandleError(context);
     if (!mounted) return;
     await charactersResponse.possiblyHandleError(context);
+    if (!mounted) return;
+
+    final pending = await reconcilePendingJoinRequests(
+      store: ref.read(pendingJoinRequestStoreProvider),
+      characters: charactersResponse.result ?? const [],
+    );
+    if (!mounted) return;
+
     setState(() {
       campagnes = campagnesResponse.result ?? [];
       characters = charactersResponse.result ?? [];
+      _pendingJoinRequests = pending;
       showLoadingSpinner = false;
+    });
+
+    unawaited(_refreshOpenJoinRequestCounts());
+  }
+
+  /// SL-3/SL-9: one request per campagne for the open-requests badge.
+  /// Best-effort: a failure only hides the badge, it never shows an error.
+  Future<void> _refreshOpenJoinRequestCounts() async {
+    final ownCampagnes = campagnes ?? const <Campagne>[];
+    if (ownCampagnes.isEmpty) return;
+    final service =
+        DependencyProvider.of(context).getService<IRpgEntityService>();
+
+    Future<MapEntry<String, int>?> countFor(Campagne campagne) async {
+      final id = campagne.id;
+      if (id?.value == null) return null;
+      try {
+        final response =
+            await service.getOpenJoinRequestsForCampagne(campagneId: id!);
+        if (!response.isSuccessful || response.result == null) return null;
+        return MapEntry(id.value!, response.result!.length);
+      } catch (_) {
+        return null;
+      }
+    }
+
+    final entries = await Future.wait(ownCampagnes.map(countFor));
+    if (!mounted) return;
+    setState(() {
+      _openJoinRequestCounts = Map.fromEntries(entries.nonNulls);
     });
   }
 
@@ -327,25 +404,47 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
-                            AddableColumnHeader(
-                                title: S.of(context).chooseACampagne,
-                                subtitle: S.of(context).startAsDm,
-                                subsubtitle: S
-                                    .of(context)
-                                    .youOwnXCampaigns(campagnes?.length ?? 0),
-                                onPressedHandler: () async {
-                                  createNewCampagne();
-                                }),
+                            _buildIntro(context),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            HorizontalLine(),
                             SizedBox(
                               height: 20,
                             ),
-                            Wrap(
-                              runSpacing: 10,
-                              spacing: 10,
-                              children: [
-                                ...getOpenCampagnes(),
-                              ],
+                            AddableColumnHeader(
+                              title: S.of(context).chooseACampagne,
+                              subtitle: S.of(context).startAsDm,
+                              subsubtitle: S
+                                  .of(context)
+                                  .youOwnXCampaigns(campagnes?.length ?? 0),
+                              actionLabel: (campagnes ?? []).isEmpty
+                                  ? null
+                                  : S.of(context).newCampaign,
+                              onPressedHandler: () async {
+                                await createNewCampagne();
+                              },
                             ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            if ((campagnes ?? []).isEmpty)
+                              EmptyListCallToAction(
+                                key: SelectGameModeScreen.noCampagnesCtaKey,
+                                text: S.of(context).noCampagnesYetHint,
+                                actionLabel: S.of(context).createCampagneAction,
+                                onPressed: () async {
+                                  await createNewCampagne();
+                                },
+                              )
+                            else
+                              Wrap(
+                                runSpacing: 10,
+                                spacing: 10,
+                                children: [
+                                  ...getOpenCampagnes(),
+                                ],
+                              ),
                             SizedBox(
                               height: 20,
                               width: 20,
@@ -356,24 +455,38 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
                               width: 20,
                             ),
                             AddableColumnHeader(
-                                title: S.of(context).chooseACharacter,
-                                subtitle: S.of(context).joinAsPlayer,
-                                subsubtitle: S
-                                    .of(context)
-                                    .youOwnXCharacters(characters?.length ?? 0),
-                                onPressedHandler: () async {
-                                  await createNewCharacter();
-                                }),
+                              title: S.of(context).chooseACharacter,
+                              subtitle: S.of(context).joinAsPlayer,
+                              subsubtitle: S
+                                  .of(context)
+                                  .youOwnXCharacters(characters?.length ?? 0),
+                              actionLabel: (characters ?? []).isEmpty
+                                  ? null
+                                  : S.of(context).joinCampagneAction,
+                              onPressedHandler: () async {
+                                await _joinCampagne();
+                              },
+                            ),
                             SizedBox(
                               height: 20,
                             ),
-                            Wrap(
-                              runSpacing: 10,
-                              spacing: 10,
-                              children: [
-                                ...getCharacters(),
-                              ],
-                            ),
+                            if ((characters ?? []).isEmpty)
+                              EmptyListCallToAction(
+                                key: SelectGameModeScreen.noCharactersCtaKey,
+                                text: S.of(context).noCharactersYetHint,
+                                actionLabel: S.of(context).joinCampagneAction,
+                                onPressed: () async {
+                                  await _joinCampagne();
+                                },
+                              )
+                            else
+                              Wrap(
+                                runSpacing: 10,
+                                spacing: 10,
+                                children: [
+                                  ...getCharacters(),
+                                ],
+                              ),
                             SizedBox(
                               height: 20,
                               width: 20,
@@ -389,161 +502,253 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     );
   }
 
-  List<Widget> getOpenCampagnes() {
-    return campagnes!
-        .map((campagne) => ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 500),
-              child: CupertinoButton(
-                onPressed: () async {
-                  await onCampagneSelected(campagne);
-                },
-                padding: EdgeInsets.zero,
-                minimumSize: Size(0, 0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: CustomThemeProvider.of(context).theme.darkColor),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: CustomFaIcon(
-                            icon: FontAwesomeIcons.peopleGroup,
-                            size: 32,
-                            color:
-                                CustomThemeProvider.of(context).theme.darkColor,
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: CustomMarkdownBody(
-                                        // TODO remove me?
-                                        text:
-                                            "# ${campagne.campagneName!}\n\n__Last updated:__ ${campagne.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Join Code:__ ${campagne.joinCode}\n\n__Config Length (Debug):__ ${(campagne.rpgConfiguration?.length ?? 0).toString()}"),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+  /// SL-3 / SP-1: what the app is, and the two ways in.
+  Widget _buildIntro(BuildContext context) {
+    final s = S.of(context);
+    final theme = CustomThemeProvider.of(context).theme;
+
+    return Column(
+      children: [
+        Text(
+          s.welcomeToQuestKeeper,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: theme.darkTextColor,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
               ),
-            ))
-        .toList();
+        ),
+        SizedBox(height: 10),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 700),
+          child: Text(
+            s.questKeeperIntro,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: theme.darkTextColor,
+                  fontSize: 16,
+                ),
+          ),
+        ),
+        SizedBox(height: 20),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 20,
+          runSpacing: 20,
+          children: [
+            RolePathCard(
+              key: SelectGameModeScreen.runAGamePathKey,
+              icon: FontAwesomeIcons.hatWizard,
+              title: s.pathRunAGameTitle,
+              subtitle: s.pathRunAGameSubtitle,
+              onPressed: () async {
+                await createNewCampagne();
+              },
+            ),
+            RolePathCard(
+              key: SelectGameModeScreen.joinAGamePathKey,
+              icon: FontAwesomeIcons.doorOpen,
+              title: s.pathJoinAGameTitle,
+              subtitle: s.pathJoinAGameSubtitle,
+              onPressed: () async {
+                await _joinCampagne();
+              },
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
-  List<Widget> getCharacters() {
-    return characters!
-        .map((character) => ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 500),
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () async {
-                  await onCharacterSelected(character);
-                },
-                minimumSize: Size(0, 0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                        color: CustomThemeProvider.of(context).theme.darkColor),
+  List<Widget> getOpenCampagnes() {
+    return campagnes!.map((campagne) {
+      final theme = CustomThemeProvider.of(context).theme;
+      final openRequests = _openJoinRequestCounts[campagne.id?.value] ?? 0;
+      final textStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: theme.darkTextColor,
+            fontSize: 14,
+          );
+
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: CupertinoButton(
+          onPressed: () async {
+            await onCampagneSelected(campagne);
+          },
+          padding: EdgeInsets.zero,
+          minimumSize: Size(0, 0),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: theme.darkColor),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: CustomFaIcon(
+                      icon: FontAwesomeIcons.peopleGroup,
+                      size: 32,
+                      color: theme.darkColor,
+                    ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20.0),
-                              child: CustomFaIcon(
-                                icon: FontAwesomeIcons.solidUser,
-                                size: 32,
-                                color: CustomThemeProvider.of(context)
-                                    .theme
-                                    .darkColor,
-                              ),
+                        _CardTitle(text: campagne.campagneName ?? ""),
+                        if (openRequests > 0)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: StatusBadge(
+                              key: ValueKey(
+                                  "openJoinRequestsBadge-${campagne.id?.value}"),
+                              icon: FontAwesomeIcons.userPlus,
+                              text: S
+                                  .of(context)
+                                  .openJoinRequestsBadge(openRequests),
+                              emphasized: true,
                             ),
-                            Expanded(
-                              child: Builder(builder: (context) {
-                                var characterNameToDisplay =
-                                    character.characterName!;
-                                var imageUrl =
-                                    "assets/images/charactercard_placeholder.png";
-
-                                if (character.rpgCharacterConfiguration !=
-                                    null) {
-                                  var parsedConfig =
-                                      RpgCharacterConfiguration.fromJson(
-                                          jsonDecode(character
-                                              .rpgCharacterConfiguration!));
-                                  characterNameToDisplay =
-                                      parsedConfig.characterName;
-
-                                  imageUrl = parsedConfig
-                                      .getImageUrlWithoutBasePath(null);
-                                }
-
-                                var fullImageUrl =
-                                    (imageUrl.startsWith("assets")
-                                        ? imageUrl
-                                        : apiImageUrl(imageUrl));
-                                return Row(
-                                  children: [
-                                    Expanded(
-                                      child: CustomMarkdownBody(
-                                          text:
-                                              "# $characterNameToDisplay\n\n__Last updated:__ ${character.lastModifiedAt!.toLocal().format("%d.%m.%Y %H:%M Uhr")}\n\n__Assigned to campagne:__ ${(character.campagneId != null && character.campagneId!.value != null).toString()}"),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    SizedBox(
-                                      height: 150,
-                                      width: 150,
-                                      child: BorderedImage(
-                                        noPadding: true,
-                                        backgroundColor:
-                                            CustomThemeProvider.of(context)
-                                                .theme
-                                                .bgColor,
-                                        lightColor:
-                                            CustomThemeProvider.of(context)
-                                                .theme
-                                                .darkColor,
-                                        imageUrl: fullImageUrl,
-                                        isLoading: false,
-                                        isGreyscale: false,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
+                          ),
+                        SizedBox(height: 8),
+                        if (campagne.joinCode != null)
+                          Text(
+                            S
+                                .of(context)
+                                .joinCodeForNewPlayers(campagne.joinCode!),
+                            style: textStyle,
+                          ),
+                        // B11: this is when the campagne config was saved last,
+                        // not when the group last played or wrote notes.
+                        if (campagne.lastModifiedAt != null)
+                          Text(
+                            S.of(context).campagneSettingsChangedAt(campagne
+                                .lastModifiedAt!
+                                .toLocal()
+                                .format("%d.%m.%Y, %H:%M")),
+                            style: textStyle.copyWith(fontSize: 12),
+                          ),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-            ))
-        .toList();
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  List<Widget> getCharacters() {
+    return characters!.map((character) {
+      final theme = CustomThemeProvider.of(context).theme;
+      final textStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: theme.darkTextColor,
+            fontSize: 14,
+          );
+      final isAssigned = character.campagneId?.value != null;
+      final isPending = !isAssigned &&
+          _pendingJoinRequests.containsKey(character.id?.value);
+
+      var characterNameToDisplay = character.characterName ?? "";
+      var imageUrl = "assets/images/charactercard_placeholder.png";
+      if (character.rpgCharacterConfiguration != null) {
+        var parsedConfig = RpgCharacterConfiguration.fromJson(
+            jsonDecode(character.rpgCharacterConfiguration!));
+        characterNameToDisplay = parsedConfig.characterName;
+        imageUrl = parsedConfig.getImageUrlWithoutBasePath(null);
+      }
+      var fullImageUrl =
+          (imageUrl.startsWith("assets") ? imageUrl : apiImageUrl(imageUrl));
+
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () async {
+            await onCharacterSelected(character);
+          },
+          minimumSize: Size(0, 0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: theme.darkColor),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: LayoutBuilder(builder: (context, constraints) {
+                // SP-9: on phones the big image left too little room, and
+                // names broke inside words ("Mira Do|rnwald").
+                final compact = constraints.maxWidth < 420;
+                final imageSize = compact ? 88.0 : 150.0;
+
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    if (!compact)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: CustomFaIcon(
+                          icon: FontAwesomeIcons.solidUser,
+                          size: 32,
+                          color: theme.darkColor,
+                        ),
+                      ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _CardTitle(text: characterNameToDisplay),
+                          SizedBox(height: 8),
+                          if (isAssigned && character.lastModifiedAt != null)
+                            Text(
+                              S.of(context).characterLastEditedAt(character
+                                  .lastModifiedAt!
+                                  .toLocal()
+                                  .format("%d.%m.%Y, %H:%M")),
+                              style: textStyle,
+                            )
+                          else if (isPending)
+                            StatusBadge(
+                              key: ValueKey(
+                                  "pendingJoinBadge-${character.id?.value}"),
+                              icon: FontAwesomeIcons.hourglassHalf,
+                              text: S.of(context).waitingForDmApproval,
+                            )
+                          else if (!isAssigned)
+                            Text(
+                              S.of(context).characterNotInCampagneHint,
+                              style: textStyle,
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      height: imageSize,
+                      width: imageSize,
+                      child: BorderedImage(
+                        noPadding: true,
+                        backgroundColor: theme.bgColor,
+                        lightColor: theme.darkColor,
+                        imageUrl: fullImageUrl,
+                        isLoading: false,
+                        isGreyscale: false,
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 
   /// Builds a [ConfigSyncSessionController] wired to this session's Riverpod
@@ -745,7 +950,8 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
     )..start();
   }
 
-  Future onCampagneSelected(Campagne campagne) async {
+  Future onCampagneSelected(Campagne campagne,
+      {bool openSetupWizard = false}) async {
     setState(() {
       showLoadingSpinner = true;
     });
@@ -887,6 +1093,13 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       await loadCampagnesAndPlayersFromServer();
     });
 
+    if (openSetupWizard) {
+      // SL-4: the same assistant the gear icon on the DM page opens; closing
+      // it lands on the DM page.
+      unawaited(navigatorKey.currentState!
+          .pushNamed(allWizardConfigurations.entries.first.key));
+    }
+
     // A fight stored on the server goes on where the DM left it.
     unawaited(com.catchUpOnFight());
   }
@@ -1015,141 +1228,120 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       // Asks for the rolls of a fight the DM started while this player was away.
       unawaited(com.catchUpOnFight());
     } else {
-      // 1. show modal for entering a join code
-      await askForCampagneJoinCode(context).then((joinCode) async {
-        if (joinCode == null) {
-          setState(() {
-            showLoadingSpinner = false;
-          });
-          return;
-        }
-        if (!mounted || !context.mounted) return;
-
-        // 2. create new join request for campagne with join code
-        var service =
-            DependencyProvider.of(context).getService<IRpgEntityService>();
-        var createResponse = await service.createNewCampagneJoinRequest(
-          joinCode: joinCode,
-          playerCharacterId: character.id!,
-        );
-        if (!mounted || !context.mounted) return;
-
-        await createResponse.possiblyHandleError(context);
-
-        setState(() {
-          showLoadingSpinner = false;
-        });
-
-        if (!createResponse.isSuccessful) {
-          return;
-        }
-
-        // Refresh SSE right before waiting: idle connections often look connected
-        // locally but are already gone on the server (resolve notify then no-ops).
-        final eventsClient =
-            DependencyProvider.of(context).getService<EventsClient>();
-        await eventsClient.forceReconnect();
-        if (!mounted) return;
-        _joinRequestController?.start();
-
-        // TODO show popup that the request was sent to the dm
-        var snackService =
-            DependencyProvider.of(context).getService<ISnackBarService>();
-        snackService.showSnackBar(
-            snack: SnackBar(
-              content: Column(
-                mainAxisSize: MainAxisSize.min, // this property
-
-                children: [
-                  Text(
-                    "Join Request sent",
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        fontSize: 24,
-                        color: CustomThemeProvider.of(context).theme.textColor),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                      "Join request was sent to the DM. They need to confirm it before you can join the campagne."),
-                ],
-              ),
-              duration: Duration(seconds: 15),
-              showCloseIcon: true,
-            ),
-            uniqueId:
-                "joinRequestWasSent-d0b3e639-f361-49b6-8cd6-68bb9a201b21");
-
-        // 3. Prefer SSE joinRequestResolved; also poll REST in case the proxy
-        // dropped the player's /events stream (seen against Cloudflare prod).
-        unawaited(_pollForJoinAcceptance(playerCharacterId: character.id!));
-        // TODO block user from creating more join requests for the same character
-        // while one is still pending.
-      });
-    }
-  }
-
-  Future createNewCharacter() async {
-    var service =
-        DependencyProvider.of(context).getService<IRpgEntityService>();
-    // first ask user for character name
-    var result =
-        await PlayerPageHelpers.askPlayerForCharacterName(context: context);
-    if (result == null) return;
-
-    setState(() {
-      showLoadingSpinner = true;
-    });
-
-    var createResponse = await service.createNewCharacter(
-      characterName: result,
-      characterConfigJson: jsonEncode(
-        RpgCharacterConfiguration.getBaseConfiguration(null).copyWith(
-          characterName: result,
-          inventory: [],
-          isAlternateFormActive: false,
-          alternateForm: null,
-          alternateForms: null,
-          characterStats: [],
-          moneyInBaseType: 0,
-          uuid: UuidV7().generate(),
-          companionCharacters: [],
-          transformationComponents: [],
-        ),
-      ),
-    );
-
-    if (!mounted) {
-      return;
-    }
-    await createResponse.possiblyHandleError(context);
-    if (!mounted) {
-      return;
-    }
-
-    if (!createResponse.isSuccessful) {
       setState(() {
         showLoadingSpinner = false;
       });
+
+      // SP-1: a request is already with the DM - tapping again explains the
+      // wait instead of opening the join dialog once more.
+      if (_pendingJoinRequests.containsKey(character.id?.value)) {
+        await _showWaitingForApproval(character);
+        return;
+      }
+
+      await _joinCampagne(existingCharacter: character);
+    }
+  }
+
+  /// "Kampagne beitreten": join code (and, without [existingCharacter], the
+  /// name of a new character), then the request goes to the DM and the
+  /// character shows "waiting for approval" until the DM answers.
+  Future<void> _joinCampagne({PlayerCharacter? existingCharacter}) async {
+    final result = await askForCampagneJoinCode(
+      context,
+      existingCharacterId: existingCharacter?.id,
+    );
+    if (!mounted) return;
+
+    if (result == null) {
+      // The dialog may have created the character before the player gave up
+      // (e.g. after a wrong code); show it so it can join later.
+      if (existingCharacter == null) {
+        await loadCampagnesAndPlayersFromServer();
+      }
       return;
     }
 
-    // reload characters from server
-    var charactersResponse = await service.getPlayerCharacetersForPlayer();
-
+    final pending = PendingJoinRequest(
+      playerCharacterId: result.playerCharacterId.value!,
+      campagneJoinRequestId: result.campagneJoinRequestId,
+      joinCode: result.joinCode,
+      requestedAt: DateTime.now(),
+    );
+    await ref.read(pendingJoinRequestStoreProvider).save(pending);
     if (!mounted) return;
-    await charactersResponse.possiblyHandleError(context);
     setState(() {
-      characters = charactersResponse.result ?? [];
-      showLoadingSpinner = false;
+      _pendingJoinRequests[pending.playerCharacterId] = pending;
     });
+
+    DependencyProvider.of(context).getService<ISnackBarService>().showSnackBar(
+          snack: SnackBar(
+            content: Text(S.of(context).joinRequestSentConfirmation),
+            duration: Duration(seconds: 8),
+            showCloseIcon: true,
+          ),
+          uniqueId: "joinRequestWasSent-${pending.playerCharacterId}",
+        );
+
+    await loadCampagnesAndPlayersFromServer();
+    if (!mounted) return;
+
+    // Refresh SSE right before waiting: idle connections often look connected
+    // locally but are already gone on the server (resolve notify then no-ops).
+    final eventsClient =
+        DependencyProvider.of(context).getService<EventsClient>();
+    await eventsClient.forceReconnect();
+    if (!mounted) return;
+    _joinRequestController?.start();
+
+    // Prefer SSE joinRequestResolved; also poll REST in case the proxy
+    // dropped the player's /events stream (seen against Cloudflare prod).
+    unawaited(_pollForJoinAcceptance(playerCharacterId: result.playerCharacterId));
+  }
+
+  Future<void> _showWaitingForApproval(PlayerCharacter character) async {
+    final s = S.of(context);
+    var name = character.characterName ?? "";
+    if (character.rpgCharacterConfiguration != null) {
+      name = RpgCharacterConfiguration.fromJson(
+              jsonDecode(character.rpgCharacterConfiguration!))
+          .characterName;
+    }
+
+    final enterCodeAgain = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AppStyleDialog(
+        title: s.waitingForApprovalTitle,
+        onClose: () => Navigator.of(dialogContext).pop(false),
+        actions: [
+          // Way out when the DM declined while the app was closed: the API
+          // cannot tell this device, so the wait would never end otherwise.
+          CustomButton(
+            label: s.enterCodeAgainAction,
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+          ),
+          CustomButton(
+            variant: CustomButtonVariant.AccentButton,
+            label: s.ok,
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+          ),
+        ],
+        child: Text(
+          s.waitingForApprovalText(name),
+          style: appModalBodyStyle(dialogContext),
+        ),
+      ),
+    );
+    if (!mounted || enterCodeAgain != true) return;
+
+    await _joinCampagne(existingCharacter: character);
   }
 
   Future createNewCampagne() async {
     var service =
         DependencyProvider.of(context).getService<IRpgEntityService>();
-    var result = await DmPageHelpers.askDmForNameOfCampagne(context: context);
-    if (result == null) return;
+    var result = await askForNewCampagneName(context);
+    if (result == null || !mounted) return;
 
     setState(() {
       showLoadingSpinner = true;
@@ -1195,11 +1387,16 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
     campagnes = campagnesResponse.result ?? [];
 
-    await onCampagneSelected(campagnes!
-        .singleWhere((e) => e.id!.value! == createResponse.result!.value!));
+    // SL-4: a new campagne goes straight into the setup assistant.
+    await onCampagneSelected(
+        campagnes!
+            .singleWhere((e) => e.id!.value! == createResponse.result!.value!),
+        openSetupWizard: true);
   }
 }
 
+/// Section header of the role selection: title, two lines of context and an
+/// optional labelled action button below.
 class AddableColumnHeader extends StatelessWidget {
   const AddableColumnHeader({
     super.key,
@@ -1207,6 +1404,7 @@ class AddableColumnHeader extends StatelessWidget {
     required this.subtitle,
     required this.subsubtitle,
     required this.onPressedHandler,
+    this.actionLabel,
   });
 
   final String title;
@@ -1214,56 +1412,248 @@ class AddableColumnHeader extends StatelessWidget {
   final String subsubtitle;
   final VoidCallback onPressedHandler;
 
+  /// Hides the action button when `null` (the empty list shows its own
+  /// call to action then).
+  final String? actionLabel;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final theme = CustomThemeProvider.of(context).theme;
+    return Column(
       children: [
-        SizedBox(
-          width: 1,
-          height: 1,
+        Text(
+          title,
+          softWrap: true,
+          maxLines: 3,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: theme.darkTextColor,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
         ),
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                title,
-                softWrap: true,
-                maxLines: 3,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color:
-                          CustomThemeProvider.of(context).theme.darkTextColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomThemeProvider.of(context).theme.darkTextColor),
-              ),
-              Text(
-                subsubtitle,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomThemeProvider.of(context).theme.darkTextColor),
-              ),
-            ],
-          ),
+        Text(
+          subtitle,
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: theme.darkTextColor),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: CustomButton(
+        Text(
+          subsubtitle,
+          textAlign: TextAlign.center,
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: theme.darkTextColor),
+        ),
+        if (actionLabel != null) ...[
+          SizedBox(height: 10),
+          CustomButton(
             onPressed: onPressedHandler,
             icon: CustomFaIcon(
               size: 16,
               icon: FontAwesomeIcons.plus,
-              color: CustomThemeProvider.of(context).theme.darkColor,
+              color: theme.darkColor,
+            ),
+            label: actionLabel,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// One of the two big ways in at the top of the role selection.
+class RolePathCard extends StatelessWidget {
+  const RolePathCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onPressed,
+  });
+
+  final FaIconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = CustomThemeProvider.of(context).theme;
+    final availableWidth = MediaQuery.sizeOf(context).width - 40;
+
+    return SizedBox(
+      width: availableWidth < 400 ? availableWidth : 400,
+      child: CupertinoButton(
+        onPressed: onPressed,
+        padding: EdgeInsets.zero,
+        minimumSize: Size(0, 0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.accentColor, width: 2),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              CustomFaIcon(icon: icon, size: 32, color: theme.accentColor),
+              SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: theme.darkTextColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: theme.darkTextColor,
+                            fontSize: 14,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              CustomFaIcon(
+                icon: FontAwesomeIcons.chevronRight,
+                size: 16,
+                color: theme.darkColor,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Shown instead of an empty list: what to do, and a labelled button for it.
+class EmptyListCallToAction extends StatelessWidget {
+  const EmptyListCallToAction({
+    super.key,
+    required this.text,
+    required this.actionLabel,
+    required this.onPressed,
+  });
+
+  final String text;
+  final String actionLabel;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = CustomThemeProvider.of(context).theme;
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 600),
+      child: Column(
+        children: [
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: theme.darkTextColor,
+                  fontSize: 16,
+                ),
+          ),
+          SizedBox(height: 15),
+          CustomButton(
+            variant: CustomButtonVariant.AccentButton,
+            onPressed: onPressed,
+            icon: CustomFaIcon(
+              size: 16,
+              icon: FontAwesomeIcons.plus,
+              color: isNightCartographerActive(context)
+                  ? theme.bgColor
+                  : theme.textColor,
+            ),
+            label: actionLabel,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Small pill on a card, e.g. "2 offene Anfragen" or the pending join state.
+class StatusBadge extends StatelessWidget {
+  const StatusBadge({
+    super.key,
+    required this.icon,
+    required this.text,
+    this.emphasized = false,
+  });
+
+  final FaIconData icon;
+  final String text;
+
+  /// Accent fill for things that want attention (open join requests).
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = CustomThemeProvider.of(context).theme;
+    final foreground = emphasized
+        ? (isNightCartographerActive(context) ? theme.bgColor : theme.textColor)
+        : theme.darkTextColor;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: emphasized ? theme.accentColor : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+            color: emphasized ? theme.accentColor : theme.darkColor),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomFaIcon(icon: icon, size: 12, color: foreground),
+          SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: foreground,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
-        )
-      ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Card title that shrinks instead of breaking inside a word (SP-9).
+class _CardTitle extends StatelessWidget {
+  const _CardTitle({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoSizeText(
+      text,
+      maxLines: 2,
+      minFontSize: 14,
+      wrapWords: false,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+            color: CustomThemeProvider.of(context).theme.darkTextColor,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
     );
   }
 }

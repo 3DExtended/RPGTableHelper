@@ -315,45 +315,45 @@ class S {
     );
   }
 
-  /// `Add character to campaign`
+  /// `Join a campaign`
   String get addCharacterToCampagneModalTitle {
     return Intl.message(
-      'Add character to campaign',
+      'Join a campaign',
       name: 'addCharacterToCampagneModalTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.`
+  /// `Your character is not part of a campaign yet. Enter the join code you got from your game master. They will then confirm your request.`
   String get assignCharacterToCampagneModalContent {
     return Intl.message(
-      'You have created a character, but it is not yet assigned to a season or campaign. Enter the join code you received from your DM here to send a request to your DM.',
+      'Your character is not part of a campaign yet. Enter the join code you got from your game master. They will then confirm your request.',
       name: 'assignCharacterToCampagneModalContent',
       desc: '',
       args: [],
     );
   }
 
-  /// `Join Code:`
+  /// `Join code`
   String get joinCode {
-    return Intl.message('Join Code:', name: 'joinCode', desc: '', args: []);
+    return Intl.message('Join code', name: 'joinCode', desc: '', args: []);
   }
 
-  /// `Error`
+  /// `That didn't work`
   String get genericErrorModalHeader {
     return Intl.message(
-      'Error',
+      'That didn\'t work',
       name: 'genericErrorModalHeader',
       desc: '',
       args: [],
     );
   }
 
-  /// `Technical details: `
+  /// `Technical details`
   String get genericErrorModalTechnicalDetailsHeader {
     return Intl.message(
-      'Technical details: ',
+      'Technical details',
       name: 'genericErrorModalTechnicalDetailsHeader',
       desc: '',
       args: [],
@@ -805,23 +805,23 @@ class S {
     return Intl.message('All players:', name: 'allPlayers', desc: '', args: []);
   }
 
-  /// `Join requests:`
+  /// `Join requests`
   String get openJoinRequests {
     return Intl.message(
-      'Join requests:',
+      'Join requests',
       name: 'openJoinRequests',
       desc: '',
       args: [],
     );
   }
 
-  /// `Join code (for new players):`
-  String get joinCodeForNewPlayers {
+  /// `Join code: {code}`
+  String joinCodeForNewPlayers(String code) {
     return Intl.message(
-      'Join code (for new players):',
+      'Join code: $code',
       name: 'joinCodeForNewPlayers',
       desc: '',
-      args: [],
+      args: [code],
     );
   }
 
@@ -1095,9 +1095,9 @@ class S {
     );
   }
 
-  /// `Ok`
+  /// `OK`
   String get ok {
-    return Intl.message('Ok', name: 'ok', desc: '', args: []);
+    return Intl.message('OK', name: 'ok', desc: '', args: []);
   }
 
   /// `Now we come to the character sheets.\n\nEvery role-playing game has different attributes that characterize the players (e.g., how many hit points a player has).\n\nFor each attribute, as the game master, you need to define how the players can interact with this attribute. We need three pieces of information from you for each attribute:\n\n1. Name of the attribute: What should this value be called on the character sheet? (e.g., “HP”, “SP”, “Name”, etc.)\n2. Type of the attribute: Is it, for example, a text that the player can modify (e.g., the backstory of the character) or a numerical value (e.g., the hit points)?\n3. Change type: Some of these attributes are regularly adjusted (e.g., the current hit points), while others are rarely changed (e.g., the maximum hit points). To consider this when creating the character sheets, you need to provide us with this information.\n\nYou arrange attributes in tabs and groups. Press and hold an attribute to move it.`
@@ -1795,29 +1795,32 @@ class S {
     );
   }
 
-  /// `Play as DM`
+  /// `As game master`
   String get startAsDm {
-    return Intl.message('Play as DM', name: 'startAsDm', desc: '', args: []);
+    return Intl.message(
+      'As game master',
+      name: 'startAsDm',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `You own {count} campaigns`
-  String youOwnXCampaigns(Object count) {
-    return Intl.message(
-      'You own $count campaigns',
+  /// `{count, plural, =0{You don't run a campaign yet.} one{You run 1 campaign.} other{You run {count} campaigns.}}`
+  String youOwnXCampaigns(int count) {
+    return Intl.plural(
+      count,
+      zero: 'You don\'t run a campaign yet.',
+      one: 'You run 1 campaign.',
+      other: 'You run $count campaigns.',
       name: 'youOwnXCampaigns',
       desc: '',
       args: [count],
     );
   }
 
-  /// `Join as Player`
+  /// `As player`
   String get joinAsPlayer {
-    return Intl.message(
-      'Join as Player',
-      name: 'joinAsPlayer',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('As player', name: 'joinAsPlayer', desc: '', args: []);
   }
 
   /// `Choose a character`
@@ -1830,10 +1833,13 @@ class S {
     );
   }
 
-  /// `You own {count} characters`
-  String youOwnXCharacters(Object count) {
-    return Intl.message(
-      'You own $count characters',
+  /// `{count, plural, =0{You don't have a character yet.} one{You have 1 character.} other{You have {count} characters.}}`
+  String youOwnXCharacters(int count) {
+    return Intl.plural(
+      count,
+      zero: 'You don\'t have a character yet.',
+      one: 'You have 1 character.',
+      other: 'You have $count characters.',
       name: 'youOwnXCharacters',
       desc: '',
       args: [count],
@@ -4352,6 +4358,513 @@ class S {
       name: 'wizardSummaryRecipeCount',
       desc: '',
       args: [count],
+    );
+  }
+
+  /// `Welcome to QuestKeeper`
+  String get welcomeToQuestKeeper {
+    return Intl.message(
+      'Welcome to QuestKeeper',
+      name: 'welcomeToQuestKeeper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QuestKeeper supports your tabletop group at the table. The game master sets up the campaign, everyone else keeps their character sheet in the app. Hit points, items and shared notes stay up to date for everyone, live.`
+  String get questKeeperIntro {
+    return Intl.message(
+      'QuestKeeper supports your tabletop group at the table. The game master sets up the campaign, everyone else keeps their character sheet in the app. Hit points, items and shared notes stay up to date for everyone, live.',
+      name: 'questKeeperIntro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I run a game`
+  String get pathRunAGameTitle {
+    return Intl.message(
+      'I run a game',
+      name: 'pathRunAGameTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a campaign and invite players`
+  String get pathRunAGameSubtitle {
+    return Intl.message(
+      'Create a campaign and invite players',
+      name: 'pathRunAGameSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I join a game`
+  String get pathJoinAGameTitle {
+    return Intl.message(
+      'I join a game',
+      name: 'pathJoinAGameTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `With the code from your game master`
+  String get pathJoinAGameSubtitle {
+    return Intl.message(
+      'With the code from your game master',
+      name: 'pathJoinAGameSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join a campaign`
+  String get joinCampagneAction {
+    return Intl.message(
+      'Join a campaign',
+      name: 'joinCampagneAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create campaign`
+  String get createCampagneAction {
+    return Intl.message(
+      'Create campaign',
+      name: 'createCampagneAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a campaign, set up the character sheet and invite your group with a code.`
+  String get noCampagnesYetHint {
+    return Intl.message(
+      'Create a campaign, set up the character sheet and invite your group with a code.',
+      name: 'noCampagnesYetHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join a campaign with the code from your game master. You create your character along the way.`
+  String get noCharactersYetHint {
+    return Intl.message(
+      'Join a campaign with the code from your game master. You create your character along the way.',
+      name: 'noCharactersYetHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings changed: {date}`
+  String campagneSettingsChangedAt(String date) {
+    return Intl.message(
+      'Settings changed: $date',
+      name: 'campagneSettingsChangedAt',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `{count, plural, one{1 open request} other{{count} open requests}}`
+  String openJoinRequestsBadge(int count) {
+    return Intl.plural(
+      count,
+      one: '1 open request',
+      other: '$count open requests',
+      name: 'openJoinRequestsBadge',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Last edited: {date}`
+  String characterLastEditedAt(String date) {
+    return Intl.message(
+      'Last edited: $date',
+      name: 'characterLastEditedAt',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Waiting for the game master to approve`
+  String get waitingForDmApproval {
+    return Intl.message(
+      'Waiting for the game master to approve',
+      name: 'waitingForDmApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not in a campaign yet. Tap to join with a code.`
+  String get characterNotInCampagneHint {
+    return Intl.message(
+      'Not in a campaign yet. Tap to join with a code.',
+      name: 'characterNotInCampagneHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the join code you got from your game master and the name of your character. You fill in the rest of the character sheet once the game master has let you in.`
+  String get joinCampagneNewCharacterIntro {
+    return Intl.message(
+      'Enter the join code you got from your game master and the name of your character. You fill in the rest of the character sheet once the game master has let you in.',
+      name: 'joinCampagneNewCharacterIntro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the join code.`
+  String get joinCodeEmptyError {
+    return Intl.message(
+      'Please enter the join code.',
+      name: 'joinCodeEmptyError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The code has six digits, for example 123-456.`
+  String get joinCodeIncompleteError {
+    return Intl.message(
+      'The code has six digits, for example 123-456.',
+      name: 'joinCodeIncompleteError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This code does not exist. Check it with your game master.`
+  String get joinCodeUnknownError {
+    return Intl.message(
+      'This code does not exist. Check it with your game master.',
+      name: 'joinCodeUnknownError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name of your character`
+  String get characterNameFieldLabel {
+    return Intl.message(
+      'Name of your character',
+      name: 'characterNameFieldLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a name`
+  String get nameRequiredError {
+    return Intl.message(
+      'Please enter a name',
+      name: 'nameRequiredError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join`
+  String get joinAction {
+    return Intl.message('Join', name: 'joinAction', desc: '', args: []);
+  }
+
+  /// `Request sent. As soon as your game master approves, you can play.`
+  String get joinRequestSentConfirmation {
+    return Intl.message(
+      'Request sent. As soon as your game master approves, you can play.',
+      name: 'joinRequestSentConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your join request was accepted. You can play now.`
+  String get joinRequestAcceptedMessage {
+    return Intl.message(
+      'Your join request was accepted. You can play now.',
+      name: 'joinRequestAcceptedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your join request was declined.`
+  String get joinRequestDeniedMessage {
+    return Intl.message(
+      'Your join request was declined.',
+      name: 'joinRequestDeniedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{playerName} ({username}) wants to join your campaign.`
+  String joinRequestCreatedForDm(String playerName, String username) {
+    return Intl.message(
+      '$playerName ($username) wants to join your campaign.',
+      name: 'joinRequestCreatedForDm',
+      desc: '',
+      args: [playerName, username],
+    );
+  }
+
+  /// `Waiting for approval`
+  String get waitingForApprovalTitle {
+    return Intl.message(
+      'Waiting for approval',
+      name: 'waitingForApprovalTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your request for “{characterName}” is with your game master. As soon as they approve, you can play here.`
+  String waitingForApprovalText(String characterName) {
+    return Intl.message(
+      'Your request for “$characterName” is with your game master. As soon as they approve, you can play here.',
+      name: 'waitingForApprovalText',
+      desc: '',
+      args: [characterName],
+    );
+  }
+
+  /// `Enter code again`
+  String get enterCodeAgainAction {
+    return Intl.message(
+      'Enter code again',
+      name: 'enterCodeAgainAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.`
+  String get newCampagneIntro {
+    return Intl.message(
+      'What should your campaign be called? Afterwards the assistant guides you through character sheet, currency and items.',
+      name: 'newCampagneIntro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create`
+  String get createAction {
+    return Intl.message('Create', name: 'createAction', desc: '', args: []);
+  }
+
+  /// `Invite players`
+  String get invitePlayersAction {
+    return Intl.message(
+      'Invite players',
+      name: 'invitePlayersAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No players yet. Invite your group with “Invite players”.`
+  String get noPlayersYetHint {
+    return Intl.message(
+      'No players yet. Invite your group with “Invite players”.',
+      name: 'noPlayersYetHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In QuestKeeper, tap “Join a campaign” and enter this code.`
+  String get invitePlayersInstruction {
+    return Intl.message(
+      'In QuestKeeper, tap “Join a campaign” and enter this code.',
+      name: 'invitePlayersInstruction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests then show up under “Join requests”. Tap ✓ to let someone in.`
+  String get invitePlayersApprovalHint {
+    return Intl.message(
+      'Requests then show up under “Join requests”. Tap ✓ to let someone in.',
+      name: 'invitePlayersApprovalHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy code`
+  String get copyCodeAction {
+    return Intl.message(
+      'Copy code',
+      name: 'copyCodeAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copied`
+  String get copiedConfirmation {
+    return Intl.message(
+      'Copied',
+      name: 'copiedConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share invitation`
+  String get shareInviteAction {
+    return Intl.message(
+      'Share invitation',
+      name: 'shareInviteAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Play in my campaign “{campagneName}”! Open QuestKeeper, tap “Join a campaign” and enter this code: {code}`
+  String inviteShareText(String campagneName, String code) {
+    return Intl.message(
+      'Play in my campaign “$campagneName”! Open QuestKeeper, tap “Join a campaign” and enter this code: $code',
+      name: 'inviteShareText',
+      desc: '',
+      args: [campagneName, code],
+    );
+  }
+
+  /// `Invitation to “{campagneName}”`
+  String inviteShareSubject(String campagneName) {
+    return Intl.message(
+      'Invitation to “$campagneName”',
+      name: 'inviteShareSubject',
+      desc: '',
+      args: [campagneName],
+    );
+  }
+
+  /// `The QR code only contains the code.`
+  String get qrCodeHint {
+    return Intl.message(
+      'The QR code only contains the code.',
+      name: 'qrCodeHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get closeAction {
+    return Intl.message('Close', name: 'closeAction', desc: '', args: []);
+  }
+
+  /// `HTTP status:`
+  String get errorDetailsStatusLabel {
+    return Intl.message(
+      'HTTP status:',
+      name: 'errorDetailsStatusLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server response:`
+  String get errorDetailsServerLabel {
+    return Intl.message(
+      'Server response:',
+      name: 'errorDetailsServerLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description:`
+  String get errorDetailsDescriptionLabel {
+    return Intl.message(
+      'Description:',
+      name: 'errorDetailsDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not reach the server. Check your internet connection and try again.`
+  String get errorMessageNoConnection {
+    return Intl.message(
+      'Could not reach the server. Check your internet connection and try again.',
+      name: 'errorMessageNoConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The server could not process the input. Check your entries and try again.`
+  String get errorMessageBadRequest {
+    return Intl.message(
+      'The server could not process the input. Check your entries and try again.',
+      name: 'errorMessageBadRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are not allowed to do this. Sign in again if needed.`
+  String get errorMessageUnauthorized {
+    return Intl.message(
+      'You are not allowed to do this. Sign in again if needed.',
+      name: 'errorMessageUnauthorized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This item does not exist (anymore).`
+  String get errorMessageNotFound {
+    return Intl.message(
+      'This item does not exist (anymore).',
+      name: 'errorMessageNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This was just changed somewhere else. Reload and try again.`
+  String get errorMessageConflict {
+    return Intl.message(
+      'This was just changed somewhere else. Reload and try again.',
+      name: 'errorMessageConflict',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong on the server. Please try again later.`
+  String get errorMessageServer {
+    return Intl.message(
+      'Something went wrong on the server. Please try again later.',
+      name: 'errorMessageServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong. Please try again.`
+  String get errorMessageUnknown {
+    return Intl.message(
+      'Something went wrong. Please try again.',
+      name: 'errorMessageUnknown',
+      desc: '',
+      args: [],
     );
   }
 }
