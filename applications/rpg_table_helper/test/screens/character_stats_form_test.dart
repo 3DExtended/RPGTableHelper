@@ -12,6 +12,7 @@ import 'package:quest_keeper/l10n/app_localizations.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
@@ -33,9 +34,9 @@ void main() {
         CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
   );
 
-  RpgCharacterConfiguration newCharacter() =>
+  RpgCharacterConfiguration newCharacter({String name = 'Mira Dornwald'}) =>
       RpgCharacterConfiguration.getBaseConfiguration(null)
-          .copyWith(characterName: 'Mira Dornwald', characterStats: []);
+          .copyWith(characterName: name, characterStats: []);
 
   Widget buildHarness({
     required GlobalKey<NavigatorState> navigatorKey,
@@ -96,7 +97,11 @@ void main() {
       CharacterStatsFormOutcome? Function() outcome,
     })
   >
-  openSetupForm(WidgetTester tester, {Size? size}) async {
+  openSetupForm(
+    WidgetTester tester, {
+    Size? size,
+    String name = 'Mira Dornwald',
+  }) async {
     if (size != null) {
       // Real fonts: the test font draws every glyph as a wide square.
       await customLoadAppFonts();
@@ -108,7 +113,7 @@ void main() {
     final navigatorKey = GlobalKey<NavigatorState>();
     final pages = buildCharacterStatsFormPages(
       rpgConfig: config,
-      character: newCharacter(),
+      character: newCharacter(name: name),
       isCompanion: false,
     );
     final persisted = <({List<RpgCharacterStatValue> stats, String? name})>[];
@@ -122,9 +127,9 @@ void main() {
             context: context,
             pages: pages,
             mode: CharacterStatsFormMode.setup,
-            characterName: 'Mira Dornwald',
+            characterName: name,
             initialValues: const {},
-            characterToRenderStatFor: newCharacter(),
+            characterToRenderStatFor: newCharacter(name: name),
             isEditingAlternateForm: false,
             overrideNavigatorKey: navigatorKey,
             onPersist: (stats, name) =>
@@ -346,5 +351,173 @@ void main() {
       storedUuids,
       form.pages.expand((p) => p.stats).map((s) => s.statUuid).toSet(),
     );
+  });
+
+  group('"Schnell starten"', () {
+    final portraitStat = statsTab.statsInTab.firstWhere(
+      (s) => s.valueType == CharacterStatValueType.singleImage,
+    );
+
+    List<CharacterStatsFormPage> setupPages({String name = 'Mira'}) =>
+        buildCharacterStatsFormPages(
+          rpgConfig: config,
+          character: newCharacter(name: name),
+          isCompanion: false,
+        );
+
+    test('asks for the summary and the portrait, from any page', () {
+      final quick = quickStartPageOf(setupPages())!;
+      expect(quick.stats.map((s) => s.statUuid), [
+        summaryStat.statUuid,
+        portraitStat.statUuid,
+      ]);
+      expect(quick.showNameField, isFalse);
+      expect(quick.tab, isNull);
+
+      expect(quickStartPageOf(setupPages(name: ''))!.showNameField, isTrue);
+    });
+
+    test('is not offered when it would save little or ask nothing', () {
+      expect(quickStartPageOf(const []), isNull);
+
+      // "Leer": the summary and a description, nothing to skip.
+      final empty = RpgConfigurationTemplates.empty();
+      expect(
+        quickStartPageOf(buildCharacterStatsFormPages(
+          rpgConfig: empty,
+          character: newCharacter(),
+          isCompanion: false,
+        )),
+        isNull,
+      );
+
+      // Summary and portrait filled in already, the name is there.
+      final rest = buildCharacterStatsFormPages(
+        rpgConfig: config,
+        character: newCharacter().copyWith(characterStats: [
+          for (final stat in [summaryStat, portraitStat])
+            RpgCharacterStatValue(
+              statUuid: stat.statUuid,
+              serializedValue: '{}',
+              hideFromCharacterScreen: false,
+              variant: 0,
+              hideLabelOfStat: false,
+            ),
+        ]),
+        isCompanion: false,
+      );
+      expect(rest, isNotEmpty);
+      expect(quickStartPageOf(rest), isNull);
+    });
+
+    Future<void> startQuick(WidgetTester tester) async {
+      final button = find.byKey(CharacterStatsFormContent.quickStartKey).last;
+      await tester.ensureVisible(button);
+      await tester.pumpAndSettle();
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('is the first choice on the first page only', (tester) async {
+      final form = await openSetupForm(tester);
+      expect(find.byKey(CharacterStatsFormContent.quickStartKey),
+          findsWidgets);
+      expect(
+        find.textContaining(
+          'Charakter-Zusammenfassung ${S.current.quickStartAnd} Porträt',
+        ),
+        findsWidgets,
+        reason: 'says what it asks for',
+      );
+
+      await tapText(tester, S.current.next);
+      expect(find.byKey(CharacterStatsFormContent.quickStartKey), findsNothing);
+      await tapText(tester, S.current.back);
+      expect(find.byKey(CharacterStatsFormContent.quickStartKey),
+          findsWidgets);
+      expect(form.persisted, hasLength(1));
+    });
+
+    testWidgets('stores the quick fields and what was typed, the rest stays '
+        'open', (tester) async {
+      final form = await openSetupForm(tester);
+      await tester.enterText(fieldLabelled('Herkunft'), 'Aus dem Norden');
+      await tester.pump();
+
+      await startQuick(tester);
+      expect(find.text(S.current.quickStartTitle), findsWidgets);
+      expect(
+        find.text(S.current.characterSetupProgress(
+            1, form.pages.length, 'Hintergrund')),
+        findsNothing,
+      );
+      expect(find.widgetWithText(TextField, 'Herkunft'), findsNothing);
+      expect(find.widgetWithText(TextField, 'Level'), findsWidgets);
+      expect(find.widgetWithText(TextField, 'Porträt'), findsWidgets);
+
+      await tester.enterText(fieldLabelled('Level'), '3');
+      await tester.pumpAndSettle();
+      await tapText(tester, S.current.characterSetupFinish);
+
+      expect(form.outcome(), CharacterStatsFormOutcome.filledInLater);
+      final stored = form.persisted.expand((p) => p.stats).toList();
+      expect(stored.map((s) => s.statUuid).toSet(), {
+        summaryStat.statUuid,
+        portraitStat.statUuid,
+        backgroundTab.statsInTab
+            .firstWhere((d) => d.name == 'Herkunft')
+            .statUuid,
+      });
+      final summary =
+          stored.firstWhere((s) => s.statUuid == summaryStat.statUuid);
+      expect(jsonDecode(summary.serializedValue)['level'], 3);
+
+      // The next form goes on with everything else.
+      final next = buildCharacterStatsFormPages(
+        rpgConfig: config,
+        character: newCharacter().copyWith(characterStats: stored),
+        isCompanion: false,
+      );
+      expect(next.expand((p) => p.stats), hasLength(
+          form.pages.expand((p) => p.stats).length - 3));
+    });
+
+    testWidgets('asks for the name while it is missing', (tester) async {
+      final form = await openSetupForm(tester, name: '');
+      await startQuick(tester);
+
+      final finish = find.text(S.current.characterSetupFinish).last;
+      await tester.tap(finish);
+      await tester.pumpAndSettle();
+      expect(form.outcome(), isNull, reason: 'no name yet');
+
+      await tester.enterText(fieldLabelled(S.current.characterName), 'Mira');
+      await tester.pumpAndSettle();
+      await tapText(tester, S.current.characterSetupFinish);
+      expect(form.outcome(), CharacterStatsFormOutcome.filledInLater);
+      expect(form.persisted.last.name, 'Mira');
+    });
+
+    testWidgets('"Alle Abschnitte" goes back to the sections', (tester) async {
+      final form = await openSetupForm(tester);
+      await startQuick(tester);
+
+      final back = find.byKey(CharacterStatsFormContent.allSectionsKey).last;
+      await tester.tap(back);
+      await tester.pumpAndSettle();
+      expect(
+        find.text(S.current.characterSetupProgress(
+            1, form.pages.length, 'Hintergrund')),
+        findsWidgets,
+      );
+      expect(form.persisted, isEmpty);
+    });
+
+    testWidgets('fits at iPhone width', (tester) async {
+      await openSetupForm(tester, size: const Size(402, 874), name: '');
+      expect(tester.takeException(), isNull);
+      await startQuick(tester);
+      expect(tester.takeException(), isNull);
+    });
   });
 }

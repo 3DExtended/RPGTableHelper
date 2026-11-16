@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
+import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
@@ -106,6 +108,12 @@ class CharacterStatsFormContent extends StatefulWidget {
   final CharacterStatsFormPersist onPersist;
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
 
+  /// "Schnell starten" on the first page of the setup.
+  static const quickStartKey = ValueKey('character-stats-form-quick-start');
+
+  /// Back from the quick start to every section.
+  static const allSectionsKey = ValueKey('character-stats-form-all-sections');
+
   @override
   State<CharacterStatsFormContent> createState() =>
       _CharacterStatsFormContentState();
@@ -128,9 +136,21 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
   late String _name;
   late String _storedName;
 
-  CharacterStatsFormPage get _page => widget.pages[_pageIndex];
-  bool get _isLastPage => _pageIndex >= widget.pages.length - 1;
+  /// "Schnell starten" was chosen: only [_quickPage] is shown.
+  bool _quick = false;
+
+  /// The page of the quick start, null when it is not offered.
+  late final CharacterStatsFormPage? _quickPage =
+      _isSetup ? quickStartPageOf(widget.pages) : null;
+
+  CharacterStatsFormPage get _page =>
+      _quick ? _quickPage! : widget.pages[_pageIndex];
+  bool get _isLastPage => _quick || _pageIndex >= widget.pages.length - 1;
   bool get _isSetup => widget.mode == CharacterStatsFormMode.setup;
+
+  /// The quick start is the first choice on the first page.
+  bool get _offersQuickStart =>
+      _quickPage != null && !_quick && _pageIndex == 0;
 
   @override
   void initState() {
@@ -230,6 +250,18 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
 
   void _onNext() {
     if (!_isPageValid) return;
+    if (_quick) {
+      // The quick fields, and whatever was typed on the first page before.
+      _persist({
+        for (final stat in _page.stats)
+          if (!_invalid.contains(stat.statUuid)) stat.statUuid,
+        ..._current.keys.where(
+          (uuid) => _isDirty(uuid) && !_invalid.contains(uuid),
+        ),
+      }.toList());
+      _close(CharacterStatsFormOutcome.filledInLater);
+      return;
+    }
     _persistPage();
     if (_isLastPage) {
       _close(CharacterStatsFormOutcome.completed);
@@ -246,6 +278,32 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
     setState(() {
       _pageIndex--;
     });
+  }
+
+  void _onQuickStart() {
+    setState(() {
+      _quick = true;
+    });
+  }
+
+  void _onAllSections() {
+    setState(() {
+      _quick = false;
+      _pageIndex = 0;
+    });
+  }
+
+  /// "Name, Porträt und Charakter-Zusammenfassung".
+  String _quickStartFields(BuildContext context) {
+    final s = S.of(context);
+    final page = _quickPage!;
+    final names = [
+      if (page.showNameField) s.characterName,
+      for (final stat in page.stats) stat.name.trim(),
+    ].where((name) => name.isNotEmpty).toList();
+    if (names.length <= 1) return names.join();
+    return '${names.take(names.length - 1).join(', ')} '
+        '${s.quickStartAnd} ${names.last}';
   }
 
   void _onFillInLater() {
@@ -313,7 +371,9 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
                   Expanded(
                     child: SingleChildScrollView(
                       // A fresh scroll position (top) for every page.
-                      key: ValueKey('character-stats-form-page-$_pageIndex'),
+                      key: ValueKey(
+                        'character-stats-form-page-${_quick ? 'quick' : _pageIndex}',
+                      ),
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: const EdgeInsets.all(20),
@@ -341,8 +401,17 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (_isSetup) ...[
+          if (_offersQuickStart) ...[
+            _QuickStartCard(
+              fields: _quickStartFields(context),
+              onStart: _onQuickStart,
+            ),
+            const SizedBox(height: 16),
+          ],
           Text(
-            widget.pages.length > 1
+            _quick
+                ? S.of(context).quickStartTitle
+                : widget.pages.length > 1
                 ? S
                       .of(context)
                       .characterSetupProgress(
@@ -354,7 +423,7 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
             key: const ValueKey('character-stats-form-progress'),
             style: textStyle.copyWith(fontSize: 20),
           ),
-          if (widget.pages.length > 1) ...[
+          if (!_quick && widget.pages.length > 1) ...[
             const SizedBox(height: 8),
             ClipRRect(
               borderRadius: BorderRadius.circular(3),
@@ -368,7 +437,9 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
           ],
           const SizedBox(height: 10),
           Text(
-            S.of(context).characterSetupHint,
+            _quick
+                ? S.of(context).quickStartPageHint
+                : S.of(context).characterSetupHint,
             style: textStyle.copyWith(fontSize: 14),
           ),
           const SizedBox(height: 10),
@@ -385,7 +456,9 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
         ],
         if (page.showNameField) ...[
           _CharacterNameField(
-            key: ValueKey('character-stats-form-name-$_pageIndex'),
+            key: ValueKey(
+              'character-stats-form-name-${_quick ? 'quick' : _pageIndex}',
+            ),
             initialName: _name,
             onChanged: _onNameChanged,
           ),
@@ -447,7 +520,29 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
                     .copyWith(color: theme.darkTextColor, fontSize: 14),
               ),
             ),
-          if (_isSetup) ...[
+          if (_isSetup && _quick) ...[
+            _ButtonRow(
+              leading: CustomButton(
+                key: CharacterStatsFormContent.allSectionsKey,
+                label: S.of(context).quickStartAllSections,
+                onPressed: _onAllSections,
+              ),
+              trailing: CustomButton(
+                label: S.of(context).characterSetupFinish,
+                variant: CustomButtonVariant.AccentButton,
+                onPressed: pageValid ? _onNext : null,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _ButtonRow(
+              leading: CustomButton(
+                label: S.of(context).cancel,
+                variant: CustomButtonVariant.FlatButton,
+                onPressed: _onCancel,
+              ),
+              trailing: const SizedBox.shrink(),
+            ),
+          ] else if (_isSetup) ...[
             _ButtonRow(
               leading: _pageIndex > 0
                   ? CustomButton(label: S.of(context).back, onPressed: _onBack)
@@ -484,6 +579,83 @@ class _CharacterStatsFormContentState extends State<CharacterStatsFormContent> {
                 onPressed: pageValid ? _onNext : null,
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Schnell starten": the first choice of the setup, above the first page.
+class _QuickStartCard extends StatelessWidget {
+  const _QuickStartCard({required this.fields, required this.onStart});
+
+  /// What the quick start asks for, e.g. "Name, Porträt und Grundwerte".
+  final String fields;
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = CustomThemeProvider.of(context).theme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+      decoration: BoxDecoration(
+        color: theme.accentColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.accentColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: CustomFaIcon(
+                  icon: FontAwesomeIcons.bolt,
+                  size: 18,
+                  color: theme.accentColor,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      s.quickStartTitle,
+                      style: textTheme.titleSmall!.copyWith(
+                        color: theme.darkTextColor,
+                        fontSize: 17,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      s.quickStartText(fields),
+                      style: textTheme.bodySmall!.copyWith(
+                        color: theme.darkTextColor.withValues(alpha: 0.85),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.centerRight,
+            child: CustomButton(
+              key: CharacterStatsFormContent.quickStartKey,
+              isSubbutton: true,
+              variant: CustomButtonVariant.AccentButton,
+              label: s.quickStartTitle,
+              onPressed: onStart,
+            ),
+          ),
         ],
       ),
     );

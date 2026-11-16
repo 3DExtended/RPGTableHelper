@@ -1132,5 +1132,17 @@
   },
   "propertyExampleLabel": "Example answer (optional)",
   "propertyExampleHelp": "Shown in grey in the empty field so players see what is meant.",
-  "templateUpdateNewExample": "New example answer"
+  "templateUpdateNewExample": "New example answer",
+  "quickStartTitle": "Quick start",
+  "quickStartText": "Just {fields}. You fill in the rest on the character sheet later, when it is needed.",
+  "@quickStartText": {
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "quickStartAnd": "and",
+  "quickStartAllSections": "All sections",
+  "quickStartPageHint": "Everything else stays open and can be filled in on the character sheet at any time."
 }

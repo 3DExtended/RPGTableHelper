@@ -2609,4 +2609,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get templateUpdateNewExample => 'Neue Beispielantwort';
+
+  @override
+  String get quickStartTitle => 'Schnell starten';
+
+  @override
+  String quickStartText(String fields) {
+    return 'Nur $fields. Den Rest füllst du später im Charakterbogen aus, wenn er gebraucht wird.';
+  }
+
+  @override
+  String get quickStartAnd => 'und';
+
+  @override
+  String get quickStartAllSections => 'Alle Abschnitte';
+
+  @override
+  String get quickStartPageHint =>
+      'Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen.';
 }

@@ -1180,5 +1180,17 @@
   },
   "propertyExampleLabel": "Beispielantwort (optional)",
   "propertyExampleHelp": "Steht grau im leeren Feld, damit Spieler sehen, was gemeint ist.",
-  "templateUpdateNewExample": "Neue Beispielantwort"
+  "templateUpdateNewExample": "Neue Beispielantwort",
+  "quickStartTitle": "Schnell starten",
+  "quickStartText": "Nur {fields}. Den Rest füllst du später im Charakterbogen aus, wenn er gebraucht wird.",
+  "@quickStartText": {
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "quickStartAnd": "und",
+  "quickStartAllSections": "Alle Abschnitte",
+  "quickStartPageHint": "Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen."
 }

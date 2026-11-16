@@ -4519,6 +4519,36 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Neue Beispielantwort'**
   String get templateUpdateNewExample;
+
+  /// No description provided for @quickStartTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Schnell starten'**
+  String get quickStartTitle;
+
+  /// No description provided for @quickStartText.
+  ///
+  /// In de, this message translates to:
+  /// **'Nur {fields}. Den Rest füllst du später im Charakterbogen aus, wenn er gebraucht wird.'**
+  String quickStartText(String fields);
+
+  /// No description provided for @quickStartAnd.
+  ///
+  /// In de, this message translates to:
+  /// **'und'**
+  String get quickStartAnd;
+
+  /// No description provided for @quickStartAllSections.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Abschnitte'**
+  String get quickStartAllSections;
+
+  /// No description provided for @quickStartPageHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles andere bleibt offen und lässt sich jederzeit im Charakterbogen ausfüllen.'**
+  String get quickStartPageHint;
 }
 
 class _AppLocalizationsDelegate

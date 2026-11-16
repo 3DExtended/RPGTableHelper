@@ -6932,6 +6932,51 @@ class S {
       args: [],
     );
   }
+
+  /// `Quick start`
+  String get quickStartTitle {
+    return Intl.message(
+      'Quick start',
+      name: 'quickStartTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Just {fields}. You fill in the rest on the character sheet later, when it is needed.`
+  String quickStartText(String fields) {
+    return Intl.message(
+      'Just $fields. You fill in the rest on the character sheet later, when it is needed.',
+      name: 'quickStartText',
+      desc: '',
+      args: [fields],
+    );
+  }
+
+  /// `and`
+  String get quickStartAnd {
+    return Intl.message('and', name: 'quickStartAnd', desc: '', args: []);
+  }
+
+  /// `All sections`
+  String get quickStartAllSections {
+    return Intl.message(
+      'All sections',
+      name: 'quickStartAllSections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Everything else stays open and can be filled in on the character sheet at any time.`
+  String get quickStartPageHint {
+    return Intl.message(
+      'Everything else stays open and can be filled in on the character sheet at any time.',
+      name: 'quickStartPageHint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -2590,4 +2590,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get templateUpdateNewExample => 'New example answer';
+
+  @override
+  String get quickStartTitle => 'Quick start';
+
+  @override
+  String quickStartText(String fields) {
+    return 'Just $fields. You fill in the rest on the character sheet later, when it is needed.';
+  }
+
+  @override
+  String get quickStartAnd => 'and';
+
+  @override
+  String get quickStartAllSections => 'All sections';
+
+  @override
+  String get quickStartPageHint =>
+      'Everything else stays open and can be filled in on the character sheet at any time.';
 }

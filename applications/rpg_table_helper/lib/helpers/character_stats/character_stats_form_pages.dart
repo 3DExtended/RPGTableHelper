@@ -96,3 +96,31 @@ List<CharacterStatsFormPage> buildCharacterStatsFormPages({
   }
   return pages;
 }
+
+/// Field types "Schnell starten" asks for: what makes a character
+/// recognisable at the table (name, level, class, ... and the portrait).
+const quickStartValueTypes = {
+  CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
+  CharacterStatValueType.singleImage,
+};
+
+/// The one page of "Schnell starten" for the setup [pages]: the name while it
+/// is missing, then the character summary and the portrait from whichever
+/// page they are on. Everything else stays open for the sheet.
+///
+/// Null when it would ask for nothing, or leave fewer than three fields
+/// open (then the full form is quick enough).
+CharacterStatsFormPage? quickStartPageOf(List<CharacterStatsFormPage> pages) {
+  if (pages.isEmpty) return null;
+  final all = pages.expand((p) => p.stats).toList();
+  final quick =
+      all.where((s) => quickStartValueTypes.contains(s.valueType)).toList();
+  final showName = pages.first.showNameField;
+  if (quick.isEmpty && !showName) return null;
+  if (all.length - quick.length < 3) return null;
+  return CharacterStatsFormPage(
+    tab: null,
+    stats: quick,
+    showNameField: showName,
+  );
+}
