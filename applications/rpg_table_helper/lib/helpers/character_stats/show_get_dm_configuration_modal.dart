@@ -13,19 +13,25 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/computed_stat_editor.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
 import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
+import 'package:quest_keeper/helpers/character_stats/property_purposes.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/modals/show_select_icon_with_color_modal.dart';
 import 'package:quest_keeper/main.dart';
 import 'package:quest_keeper/models/computed_stat_formula.dart';
+import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/models/rpg_configuration_templates.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:uuid/v7.dart';
 
+/// Edits [predefinedConfiguration], or creates a new property: of the field
+/// type [purpose] stands for, or (without one) any field type.
 Future<CharacterStatDefinition?> showGetDmConfigurationModal({
   required BuildContext context,
   CharacterStatDefinition? predefinedConfiguration,
+  PropertyPurpose? purpose,
   GlobalKey<NavigatorState>? overrideNavigatorKey,
   List<StatWithTab> availableStats = const [],
 }) async {
@@ -41,6 +47,7 @@ Future<CharacterStatDefinition?> showGetDmConfigurationModal({
         return ShowGetDmConfigurationModalContent(
           overrideNavigatorKey: overrideNavigatorKey,
           predefinedConfiguration: predefinedConfiguration,
+          purpose: predefinedConfiguration == null ? purpose : null,
           availableStats: availableStats,
         );
       });
@@ -50,12 +57,17 @@ class ShowGetDmConfigurationModalContent extends StatefulWidget {
   const ShowGetDmConfigurationModalContent({
     this.overrideNavigatorKey,
     this.predefinedConfiguration,
+    this.purpose,
     this.availableStats = const [],
     super.key,
   });
 
   final GlobalKey<NavigatorState>? overrideNavigatorKey;
   final CharacterStatDefinition? predefinedConfiguration;
+
+  /// What a new property is for: sets its field type and change frequency,
+  /// which then sit folded away below the purpose.
+  final PropertyPurpose? purpose;
 
   /// The campaign's stats (all tabs, unsaved edits included): sources for a
   /// computed value.
@@ -113,27 +125,31 @@ class _ShowGetDmConfigurationModalContentState
 
   @override
   void initState() {
+    // The property to edit, or what a new one of the purpose starts with.
+    final initial = widget.predefinedConfiguration ??
+        (widget.purpose == null
+            ? null
+            : PropertyPurposeInfo.of(widget.purpose!).newStat());
     Future.delayed(Duration.zero, () {
-      if (widget.predefinedConfiguration != null) {
+      if (initial != null) {
         setState(() {
           nameTextEditor =
-              TextEditingController(text: widget.predefinedConfiguration!.name);
+              TextEditingController(text: initial.name);
           helperTextEditor = TextEditingController(
-              text: widget.predefinedConfiguration!.helperText);
+              text: initial.helperText);
 
-          selectedEditType = widget.predefinedConfiguration!.editType;
-          selectedValueType = widget.predefinedConfiguration!.valueType;
+          selectedEditType = initial.editType;
+          selectedValueType = initial.valueType;
 
           isOptionalForAlternateForms =
-              widget.predefinedConfiguration!.isOptionalForAlternateForms ??
+              initial.isOptionalForAlternateForms ??
                   false;
 
-          isOptionalForCompanionCharacters = widget
-                  .predefinedConfiguration!.isOptionalForCompanionCharacters ??
+          isOptionalForCompanionCharacters = initial.isOptionalForCompanionCharacters ??
               false;
 
           var predefinedFormula =
-              ComputedStatFormula.of(widget.predefinedConfiguration!);
+              ComputedStatFormula.of(initial);
           if (predefinedFormula != null) {
             isComputed = true;
             computedFormula = predefinedFormula;
@@ -142,18 +158,18 @@ class _ShowGetDmConfigurationModalContentState
           // what to do about additionaldetails
           if (selectedValueType == CharacterStatValueType.companionSelector) {
             companionSelectorIconName = configuredCompanionSelectorIconName(
-                    widget.predefinedConfiguration!) ??
+                    initial) ??
                 defaultCompanionSelectorIconName;
           } else if (selectedValueType ==
               CharacterStatValueType.checkboxTrack) {
             final config =
-                CheckboxTrackConfig.of(widget.predefinedConfiguration!);
+                CheckboxTrackConfig.of(initial);
             checkboxTrackBoxCount = config.boxCount;
             checkboxTrackLabels = config.labels
                 .map((l) => TextEditingController(text: l))
                 .toList();
           } else if (selectedValueType == CharacterStatValueType.textList) {
-            final config = TextListConfig.of(widget.predefinedConfiguration!);
+            final config = TextListConfig.of(initial);
             textListAllowCustomEntries = config.allowCustomEntries;
             textListSlots = config.slots
                 .map((s) =>
@@ -164,18 +180,16 @@ class _ShowGetDmConfigurationModalContentState
             // Decode JSON string to a list of dynamic maps
             // TODO remove migration
             List<dynamic> jsonList = [];
-            if (widget.predefinedConfiguration?.jsonSerializedAdditionalData
+            if (initial.jsonSerializedAdditionalData
                         ?.isNotEmpty ==
                     true &&
-                widget.predefinedConfiguration!.jsonSerializedAdditionalData!
+                initial.jsonSerializedAdditionalData!
                     .startsWith("[")) {
-              jsonList = jsonDecode(widget
-                      .predefinedConfiguration?.jsonSerializedAdditionalData ??
+              jsonList = jsonDecode(initial.jsonSerializedAdditionalData ??
                   "[]");
               multiselectIsAllowedToBeSelectedMultipleTimes = false;
             } else {
-              Map<String, dynamic> json = jsonDecode(widget
-                      .predefinedConfiguration?.jsonSerializedAdditionalData ??
+              Map<String, dynamic> json = jsonDecode(initial.jsonSerializedAdditionalData ??
                   '{"options:":[], "multiselectIsAllowedToBeSelectedMultipleTimes":false}');
 
               multiselectIsAllowedToBeSelectedMultipleTimes = json.containsKey(
@@ -209,10 +223,10 @@ class _ShowGetDmConfigurationModalContentState
                   CharacterStatValueType
                       .characterNameWithLevelAndAdditionalDetails) {
             showLevel =
-                characterSummaryShowsLevel(widget.predefinedConfiguration!);
+                characterSummaryShowsLevel(initial);
             // Decode JSON string to a list of dynamic maps
             List<dynamic> jsonList = (jsonDecode(
-                widget.predefinedConfiguration?.jsonSerializedAdditionalData ??
+                initial.jsonSerializedAdditionalData ??
                     '{"values": []}') as Map<String, dynamic>)["values"];
 
             for (var item in jsonList) {
@@ -250,6 +264,70 @@ class _ShowGetDmConfigurationModalContentState
 
         // TODO ensure onSave is null if disabled should be disabled...
         onSave: () async {
+          final tempResult = _currentDefinition();
+          if (widget.predefinedConfiguration == null) {
+            return tempResult;
+          } else {
+            return tempResult.copyWith(
+                statUuid: widget.predefinedConfiguration!.statUuid);
+          }
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.purpose != null) _purposeHeader(),
+            CustomTextField(
+              labelText: S.of(context).nameOfPropertyLabel,
+              textEditingController: nameTextEditor,
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomTextField(
+              labelText: S.of(context).descriptionOfProperty,
+              textEditingController: helperTextEditor,
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            if (widget.purpose == null)
+              ..._typePickers()
+            else
+              ThemeConfigurationForApp(
+                child: ExpansionTile(
+                  key: const ValueKey('propertyTypePickers'),
+                  enableFeedback: false,
+                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                  title: Text(S.of(context).propertyPurposeChangeType),
+                  textColor:
+                      CustomThemeProvider.of(context).theme.darkTextColor,
+                  iconColor: CustomThemeProvider.of(context).theme.darkColor,
+                  collapsedIconColor:
+                      CustomThemeProvider.of(context).theme.darkColor,
+                  collapsedTextColor:
+                      CustomThemeProvider.of(context).theme.darkTextColor,
+                  shape: Border.all(color: Colors.transparent, width: 0),
+                  collapsedShape:
+                      Border.all(color: Colors.transparent, width: 0),
+                  children: _typePickers(),
+                ),
+              ),
+            ...getAdvancedConfigurationOptionWidgets(),
+            ...getAdditionalDetailsWidgets(),
+            ..._previewWidgets(),
+            SizedBox(
+                height: EdgeInsets.fromViewPadding(View.of(context).viewInsets,
+                        View.of(context).devicePixelRatio)
+                    .bottom),
+          ],
+        ));
+  }
+
+  /// The property as configured right now (a new uuid; saving keeps the
+  /// uuid of an edited property).
+  CharacterStatDefinition _currentDefinition() {
           var tempResult = CharacterStatDefinition(
             statUuid: UuidV7().generate(),
             name: nameTextEditor.text,
@@ -373,32 +451,11 @@ class _ShowGetDmConfigurationModalContentState
                     computedFormula.toAdditionalData());
           }
 
-          if (widget.predefinedConfiguration == null) {
-            return tempResult;
-          } else {
-            return tempResult.copyWith(
-                statUuid: widget.predefinedConfiguration!.statUuid);
-          }
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomTextField(
-              labelText: S.of(context).nameOfPropertyLabel,
-              textEditingController: nameTextEditor,
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            CustomTextField(
-              labelText: S.of(context).descriptionOfProperty,
-              textEditingController: helperTextEditor,
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(
-              height: 10,
-            ),
+    return tempResult;
+  }
+
+  /// The change frequency and the field type.
+  List<Widget> _typePickers() => [
             CustomDropdownMenu(
                 isExpanded: true,
                 selectedValueTemp: selectedEditType?.name,
@@ -570,14 +627,130 @@ class _ShowGetDmConfigurationModalContentState
                   ),
                 ),
               ),
-            ...getAdvancedConfigurationOptionWidgets(),
-            ...getAdditionalDetailsWidgets(),
-            SizedBox(
-                height: EdgeInsets.fromViewPadding(View.of(context).viewInsets,
-                        View.of(context).devicePixelRatio)
-                    .bottom),
-          ],
-        ));
+      ];
+
+  /// What the property is for, above its name (new properties picked by
+  /// purpose).
+  Widget _purposeHeader() {
+    final info = PropertyPurposeInfo.of(widget.purpose!);
+    final theme = CustomThemeProvider.of(context).theme;
+    final s = S.of(context);
+    return Padding(
+      key: const ValueKey('propertyPurposeHeader'),
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomFaIcon(icon: info.icon, size: 20, color: theme.accentColor),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  info.title(s),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: theme.darkTextColor,
+                        fontSize: 20,
+                      ),
+                ),
+                Text(
+                  info.description(s),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: theme.darkTextColor,
+                        fontSize: 14,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Every text field whose input changes the preview.
+  Listenable _previewInputs() => Listenable.merge([
+        nameTextEditor,
+        helperTextEditor,
+        for (final option in multiselectOptions) ...[
+          option.$2,
+          option.$3,
+          option.$4,
+        ],
+        for (final value in groupOfLabeledValues) value.label,
+        ...checkboxTrackLabels,
+        for (final slot in textListSlots) slot.label,
+      ]);
+
+  /// The property as the sheet shows it, with sample values; it follows the
+  /// edits above.
+  List<Widget> _previewWidgets() {
+    if (!propertyHasPreview(selectedValueType)) return const [];
+    final theme = CustomThemeProvider.of(context).theme;
+    final s = S.of(context);
+    return [
+      const SizedBox(height: 20),
+      HorizontalLine(),
+      const SizedBox(height: 10),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "${s.preview}:",
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: theme.darkTextColor,
+                fontSize: 24,
+              ),
+        ),
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          s.propertyPreviewHint,
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: theme.darkTextColor,
+                fontSize: 14,
+              ),
+        ),
+      ),
+      const SizedBox(height: 10),
+      ListenableBuilder(
+        listenable: _previewInputs(),
+        builder: (context, _) {
+          final definition =
+              _currentDefinition().copyWith(statUuid: 'property-preview');
+          final sample = propertyPreviewSample(definition);
+          if (sample == null) {
+            return Text(
+              s.propertyPreviewNeedsEntries,
+              key: const ValueKey('propertyPreviewEmpty'),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: theme.darkTextColor.withValues(alpha: 0.7),
+                    fontSize: 14,
+                  ),
+            );
+          }
+          return Center(
+            child: ConstrainedBox(
+              key: const ValueKey('propertyPreview'),
+              // About one column of the sheet.
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: IgnorePointer(
+                child: getPlayerVisualizationWidget(
+                  context: context,
+                  statConfiguration: definition,
+                  characterValue: sample,
+                  characterName: s.characterNameDefault,
+                  onNewStatValue: (_) {},
+                  characterToRenderStatFor: null,
+                  readOnly: true,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ];
   }
 
   List<Widget> getAdvancedConfigurationOptionWidgets() {
@@ -1324,4 +1497,51 @@ class SelectableTile extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Companions and alternate forms only make sense on a real character.
+bool propertyHasPreview(CharacterStatValueType? type) => switch (type) {
+      null ||
+      CharacterStatValueType.companionSelector ||
+      CharacterStatValueType.transformIntoAlternateFormBtn ||
+      CharacterStatValueType.unsupported =>
+        false,
+      _ => true,
+    };
+
+/// A sample value to preview [definition] with, or null when there is
+/// nothing to show yet (a list without entries, or a type without a preview).
+RpgCharacterStatValue? propertyPreviewSample(CharacterStatDefinition definition) {
+  if (!propertyHasPreview(definition.valueType)) return null;
+  switch (definition.valueType) {
+    case CharacterStatValueType.multiselect:
+    case CharacterStatValueType.singleSelect:
+      final options = (jsonDecode(
+              definition.jsonSerializedAdditionalData ?? '{}')
+          as Map<String, dynamic>)["options"] as List<dynamic>?;
+      if (options == null || options.isEmpty) return null;
+    case CharacterStatValueType.listOfIntsWithIcons:
+    case CharacterStatValueType.listOfIntWithCalculatedValues:
+      final values = (jsonDecode(
+              definition.jsonSerializedAdditionalData ?? '{}')
+          as Map<String, dynamic>)["values"] as List<dynamic>?;
+      if (values == null || values.isEmpty) return null;
+    default:
+      break;
+  }
+  final config = RpgConfigurationTemplates.empty().copyWith(
+    characterStatTabsDefinition: [
+      CharacterStatsTabDefinition(
+        uuid: 'property-preview-tab',
+        tabName: '',
+        isOptional: false,
+        isDefaultTab: true,
+        statsInTab: [definition],
+      ),
+    ],
+  );
+  final sample = RpgCharacterConfiguration.getDefaultStats(config, false, null)
+      .firstOrNull;
+  // The first style, which a new property starts with.
+  return sample?.copyWith(variant: 0);
 }

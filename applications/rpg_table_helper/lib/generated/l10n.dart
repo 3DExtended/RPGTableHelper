@@ -6259,6 +6259,356 @@ class S {
       args: [],
     );
   }
+
+  /// `What do you want to track?`
+  String get propertyPurposePickerQuestion {
+    return Intl.message(
+      'What do you want to track?',
+      name: 'propertyPurposePickerQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick what the property is for. You can still change its field type and look afterwards.`
+  String get propertyPurposePickerHint {
+    return Intl.message(
+      'Pick what the property is for. You can still change its field type and look afterwards.',
+      name: 'propertyPurposePickerHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All field types`
+  String get propertyPurposeAdvancedTitle {
+    return Intl.message(
+      'All field types',
+      name: 'propertyPurposeAdvancedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the field type yourself from the full list.`
+  String get propertyPurposeAdvancedDescription {
+    return Intl.message(
+      'Choose the field type yourself from the full list.',
+      name: 'propertyPurposeAdvancedDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Field type and how often it changes`
+  String get propertyPurposeChangeType {
+    return Intl.message(
+      'Field type and how often it changes',
+      name: 'propertyPurposeChangeType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is how the property looks on the sheet, with sample values.`
+  String get propertyPreviewHint {
+    return Intl.message(
+      'This is how the property looks on the sheet, with sample values.',
+      name: 'propertyPreviewHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add entries above to see the preview here.`
+  String get propertyPreviewNeedsEntries {
+    return Intl.message(
+      'Add entries above to see the preview here.',
+      name: 'propertyPreviewNeedsEntries',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Health & resources`
+  String get propertyPurposeResourceTitle {
+    return Intl.message(
+      'Health & resources',
+      name: 'propertyPurposeResourceTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A value with a maximum that players change with + and − during play. E.g. hit points, mana, ammunition.`
+  String get propertyPurposeResourceDescription {
+    return Intl.message(
+      'A value with a maximum that players change with + and − during play. E.g. hit points, mana, ammunition.',
+      name: 'propertyPurposeResourceDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Abilities`
+  String get propertyPurposeAbilitiesTitle {
+    return Intl.message(
+      'Abilities',
+      name: 'propertyPurposeAbilitiesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Several values with a bonus that rarely change. E.g. strength, dexterity, wisdom.`
+  String get propertyPurposeAbilitiesDescription {
+    return Intl.message(
+      'Several values with a bonus that rarely change. E.g. strength, dexterity, wisdom.',
+      name: 'propertyPurposeAbilitiesDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Key numbers`
+  String get propertyPurposeKeyNumbersTitle {
+    return Intl.message(
+      'Key numbers',
+      name: 'propertyPurposeKeyNumbersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Several numbers with an icon. E.g. armour class, speed, initiative.`
+  String get propertyPurposeKeyNumbersDescription {
+    return Intl.message(
+      'Several numbers with an icon. E.g. armour class, speed, initiative.',
+      name: 'propertyPurposeKeyNumbersDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Counter`
+  String get propertyPurposeCounterTitle {
+    return Intl.message(
+      'Counter',
+      name: 'propertyPurposeCounterTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A single number that changes during play. E.g. story points, inspiration, luck.`
+  String get propertyPurposeCounterDescription {
+    return Intl.message(
+      'A single number that changes during play. E.g. story points, inspiration, luck.',
+      name: 'propertyPurposeCounterDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value with bonus`
+  String get propertyPurposeValueWithBonusTitle {
+    return Intl.message(
+      'Value with bonus',
+      name: 'propertyPurposeValueWithBonusTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A number with a second number next to it. E.g. an ability with its modifier.`
+  String get propertyPurposeValueWithBonusDescription {
+    return Intl.message(
+      'A number with a second number next to it. E.g. an ability with its modifier.',
+      name: 'propertyPurposeValueWithBonusDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tick boxes`
+  String get propertyPurposeTickBoxesTitle {
+    return Intl.message(
+      'Tick boxes',
+      name: 'propertyPurposeTickBoxesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boxes players tick with one tap. E.g. stress, exhaustion, death saves.`
+  String get propertyPurposeTickBoxesDescription {
+    return Intl.message(
+      'Boxes players tick with one tap. E.g. stress, exhaustion, death saves.',
+      name: 'propertyPurposeTickBoxesDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checklist`
+  String get propertyPurposeChecklistTitle {
+    return Intl.message(
+      'Checklist',
+      name: 'propertyPurposeChecklistTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tick several options from a list. E.g. skills, saving throws, languages.`
+  String get propertyPurposeChecklistDescription {
+    return Intl.message(
+      'Tick several options from a list. E.g. skills, saving throws, languages.',
+      name: 'propertyPurposeChecklistDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick one`
+  String get propertyPurposePickOneTitle {
+    return Intl.message(
+      'Pick one',
+      name: 'propertyPurposePickOneTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exactly one option from a list. E.g. class, alignment, origin.`
+  String get propertyPurposePickOneDescription {
+    return Intl.message(
+      'Exactly one option from a list. E.g. class, alignment, origin.',
+      name: 'propertyPurposePickOneDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List of entries`
+  String get propertyPurposeEntriesTitle {
+    return Intl.message(
+      'List of entries',
+      name: 'propertyPurposeEntriesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Short entries, fixed or added by players. E.g. aspects, goals, contacts.`
+  String get propertyPurposeEntriesDescription {
+    return Intl.message(
+      'Short entries, fixed or added by players. E.g. aspects, goals, contacts.',
+      name: 'propertyPurposeEntriesDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Short text`
+  String get propertyPurposeShortTextTitle {
+    return Intl.message(
+      'Short text',
+      name: 'propertyPurposeShortTextTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One line. E.g. deity, title, home town.`
+  String get propertyPurposeShortTextDescription {
+    return Intl.message(
+      'One line. E.g. deity, title, home town.',
+      name: 'propertyPurposeShortTextDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Long text`
+  String get propertyPurposeLongTextTitle {
+    return Intl.message(
+      'Long text',
+      name: 'propertyPurposeLongTextTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Several paragraphs. E.g. background, personality, equipment.`
+  String get propertyPurposeLongTextDescription {
+    return Intl.message(
+      'Several paragraphs. E.g. background, personality, equipment.',
+      name: 'propertyPurposeLongTextDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image`
+  String get propertyPurposeImageTitle {
+    return Intl.message(
+      'Image',
+      name: 'propertyPurposeImageTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An image with a description. E.g. portrait, crest.`
+  String get propertyPurposeImageDescription {
+    return Intl.message(
+      'An image with a description. E.g. portrait, crest.',
+      name: 'propertyPurposeImageDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Companions`
+  String get propertyPurposeCompanionsTitle {
+    return Intl.message(
+      'Companions',
+      name: 'propertyPurposeCompanionsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Companions with their own sheet. E.g. pet, familiar, mount.`
+  String get propertyPurposeCompanionsDescription {
+    return Intl.message(
+      'Companions with their own sheet. E.g. pet, familiar, mount.',
+      name: 'propertyPurposeCompanionsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transformation`
+  String get propertyPurposeTransformationTitle {
+    return Intl.message(
+      'Transformation',
+      name: 'propertyPurposeTransformationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A button that turns the character into another form. E.g. an animal shape.`
+  String get propertyPurposeTransformationDescription {
+    return Intl.message(
+      'A button that turns the character into another form. E.g. an animal shape.',
+      name: 'propertyPurposeTransformationDescription',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

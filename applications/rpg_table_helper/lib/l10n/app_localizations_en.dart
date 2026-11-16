@@ -2307,4 +2307,127 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statStyleNext => 'Next style';
+
+  @override
+  String get propertyPurposePickerQuestion => 'What do you want to track?';
+
+  @override
+  String get propertyPurposePickerHint =>
+      'Pick what the property is for. You can still change its field type and look afterwards.';
+
+  @override
+  String get propertyPurposeAdvancedTitle => 'All field types';
+
+  @override
+  String get propertyPurposeAdvancedDescription =>
+      'Choose the field type yourself from the full list.';
+
+  @override
+  String get propertyPurposeChangeType => 'Field type and how often it changes';
+
+  @override
+  String get propertyPreviewHint =>
+      'This is how the property looks on the sheet, with sample values.';
+
+  @override
+  String get propertyPreviewNeedsEntries =>
+      'Add entries above to see the preview here.';
+
+  @override
+  String get propertyPurposeResourceTitle => 'Health & resources';
+
+  @override
+  String get propertyPurposeResourceDescription =>
+      'A value with a maximum that players change with + and − during play. E.g. hit points, mana, ammunition.';
+
+  @override
+  String get propertyPurposeAbilitiesTitle => 'Abilities';
+
+  @override
+  String get propertyPurposeAbilitiesDescription =>
+      'Several values with a bonus that rarely change. E.g. strength, dexterity, wisdom.';
+
+  @override
+  String get propertyPurposeKeyNumbersTitle => 'Key numbers';
+
+  @override
+  String get propertyPurposeKeyNumbersDescription =>
+      'Several numbers with an icon. E.g. armour class, speed, initiative.';
+
+  @override
+  String get propertyPurposeCounterTitle => 'Counter';
+
+  @override
+  String get propertyPurposeCounterDescription =>
+      'A single number that changes during play. E.g. story points, inspiration, luck.';
+
+  @override
+  String get propertyPurposeValueWithBonusTitle => 'Value with bonus';
+
+  @override
+  String get propertyPurposeValueWithBonusDescription =>
+      'A number with a second number next to it. E.g. an ability with its modifier.';
+
+  @override
+  String get propertyPurposeTickBoxesTitle => 'Tick boxes';
+
+  @override
+  String get propertyPurposeTickBoxesDescription =>
+      'Boxes players tick with one tap. E.g. stress, exhaustion, death saves.';
+
+  @override
+  String get propertyPurposeChecklistTitle => 'Checklist';
+
+  @override
+  String get propertyPurposeChecklistDescription =>
+      'Tick several options from a list. E.g. skills, saving throws, languages.';
+
+  @override
+  String get propertyPurposePickOneTitle => 'Pick one';
+
+  @override
+  String get propertyPurposePickOneDescription =>
+      'Exactly one option from a list. E.g. class, alignment, origin.';
+
+  @override
+  String get propertyPurposeEntriesTitle => 'List of entries';
+
+  @override
+  String get propertyPurposeEntriesDescription =>
+      'Short entries, fixed or added by players. E.g. aspects, goals, contacts.';
+
+  @override
+  String get propertyPurposeShortTextTitle => 'Short text';
+
+  @override
+  String get propertyPurposeShortTextDescription =>
+      'One line. E.g. deity, title, home town.';
+
+  @override
+  String get propertyPurposeLongTextTitle => 'Long text';
+
+  @override
+  String get propertyPurposeLongTextDescription =>
+      'Several paragraphs. E.g. background, personality, equipment.';
+
+  @override
+  String get propertyPurposeImageTitle => 'Image';
+
+  @override
+  String get propertyPurposeImageDescription =>
+      'An image with a description. E.g. portrait, crest.';
+
+  @override
+  String get propertyPurposeCompanionsTitle => 'Companions';
+
+  @override
+  String get propertyPurposeCompanionsDescription =>
+      'Companions with their own sheet. E.g. pet, familiar, mount.';
+
+  @override
+  String get propertyPurposeTransformationTitle => 'Transformation';
+
+  @override
+  String get propertyPurposeTransformationDescription =>
+      'A button that turns the character into another form. E.g. an animal shape.';
 }

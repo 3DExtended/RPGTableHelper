@@ -16,7 +16,11 @@ class ModalContentWrapper<T> extends StatelessWidget {
     required this.onSave,
     required this.onCancel,
     required this.isFullscreen,
+    this.hideSaveButton = false,
   });
+
+  /// For a chooser that closes when an entry is tapped: no Save button.
+  final bool hideSaveButton;
 
   final String title;
   final Widget child;
@@ -117,6 +121,7 @@ class ModalContentWrapper<T> extends StatelessWidget {
                               },
                             ),
                             const Spacer(),
+                            if (!hideSaveButton)
                             CustomButton(
                               label: S.of(context).save,
                               onPressed: onSave == null

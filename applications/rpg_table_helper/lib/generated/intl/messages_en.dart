@@ -1075,6 +1075,113 @@ class MessageLookup extends MessageLookupByLibrary {
       "Property is copied",
     ),
     "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+    "propertyPreviewHint": MessageLookupByLibrary.simpleMessage(
+      "This is how the property looks on the sheet, with sample values.",
+    ),
+    "propertyPreviewNeedsEntries": MessageLookupByLibrary.simpleMessage(
+      "Add entries above to see the preview here.",
+    ),
+    "propertyPurposeAbilitiesDescription": MessageLookupByLibrary.simpleMessage(
+      "Several values with a bonus that rarely change. E.g. strength, dexterity, wisdom.",
+    ),
+    "propertyPurposeAbilitiesTitle": MessageLookupByLibrary.simpleMessage(
+      "Abilities",
+    ),
+    "propertyPurposeAdvancedDescription": MessageLookupByLibrary.simpleMessage(
+      "Choose the field type yourself from the full list.",
+    ),
+    "propertyPurposeAdvancedTitle": MessageLookupByLibrary.simpleMessage(
+      "All field types",
+    ),
+    "propertyPurposeChangeType": MessageLookupByLibrary.simpleMessage(
+      "Field type and how often it changes",
+    ),
+    "propertyPurposeChecklistDescription": MessageLookupByLibrary.simpleMessage(
+      "Tick several options from a list. E.g. skills, saving throws, languages.",
+    ),
+    "propertyPurposeChecklistTitle": MessageLookupByLibrary.simpleMessage(
+      "Checklist",
+    ),
+    "propertyPurposeCompanionsDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Companions with their own sheet. E.g. pet, familiar, mount.",
+        ),
+    "propertyPurposeCompanionsTitle": MessageLookupByLibrary.simpleMessage(
+      "Companions",
+    ),
+    "propertyPurposeCounterDescription": MessageLookupByLibrary.simpleMessage(
+      "A single number that changes during play. E.g. story points, inspiration, luck.",
+    ),
+    "propertyPurposeCounterTitle": MessageLookupByLibrary.simpleMessage(
+      "Counter",
+    ),
+    "propertyPurposeEntriesDescription": MessageLookupByLibrary.simpleMessage(
+      "Short entries, fixed or added by players. E.g. aspects, goals, contacts.",
+    ),
+    "propertyPurposeEntriesTitle": MessageLookupByLibrary.simpleMessage(
+      "List of entries",
+    ),
+    "propertyPurposeImageDescription": MessageLookupByLibrary.simpleMessage(
+      "An image with a description. E.g. portrait, crest.",
+    ),
+    "propertyPurposeImageTitle": MessageLookupByLibrary.simpleMessage("Image"),
+    "propertyPurposeKeyNumbersDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Several numbers with an icon. E.g. armour class, speed, initiative.",
+        ),
+    "propertyPurposeKeyNumbersTitle": MessageLookupByLibrary.simpleMessage(
+      "Key numbers",
+    ),
+    "propertyPurposeLongTextDescription": MessageLookupByLibrary.simpleMessage(
+      "Several paragraphs. E.g. background, personality, equipment.",
+    ),
+    "propertyPurposeLongTextTitle": MessageLookupByLibrary.simpleMessage(
+      "Long text",
+    ),
+    "propertyPurposePickOneDescription": MessageLookupByLibrary.simpleMessage(
+      "Exactly one option from a list. E.g. class, alignment, origin.",
+    ),
+    "propertyPurposePickOneTitle": MessageLookupByLibrary.simpleMessage(
+      "Pick one",
+    ),
+    "propertyPurposePickerHint": MessageLookupByLibrary.simpleMessage(
+      "Pick what the property is for. You can still change its field type and look afterwards.",
+    ),
+    "propertyPurposePickerQuestion": MessageLookupByLibrary.simpleMessage(
+      "What do you want to track?",
+    ),
+    "propertyPurposeResourceDescription": MessageLookupByLibrary.simpleMessage(
+      "A value with a maximum that players change with + and − during play. E.g. hit points, mana, ammunition.",
+    ),
+    "propertyPurposeResourceTitle": MessageLookupByLibrary.simpleMessage(
+      "Health & resources",
+    ),
+    "propertyPurposeShortTextDescription": MessageLookupByLibrary.simpleMessage(
+      "One line. E.g. deity, title, home town.",
+    ),
+    "propertyPurposeShortTextTitle": MessageLookupByLibrary.simpleMessage(
+      "Short text",
+    ),
+    "propertyPurposeTickBoxesDescription": MessageLookupByLibrary.simpleMessage(
+      "Boxes players tick with one tap. E.g. stress, exhaustion, death saves.",
+    ),
+    "propertyPurposeTickBoxesTitle": MessageLookupByLibrary.simpleMessage(
+      "Tick boxes",
+    ),
+    "propertyPurposeTransformationDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "A button that turns the character into another form. E.g. an animal shape.",
+        ),
+    "propertyPurposeTransformationTitle": MessageLookupByLibrary.simpleMessage(
+      "Transformation",
+    ),
+    "propertyPurposeValueWithBonusDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "A number with a second number next to it. E.g. an ability with its modifier.",
+        ),
+    "propertyPurposeValueWithBonusTitle": MessageLookupByLibrary.simpleMessage(
+      "Value with bonus",
+    ),
     "qrCodeHint": MessageLookupByLibrary.simpleMessage(
       "The QR code only contains the code.",
     ),

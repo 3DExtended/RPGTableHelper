@@ -2326,4 +2326,127 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get statStyleNext => 'Nächster Stil';
+
+  @override
+  String get propertyPurposePickerQuestion => 'Was willst du erfassen?';
+
+  @override
+  String get propertyPurposePickerHint =>
+      'Wähle, wofür die Eigenschaft da ist. Feldtyp und Darstellung kannst du danach noch ändern.';
+
+  @override
+  String get propertyPurposeAdvancedTitle => 'Alle Feldtypen';
+
+  @override
+  String get propertyPurposeAdvancedDescription =>
+      'Wähle den Feldtyp selbst aus der vollständigen Liste.';
+
+  @override
+  String get propertyPurposeChangeType => 'Feldtyp und Änderungshäufigkeit';
+
+  @override
+  String get propertyPreviewHint =>
+      'So sieht die Eigenschaft auf dem Bogen aus, mit Beispielwerten.';
+
+  @override
+  String get propertyPreviewNeedsEntries =>
+      'Füge oben Einträge hinzu, dann erscheint hier die Vorschau.';
+
+  @override
+  String get propertyPurposeResourceTitle => 'Lebenspunkte & Vorräte';
+
+  @override
+  String get propertyPurposeResourceDescription =>
+      'Ein Wert mit Maximum, den Spieler im Spiel mit + und − ändern. Z. B. Trefferpunkte, Mana, Munition.';
+
+  @override
+  String get propertyPurposeAbilitiesTitle => 'Attribute';
+
+  @override
+  String get propertyPurposeAbilitiesDescription =>
+      'Mehrere Werte mit Bonus, die sich selten ändern. Z. B. Stärke, Geschick, Weisheit.';
+
+  @override
+  String get propertyPurposeKeyNumbersTitle => 'Kennzahlen';
+
+  @override
+  String get propertyPurposeKeyNumbersDescription =>
+      'Mehrere Zahlen mit Symbol. Z. B. Rüstungsklasse, Bewegung, Initiative.';
+
+  @override
+  String get propertyPurposeCounterTitle => 'Zähler';
+
+  @override
+  String get propertyPurposeCounterDescription =>
+      'Eine einzelne Zahl, die sich im Spiel ändert. Z. B. Erzählpunkte, Inspiration, Glück.';
+
+  @override
+  String get propertyPurposeValueWithBonusTitle => 'Wert mit Bonus';
+
+  @override
+  String get propertyPurposeValueWithBonusDescription =>
+      'Eine Zahl mit einer zweiten Zahl daneben. Z. B. ein Attribut mit Modifikator.';
+
+  @override
+  String get propertyPurposeTickBoxesTitle => 'Leiste zum Ankreuzen';
+
+  @override
+  String get propertyPurposeTickBoxesDescription =>
+      'Kästchen, die Spieler mit einem Tipp ankreuzen. Z. B. Stress, Erschöpfung, Todesrettungswürfe.';
+
+  @override
+  String get propertyPurposeChecklistTitle => 'Mehrfachauswahl';
+
+  @override
+  String get propertyPurposeChecklistDescription =>
+      'Mehrere Optionen aus einer Liste ankreuzen. Z. B. Fertigkeiten, Rettungswürfe, Sprachen.';
+
+  @override
+  String get propertyPurposePickOneTitle => 'Eine Option wählen';
+
+  @override
+  String get propertyPurposePickOneDescription =>
+      'Genau eine Option aus einer Liste. Z. B. Klasse, Gesinnung, Herkunft.';
+
+  @override
+  String get propertyPurposeEntriesTitle => 'Liste von Einträgen';
+
+  @override
+  String get propertyPurposeEntriesDescription =>
+      'Kurze Einträge, feste oder eigene der Spieler. Z. B. Aspekte, Ziele, Kontakte.';
+
+  @override
+  String get propertyPurposeShortTextTitle => 'Kurzer Text';
+
+  @override
+  String get propertyPurposeShortTextDescription =>
+      'Eine Zeile. Z. B. Gottheit, Titel, Heimatort.';
+
+  @override
+  String get propertyPurposeLongTextTitle => 'Längerer Text';
+
+  @override
+  String get propertyPurposeLongTextDescription =>
+      'Mehrere Absätze. Z. B. Hintergrund, Persönlichkeit, Ausrüstung.';
+
+  @override
+  String get propertyPurposeImageTitle => 'Bild';
+
+  @override
+  String get propertyPurposeImageDescription =>
+      'Ein Bild mit Beschreibung. Z. B. Porträt, Wappen.';
+
+  @override
+  String get propertyPurposeCompanionsTitle => 'Begleiter';
+
+  @override
+  String get propertyPurposeCompanionsDescription =>
+      'Begleiter mit eigenem Bogen. Z. B. Haustier, Vertrauter, Reittier.';
+
+  @override
+  String get propertyPurposeTransformationTitle => 'Verwandlung';
+
+  @override
+  String get propertyPurposeTransformationDescription =>
+      'Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt.';
 }

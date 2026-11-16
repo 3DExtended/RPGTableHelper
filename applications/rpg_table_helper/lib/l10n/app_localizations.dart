@@ -4111,6 +4111,216 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Nächster Stil'**
   String get statStyleNext;
+
+  /// No description provided for @propertyPurposePickerQuestion.
+  ///
+  /// In de, this message translates to:
+  /// **'Was willst du erfassen?'**
+  String get propertyPurposePickerQuestion;
+
+  /// No description provided for @propertyPurposePickerHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle, wofür die Eigenschaft da ist. Feldtyp und Darstellung kannst du danach noch ändern.'**
+  String get propertyPurposePickerHint;
+
+  /// No description provided for @propertyPurposeAdvancedTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Feldtypen'**
+  String get propertyPurposeAdvancedTitle;
+
+  /// No description provided for @propertyPurposeAdvancedDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle den Feldtyp selbst aus der vollständigen Liste.'**
+  String get propertyPurposeAdvancedDescription;
+
+  /// No description provided for @propertyPurposeChangeType.
+  ///
+  /// In de, this message translates to:
+  /// **'Feldtyp und Änderungshäufigkeit'**
+  String get propertyPurposeChangeType;
+
+  /// No description provided for @propertyPreviewHint.
+  ///
+  /// In de, this message translates to:
+  /// **'So sieht die Eigenschaft auf dem Bogen aus, mit Beispielwerten.'**
+  String get propertyPreviewHint;
+
+  /// No description provided for @propertyPreviewNeedsEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'Füge oben Einträge hinzu, dann erscheint hier die Vorschau.'**
+  String get propertyPreviewNeedsEntries;
+
+  /// No description provided for @propertyPurposeResourceTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Lebenspunkte & Vorräte'**
+  String get propertyPurposeResourceTitle;
+
+  /// No description provided for @propertyPurposeResourceDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Wert mit Maximum, den Spieler im Spiel mit + und − ändern. Z. B. Trefferpunkte, Mana, Munition.'**
+  String get propertyPurposeResourceDescription;
+
+  /// No description provided for @propertyPurposeAbilitiesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Attribute'**
+  String get propertyPurposeAbilitiesTitle;
+
+  /// No description provided for @propertyPurposeAbilitiesDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Werte mit Bonus, die sich selten ändern. Z. B. Stärke, Geschick, Weisheit.'**
+  String get propertyPurposeAbilitiesDescription;
+
+  /// No description provided for @propertyPurposeKeyNumbersTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kennzahlen'**
+  String get propertyPurposeKeyNumbersTitle;
+
+  /// No description provided for @propertyPurposeKeyNumbersDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Zahlen mit Symbol. Z. B. Rüstungsklasse, Bewegung, Initiative.'**
+  String get propertyPurposeKeyNumbersDescription;
+
+  /// No description provided for @propertyPurposeCounterTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Zähler'**
+  String get propertyPurposeCounterTitle;
+
+  /// No description provided for @propertyPurposeCounterDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine einzelne Zahl, die sich im Spiel ändert. Z. B. Erzählpunkte, Inspiration, Glück.'**
+  String get propertyPurposeCounterDescription;
+
+  /// No description provided for @propertyPurposeValueWithBonusTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Wert mit Bonus'**
+  String get propertyPurposeValueWithBonusTitle;
+
+  /// No description provided for @propertyPurposeValueWithBonusDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Zahl mit einer zweiten Zahl daneben. Z. B. ein Attribut mit Modifikator.'**
+  String get propertyPurposeValueWithBonusDescription;
+
+  /// No description provided for @propertyPurposeTickBoxesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Leiste zum Ankreuzen'**
+  String get propertyPurposeTickBoxesTitle;
+
+  /// No description provided for @propertyPurposeTickBoxesDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Kästchen, die Spieler mit einem Tipp ankreuzen. Z. B. Stress, Erschöpfung, Todesrettungswürfe.'**
+  String get propertyPurposeTickBoxesDescription;
+
+  /// No description provided for @propertyPurposeChecklistTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrfachauswahl'**
+  String get propertyPurposeChecklistTitle;
+
+  /// No description provided for @propertyPurposeChecklistDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Optionen aus einer Liste ankreuzen. Z. B. Fertigkeiten, Rettungswürfe, Sprachen.'**
+  String get propertyPurposeChecklistDescription;
+
+  /// No description provided for @propertyPurposePickOneTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Option wählen'**
+  String get propertyPurposePickOneTitle;
+
+  /// No description provided for @propertyPurposePickOneDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Genau eine Option aus einer Liste. Z. B. Klasse, Gesinnung, Herkunft.'**
+  String get propertyPurposePickOneDescription;
+
+  /// No description provided for @propertyPurposeEntriesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Liste von Einträgen'**
+  String get propertyPurposeEntriesTitle;
+
+  /// No description provided for @propertyPurposeEntriesDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurze Einträge, feste oder eigene der Spieler. Z. B. Aspekte, Ziele, Kontakte.'**
+  String get propertyPurposeEntriesDescription;
+
+  /// No description provided for @propertyPurposeShortTextTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurzer Text'**
+  String get propertyPurposeShortTextTitle;
+
+  /// No description provided for @propertyPurposeShortTextDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Zeile. Z. B. Gottheit, Titel, Heimatort.'**
+  String get propertyPurposeShortTextDescription;
+
+  /// No description provided for @propertyPurposeLongTextTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Längerer Text'**
+  String get propertyPurposeLongTextTitle;
+
+  /// No description provided for @propertyPurposeLongTextDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Absätze. Z. B. Hintergrund, Persönlichkeit, Ausrüstung.'**
+  String get propertyPurposeLongTextDescription;
+
+  /// No description provided for @propertyPurposeImageTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Bild'**
+  String get propertyPurposeImageTitle;
+
+  /// No description provided for @propertyPurposeImageDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Bild mit Beschreibung. Z. B. Porträt, Wappen.'**
+  String get propertyPurposeImageDescription;
+
+  /// No description provided for @propertyPurposeCompanionsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Begleiter'**
+  String get propertyPurposeCompanionsTitle;
+
+  /// No description provided for @propertyPurposeCompanionsDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Begleiter mit eigenem Bogen. Z. B. Haustier, Vertrauter, Reittier.'**
+  String get propertyPurposeCompanionsDescription;
+
+  /// No description provided for @propertyPurposeTransformationTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Verwandlung'**
+  String get propertyPurposeTransformationTitle;
+
+  /// No description provided for @propertyPurposeTransformationDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt.'**
+  String get propertyPurposeTransformationDescription;
 }
 
 class _AppLocalizationsDelegate

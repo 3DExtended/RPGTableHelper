@@ -14,6 +14,7 @@ import 'package:quest_keeper/components/wizards/wizard_step_save_registry.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
+import 'package:quest_keeper/helpers/character_stats/show_property_purpose_picker.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_confirm_delete_dialog.dart';
@@ -724,9 +725,9 @@ class _RpgConfigurationWizardStep2CharacterConfigurationsPresetState
                     CustomButton(
                       isSubbutton: true,
                       onPressed: () async {
-                        // open new modal for dm config
+                        // "What do you want to track?", then the editor;
                         // if it returns non null add the stat
-                        await showGetDmConfigurationModal(
+                        await showNewPropertyEditor(
                                 context: context,
                                 availableStats: _statsWithTabs())
                             .then((value) {

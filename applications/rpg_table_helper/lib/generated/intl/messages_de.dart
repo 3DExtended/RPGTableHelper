@@ -1115,6 +1115,112 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eigenschaft wurde kopiert",
     ),
     "propertyNameLabel": MessageLookupByLibrary.simpleMessage("Name:"),
+    "propertyPreviewHint": MessageLookupByLibrary.simpleMessage(
+      "So sieht die Eigenschaft auf dem Bogen aus, mit Beispielwerten.",
+    ),
+    "propertyPreviewNeedsEntries": MessageLookupByLibrary.simpleMessage(
+      "Füge oben Einträge hinzu, dann erscheint hier die Vorschau.",
+    ),
+    "propertyPurposeAbilitiesDescription": MessageLookupByLibrary.simpleMessage(
+      "Mehrere Werte mit Bonus, die sich selten ändern. Z. B. Stärke, Geschick, Weisheit.",
+    ),
+    "propertyPurposeAbilitiesTitle": MessageLookupByLibrary.simpleMessage(
+      "Attribute",
+    ),
+    "propertyPurposeAdvancedDescription": MessageLookupByLibrary.simpleMessage(
+      "Wähle den Feldtyp selbst aus der vollständigen Liste.",
+    ),
+    "propertyPurposeAdvancedTitle": MessageLookupByLibrary.simpleMessage(
+      "Alle Feldtypen",
+    ),
+    "propertyPurposeChangeType": MessageLookupByLibrary.simpleMessage(
+      "Feldtyp und Änderungshäufigkeit",
+    ),
+    "propertyPurposeChecklistDescription": MessageLookupByLibrary.simpleMessage(
+      "Mehrere Optionen aus einer Liste ankreuzen. Z. B. Fertigkeiten, Rettungswürfe, Sprachen.",
+    ),
+    "propertyPurposeChecklistTitle": MessageLookupByLibrary.simpleMessage(
+      "Mehrfachauswahl",
+    ),
+    "propertyPurposeCompanionsDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Begleiter mit eigenem Bogen. Z. B. Haustier, Vertrauter, Reittier.",
+        ),
+    "propertyPurposeCompanionsTitle": MessageLookupByLibrary.simpleMessage(
+      "Begleiter",
+    ),
+    "propertyPurposeCounterDescription": MessageLookupByLibrary.simpleMessage(
+      "Eine einzelne Zahl, die sich im Spiel ändert. Z. B. Erzählpunkte, Inspiration, Glück.",
+    ),
+    "propertyPurposeCounterTitle": MessageLookupByLibrary.simpleMessage(
+      "Zähler",
+    ),
+    "propertyPurposeEntriesDescription": MessageLookupByLibrary.simpleMessage(
+      "Kurze Einträge, feste oder eigene der Spieler. Z. B. Aspekte, Ziele, Kontakte.",
+    ),
+    "propertyPurposeEntriesTitle": MessageLookupByLibrary.simpleMessage(
+      "Liste von Einträgen",
+    ),
+    "propertyPurposeImageDescription": MessageLookupByLibrary.simpleMessage(
+      "Ein Bild mit Beschreibung. Z. B. Porträt, Wappen.",
+    ),
+    "propertyPurposeImageTitle": MessageLookupByLibrary.simpleMessage("Bild"),
+    "propertyPurposeKeyNumbersDescription": MessageLookupByLibrary.simpleMessage(
+      "Mehrere Zahlen mit Symbol. Z. B. Rüstungsklasse, Bewegung, Initiative.",
+    ),
+    "propertyPurposeKeyNumbersTitle": MessageLookupByLibrary.simpleMessage(
+      "Kennzahlen",
+    ),
+    "propertyPurposeLongTextDescription": MessageLookupByLibrary.simpleMessage(
+      "Mehrere Absätze. Z. B. Hintergrund, Persönlichkeit, Ausrüstung.",
+    ),
+    "propertyPurposeLongTextTitle": MessageLookupByLibrary.simpleMessage(
+      "Längerer Text",
+    ),
+    "propertyPurposePickOneDescription": MessageLookupByLibrary.simpleMessage(
+      "Genau eine Option aus einer Liste. Z. B. Klasse, Gesinnung, Herkunft.",
+    ),
+    "propertyPurposePickOneTitle": MessageLookupByLibrary.simpleMessage(
+      "Eine Option wählen",
+    ),
+    "propertyPurposePickerHint": MessageLookupByLibrary.simpleMessage(
+      "Wähle, wofür die Eigenschaft da ist. Feldtyp und Darstellung kannst du danach noch ändern.",
+    ),
+    "propertyPurposePickerQuestion": MessageLookupByLibrary.simpleMessage(
+      "Was willst du erfassen?",
+    ),
+    "propertyPurposeResourceDescription": MessageLookupByLibrary.simpleMessage(
+      "Ein Wert mit Maximum, den Spieler im Spiel mit + und − ändern. Z. B. Trefferpunkte, Mana, Munition.",
+    ),
+    "propertyPurposeResourceTitle": MessageLookupByLibrary.simpleMessage(
+      "Lebenspunkte & Vorräte",
+    ),
+    "propertyPurposeShortTextDescription": MessageLookupByLibrary.simpleMessage(
+      "Eine Zeile. Z. B. Gottheit, Titel, Heimatort.",
+    ),
+    "propertyPurposeShortTextTitle": MessageLookupByLibrary.simpleMessage(
+      "Kurzer Text",
+    ),
+    "propertyPurposeTickBoxesDescription": MessageLookupByLibrary.simpleMessage(
+      "Kästchen, die Spieler mit einem Tipp ankreuzen. Z. B. Stress, Erschöpfung, Todesrettungswürfe.",
+    ),
+    "propertyPurposeTickBoxesTitle": MessageLookupByLibrary.simpleMessage(
+      "Leiste zum Ankreuzen",
+    ),
+    "propertyPurposeTransformationDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Ein Knopf, mit dem sich der Charakter in eine andere Gestalt verwandelt. Z. B. Tiergestalt.",
+        ),
+    "propertyPurposeTransformationTitle": MessageLookupByLibrary.simpleMessage(
+      "Verwandlung",
+    ),
+    "propertyPurposeValueWithBonusDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Eine Zahl mit einer zweiten Zahl daneben. Z. B. ein Attribut mit Modifikator.",
+        ),
+    "propertyPurposeValueWithBonusTitle": MessageLookupByLibrary.simpleMessage(
+      "Wert mit Bonus",
+    ),
     "qrCodeHint": MessageLookupByLibrary.simpleMessage(
       "Der QR-Code enthält nur den Code.",
     ),
