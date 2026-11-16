@@ -10,6 +10,7 @@ import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/navbar.dart';
 import 'package:quest_keeper/generated/l10n.dart';
+import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/iterable_extension.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
@@ -496,6 +497,45 @@ class _SelectTransformationComponentsForTransformationModalContentState
 
       // never merge...
       case CharacterStatValueType.transformIntoAlternateFormBtn:
+        break;
+
+      // {"checked": [0, 2]}: a box ticked in either stays ticked
+      case CharacterStatValueType.checkboxTrack:
+        currentStatValueToMergeInto["checked"] = ({
+          ...checkedBoxesOf(currentStatToMerge.serializedValue),
+          ...checkedBoxesOf(value.serializedValue),
+        }.toList()
+          ..sort());
+        break;
+
+      // {"values": [{"uuid": "...", "value": "..."}]}: texts of the same
+      // slot are joined, other entries are added
+      case CharacterStatValueType.textList:
+        final mergedEntries =
+            textListEntriesOf(currentStatToMerge.serializedValue);
+        for (final entry in textListEntriesOf(value.serializedValue)) {
+          final index = mergedEntries.indexWhere((e) => e.uuid == entry.uuid);
+          if (index == -1) {
+            mergedEntries.add(entry);
+          } else {
+            final joined = [mergedEntries[index].value, entry.value]
+                .where((v) => v.trim().isNotEmpty)
+                .join(", ");
+            mergedEntries[index] = TextListEntry(uuid: entry.uuid, value: joined);
+          }
+        }
+        currentStatValueToMergeInto["values"] =
+            mergedEntries.map((e) => e.toJson()).toList();
+        break;
+
+      // {"value": "<option uuid>"}: the transformation's choice wins
+      case CharacterStatValueType.singleSelect:
+        final chosen = selectedOptionUuidOf(value.serializedValue);
+        if (chosen != null) currentStatValueToMergeInto["value"] = chosen;
+        break;
+
+      // unknown to this version: keep the current value
+      case CharacterStatValueType.unsupported:
         break;
     }
 

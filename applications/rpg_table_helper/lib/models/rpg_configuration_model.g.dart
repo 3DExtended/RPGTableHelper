@@ -631,6 +631,10 @@ abstract class _$CharacterStatDefinitionCWProxy {
     String? jsonSerializedAdditionalData,
   );
 
+  CharacterStatDefinition unsupportedValueTypeName(
+    String? unsupportedValueTypeName,
+  );
+
   /// Creates a new instance with the provided field values.
   /// Omitted fields keep their values; explicit `null` clears nullable fields.
   /// The public API rejects `null` for non-nullable fields. To update a single field use `CharacterStatDefinition(...).copyWith.fieldName(value)`.
@@ -649,6 +653,7 @@ abstract class _$CharacterStatDefinitionCWProxy {
     bool? isOptionalForAlternateForms,
     bool? isOptionalForCompanionCharacters,
     String? jsonSerializedAdditionalData,
+    String? unsupportedValueTypeName,
   });
 }
 
@@ -696,6 +701,11 @@ class _$CharacterStatDefinitionCWProxyImpl
     String? jsonSerializedAdditionalData,
   ) => call(jsonSerializedAdditionalData: jsonSerializedAdditionalData);
 
+  @override
+  CharacterStatDefinition unsupportedValueTypeName(
+    String? unsupportedValueTypeName,
+  ) => call(unsupportedValueTypeName: unsupportedValueTypeName);
+
   /// Creates a new instance with the provided field values.
   /// Omitted fields keep their values; explicit `null` clears nullable fields.
   /// The public API rejects `null` for non-nullable fields. To update a single field use `CharacterStatDefinition(...).copyWith.fieldName(value)`.
@@ -715,6 +725,7 @@ class _$CharacterStatDefinitionCWProxyImpl
     Object? isOptionalForAlternateForms = const $CopyWithPlaceholder(),
     Object? isOptionalForCompanionCharacters = const $CopyWithPlaceholder(),
     Object? jsonSerializedAdditionalData = const $CopyWithPlaceholder(),
+    Object? unsupportedValueTypeName = const $CopyWithPlaceholder(),
   }) {
     return CharacterStatDefinition(
       statUuid: statUuid == const $CopyWithPlaceholder() || statUuid == null
@@ -757,6 +768,11 @@ class _$CharacterStatDefinitionCWProxyImpl
           ? _value.jsonSerializedAdditionalData
           // ignore: cast_nullable_to_non_nullable
           : jsonSerializedAdditionalData as String?,
+      unsupportedValueTypeName:
+          unsupportedValueTypeName == const $CopyWithPlaceholder()
+          ? _value.unsupportedValueTypeName
+          // ignore: cast_nullable_to_non_nullable
+          : unsupportedValueTypeName as String?,
     );
   }
 }
@@ -1383,7 +1399,11 @@ CharacterStatDefinition _$CharacterStatDefinitionFromJson(
   name: json['name'] as String,
   groupId: (json['groupId'] as num?)?.toInt(),
   helperText: json['helperText'] as String,
-  valueType: $enumDecode(_$CharacterStatValueTypeEnumMap, json['valueType']),
+  valueType: $enumDecode(
+    _$CharacterStatValueTypeEnumMap,
+    json['valueType'],
+    unknownValue: CharacterStatValueType.unsupported,
+  ),
   editType: $enumDecode(_$CharacterStatEditTypeEnumMap, json['editType']),
   isOptionalForAlternateForms: json['isOptionalForAlternateForms'] as bool?,
   isOptionalForCompanionCharacters:
@@ -1421,6 +1441,10 @@ const _$CharacterStatValueTypeEnumMap = {
   CharacterStatValueType.companionSelector: 'companionSelector',
   CharacterStatValueType.transformIntoAlternateFormBtn:
       'transformIntoAlternateFormBtn',
+  CharacterStatValueType.checkboxTrack: 'checkboxTrack',
+  CharacterStatValueType.textList: 'textList',
+  CharacterStatValueType.singleSelect: 'singleSelect',
+  CharacterStatValueType.unsupported: 'unsupported',
 };
 
 const _$CharacterStatEditTypeEnumMap = {

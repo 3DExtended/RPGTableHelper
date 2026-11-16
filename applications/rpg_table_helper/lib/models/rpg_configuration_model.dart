@@ -952,7 +952,9 @@ enum CharacterStatValueType {
   listOfIntWithCalculatedValues,
 
   // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "Volk"}]}
+  //    optional "showLevel": false hides the level (form and sheet); absent means true
   // => RpgCharacterStatValue.serializedValue == {"level": 12, "values":[{"uuid":"5f515750-0456-41e7-a1ee-97acb30c25c0", "value": "Zwerg"}], "imageUrl": "optional", "imagePrompt": "optional"}
+  //    "level" is still written while the level is hidden (last value, default 1)
   characterNameWithLevelAndAdditionalDetails,
 
   // => statConfiguration.jsonSerializedAdditionalData! == {"values":[{"uuid":"theCorrespondingUuidOfTheGroupValue", "label": "HP", "iconName": "asdf"}]}
@@ -963,6 +965,27 @@ enum CharacterStatValueType {
   companionSelector,
 
   transformIntoAlternateFormBtn,
+
+  // A row of boxes the player ticks with one tap on the sheet (e.g. stress).
+  // => statConfiguration.jsonSerializedAdditionalData! == {"boxCount": 3, "labels": ["1", "2", "3"]}
+  //    boxCount 1-20; "labels" is optional, an empty or missing label leaves the box unlabelled
+  // => RpgCharacterStatValue.serializedValue == {"checked": [0, 2]}  (0-based indices of the ticked boxes)
+  checkboxTrack,
+
+  // A list of text entries: optional fixed, labelled slots plus (if allowed) the player's own entries.
+  // => statConfiguration.jsonSerializedAdditionalData! == {"slots": [{"uuid": "...", "label": "Hauptaspekt"}], "allowCustomEntries": true}
+  // => RpgCharacterStatValue.serializedValue == {"values": [{"uuid": "<slot uuid or own entry uuid>", "value": "text"}]}
+  //    an entry whose uuid is not a slot uuid is one of the player's own entries
+  textList,
+
+  // Exactly one option, configured like multiselect.
+  // => statConfiguration.jsonSerializedAdditionalData! == {"options": [{"uuid": "...", "label": "", "description": "", "summary": "optional"}]}
+  // => RpgCharacterStatValue.serializedValue == {"value": "<uuid of the selected option>"}  ({"value": null} while nothing is selected)
+  singleSelect,
+
+  // Placeholder for a type written by a newer app version. Never stored:
+  // CharacterStatDefinition.toJson writes the original type name back.
+  unsupported,
 }
 
 @JsonSerializable()
@@ -972,6 +995,11 @@ class CharacterStatDefinition {
   final String statUuid;
   final String helperText;
   final int? groupId;
+
+  /// Unknown types (from a newer app version) load as
+  /// [CharacterStatValueType.unsupported] instead of failing the whole
+  /// configuration; [unsupportedValueTypeName] keeps the original name.
+  @JsonKey(unknownEnumValue: CharacterStatValueType.unsupported)
   final CharacterStatValueType valueType;
   final CharacterStatEditType editType;
 
@@ -979,6 +1007,12 @@ class CharacterStatDefinition {
   final bool? isOptionalForCompanionCharacters;
 
   final String? jsonSerializedAdditionalData;
+
+  /// The stored type name when [valueType] is
+  /// [CharacterStatValueType.unsupported], so saving the configuration does
+  /// not destroy a stat a newer app version created.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String? unsupportedValueTypeName;
 
   CharacterStatDefinition({
     required this.statUuid,
@@ -990,12 +1024,24 @@ class CharacterStatDefinition {
     required this.isOptionalForAlternateForms,
     required this.isOptionalForCompanionCharacters,
     this.jsonSerializedAdditionalData,
+    this.unsupportedValueTypeName,
   });
 
-  factory CharacterStatDefinition.fromJson(Map<String, dynamic> json) =>
-      _$CharacterStatDefinitionFromJson(json);
+  factory CharacterStatDefinition.fromJson(Map<String, dynamic> json) {
+    final parsed = _$CharacterStatDefinitionFromJson(json);
+    if (parsed.valueType != CharacterStatValueType.unsupported) return parsed;
+    return parsed.copyWith(
+        unsupportedValueTypeName: json['valueType']?.toString());
+  }
 
-  Map<String, dynamic> toJson() => _$CharacterStatDefinitionToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$CharacterStatDefinitionToJson(this);
+    if (valueType == CharacterStatValueType.unsupported &&
+        unsupportedValueTypeName != null) {
+      json['valueType'] = unsupportedValueTypeName;
+    }
+    return json;
+  }
 }
 
 @JsonSerializable()

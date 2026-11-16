@@ -16,10 +16,14 @@ import 'package:quest_keeper/components/custom_fa_icon.dart';
 import 'package:quest_keeper/components/custom_int_edit_field.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
+import 'package:quest_keeper/components/stat_types/checkbox_track_view.dart';
+import 'package:quest_keeper/components/stat_types/single_select_view.dart';
+import 'package:quest_keeper/components/stat_types/unsupported_stat_view.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/generated/swaggen/swagger.models.swagger.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/show_get_dm_configuration_modal.dart';
 import 'package:quest_keeper/helpers/connection_details_provider.dart';
 import 'package:quest_keeper/helpers/modals/show_create_new_character_transformation_wizard.dart';
@@ -114,6 +118,18 @@ class _PlayerStatsConfigurationVisualsState
 
   List<({String label, TextEditingController valueTextController, String uuid})>
       listOfSingleValueOptions = [];
+
+  // checkboxTrack: 0-based indices of the ticked boxes
+  Set<int> checkboxTrackChecked = {};
+
+  // textList: one field per fixed slot (by slot uuid) and the player's own
+  // entries in order
+  Map<String, TextEditingController> textListSlotControllers = {};
+  List<({String uuid, TextEditingController controller})> textListOwnEntries =
+      [];
+
+  // singleSelect: uuid of the chosen option
+  String? singleSelectSelectedUuid;
 
   late PageController pageController;
 
@@ -360,6 +376,58 @@ class _PlayerStatsConfigurationVisualsState
     }
 
     if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.checkboxTrack) {
+      // => characterValue.serializedValue == {"checked": [0, 2]}
+      final boxCount =
+          CheckboxTrackConfig.of(widget.statConfiguration).boxCount;
+      checkboxTrackChecked =
+          checkedBoxesOf(widget.characterValue?.serializedValue)
+              .where((i) => i >= 0 && i < boxCount)
+              .toSet();
+    }
+
+    if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.textList) {
+      // => characterValue.serializedValue == {"values": [{"uuid": "...", "value": "..."}]}
+      final config = TextListConfig.of(widget.statConfiguration);
+      final entries =
+          textListEntriesOf(widget.characterValue?.serializedValue);
+      final slotUuids = config.slots.map((s) => s.uuid).toSet();
+      textListSlotControllers = {
+        for (final slot in config.slots)
+          slot.uuid: TextEditingController(
+              text: entries
+                      .firstWhereOrNull((e) => e.uuid == slot.uuid)
+                      ?.value ??
+                  "")
+            ..addListener(onChanged)
+            ..addListener(clearPreviewSandboxOnConfigEdit),
+      };
+      textListOwnEntries = config.allowCustomEntries
+          ? entries
+              .where((e) => !slotUuids.contains(e.uuid))
+              .map((e) => (
+                    uuid: e.uuid,
+                    controller: TextEditingController(text: e.value)
+                      ..addListener(onChanged)
+                      ..addListener(clearPreviewSandboxOnConfigEdit),
+                  ))
+              .toList()
+          : [];
+    }
+
+    if (widget.statConfiguration.valueType ==
+        CharacterStatValueType.singleSelect) {
+      // => characterValue.serializedValue == {"value": "<option uuid>"}
+      final selected =
+          selectedOptionUuidOf(widget.characterValue?.serializedValue);
+      singleSelectSelectedUuid =
+          selectOptionsOf(widget.statConfiguration).any((o) => o.uuid == selected)
+              ? selected
+              : null;
+    }
+
+    if (widget.statConfiguration.valueType ==
         CharacterStatValueType.companionSelector) {
       List<String> previouslySelectedCompanions = [];
       if (widget.characterValue?.serializedValue != null) {
@@ -399,8 +467,12 @@ class _PlayerStatsConfigurationVisualsState
               ))
           .toList();
 
+      // No level field while the DM switched the level off; the stored level
+      // is kept (see _lastValidLevel below).
       if (widget.statConfiguration.valueType ==
-          CharacterStatValueType.characterNameWithLevelAndAdditionalDetails) {
+              CharacterStatValueType
+                  .characterNameWithLevelAndAdditionalDetails &&
+          characterSummaryShowsLevel(widget.statConfiguration)) {
         labelDefinitions.add((label: S.of(context).level, uuid: ""));
       }
 
@@ -424,6 +496,8 @@ class _PlayerStatsConfigurationVisualsState
             uuid: "",
             value: tempDecode["level"]?.toString() ?? "1"
           ));
+          // Keeps the stored level while no level field is shown.
+          _lastValidLevel = parseCharacterLevel(tempDecode["level"]?.toString());
 
           // Optional portrait fields (same shape idea as singleImage)
           // {"imageUrl": "...", "imagePrompt": "..."}
@@ -594,6 +668,19 @@ class _PlayerStatsConfigurationVisualsState
               return getConfigurationWidgetsForCompanionsSelector();
             case CharacterStatValueType.transformIntoAlternateFormBtn:
               return getConfigurationWidgetsForTransformIntoAlternateFormBtn();
+
+            case CharacterStatValueType.checkboxTrack:
+              return getConfigurationWidgetsForCheckboxTrack();
+
+            case CharacterStatValueType.textList:
+              return getConfigurationWidgetsForTextList();
+
+            case CharacterStatValueType.singleSelect:
+              return getConfigurationWidgetsForSingleSelect();
+
+            case CharacterStatValueType.unsupported:
+              return UnsupportedStatView(
+                  title: widget.statConfiguration.name);
 
             default:
               return Container(
@@ -1144,7 +1231,34 @@ class _PlayerStatsConfigurationVisualsState
         return getCurrentStatValueOrDefaultForListOfIntsWithCalculatedValueType();
       case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
         return getCurrentStatValueOrDefaultForCharacterNameWithLevelType();
+      case CharacterStatValueType.checkboxTrack:
+        return _statValueWith(serializeCheckedBoxes(checkboxTrackChecked));
+      case CharacterStatValueType.textList:
+        return _statValueWith(serializeTextListEntries([
+          ...textListSlotControllers.entries.map((e) =>
+              TextListEntry(uuid: e.key, value: e.value.text.trim())),
+          // An own entry left empty is not stored.
+          ...textListOwnEntries
+              .where((e) => e.controller.text.trim().isNotEmpty)
+              .map((e) => TextListEntry(
+                  uuid: e.uuid, value: e.controller.text.trim())),
+        ]));
+      case CharacterStatValueType.singleSelect:
+        return _statValueWith(serializeSingleSelect(singleSelectSelectedUuid));
+      case CharacterStatValueType.unsupported:
+        // Nothing to edit: keep whatever a newer app version stored.
+        return _statValueWith(widget.characterValue?.serializedValue ?? "{}");
     }
+  }
+
+  RpgCharacterStatValue _statValueWith(String serializedValue) {
+    return RpgCharacterStatValue(
+      hideLabelOfStat: hideLabelOfStat,
+      hideFromCharacterScreen: hideStatFromCharacterScreens,
+      variant: 0,
+      serializedValue: serializedValue,
+      statUuid: widget.statConfiguration.statUuid,
+    );
   }
 
   RpgCharacterStatValue
@@ -1973,6 +2087,151 @@ class _PlayerStatsConfigurationVisualsState
             )
         ],
       ),
+    );
+  }
+
+  Widget getConfigurationWidgetsForCheckboxTrack() {
+    // characterValue.serializedValue = {"checked": [0, 2]}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: widget.statConfiguration.name,
+            statDescription: widget.statConfiguration.helperText),
+        CheckboxTrackView(
+          title: widget.statConfiguration.name,
+          hideTitle: true,
+          config: CheckboxTrackConfig.of(widget.statConfiguration),
+          checked: checkboxTrackChecked,
+          onToggle: (index) {
+            setState(() {
+              final updated = {...checkboxTrackChecked};
+              if (!updated.remove(index)) updated.add(index);
+              checkboxTrackChecked = updated;
+              onChanged();
+            });
+            clearPreviewSandboxOnConfigEdit();
+          },
+        ),
+        Text(
+          S.of(context).checkboxTrackTapHint,
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                color: CustomThemeProvider.of(context).theme.darkTextColor,
+                fontSize: 12,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForTextList() {
+    // characterValue.serializedValue = {"values": [{"uuid": "...", "value": "..."}]}
+    final config = TextListConfig.of(widget.statConfiguration);
+    final darkColor = CustomThemeProvider.of(context).theme.darkColor;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: widget.statConfiguration.name,
+            statDescription: widget.statConfiguration.helperText),
+        for (final slot in config.slots)
+          if (textListSlotControllers[slot.uuid] != null)
+            CustomTextField(
+              key: ValueKey('text-list-slot-field-${slot.uuid}'),
+              labelText: slot.label.trim().isEmpty
+                  ? widget.statConfiguration.name
+                  : slot.label,
+              textEditingController: textListSlotControllers[slot.uuid]!,
+              keyboardType: TextInputType.text,
+            ),
+        if (config.allowCustomEntries) ...[
+          for (final entry in textListOwnEntries)
+            Row(
+              key: ValueKey('text-list-own-entry-${entry.uuid}'),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    labelText: S.of(context).textListOwnEntryLabel,
+                    textEditingController: entry.controller,
+                    keyboardType: TextInputType.text,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: CustomButton(
+                    key: ValueKey('text-list-own-entry-delete-${entry.uuid}'),
+                    variant: CustomButtonVariant.FlatButton,
+                    onPressed: () {
+                      setState(() {
+                        textListOwnEntries = textListOwnEntries
+                            .where((e) => e.uuid != entry.uuid)
+                            .toList();
+                        onChanged();
+                      });
+                      clearPreviewSandboxOnConfigEdit();
+                    },
+                    icon: CustomFaIcon(
+                      icon: FontAwesomeIcons.trashCan,
+                      color: darkColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          const SizedBox(height: 5),
+          CustomButton(
+            key: const ValueKey('text-list-add-own-entry'),
+            isSubbutton: true,
+            onPressed: () {
+              setState(() {
+                textListOwnEntries = [
+                  ...textListOwnEntries,
+                  (
+                    uuid: UuidV7().generate(),
+                    controller: TextEditingController()
+                      ..addListener(onChanged)
+                      ..addListener(clearPreviewSandboxOnConfigEdit),
+                  ),
+                ];
+              });
+            },
+            label: S.of(context).textListAddEntry,
+            icon: CustomFaIcon(
+              icon: FontAwesomeIcons.plus,
+              size: 14,
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget getConfigurationWidgetsForSingleSelect() {
+    // characterValue.serializedValue = {"value": "<option uuid>"}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _PlayerConfigModalNonDefaultTitleAndHelperText(
+            statTitle: widget.statConfiguration.name,
+            statDescription: widget.statConfiguration.helperText),
+        // In the DM's order: options of one choice are often ranked.
+        ...selectOptionsOf(widget.statConfiguration).map(
+          (option) => SingleSelectOptionTile(
+            option: option,
+            isSelected: option.uuid == singleSelectSelectedUuid,
+            showFullDescription: true,
+            onTap: () {
+              setState(() {
+                singleSelectSelectedUuid = option.uuid;
+                onChanged();
+              });
+              clearPreviewSandboxOnConfigEdit();
+            },
+          ),
+        ),
+      ],
     );
   }
 

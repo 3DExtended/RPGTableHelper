@@ -2019,4 +2019,93 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get aboutLicensesSettingsSubtitle =>
       'Regelmaterial, Lizenzen und Open-Source-Hinweise';
+
+  @override
+  String get statTypeCheckboxTrack => 'Kästchenleiste';
+
+  @override
+  String get statTypeCheckboxTrackHelp =>
+      'Eine Reihe Kästchen, die Spieler mit einem Tipp auf dem Bogen ankreuzen, z. B. Stress.';
+
+  @override
+  String get statTypeTextList => 'Textliste';
+
+  @override
+  String get statTypeTextListHelp =>
+      'Mehrere Texteinträge, optional mit festen, beschrifteten Plätzen, z. B. Aspekte oder Konsequenzen.';
+
+  @override
+  String get statTypeSingleSelect => 'Auswahl (eine)';
+
+  @override
+  String get statTypeSingleSelectHelp =>
+      'Spieler wählen genau eine der Optionen, z. B. Herkunft oder Gesinnung.';
+
+  @override
+  String get statTypeUnsupported => 'Unbekannter Typ';
+
+  @override
+  String get statTypeUnsupportedHint =>
+      'Wird von dieser Version nicht unterstützt. Bitte aktualisiere die App.';
+
+  @override
+  String get checkboxTrackBoxesHeadline => 'Kästchen';
+
+  @override
+  String get checkboxTrackBoxCountLabel => 'Anzahl';
+
+  @override
+  String get checkboxTrackLabelsHint =>
+      'Beschriftungen sind optional, z. B. „1“, „2“, „3“ oder „Leicht“.';
+
+  @override
+  String checkboxTrackBoxLabel(int number) {
+    return 'Kästchen $number';
+  }
+
+  @override
+  String get checkboxTrackTapHint =>
+      'Tippe ein Kästchen an, um es anzukreuzen oder freizugeben.';
+
+  @override
+  String get textListSlotsHeadline => 'Feste Plätze';
+
+  @override
+  String get textListSlotsHint =>
+      'Optional, z. B. „Hauptaspekt“, „Dilemma“ oder „Leicht (2)“.';
+
+  @override
+  String get textListSlotLabel => 'Beschriftung:';
+
+  @override
+  String get textListAllowCustomEntries =>
+      'Spieler dürfen eigene Einträge hinzufügen und löschen';
+
+  @override
+  String get textListAddEntry => 'Eintrag hinzufügen';
+
+  @override
+  String get textListOwnEntryLabel => 'Eigener Eintrag';
+
+  @override
+  String get textListEmpty => 'Noch keine Einträge';
+
+  @override
+  String get textListEditEntryTitle => 'Eintrag bearbeiten';
+
+  @override
+  String get textListDeleteEntry => 'Löschen';
+
+  @override
+  String get singleSelectOptionsHeadline => 'Optionen';
+
+  @override
+  String get singleSelectNothingChosen => 'Noch nichts gewählt';
+
+  @override
+  String get showLevelToggle => 'Level anzeigen';
+
+  @override
+  String get showLevelHint =>
+      'Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins.';
 }

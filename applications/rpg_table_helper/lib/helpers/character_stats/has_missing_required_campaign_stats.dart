@@ -13,8 +13,11 @@ bool hasMissingRequiredCampaignStats({
           .toList() ??
       const <CharacterStatDefinition>[];
   final present = character.characterStats.map((s) => s.statUuid).toSet();
-  // Computed stats are never typed in, so they are never missing.
-  final missingDef = defs.any(
-      (st) => !present.contains(st.statUuid) && !StatNumbers.isComputed(st));
+  // Computed stats are never typed in, so they are never missing; neither
+  // are stats of a type from a newer app version (nothing to type in here).
+  final missingDef = defs.any((st) =>
+      !present.contains(st.statUuid) &&
+      !StatNumbers.isComputed(st) &&
+      st.valueType != CharacterStatValueType.unsupported);
   return missingDef || character.characterName.trim().isEmpty;
 }

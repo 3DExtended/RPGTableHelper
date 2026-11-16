@@ -319,6 +319,36 @@ class StatVisualizationVariantCatalog {
       title: 'Large numeral tile',
       isNew: true,
     ),
+
+    // --- checkboxTrack / textList / singleSelect ---
+    StatVisualizationVariantEntry(
+      id: 'V-TRACK-0',
+      valueType: 'checkboxTrack',
+      variant: 0,
+      title: 'Labelled boxes (tap to tick)',
+      isNew: true,
+    ),
+    StatVisualizationVariantEntry(
+      id: 'V-TEXTLIST-0',
+      valueType: 'textList',
+      variant: 0,
+      title: 'Lined list (tap to edit)',
+      isNew: true,
+    ),
+    StatVisualizationVariantEntry(
+      id: 'V-SELECT-0',
+      valueType: 'singleSelect',
+      variant: 0,
+      title: 'Chosen option only',
+      isNew: true,
+    ),
+    StatVisualizationVariantEntry(
+      id: 'V-SELECT-1',
+      valueType: 'singleSelect',
+      variant: 1,
+      title: 'All options (tap to choose)',
+      isNew: true,
+    ),
   ];
 
   static List<StatVisualizationVariantEntry> get newOnly =>

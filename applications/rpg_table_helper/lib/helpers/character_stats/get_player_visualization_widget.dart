@@ -14,10 +14,15 @@ import 'package:quest_keeper/components/custom_markdown_body.dart';
 import 'package:quest_keeper/components/custom_shadow_widget.dart';
 import 'package:quest_keeper/components/pentagon_with_label.dart';
 import 'package:quest_keeper/components/progress_indicator_for_character_screen.dart';
+import 'package:quest_keeper/components/stat_types/checkbox_track_view.dart';
+import 'package:quest_keeper/components/stat_types/single_select_view.dart';
+import 'package:quest_keeper/components/stat_types/text_list_view.dart';
+import 'package:quest_keeper/components/stat_types/unsupported_stat_view.dart';
 import 'package:quest_keeper/components/static_grid.dart';
 import 'package:quest_keeper/constants.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/multiselect_option_list_text.dart';
+import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_visualization_variant_widgets.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_level_seal.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
@@ -33,6 +38,7 @@ import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
 import 'package:quest_keeper/screens/pageviews/player_pageview/player_page_screen.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:uuid/v7.dart';
 
 /// Resolves a stored image path (asset or API-relative) to a loadable URL.
 String resolveStatImageUrl(String? imageUrl) {
@@ -49,7 +55,12 @@ int numberOfVariantsForValueTypes(CharacterStatValueType valueType) {
   switch (valueType) {
     case CharacterStatValueType.singleLineText:
     case CharacterStatValueType.singleImage:
+    case CharacterStatValueType.checkboxTrack:
+    case CharacterStatValueType.textList:
+    case CharacterStatValueType.unsupported:
       return 1;
+    case CharacterStatValueType.singleSelect:
+      return 2;
     case CharacterStatValueType.companionSelector:
     case CharacterStatValueType.transformIntoAlternateFormBtn:
     case CharacterStatValueType.int:
@@ -76,6 +87,9 @@ Widget getPlayerVisualizationWidget({
   required String characterName,
   required void Function(String newSerializedValue) onNewStatValue,
   required RpgCharacterConfiguration? characterToRenderStatFor,
+  // Disables the direct edits of the checkbox track, text list and single
+  // select (e.g. while the DM looks at a player's sheet).
+  bool readOnly = false,
 }) {
   switch (statConfiguration.valueType) {
     case CharacterStatValueType.multiLineText:
@@ -124,7 +138,131 @@ Widget getPlayerVisualizationWidget({
     case CharacterStatValueType.multiselect:
       return renderMultiselectStat(onNewStatValue, characterValue, context,
           statConfiguration, characterName);
+
+    case CharacterStatValueType.checkboxTrack:
+      return renderCheckboxTrackStat(
+          readOnly ? null : onNewStatValue, characterValue, statConfiguration);
+
+    case CharacterStatValueType.textList:
+      return renderTextListStat(readOnly ? null : onNewStatValue,
+          characterValue, context, statConfiguration);
+
+    case CharacterStatValueType.singleSelect:
+      return renderSingleSelectStat(
+          readOnly ? null : onNewStatValue, characterValue, statConfiguration);
+
+    case CharacterStatValueType.unsupported:
+      return UnsupportedStatView(title: statConfiguration.name);
   }
+}
+
+/// Checkbox track: a tap ticks or frees a box, no dialog.
+Widget renderCheckboxTrackStat(
+    void Function(String newSerializedValue)? onNewStatValue,
+    RpgCharacterStatValue characterValue,
+    CharacterStatDefinition statConfiguration) {
+  // statConfiguration.jsonSerializedAdditionalData = {"boxCount": 3, "labels": ["1", "2", "3"]}
+  // characterValue.serializedValue = {"checked": [0, 2]}
+  final config = CheckboxTrackConfig.of(statConfiguration);
+  return CheckboxTrackView(
+    title: statConfiguration.name,
+    hideTitle: characterValue.hideLabelOfStat == true,
+    config: config,
+    checked: checkedBoxesOf(characterValue.serializedValue),
+    onToggle: onNewStatValue == null
+        ? null
+        : (index) => onNewStatValue(toggleCheckboxTrackBox(
+              serializedValue: characterValue.serializedValue,
+              index: index,
+              boxCount: config.boxCount,
+            )),
+  );
+}
+
+/// Text list: a tap on a row edits it in a small dialog; own entries can be
+/// added (and deleted in the dialog) when the DM allows them.
+Widget renderTextListStat(
+    void Function(String newSerializedValue)? onNewStatValue,
+    RpgCharacterStatValue characterValue,
+    BuildContext context,
+    CharacterStatDefinition statConfiguration) {
+  // statConfiguration.jsonSerializedAdditionalData = {"slots": [{"uuid": "...", "label": "..."}], "allowCustomEntries": true}
+  // characterValue.serializedValue = {"values": [{"uuid": "...", "value": "..."}]}
+  final config = TextListConfig.of(statConfiguration);
+  final rows = textListRowsOf(
+      config, textListEntriesOf(characterValue.serializedValue));
+
+  Future<void> edit(TextListRow row) async {
+    final result = await showTextListEntryDialog(
+      context,
+      title: statConfiguration.name.trim().isEmpty
+          ? S.of(context).textListEditEntryTitle
+          : statConfiguration.name,
+      label: (row.slotLabel?.trim().isNotEmpty ?? false)
+          ? row.slotLabel!
+          : S.of(context).textListOwnEntryLabel,
+      initialValue: row.value,
+      canDelete: !row.isSlot,
+    );
+    if (result == null) return;
+    onNewStatValue!(result.delete
+        ? removeTextListEntry(
+            serializedValue: characterValue.serializedValue, uuid: row.uuid)
+        : setTextListEntry(
+            serializedValue: characterValue.serializedValue,
+            uuid: row.uuid,
+            value: result.value,
+          ));
+  }
+
+  Future<void> add() async {
+    final result = await showTextListEntryDialog(
+      context,
+      title: S.of(context).textListAddEntry,
+      label: S.of(context).textListOwnEntryLabel,
+      initialValue: '',
+      canDelete: false,
+    );
+    if (result == null || result.delete || result.value.isEmpty) return;
+    onNewStatValue!(setTextListEntry(
+      serializedValue: characterValue.serializedValue,
+      uuid: UuidV7().generate(),
+      value: result.value,
+    ));
+  }
+
+  return TextListView(
+    title: statConfiguration.name,
+    hideTitle: characterValue.hideLabelOfStat == true,
+    rows: rows,
+    onEditRow: onNewStatValue == null ? null : edit,
+    onAddEntry:
+        onNewStatValue == null || !config.allowCustomEntries ? null : add,
+  );
+}
+
+/// Single select: variant 0 shows the chosen option, variant 1 lists all
+/// options and a tap picks one (replacing the previous choice).
+Widget renderSingleSelectStat(
+    void Function(String newSerializedValue)? onNewStatValue,
+    RpgCharacterStatValue characterValue,
+    CharacterStatDefinition statConfiguration) {
+  // statConfiguration.jsonSerializedAdditionalData = {"options": [{"uuid": "...", "label": "", "description": ""}]}
+  // characterValue.serializedValue = {"value": "<option uuid>"}
+  final selectedUuid = selectedOptionUuidOf(characterValue.serializedValue);
+  return SingleSelectView(
+    title: statConfiguration.name,
+    hideTitle: characterValue.hideLabelOfStat == true,
+    options: selectOptionsOf(statConfiguration),
+    selectedUuid: selectedUuid,
+    showAllOptions: characterValue.variant == 1,
+    onSelect: onNewStatValue == null
+        ? null
+        : (uuid) {
+            if (uuid == selectedUuid) return;
+            onNewStatValue(serializeSingleSelect(uuid));
+          },
+  );
 }
 
 const defaultCompanionSelectorIconName = "paw";
@@ -1716,6 +1854,9 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
       ? null
       : resolveStatImageUrl(storedImageUrl);
 
+  // The DM can switch the level off ("showLevel": false in the configuration).
+  final showLevel = characterSummaryShowsLevel(statConfiguration);
+
   return LayoutBuilder(builder: (context, constraints) {
     final details = filledValues
         .map((t) => (label: t.label, value: t.value))
@@ -1725,18 +1866,22 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
       case 1:
         return IdentityBanner(
           characterName: characterName,
-          level: characterLevel is int
-              ? characterLevel
-              : int.tryParse('$characterLevel') ?? 0,
+          level: !showLevel
+              ? null
+              : characterLevel is int
+                  ? characterLevel
+                  : int.tryParse('$characterLevel') ?? 0,
           details: details,
           levelAbbr: S.of(context).levelAbbr,
         );
       case 2:
         return IdentityPortraitCard(
           characterName: characterName,
-          level: characterLevel is int
-              ? characterLevel
-              : int.tryParse('$characterLevel') ?? 0,
+          level: !showLevel
+              ? null
+              : characterLevel is int
+                  ? characterLevel
+                  : int.tryParse('$characterLevel') ?? 0,
           details: details,
           levelAbbr: S.of(context).levelAbbr,
           imageUrl: resolvedPortraitUrl,
@@ -1744,12 +1889,20 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
       case 3:
         return IdentityMinimalLine(
           characterName: characterName,
-          level: characterLevel is int
-              ? characterLevel
-              : int.tryParse('$characterLevel') ?? 0,
+          level: !showLevel
+              ? null
+              : characterLevel is int
+                  ? characterLevel
+                  : int.tryParse('$characterLevel') ?? 0,
           details: details,
           levelAbbr: S.of(context).levelAbbr,
         );
+    }
+
+    if (!showLevel) {
+      // Without the level seal the name and details take the whole width.
+      return _characterSummaryDetailGrid(
+          context, characterName, filledValues);
     }
 
     var maxWidth = min(140.0 + 10 + 200, constraints.maxWidth);
@@ -1884,6 +2037,42 @@ Widget renderCharacterNameWithLevelAndAdditionalDetailsStat(
       ),
     );
   });
+}
+
+/// Name and detail values of the character summary as label/value grid,
+/// used when the level is switched off.
+Widget _characterSummaryDetailGrid(
+  BuildContext context,
+  String characterName,
+  List<({String label, String value})> filledValues,
+) {
+  final ink = CustomThemeProvider.of(context).theme.darkTextColor;
+  return StaticGrid(
+    colGap: 10,
+    rowGap: 4,
+    expandedFlexValues: [1, 2],
+    columnCrossAxisAlignment: CrossAxisAlignment.start,
+    columnMainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      S.of(context).characterNameLabel,
+      characterName,
+      ...filledValues.map((t) => ["${t.label}:", t.value]).expand((i) => i)
+    ]
+        .asMap()
+        .entries
+        .map((strKVP) => AutoSizeText(
+              strKVP.value,
+              textAlign: strKVP.key % 2 == 0 ? TextAlign.right : TextAlign.left,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                    color: ink,
+                    fontSize: strKVP.key % 2 == 0 ? 16 : 24,
+                  ),
+              maxFontSize: strKVP.key % 2 == 0 ? 16 : 24,
+              maxLines: 1,
+              minFontSize: 10,
+            ))
+        .toList(),
+  );
 }
 
 Column renderIntStat(

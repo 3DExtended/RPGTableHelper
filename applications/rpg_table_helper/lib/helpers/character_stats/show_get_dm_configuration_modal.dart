@@ -5,12 +5,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quest_keeper/components/custom_button.dart';
 import 'package:quest_keeper/components/custom_dropdown_menu.dart';
 import 'package:quest_keeper/components/custom_fa_icon.dart';
+import 'package:quest_keeper/components/custom_int_edit_field.dart';
 import 'package:quest_keeper/components/custom_text_field.dart';
 import 'package:quest_keeper/components/horizontal_line.dart';
 import 'package:quest_keeper/components/modal_content_wrapper.dart';
 import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_stats/computed_stat_editor.dart';
 import 'package:quest_keeper/helpers/character_stats/get_player_visualization_widget.dart';
+import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/helpers/icons_helper.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
@@ -84,6 +86,18 @@ class _ShowGetDmConfigurationModalContentState
   // companionSelector: icon shown above the selected companions
   String companionSelectorIconName = defaultCompanionSelectorIconName;
 
+  // checkboxTrack: number of boxes and one (optional) label field per box.
+  // Holds at least checkboxTrackBoxCount fields; only those are stored.
+  int checkboxTrackBoxCount = CheckboxTrackConfig.defaultBoxCount;
+  List<TextEditingController> checkboxTrackLabels = [];
+
+  // textList: fixed slots and whether players may add own entries
+  List<({String uuid, TextEditingController label})> textListSlots = [];
+  bool textListAllowCustomEntries = true;
+
+  // characterNameWithLevelAndAdditionalDetails: show and ask for the level
+  bool showLevel = true;
+
   CharacterStatEditType? selectedEditType = CharacterStatEditType.static;
   CharacterStatValueType? selectedValueType =
       CharacterStatValueType.singleLineText;
@@ -131,7 +145,22 @@ class _ShowGetDmConfigurationModalContentState
                     widget.predefinedConfiguration!) ??
                 defaultCompanionSelectorIconName;
           } else if (selectedValueType ==
-              CharacterStatValueType.multiselect) {
+              CharacterStatValueType.checkboxTrack) {
+            final config =
+                CheckboxTrackConfig.of(widget.predefinedConfiguration!);
+            checkboxTrackBoxCount = config.boxCount;
+            checkboxTrackLabels = config.labels
+                .map((l) => TextEditingController(text: l))
+                .toList();
+          } else if (selectedValueType == CharacterStatValueType.textList) {
+            final config = TextListConfig.of(widget.predefinedConfiguration!);
+            textListAllowCustomEntries = config.allowCustomEntries;
+            textListSlots = config.slots
+                .map((s) =>
+                    (uuid: s.uuid, label: TextEditingController(text: s.label)))
+                .toList();
+          } else if (selectedValueType == CharacterStatValueType.multiselect ||
+              selectedValueType == CharacterStatValueType.singleSelect) {
             // Decode JSON string to a list of dynamic maps
             // TODO remove migration
             List<dynamic> jsonList = [];
@@ -155,7 +184,7 @@ class _ShowGetDmConfigurationModalContentState
                       as bool
                   : false;
 
-              jsonList = json["options"] as List<dynamic>;
+              jsonList = (json["options"] as List<dynamic>?) ?? [];
             }
 
             for (var item in jsonList) {
@@ -179,6 +208,8 @@ class _ShowGetDmConfigurationModalContentState
               selectedValueType ==
                   CharacterStatValueType
                       .characterNameWithLevelAndAdditionalDetails) {
+            showLevel =
+                characterSummaryShowsLevel(widget.predefinedConfiguration!);
             // Decode JSON string to a list of dynamic maps
             List<dynamic> jsonList = (jsonDecode(
                 widget.predefinedConfiguration?.jsonSerializedAdditionalData ??
@@ -251,6 +282,49 @@ class _ShowGetDmConfigurationModalContentState
             tempResult = tempResult.copyWith(
                 jsonSerializedAdditionalData: serializedAdditionalData);
           } else if (selectedValueType ==
+              CharacterStatValueType.singleSelect) {
+            // Same option format as multiselect, without the "multiple
+            // times" switch.
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: jsonEncode({
+              "options": multiselectOptions.map((e) {
+                final map = <String, dynamic>{
+                  "uuid": e.$1,
+                  "label": e.$2.text,
+                  "description": e.$3.text,
+                };
+                final summary = e.$4.text.trim();
+                if (summary.isNotEmpty) {
+                  map["summary"] = summary;
+                }
+                return map;
+              }).toList(),
+            }));
+          } else if (selectedValueType ==
+              CharacterStatValueType.checkboxTrack) {
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: CheckboxTrackConfig(
+              boxCount: checkboxTrackBoxCount,
+              labels: checkboxTrackLabels.map((c) => c.text).toList(),
+            ).toAdditionalData());
+          } else if (selectedValueType == CharacterStatValueType.textList) {
+            tempResult = tempResult.copyWith(
+                jsonSerializedAdditionalData: TextListConfig(
+              slots: textListSlots
+                  .map((s) =>
+                      TextListSlot(uuid: s.uuid, label: s.label.text.trim()))
+                  .toList(),
+              allowCustomEntries: textListAllowCustomEntries,
+            ).toAdditionalData());
+          } else if (selectedValueType == CharacterStatValueType.unsupported) {
+            // A type from a newer app version: keep its data and type name.
+            tempResult = tempResult.copyWith(
+              jsonSerializedAdditionalData:
+                  widget.predefinedConfiguration?.jsonSerializedAdditionalData,
+              unsupportedValueTypeName:
+                  widget.predefinedConfiguration?.unsupportedValueTypeName,
+            );
+          } else if (selectedValueType ==
                   CharacterStatValueType.listOfIntWithCalculatedValues ||
               selectedValueType ==
                   CharacterStatValueType
@@ -261,7 +335,13 @@ class _ShowGetDmConfigurationModalContentState
                         "uuid": e.uuid,
                         "label": e.label.text,
                       })
-                  .toList())
+                  .toList()),
+              // Only written when off, so existing campaigns stay unchanged.
+              if (selectedValueType ==
+                      CharacterStatValueType
+                          .characterNameWithLevelAndAdditionalDetails &&
+                  !showLevel)
+                "showLevel": false,
             });
 
             tempResult = tempResult.copyWith(
@@ -362,11 +442,46 @@ class _ShowGetDmConfigurationModalContentState
                     } else {
                       selectedValueType = CharacterStatValueType.values
                           .singleWhere((e) => e.name == newValue);
+                      // Boxes are ticked during play: a new track starts
+                      // as a frequently changed value.
+                      if (selectedValueType ==
+                              CharacterStatValueType.checkboxTrack &&
+                          widget.predefinedConfiguration == null) {
+                        selectedEditType = CharacterStatEditType.oneTap;
+                      }
                     }
                   });
                 },
-                items: CharacterStatValueType.values.map((e) {
+                // The placeholder for unknown types is never offered, it is
+                // only shown for a stat that already has it.
+                items: CharacterStatValueType.values
+                    .where((e) =>
+                        e != CharacterStatValueType.unsupported ||
+                        selectedValueType ==
+                            CharacterStatValueType.unsupported)
+                    .map((e) {
                   switch (e) {
+                    case CharacterStatValueType.checkboxTrack:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(S.of(context).statTypeCheckboxTrack),
+                      );
+                    case CharacterStatValueType.textList:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(S.of(context).statTypeTextList),
+                      );
+                    case CharacterStatValueType.singleSelect:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(S.of(context).statTypeSingleSelect),
+                      );
+                    case CharacterStatValueType.unsupported:
+                      return DropdownMenuItem<String?>(
+                        value: e.name,
+                        child: Text(
+                            "${S.of(context).statTypeUnsupported} (${widget.predefinedConfiguration?.unsupportedValueTypeName ?? "?"})"),
+                      );
                     case CharacterStatValueType.singleImage:
                       return DropdownMenuItem<String?>(
                         value: e.name,
@@ -439,6 +554,22 @@ class _ShowGetDmConfigurationModalContentState
                   }
                 }).toList(),
                 label: S.of(context).kindOfProperty),
+            if (_valueTypeHelpText(selectedValueType) != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _valueTypeHelpText(selectedValueType)!,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: CustomThemeProvider.of(context)
+                              .theme
+                              .darkTextColor,
+                          fontSize: 14,
+                        ),
+                  ),
+                ),
+              ),
             ...getAdvancedConfigurationOptionWidgets(),
             ...getAdditionalDetailsWidgets(),
             SizedBox(
@@ -558,6 +689,184 @@ class _ShowGetDmConfigurationModalContentState
     ];
   }
 
+  /// Short help below the type picker, for the types that need one.
+  String? _valueTypeHelpText(CharacterStatValueType? type) {
+    switch (type) {
+      case CharacterStatValueType.checkboxTrack:
+        return S.of(context).statTypeCheckboxTrackHelp;
+      case CharacterStatValueType.textList:
+        return S.of(context).statTypeTextListHelp;
+      case CharacterStatValueType.singleSelect:
+        return S.of(context).statTypeSingleSelectHelp;
+      case CharacterStatValueType.unsupported:
+        return S.of(context).statTypeUnsupportedHint;
+      default:
+        return null;
+    }
+  }
+
+  List<Widget> _sectionStart(String headline, {String? hint}) {
+    return [
+      const SizedBox(height: 20),
+      HorizontalLine(),
+      const SizedBox(height: 10),
+      Text(
+        headline,
+        style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 20,
+            ),
+      ),
+      if (hint != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            hint,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: CustomThemeProvider.of(context).theme.darkTextColor,
+                  fontSize: 13,
+                ),
+          ),
+        ),
+      const SizedBox(height: 10),
+    ];
+  }
+
+  Widget _addElementButton({Key? key, required VoidCallback onPressed}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+      child: CustomButton(
+        key: key,
+        isSubbutton: true,
+        onPressed: onPressed,
+        label: S.of(context).additionalElement,
+        icon: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: CustomFaIcon(
+            icon: FontAwesomeIcons.plus,
+            size: 16,
+            color: CustomThemeProvider.of(context).theme.darkTextColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// checkboxTrack: number of boxes (1-20) and an optional label per box.
+  List<Widget> getCheckboxTrackConfigurationWidgets() {
+    while (checkboxTrackLabels.length < checkboxTrackBoxCount) {
+      checkboxTrackLabels.add(TextEditingController());
+    }
+    return [
+      ..._sectionStart(S.of(context).checkboxTrackBoxesHeadline),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: CustomIntEditField(
+          key: const ValueKey("checkboxTrackBoxCount"),
+          label: S.of(context).checkboxTrackBoxCountLabel,
+          startValue: checkboxTrackBoxCount,
+          minValue: CheckboxTrackConfig.minBoxes,
+          maxValue: CheckboxTrackConfig.maxBoxes,
+          onValueChange: (newValue) {
+            setState(() {
+              checkboxTrackBoxCount = newValue.clamp(
+                  CheckboxTrackConfig.minBoxes, CheckboxTrackConfig.maxBoxes);
+            });
+          },
+        ),
+      ),
+      const SizedBox(height: 10),
+      Text(
+        S.of(context).checkboxTrackLabelsHint,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: CustomThemeProvider.of(context).theme.darkTextColor,
+              fontSize: 13,
+            ),
+      ),
+      const SizedBox(height: 5),
+      Wrap(
+        spacing: 10,
+        children: List.generate(
+          checkboxTrackBoxCount,
+          (index) => SizedBox(
+            width: 140,
+            child: CustomTextField(
+              key: ValueKey("checkboxTrackLabel-$index"),
+              labelText: S.of(context).checkboxTrackBoxLabel(index + 1),
+              textEditingController: checkboxTrackLabels[index],
+              keyboardType: TextInputType.text,
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  /// textList: optional fixed slots and whether players may add own entries.
+  List<Widget> getTextListConfigurationWidgets() {
+    return [
+      ..._sectionStart(
+        S.of(context).textListSlotsHeadline,
+        hint: S.of(context).textListSlotsHint,
+      ),
+      ...textListSlots.asMap().entries.map(
+            (tuple) => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    key: ValueKey("textListSlot-${tuple.key}"),
+                    labelText: S.of(context).textListSlotLabel,
+                    textEditingController: tuple.value.label,
+                    keyboardType: TextInputType.text,
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 70,
+                  clipBehavior: Clip.none,
+                  child: CustomButton(
+                    variant: CustomButtonVariant.FlatButton,
+                    onPressed: () {
+                      setState(() {
+                        textListSlots.removeAt(tuple.key);
+                      });
+                    },
+                    icon: CustomFaIcon(
+                      icon: FontAwesomeIcons.trashCan,
+                      color: CustomThemeProvider.of(context).theme.darkColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      _addElementButton(
+        key: const ValueKey("textListAddSlot"),
+        onPressed: () {
+          setState(() {
+            textListSlots.add(
+                (uuid: UuidV7().generate(), label: TextEditingController()));
+          });
+        },
+      ),
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          Expanded(
+            child: SelectableTile(
+              key: const ValueKey("textListAllowCustomEntriesToggle"),
+              onValueChange: () => setState(() =>
+                  textListAllowCustomEntries = !textListAllowCustomEntries),
+              isSet: textListAllowCustomEntries,
+              label: S.of(context).textListAllowCustomEntries,
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
   List<Widget> getAdditionalDetailsWidgets() {
     // TODO add all items which need additionalDetails here
     var typesWithAdditionalConfigurationRequired = [
@@ -566,6 +875,9 @@ class _ShowGetDmConfigurationModalContentState
       CharacterStatValueType.characterNameWithLevelAndAdditionalDetails,
       CharacterStatValueType.listOfIntsWithIcons,
       CharacterStatValueType.companionSelector,
+      CharacterStatValueType.checkboxTrack,
+      CharacterStatValueType.textList,
+      CharacterStatValueType.singleSelect,
     ];
 
     if (selectedValueType == null) return [];
@@ -640,7 +952,16 @@ class _ShowGetDmConfigurationModalContentState
       ];
     }
 
-    if (selectedValueType == CharacterStatValueType.multiselect) {
+    if (selectedValueType == CharacterStatValueType.checkboxTrack) {
+      return getCheckboxTrackConfigurationWidgets();
+    }
+
+    if (selectedValueType == CharacterStatValueType.textList) {
+      return getTextListConfigurationWidgets();
+    }
+
+    if (selectedValueType == CharacterStatValueType.multiselect ||
+        selectedValueType == CharacterStatValueType.singleSelect) {
       return [
         SizedBox(
           height: 20,
@@ -650,7 +971,9 @@ class _ShowGetDmConfigurationModalContentState
           height: 10,
         ),
         Text(
-          S.of(context).optionsForMultiselect,
+          selectedValueType == CharacterStatValueType.singleSelect
+              ? S.of(context).singleSelectOptionsHeadline
+              : S.of(context).optionsForMultiselect,
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: CustomThemeProvider.of(context).theme.darkTextColor,
                 fontSize: 20,
@@ -778,6 +1101,35 @@ class _ShowGetDmConfigurationModalContentState
           height: 20,
         ),
         HorizontalLine(),
+        if (selectedValueType ==
+            CharacterStatValueType
+                .characterNameWithLevelAndAdditionalDetails) ...[
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableTile(
+                  key: const ValueKey("showLevelToggle"),
+                  onValueChange: () => setState(() => showLevel = !showLevel),
+                  isSet: showLevel,
+                  label: S.of(context).showLevelToggle,
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Text(
+              S.of(context).showLevelHint,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: CustomThemeProvider.of(context).theme.darkTextColor,
+                    fontSize: 13,
+                  ),
+            ),
+          ),
+        ],
         SizedBox(
           height: 10,
         ),
@@ -956,11 +1308,14 @@ class SelectableTile extends StatelessWidget {
           SizedBox(
             width: 10,
           ),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: CustomThemeProvider.of(context).theme.darkTextColor,
-                fontSize: 16),
+          // Flexible: long labels wrap on phones instead of overflowing.
+          Flexible(
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: CustomThemeProvider.of(context).theme.darkTextColor,
+                  fontSize: 16),
+            ),
           ),
           SizedBox(
             width: 10,

@@ -3541,6 +3541,162 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Regelmaterial, Lizenzen und Open-Source-Hinweise'**
   String get aboutLicensesSettingsSubtitle;
+
+  /// No description provided for @statTypeCheckboxTrack.
+  ///
+  /// In de, this message translates to:
+  /// **'Kästchenleiste'**
+  String get statTypeCheckboxTrack;
+
+  /// No description provided for @statTypeCheckboxTrackHelp.
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Reihe Kästchen, die Spieler mit einem Tipp auf dem Bogen ankreuzen, z. B. Stress.'**
+  String get statTypeCheckboxTrackHelp;
+
+  /// No description provided for @statTypeTextList.
+  ///
+  /// In de, this message translates to:
+  /// **'Textliste'**
+  String get statTypeTextList;
+
+  /// No description provided for @statTypeTextListHelp.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere Texteinträge, optional mit festen, beschrifteten Plätzen, z. B. Aspekte oder Konsequenzen.'**
+  String get statTypeTextListHelp;
+
+  /// No description provided for @statTypeSingleSelect.
+  ///
+  /// In de, this message translates to:
+  /// **'Auswahl (eine)'**
+  String get statTypeSingleSelect;
+
+  /// No description provided for @statTypeSingleSelectHelp.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler wählen genau eine der Optionen, z. B. Herkunft oder Gesinnung.'**
+  String get statTypeSingleSelectHelp;
+
+  /// No description provided for @statTypeUnsupported.
+  ///
+  /// In de, this message translates to:
+  /// **'Unbekannter Typ'**
+  String get statTypeUnsupported;
+
+  /// No description provided for @statTypeUnsupportedHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird von dieser Version nicht unterstützt. Bitte aktualisiere die App.'**
+  String get statTypeUnsupportedHint;
+
+  /// No description provided for @checkboxTrackBoxesHeadline.
+  ///
+  /// In de, this message translates to:
+  /// **'Kästchen'**
+  String get checkboxTrackBoxesHeadline;
+
+  /// No description provided for @checkboxTrackBoxCountLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Anzahl'**
+  String get checkboxTrackBoxCountLabel;
+
+  /// No description provided for @checkboxTrackLabelsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschriftungen sind optional, z. B. „1“, „2“, „3“ oder „Leicht“.'**
+  String get checkboxTrackLabelsHint;
+
+  /// No description provided for @checkboxTrackBoxLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kästchen {number}'**
+  String checkboxTrackBoxLabel(int number);
+
+  /// No description provided for @checkboxTrackTapHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe ein Kästchen an, um es anzukreuzen oder freizugeben.'**
+  String get checkboxTrackTapHint;
+
+  /// No description provided for @textListSlotsHeadline.
+  ///
+  /// In de, this message translates to:
+  /// **'Feste Plätze'**
+  String get textListSlotsHeadline;
+
+  /// No description provided for @textListSlotsHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Optional, z. B. „Hauptaspekt“, „Dilemma“ oder „Leicht (2)“.'**
+  String get textListSlotsHint;
+
+  /// No description provided for @textListSlotLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschriftung:'**
+  String get textListSlotLabel;
+
+  /// No description provided for @textListAllowCustomEntries.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler dürfen eigene Einträge hinzufügen und löschen'**
+  String get textListAllowCustomEntries;
+
+  /// No description provided for @textListAddEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag hinzufügen'**
+  String get textListAddEntry;
+
+  /// No description provided for @textListOwnEntryLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Eigener Eintrag'**
+  String get textListOwnEntryLabel;
+
+  /// No description provided for @textListEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Einträge'**
+  String get textListEmpty;
+
+  /// No description provided for @textListEditEntryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag bearbeiten'**
+  String get textListEditEntryTitle;
+
+  /// No description provided for @textListDeleteEntry.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get textListDeleteEntry;
+
+  /// No description provided for @singleSelectOptionsHeadline.
+  ///
+  /// In de, this message translates to:
+  /// **'Optionen'**
+  String get singleSelectOptionsHeadline;
+
+  /// No description provided for @singleSelectNothingChosen.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nichts gewählt'**
+  String get singleSelectNothingChosen;
+
+  /// No description provided for @showLevelToggle.
+  ///
+  /// In de, this message translates to:
+  /// **'Level anzeigen'**
+  String get showLevelToggle;
+
+  /// No description provided for @showLevelHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins.'**
+  String get showLevelHint;
 }
 
 class _AppLocalizationsDelegate

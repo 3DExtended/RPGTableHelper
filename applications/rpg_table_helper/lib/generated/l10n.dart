@@ -5369,6 +5369,266 @@ class S {
       args: [],
     );
   }
+
+  /// `Checkbox track`
+  String get statTypeCheckboxTrack {
+    return Intl.message(
+      'Checkbox track',
+      name: 'statTypeCheckboxTrack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A row of boxes players tick with one tap on the sheet, e.g. stress.`
+  String get statTypeCheckboxTrackHelp {
+    return Intl.message(
+      'A row of boxes players tick with one tap on the sheet, e.g. stress.',
+      name: 'statTypeCheckboxTrackHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text list`
+  String get statTypeTextList {
+    return Intl.message(
+      'Text list',
+      name: 'statTypeTextList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Several text entries, optionally with fixed, labelled slots, e.g. aspects or consequences.`
+  String get statTypeTextListHelp {
+    return Intl.message(
+      'Several text entries, optionally with fixed, labelled slots, e.g. aspects or consequences.',
+      name: 'statTypeTextListHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choice (one)`
+  String get statTypeSingleSelect {
+    return Intl.message(
+      'Choice (one)',
+      name: 'statTypeSingleSelect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Players pick exactly one of the options, e.g. background or alignment.`
+  String get statTypeSingleSelectHelp {
+    return Intl.message(
+      'Players pick exactly one of the options, e.g. background or alignment.',
+      name: 'statTypeSingleSelectHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown type`
+  String get statTypeUnsupported {
+    return Intl.message(
+      'Unknown type',
+      name: 'statTypeUnsupported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not supported by this version. Please update the app.`
+  String get statTypeUnsupportedHint {
+    return Intl.message(
+      'Not supported by this version. Please update the app.',
+      name: 'statTypeUnsupportedHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boxes`
+  String get checkboxTrackBoxesHeadline {
+    return Intl.message(
+      'Boxes',
+      name: 'checkboxTrackBoxesHeadline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Count`
+  String get checkboxTrackBoxCountLabel {
+    return Intl.message(
+      'Count',
+      name: 'checkboxTrackBoxCountLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Labels are optional, e.g. “1”, “2”, “3” or “Mild”.`
+  String get checkboxTrackLabelsHint {
+    return Intl.message(
+      'Labels are optional, e.g. “1”, “2”, “3” or “Mild”.',
+      name: 'checkboxTrackLabelsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Box {number}`
+  String checkboxTrackBoxLabel(Object number) {
+    return Intl.message(
+      'Box $number',
+      name: 'checkboxTrackBoxLabel',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Tap a box to tick or clear it.`
+  String get checkboxTrackTapHint {
+    return Intl.message(
+      'Tap a box to tick or clear it.',
+      name: 'checkboxTrackTapHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fixed slots`
+  String get textListSlotsHeadline {
+    return Intl.message(
+      'Fixed slots',
+      name: 'textListSlotsHeadline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional, e.g. “High concept”, “Trouble” or “Mild (2)”.`
+  String get textListSlotsHint {
+    return Intl.message(
+      'Optional, e.g. “High concept”, “Trouble” or “Mild (2)”.',
+      name: 'textListSlotsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Label:`
+  String get textListSlotLabel {
+    return Intl.message(
+      'Label:',
+      name: 'textListSlotLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Players may add and delete their own entries`
+  String get textListAllowCustomEntries {
+    return Intl.message(
+      'Players may add and delete their own entries',
+      name: 'textListAllowCustomEntries',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add entry`
+  String get textListAddEntry {
+    return Intl.message(
+      'Add entry',
+      name: 'textListAddEntry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Own entry`
+  String get textListOwnEntryLabel {
+    return Intl.message(
+      'Own entry',
+      name: 'textListOwnEntryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No entries yet`
+  String get textListEmpty {
+    return Intl.message(
+      'No entries yet',
+      name: 'textListEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit entry`
+  String get textListEditEntryTitle {
+    return Intl.message(
+      'Edit entry',
+      name: 'textListEditEntryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get textListDeleteEntry {
+    return Intl.message(
+      'Delete',
+      name: 'textListDeleteEntry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Options`
+  String get singleSelectOptionsHeadline {
+    return Intl.message(
+      'Options',
+      name: 'singleSelectOptionsHeadline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing chosen yet`
+  String get singleSelectNothingChosen {
+    return Intl.message(
+      'Nothing chosen yet',
+      name: 'singleSelectNothingChosen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show level`
+  String get showLevelToggle {
+    return Intl.message(
+      'Show level',
+      name: 'showLevelToggle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off: the character form does not ask for a level and the sheet shows none.`
+  String get showLevelHint {
+    return Intl.message(
+      'Off: the character form does not ask for a level and the sheet shows none.',
+      name: 'showLevelHint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

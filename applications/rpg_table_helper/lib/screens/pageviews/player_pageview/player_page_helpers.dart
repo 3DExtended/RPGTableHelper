@@ -155,6 +155,8 @@ class PlayerPageHelpers {
         .where((s) => s.statUuid == filterStatUuid)
         // Computed stats are never typed in.
         .where((s) => !StatNumbers.isComputed(s))
+        // Nor stats of a type from a newer app version.
+        .where((s) => s.valueType != CharacterStatValueType.unsupported)
         // we are not allowing the companionSelector stat on companions
         .where((s) =>
             !isUpdatingCompanionCharacter ||

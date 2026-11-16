@@ -864,6 +864,14 @@ extension on CharacterStatValueType {
         return S.of(context).multiselectOption;
       case CharacterStatValueType.companionSelector:
         return S.of(context).companionOverview;
+      case CharacterStatValueType.checkboxTrack:
+        return S.of(context).statTypeCheckboxTrack;
+      case CharacterStatValueType.textList:
+        return S.of(context).statTypeTextList;
+      case CharacterStatValueType.singleSelect:
+        return S.of(context).statTypeSingleSelect;
+      case CharacterStatValueType.unsupported:
+        return S.of(context).statTypeUnsupported;
     }
   }
 }

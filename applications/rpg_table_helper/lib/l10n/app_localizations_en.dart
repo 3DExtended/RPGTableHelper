@@ -2001,4 +2001,92 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aboutLicensesSettingsSubtitle =>
       'Rules material, licenses and open source notices';
+
+  @override
+  String get statTypeCheckboxTrack => 'Checkbox track';
+
+  @override
+  String get statTypeCheckboxTrackHelp =>
+      'A row of boxes players tick with one tap on the sheet, e.g. stress.';
+
+  @override
+  String get statTypeTextList => 'Text list';
+
+  @override
+  String get statTypeTextListHelp =>
+      'Several text entries, optionally with fixed, labelled slots, e.g. aspects or consequences.';
+
+  @override
+  String get statTypeSingleSelect => 'Choice (one)';
+
+  @override
+  String get statTypeSingleSelectHelp =>
+      'Players pick exactly one of the options, e.g. background or alignment.';
+
+  @override
+  String get statTypeUnsupported => 'Unknown type';
+
+  @override
+  String get statTypeUnsupportedHint =>
+      'Not supported by this version. Please update the app.';
+
+  @override
+  String get checkboxTrackBoxesHeadline => 'Boxes';
+
+  @override
+  String get checkboxTrackBoxCountLabel => 'Count';
+
+  @override
+  String get checkboxTrackLabelsHint =>
+      'Labels are optional, e.g. “1”, “2”, “3” or “Mild”.';
+
+  @override
+  String checkboxTrackBoxLabel(int number) {
+    return 'Box $number';
+  }
+
+  @override
+  String get checkboxTrackTapHint => 'Tap a box to tick or clear it.';
+
+  @override
+  String get textListSlotsHeadline => 'Fixed slots';
+
+  @override
+  String get textListSlotsHint =>
+      'Optional, e.g. “High concept”, “Trouble” or “Mild (2)”.';
+
+  @override
+  String get textListSlotLabel => 'Label:';
+
+  @override
+  String get textListAllowCustomEntries =>
+      'Players may add and delete their own entries';
+
+  @override
+  String get textListAddEntry => 'Add entry';
+
+  @override
+  String get textListOwnEntryLabel => 'Own entry';
+
+  @override
+  String get textListEmpty => 'No entries yet';
+
+  @override
+  String get textListEditEntryTitle => 'Edit entry';
+
+  @override
+  String get textListDeleteEntry => 'Delete';
+
+  @override
+  String get singleSelectOptionsHeadline => 'Options';
+
+  @override
+  String get singleSelectNothingChosen => 'Nothing chosen yet';
+
+  @override
+  String get showLevelToggle => 'Show level';
+
+  @override
+  String get showLevelHint =>
+      'Off: the character form does not ask for a level and the sheet shows none.';
 }

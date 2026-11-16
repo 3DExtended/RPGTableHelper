@@ -1371,12 +1371,15 @@ class IdentityBanner extends StatelessWidget {
   });
 
   final String characterName;
-  final int level;
+
+  /// Null hides the level seal (level switched off by the DM).
+  final int? level;
   final List<({String label, String value})> details;
   final String levelAbbr;
 
   @override
   Widget build(BuildContext context) {
+    final level = this.level;
     return Container(
       width: 320,
       padding: EdgeInsets.fromLTRB(16, 14, 16, 14),
@@ -1415,6 +1418,7 @@ class IdentityBanner extends StatelessWidget {
               ],
             ),
           ),
+          if (level != null)
           SizedBox(
             width: 56,
             height: 56,
@@ -1473,7 +1477,9 @@ class IdentityPortraitCard extends StatelessWidget {
   });
 
   final String characterName;
-  final int level;
+
+  /// Null hides the level badge (level switched off by the DM).
+  final int? level;
   final List<({String label, String value})> details;
   final String levelAbbr;
   final String? imageUrl;
@@ -1481,6 +1487,7 @@ class IdentityPortraitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+    final level = this.level;
     return SizedBox(
       width: 280,
       child: Column(
@@ -1513,6 +1520,7 @@ class IdentityPortraitCard extends StatelessWidget {
                             StatVizTheme.dark(context).withValues(alpha: 0.45),
                       ),
               ),
+              if (level != null)
               SizedBox(
                 width: 48,
                 height: 48,
@@ -1581,7 +1589,9 @@ class IdentityMinimalLine extends StatelessWidget {
   });
 
   final String characterName;
-  final int level;
+
+  /// Null leaves the level out (level switched off by the DM).
+  final int? level;
   final List<({String label, String value})> details;
   final String levelAbbr;
 
@@ -1589,7 +1599,7 @@ class IdentityMinimalLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final parts = [
       characterName,
-      '$levelAbbr $level',
+      if (level != null) '$levelAbbr $level',
       ...details.map((d) => d.value).where((v) => v.isNotEmpty),
     ];
     return Text(

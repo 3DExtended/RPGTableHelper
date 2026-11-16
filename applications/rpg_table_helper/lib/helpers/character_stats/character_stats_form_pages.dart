@@ -22,13 +22,15 @@ class CharacterStatsFormPage {
 }
 
 /// Stats of [tab] a player types in for [character]: computed stats are
-/// never typed in, and companions cannot select companions.
+/// never typed in, stats of a type from a newer app version cannot be, and
+/// companions cannot select companions.
 List<CharacterStatDefinition> fillableStatsOfTab(
   CharacterStatsTabDefinition tab, {
   required bool isCompanion,
 }) {
   return tab.statsInTab
       .where((s) => !StatNumbers.isComputed(s))
+      .where((s) => s.valueType != CharacterStatValueType.unsupported)
       .where(
         (s) =>
             !isCompanion ||

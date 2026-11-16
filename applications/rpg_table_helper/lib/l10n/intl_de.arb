@@ -908,5 +908,39 @@
   "aboutLicensesNotAffiliated": "QuestKeeper ist ein unabhängiges Produkt und wird von keinem Rollenspielverlag herausgegeben oder unterstützt.",
   "aboutLicensesOpenSourceTitle": "Open-Source-Lizenzen",
   "aboutLicensesShowOpenSource": "Alle Lizenzen anzeigen",
-  "aboutLicensesSettingsSubtitle": "Regelmaterial, Lizenzen und Open-Source-Hinweise"
+  "aboutLicensesSettingsSubtitle": "Regelmaterial, Lizenzen und Open-Source-Hinweise",
+  "statTypeCheckboxTrack": "Kästchenleiste",
+  "statTypeCheckboxTrackHelp": "Eine Reihe Kästchen, die Spieler mit einem Tipp auf dem Bogen ankreuzen, z. B. Stress.",
+  "statTypeTextList": "Textliste",
+  "statTypeTextListHelp": "Mehrere Texteinträge, optional mit festen, beschrifteten Plätzen, z. B. Aspekte oder Konsequenzen.",
+  "statTypeSingleSelect": "Auswahl (eine)",
+  "statTypeSingleSelectHelp": "Spieler wählen genau eine der Optionen, z. B. Herkunft oder Gesinnung.",
+  "statTypeUnsupported": "Unbekannter Typ",
+  "statTypeUnsupportedHint": "Wird von dieser Version nicht unterstützt. Bitte aktualisiere die App.",
+  "checkboxTrackBoxesHeadline": "Kästchen",
+  "checkboxTrackBoxCountLabel": "Anzahl",
+  "checkboxTrackLabelsHint": "Beschriftungen sind optional, z. B. „1“, „2“, „3“ oder „Leicht“.",
+  "checkboxTrackBoxLabel": "Kästchen {number}",
+  "@checkboxTrackBoxLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "checkboxTrackTapHint": "Tippe ein Kästchen an, um es anzukreuzen oder freizugeben.",
+  "textListSlotsHeadline": "Feste Plätze",
+  "textListSlotsHint": "Optional, z. B. „Hauptaspekt“, „Dilemma“ oder „Leicht (2)“.",
+  "textListSlotLabel": "Beschriftung:",
+  "textListAllowCustomEntries": "Spieler dürfen eigene Einträge hinzufügen und löschen",
+  "textListAddEntry": "Eintrag hinzufügen",
+  "textListOwnEntryLabel": "Eigener Eintrag",
+  "textListEmpty": "Noch keine Einträge",
+  "textListEditEntryTitle": "Eintrag bearbeiten",
+  "textListDeleteEntry": "Löschen",
+  "singleSelectOptionsHeadline": "Optionen",
+  "singleSelectNothingChosen": "Noch nichts gewählt",
+  "showLevelToggle": "Level anzeigen",
+  "showLevelHint": "Aus: Das Charakterformular fragt kein Level ab und der Bogen zeigt keins."
 }

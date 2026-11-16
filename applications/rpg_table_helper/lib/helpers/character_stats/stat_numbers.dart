@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:quest_keeper/helpers/character_stats/narrative_stat_types.dart';
 import 'package:quest_keeper/models/computed_stat_formula.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
@@ -156,6 +157,8 @@ class StatNumbers {
           break;
         case CharacterStatValueType.characterNameWithLevelAndAdditionalDetails:
           if (!includeMaxAndLevel) break;
+          // A level the DM switched off is not offered as a building block.
+          if (!characterSummaryShowsLevel(stat)) break;
           add(
             StatNumberRef(
               statUuid: stat.statUuid,

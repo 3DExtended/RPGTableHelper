@@ -24,9 +24,14 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
     required this.rpgConfig,
     required this.charToRender,
     required this.onStatValueChanged,
+    this.readOnly = false,
   });
 
   final void Function(RpgCharacterStatValue) onStatValueChanged;
+
+  /// True while the DM looks at a player's sheet: no direct edits (ticking
+  /// boxes, editing text list entries, picking an option).
+  final bool readOnly;
   final CharacterStatsTabDefinition tabDef;
   final RpgConfigurationModel rpgConfig;
   final RpgCharacterConfigurationBase? charToRender;
@@ -139,7 +144,10 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
       if (!hasValue) {
         // "Später ausfüllen" leaves properties without a value; show them
         // so the player can still fill them in on the sheet.
-        if (!isComputed && canFillMissingValues()) {
+        // A type from a newer app version cannot be filled in here.
+        if (!isComputed &&
+            statToRender.valueType != CharacterStatValueType.unsupported &&
+            canFillMissingValues()) {
           result.add(SizedBox(
             width: columnWidth,
             child: MissingStatPlaceholder(
@@ -198,7 +206,8 @@ class PlayerScreenCharacterStatsForTab extends ConsumerWidget {
                   characterName: charToRender?.characterName ??
                       S.of(context).characterNameDefault,
                   statConfiguration: statToRender,
-                  characterValue: matchingPlayerCharacterStat)),
+                  characterValue: matchingPlayerCharacterStat,
+                  readOnly: readOnly)),
         ),
       );
     }

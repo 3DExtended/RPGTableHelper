@@ -182,7 +182,8 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             },
             tabDef: tabDef,
             rpgConfig: rpgConfig,
-            charToRender: charToRender),
+            charToRender: charToRender,
+            readOnly: disableEdit),
         tabDef.uuid
       ));
     }

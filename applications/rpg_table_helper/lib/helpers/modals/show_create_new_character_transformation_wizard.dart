@@ -128,7 +128,9 @@ class _CreateNewCharacterTransformationWizardModalContentState
               .where((e) =>
                   e.valueType != CharacterStatValueType.companionSelector &&
                   e.valueType !=
-                      CharacterStatValueType.transformIntoAlternateFormBtn)
+                      CharacterStatValueType.transformIntoAlternateFormBtn &&
+                  // a type from a newer app version has nothing to set here
+                  e.valueType != CharacterStatValueType.unsupported)
               .map((e) {
             var statName = e.name;
             if ((statName == "") &&
