@@ -364,6 +364,7 @@ class _PlayerPageScreenState extends ConsumerState<PlayerPageScreen> {
             ref: ref,
             rpgConfig: rpgConfig,
             selectedCharacter: charToRender!,
+            openedAutomatically: true,
           );
         });
       }

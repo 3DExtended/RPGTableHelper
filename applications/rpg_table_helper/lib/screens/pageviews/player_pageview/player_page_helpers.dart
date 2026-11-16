@@ -11,6 +11,7 @@ import 'package:quest_keeper/helpers/rpg_character_configuration_provider.dart';
 import 'package:quest_keeper/models/rpg_character_configuration.dart';
 import 'package:quest_keeper/helpers/character_stats/stat_numbers.dart';
 import 'package:quest_keeper/models/rpg_configuration_model.dart';
+import 'package:quest_keeper/services/character_setup_prompt_store.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 
 class PlayerPageHelpers {
@@ -60,6 +61,10 @@ class PlayerPageHelpers {
   /// - [filterTabId] (sheet menu "Configure properties"): the form with every
   ///   field of that tab.
   /// - [filterStatUuid] (long press on a stat): the dialog for that one field.
+  ///
+  /// With [openedAutomatically] (entering the sheet) the form opens at most
+  /// once per character on this device; afterwards the placeholders on the
+  /// sheet lead to the missing fields.
   static void handlePossiblyMissingCharacterStats({
     required WidgetRef ref,
     required BuildContext context,
@@ -67,6 +72,7 @@ class PlayerPageHelpers {
     required RpgCharacterConfigurationBase selectedCharacter,
     String? filterTabId,
     String? filterStatUuid,
+    bool openedAutomatically = false,
   }) {
     if (DependencyProvider.of(context).isMocked) {
       return;
@@ -113,6 +119,12 @@ class PlayerPageHelpers {
         filterTabId: filterTabId,
       );
       if (pages.isEmpty) return;
+
+      if (openedAutomatically) {
+        if (await wasCharacterSetupPrompted(selectedCharacterId)) return;
+        await markCharacterSetupPrompted(selectedCharacterId);
+        if (!context.mounted) return;
+      }
 
       await showCharacterStatsForm(
         context: context,
