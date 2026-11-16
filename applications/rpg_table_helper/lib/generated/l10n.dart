@@ -4755,10 +4755,10 @@ class S {
     );
   }
 
-  /// `The QR code only contains the code.`
+  /// `Scan it with the phone camera: QuestKeeper opens joining with this code.`
   String get qrCodeHint {
     return Intl.message(
-      'The QR code only contains the code.',
+      'Scan it with the phone camera: QuestKeeper opens joining with this code.',
       name: 'qrCodeHint',
       desc: '',
       args: [],

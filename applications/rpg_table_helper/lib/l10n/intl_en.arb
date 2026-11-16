@@ -796,7 +796,7 @@
       }
     }
   },
-  "qrCodeHint": "The QR code only contains the code.",
+  "qrCodeHint": "Scan it with the phone camera: QuestKeeper opens joining with this code.",
   "closeAction": "Close",
   "errorDetailsStatusLabel": "HTTP status:",
   "errorDetailsServerLabel": "Server response:",

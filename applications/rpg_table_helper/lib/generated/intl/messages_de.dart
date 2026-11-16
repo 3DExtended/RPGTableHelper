@@ -1351,7 +1351,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wert mit Bonus",
     ),
     "qrCodeHint": MessageLookupByLibrary.simpleMessage(
-      "Der QR-Code enthält nur den Code.",
+      "Mit der Handykamera scannen: QuestKeeper öffnet direkt das Beitreten mit diesem Code.",
     ),
     "questKeeperIntro": MessageLookupByLibrary.simpleMessage(
       "QuestKeeper begleitet eure Pen-&-Paper-Runde am Tisch. Die Spielleitung richtet die Kampagne ein, alle anderen führen ihren Charakterbogen in der App. Trefferpunkte, Gegenstände und geteilte Notizen sind dabei für alle live aktuell.",

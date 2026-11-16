@@ -41,6 +41,7 @@ import 'package:quest_keeper/services/auth/session_revoker.dart';
 import 'package:quest_keeper/services/config_sync/config_sync_session_controller.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
+import 'package:quest_keeper/services/join_link.dart';
 import 'package:quest_keeper/services/join_requests/pending_join_request_store.dart';
 import 'package:quest_keeper/services/note_documents_service.dart';
 import 'package:quest_keeper/services/join_requests/join_request_notification_controller.dart';
@@ -96,8 +97,16 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       if (!mounted) return;
       await _startJoinRequestNotifications();
       if (!mounted) return;
+      // A join link answers "lead or join?" already.
+      if (pendingJoinLinkCode.value != null) {
+        await clearOnboardingIntent();
+        await _openPendingJoinLink();
+        return;
+      }
+      if (!mounted) return;
       await _openPathFromOnboardingIntent();
     });
+    pendingJoinLinkCode.addListener(_onJoinLink);
 
     // auth-04: every successful auth path (login, register, Apple/Google,
     // complete-SSO) lands here, so this is the single place that covers
@@ -375,8 +384,29 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
 
   @override
   void dispose() {
+    pendingJoinLinkCode.removeListener(_onJoinLink);
     unawaited(_joinRequestController?.stop());
     super.dispose();
+  }
+
+  /// A join link arrived: open the join dialog when this screen is in front
+  /// and idle; otherwise the link waits (e.g. until the user leaves the
+  /// campagne they are in).
+  void _onJoinLink() {
+    if (pendingJoinLinkCode.value == null || !mounted) return;
+    if (showLoadingSpinner || campagnes == null) return;
+    if (ModalRoute.of(context)?.isCurrent != true) return;
+    unawaited(_openPendingJoinLink());
+  }
+
+  /// The join dialog with the code of the last join link (QR code of
+  /// "Spieler einladen"). False when there is none.
+  Future<bool> _openPendingJoinLink() async {
+    final code = pendingJoinLinkCode.value;
+    if (code == null || !mounted) return false;
+    pendingJoinLinkCode.value = null;
+    await _joinCampagne(initialCode: code);
+    return true;
   }
 
   @override
@@ -1154,6 +1184,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
       ref.read(currentFightProvider.notifier).state = null;
 
       await loadCampagnesAndPlayersFromServer();
+      _onJoinLink();
     });
 
     if (openSetupWizard) {
@@ -1286,6 +1317,7 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
         await sessionEntryCoordinator.leave(campagneId: character.campagneId!);
 
         await loadCampagnesAndPlayersFromServer();
+        _onJoinLink();
       });
 
       // Asks for the rolls of a fight the DM started while this player was away.
@@ -1309,10 +1341,14 @@ class _SelectGameModeScreenState extends ConsumerState<SelectGameModeScreen> {
   /// "Kampagne beitreten": join code (and, without [existingCharacter], the
   /// name of a new character), then the request goes to the DM and the
   /// character shows "waiting for approval" until the DM answers.
-  Future<void> _joinCampagne({PlayerCharacter? existingCharacter}) async {
+  Future<void> _joinCampagne({
+    PlayerCharacter? existingCharacter,
+    String? initialCode,
+  }) async {
     final result = await askForCampagneJoinCode(
       context,
       existingCharacterId: existingCharacter?.id,
+      initialCode: initialCode,
     );
     if (!mounted) return;
 

@@ -10,6 +10,7 @@ import 'package:quest_keeper/generated/l10n.dart';
 import 'package:quest_keeper/helpers/character_sheet_skins/character_sheet_skin_chrome.dart';
 import 'package:quest_keeper/helpers/modal_helpers.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
+import 'package:quest_keeper/services/join_link.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Opens the platform share sheet. [origin] anchors the popover on iPad.
@@ -150,7 +151,10 @@ class _InvitePlayersSheetContentState extends State<InvitePlayersSheetContent> {
             border: Border.all(color: theme.darkColor),
           ),
           child: QrImageView(
-            data: widget.joinCode,
+            // The key carries the data, which the widget keeps to itself.
+            key: ValueKey(joinLinkFor(widget.joinCode)),
+            // Scanned with the camera it opens the join dialog of the app.
+            data: joinLinkFor(widget.joinCode),
             version: QrVersions.auto,
             size: 170,
             backgroundColor: Colors.white,

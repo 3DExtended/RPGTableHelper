@@ -35,10 +35,14 @@ import 'package:quest_keeper/services/auth/session_refresh_coordinator.dart';
 import 'package:quest_keeper/services/custom_theme_provider.dart';
 import 'package:quest_keeper/services/dependency_provider.dart';
 import 'package:quest_keeper/services/sse/events_client.dart';
+import 'package:quest_keeper/services/join_link.dart';
 import 'package:quest_keeper/services/sse/network_change_reconnect.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Before runApp: the observer must come before the app's own, which would
+  // try a join link as a route.
+  listenForJoinLinks();
 
   // CC BY 4.0 attribution of the SRD 5.2.1 in Flutter's license list.
   LicenseRegistry.addLicense(srdLicenseEntries);

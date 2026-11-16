@@ -1796,7 +1796,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get qrCodeHint => 'Der QR-Code enthält nur den Code.';
+  String get qrCodeHint =>
+      'Mit der Handykamera scannen: QuestKeeper öffnet direkt das Beitreten mit diesem Code.';
 
   @override
   String get closeAction => 'Schließen';

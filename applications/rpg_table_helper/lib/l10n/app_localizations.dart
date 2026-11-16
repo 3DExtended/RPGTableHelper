@@ -3155,7 +3155,7 @@ abstract class AppLocalizations {
   /// No description provided for @qrCodeHint.
   ///
   /// In de, this message translates to:
-  /// **'Der QR-Code enthält nur den Code.'**
+  /// **'Mit der Handykamera scannen: QuestKeeper öffnet direkt das Beitreten mit diesem Code.'**
   String get qrCodeHint;
 
   /// No description provided for @closeAction.

@@ -820,7 +820,7 @@
       }
     }
   },
-  "qrCodeHint": "Der QR-Code enthält nur den Code.",
+  "qrCodeHint": "Mit der Handykamera scannen: QuestKeeper öffnet direkt das Beitreten mit diesem Code.",
   "closeAction": "Schließen",
   "errorDetailsStatusLabel": "HTTP-Status:",
   "errorDetailsServerLabel": "Server-Antwort:",

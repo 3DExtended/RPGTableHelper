@@ -34,6 +34,7 @@ Future<JoinCampagneResult?> askForCampagneJoinCode(
   BuildContext context, {
   GlobalKey<NavigatorState>? overrideNavigatorKey,
   PlayerCharacterIdentifier? existingCharacterId,
+  String? initialCode,
 }) async {
   return await customShowCupertinoModalBottomSheet<JoinCampagneResult>(
     backgroundColor: const Color.fromARGB(192, 21, 21, 21),
@@ -45,6 +46,7 @@ Future<JoinCampagneResult?> askForCampagneJoinCode(
     overrideNavigatorKey: overrideNavigatorKey,
     builder: (context) => AskForCampagneJoinCodeModalContent(
       existingCharacterId: existingCharacterId,
+      initialCode: initialCode,
     ),
   );
 }
@@ -53,9 +55,14 @@ class AskForCampagneJoinCodeModalContent extends StatefulWidget {
   const AskForCampagneJoinCodeModalContent({
     super.key,
     this.existingCharacterId,
+    this.initialCode,
   });
 
   final PlayerCharacterIdentifier? existingCharacterId;
+
+  /// The code of a join link (QR code of "Spieler einladen"): filled in, so
+  /// only the name is left to type.
+  final String? initialCode;
 
   static const codeFieldKey = ValueKey('joinCodeField');
   static const nameFieldKey = ValueKey('joinCharacterNameField');
@@ -87,6 +94,9 @@ class _AskForCampagneJoinCodeModalContentState
   void initState() {
     super.initState();
     _characterId = widget.existingCharacterId;
+    if (widget.initialCode case final code?) {
+      _codeController.text = formatJoinCode(code);
+    }
   }
 
   @override
@@ -171,7 +181,7 @@ class _AskForCampagneJoinCodeModalContentState
             hintText: '123-456',
             keyboardType: TextInputType.number,
             inputFormatters: const [JoinCodeInputFormatter()],
-            autofocus: true,
+            autofocus: widget.initialCode == null || !_asksForName,
             errorText: _codeError,
             textCapitalization: TextCapitalization.none,
             onChanged: (_) {
@@ -190,6 +200,7 @@ class _AskForCampagneJoinCodeModalContentState
               labelText: s.characterNameFieldLabel,
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
+              autofocus: widget.initialCode != null,
               enabled: !_characterAlreadyCreated && !_isBusy,
               errorText: _nameError,
               onChanged: (_) {

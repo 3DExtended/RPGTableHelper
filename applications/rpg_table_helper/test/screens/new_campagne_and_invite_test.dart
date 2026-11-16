@@ -106,7 +106,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('shows the code, a QR code with only the code and the how-to', (
+    testWidgets('shows the code, a QR code with the join link and the how-to', (
       tester,
     ) async {
       await pumpSheet(tester);
@@ -128,6 +128,17 @@ void main() {
         findsOneWidget,
       );
       expect(find.byType(QrImageView), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('questkeeper://join?code=699-457')),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Mit der Handykamera scannen: QuestKeeper öffnet direkt das '
+          'Beitreten mit diesem Code.',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('share sends the code, the how-to and an iPad anchor', (
